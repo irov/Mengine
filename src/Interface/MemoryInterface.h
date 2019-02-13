@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/InputStreamInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 
 #include "Config/Char.h"
@@ -11,7 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class MemoryInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual Pointer getBuffer() const = 0;

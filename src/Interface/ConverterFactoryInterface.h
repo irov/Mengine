@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Interface/Interface.h"
 
 #include "Interface/ConverterInterface.h"
 
@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ConverterFactoryInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool initialize() = 0;

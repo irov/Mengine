@@ -542,6 +542,11 @@ namespace Mengine
             }
         }
 
+        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -939,6 +944,13 @@ namespace Mengine
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
 
         materials.push_back( material.get() );
+
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialInterfacePtr & RenderMaterialService::getSolidMaterial( EMaterialBlendMode _blendMode ) const
+    {
+        const RenderMaterialInterfacePtr & material = m_solidRenderMaterial[_blendMode];
 
         return material;
     }

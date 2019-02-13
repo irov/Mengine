@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/PrototypeGeneratorInterface.h"
 
 #include "Kernel/Factorable.h"
 

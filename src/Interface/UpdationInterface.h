@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 #include "Kernel/UpdateContext.h"
 
@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void activate( uint32_t _mode, uint32_t _deep ) = 0;

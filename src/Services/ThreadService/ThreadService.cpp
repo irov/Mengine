@@ -99,14 +99,13 @@ namespace Mengine
 
             task->cancel();
 
-            if( desc.progress == false )
+            if( desc.progress == true )
             {
-                continue;
+                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+                threadIdentity->removeTask();
             }
 
-            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-
-			threadIdentity->removeTask();
+            task->finally();
         }
 
         m_tasks.clear();

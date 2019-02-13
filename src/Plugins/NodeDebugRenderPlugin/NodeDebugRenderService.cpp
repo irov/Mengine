@@ -578,7 +578,7 @@ namespace Mengine
             else if( m_showDebugText == 5 )
             {
                 class MyVisitorFactoryService
-                    : public VisitorFactoryService
+                    : public VisitorFactoryInterface
                     , public Factorable
                 {
                 public:

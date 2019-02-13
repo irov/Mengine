@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/Interface.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
@@ -7,8 +9,6 @@
 
 #include "Config/String.h"
 #include "Config/VectorString.h"
-
-#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -30,7 +30,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class TextEntryInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual const ConstString & getKey() const = 0;

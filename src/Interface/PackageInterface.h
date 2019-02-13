@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
@@ -26,7 +27,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class PackageInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void setName( const ConstString & _name ) = 0;

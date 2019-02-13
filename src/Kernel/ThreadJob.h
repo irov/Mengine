@@ -62,7 +62,6 @@ namespace Mengine
     protected:
         bool _onMain() override;
         void _onUpdate() override;
-        void _onCancel() override;
         void _onFinally() override;
 
     protected:

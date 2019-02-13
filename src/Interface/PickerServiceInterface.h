@@ -54,9 +54,6 @@ namespace Mengine
         virtual void handleMouseEnter( const InputMousePositionEvent & _event ) = 0;
         virtual void handleMouseLeave( const InputMousePositionEvent & _event ) = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PickerServiceInterface> PickerServiceInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
 #define PICKER_SERVICE()\

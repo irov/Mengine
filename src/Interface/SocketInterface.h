@@ -1,9 +1,8 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/InputStreamInterface.h"
-
-#include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
 
@@ -17,7 +16,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SocketInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool connect( const SocketConnectInfo & _data ) = 0;

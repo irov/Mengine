@@ -3,8 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class TimeServiceInterface
         : public ServiceInterface
     {

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class CodecFactoryInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool initialize() = 0;

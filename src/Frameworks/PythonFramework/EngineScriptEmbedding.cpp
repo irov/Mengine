@@ -23,6 +23,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"

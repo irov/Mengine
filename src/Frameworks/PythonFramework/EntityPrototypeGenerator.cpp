@@ -4,6 +4,7 @@
 #include "Environment/Python/PythonEventReceiver.h"
 
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"

@@ -1,19 +1,19 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EventReceiverInterface
-        : public Mixin
+        : public Interface
     {
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EventReceiverInterface> EventReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class EventationInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;

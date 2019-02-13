@@ -2,6 +2,7 @@
 
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Kernel/CRC32.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -45,33 +46,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeLeakDetectorService::getNodeLeak( uint32_t _generation, const LambdaNodeLeaks & _leaks ) const
     {
-        for( const NodeLeakDesc & desc : m_nodeLeakDescs )
+        for( uint32_t index = 0; index != MENGINE_NODELEAKDETECTOR_HASHSIZE; ++index )
         {
-            if( desc.generation != _generation )
-            {
-                continue;
-            }
+            const VectorNodeLeakDesc & nodeLeakDescs = m_nodeLeakDescs[index];
 
-            _leaks( desc.factory, desc.factorable, desc.doc.c_str() );
+            for( const NodeLeakDesc & desc : nodeLeakDescs )
+            {
+                if( desc.generation != _generation )
+                {
+                    continue;
+                }
+
+                _leaks( desc.factory, desc.factorable, desc.doc.c_str() );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeLeakDetectorService::notifyDebugCreateObject( Factory * _factory, Factorable * _factorable, const Char * _doc )
     {
+        uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
+
         NodeLeakDesc desc;
         desc.generation = m_generation;
         desc.factory = _factory;
         desc.factorable = _factorable;
         desc.doc = _doc;
 
-        m_nodeLeakDescs.push_back( desc );
+        m_nodeLeakDescs[hash].push_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeLeakDetectorService::notifyDebugDestroyObject( Factory * _factory, Factorable * _factorable )
     {
+        uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
+
+        VectorNodeLeakDesc & nodeLeakDescs = m_nodeLeakDescs[hash];
+
         for( VectorNodeLeakDesc::iterator
-            it = m_nodeLeakDescs.begin(),
-            it_end = m_nodeLeakDescs.end();
+            it = nodeLeakDescs.begin(),
+            it_end = nodeLeakDescs.end();
             it != it_end;
             ++it )
         {
@@ -82,8 +94,8 @@ namespace Mengine
                 continue;
             }
 
-            *it = m_nodeLeakDescs.back();
-            m_nodeLeakDescs.pop_back();
+            *it = nodeLeakDescs.back();
+            nodeLeakDescs.pop_back();
 
             break;
         }

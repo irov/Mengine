@@ -3,6 +3,7 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/KeyCode.h"
 
+#include "Config/Config.h"
 #include "Config/Char.h"
 
 namespace Mengine

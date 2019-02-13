@@ -446,6 +446,9 @@ Core
     StringArguments.h
     StringArguments.cpp
     
+    GlobalInputHandlerHelper.h
+    GlobalInputHandlerHelper.cpp
+    
     KeyCode.h
     Document.h
 )

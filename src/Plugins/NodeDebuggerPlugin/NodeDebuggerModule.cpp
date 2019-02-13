@@ -15,6 +15,7 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -31,6 +32,7 @@
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/GlobalInputHandlerHelper.h"
 
 #include "Config/Stringstream.h"
 
@@ -60,6 +62,11 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
+
+        Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & ) {
+            PLATFORM_SERVICE()
+                ->cmd( "start NodeDebugger.exe 127.0.0.1:18790" );
+        }, MENGINE_DOCUMENT_FUNCTION );
 
         return true;
     }

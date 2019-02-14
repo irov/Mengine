@@ -72,6 +72,7 @@
 //#include "Skeleton.h"
 
 #include "ScriptHolder.h"
+#include "DocumentTraceback.h"
 
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
@@ -300,15 +301,15 @@ namespace Mengine
             const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduler();
 
-            DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_FUNCTION );
+            DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_pipe->initialize( _delay );
 
-            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_FUNCTION );
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_timing->initialize( _timing, _args );
 
-            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_FUNCTION );
+            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_event->initialize( _event, _args );
 
@@ -351,12 +352,12 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
+        uint32_t s_schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduler();
 
-            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_FUNCTION );
+            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
 
             sl->initialize( _script, _args );
 
@@ -365,7 +366,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool scheduleRemove( uint32_t _id )
+        bool s_scheduleRemove( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduler();
@@ -380,7 +381,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        void scheduleRemoveAll()
+        void s_scheduleRemoveAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduler();
@@ -421,7 +422,7 @@ namespace Mengine
             sm->freezeAll( true );
         }
         //////////////////////////////////////////////////////////////////////////
-        void scheduleResumeAll()
+        void s_scheduleResumeAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduler();
@@ -467,12 +468,9 @@ namespace Mengine
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduler();
 
-            if( sm == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( sm, 0 );
 
-            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_FUNCTION );
+            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
 
             sl->initialize( _cb, _args );
 
@@ -688,7 +686,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_FUNCTION );
+            PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_cb->initialize( _cb, _args );
 
@@ -706,7 +704,7 @@ namespace Mengine
             else
             {
                 ScenePtr scene = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
                 if( scene == nullptr )
                 {
@@ -738,7 +736,9 @@ namespace Mengine
         ScenePtr s_createScene( const ConstString & _prototype, const ConstString & _name )
         {
             ScenePtr scene = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr );
 
             scene->setName( _name );
 
@@ -770,16 +770,11 @@ namespace Mengine
         void s_setArrow( const ConstString & _prototype )
         {
             ArrowPtr arrow = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-            if( arrow == nullptr )
-            {
-                LOGGER_ERROR( "Error: can't setup arrow '%s'"
-                    , _prototype.c_str()
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( arrow )("Error: can't setup arrow '%s'"
+                , _prototype.c_str()
                 );
-
-                return;
-            }
 
             PLAYER_SERVICE()
                 ->setArrow( arrow );
@@ -914,7 +909,7 @@ namespace Mengine
         SurfacePtr s_createSurface( const ConstString & _type )
         {
             SurfacePtr surface = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type, MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr );
 
@@ -924,7 +919,7 @@ namespace Mengine
         RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
         {
             RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( randomizer, nullptr );
 
@@ -943,7 +938,7 @@ namespace Mengine
             }
 
             SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr );
 
@@ -951,7 +946,7 @@ namespace Mengine
             surface->setResourceImage( _resource );
 
             ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shape, nullptr );
 
@@ -970,16 +965,11 @@ namespace Mengine
         ResourcePtr createResource( const ConstString& _type )
         {
             ResourcePtr resource = RESOURCE_SERVICE()
-                ->generateResource( _type, MENGINE_DOCUMENT_FUNCTION );
+                ->generateResource( _type, MENGINE_DOCUMENT_PYBIND );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.createResource: invalid create resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr )("invalid create resource '%s'"
                     , _type.c_str()
                 );
-
-                return nullptr;
-            }
 
             return resource;
         }
@@ -990,7 +980,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResource( _nameResource, &resource ) == false )
             {
-                LOGGER_ERROR( "Mengine.directResourceCompile: not found resource '%s'"
+                LOGGER_ERROR( "not found resource '%s'"
                     , _nameResource.c_str()
                 );
 
@@ -999,7 +989,7 @@ namespace Mengine
 
             if( resource->incrementReference() == false )
             {
-                LOGGER_ERROR( "Mengine.directResourceCompile: resource '%s' type '%s' invalid compile"
+                LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                     , _nameResource.c_str()
                     , resource->getType().c_str()
                 );
@@ -1167,23 +1157,17 @@ namespace Mengine
                     ->getFileGroup( _pakName );
 
                 InputStreamInterfacePtr stream = FILE_SERVICE()
-                    ->openInputFile( fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
+                    ->openInputFile( fileGroup, _fileName, false, MENGINE_DOCUMENT_PYBIND );
 
-                if( stream == nullptr )
-                {
-                    return nullptr;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
                 ConstString codecType = CODEC_SERVICE()
                     ->findCodecType( _fileName );
 
                 ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-					->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+					->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_PYBIND );
 
-                if( imageDecoder == nullptr )
-                {
-                    return nullptr;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, nullptr );
 
                 if( imageDecoder->prepareData( stream ) == false )
                 {
@@ -1201,12 +1185,9 @@ namespace Mengine
             }
 
             ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
-                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FUNCTION );
+                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_PYBIND );
 
-            if( resource == nullptr )
-            {
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
             resource->setName( _resourceName );
 
@@ -1224,12 +1205,9 @@ namespace Mengine
         ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
         {
             ResourceImageSolidPtr resource = RESOURCE_SERVICE()
-				->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), MENGINE_DOCUMENT_FUNCTION );
+				->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), MENGINE_DOCUMENT_PYBIND );
 
-            if( resource == nullptr )
-            {
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
             resource->setName( _resourceName );
 
@@ -1706,17 +1684,14 @@ namespace Mengine
             const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
                 ->getResource( _resourceFileName );
 
-            if( resourceFile == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceFile, false );
 
             const FileGroupInterfacePtr & fileGroup = resourceFile->getFileGroup();
 
             const FilePath & filePath = resourceFile->getFilePath();
 
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+                ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_PYBIND );
 
             if( stream == nullptr )
             {
@@ -1740,7 +1715,7 @@ namespace Mengine
         bool s_copyUserPicture( const ConstString & _resourceFileName, const String & _fileName )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+                ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
 
             if( this->s_copyFile_( _resourceFileName, memory ) == false )
             {
@@ -1763,7 +1738,7 @@ namespace Mengine
         bool s_copyUserMusic( const ConstString & _resourceFileName, const String & _fileName )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+                ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
 
             if( this->s_copyFile_( _resourceFileName, memory ) == false )
             {
@@ -1856,7 +1831,7 @@ namespace Mengine
                     ->getRenderViewport();
             }
 
-            PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_FUNCTION );
+            PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYBIND );
 
             provider->setup( arrow, camera, viewport, _cb, _args );
 
@@ -2065,7 +2040,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_gridBurnTransparency( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
         {
-            AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject( MENGINE_DOCUMENT_FUNCTION );
+            AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject( MENGINE_DOCUMENT_PYBIND );
 
             affector->setAffectorType( ETA_USER );
 
@@ -2109,7 +2084,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         AffectorPtr s_createAffector( const pybind::object & _cb, const pybind::args & _args )
         {
-            AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_FUNCTION );
+            AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
 
             if( affector->initialize( _cb, _args ) == false )
             {
@@ -2121,7 +2096,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::args & _args )
         {
-            AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_FUNCTION );
+            AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
 
             if( affector->initialize( _cb, _args ) == false )
             {
@@ -2275,9 +2250,9 @@ namespace Mengine
             }
 
         public:
-            AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
+            AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed, const Char * _doc )
             {
-                TAffectorNodeFollowerMethodPtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+                TAffectorNodeFollowerMethodPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorable( _affectorable );
 
@@ -2306,7 +2281,7 @@ namespace Mengine
 
             if( render == nullptr )
             {
-                LOGGER_ERROR( "Node.addNodeFollowerLocalAlpha node '%s' is not renderable"
+                LOGGER_ERROR( "node '%s' is not renderable"
                     , _node->getName().c_str()
                 );
 
@@ -2316,7 +2291,8 @@ namespace Mengine
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node
                 , [render]( float _alpha ) { render->setLocalAlpha( _alpha ); }
             , [render]() { return render->getLocalAlpha(); }
-            , _value, _target, _speed );
+                , _value, _target, _speed
+                , MENGINE_DOCUMENT_PYBIND );
 
             return affector;
         }
@@ -2328,7 +2304,8 @@ namespace Mengine
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerCustomSize.create( _node
                 , [_node]( const mt::vec2f & _value ) { _node->setCustomSize( _value ); }
             , [_node]() { return _node->getCustomSize(); }
-            , _value, _target, _speed );
+                , _value, _target, _speed
+                , MENGINE_DOCUMENT_PYBIND );
 
             return affector;
         }
@@ -2340,7 +2317,8 @@ namespace Mengine
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node
                 , [_node]( const mt::vec2f & _value ) { _node->setTextureUVScale( _value ); }
             , [_node]() { return _node->getTextureUVScale(); }
-            , _value, _target, _speed );
+                , _value, _target, _speed
+                , MENGINE_DOCUMENT_PYBIND );
 
             return affector;
         }
@@ -2379,7 +2357,7 @@ namespace Mengine
         PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
         {
             PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), MENGINE_DOCUMENT_PYBIND );
 
             follower->initialize( _value, _speed, _cb, _args );
 
@@ -2394,7 +2372,7 @@ namespace Mengine
         PythonValueFollowerAccelerationPtr s_createValueFollowerAcceleration( float _value, float _speed, float _acceleration, const pybind::object & _cb, const pybind::args & _args )
         {
             PythonValueFollowerAccelerationPtr follower = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), MENGINE_DOCUMENT_PYBIND );
 
             follower->initialize( _value, _speed, _acceleration, _cb, _args );
 
@@ -2588,7 +2566,7 @@ namespace Mengine
             }
 
             PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_cb->initialize( _cb, _args );
 
@@ -2724,7 +2702,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseMoveHandlerPtr handler = m_factoryPyGlobalMouseMoveHandlers
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2769,7 +2747,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonPtr handler = m_factoryPyGlobalMouseHandlerButtons
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2815,7 +2793,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonEndPtr handler = m_factoryPyGlobalMouseHandlerButtonEnds
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2855,7 +2833,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2901,7 +2879,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2940,7 +2918,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2977,7 +2955,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler
-				->createObject( MENGINE_DOCUMENT_FUNCTION );
+				->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -3416,12 +3394,12 @@ namespace Mengine
         pybind::def_functor( kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::createScheduler );
         pybind::def_functor( kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::destroyScheduler );
 
-        pybind::def_functor_args( kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::schedule );
-        pybind::def_functor( kernel, "scheduleRemove", nodeScriptMethod, &EngineScriptMethod::scheduleRemove );
-        pybind::def_functor( kernel, "scheduleRemoveAll", nodeScriptMethod, &EngineScriptMethod::scheduleRemoveAll );
+        pybind::def_functor_args( kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );
+        pybind::def_functor( kernel, "scheduleRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemove );
+        pybind::def_functor( kernel, "scheduleRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemoveAll );
         pybind::def_functor( kernel, "scheduleFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreeze );
         pybind::def_functor( kernel, "scheduleFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreezeAll );
-        pybind::def_functor( kernel, "scheduleResumeAll", nodeScriptMethod, &EngineScriptMethod::scheduleResumeAll );
+        pybind::def_functor( kernel, "scheduleResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleResumeAll );
         pybind::def_functor( kernel, "scheduleIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleIsFreeze );
         pybind::def_functor( kernel, "scheduleTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleTime );
 

@@ -7,6 +7,11 @@ PythonFramework
 )
 
 ADD_FILTER(
+DocumentTraceback
+    DocumentTraceback.h
+)
+
+ADD_FILTER(
 ScriptHolder
 	ScriptHolder.cpp
 	ScriptHolder.h

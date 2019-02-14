@@ -196,7 +196,7 @@ namespace Mengine
 
         if( py_entity.is_invalid() == true )
         {
-            LOGGER_ERROR( "EntityPrototypeGenerator.generate: can't create object '%s' '%s' (invalid create) doc '%s'"
+            LOGGER_ERROR( "can't create object '%s' '%s' (invalid create) doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
 				, _doc
@@ -206,11 +206,11 @@ namespace Mengine
         }
 
         EntityPtr entity = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category, MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category, _doc );
 
         if( entity == nullptr )
         {
-            LOGGER_ERROR( "EntityPrototypeGenerator can't generate '%s' '%s' doc '%s'"
+            LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
 				, _doc

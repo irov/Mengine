@@ -8,6 +8,7 @@
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "DocumentTraceback.h"
 #include "PythonEntityBehavior.h"
 #include "EntityPrototypeGenerator.h"
 
@@ -43,7 +44,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
         {
-            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_FUNCTION );
+            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
 
             generator->setGenerator( _generator );
 

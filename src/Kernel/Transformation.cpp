@@ -88,17 +88,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Transformation::invalidateWorldMatrix()
     {
-        if( m_invalidateWorldMatrix == false )
-        {
-            m_invalidateWorldMatrix = true;
+		if( m_invalidateWorldMatrix == true )
+		{
+			return;
+		}
+         
+		m_invalidateWorldMatrix = true;
 
-            for( Transformation * child : m_relationChildren )
-            {
-                child->invalidateWorldMatrix();
-            }
-        }
-
-        this->_invalidateWorldMatrix();
+		for( Transformation * child : m_relationChildren )
+		{
+			child->invalidateWorldMatrix();
+		}
+        
+		this->_invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::_invalidateWorldMatrix()

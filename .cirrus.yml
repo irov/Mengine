@@ -7,8 +7,10 @@ task:
   env:
     matrix:
       BUILD_CONFIGURATION: Debug
-      BUILD_CONFIGURATION: Release   
-    
+      BUILD_CONFIGURATION: Release
+      
+  install_script: brew install cmake
+  
   build_script:
   - cmake --version
   

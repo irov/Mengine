@@ -1,14 +1,16 @@
 task:
   name: Mengine_Xcode_IOS_SDL
   
-  container:
+  osx_instance:
     image: mojave-xcode-10.1
     
   env:
     matrix:
       BUILD_CONFIGURATION: Debug
-      BUILD_CONFIGURATION: Release   
-    
+      BUILD_CONFIGURATION: Release
+      
+  install_script: brew install cmake
+  
   build_script:
   - cmake --version
   

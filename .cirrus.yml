@@ -1,7 +1,7 @@
 task:
   name: Mengine_Xcode_IOS_SDL
   
-  container:
+  osx_instance:
     image: mojave-xcode-10.1
     
   env:

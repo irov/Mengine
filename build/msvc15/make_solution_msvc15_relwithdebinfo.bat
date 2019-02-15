@@ -1,1 +1,1 @@
-@call make_solution_msvc15.bat RelWithDebInfo
+@call %~dp0\make_solution_msvc15.bat RelWithDebInfo

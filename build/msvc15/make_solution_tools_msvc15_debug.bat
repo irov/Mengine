@@ -1,1 +1,1 @@
-@call make_solution_tools_msvc15 Debug
+@call %~dp0\make_solution_tools_msvc15 Debug

@@ -1,1 +1,1 @@
-@call make_solution_tools_msvc15 Release
+@call %~dp0\make_solution_tools_msvc15 Release

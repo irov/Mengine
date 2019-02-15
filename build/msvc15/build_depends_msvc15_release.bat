@@ -1,1 +1,1 @@
-@call build_depends_msvc15.bat Release
+@call %~dp0\build_depends_msvc15.bat Release

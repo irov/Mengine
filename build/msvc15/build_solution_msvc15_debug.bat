@@ -1,1 +1,1 @@
-@call build_solution_msvc15.bat Debug
+@call %~dp0\build_solution_msvc15.bat Debug

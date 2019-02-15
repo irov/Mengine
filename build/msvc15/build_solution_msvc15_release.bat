@@ -1,1 +1,1 @@
-@call %~dp0\build_solution_msvc15.bat Release
+@call %~dp0build_solution_msvc15.bat Release

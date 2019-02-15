@@ -3,13 +3,13 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Factory.h"
+#include "Kernel/Pool.h"
 
 #include "ConstStringHolderMemory.h"
 
 #include "stdex/intrusive_list.h"
-#include "stdex/template_pool.h"
+
 
 #ifndef MENGINE_STRINGIZE_INTERNAL_COUNT
 #define MENGINE_STRINGIZE_INTERNAL_COUNT 1021
@@ -38,7 +38,7 @@ namespace Mengine
         bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
 
     protected:
-        typedef stdex::template_pool<ConstStringHolderMemory, 1024> PoolConstStringHolderMemory;
+        typedef Pool<ConstStringHolderMemory, 1024> PoolConstStringHolderMemory;
         PoolConstStringHolderMemory m_poolHolderStringMemory;
 
         typedef stdex::intrusive_list<ConstStringHolder> IntrusiveListConstStringHolder;

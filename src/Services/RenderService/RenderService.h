@@ -13,9 +13,9 @@
 
 #include "stdex/static_array.h"
 #include "stdex/dynamic_array.h"
-#include "stdex/template_pool.h"
 
 #include "Kernel/Factory.h"
+#include "Kernel/Pool.h"
 
 #include "math/mat4.h"
 #include "math/vec4.h"
@@ -319,7 +319,7 @@ namespace Mengine
         typedef Vector<RenderBatchPtr> VectorRenderBatch;
         VectorRenderBatch m_renderBatches;
 
-        typedef stdex::template_pool<RenderPass, 128> PoolRenderPass;
+        typedef Pool<RenderPass, 128> PoolRenderPass;
         PoolRenderPass m_poolRenderPass;
 
         typedef Vector<RenderPass *> VectorRenderPass;

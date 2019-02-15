@@ -294,6 +294,8 @@ Core
     AssertionMainThreadGuard.h
     AssertionVocabulary.h
     AssertionVocabulary.cpp
+    
+    Pool.h
 
     CRC32.h
     CRC32.cpp

@@ -1,12 +1,23 @@
 #pragma once
 
+#include "Interface/RenderMaterialInterface.h"
+
 #include "Movie2DataInterface.h"
 
 #include "Kernel/Resource.h"
+#include "Kernel/ResourceImage.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/Pool.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct Movie2DataImageDesc
+    {
+        const ResourceImage * resource;
+
+        RenderMaterialInterfacePtr materials[4];
+    };
     //////////////////////////////////////////////////////////////////////////
     class Movie2Data
         : public Movie2DataInterface
@@ -30,8 +41,17 @@ namespace Mengine
     public:
         Resource * getResource( const ae_string_t _resourceName );
 
+        Movie2DataImageDesc * makeImageDesc( ResourceImage * _resource );
+        void removeImageDesc( Movie2DataImageDesc * _desc );
+
     protected:
         const aeMovieData * m_movieData;
+
+        typedef Pool<Movie2DataImageDesc, 512> PoolImageDesc;
+        PoolImageDesc m_poolImageDesc;
+
+        typedef Vector<Movie2DataImageDesc *> VectorImageDesc;
+        VectorImageDesc m_images;
 
         typedef Vector<ResourcePtr> VectorResources;
         VectorResources m_resources;

@@ -31,12 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::_finalizeService()
     {
-        if( m_scene != nullptr )
-        {
-            m_scene->disable();
-            m_scene = nullptr;
-        }
-
+        this->destroyCurrentScene();
         this->removeGlobalScene();
     }
     //////////////////////////////////////////////////////////////////////////

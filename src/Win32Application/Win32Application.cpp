@@ -28,6 +28,7 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -1006,6 +1007,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::AccountServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
         SERVICE_FINALIZE( Mengine::PickerServiceInterface );
+        SERVICE_FINALIZE( Mengine::SceneServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
         SERVICE_FINALIZE( Mengine::FrameworkInterface );

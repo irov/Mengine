@@ -40,7 +40,7 @@ namespace Mengine
         ThreadWorkerInterfacePtr worker;
 
         AtomicUInt32 id;
-        AtomicUInt32 status;
+        Atomic<EThreadStatus> status;
     };
     //////////////////////////////////////////////////////////////////////////
     class ThreadJob

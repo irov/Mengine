@@ -167,8 +167,7 @@ namespace Mengine
         if( m_playing == true && m_sourceId != 0 )
         {
             float gain = ::powf( m_volume, 2.f );
-            alSourcef( m_sourceId, AL_GAIN, gain );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourcef, (m_sourceId, AL_GAIN, gain) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -331,48 +330,26 @@ namespace Mengine
     {
         if( m_headMode == true )
         {
-            alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
-            OPENAL_CHECK_ERROR();
-
-            alSourcef( _source, AL_ROLLOFF_FACTOR, 0.f );
-            OPENAL_CHECK_ERROR();
-
-            alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_TRUE) );
+            OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 0.f) );
+            OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
         else
         {
-            alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
-            OPENAL_CHECK_ERROR();
-
-            alSourcef( _source, AL_ROLLOFF_FACTOR, 1.f );
-            OPENAL_CHECK_ERROR();
-
-            alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourcei, ( _source, AL_SOURCE_RELATIVE, AL_FALSE ));
+            OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 1.f) );
+            OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
 
-        alSourcei( _source, AL_LOOPING, AL_FALSE );
-        OPENAL_CHECK_ERROR();
-
-        alSource3f( _source, AL_POSITION, 0.f, 0.f, 0.f );
-        OPENAL_CHECK_ERROR();
-
-        alSource3f( _source, AL_VELOCITY, 0.f, 0.f, 0.f );
-        OPENAL_CHECK_ERROR();
-
-        alSourcef( _source, AL_MIN_GAIN, 0.f );
-        OPENAL_CHECK_ERROR();
-
-        alSourcef( _source, AL_MAX_GAIN, 1.f );
-        OPENAL_CHECK_ERROR();
-
-        alSourcef( _source, AL_PITCH, 1.f );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcei, (_source, AL_LOOPING, AL_FALSE) );
+        OPENAL_CALL( alSource3f, (_source, AL_POSITION, 0.f, 0.f, 0.f) );
+        OPENAL_CALL( alSource3f, (_source, AL_VELOCITY, 0.f, 0.f, 0.f) );
+        OPENAL_CALL( alSourcef, (_source, AL_MIN_GAIN, 0.f) );
+        OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );
+        OPENAL_CALL( alSourcef, (_source, AL_PITCH, 1.f) );
 
         float gain = ::powf( m_volume, 2.f );
-        alSourcef( _source, AL_GAIN, gain );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
     }
     //////////////////////////////////////////////////////////////////////////
     SoundBufferInterfacePtr OpenALSoundSource::getSoundBuffer() const

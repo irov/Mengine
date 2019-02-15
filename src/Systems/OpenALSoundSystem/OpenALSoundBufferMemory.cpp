@@ -90,9 +90,7 @@ namespace Mengine
         }
 
         ALsizei al_decode_size = (ALsizei)decode_size;
-        alBufferData( m_alBufferId, m_format, binary_memory, al_decode_size, m_frequency );
-
-        if( OPENAL_CHECK_ERROR() == false )
+        IF_OPENAL_CALL( alBufferData, (m_alBufferId, m_format, binary_memory, al_decode_size, m_frequency) )
         {
             return false;
         }
@@ -103,47 +101,38 @@ namespace Mengine
     bool OpenALSoundBufferMemory::playSource( ALuint _source, bool _looped, float _pos )
     {
         ALint state = 0;
-        alGetSourcei( _source, AL_SOURCE_STATE, &state );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alGetSourcei, (_source, AL_SOURCE_STATE, &state) );
 
         if( state == AL_PLAYING )
         {
             //alSourceStop( _source );
-            alSourceRewind( _source );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourceRewind, (_source) );
         }
 
-        alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) ); // clear source buffering
 
-        alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
-        OPENAL_CHECK_ERROR();
-
-        alSourcei( _source, AL_BUFFER, m_alBufferId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcei, (_source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE) );
+        
+        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, m_alBufferId) );
 
         float al_pos = _pos * 0.001f;
-        alSourcef( _source, AL_SEC_OFFSET, al_pos );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) );
 
-        alSourcePlay( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcePlay, (_source) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::resumeSource( ALuint _source )
     {
-        alSourcePlay( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcePlay, (_source) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::pauseSource( ALuint _source )
     {
-        alSourcePause( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcePause, (_source) );
 
         //alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
         //OAL_CHECK_ERROR();
@@ -151,32 +140,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::stopSource( ALuint _source )
     {
-        alSourceStop( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourceStop, (_source) );
 
         {
             ALint val;
 
             do
             {
-                alGetSourcei( _source, AL_SOURCE_STATE, &val );
+                OPENAL_CALL( alGetSourcei, (_source, AL_SOURCE_STATE, &val) );
             } while( val == AL_PLAYING );
         }
 
-        alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-        OPENAL_CHECK_ERROR();
-
-        alSourceRewind( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) ); // clear source buffering
+        OPENAL_CALL( alSourceRewind, (_source) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
     {
         float al_pos = _pos * 0.001f;
-        alSourcef( _source, AL_SEC_OFFSET, al_pos );
-
-        if( OPENAL_CHECK_ERROR() == false )
-        {
+        IF_OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) )
+        { 
             return false;
         }
 
@@ -187,9 +170,7 @@ namespace Mengine
     {
         float al_pos = 0.f;
 
-        alGetSourcef( _source, AL_SEC_OFFSET, &al_pos );
-
-        if( OPENAL_CHECK_ERROR() == false )
+        IF_OPENAL_CALL( alGetSourcef, (_source, AL_SEC_OFFSET, &al_pos) )
         {
             return false;
         }

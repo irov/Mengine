@@ -9,6 +9,8 @@
 #include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugins/VideoPlugin/VideoUnknownInterface.h"
 
+#include "Movie2Data.h"
+
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceTrackMatte.h"
@@ -2340,8 +2342,6 @@ namespace Mengine
         aeMovieRenderMesh mesh;
         while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
         {
-            Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_userdata);
-
             RenderContext context;
 
             if( mesh.camera_userdata != nullptr )
@@ -2509,7 +2509,9 @@ namespace Mengine
                             continue;
                         }
 
-                        ResourceImage * resource_image = reinterpret_node_cast<ResourceImage *>(resource_reference);
+                        Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(mesh.resource_userdata);
+
+                        const ResourceImage * resource_image = image_desc->resource;
 
                         const Color & imageColor = resource_image->getColor();
 
@@ -2574,7 +2576,7 @@ namespace Mengine
 
                         if( mesh.shader_userdata == AE_NULLPTR )
                         {
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
+                            RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
                             this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                         }

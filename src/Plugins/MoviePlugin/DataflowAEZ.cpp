@@ -53,7 +53,9 @@ namespace Mengine
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource;
+                    Movie2DataImageDesc * desc = data->makeImageDesc( (ResourceImage *)data_resource );
+
+                    *_rd = desc;
 
                     return AE_TRUE;
                 }break;
@@ -111,11 +113,21 @@ namespace Mengine
             return AE_TRUE;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )
+        static ae_void_t __movie_resource_deleter( aeMovieResourceTypeEnum _type, ae_userdata_t _data, ae_userdata_t _ud )
         {
-            AE_UNUSED( _type );
-            AE_UNUSED( _data );
-            AE_UNUSED( _ud );
+            Movie2Data * data = reinterpret_cast<Movie2Data *>(_ud);
+
+            switch( _type )
+            {
+            case AE_MOVIE_RESOURCE_IMAGE:
+                {
+                    Movie2DataImageDesc * desc = reinterpret_cast<Movie2DataImageDesc *>(_data);
+
+                    data->removeImageDesc( desc );
+                }break;
+            default:
+                break;
+            }
         }
         //////////////////////////////////////////////////////////////////////////
         static ae_bool_t __movie_cache_uv_available( const aeMovieDataCacheUVAvailableCallbackData * _callbackData, ae_voidptr_t _ud )
@@ -132,8 +144,6 @@ namespace Mengine
 
             const aeMovieResource * movie_resource = _callbackData->resource;
 
-            Resource * resource = reinterpret_cast<Resource *>(movie_resource->userdata);
-
             aeMovieResourceTypeEnum resource_type = movie_resource->type;
 
             switch( resource_type )
@@ -147,7 +157,9 @@ namespace Mengine
                         break;
                     }
 
-                    ResourceImage * resource_image = static_cast<ResourceImage *>(resource);
+                    const Movie2DataImageDesc * image_desc = reinterpret_cast<const Movie2DataImageDesc *>(movie_resource->userdata);
+
+                    const ResourceImage * resource_image = image_desc->resource;
 
                     ae_uint32_t vertex_count = _callbackData->vertex_count;
 

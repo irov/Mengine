@@ -163,20 +163,16 @@ namespace Mengine
         }
 
         ALint state = 0;
-        alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        OPENAL_CHECK_ERROR();
-
+        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
+        
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
             this->stopSource( m_sourceId );
             //alSourceRewind( _source );
         }
 
-        alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
-        OPENAL_CHECK_ERROR();
-
-        alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) ); // clear source buffering
+        OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
 
         if( m_soundDecoder->seek( _pos ) == false )
         {
@@ -202,8 +198,7 @@ namespace Mengine
                 break;
             }
 
-            alSourceQueueBuffers( m_sourceId, 1, &bufferId );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
 
             if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE )
             {
@@ -211,8 +206,7 @@ namespace Mengine
             }
         }
 
-        alSourcePlay( m_sourceId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcePlay, (m_sourceId) );
 
         this->setUpdating_( true );
 
@@ -223,8 +217,7 @@ namespace Mengine
     {
         (void)_source;
 
-        alSourcePlay( m_sourceId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcePlay, (m_sourceId) );
 
         this->setUpdating_( true );
 
@@ -235,8 +228,7 @@ namespace Mengine
     {
         this->setUpdating_( false );
 
-        alSourcePause( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourcePause, (_source) );
         //m_soundSystem->clearSourceId( _source );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -246,8 +238,7 @@ namespace Mengine
 
         ALint process_count = 0;
         // Получаем количество отработанных буферов
-        alGetSourcei( _source, AL_BUFFERS_PROCESSED, &process_count );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alGetSourcei, (_source, AL_BUFFERS_PROCESSED, &process_count) );
 
         // Если таковые существуют то
         while( process_count-- > 0 )
@@ -255,31 +246,26 @@ namespace Mengine
             // Исключаем их из очереди
             ALuint buffer = 0;
 
-            alSourceUnqueueBuffers( _source, 1, &buffer );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourceUnqueueBuffers, (_source, 1, &buffer) );
         }
 
-        alSourceStop( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourceStop, (_source) );
 
         ALint queued_count = 0;
         // unqueue remaining buffers
-        alGetSourcei( _source, AL_BUFFERS_QUEUED, &queued_count );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alGetSourcei, (_source, AL_BUFFERS_QUEUED, &queued_count) );
 
         while( queued_count-- > 0 )
         {
             // Исключаем их из очереди
             ALuint buffer = 0;
 
-            alSourceUnqueueBuffers( _source, 1, &buffer );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourceUnqueueBuffers, (_source, 1, &buffer) );
         }
 
-        alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
+        OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) );
 
-        alSourceRewind( _source );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourceRewind, (_source) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )
@@ -333,19 +319,15 @@ namespace Mengine
             return true;
         }
 
+        ALint state;
+        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
+
         ALint processed_count = 0;
-        alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed_count );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_PROCESSED, &processed_count) );
 
         ALuint unqueueBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT];
-        alSourceUnqueueBuffers( m_sourceId, processed_count, unqueueBuffersId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, processed_count, unqueueBuffersId) );
 
-        ALint queued_count = 0;
-        alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queued_count );
-        OPENAL_CHECK_ERROR();
-
-        bool end = false;
         for( ALint curr_processed = 0; curr_processed != processed_count; ++curr_processed )
         {
             // Исключаем их из очереди
@@ -357,31 +339,23 @@ namespace Mengine
 
             if( bytesWritten == 0 )
             {
-                if( m_looped == false )
-                {
-                    end = true;
-
-                    continue;
-                }
+                continue;
             }
 
-            alSourceQueueBuffers( m_sourceId, 1, &bufferId );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
         }
-
-        if( end == true )
-        {
-            return false;
-        }
-
-        ALint state;
-        alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        OPENAL_CHECK_ERROR();
 
         if( state != AL_PLAYING && state != AL_PAUSED )
         {
-            alSourcePlay( m_sourceId );
-            OPENAL_CHECK_ERROR();
+            ALint queued_count = 0;
+            OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
+
+            if( queued_count == 0 )
+            {
+                return false;
+            }
+
+            OPENAL_CALL( alSourcePlay, (m_sourceId) );
         }
 
         return true;
@@ -409,9 +383,7 @@ namespace Mengine
         }
 
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;
-        alBufferData( _alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency );
-
-        if( OPENAL_CHECK_ERROR() == false )
+        IF_OPENAL_CALL( alBufferData, (_alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency) )
         {
             LOGGER_ERROR( "buffer=%d id=%d format=%d bytes=%d frequency=%d"
                 , _alBufferId

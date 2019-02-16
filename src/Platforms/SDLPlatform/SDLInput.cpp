@@ -44,18 +44,8 @@ namespace Mengine
         _point.y = y / m_height;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SDLInput::getFingerIndex_( SDL_FingerID _fingerId )
+    uint32_t SDLInput::acquireFingerIndex_( SDL_FingerID _fingerId )
     {
-        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
-        {
-            SDL_FingerID fingerId = m_fingers[index];
-
-            if( fingerId == _fingerId )
-            {
-                return index;
-            }
-        }
-
         for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
         {
             SDL_FingerID fingerId = m_fingers[index];
@@ -68,7 +58,39 @@ namespace Mengine
             }
         }
 
-        return 0;
+        return ~0U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLInput::releaseFingerIndex_( SDL_FingerID _fingerId )
+    {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            SDL_FingerID fingerId = m_fingers[index];
+
+            if( fingerId == _fingerId )
+            {
+                m_fingers[index] = -1;
+
+                return index;
+            }
+        }
+
+        return ~0U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLInput::getFingerIndex_( SDL_FingerID _fingerId ) const
+    {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            SDL_FingerID fingerId = m_fingers[index];
+
+            if( fingerId == _fingerId )
+            {
+                return index;
+            }
+        }
+
+        return ~0U;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLInput::handleEvent( const SDL_Event & _event )
@@ -171,12 +193,18 @@ namespace Mengine
                     ->pushMouseMoveEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
             }break;
         case SDL_FINGERDOWN:
-        case SDL_FINGERUP:
             {
-                uint32_t fingerIndex = this->getFingerIndex_( _event.tfinger.fingerId );
+                uint32_t fingerIndex = this->acquireFingerIndex_( _event.tfinger.fingerId );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
+                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, true );
+            }break;
+        case SDL_FINGERUP:
+            {
+                uint32_t fingerIndex = this->releaseFingerIndex_( _event.tfinger.fingerId );
+
+                INPUT_SERVICE()
+                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, false );
             }
             break;
         }

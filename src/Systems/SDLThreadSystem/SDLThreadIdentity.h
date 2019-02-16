@@ -38,11 +38,14 @@ namespace Mengine
         int32_t m_priority;
 
         SDL_Thread * m_thread;
-        
+
+		SDL_mutex * m_processLock;
+
         SDL_cond * m_conditionVariable;
         SDL_mutex * m_conditionLock;
 
-        Atomic<ThreadTaskInterface *> m_task;        
+        ThreadTaskInterface * m_task;
+
         AtomicBool m_exit;
 
 #ifndef NDEBUG

@@ -251,7 +251,6 @@ namespace Mengine
             if( oldRenderParent != nullptr )
             {
                 render->removeRelationRender();
-                render->invalidateColor();
             }
         }
         else
@@ -263,7 +262,6 @@ namespace Mengine
                 this->foreachRenderCloseChildren( []( RenderInterface * _render )
                 {
                     _render->removeRelationRender();
-                    _render->invalidateColor();
                 } );
             }
         }
@@ -281,7 +279,6 @@ namespace Mengine
             if( oldRenderParent != newRenderParent )
             {
                 render->setRelationRender( newRenderParent );
-                render->invalidateColor();
             }
         }
         else
@@ -294,7 +291,6 @@ namespace Mengine
                 this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
                 {
                     _render->setRelationRender( newRenderParent );
-                    _render->invalidateColor();
                 } );
             }
         }
@@ -313,11 +309,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::setParent_( Node * _parent )
     {
-        Node * oldparent = m_parent;
-        m_parent = _parent;
-
-        this->setRelationTransformation( _parent );
         this->setRelationRender_( _parent );
+        this->setRelationTransformation( _parent );
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -327,6 +320,9 @@ namespace Mengine
 
             updation->replace( deep );
         }
+
+        Node * oldparent = m_parent;
+        m_parent = _parent;
 
         this->_changeParent( oldparent, _parent );
     }
@@ -490,7 +486,7 @@ namespace Mengine
         {
             if( child_parent != nullptr )
             {
-                child_parent->removeChild_( _child );
+                child_parent->eraseChild_( _child );
             }
 
             this->insertChild_( _insert, _child );
@@ -788,8 +784,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     NodePtr Node::_findChild( const ConstString & _name, bool _recursion ) const
     {
-        (void)_name;
-        (void)_recursion;
+        MENGINE_UNUSED( _name );
+        MENGINE_UNUSED( _recursion );
 
         return nullptr;
     }
@@ -883,8 +879,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Node::_hasChild( const ConstString & _name, bool _recursive ) const
     {
-        (void)_name;
-        (void)_recursive;
+        MENGINE_UNUSED( _name );
+        MENGINE_UNUSED( _recursive );
 
         return false;
     }
@@ -896,20 +892,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_changeParent( Node * _oldParent, Node * _newParent )
     {
-        (void)_oldParent;
-        (void)_newParent;
+        MENGINE_UNUSED( _oldParent );
+        MENGINE_UNUSED( _newParent);
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_addChild( const NodePtr & _node )
     {
-        (void)_node;
+        MENGINE_UNUSED( _node );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_removeChild( const NodePtr & _node )
     {
-        (void)_node;
+        MENGINE_UNUSED( _node );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -946,7 +945,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::setSpeedFactor( float _speedFactor )
     {
-        (void)_speedFactor;
+        MENGINE_UNUSED( _speedFactor);
+
         //TODO: REMOVE
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1055,16 +1055,6 @@ namespace Mengine
     {
         //Empty
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::_update( const UpdateContext * _context )
-    //{
-    //    (void)_context;
-
-    //    if( m_invalidateWorldMatrix == true )
-    //    {
-    //        this->updateWorldMatrix();
-    //    }
-    //}
     //////////////////////////////////////////////////////////////////////////
     bool Node::compile()
     {
@@ -1141,95 +1131,6 @@ namespace Mengine
 
         this->deactivate();
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::render( const RenderContext * _state )
-    //{
-    //    if( this->isRenderable() == false )
-    //    {
-    //        return;
-    //    }
-
-    //    RenderViewportInterfacePtr renderViewport = _state->viewport;
-
-    //    if( m_renderViewport != nullptr )
-    //    {
-    //        renderViewport = m_renderViewport;
-    //    }
-
-    //    RenderCameraInterfacePtr renderCamera = _state->camera;
-
-    //    if( m_renderCamera != nullptr )
-    //    {
-    //        renderCamera = m_renderCamera;
-    //    }
-
-    //    RenderScissorInterfacePtr renderScissor = _state->scissor;
-
-    //    if( m_renderScissor != nullptr )
-    //    {
-    //        renderScissor = m_renderScissor;
-    //    }
-
-    //    RenderTargetInterfacePtr renderTarget = _state->target;
-
-    //    if( m_renderTarget != nullptr )
-    //    {
-    //        renderTarget = m_renderTarget;
-    //    }
-
-    //    //const Viewport& viewPort = _camera->getViewport();
-
-    //    //size_t cameraRevision = _camera->getCameraRevision();
-
-    //    //if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
-    //    //{
-    //    //	if( getVisibility() == false )
-    //    //	{
-    //    //		return;
-    //    //	}
-    //    //}
-    //    //else
-    //    //{
-    //    //	m_cameraRevision = cameraRevision;
-
-    //    RenderContext state;
-    //    state.viewport = renderViewport;
-    //    state.camera = renderCamera;
-    //    state.scissor = renderScissor;
-    //    state.target = renderTarget;
-    //    state.debugMask = _state->debugMask;
-
-    //    //if( this->checkVisibility( viewPort ) == true )
-    //    {
-    //        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
-    //        {
-    //            this->_render( &state );
-    //        }
-
-    //        this->renderChild_( &state );
-    //    }
-    //    //}
-
-    //    if( m_renderTarget != nullptr )
-    //    {
-    //        this->_renderTarget( _state );
-    //    }
-
-    //    if( _state->debugMask != 0 )
-    //    {
-    //        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
-    //        {
-    //            this->_debugRender( &state );
-    //        }
-    //    }
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::_setHide( bool _value )
-    //{
-    //    (void)_value;
-
-    //    m_invalidateRendering = true;
-    //}    
     //////////////////////////////////////////////////////////////////////////
     void Node::_invalidateWorldMatrix()
     {

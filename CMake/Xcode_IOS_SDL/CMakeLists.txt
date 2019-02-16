@@ -5,6 +5,8 @@ PROJECT(Mengine_Xcode_IOS_SDL)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../xcode_ios_template.cmake)
 
+OPTION(MENGINE_BUILD_ONLY_EXECUTABLE_MODULE "Mengine build only executable module" OFF)
+
 SET_MENGINE_ENVIRONMENT(PYTHON IOS OPENGL X64 SDL XCODE)
 
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )

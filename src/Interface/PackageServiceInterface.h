@@ -18,11 +18,11 @@ namespace Mengine
         SERVICE_DECLARE( "PackageService" );
 
     public:
-        virtual bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni ) = 0;
+        virtual bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni, const Char * _doc ) = 0;
 
     public:
         virtual bool hasPackage( const ConstString & _name ) const = 0;
-        virtual bool addPackage( const PackageDesc & _desc ) = 0;
+        virtual bool addPackage( const PackageDesc & _desc, const Char * _doc ) = 0;
         virtual bool removePackage( const ConstString & _name ) = 0;
         virtual PackageInterfacePtr getPackage( const ConstString & _name ) const = 0;
 

@@ -173,12 +173,6 @@ namespace Mengine
             BaseRender::setHide( false );
         }
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void Arrow::setHide( bool _value )
-    //{
-    //    Node::setHide( _value );
-    //    m_hided = _value;
-    //}
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) const
     {

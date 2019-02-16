@@ -372,7 +372,9 @@ namespace Mengine
             if( layer.type == STRINGIZE_STRING_LOCAL( "TextField" ) )
             {
                 TextFieldPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                    );
 
                 if( node == nullptr )
                 {
@@ -450,7 +452,9 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) )
             {
                 HotSpotPolygonPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                    );
 
                 if( node == nullptr )
                 {
@@ -462,7 +466,9 @@ namespace Mengine
                 this->addSocket_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                    );
 
                 if( matrixProxy == nullptr )
                 {
@@ -483,7 +489,9 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) || layer.type == STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) )
             {
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                    );
 
                 if( node == nullptr )
                 {
@@ -498,7 +506,9 @@ namespace Mengine
                 this->addParticle_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                    );
 
                 if( matrixProxy == nullptr )
                 {
@@ -535,7 +545,9 @@ namespace Mengine
                 }
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                    );
 
                 if( surface == nullptr )
                 {
@@ -567,7 +579,9 @@ namespace Mengine
                 this->addSprite_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                    );
 
                 if( matrixProxy == nullptr )
                 {
@@ -619,19 +633,30 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::destroyCompositionLayers_()
     {
+        for( const MatrixProxyPtr & proxy : m_matrixProxies )
+        {
+            proxy->removeFromParent();
+            proxy->removeChildren( []( const NodePtr & ) {} );
+        }
+
+        m_matrixProxies.clear();
+
         m_slots.clear();
+
+        for( const MapSockets::value_type & value : m_sockets )
+        {
+            const HotSpotPolygonPtr & hotspot = value.second;
+            EventationInterface * eventation = hotspot->getEventation();
+            eventation->removeEvents();
+            hotspot->removeFromParent();
+        }
+
         m_sockets.clear();
+
         m_texts.clear();
         m_particleEmitters.clear();
         m_sprites.clear();
         m_subCompositions.clear();
-
-        for( const MatrixProxyPtr & proxy : m_matrixProxies )
-        {
-            proxy->removeFromParent();
-        }
-
-        m_matrixProxies.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
@@ -1265,8 +1290,11 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    ResourceImage * resourceImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
-                    ResourceImage * resourceTrackMatteImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    const ResourceImage * resourceImage = imageDesc->resourceImage;
+
+                    Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    const ResourceImage * resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceImage( resourceImage );
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
@@ -2511,7 +2539,7 @@ namespace Mengine
 
                         Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(mesh.resource_userdata);
 
-                        const ResourceImage * resource_image = image_desc->resource;
+                        const ResourceImage * resource_image = image_desc->resourceImage;
 
                         const Color & imageColor = resource_image->getColor();
 

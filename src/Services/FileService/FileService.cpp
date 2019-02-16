@@ -69,7 +69,7 @@ namespace Mengine
         m_factoryFileGroups.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type )
+    FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const Char * _doc )
     {
         TFactoryFileGroups::iterator it_found = m_factoryFileGroups.find( _type );
 
@@ -84,7 +84,7 @@ namespace Mengine
 
         const FactoryPtr & factory = it_found->second;
 
-		FileGroupInterfacePtr fileGroup = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+		FileGroupInterfacePtr fileGroup = factory->createObject( _doc );
 
         if( fileGroup == nullptr )
         {
@@ -98,7 +98,7 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup, const Char * _doc )
     {
         LOGGER_INFO( "group '%s' path '%s' type '%s'"
             , _name.c_str()
@@ -118,7 +118,7 @@ namespace Mengine
             return false;
         }
 
-        FileGroupInterfacePtr fileGroup = this->createFileGroup( _type );
+        FileGroupInterfacePtr fileGroup = this->createFileGroup( _type, _doc );
 
         if( fileGroup == nullptr )
         {

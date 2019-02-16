@@ -9,6 +9,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MemoryService, Mengine::MemoryService );
 //////////////////////////////////////////////////////////////////////////
@@ -211,21 +213,17 @@ namespace Mengine
     {
         m_memoryCacheMutex->lock();
 
-        for( const CacheBufferMemory & buffer : m_buffers )
+        m_buffers.erase( std::remove_if( m_buffers.begin(), m_buffers.end(), []( const CacheBufferMemory & _buffer )
         {
-            if( buffer.lock == true )
+            if( _buffer.lock == true )
             {
-                LOGGER_ERROR( "don't unlock buffer '%s' id %d size %d"
-                    , buffer.doc
-                    , buffer.id
-                    , buffer.size
-                );
+                return false;
             }
 
-            Helper::freeMemory( buffer.memory, buffer.doc );
-        }
+            Helper::freeMemory( _buffer.memory, _buffer.doc );
 
-        m_buffers.clear();
+            return true;
+        } ), m_buffers.end() );
 
         m_memoryCacheMutex->unlock();
     }

@@ -52,6 +52,7 @@ namespace Mengine
         if( m_scene != nullptr )
         {
             m_scene->disable();
+            m_scene->onDestroy();
             m_scene = nullptr;
         }
 
@@ -146,6 +147,7 @@ namespace Mengine
         if( m_scene != nullptr )
         {
             m_scene->disable();
+            m_scene->onDestroy();
             m_scene = nullptr;
         }
 
@@ -171,6 +173,7 @@ namespace Mengine
         if( destroyScene != nullptr )
         {
             destroyScene->release();
+            destroyScene->onDestroy();
             destroyScene = nullptr;
         }
     }
@@ -205,6 +208,7 @@ namespace Mengine
         if( m_globalScene != nullptr )
         {
             m_globalScene->disable();
+            m_globalScene->onDestroy();
             m_globalScene = nullptr;
         }
     }

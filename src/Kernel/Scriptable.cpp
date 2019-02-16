@@ -1,4 +1,5 @@
 #include "Kernel/Scriptable.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -25,12 +26,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * Scriptable::_embedded( pybind::kernel_interface * _kernel )
     {
-        (void)_kernel;
+        MENGINE_UNUSED( _kernel );
 
-        if( m_scriptWrapper == nullptr )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_scriptWrapper, nullptr );
 
         PyObject * embedding = m_scriptWrapper->wrap( this );
 

@@ -50,7 +50,7 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni, const Char * _doc )
     {
         LOGGER_WARNING( "Packages load..."
         );
@@ -58,14 +58,12 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, _fileGroup, _resourceIni ) == false )
         {
-            LOGGER_ERROR( "PackageService::loadPackages Invalid load resource settings '%s'"
+            LOGGER_ERROR( "invalid load resource settings '%s'"
                 , _resourceIni.c_str()
             );
 
             return false;
         }
-
-        //tinyini::tinyini & ini = store.ini;
 
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
 
@@ -87,7 +85,7 @@ namespace Mengine
 
             if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
+                LOGGER_CRITICAL( "'%s' invalid load resource pack no found section for '%s'"
                     , _resourceIni.c_str()
                     , resourcePack.c_str()
                 );
@@ -105,7 +103,7 @@ namespace Mengine
             IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev );
             IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload );
 
-            if( this->addPackage( pack ) == false )
+            if( this->addPackage( pack, _doc ) == false )
             {
                 return false;
             }
@@ -147,7 +145,7 @@ namespace Mengine
             IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev );
             IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload );
 
-            if( this->addPackage( pack ) == false )
+            if( this->addPackage( pack, _doc ) == false )
             {
                 return false;
             }
@@ -189,7 +187,7 @@ namespace Mengine
             IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev );
             IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload );
 
-            if( this->addPackage( pack ) == false )
+            if( this->addPackage( pack, _doc ) == false )
             {
                 return false;
             }
@@ -215,7 +213,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::addPackage( const PackageDesc & _desc )
+    bool PackageService::addPackage( const PackageDesc & _desc, const Char * _doc )
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -228,7 +226,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->hasFileGroup( _desc.category, &category ) == false )
         {
-            LOGGER_ERROR( "PackageService::addPackage invalid found file group %s"
+            LOGGER_ERROR( "invalid found file group '%s'"
                 , _desc.category.c_str()
             );
 
@@ -247,9 +245,9 @@ namespace Mengine
             , _desc.preload
         );
 
-        if( package->load() == false )
+        if( package->load( _doc ) == false )
         {
-            LOGGER_ERROR( "PackageService::addPackage invalid load package '%s' path '%s'"
+            LOGGER_ERROR( "invalid load package '%s' path '%s'"
                 , package->getName().c_str()
                 , package->getPath().c_str()
             );
@@ -372,7 +370,7 @@ namespace Mengine
         {
             if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( "en" ), _platformTags ) == false )
             {
-                LOGGER_WARNING( "PackageService::applyPackages not set locale pack"
+                LOGGER_WARNING( "not set locale pack"
                 );
             }
         }
@@ -491,7 +489,7 @@ namespace Mengine
 
         if( this->disableLocalePackage( _prevLocale, platformTags ) == false )
         {
-            LOGGER_ERROR( "PackageService::notifyChangeLocale invalid disable locale package '%s' platform '%s'"
+            LOGGER_ERROR( "invalid disable locale package '%s' platform '%s'"
                 , _prevLocale.c_str()
                 , platformTags.to_str().c_str()
             );
@@ -501,7 +499,7 @@ namespace Mengine
 
         if( this->enableLocalePackage( _currentlocale, platformTags ) == false )
         {
-            LOGGER_ERROR( "PackageService::notifyChangeLocale invalid enable locale package '%s' platform '%s'"
+            LOGGER_ERROR( "invalid enable locale package '%s' platform '%s'"
                 , _currentlocale.c_str()
                 , platformTags.to_str().c_str()
             );

@@ -13,18 +13,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class EntityPrototypeGenerator
         : public FactoryPrototypeGenerator
-        , public Eventable
-        , public BaseEventation
     {
-        DECLARE_EVENTABLE( EntityEventReceiver );
-
     public:
         EntityPrototypeGenerator();
         ~EntityPrototypeGenerator() override;
 
     public:
+        void setKernel( pybind::kernel_interface * _kernel );
+        pybind::kernel_interface * getKernel() const;
+
+    public:
         void setGenerator( const pybind::object & _generator );
         const pybind::object & getGenerator() const;
+
+    public:
+        const pybind::object & getPythonType() const;
 
     public:
         bool initialize() override;
@@ -33,13 +36,17 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override;
 
-    public:
-        pybind::object preparePythonType();
-
     protected:
 		FactorablePointer generate( const Char * _doc ) override;
 
     protected:
+        const pybind::object & preparePythonType_();
+
+    protected:
+        pybind::kernel_interface * m_kernel;
+
+        EventablePtr m_eventable;
+
         pybind::object m_generator;
         pybind::object m_type;
     };

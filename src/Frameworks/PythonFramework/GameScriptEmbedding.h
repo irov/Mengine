@@ -15,7 +15,7 @@ namespace Mengine
         ~GameScriptEmbedding() override;
 
     public:
-        bool embedding() override;
+        bool embedding( pybind::kernel_interface * _kernel ) override;
         void ejecting() override;
 
     protected:

@@ -143,7 +143,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( _kernel, py_kwds, _node );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -291,7 +291,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( _kernel, py_kwds, _node );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )

@@ -76,14 +76,33 @@ namespace Mengine
                 Detail::callBehavior( m_cb, _behavior );
             }
         };
+        //////////////////////////////////////////////////////////////////////////
+        class PythonEntityEventation
+            : public Factorable
+            , public Eventable
+            , public BaseEventation
+        {
+            DECLARE_EVENTABLE( EntityEventReceiver );
+        };
     }
     //////////////////////////////////////////////////////////////////////////
     EntityPrototypeGenerator::EntityPrototypeGenerator()
+        : m_kernel( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     EntityPrototypeGenerator::~EntityPrototypeGenerator()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void EntityPrototypeGenerator::setKernel( pybind::kernel_interface * _kernel )
+    {
+        m_kernel = _kernel;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    pybind::kernel_interface * EntityPrototypeGenerator::getKernel() const
+    {
+        return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
     void EntityPrototypeGenerator::setGenerator( const pybind::object & _generator )
@@ -94,6 +113,11 @@ namespace Mengine
     const pybind::object & EntityPrototypeGenerator::getGenerator() const
     {
         return m_generator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const pybind::object & EntityPrototypeGenerator::getPythonType() const
+    {
+        return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
     bool EntityPrototypeGenerator::initialize()
@@ -115,6 +139,7 @@ namespace Mengine
     {
         FactoryPrototypeGenerator::finalize();
 
+        m_eventable = nullptr;
         m_generator = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -125,7 +150,7 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    pybind::object EntityPrototypeGenerator::preparePythonType()
+    const pybind::object & EntityPrototypeGenerator::preparePythonType_()
     {
         if( m_type.is_invalid() == false )
         {
@@ -136,7 +161,7 @@ namespace Mengine
 
         if( py_type.is_invalid() == true || py_type.is_none() == true )
         {
-            LOGGER_ERROR( "PythonPrototypeGenerator type %s prototype %s invalid type create"
+            LOGGER_ERROR( "type '%s' prototype '%s' invalid type create"
                 , m_category.c_str()
                 , m_prototype.c_str()
             );
@@ -151,23 +176,25 @@ namespace Mengine
 
             if( py_kernel->type_initialize( py_type_ptr ) == false )
             {
-                LOGGER_ERROR( "PythonPrototypeGenerator prototype %s invalid type initialize"
+                LOGGER_ERROR( "type '%s' prototype '%s' invalid type initialize"
                     , m_category.c_str()
                     , m_prototype.c_str()
                 );
 
-                return pybind::make_invalid_object_t();
+                return pybind::make_invalid_object_t();;
             }
         }
 
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCreate", EVENT_ENTITY_CREATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDestroy", EVENT_ENTITY_DESTROY );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparation", EVENT_ENTITY_PREPARATION );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onActivate", EVENT_ENTITY_ACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onCompile", EVENT_ENTITY_COMPILE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( py_type, this, "onRelease", EVENT_ENTITY_RELEASE );
+        m_eventable = new FactorableUnique<PythonEntityEventation>();
+
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onCreate", EVENT_ENTITY_CREATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onDestroy", EVENT_ENTITY_DESTROY );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onPreparation", EVENT_ENTITY_PREPARATION );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onActivate", EVENT_ENTITY_ACTIVATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onCompile", EVENT_ENTITY_COMPILE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onRelease", EVENT_ENTITY_RELEASE );
 
         //this->registerEventMethod( EVENT_ENTITY_DESTROY, "onDestroy", py_type );
 
@@ -185,7 +212,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer EntityPrototypeGenerator::generate( const Char * _doc )
     {
-        const pybind::object & py_type = this->preparePythonType();
+        const pybind::object & py_type = this->preparePythonType_();
 
         if( py_type.is_invalid() == true )
         {
@@ -221,7 +248,7 @@ namespace Mengine
 
         entity->setPrototype( m_prototype );
 
-        entity->setBehaviorEventable( this );
+        entity->setBehaviorEventable( m_eventable );
 
         const FactoryPtr & factory = this->getFactory();
 

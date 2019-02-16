@@ -190,6 +190,11 @@ namespace Mengine
         m_debugLineMaterial = nullptr;
         m_debugTriangleMaterial = nullptr;
 
+        m_solidRenderMaterial[0] = nullptr;
+        m_solidRenderMaterial[1] = nullptr;
+        m_solidRenderMaterial[2] = nullptr;
+        m_solidRenderMaterial[3] = nullptr;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
         m_factoryMaterial = nullptr;
@@ -205,14 +210,14 @@ namespace Mengine
         {
             if( exist == false )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials: materials '%s:%s' not found"
+                LOGGER_ERROR( "materials '%s:%s' not found"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials: Invalid parse materials '%s:%s'"
+                LOGGER_ERROR( "invalid parse materials '%s:%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                 );
@@ -251,7 +256,7 @@ namespace Mengine
 
             if( shader == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials material %s:%s invalid load fragment shader %s compile %d"
+                LOGGER_ERROR( "material %s:%s invalid load fragment shader %s compile %d"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , filePath.c_str()
@@ -292,7 +297,7 @@ namespace Mengine
 
             if( shader == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials material %s:%s invalid load vertex shader %s compile %d"
+                LOGGER_ERROR( "material %s:%s invalid load vertex shader '%s' compile %d"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , filePath.c_str()
@@ -375,7 +380,7 @@ namespace Mengine
 
             if( vertexShader == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials material %s:%s program %s not found vertex shader %s"
+                LOGGER_ERROR( "material %s:%s program '%s' not found vertex shader '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , name.c_str()
@@ -389,7 +394,7 @@ namespace Mengine
 
             if( fragmentShader == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials material '%s:%s' program '%s' not found fragment shader '%s'"
+                LOGGER_ERROR( "material '%s:%s' program '%s' not found fragment shader '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , name.c_str()
@@ -418,7 +423,7 @@ namespace Mengine
 
             if( program == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials material '%s:%s' invalid create program vertex '%s' fragment '%s'"
+                LOGGER_ERROR( "material '%s:%s' invalid create program vertex '%s' fragment '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , vertexShaderName.c_str()
@@ -468,7 +473,7 @@ namespace Mengine
 
                 if( program == nullptr )
                 {
-                    LOGGER_ERROR( "RenderMaterialService::loadMaterials material '%s:%s' invalid get program '%s'"
+                    LOGGER_ERROR( "material '%s:%s' invalid get program '%s'"
                         , _fileGroup->getName().c_str()
                         , _fileName.c_str()
                         , programName.c_str()
@@ -507,7 +512,7 @@ namespace Mengine
 
             if( cache_stage == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials material '%s:%s' invalid create stage group '%s'"
+                LOGGER_ERROR( "material '%s:%s' invalid create stage group '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , name.c_str()
@@ -560,14 +565,14 @@ namespace Mengine
         {
             if( exist == false )
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials: materials '%s:%s' not found"
+                LOGGER_ERROR( "materials '%s:%s' not found"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "RenderMaterialService::loadMaterials: Invalid parse materials '%s:%s'"
+                LOGGER_ERROR( "Invalid parse materials '%s:%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                 );
@@ -817,7 +822,7 @@ namespace Mengine
 
         if( it_found == m_materialStageIndexer.end() )
         {
-            LOGGER_ERROR( "RenderMaterialService::getMaterial stage %s not found"
+            LOGGER_ERROR( "stage '%s' not found"
                 , _materialName.c_str()
             );
 
@@ -830,7 +835,7 @@ namespace Mengine
         {
             if( _textures[i] == nullptr )
             {
-                LOGGER_ERROR( "RenderMaterialService::getMaterial stage %s invalid setup texture %d"
+                LOGGER_ERROR( "stage '%s' invalid setup texture %d"
                     , _materialName.c_str()
                     , i
                 );

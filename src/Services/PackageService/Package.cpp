@@ -100,9 +100,9 @@ namespace Mengine
         return m_path;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::load()
+    bool Package::load( const Char * _doc )
     {
-        if( this->mountFileGroup_() == false )
+        if( this->mountFileGroup_( _doc ) == false )
         {
             return false;
         }
@@ -122,10 +122,10 @@ namespace Mengine
         return m_load;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::mountFileGroup_()
+    bool Package::mountFileGroup_( const Char * _doc )
     {
         if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_category, m_path, m_type, &m_fileGroup ) == false )
+            ->mountFileGroup( m_name, m_category, m_path, m_type, &m_fileGroup, _doc ) == false )
         {
             LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
                 , m_name.c_str()

@@ -159,7 +159,7 @@ namespace Mengine
 
                     const Movie2DataImageDesc * image_desc = reinterpret_cast<const Movie2DataImageDesc *>(movie_resource->userdata);
 
-                    const ResourceImage * resource_image = image_desc->resource;
+                    const ResourceImage * resource_image = image_desc->resourceImage;
 
                     ae_uint32_t vertex_count = _callbackData->vertex_count;
 

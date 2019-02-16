@@ -110,6 +110,12 @@ namespace Mengine
             ->onEntityCreate( m_behavior, this );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Entity::onDestroy()
+    {
+        EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
+            ->onEntityDestroy( m_behavior );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Entity::_destroy()
     {
         this->release();
@@ -133,8 +139,8 @@ namespace Mengine
             return;
         }
 
-        this->destroyChildren( []( const NodePtr & ) {} );
         this->removeFromParent();
+        this->destroyChildren( []( const NodePtr & ) {} );        
 
         this->unwrap();
     }

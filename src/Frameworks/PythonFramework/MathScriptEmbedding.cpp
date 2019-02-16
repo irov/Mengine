@@ -591,15 +591,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MathScriptEmbedding::embedding()
+    bool MathScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<Polygon, Vector<Polygon>>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(kernel);
-        pybind::registration_stl_vector_type_cast<Polygon, Vector<Polygon>>(kernel);
-
-        pybind::struct_<mt::vec2f>( kernel, "vec2f" )
+        pybind::struct_<mt::vec2f>( _kernel, "vec2f" )
             .def_constructor( pybind::init<float, float>() )
             .def_convert( &ScriptMethod::vec2f_convert, nullptr )
             .def_repr( &ScriptMethod::vec2f_repr )
@@ -616,7 +613,7 @@ namespace Mengine
             .def_member( "y", &mt::vec2f::y )
             ;
 
-        pybind::struct_<mt::vec3f>( kernel, "vec3f" )
+        pybind::struct_<mt::vec3f>( _kernel, "vec3f" )
             .def_constructor( pybind::init<float, float, float>() )
             .def_convert( &ScriptMethod::vec3f_convert, nullptr )
             .def_repr( &ScriptMethod::vec3f_repr )
@@ -634,7 +631,7 @@ namespace Mengine
             .def_member( "z", &mt::vec3f::z )
             ;
 
-        pybind::struct_<mt::vec4f>( kernel, "vec4f" )
+        pybind::struct_<mt::vec4f>( _kernel, "vec4f" )
             .def_constructor( pybind::init<float, float, float, float>() )
             .def_convert( &ScriptMethod::vec4f_convert, nullptr )
             .def_repr( &ScriptMethod::vec4f_repr )
@@ -653,7 +650,7 @@ namespace Mengine
             .def_member( "w", &mt::vec4f::w )
             ;
 
-        pybind::struct_<mt::uv4f>( kernel, "uv4f" )
+        pybind::struct_<mt::uv4f>( _kernel, "uv4f" )
             .def_constructor( pybind::init<mt::vec2f, mt::vec2f, mt::vec2f, mt::vec2f>() )
             .def_convert( &ScriptMethod::uv4f_convert, nullptr )
             .def_repr( &ScriptMethod::uv4f_repr )
@@ -664,7 +661,7 @@ namespace Mengine
             .def_member( "p3", &mt::uv4f::p3 )
             ;
 
-        pybind::struct_<mt::box2f>( kernel, "box2f" )
+        pybind::struct_<mt::box2f>( _kernel, "box2f" )
             .def_constructor( pybind::init<mt::vec2f, mt::vec2f>() )
             .def_convert( &ScriptMethod::box2f_convert, nullptr )
             .def_repr( &ScriptMethod::box2f_repr )
@@ -672,7 +669,7 @@ namespace Mengine
             .def_member( "maximum", &mt::box2f::maximum )
             ;
 
-        pybind::struct_<Rect>( kernel, "Rect" )
+        pybind::struct_<Rect>( _kernel, "Rect" )
             .def_constructor( pybind::init<uint32_t, uint32_t, uint32_t, uint32_t>() )
             .def_convert( &ScriptMethod::Rect_convert, nullptr )
             .def_member( "left", &Rect::left )
@@ -684,7 +681,7 @@ namespace Mengine
             ;
 
 
-        pybind::struct_<mt::quatf>( kernel, "quatf" )
+        pybind::struct_<mt::quatf>( _kernel, "quatf" )
             .def_constructor( pybind::init<float, float, float, float>() )
             .def_member( "w", &mt::quatf::w )
             .def_member( "x", &mt::quatf::x )
@@ -692,7 +689,7 @@ namespace Mengine
             .def_member( "z", &mt::quatf::z )
             ;
 
-        pybind::struct_<mt::planef>( kernel, "planef" )
+        pybind::struct_<mt::planef>( _kernel, "planef" )
             .def_constructor( pybind::init<float, float, float, float>() )
             .def_member( "a", &mt::planef::a )
             .def_member( "b", &mt::planef::b )
@@ -700,12 +697,12 @@ namespace Mengine
             .def_member( "d", &mt::planef::d )
             ;
 
-        pybind::struct_<Polygon>( kernel, "Polygon" )
+        pybind::struct_<Polygon>( _kernel, "Polygon" )
             .def_convert( &ScriptMethod::Polygon_convert, nullptr )
             .def( "getPoints", &Polygon::getPoints )
             ;
 
-        pybind::struct_<Viewport>( kernel, "Viewport" )
+        pybind::struct_<Viewport>( _kernel, "Viewport" )
             .def_constructor( pybind::init<mt::vec2f, mt::vec2f>() )
             .def_convert( &ScriptMethod::Viewport_convert, nullptr )
             .def_repr( &ScriptMethod::Viewport_repr )
@@ -726,7 +723,7 @@ namespace Mengine
             .def( "getIntersectionSquareBBox", &Viewport::getIntersectionSquareBBox )
             ;
 
-        pybind::struct_<Color>( kernel, "Color" )
+        pybind::struct_<Color>( _kernel, "Color" )
             .def_constructor( pybind::init<float, float, float, float>() )
             .def_convert( &ScriptMethod::color_convert, nullptr )
             .def_repr( &ScriptMethod::color_repr )
@@ -743,7 +740,7 @@ namespace Mengine
             .def( "isSolid", &Color::isSolid )
             ;
 
-        pybind::struct_<Resolution>( kernel, "Resolution" )
+        pybind::struct_<Resolution>( _kernel, "Resolution" )
             .def_constructor( pybind::init<uint32_t, uint32_t>() )
             .def_convert( &ScriptMethod::Resolution_convert, nullptr )
             .def_repr( &ScriptMethod::Resolution_repr )

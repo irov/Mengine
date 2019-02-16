@@ -3126,297 +3126,294 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HelperScriptEmbedding::embedding()
+    bool HelperScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        pybind::registration_type_cast<Blobject>(_kernel, new extract_Blobject_type);
+        pybind::registration_type_cast<Tags>(_kernel, new extract_Tags_type);
 
-        pybind::registration_type_cast<Blobject>(kernel, new extract_Blobject_type);
-        pybind::registration_type_cast<Tags>(kernel, new extract_Tags_type);
+        pybind::registration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(_kernel);
+        pybind::registration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(kernel);
-        pybind::registration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(kernel);
+        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
+        pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
 
-        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(kernel);
-        pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(kernel);
+        pybind::registration_type_cast<String>(_kernel, new extract_String_type);
+        pybind::registration_type_cast<WString>(_kernel, new extract_WString_type);
 
-        pybind::registration_type_cast<String>(kernel, new extract_String_type);
-        pybind::registration_type_cast<WString>(kernel, new extract_WString_type);
-
-        pybind::registration_stl_vector_type_cast<String, Vector<String>>(kernel);
-        pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(kernel);
+        pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
+        pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
 
         HelperScriptMethod * helperScriptMethod = new FactorableUnique<HelperScriptMethod>();
 
-        pybind::def_functor( kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
-
-        pybind::def_functor( kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
-
-        pybind::def_functor( kernel, "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
-        pybind::def_functor( kernel, "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
-        pybind::def_functor( kernel, "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
-        pybind::def_functor( kernel, "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
-        pybind::def_functor( kernel, "around_randf", helperScriptMethod, &HelperScriptMethod::mt_around_randf );
-        pybind::def_functor( kernel, "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );
-
-        pybind::def_functor( kernel, "rounding", helperScriptMethod, &HelperScriptMethod::mt_rounding );
-        pybind::def_functor( kernel, "roundingf", helperScriptMethod, &HelperScriptMethod::mt_roundingf );
-
-        pybind::def_functor( kernel, "pi", helperScriptMethod, &HelperScriptMethod::mt_pi );
-        pybind::def_functor( kernel, "deg2rad", helperScriptMethod, &HelperScriptMethod::mt_deg2rad );
-        pybind::def_functor( kernel, "rad2deg", helperScriptMethod, &HelperScriptMethod::mt_rad2deg );
-
-        pybind::def_functor( kernel, "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
-        pybind::def_functor( kernel, "powf", helperScriptMethod, &HelperScriptMethod::mt_powf );
-        pybind::def_functor( kernel, "absf", helperScriptMethod, &HelperScriptMethod::mt_absf );
-        pybind::def_functor( kernel, "cosf", helperScriptMethod, &HelperScriptMethod::mt_cosf );
-        pybind::def_functor( kernel, "sinf", helperScriptMethod, &HelperScriptMethod::mt_sinf );
-        pybind::def_functor( kernel, "tanf", helperScriptMethod, &HelperScriptMethod::mt_tanf );
-        pybind::def_functor( kernel, "cosf_deg", helperScriptMethod, &HelperScriptMethod::mt_cosf_deg );
-        pybind::def_functor( kernel, "sinf_deg", helperScriptMethod, &HelperScriptMethod::mt_sinf_deg );
-        pybind::def_functor( kernel, "acosf", helperScriptMethod, &HelperScriptMethod::mt_acosf );
-        pybind::def_functor( kernel, "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
-        pybind::def_functor( kernel, "logf", helperScriptMethod, &HelperScriptMethod::mt_logf );
-        pybind::def_functor( kernel, "log10f", helperScriptMethod, &HelperScriptMethod::mt_log10f );
-        pybind::def_functor( kernel, "log10", helperScriptMethod, &HelperScriptMethod::mt_log10 );
-        pybind::def_functor( kernel, "fibo", helperScriptMethod, &HelperScriptMethod::mt_fibo );
-        pybind::def_functor( kernel, "fibo_bine", helperScriptMethod, &HelperScriptMethod::mt_fibo_bine );
-        pybind::def_functor( kernel, "dot_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_dot_v2_v2 );
-        pybind::def_functor( kernel, "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_direction_v2_v2 );
-        pybind::def_functor( kernel, "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::mt_direction_v3_v3 );
-        pybind::def_functor( kernel, "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_angle_from_v2_v2 );
-        pybind::def_functor( kernel, "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
-        pybind::def_functor( kernel, "norm_v3", helperScriptMethod, &HelperScriptMethod::mt_norm_v3 );
-
-        pybind::def_functor_kernel( kernel, "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
-        pybind::def_functor( kernel, "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );
-
-        pybind::def_functor( kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::projectionPointToLine );
-
-        pybind::def_functor( kernel, "isPointInsidePolygon", helperScriptMethod, &HelperScriptMethod::s_isPointInsidePolygon );
-
-        pybind::def_functor( kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
-        pybind::def_functor( kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
-
-        pybind::def_functor( kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
-
-        pybind::def_functor( kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
-
-        pybind::def_functor( kernel, "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
-        pybind::def_functor( kernel, "getConfigInt", helperScriptMethod, &HelperScriptMethod::s_getConfigInt );
-        pybind::def_functor( kernel, "getConfigUInt", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt );
-        pybind::def_functor( kernel, "getConfigUInt64", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt64 );
-        pybind::def_functor( kernel, "getConfigFloat", helperScriptMethod, &HelperScriptMethod::s_getConfigFloat );
-        pybind::def_functor( kernel, "getConfigString", helperScriptMethod, &HelperScriptMethod::s_getConfigString );
-
-        pybind::def_functor( kernel, "getAccounts", helperScriptMethod, &HelperScriptMethod::s_getAccounts );
-
-        pybind::def_functor_kernel( kernel, "getCurrentAccountUID", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountUID );
-
-        pybind::def_functor_kernel( kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
-        pybind::def_functor_kernel( kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
-        pybind::def_functor_kernel( kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
-        pybind::def_functor_kernel( kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
-        pybind::def_functor_kernel( kernel, "getSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt64 );
-        pybind::def_functor_kernel( kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
-        pybind::def_functor_kernel( kernel, "getSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getSettingStrings );
-        pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
-
-        pybind::def_functor_kernel_args( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
-        pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
-        pybind::def_functor_kernel( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
-        pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
-        pybind::def_functor( kernel, "changeSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingInt );
-        pybind::def_functor( kernel, "changeSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt );
-        pybind::def_functor( kernel, "changeSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt64 );
-        pybind::def_functor( kernel, "changeSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeSettingFloat );
-        pybind::def_functor( kernel, "changeSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeSettingStrings );
-
-        pybind::def_functor_kernel( kernel, "getAccountUID", helperScriptMethod, &HelperScriptMethod::s_getAccountUID );
-
-        pybind::def_functor_kernel( kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
-        pybind::def_functor_kernel( kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
-        pybind::def_functor_kernel( kernel, "getAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingInt );
-        pybind::def_functor_kernel( kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
-        pybind::def_functor_kernel( kernel, "getAccountSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt64 );
-        pybind::def_functor_kernel( kernel, "getAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloat );
-        pybind::def_functor_kernel( kernel, "getAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingStrings );
-        pybind::def_functor( kernel, "getAccountSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloatDefault );
-
-        pybind::def_functor_kernel_args( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
-        pybind::def_functor( kernel, "hasAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasAccountSetting );
-        pybind::def_functor_kernel( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
-        pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
-        pybind::def_functor( kernel, "changeAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingInt );
-        pybind::def_functor( kernel, "changeAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingUInt );
-        pybind::def_functor( kernel, "changeAccountSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingUInt64 );
-        pybind::def_functor( kernel, "changeAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingFloat );
-        pybind::def_functor( kernel, "changeAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingStrings );
+        pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
+
+        pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
+
+        pybind::def_functor( _kernel, "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
+        pybind::def_functor( _kernel, "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
+        pybind::def_functor( _kernel, "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );
+        pybind::def_functor( _kernel, "range_randf", helperScriptMethod, &HelperScriptMethod::mt_range_randf );
+        pybind::def_functor( _kernel, "around_randf", helperScriptMethod, &HelperScriptMethod::mt_around_randf );
+        pybind::def_functor( _kernel, "radius_randf", helperScriptMethod, &HelperScriptMethod::mt_radius_randf );
+
+        pybind::def_functor( _kernel, "rounding", helperScriptMethod, &HelperScriptMethod::mt_rounding );
+        pybind::def_functor( _kernel, "roundingf", helperScriptMethod, &HelperScriptMethod::mt_roundingf );
+
+        pybind::def_functor( _kernel, "pi", helperScriptMethod, &HelperScriptMethod::mt_pi );
+        pybind::def_functor( _kernel, "deg2rad", helperScriptMethod, &HelperScriptMethod::mt_deg2rad );
+        pybind::def_functor( _kernel, "rad2deg", helperScriptMethod, &HelperScriptMethod::mt_rad2deg );
+
+        pybind::def_functor( _kernel, "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
+        pybind::def_functor( _kernel, "powf", helperScriptMethod, &HelperScriptMethod::mt_powf );
+        pybind::def_functor( _kernel, "absf", helperScriptMethod, &HelperScriptMethod::mt_absf );
+        pybind::def_functor( _kernel, "cosf", helperScriptMethod, &HelperScriptMethod::mt_cosf );
+        pybind::def_functor( _kernel, "sinf", helperScriptMethod, &HelperScriptMethod::mt_sinf );
+        pybind::def_functor( _kernel, "tanf", helperScriptMethod, &HelperScriptMethod::mt_tanf );
+        pybind::def_functor( _kernel, "cosf_deg", helperScriptMethod, &HelperScriptMethod::mt_cosf_deg );
+        pybind::def_functor( _kernel, "sinf_deg", helperScriptMethod, &HelperScriptMethod::mt_sinf_deg );
+        pybind::def_functor( _kernel, "acosf", helperScriptMethod, &HelperScriptMethod::mt_acosf );
+        pybind::def_functor( _kernel, "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
+        pybind::def_functor( _kernel, "logf", helperScriptMethod, &HelperScriptMethod::mt_logf );
+        pybind::def_functor( _kernel, "log10f", helperScriptMethod, &HelperScriptMethod::mt_log10f );
+        pybind::def_functor( _kernel, "log10", helperScriptMethod, &HelperScriptMethod::mt_log10 );
+        pybind::def_functor( _kernel, "fibo", helperScriptMethod, &HelperScriptMethod::mt_fibo );
+        pybind::def_functor( _kernel, "fibo_bine", helperScriptMethod, &HelperScriptMethod::mt_fibo_bine );
+        pybind::def_functor( _kernel, "dot_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_dot_v2_v2 );
+        pybind::def_functor( _kernel, "direction_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_direction_v2_v2 );
+        pybind::def_functor( _kernel, "direction_v3_v3", helperScriptMethod, &HelperScriptMethod::mt_direction_v3_v3 );
+        pybind::def_functor( _kernel, "angle_from_v2_v2", helperScriptMethod, &HelperScriptMethod::mt_angle_from_v2_v2 );
+        pybind::def_functor( _kernel, "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
+        pybind::def_functor( _kernel, "norm_v3", helperScriptMethod, &HelperScriptMethod::mt_norm_v3 );
+
+        pybind::def_functor_kernel( _kernel, "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );
+        pybind::def_functor( _kernel, "angle_between_two_vectors", helperScriptMethod, &HelperScriptMethod::s_angle_between_two_vectors );
+
+        pybind::def_functor( _kernel, "projectionPointToLine", helperScriptMethod, &HelperScriptMethod::projectionPointToLine );
+
+        pybind::def_functor( _kernel, "isPointInsidePolygon", helperScriptMethod, &HelperScriptMethod::s_isPointInsidePolygon );
+
+        pybind::def_functor( _kernel, "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
+        pybind::def_functor( _kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
+
+        pybind::def_functor( _kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
+
+        pybind::def_functor( _kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
+
+        pybind::def_functor( _kernel, "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
+        pybind::def_functor( _kernel, "getConfigInt", helperScriptMethod, &HelperScriptMethod::s_getConfigInt );
+        pybind::def_functor( _kernel, "getConfigUInt", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt );
+        pybind::def_functor( _kernel, "getConfigUInt64", helperScriptMethod, &HelperScriptMethod::s_getConfigUInt64 );
+        pybind::def_functor( _kernel, "getConfigFloat", helperScriptMethod, &HelperScriptMethod::s_getConfigFloat );
+        pybind::def_functor( _kernel, "getConfigString", helperScriptMethod, &HelperScriptMethod::s_getConfigString );
+
+        pybind::def_functor( _kernel, "getAccounts", helperScriptMethod, &HelperScriptMethod::s_getAccounts );
+
+        pybind::def_functor_kernel( _kernel, "getCurrentAccountUID", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountUID );
+
+        pybind::def_functor_kernel( _kernel, "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
+        pybind::def_functor_kernel( _kernel, "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
+        pybind::def_functor_kernel( _kernel, "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
+        pybind::def_functor_kernel( _kernel, "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
+        pybind::def_functor_kernel( _kernel, "getSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt64 );
+        pybind::def_functor_kernel( _kernel, "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
+        pybind::def_functor_kernel( _kernel, "getSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getSettingStrings );
+        pybind::def_functor( _kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
+
+        pybind::def_functor_kernel_args( _kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
+        pybind::def_functor( _kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
+        pybind::def_functor_kernel( _kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
+        pybind::def_functor( _kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
+        pybind::def_functor( _kernel, "changeSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingInt );
+        pybind::def_functor( _kernel, "changeSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt );
+        pybind::def_functor( _kernel, "changeSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt64 );
+        pybind::def_functor( _kernel, "changeSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeSettingFloat );
+        pybind::def_functor( _kernel, "changeSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeSettingStrings );
+
+        pybind::def_functor_kernel( _kernel, "getAccountUID", helperScriptMethod, &HelperScriptMethod::s_getAccountUID );
+
+        pybind::def_functor_kernel( _kernel, "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
+        pybind::def_functor_kernel( _kernel, "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
+        pybind::def_functor_kernel( _kernel, "getAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingInt );
+        pybind::def_functor_kernel( _kernel, "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
+        pybind::def_functor_kernel( _kernel, "getAccountSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt64 );
+        pybind::def_functor_kernel( _kernel, "getAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloat );
+        pybind::def_functor_kernel( _kernel, "getAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingStrings );
+        pybind::def_functor( _kernel, "getAccountSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloatDefault );
+
+        pybind::def_functor_kernel_args( _kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
+        pybind::def_functor( _kernel, "hasAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasAccountSetting );
+        pybind::def_functor_kernel( _kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
+        pybind::def_functor( _kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
+        pybind::def_functor( _kernel, "changeAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingInt );
+        pybind::def_functor( _kernel, "changeAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingUInt );
+        pybind::def_functor( _kernel, "changeAccountSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingUInt64 );
+        pybind::def_functor( _kernel, "changeAccountSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingFloat );
+        pybind::def_functor( _kernel, "changeAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingStrings );
 
-        pybind::def_functor_kernel( kernel, "getGlobalAccountUID", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountUID );
+        pybind::def_functor_kernel( _kernel, "getGlobalAccountUID", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountUID );
 
-        pybind::def_functor_kernel( kernel, "getGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_getGlobalSetting );
-        pybind::def_functor_kernel( kernel, "getGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingBool );
-        pybind::def_functor_kernel( kernel, "getGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingInt );
-        pybind::def_functor_kernel( kernel, "getGlobalSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingUInt );
-        pybind::def_functor_kernel( kernel, "getGlobalSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingUInt64 );
-        pybind::def_functor_kernel( kernel, "getGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingFloat );
-        pybind::def_functor_kernel( kernel, "getGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingStrings );
+        pybind::def_functor_kernel( _kernel, "getGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_getGlobalSetting );
+        pybind::def_functor_kernel( _kernel, "getGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingBool );
+        pybind::def_functor_kernel( _kernel, "getGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingInt );
+        pybind::def_functor_kernel( _kernel, "getGlobalSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingUInt );
+        pybind::def_functor_kernel( _kernel, "getGlobalSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingUInt64 );
+        pybind::def_functor_kernel( _kernel, "getGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingFloat );
+        pybind::def_functor_kernel( _kernel, "getGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingStrings );
 
-        pybind::def_functor_kernel_args( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
-        pybind::def_functor( kernel, "hasGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_hasGlobalSetting );
-        pybind::def_functor_kernel( kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
-        pybind::def_functor( kernel, "changeGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingBool );
-        pybind::def_functor( kernel, "changeGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingInt );
-        pybind::def_functor( kernel, "changeGlobalSettingUint", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingUInt );
-        pybind::def_functor( kernel, "changeGlobalSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingUInt64 );
-        pybind::def_functor( kernel, "changeGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingFloat );
-        pybind::def_functor( kernel, "changeGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingStrings );
+        pybind::def_functor_kernel_args( _kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
+        pybind::def_functor( _kernel, "hasGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_hasGlobalSetting );
+        pybind::def_functor_kernel( _kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
+        pybind::def_functor( _kernel, "changeGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingBool );
+        pybind::def_functor( _kernel, "changeGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingInt );
+        pybind::def_functor( _kernel, "changeGlobalSettingUint", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingUInt );
+        pybind::def_functor( _kernel, "changeGlobalSettingUInt64", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingUInt64 );
+        pybind::def_functor( _kernel, "changeGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingFloat );
+        pybind::def_functor( _kernel, "changeGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingStrings );
 
-        pybind::def_functor_kernel( kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
-        pybind::def_functor_kernel( kernel, "createGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_createGlobalAccount );
+        pybind::def_functor_kernel( _kernel, "createAccount", helperScriptMethod, &HelperScriptMethod::s_createAccount );
+        pybind::def_functor_kernel( _kernel, "createGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_createGlobalAccount );
 
-        pybind::def_functor( kernel, "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );
-        pybind::def_functor( kernel, "deleteAccount", helperScriptMethod, &HelperScriptMethod::s_deleteAccount );
+        pybind::def_functor( _kernel, "selectAccount", helperScriptMethod, &HelperScriptMethod::s_selectAccount );
+        pybind::def_functor( _kernel, "deleteAccount", helperScriptMethod, &HelperScriptMethod::s_deleteAccount );
 
-        pybind::def_functor( kernel, "saveAccount", helperScriptMethod, &HelperScriptMethod::s_saveAccount );
-        pybind::def_functor( kernel, "saveAccounts", helperScriptMethod, &HelperScriptMethod::s_saveAccounts );
-        pybind::def_functor( kernel, "saveAccountsInfo", helperScriptMethod, &HelperScriptMethod::s_saveAccountsInfo );
-        pybind::def_functor( kernel, "hasCurrentAccount", helperScriptMethod, &HelperScriptMethod::s_hasCurrentAccount );
-        pybind::def_functor( kernel, "getCurrentAccountName", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountName );
+        pybind::def_functor( _kernel, "saveAccount", helperScriptMethod, &HelperScriptMethod::s_saveAccount );
+        pybind::def_functor( _kernel, "saveAccounts", helperScriptMethod, &HelperScriptMethod::s_saveAccounts );
+        pybind::def_functor( _kernel, "saveAccountsInfo", helperScriptMethod, &HelperScriptMethod::s_saveAccountsInfo );
+        pybind::def_functor( _kernel, "hasCurrentAccount", helperScriptMethod, &HelperScriptMethod::s_hasCurrentAccount );
+        pybind::def_functor( _kernel, "getCurrentAccountName", helperScriptMethod, &HelperScriptMethod::s_getCurrentAccountName );
 
-        pybind::def_functor( kernel, "setGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_setGlobalAccount );
-        pybind::def_functor( kernel, "hasGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_hasGlobalAccount );
-        pybind::def_functor( kernel, "getGlobalAccountName", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountName );
+        pybind::def_functor( _kernel, "setGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_setGlobalAccount );
+        pybind::def_functor( _kernel, "hasGlobalAccount", helperScriptMethod, &HelperScriptMethod::s_hasGlobalAccount );
+        pybind::def_functor( _kernel, "getGlobalAccountName", helperScriptMethod, &HelperScriptMethod::s_getGlobalAccountName );
 
-        pybind::def_functor( kernel, "setDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_setDefaultAccount );
-        pybind::def_functor( kernel, "getDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_getDefaultAccount );
-        pybind::def_functor( kernel, "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );
-        pybind::def_functor( kernel, "isCurrentDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_isCurrentDefaultAccount );
-        pybind::def_functor( kernel, "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );
+        pybind::def_functor( _kernel, "setDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_setDefaultAccount );
+        pybind::def_functor( _kernel, "getDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_getDefaultAccount );
+        pybind::def_functor( _kernel, "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );
+        pybind::def_functor( _kernel, "isCurrentDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_isCurrentDefaultAccount );
+        pybind::def_functor( _kernel, "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );
 
-        pybind::def_functor_kernel( kernel, "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
-        pybind::def_functor_kernel( kernel, "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
-        pybind::def_functor( kernel, "hasAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_hasAccountPickleFile );
+        pybind::def_functor_kernel( _kernel, "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
+        pybind::def_functor_kernel( _kernel, "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
+        pybind::def_functor( _kernel, "hasAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_hasAccountPickleFile );
 
-        pybind::def_functor( kernel, "getDefaultFileGroup", helperScriptMethod, &HelperScriptMethod::s_getDefaultFileGroup );
-        pybind::def_functor( kernel, "hasFileGroup", helperScriptMethod, &HelperScriptMethod::s_hasFileGroup );
-        pybind::def_functor( kernel, "getFileGroup", helperScriptMethod, &HelperScriptMethod::s_getFileGroup );
+        pybind::def_functor( _kernel, "getDefaultFileGroup", helperScriptMethod, &HelperScriptMethod::s_getDefaultFileGroup );
+        pybind::def_functor( _kernel, "hasFileGroup", helperScriptMethod, &HelperScriptMethod::s_hasFileGroup );
+        pybind::def_functor( _kernel, "getFileGroup", helperScriptMethod, &HelperScriptMethod::s_getFileGroup );
 
-        pybind::def_functor( kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
+        pybind::def_functor( _kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
-        pybind::def_functor( kernel, "getNodeScreenPosition", helperScriptMethod, &HelperScriptMethod::s_getNodeScreenPosition );
+        pybind::def_functor( _kernel, "getNodeScreenPosition", helperScriptMethod, &HelperScriptMethod::s_getNodeScreenPosition );
 
-        pybind::def_functor( kernel, "hasTextByKey", helperScriptMethod, &HelperScriptMethod::s_hasTextByKey );
-        pybind::def_functor( kernel, "getTextByKey", helperScriptMethod, &HelperScriptMethod::s_getTextByKey );
-        pybind::def_functor( kernel, "getTextCharCountByKey", helperScriptMethod, &HelperScriptMethod::s_getTextCharCountByKey );
+        pybind::def_functor( _kernel, "hasTextByKey", helperScriptMethod, &HelperScriptMethod::s_hasTextByKey );
+        pybind::def_functor( _kernel, "getTextByKey", helperScriptMethod, &HelperScriptMethod::s_getTextByKey );
+        pybind::def_functor( _kernel, "getTextCharCountByKey", helperScriptMethod, &HelperScriptMethod::s_getTextCharCountByKey );
 
 
-        pybind::def_functor( kernel, "setVSync", helperScriptMethod, &HelperScriptMethod::s_setVSync );
-        pybind::def_functor( kernel, "getVSync", helperScriptMethod, &HelperScriptMethod::s_getVSync );
-        pybind::def_functor( kernel, "setCursorMode", helperScriptMethod, &HelperScriptMethod::s_setCursorMode );
-        pybind::def_functor( kernel, "getCursorMode", helperScriptMethod, &HelperScriptMethod::s_getCursorMode );
-        pybind::def_functor( kernel, "setCursorIcon", helperScriptMethod, &HelperScriptMethod::s_setCursorIcon );
+        pybind::def_functor( _kernel, "setVSync", helperScriptMethod, &HelperScriptMethod::s_setVSync );
+        pybind::def_functor( _kernel, "getVSync", helperScriptMethod, &HelperScriptMethod::s_getVSync );
+        pybind::def_functor( _kernel, "setCursorMode", helperScriptMethod, &HelperScriptMethod::s_setCursorMode );
+        pybind::def_functor( _kernel, "getCursorMode", helperScriptMethod, &HelperScriptMethod::s_getCursorMode );
+        pybind::def_functor( _kernel, "setCursorIcon", helperScriptMethod, &HelperScriptMethod::s_setCursorIcon );
 
-        pybind::def_functor( kernel, "intersectsEllipseVsPoint", helperScriptMethod, &HelperScriptMethod::s_intersectsEllipseVsPoint );
-        pybind::def_functor( kernel, "intersectsBoxes", helperScriptMethod, &HelperScriptMethod::s_intersectsBoxes );
+        pybind::def_functor( _kernel, "intersectsEllipseVsPoint", helperScriptMethod, &HelperScriptMethod::s_intersectsEllipseVsPoint );
+        pybind::def_functor( _kernel, "intersectsBoxes", helperScriptMethod, &HelperScriptMethod::s_intersectsBoxes );
 
-        pybind::def_functor_kernel( kernel, "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
-        pybind::def_functor( kernel, "intersectionPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectionPolygons );
-        pybind::def_functor( kernel, "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
-        pybind::def_functor( kernel, "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
-        pybind::def_functor( kernel, "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );
+        pybind::def_functor_kernel( _kernel, "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
+        pybind::def_functor( _kernel, "intersectionPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectionPolygons );
+        pybind::def_functor( _kernel, "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
+        pybind::def_functor( _kernel, "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
+        pybind::def_functor( _kernel, "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );
 
 
-        pybind::def_functor_kernel( kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
-        pybind::def_functor_kernel( kernel, "textures", helperScriptMethod, &HelperScriptMethod::s_textures );
+        pybind::def_functor_kernel( _kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
+        pybind::def_functor_kernel( _kernel, "textures", helperScriptMethod, &HelperScriptMethod::s_textures );
 
-        pybind::def_functor( kernel, "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );
+        pybind::def_functor( _kernel, "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );
 
-        pybind::def_functor( kernel, "addGlobalModule", helperScriptMethod, &HelperScriptMethod::s_addGlobalModule );
+        pybind::def_functor( _kernel, "addGlobalModule", helperScriptMethod, &HelperScriptMethod::s_addGlobalModule );
 
-        pybind::def_function( kernel, "angle_norm", &mt::angle_norm );
-        pybind::def_function( kernel, "angle_delta_deg", &mt::angle_delta_deg );
+        pybind::def_function( _kernel, "angle_norm", &mt::angle_norm );
+        pybind::def_function( _kernel, "angle_delta_deg", &mt::angle_delta_deg );
 
-        pybind::def_function( kernel, "length_v2", &mt::length_v2 );
+        pybind::def_function( _kernel, "length_v2", &mt::length_v2 );
 
-        pybind::def_function( kernel, "length_v2_v2", &mt::length_v2_v2 );
-        pybind::def_function( kernel, "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
+        pybind::def_function( _kernel, "length_v2_v2", &mt::length_v2_v2 );
+        pybind::def_function( _kernel, "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
 
-        pybind::def_function( kernel, "length_v3_v3", &mt::length_v3_v3 );
-        pybind::def_function( kernel, "sqrlength_v3_v3", &mt::sqrlength_v3_v3 );
+        pybind::def_function( _kernel, "length_v3_v3", &mt::length_v3_v3 );
+        pybind::def_function( _kernel, "sqrlength_v3_v3", &mt::sqrlength_v3_v3 );
 
-        pybind::def_function( kernel, "length_v3", &mt::length_v3 );
-        pybind::def_function( kernel, "sqrlength_v3", &mt::sqrlength_v3 );
+        pybind::def_function( _kernel, "length_v3", &mt::length_v3 );
+        pybind::def_function( _kernel, "sqrlength_v3", &mt::sqrlength_v3 );
 
-        pybind::def_function( kernel, "signed_angle", &mt::signed_angle );
-        pybind::def_function( kernel, "angle_length", &mt::angle_length );
-        pybind::def_function( kernel, "perp_v2", &mt::perp );
-        pybind::def_function_deprecate( kernel, "perp", &mt::perp, "use perp_v2" );
-        pybind::def_function( kernel, "perp_left", &mt::perp_left );
+        pybind::def_function( _kernel, "signed_angle", &mt::signed_angle );
+        pybind::def_function( _kernel, "angle_length", &mt::angle_length );
+        pybind::def_function( _kernel, "perp_v2", &mt::perp );
+        pybind::def_function_deprecate( _kernel, "perp", &mt::perp, "use perp_v2" );
+        pybind::def_function( _kernel, "perp_left", &mt::perp_left );
 
-        pybind::def_functor_kernel( kernel, "getrefcount", helperScriptMethod, &HelperScriptMethod::s_refcount );
-        pybind::def_functor_kernel( kernel, "is_class", helperScriptMethod, &HelperScriptMethod::s_is_class );
-        pybind::def_functor_kernel( kernel, "is_type_class", helperScriptMethod, &HelperScriptMethod::s_is_type_class );
-        pybind::def_functor_kernel( kernel, "is_wrap", helperScriptMethod, &HelperScriptMethod::s_is_wrap );
+        pybind::def_functor_kernel( _kernel, "getrefcount", helperScriptMethod, &HelperScriptMethod::s_refcount );
+        pybind::def_functor_kernel( _kernel, "is_class", helperScriptMethod, &HelperScriptMethod::s_is_class );
+        pybind::def_functor_kernel( _kernel, "is_type_class", helperScriptMethod, &HelperScriptMethod::s_is_type_class );
+        pybind::def_functor_kernel( _kernel, "is_wrap", helperScriptMethod, &HelperScriptMethod::s_is_wrap );
 
-        pybind::def_functor( kernel, "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
+        pybind::def_functor( _kernel, "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
 
-        pybind::def_functor( kernel, "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
-        pybind::def_functor( kernel, "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );
+        pybind::def_functor( _kernel, "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
+        pybind::def_functor( _kernel, "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );
 
-        pybind::def_functor( kernel, "isValidWindowMode", helperScriptMethod, &HelperScriptMethod::s_isValidWindowMode );
+        pybind::def_functor( _kernel, "isValidWindowMode", helperScriptMethod, &HelperScriptMethod::s_isValidWindowMode );
 
-        pybind::def_functor( kernel, "utf8ToUnicode", helperScriptMethod, &HelperScriptMethod::s_utf8ToUnicode );
-        pybind::def_functor( kernel, "unicodeToUtf8", helperScriptMethod, &HelperScriptMethod::s_unicodeToUtf8 );
-        pybind::def_functor( kernel, "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
+        pybind::def_functor( _kernel, "utf8ToUnicode", helperScriptMethod, &HelperScriptMethod::s_utf8ToUnicode );
+        pybind::def_functor( _kernel, "unicodeToUtf8", helperScriptMethod, &HelperScriptMethod::s_unicodeToUtf8 );
+        pybind::def_functor( _kernel, "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
 
-        pybind::def_functor( kernel, "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
-        pybind::def_functor( kernel, "debugNode", helperScriptMethod, &HelperScriptMethod::s_debugNode );
+        pybind::def_functor( _kernel, "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
+        pybind::def_functor( _kernel, "debugNode", helperScriptMethod, &HelperScriptMethod::s_debugNode );
 
-        pybind::def_functor( kernel, "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
-        pybind::def_functor_kernel( kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
-        pybind::def_functor_kernel( kernel, "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
+        pybind::def_functor( _kernel, "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
+        pybind::def_functor_kernel( _kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
+        pybind::def_functor_kernel( _kernel, "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
 
 
-        pybind::def_functor( kernel, "isAltDown", helperScriptMethod, &HelperScriptMethod::s_isAltDown );
-        pybind::def_functor( kernel, "isShiftDown", helperScriptMethod, &HelperScriptMethod::s_isShiftDown );
-        pybind::def_functor( kernel, "isCtrlDown", helperScriptMethod, &HelperScriptMethod::s_isCtrlDown );
+        pybind::def_functor( _kernel, "isAltDown", helperScriptMethod, &HelperScriptMethod::s_isAltDown );
+        pybind::def_functor( _kernel, "isShiftDown", helperScriptMethod, &HelperScriptMethod::s_isShiftDown );
+        pybind::def_functor( _kernel, "isCtrlDown", helperScriptMethod, &HelperScriptMethod::s_isCtrlDown );
 
-        pybind::def_functor( kernel, "isKeyDown", helperScriptMethod, &HelperScriptMethod::s_isKeyDown );
-        pybind::def_functor( kernel, "isExclusiveKeyDown", helperScriptMethod, &HelperScriptMethod::s_isExclusiveKeyDown );
-        pybind::def_functor( kernel, "isAnyKeyDown", helperScriptMethod, &HelperScriptMethod::s_isAnyKeyDown );
+        pybind::def_functor( _kernel, "isKeyDown", helperScriptMethod, &HelperScriptMethod::s_isKeyDown );
+        pybind::def_functor( _kernel, "isExclusiveKeyDown", helperScriptMethod, &HelperScriptMethod::s_isExclusiveKeyDown );
+        pybind::def_functor( _kernel, "isAnyKeyDown", helperScriptMethod, &HelperScriptMethod::s_isAnyKeyDown );
 
-        pybind::def_functor( kernel, "isAnyMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isAnyMouseButtonDown );
-        pybind::def_functor( kernel, "isMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isMouseButtonDown );
+        pybind::def_functor( _kernel, "isAnyMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isAnyMouseButtonDown );
+        pybind::def_functor( _kernel, "isMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isMouseButtonDown );
 
-        pybind::def_functor( kernel, "printChildren", helperScriptMethod, &HelperScriptMethod::s_printChildren );
+        pybind::def_functor( _kernel, "printChildren", helperScriptMethod, &HelperScriptMethod::s_printChildren );
 
-        pybind::def_functor( kernel, "getGroupResourcesMemoryUse", helperScriptMethod, &HelperScriptMethod::s_getGroupResourcesMemoryUse );
+        pybind::def_functor( _kernel, "getGroupResourcesMemoryUse", helperScriptMethod, &HelperScriptMethod::s_getGroupResourcesMemoryUse );
 
-        pybind::def_functor( kernel, "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
-        pybind::def_functor_kernel( kernel, "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
+        pybind::def_functor( _kernel, "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
+        pybind::def_functor_kernel( _kernel, "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
 
-        pybind::def_functor_kernel( kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
+        pybind::def_functor_kernel( _kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
 
-        pybind::def_functor( kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
+        pybind::def_functor( _kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 
-        pybind::def_functor( kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
+        pybind::def_functor( _kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
 
-        pybind::def_functor( kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );
-        pybind::def_functor( kernel, "removeTextAlias", helperScriptMethod, &HelperScriptMethod::s_removeTextAlias );
-        pybind::def_functor( kernel, "hasTextAlias", helperScriptMethod, &HelperScriptMethod::s_hasTextAlias );
-        pybind::def_functor( kernel, "getTextAlias", helperScriptMethod, &HelperScriptMethod::s_getTextAlias );
+        pybind::def_functor( _kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );
+        pybind::def_functor( _kernel, "removeTextAlias", helperScriptMethod, &HelperScriptMethod::s_removeTextAlias );
+        pybind::def_functor( _kernel, "hasTextAlias", helperScriptMethod, &HelperScriptMethod::s_hasTextAlias );
+        pybind::def_functor( _kernel, "getTextAlias", helperScriptMethod, &HelperScriptMethod::s_getTextAlias );
 
-        pybind::def_functor_args( kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
-        pybind::def_functor( kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
+        pybind::def_functor_args( _kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
+        pybind::def_functor( _kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
 
-        pybind::def_functor( kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
+        pybind::def_functor( _kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
 
-        pybind::def_functor_kernel_args( kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
-        pybind::def_functor( kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );
+        pybind::def_functor_kernel_args( _kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
+        pybind::def_functor( _kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );
 
-        pybind::def_functor( kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );
+        pybind::def_functor( _kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );
 
         m_implement = helperScriptMethod;
 

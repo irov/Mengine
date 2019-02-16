@@ -74,6 +74,7 @@ namespace Mengine
 
     public:
         void onCreate();
+        void onDestroy();
 
     protected:
         bool _activate() override;

@@ -57,6 +57,11 @@ namespace Mengine
             }break;
         };
 
+        MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
+
+        m_memory = memory;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -126,27 +131,27 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pVB, Lock, (_offset * m_vertexSize, _count * m_vertexSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "%d offset %d invalid lock"
+            LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
                 , _count
                 , _offset
+                , _doc
             );
 
             return nullptr;
         }
 
-        MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-			->createMemoryProxy( _doc );
+        m_memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
 
-        memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
-
-        return memory;
+        return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::unlock()
     {
+        m_memory->setBuffer( nullptr, 0, __FILE__, __LINE__ );
+
         IF_DXCALL( m_pVB, Unlock, () )
         {
-            LOGGER_ERROR( "DX9RenderIndexBuffer::unlock invalid"
+            LOGGER_ERROR( "invalid"
             );
 
             return false;

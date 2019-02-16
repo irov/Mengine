@@ -48,9 +48,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type )
+    ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const Char * _doc )
     {
-        LOGGER_INFO( "ConverterService::createConverter %s"
+        LOGGER_INFO( "create converter '%s'"
             , _type.c_str()
         );
 
@@ -58,7 +58,7 @@ namespace Mengine
 
         if( it_find == m_mapConverterSystem.end() )
         {
-            LOGGER_INFO( "ConverterService::createConverter not found converter %s"
+            LOGGER_INFO( "not found converter '%s'"
                 , _type.c_str()
             );
 
@@ -69,18 +69,18 @@ namespace Mengine
 
         if( factory == nullptr )
         {
-            LOGGER_INFO( "ConverterService::createConverter invalid factory %s is nullptr"
+            LOGGER_INFO( "invalid factory %s is nullptr"
                 , _type.c_str()
             );
 
             return nullptr;
         }
 
-        ConverterInterfacePtr converter = factory->createConverter();
+		ConverterInterfacePtr converter = factory->createConverter( _doc );
 
         if( converter == nullptr )
         {
-            LOGGER_INFO( "ConverterService::createConverter invalid create converter %s"
+            LOGGER_INFO( "invalid create converter '%s'"
                 , _type.c_str()
             );
 
@@ -89,7 +89,7 @@ namespace Mengine
 
         if( converter->initialize() == false )
         {
-            LOGGER_INFO( "ConverterService::createConverter invalid initialize converter %s"
+            LOGGER_INFO( "invalid initialize converter '%s'"
                 , _type.c_str()
             );
 
@@ -99,9 +99,9 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out )
+    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out, const Char * _doc )
     {
-        ConverterInterfacePtr converter = this->createConverter( _converter );
+        ConverterInterfacePtr converter = this->createConverter( _converter, _doc );
 
         if( converter == nullptr )
         {
@@ -158,7 +158,7 @@ namespace Mengine
         if( options.fileGroup->existFile( options.outputFileName ) == true )
         {
             InputStreamInterfacePtr oldFile = FILE_SERVICE()
-                ->openInputFile( options.fileGroup, options.inputFileName, false );
+				->openInputFile( options.fileGroup, options.inputFileName, false, _doc );
 
             if( oldFile == nullptr )
             {
@@ -177,7 +177,7 @@ namespace Mengine
             oldFile = nullptr;
 
             InputStreamInterfacePtr newFile = FILE_SERVICE()
-                ->openInputFile( options.fileGroup, options.outputFileName, false );
+				->openInputFile( options.fileGroup, options.outputFileName, false, _doc );
 
             if( newFile == nullptr )
             {

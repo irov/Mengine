@@ -4,9 +4,11 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "DocumentTraceback.h"
 #include "PythonEntityBehavior.h"
 #include "EntityPrototypeGenerator.h"
 
@@ -16,6 +18,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "pybind/pybind.hpp"
 
@@ -41,7 +44,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
         {
-            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject();
+            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
 
             generator->setGenerator( _generator );
 
@@ -72,14 +75,17 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        const pybind::object & s_createEntity( const ConstString & _prototype )
+        const pybind::object & s_createEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
         {
+			Char pytraceback[4096];
+			_kernel->get_traceback( pytraceback, 4096 );
+
             EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, pytraceback );
 
             if( entity == nullptr )
             {
-                LOGGER_ERROR( "Error: can't create Entity '%s'"
+                LOGGER_ERROR( "can't create entity '%s'"
                     , _prototype.c_str()
                 );
 
@@ -126,14 +132,15 @@ namespace Mengine
     public:
         void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
         {
-            (void)_kernel;
             (void)_scope;
-            (void)_obj;
             (void)_args;
             (void)_kwds;
 
+			Char pytraceback[4096];
+			_kernel->get_traceback( pytraceback, 4096 );
+
             EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), pytraceback );
 
             entity->setEmbed( _kernel, _obj );
 
@@ -168,14 +175,15 @@ namespace Mengine
     public:
         void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
         {
-            (void)_kernel;
             (void)_scope;
-            (void)_obj;
             (void)_args;
             (void)_kwds;
 
+			Char pytraceback[4096];
+			_kernel->get_traceback( pytraceback, 4096 );
+
             ArrowPtr arrow = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), pytraceback );
 
             arrow->setEmbed( _kernel, _obj );
 
@@ -210,14 +218,15 @@ namespace Mengine
     public:
         void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
         {
-            (void)_kernel;
             (void)_scope;
-            (void)_obj;
             (void)_args;
             (void)_kwds;
 
+			Char pytraceback[4096];
+			_kernel->get_traceback( pytraceback, 4096 );
+
             ScenePtr scene = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), pytraceback );
 
             scene->setEmbed( _kernel, _obj );
 
@@ -291,7 +300,7 @@ namespace Mengine
         pybind::def_functor( kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
         pybind::def_functor( kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
         pybind::def_functor( kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
-        pybind::def_functor( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
+        pybind::def_functor_kernel( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 
         m_implement = entityScriptMethod;

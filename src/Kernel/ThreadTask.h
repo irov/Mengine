@@ -35,6 +35,7 @@ namespace Mengine
         bool run() override;
         bool cancel() override;
         bool update() override;
+		void finally() override;
 
     protected:
         virtual void _onPreparation();
@@ -43,6 +44,7 @@ namespace Mengine
     protected:
         virtual bool _onRun();
         virtual void _onCancel();
+		virtual void _onFinally();
         virtual void _onUpdate();
 
     protected:

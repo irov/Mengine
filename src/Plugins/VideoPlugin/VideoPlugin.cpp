@@ -95,7 +95,6 @@ namespace Mengine
             .def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
             .def( "getWidth", &SurfaceVideo::getWidth )
             .def( "getHeight", &SurfaceVideo::getHeight )
-            .def( "getDuration", &SurfaceVideo::getDuration )
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
             ;
 

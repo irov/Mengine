@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#include "Interface/Interface.h"
+#include "Interface/ServiceProviderInterface.h"
 #include "Interface/PluginInterface.h"
-
-#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -13,7 +12,7 @@ namespace Mengine
     typedef void * (*TDynamicLibraryFunction)(void *);
     //////////////////////////////////////////////////////////////////////////
     class DynamicLibraryInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool load() = 0;

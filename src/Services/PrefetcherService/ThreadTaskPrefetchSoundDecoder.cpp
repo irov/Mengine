@@ -7,6 +7,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -41,7 +42,7 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false );
+        m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_stream == nullptr )
         {
@@ -53,11 +54,11 @@ namespace Mengine
         }
 
         m_soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec );
+			->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_soundDecoder == nullptr )
         {
-            LOGGER_ERROR( "ThreadTaskPrefetchSoundDecoder::_onRun: invalide create codec %s"
+            LOGGER_ERROR( "invalide create codec '%s'"
                 , m_soundCodec.c_str()
             );
 
@@ -82,7 +83,7 @@ namespace Mengine
         size_t stream_size = m_stream->size();
 
         MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
-            ->createMemoryInput();
+            ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
         if( memoryInput == nullptr )
         {

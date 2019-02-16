@@ -17,6 +17,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/MatrixProxy.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
@@ -61,18 +62,15 @@
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
 
-//#include "Light2D.h"
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
 #include "Kernel/RenderCameraProjection.h"
-//#include "RigidBody3D.h"
-//#include "CapsuleController.h"
-//#include "Skeleton.h"
 
 #include "ScriptHolder.h"
+#include "DocumentTraceback.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
@@ -83,7 +81,6 @@
 #include "Engine/SurfaceTrackMatte.h"
 #include "Engine/SurfaceSolidColor.h"
 
-
 #include "Kernel/Interender.h"
 #include "Kernel/Isometric.h"
 #include "Kernel/Parallax.h"
@@ -92,19 +89,14 @@
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
-
 #include "Kernel/ResourceImage.h"
 
 #include "Engine/Layer2D.h"
-
 #include "Engine/Meshget.h"
-
 #include "Engine/Window.h"
-
 
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
-
 #include "Kernel/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"
@@ -443,7 +435,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ScriptableAffectorCallbackPtr createNodeAffectorCallback( const ScriptablePtr & _scriptable, const pybind::object & _cb, const pybind::args & _args )
         {
-            ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject();
+            ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
 
             callback->initialize( _scriptable, _cb, _args );
 
@@ -491,7 +483,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
         {
-            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
+            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
 
             sl->initialize( _script, _args );
 
@@ -505,15 +497,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
-            DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject();
+            DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
 
             pipe->initialize( _delay );
 
-            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject();
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_timing->initialize( _timing, _args );
 
-            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject();
+            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_event->initialize( _event, _args );
 
@@ -526,15 +518,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
-            PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject();
+            PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_pipe->initialize( _pipe, _args );
 
-            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject();
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_timing->initialize( _timing, _args );
 
-            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject();
+            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_event->initialize( _event, _args );
 
@@ -901,21 +893,21 @@ namespace Mengine
             return std::string( debugId );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
+        NodePtr s_Node_createChildren( pybind::kernel_interface * _kernel, Node * _node, const ConstString & _type )
         {
-            NodePtr newNode = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
-            if( newNode == nullptr )
-            {
-                return nullptr;
-            }
+            NodePtr node = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, pytraceback );
 
-            newNode->disable();
+            MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
 
-            _node->addChild( newNode );
+            node->disable();
 
-            return newNode;
+            _node->addChild( node );
+
+            return node;
         }
         //////////////////////////////////////////////////////////////////////////
         pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
@@ -1052,9 +1044,9 @@ namespace Mengine
 
         public:
             AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const mt::vec3f & _velocity, float _time )
+                , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const Char * _doc )
             {
-                AffectorVelocity2Ptr affector = m_factory->createObject();
+                AffectorVelocity2Ptr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
 
@@ -1088,7 +1080,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_factoryAffectorVelocity2.create( ETA_POSITION
-                , callback, _node, _velocity, _time
+                , callback, _node, _velocity, _time, MENGINE_DOCUMENT_PYBIND
             );
 
             if( affector == nullptr )
@@ -1526,9 +1518,9 @@ namespace Mengine
 
         public:
             AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
+                , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const Char * _doc )
             {
-                AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject();
+				AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
 
@@ -1568,7 +1560,7 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateParabolic.create( ETA_POSITION
-                    , callback, _node, _end, _v0, _time
+                    , callback, _node, _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
                 );
 
             if( affector == nullptr )
@@ -1756,9 +1748,9 @@ namespace Mengine
             AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
                 , bool _rotate
-                , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+                , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const Char * _doc )
             {
-                AffectorCreatorFollowToPtr affector = m_factory->createObject();
+                AffectorCreatorFollowToPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
 
@@ -1810,12 +1802,10 @@ namespace Mengine
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , _rotate
                     , _rotationSpeed, _rotationAcceleration, _rotationLimit
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
 
             s_Node_moveStop( _node );
 
@@ -1944,9 +1934,10 @@ namespace Mengine
 
         public:
             AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+                , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
+                , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const Char * _doc )
             {
-                AffectorCreatorFollowToWPtr affector = m_factory->createObject();
+                AffectorCreatorFollowToWPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
 
@@ -1992,12 +1983,10 @@ namespace Mengine
                 m_nodeAffectorCreatorFollowToW.create( ETA_POSITION
                     , callback, _node, _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0 );
 
             s_Node_moveStop( _node );
 
@@ -2672,6 +2661,7 @@ namespace Mengine
             .def( "setLastFrame", &AnimationInterface::setLastFrame )
             .def( "setTime", &AnimationInterface::setTime )
             .def( "getTime", &AnimationInterface::getTime )
+            .def( "getDuration", &AnimationInterface::getDuration )
             .def( "setPlayCount", &AnimationInterface::setPlayCount )
             .def( "getPlayCount", &AnimationInterface::getPlayCount )
             .def( "getPlayIterator", &AnimationInterface::getPlayIterator )
@@ -2754,7 +2744,7 @@ namespace Mengine
 
             .def_proxy_static( "getDebugId", nodeScriptMethod, &NodeScriptMethod::s_Node_getDebugId )
 
-            .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
+            .def_proxy_static_kernel( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
             .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_getAllChildren )
 
             .def_proxy_static_args( "colorTo", nodeScriptMethod, &NodeScriptMethod::s_Node_colorTo )
@@ -2805,7 +2795,6 @@ namespace Mengine
         pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )
             .def( "setResourceSound", &SurfaceSound::setResourceSound )
             .def( "getResourceSound", &SurfaceSound::getResourceSound )
-            .def( "getDuration", &SurfaceSound::getDuration )
             .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
             ;
 

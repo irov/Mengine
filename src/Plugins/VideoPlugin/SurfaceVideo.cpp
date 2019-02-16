@@ -6,6 +6,7 @@
 #include "Kernel/RenderUtils.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <math.h>
 
@@ -55,15 +56,6 @@ namespace Mengine
         float height = (float)dataInfo->frameHeight;
 
         return height;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float SurfaceVideo::getDuration() const
-    {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float duration = (float)dataInfo->duration;
-
-        return duration;
     }
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::updateSize_()
@@ -130,7 +122,7 @@ namespace Mengine
     {
         if( m_resourceVideo == nullptr )
         {
-            LOGGER_ERROR( "Video::_compile '%s' resource is null"
+            LOGGER_ERROR( "'%s' resource is null"
                 , this->getName().c_str()
             );
 
@@ -139,7 +131,7 @@ namespace Mengine
 
         if( m_resourceVideo.compile() == false )
         {
-            LOGGER_ERROR( "Video::_compile '%s' resource '%s' is not compile"
+            LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
             );
@@ -149,7 +141,7 @@ namespace Mengine
 
         if( this->createDecoder_() == false )
         {
-            LOGGER_ERROR( "Video::_compile %s can`t create video decoder '%s'"
+            LOGGER_ERROR( "%s can`t create video decoder '%s'"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
             );
@@ -175,7 +167,7 @@ namespace Mengine
 
         if( dynamicTexture == nullptr )
         {
-            LOGGER_ERROR( "Video::_compile '%s' resource '%s' can`t create dynamic texture"
+            LOGGER_ERROR( "'%s' resource '%s' can`t create dynamic texture"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
             );
@@ -198,11 +190,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::createDecoder_()
     {
-        m_videoDecoder = m_resourceVideo->createVideoDecoder();
+        m_videoDecoder = m_resourceVideo->createVideoDecoder( MENGINE_DOCUMENT_FUNCTION );
 
         if( m_videoDecoder == nullptr )
         {
-            LOGGER_ERROR( "Video::_compileDecoder '%s' can't create video decoder"
+            LOGGER_ERROR( "'%s' can't create video decoder"
                 , this->getName().c_str()
             );
 
@@ -515,6 +507,16 @@ namespace Mengine
 
         return timing;
     }
+    //////////////////////////////////////////////////////////////////////////
+    float SurfaceVideo::_getDuration() const
+    {
+        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+
+        float duration = (float)dataInfo->duration;
+
+        return duration;
+    }
+
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_setFirstFrame()
     {

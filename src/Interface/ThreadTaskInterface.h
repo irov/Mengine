@@ -2,6 +2,8 @@
 
 #include "Kernel/Mixin.h"
 
+#include "Config/Config.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -17,6 +19,7 @@ namespace Mengine
     public:
         virtual void preparation() = 0;
         virtual void main() = 0;
+		virtual void finally() = 0;
 
     public:
         virtual bool run() = 0;

@@ -7,6 +7,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 #include <stdio.h>
@@ -61,26 +62,22 @@ namespace Mengine
         {
             LOGGER_ERROR( "Failed to create context" );
 
-            alcCloseDevice( m_device );
-
+            OPENAL_CALL( alcCloseDevice, (m_device) );
             m_device = nullptr;
 
             return false;
         }
 
-        ALCboolean currentResult = alcMakeContextCurrent( m_context );
-        OPENAL_CHECK_ERROR();
+        RET_OPENAL_CALL( ALCboolean, currentResult, alcMakeContextCurrent, (m_context) );
 
         if( currentResult == ALC_FALSE )
         {
             LOGGER_ERROR( "Failed to make context current" );
 
-            alcDestroyContext( m_context );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alcDestroyContext, (m_context) );
             m_context = nullptr;
 
-            alcCloseDevice( m_device );
-            OPENAL_CHECK_ERROR();
+            OPENAL_CALL( alcCloseDevice, (m_device) );
             m_device = nullptr;
 
             return false;
@@ -88,23 +85,23 @@ namespace Mengine
 
 
         ALCint majorVersion;
-        alcGetIntegerv( m_device, ALC_MAJOR_VERSION, 1, &majorVersion );
+        OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MAJOR_VERSION, 1, &majorVersion) );
 
         ALCint minorVersion;
-        alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
+        OPENAL_CALL( alcGetIntegerv, (m_device, ALC_MINOR_VERSION, 1, &minorVersion) );
 
         LOGGER_WARNING( "OpenAL version %u.%u"
             , majorVersion
             , minorVersion
         );
 
-        const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
+        RET_OPENAL_CALL( const ALCchar*, defaultDeviceSprcifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
 
         LOGGER_WARNING( "OpenAL default device specifier [%s]"
             , defaultDeviceSprcifier
         );
 
-        const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
+        RET_OPENAL_CALL( const ALCchar*, captureDeviceSpecifier, alcGetString, (m_device, ALC_CAPTURE_DEVICE_SPECIFIER) );
 
         LOGGER_WARNING( "OpenAL capture device specifier [%s]"
             , captureDeviceSpecifier
@@ -125,16 +122,13 @@ namespace Mengine
         );
 
         float lposition[] = { 0.f, 0.f, 0.f };
-        alListenerfv( AL_POSITION, lposition );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alListenerfv, (AL_POSITION, lposition) );
 
         float lvelocity[] = { 0.f, 0.f, 0.f };
-        alListenerfv( AL_VELOCITY, lvelocity );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alListenerfv, (AL_VELOCITY, lvelocity) );
 
         float lorient[] = { 0.f, 0.f, 1.f, 0.f, 1.f, 0.f };
-        alListenerfv( AL_ORIENTATION, lorient );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alListenerfv, (AL_ORIENTATION, lorient) );
 
         m_factoryOpenALSoundBuffer = new FactoryPool<OpenALSoundBufferMemory, 32>();
         m_factoryOpenALSoundBufferStream = new FactoryPool<OpenALSoundBufferStream, 32>();
@@ -201,7 +195,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
     {
-        OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject();
+        OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         soundSource->initialize( this );
 
@@ -217,7 +211,7 @@ namespace Mengine
 
         if( _isStream == false || SERVICE_AVAILABLE( ThreadServiceInterface ) == false )
         {
-            OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject();
+			OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer->initialize( this ) == false )
             {
@@ -228,7 +222,7 @@ namespace Mengine
         }
         else
         {
-            OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject();
+			OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer->initialize( this ) == false )
             {
@@ -252,30 +246,26 @@ namespace Mengine
     ALuint OpenALSoundSystem::genSourceId()
     {
         ALuint sourceId = 0;
-        alGenSources( 1, &sourceId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alGenSources, (1, &sourceId) );
 
         return sourceId;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::releaseSourceId( ALuint _sourceId )
     {
-        alDeleteSources( 1, &_sourceId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alDeleteSources, (1, &_sourceId) );
     }
     //////////////////////////////////////////////////////////////////////////
     ALuint OpenALSoundSystem::genBufferId()
     {
         ALuint bufferId = 0;
-        alGenBuffers( 1, &bufferId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alGenBuffers, (1, &bufferId) );
 
         return bufferId;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::releaseBufferId( ALuint _bufferId )
     {
-        alDeleteBuffers( 1, &_bufferId );
-        OPENAL_CHECK_ERROR();
+        OPENAL_CALL( alDeleteBuffers, (1, &_bufferId) );
     }
 }

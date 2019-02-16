@@ -5,6 +5,7 @@
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -27,7 +28,7 @@ namespace Mengine
 
             if( decoder == nullptr )
             {
-                LOGGER_ERROR( "DecoderRenderImageProviderInterface::getImageMemory invalid create decoder '%s':'%s' codec '%s'"
+                LOGGER_ERROR( "invalid create decoder '%s':'%s' codec '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , _codecName.c_str()
@@ -40,7 +41,7 @@ namespace Mengine
         {
             if( decoder->rewind() == false )
             {
-                LOGGER_ERROR( "DecoderRenderImageProviderInterface::loadTexture invalid rewind decoder '%s':'%s' codec '%s'"
+                LOGGER_ERROR( "invalid rewind decoder '%s':'%s' codec '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , _codecName.c_str()
@@ -100,7 +101,7 @@ namespace Mengine
 
         if( textureBuffer == nullptr )
         {
-            LOGGER_ERROR( "DecoderRenderImageLoader::load Invalid lock mipmap %d rect %d:%d-%d:%d"
+            LOGGER_ERROR( "Invalid lock mipmap %d rect %d:%d-%d:%d"
                 , 0
                 , rect.left
                 , rect.top
@@ -120,7 +121,7 @@ namespace Mengine
 
         if( m_decoder->decode( textureBuffer, mipmap_size ) == 0 )
         {
-            LOGGER_ERROR( "DecoderRenderImageProviderInterface::getImageMemory invalid decode for"
+            LOGGER_ERROR( "invalid decode for"
             );
 
             _image->unlock( 0, false );
@@ -160,11 +161,11 @@ namespace Mengine
     ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName ) const
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _fileName, false );
+            ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "DecoderRenderImageProviderInterface::createImageDecoder_ invalid open stream '%s:%s' codec '%s'"
+            LOGGER_ERROR( "invalid open stream '%s:%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
@@ -174,11 +175,11 @@ namespace Mengine
         }
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codecName );
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codecName, MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "DecoderRenderImageProviderInterface::createImageDecoder_ invalid create decoder '%s:%s' codec '%s'"
+            LOGGER_ERROR( "invalid create decoder '%s:%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
@@ -189,7 +190,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "DecoderRenderImageProviderInterface::createImageDecoder_ invalid prepare data '%s:%s' codec '%s'"
+            LOGGER_ERROR( "invalid prepare data '%s:%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()

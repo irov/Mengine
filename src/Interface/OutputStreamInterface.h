@@ -2,12 +2,12 @@
 
 #include "Config/Typedef.h"
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
     class OutputStreamInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual size_t write( const void * _data, size_t _size ) = 0;

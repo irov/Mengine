@@ -7,6 +7,7 @@
 #include "ResourceOzzAnimation.h"
 
 #include "Kernel/RenderUtils.h"
+#include "Kernel/Document.h"
 
 #include "ozz/base/maths/soa_transform.h"
 #include "ozz/base/containers/vector.h"
@@ -227,15 +228,15 @@ namespace Mengine
         }
 
         m_vertexMemory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
-            ->createVertexBuffer( 1, BT_STREAM );
+            ->createVertexBuffer( 1, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
 
         m_vertexBuffer = vertexBuffer;
 
         RenderIndexBufferInterfacePtr indexStream = RENDER_SYSTEM()
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
 
         m_indexBuffer = indexStream;
 
@@ -363,25 +364,25 @@ namespace Mengine
         }
 
         // Renders skin.
-        const int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
         // Positions and normals are interleaved to improve caching while executing
         // skinning job.
 
-        const uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
+        uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
 
         // Reallocate vertex buffer.
         const uint32_t vbo_size = skinned_data_size;
-        void* vbo_map = m_vertexMemory->newBuffer( vbo_size, "NodeOzzAnimation", __FILE__, __LINE__ );
+        void * vbo_map = m_vertexMemory->newBuffer( vbo_size, "NodeOzzAnimation", __FILE__, __LINE__ );
 
         // Iterate mesh parts and fills vbo.
         // Runs a skinning job per mesh part. Triangle indices are shared
         // across parts.
         size_t processed_vertex_count = 0;
-        for( const Detail::Part& part : ozz_mesh.parts )
+        for( const Detail::Part & part : ozz_mesh.parts )
         {
             // Skip this iteration if no vertex.
-            const size_t part_vertex_count = Detail::getPartVertexCount( part );
+            size_t part_vertex_count = Detail::getPartVertexCount( part );
 
             if( part_vertex_count == 0 )
             {
@@ -391,7 +392,7 @@ namespace Mengine
             // Fills the job.
             ozz::geometry::SkinningJob skinning_job;
             skinning_job.vertex_count = static_cast<int32_t>(part_vertex_count);
-            const int32_t part_influences_count = getPartInfluencesCount( part );
+            int32_t part_influences_count = getPartInfluencesCount( part );
 
             // Clamps joints influence count according to the option.
             skinning_job.influences_count = part_influences_count;
@@ -402,21 +403,18 @@ namespace Mengine
 
             // Setup joint's indices.
             skinning_job.joint_indices = ozz::make_range( part.joint_indices );
-            skinning_job.joint_indices_stride =
-                sizeof( uint16_t ) * part_influences_count;
+            skinning_job.joint_indices_stride = sizeof( uint16_t ) * part_influences_count;
 
             // Setup joint's weights.
             if( part_influences_count > 1 )
             {
                 skinning_job.joint_weights = ozz::make_range( part.joint_weights );
-                skinning_job.joint_weights_stride =
-                    sizeof( float ) * (part_influences_count - 1);
+                skinning_job.joint_weights_stride = sizeof( float ) * (part_influences_count - 1);
             }
 
             // Setup input positions, coming from the loaded mesh.
             skinning_job.in_positions = ozz::make_range( part.positions );
-            skinning_job.in_positions_stride =
-                sizeof( float ) * Detail::Part::kPositionsCpnts;
+            skinning_job.in_positions_stride = sizeof( float ) * Detail::Part::kPositionsCpnts;
 
             // Setup output positions, coming from the rendering output mesh buffers.
             // We need to offset the buffer every loop.
@@ -529,17 +527,17 @@ namespace Mengine
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
         // Renders skin.
-        const int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-        const uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
+        uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
 
         // Reallocate vertex buffer.
-        const uint32_t vbo_size = skinned_data_size;
+        uint32_t vbo_size = skinned_data_size;
         void * vbo_buffer = m_vertexMemory->getBuffer();
 
         m_vertexBuffer->draw( vbo_buffer, vbo_size );
 
-        const Detail::Mesh::VectorTriangleIndices& triangle_indices = ozz_mesh.triangle_indices;
+        const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
         const void * triangle_indices_buffer_data = &triangle_indices.front();
         size_t triangle_indices_buffer_size = triangle_indices.size() * sizeof( Detail::Mesh::VectorTriangleIndices::value_type );

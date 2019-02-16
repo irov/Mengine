@@ -57,4 +57,12 @@ namespace Mengine
         EM_COLOR_SCREEN,
         EM_MATERIAL_COUNT
     };
+    //////////////////////////////////////////////////////////////////////////
+    enum EMaterialBlendMode
+    {
+        EMB_NORMAL,
+        EMB_ADD,
+        EMB_SCREEN,
+        EMB_MULTIPLY
+    };
 }

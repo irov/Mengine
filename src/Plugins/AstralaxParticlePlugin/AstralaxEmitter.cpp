@@ -8,6 +8,7 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/UnknownResourceImageDataInterface.h"
 #include "Kernel/PolygonHelper.h"
@@ -83,7 +84,7 @@ namespace Mengine
             return false;
         }
 
-        AstralaxEmitterInterfacePtr emitter = m_resourceParticle->createEmitter();
+        AstralaxEmitterInterfacePtr emitter = m_resourceParticle->createEmitter( MENGINE_DOCUMENT_FUNCTION );
 
         if( emitter == nullptr )
         {
@@ -629,7 +630,7 @@ namespace Mengine
             return false;
         }
 
-        UnknownResourceImageDataInterfacePtr unknownImageData = resourceHIT->getUnknown();
+        UnknownResourceImageDataInterface * unknownImageData = resourceHIT->getUnknown();
 
         if( unknownImageData == nullptr )
         {
@@ -744,7 +745,7 @@ namespace Mengine
         *_boundingBoxCurrent = &_boundingBox;
     }
     /////////////////////////////////////////////////////////////////////////
-    float AstralaxEmitter::getDuration() const
+    float AstralaxEmitter::_getDuration() const
     {
         if( this->isCompile() == false )
         {

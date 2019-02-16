@@ -4,6 +4,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -35,7 +36,7 @@ namespace Mengine
         }
 
         m_stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, m_filePath );
+            ->openOutputFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_stream == nullptr )
         {

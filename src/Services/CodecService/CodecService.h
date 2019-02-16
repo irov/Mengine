@@ -23,13 +23,13 @@ namespace Mengine
 
     public:
         bool registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory ) override;
-        EncoderFactoryInterfacePtr unregisterEncoder( const ConstString& _type ) override;
+        EncoderFactoryInterfacePtr unregisterEncoder( const ConstString & _type ) override;
 
     public:
-        DecoderInterfacePtr createDecoder( const ConstString& _type ) override;
+        DecoderInterfacePtr createDecoder( const ConstString & _type, const Char * _doc ) override;
 
     public:
-        EncoderInterfacePtr createEncoder( const ConstString& _type ) override;
+        EncoderInterfacePtr createEncoder( const ConstString & _type, const Char * _doc ) override;
 
     public:
         bool registerCodecExt( const String & _ext, const ConstString & _codecType ) override;

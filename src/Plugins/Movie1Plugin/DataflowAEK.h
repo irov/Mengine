@@ -26,7 +26,7 @@ namespace Mengine
         void finalize() override;
 
     public:
-        DataInterfacePtr create() override;
+        DataInterfacePtr create( const Char * _doc ) override;
         bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
 
     protected:

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/Interface.h"
+
 #include "Interface/ServiceInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/AccountProviderInterface.h"
@@ -10,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AccountVisitorInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onAccount( const AccountInterfacePtr & _account ) = 0;

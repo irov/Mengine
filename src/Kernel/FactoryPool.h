@@ -2,8 +2,7 @@
 
 #include "Kernel/Factory.h"
 #include "Kernel/Typename.h"
-
-#include "stdex/template_pool.h"
+#include "Kernel/Pool.h"
 
 namespace Mengine
 {
@@ -37,8 +36,8 @@ namespace Mengine
         }
 
     protected:
-        typedef stdex::template_pool<Type, Count> TTemplatePool;
-        TTemplatePool m_pool;
+        typedef Pool<Type, Count> PoolType;
+        PoolType m_pool;
     };
     //////////////////////////////////////////////////////////////////////////
 }

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
     class ScriptEmbeddingInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool embedding() = 0;

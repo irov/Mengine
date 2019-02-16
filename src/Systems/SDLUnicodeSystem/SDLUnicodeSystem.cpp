@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
-        size_t unicodeSize = (_unicodeSize == ~0U) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;
+        size_t unicodeSize = (_unicodeSize == MENGINE_UNICODE_UNKNOWN_SIZE) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;
 
         char * sdl_utf8 = SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t
             , (const char*)_unicode
@@ -66,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLUnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
     {
-        size_t utf8Size = (_utf8Size == ~0U) ? strlen( _utf8 ) + 1 : _utf8Size + 1;
+        size_t utf8Size = (_utf8Size == MENGINE_UNICODE_UNKNOWN_SIZE) ? strlen( _utf8 ) + 1 : _utf8Size + 1;
 
         wchar_t * sdl_unicode = (wchar_t*)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8"
             , _utf8

@@ -116,10 +116,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileMappedStream::createFileStream()
+    InputStreamInterfacePtr Win32FileMappedStream::createFileStream( const Char * _doc )
     {
         MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryProxyInput();
+            ->createMemoryProxyInput( _doc );
 
         return memory;
     }

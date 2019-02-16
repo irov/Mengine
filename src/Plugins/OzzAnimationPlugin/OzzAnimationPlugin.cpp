@@ -1,6 +1,7 @@
 #include "OzzAnimationPlugin.h"
 
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"

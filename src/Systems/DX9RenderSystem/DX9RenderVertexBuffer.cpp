@@ -6,6 +6,7 @@
 #include "DX9ErrorHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -96,11 +97,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
+    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, const Char * _doc )
     {
         if( _offset + _count > m_vertexCount )
         {
-            LOGGER_ERROR( "DX9RenderVertexBuffer::lock %d offset %d more max size %d"
+            LOGGER_ERROR( "%d offset %d more max size %d"
                 , _count
                 , _offset
                 , m_vertexCount
@@ -125,7 +126,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pVB, Lock, (_offset * m_vertexSize, _count * m_vertexSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "DX9RenderVertexBuffer::lock %d offset %d invalid lock"
+            LOGGER_ERROR( "%d offset %d invalid lock"
                 , _count
                 , _offset
             );
@@ -134,7 +135,7 @@ namespace Mengine
         }
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryProxy();
+			->createMemoryProxy( _doc );
 
         memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
 

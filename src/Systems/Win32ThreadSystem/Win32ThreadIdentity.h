@@ -6,6 +6,7 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/String.h"
 #include "Config/Char.h"
 #include "Config/Atomic.h"
 
@@ -20,7 +21,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line );
+        bool initialize( int32_t _priority, const Char * _doc );
 
     public:
         void main();
@@ -44,8 +45,7 @@ namespace Mengine
         AtomicBool m_exit;
 
 #ifndef NDEBUG
-        const Char * m_file;
-        uint32_t m_line;
+        String m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

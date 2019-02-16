@@ -8,6 +8,7 @@
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
@@ -40,11 +41,11 @@ namespace Mengine
         FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, full_input, false );
+            ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream_intput == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid open input file"
+            LOGGER_ERROR( "invalid open input file '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -52,11 +53,11 @@ namespace Mengine
         }
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+			->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid create decoder"
+            LOGGER_ERROR( "invalid create decoder '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -65,7 +66,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream_intput ) == false )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid prepare decoder"
+            LOGGER_ERROR( "invalid prepare decoder '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -80,7 +81,7 @@ namespace Mengine
 
         if( decoder->setOptions( &decoder_options ) == false )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid optionize decoder"
+            LOGGER_ERROR( "invalid optionize decoder '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -100,7 +101,7 @@ namespace Mengine
 
         if( decoder->decode( data_memory, data_size ) == 0 )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid decode"
+            LOGGER_ERROR( "invalid decode '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -108,11 +109,11 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr stream_output = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, full_output );
+            ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream_output == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid open output %s"
+            LOGGER_ERROR( "%s invalid open output '%s'"
                 , m_options.inputFileName.c_str()
                 , full_output.c_str()
             );
@@ -121,11 +122,11 @@ namespace Mengine
         }
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage" ) );
+            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( encoder == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid create encoder"
+            LOGGER_ERROR( "%s invalid create encoder"
                 , m_options.inputFileName.c_str()
             );
 
@@ -134,7 +135,7 @@ namespace Mengine
 
         if( encoder->initialize( stream_output ) == false )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid initialize encoder"
+            LOGGER_ERROR( "%s invalid initialize encoder"
                 , m_options.inputFileName.c_str()
             );
 
@@ -147,7 +148,7 @@ namespace Mengine
 
         if( encoder->setOptions( &encoder_options ) == false )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid optionize encoder"
+            LOGGER_ERROR( "%s invalid optionize encoder"
                 , m_options.inputFileName.c_str()
             );
 
@@ -166,7 +167,7 @@ namespace Mengine
 
         if( encode_byte == 0 )
         {
-            LOGGER_ERROR( "ImageConverterPNGToACF::convert: %s invalid encode"
+            LOGGER_ERROR( "%s invalid encode"
                 , m_options.inputFileName.c_str()
             );
 

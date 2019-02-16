@@ -6,6 +6,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 
@@ -32,11 +33,11 @@ namespace Mengine
         const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false );
+            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageData::_compile: Image file '%s:%s' was not found"
+            LOGGER_ERROR( "Image file '%s:%s' was not found"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -47,11 +48,11 @@ namespace Mengine
         const ConstString & codecType = this->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
+            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' was not found"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
@@ -62,7 +63,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
+            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' was not found"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
@@ -78,7 +79,7 @@ namespace Mengine
         uint32_t channels = dataInfo->channels;
         PixelFormat format = dataInfo->format;
 
-        size_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
+        uint32_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
 
         m_buffer = Helper::allocateArrayT<uint8_t>( memorySize );
 
@@ -88,7 +89,7 @@ namespace Mengine
 
         if( imageDecoder->setOptions( &options ) == false )
         {
-            LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid optionize"
+            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' invalid optionize"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
@@ -99,7 +100,7 @@ namespace Mengine
 
         if( imageDecoder->decode( m_buffer, memorySize ) == 0 )
         {
-            LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid decode"
+            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' invalid decode"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()

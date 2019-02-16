@@ -12,7 +12,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        const VectorTextChunks::size_type TextChunkNPos = (VectorTextChunks::size_type)(-1);
+        static const VectorTextChunks::size_type TextChunkNPos = ~0U;
         //////////////////////////////////////////////////////////////////////////
         static bool test2( VectorTextChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
         {

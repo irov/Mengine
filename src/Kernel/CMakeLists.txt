@@ -294,6 +294,8 @@ Core
     AssertionMainThreadGuard.h
     AssertionVocabulary.h
     AssertionVocabulary.cpp
+    
+    Pool.h
 
     CRC32.h
     CRC32.cpp
@@ -445,6 +447,9 @@ Core
     
     StringArguments.h
     StringArguments.cpp
+    
+    GlobalInputHandlerHelper.h
+    GlobalInputHandlerHelper.cpp
     
     KeyCode.h
     Document.h

@@ -1,9 +1,8 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/InputStreamInterface.h"
-
-#include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
 
@@ -17,18 +16,18 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SocketInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool connect( const SocketConnectInfo & _data ) = 0;
-        virtual bool bind( const SocketConnectInfo & _data, const bool _blocking = true ) = 0;
+        virtual bool bind( const SocketConnectInfo & _data, bool _blocking = true ) = 0;
         virtual void disconnect() = 0;
 
         virtual int32_t checkForClientConnection() = 0;
-        virtual bool waitForData( size_t _timeoutMs ) = 0;
+        virtual bool waitForData( uint32_t _timeoutMs ) = 0;
 
-        virtual int32_t send( const void* _data, size_t _numBytes ) = 0;
-        virtual int32_t receive( void* _data, size_t _maxBytes ) = 0;
+        virtual int32_t send( const void * _buffer, size_t _size ) = 0;
+        virtual int32_t receive( void * _buffer, size_t _size ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getSendStream() const = 0;

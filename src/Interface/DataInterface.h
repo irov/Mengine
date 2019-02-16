@@ -3,14 +3,14 @@
 #include "Config/Config.h"
 #include "Config/Typedef.h"
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 #include "Kernel/Pointer.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DataInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool acquire() = 0;

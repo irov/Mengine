@@ -95,15 +95,22 @@ namespace Mengine
     struct NodeAnimation
     {
         bool loop;
+        bool play;
+        bool pause;
+        float duration;
+        float time;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
-            SERIALIZE_PROP( loop );
+            SERIALIZE_PROP( loop );            
+            SERIALIZE_PROP( time );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
             DESERIALIZE_PROP( loop );
+            DESERIALIZE_PROP( duration );
+            DESERIALIZE_PROP( time );
         }
     };
 
@@ -193,6 +200,23 @@ namespace Mengine
         }
     };
 
+    struct NodeMovie2
+    {
+        String CompositionName;
+        String TextAliasEnvironment;        
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( TextAliasEnvironment );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( CompositionName );
+            DESERIALIZE_PROP( TextAliasEnvironment );
+        }
+    };
+
     struct CachedImage
     {
         String      name;
@@ -239,11 +263,27 @@ namespace Mengine
         bool                    isTypeTextField;
         NodeTextField           textField;
 
+        bool                    isTypeMovie2;
+        NodeMovie2           movie2;
+
         Vector<DebuggerNode*>   children;
         DebuggerNode*           parent;
 
         bool                    dirty;
         const NodeIcon*         icon;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( enable );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( uid );
+            DESERIALIZE_PROP( name );
+            DESERIALIZE_PROP( type );
+            DESERIALIZE_PROP( enable );
+        }
     };
 
     struct TabDescriptor

@@ -73,7 +73,7 @@ namespace Mengine
             return;
         }
 
-        if( _hash == (ConstString::hash_type)(-1) )
+        if( _hash == MENGINE_STRINGIZE_UNKNOWN_HASH )
         {
             _hash = Helper::makeHash( _str, _size );
         }
@@ -92,7 +92,7 @@ namespace Mengine
             return;
         }
 
-        if( _hash == (ConstString::hash_type)(-1) )
+        if( _hash == MENGINE_STRINGIZE_UNKNOWN_HASH )
         {
             _hash = Helper::makeHash( _str, _size );
         }
@@ -189,12 +189,12 @@ namespace Mengine
             return false;
         }
 
-        if( holder_size == (ConstStringHolder::size_type)(-1) )
+        if( holder_size == MENGINE_STRINGIZE_UNKNOWN_SIZE )
         {
             holder_size = (ConstStringHolder::size_type)strlen( holder_str );
         }
 
-        if( holder_hash == (ConstStringHolder::hash_type) (-1) )
+        if( holder_hash == MENGINE_STRINGIZE_UNKNOWN_HASH )
         {
             holder_hash = Helper::makeHash( holder_str, holder_size );
         }

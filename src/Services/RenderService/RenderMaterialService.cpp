@@ -11,6 +11,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Metacode/Metacode.h"
 
@@ -413,7 +414,7 @@ namespace Mengine
             }
 
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
-                ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount );
+                ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount, MENGINE_DOCUMENT_FUNCTION );
 
             if( program == nullptr )
             {
@@ -540,6 +541,11 @@ namespace Mengine
                 
             }
         }
+
+        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
 
         return true;
     }
@@ -847,7 +853,7 @@ namespace Mengine
 #ifndef NDEBUG
         if( _stage == nullptr )
         {
-            LOGGER_ERROR( "RenderMaterialService::getMaterial2 invalid get stage for material '%s'"
+            LOGGER_ERROR( "invalid get stage for material '%s'"
                 , _materialName.c_str()
             );
 
@@ -879,7 +885,7 @@ namespace Mengine
             return material;
         }
 
-        RenderMaterialPtr material = m_factoryMaterial->createObject();
+        RenderMaterialPtr material = m_factoryMaterial->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
@@ -899,7 +905,7 @@ namespace Mengine
 #ifndef NDEBUG
         if( stage == nullptr )
         {
-            LOGGER_ERROR( "RenderMaterialService::getMaterial3 invalid get stage for material '%s'"
+            LOGGER_ERROR( "invalid get stage for material '%s'"
                 , m_defaultStageNames[_materialId].c_str()
             );
 
@@ -932,12 +938,19 @@ namespace Mengine
             return material;
         }
 
-        RenderMaterialPtr material = m_factoryMaterial->createObject();
+        RenderMaterialPtr material = m_factoryMaterial->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
 
         materials.push_back( material.get() );
+
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialInterfacePtr & RenderMaterialService::getSolidMaterial( EMaterialBlendMode _blendMode ) const
+    {
+        const RenderMaterialInterfacePtr & material = m_solidRenderMaterial[_blendMode];
 
         return material;
     }
@@ -1040,7 +1053,7 @@ namespace Mengine
     RenderVertexAttributeInterfacePtr RenderMaterialService::createVertexAttribute_( const ConstString & _name, uint32_t _elementSize )
     {
         RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
-            ->createVertexAttribute( _name, _elementSize );
+            ->createVertexAttribute( _name, _elementSize, MENGINE_DOCUMENT_FUNCTION );
 
         return vertexAttribute;
     }
@@ -1055,7 +1068,7 @@ namespace Mengine
         }
 
         RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM()
-            ->createVertexShader( _name, memory, _compile );
+            ->createVertexShader( _name, memory, _compile, MENGINE_DOCUMENT_FUNCTION );
 
         return shader;
     }
@@ -1070,7 +1083,7 @@ namespace Mengine
         }
 
         RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM()
-            ->createFragmentShader( _name, memory, _compile );
+            ->createFragmentShader( _name, memory, _compile, MENGINE_DOCUMENT_FUNCTION );
 
         return shader;
     }

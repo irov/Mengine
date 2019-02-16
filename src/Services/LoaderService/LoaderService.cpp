@@ -15,6 +15,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #ifndef MENGINE_MASTER_RELEASE
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
@@ -128,7 +129,7 @@ namespace Mengine
             }
 
             file_bin = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false );
+                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             done = this->importBin_( file_bin, _metadata, nullptr );
         }
@@ -140,7 +141,7 @@ namespace Mengine
     bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Metabuf::Metadata * _metadata ) const
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false );
+            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -315,7 +316,7 @@ namespace Mengine
             }
 
             InputStreamInterfacePtr file_bin = FILE_SERVICE()
-                ->openInputFile( _pak, _path, false );
+                ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
             if( file_bin == nullptr )
             {
@@ -340,7 +341,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr file_bin = FILE_SERVICE()
-            ->openInputFile( _pak, _path, false );
+            ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( file_bin == nullptr )
         {
@@ -348,7 +349,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr file_xml = FILE_SERVICE()
-            ->openInputFile( _pak, c_cache_path_xml, false );
+            ->openInputFile( _pak, c_cache_path_xml, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( file_xml == nullptr )
         {
@@ -376,7 +377,7 @@ namespace Mengine
             }
 
             file_bin = FILE_SERVICE()
-                ->openInputFile( _pak, _path, false );
+                ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
         }
 
         _file = file_bin;
@@ -387,7 +388,7 @@ namespace Mengine
     bool LoaderService::makeBin_( const FileGroupInterfacePtr & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const
     {
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
+            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {
@@ -444,7 +445,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr file_bin = FILE_SERVICE()
-            ->openInputFile( _pak, _path, false );
+            ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( file_bin == nullptr )
         {

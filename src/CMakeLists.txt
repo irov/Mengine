@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-ADD_SUBDIRECTORY(PrecompiledHeader)
+if(MSVC)
+    ADD_SUBDIRECTORY(PrecompiledHeader)
+endif()
 ADD_SUBDIRECTORY(Config)
 
 ADD_SUBDIRECTORY(Kernel)

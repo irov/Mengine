@@ -16,11 +16,11 @@
 #include "Kernel/Entity.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
+#include "Kernel/Pool.h"
 
 #include "pybind/pybind.hpp"
 
 #include "Config/Map.h"
-#include "stdex/template_pool.h"
 
 #include <cstdarg>
 
@@ -96,7 +96,7 @@ namespace Mengine
         typedef Map<ConstString, MapModules> MapCategoryPrototypies;
         MapCategoryPrototypies m_prototypies;
 
-        typedef stdex::template_pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
+        typedef Pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;
 
         FactoryPtr m_factoryScriptModule;

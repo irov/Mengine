@@ -2,10 +2,10 @@
 
 #include "Config/Typedef.h"
 
+#include "Interface/Interface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
@@ -25,7 +25,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool initialize() = 0;

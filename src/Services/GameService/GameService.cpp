@@ -22,6 +22,7 @@
 #include "Kernel/Arrow.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
@@ -321,7 +322,7 @@ namespace Mengine
         if( defaultArrowPrototype.empty() == false )
         {
             ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FUNCTION );
 
             if( defaultArrow == nullptr )
             {

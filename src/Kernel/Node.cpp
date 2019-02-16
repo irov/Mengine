@@ -7,6 +7,7 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
+#include "Kernel/IntrusivePtrScope.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
@@ -62,11 +63,9 @@ namespace Mengine
             return false;
         }
 
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         m_active = true;
-
-        //m_invalidateRendering = true;
 
         if( m_children.empty() == false )
         {
@@ -99,8 +98,6 @@ namespace Mengine
         {
             m_active = false;
         }
-
-        stdex::intrusive_this_release( this );
 
         return m_active;
     }
@@ -155,8 +152,6 @@ namespace Mengine
         m_deactivating = false;
 
         this->_afterDeactivate();
-
-        //m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::enable()
@@ -215,13 +210,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::disable()
     {
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         this->deactivate();
 
         m_enable = false;
-
-        stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getLeafDeep() const
@@ -296,6 +289,87 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::setRelationRenderFront_( Node * _parent )
+    {
+        RenderInterface * render = this->getRender();
+
+        if( render != nullptr )
+        {
+            RenderInterface * oldRenderParent = render->getRelationRender();
+            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+            if( oldRenderParent != newRenderParent )
+            {
+                render->setRelationRenderFront( newRenderParent );
+            }
+        }
+        else
+        {
+            RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( m_parent );
+            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+            if( oldRenderParent != newRenderParent )
+            {
+                this->foreachReverseRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                {
+                    _render->setRelationRenderFront( newRenderParent );
+                } );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildRenderFront_( const NodePtr & _child )
+    {
+        RenderInterface * render = this->getRender();        
+
+        if( render != nullptr )
+        {
+            RenderInterface * childRender = _child->getRender();
+
+            if( childRender != nullptr )
+            {
+                render->moveRelationRenderFront( childRender );
+            }
+            else
+            {
+                this->foreachReverseRenderCloseChildren( [render]( RenderInterface * _childRender )
+                {
+                    render->moveRelationRenderFront( _childRender );
+                } );
+            }
+        }
+        else
+        {
+            //ToDo
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildRenderBack_( const NodePtr & _child )
+    {
+        RenderInterface * render = this->getRender();        
+
+        if( render != nullptr )
+        {
+            RenderInterface * childRender = _child->getRender();
+
+            if( childRender != nullptr )
+            {
+                render->moveRelationRenderBack( childRender );
+            }
+            else
+            {
+                this->foreachRenderCloseChildren( [render]( RenderInterface * _childRender )
+                {
+                    render->moveRelationRenderBack( _childRender );
+                } );
+            }
+        }
+        else
+        {
+            //ToDo
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::removeParent_()
     {
         this->removeRelationTransformation();
@@ -307,10 +381,25 @@ namespace Mengine
         this->_changeParent( oldparent, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::setParent_( Node * _parent )
+    void Node::setParent_( Node * _parent, ENodeChildInsertMode _mode )
     {
-        this->setRelationRender_( _parent );
-        this->setRelationTransformation( _parent );
+        switch( _mode )
+        {
+        case ENCI_FRONT:
+            {
+                this->setRelationRenderFront_( _parent );
+            }break;
+        case ENCI_MIDDLE:
+            {
+                this->setRelationRender_( _parent );
+            }break;
+        case ENCI_BACK:
+            {
+                this->setRelationRender_( _parent );
+            }break;
+        }
+        
+        this->setRelationTransformation( _parent );        
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -423,7 +512,7 @@ namespace Mengine
             , this->getName().c_str()
             ) );
 
-        this->addChild_( m_children.end(), _node );
+        this->addChild_( m_children.end(), _node, ENCI_BACK );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::addChildFront( const NodePtr & _node )
@@ -432,7 +521,7 @@ namespace Mengine
             , this->getName().c_str()
             ) );
 
-        this->addChild_( m_children.begin(), _node );
+        this->addChild_( m_children.begin(), _node, ENCI_FRONT );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
@@ -458,14 +547,14 @@ namespace Mengine
             , this->getName().c_str()
             ) );
 
-        this->addChild_( it_found, _node );
+        this->addChild_( it_found, _node, ENCI_MIDDLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child )
+    void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child, ENodeChildInsertMode _mode )
     {
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         Node * child_parent = _child->getParent();
 
@@ -473,14 +562,35 @@ namespace Mengine
         {
             if( *_insert == _child )
             {
-                stdex::intrusive_this_release( this );
+                return;
+            }
 
+            const NodePtr & backNode = m_children.back();
+
+            if( backNode == _child )
+            {
                 return;
             }
 
             this->eraseChild_( _child );
 
             this->insertChild_( _insert, _child );
+
+            switch( _mode )
+            {
+            case ENCI_FRONT:
+                {
+                    this->moveChildRenderFront_( _child );
+                }break;
+            case ENCI_MIDDLE:
+                {
+
+                }break;
+            case ENCI_BACK:
+                {
+                    this->moveChildRenderBack_( _child );
+                }break;
+            }            
         }
         else
         {
@@ -491,7 +601,7 @@ namespace Mengine
 
             this->insertChild_( _insert, _child );
 
-            _child->setParent_( this );
+            _child->setParent_( this, _mode );
         }
 
         this->_addChild( _child );
@@ -515,8 +625,6 @@ namespace Mengine
         }
 
         _child->invalidateWorldMatrix();
-
-        stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node )
@@ -553,6 +661,20 @@ namespace Mengine
             ++it )
         {
             NodePtr child = (*it);
+
+            _lambda( child );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachChildrenReverse( const LambdaNode & _lambda ) const
+    {
+        for( IntrusiveSlugListNodeChild::const_reverse_iterator
+            it = m_children.rbegin(),
+            it_end = m_children.rend();
+            it != it_end;
+            ++it )
+        {
+            const NodePtr & child = (*it);
 
             _lambda( child );
         }
@@ -615,6 +737,23 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::foreachReverseRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )
+    {
+        this->foreachChildrenReverse( [&_lambda]( const NodePtr & _child )
+        {
+            RenderInterface * render = _child->getRender();
+
+            if( render != nullptr )
+            {
+                _lambda( render );
+            }
+            else
+            {
+                _child->foreachReverseRenderCloseChildren( _lambda );
+            }
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::visitChildren( const VisitorPtr & _visitor )
     {
         this->visit( _visitor );
@@ -624,7 +763,7 @@ namespace Mengine
             return;
         }
 
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         NodePtr single_child = m_children.single();
 
@@ -643,8 +782,6 @@ namespace Mengine
                 children->visitChildren( _visitor );
             }
         }
-
-        stdex::intrusive_this_release( this );
     }    
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
@@ -928,7 +1065,7 @@ namespace Mengine
     {
         if( m_children.empty() != true )
         {
-            stdex::intrusive_this_acquire( this );
+            IntrusivePtrScope ankh( this );
 
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
@@ -938,8 +1075,6 @@ namespace Mengine
 
                 node->freeze( _value );
             }
-
-            stdex::intrusive_this_release( this );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -954,57 +1089,6 @@ namespace Mengine
     {
         return 0.f;
     }
-    //////////////////////////////////////////////////////////////////////////
-    //void Node::update( const UpdateContext * _context )
-    //{
-    //    if( this->isActivate() == false )
-    //    {
-    //        return;
-    //    }
-
-    //    if( this->isFreeze() == true )
-    //    {
-    //        return;
-    //    }
-
-    //    this->setUpdateRevision( _context->revision );
-
-    //    stdex::intrusive_this_acquire( this );
-
-    //    this->_update( _context );
-
-        //Affectorable::updateAffectors( _context );
-
-    //    this->updateChildren_( _context );
-
-    //    stdex::intrusive_this_release( this );
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::updateChildren_( const UpdateContext * _context )
-    //{
-    //    if( m_children.empty() == true )
-    //    {
-    //        return;
-    //    }
-
-    //    NodePtr single = m_children.single();
-
-    //    if( single != nullptr )
-    //    {
-    //        single->update( _context );
-    //    }
-    //    else
-    //    {
-    //        for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-    //        {
-    //            NodePtr children = *it;
-
-    //            it.next_shuffle();
-
-    //            children->update( _context );
-    //        }
-    //    }
-    //}
     //////////////////////////////////////////////////////////////////////////
     bool Node::_activate()
     {
@@ -1060,8 +1144,6 @@ namespace Mengine
     {
         bool result = Compilable::compile();
 
-        //m_invalidateRendering = true;
-
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1094,14 +1176,10 @@ namespace Mengine
         }
 
         Compilable::release();
-
-        //this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_recompile()
     {
-        //m_invalidateRendering = true;
-
         if( m_enable == false )
         {
             return;
@@ -1117,8 +1195,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_uncompile()
     {
-        //m_invalidateRendering = true;
-
         if( m_enable == false )
         {
             return;
@@ -1158,30 +1234,4 @@ namespace Mengine
     {
         return nullptr;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::updateRendering_() const
-    //{
-    //    m_invalidateRendering = false;
-
-    //    if( this->isCompile() == false )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else if( this->isActivate() == false )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else if( this->isHide() == true )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else if( this->isLocalTransparent() == true )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else
-    //    {
-    //        m_rendering = true;
-    //    }
-    //}
 }

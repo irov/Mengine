@@ -58,7 +58,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _whoName )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const Char * _doc )
     {
         if( this->isAvailableService() == false )
         {
@@ -68,7 +68,7 @@ namespace Mengine
         }
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SYSTEM()
-            ->createEmitterContainerFromMemory( _fileGroup, _fileName, m_archivator, _whoName );
+            ->createEmitterContainerFromMemory( _fileGroup, _fileName, m_archivator, _doc );
 
         if( container == nullptr )
         {

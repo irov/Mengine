@@ -19,18 +19,18 @@ namespace Mengine
 
     public:
         virtual bool registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _decoder ) = 0;
-        virtual DecoderFactoryInterfacePtr unregisterDecoder( const ConstString& _type ) = 0;
+        virtual DecoderFactoryInterfacePtr unregisterDecoder( const ConstString & _type ) = 0;
 
         virtual bool registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _encoder ) = 0;
-        virtual EncoderFactoryInterfacePtr unregisterEncoder( const ConstString& _type ) = 0;
+        virtual EncoderFactoryInterfacePtr unregisterEncoder( const ConstString & _type ) = 0;
 
     public:
-        virtual DecoderInterfacePtr createDecoder( const ConstString & _type ) = 0;
+        virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const Char * _doc ) = 0;
 
         template<class T>
-        T createDecoderT( const ConstString& _type )
+        T createDecoderT( const ConstString& _type, const Char * _doc )
         {
-            DecoderInterfacePtr decoder = this->createDecoder( _type );
+			DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
 
 #ifndef NDEBUG
             if( decoder == nullptr )
@@ -50,12 +50,12 @@ namespace Mengine
         }
 
     public:
-        virtual EncoderInterfacePtr createEncoder( const ConstString& _type ) = 0;
+        virtual EncoderInterfacePtr createEncoder( const ConstString & _type, const Char * _doc ) = 0;
 
         template<class T>
-        T createEncoderT( const ConstString& _type )
+        T createEncoderT( const ConstString& _type, const Char * _doc )
         {
-            EncoderInterfacePtr encoder = this->createEncoder( _type );
+			EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
 
 #ifndef NDEBUG
             if( encoder == nullptr )

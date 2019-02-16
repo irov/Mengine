@@ -7,6 +7,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Date.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -34,13 +35,13 @@ namespace Mengine
 
         utf8_logFilename += ".log";
 
-        FilePath logFilename = Helper::stringizeFilePathSize( utf8_logFilename.c_str(), utf8_logFilename.size() );
+        FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
         m_stream = FILE_SERVICE()
-            ->openOutputFile( fileGroup, logFilename );
+            ->openOutputFile( fileGroup, logFilename, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_stream == nullptr )
         {

@@ -9,6 +9,8 @@
 #include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugins/VideoPlugin/VideoUnknownInterface.h"
 
+#include "Movie2Data.h"
+
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceTrackMatte.h"
@@ -21,6 +23,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Config/Stringstream.h"
 
@@ -43,17 +46,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie2 )
+    void Movie2::setResourceMovie2( const ResourcePtr & _resource )
     {
-        if( m_resourceMovie2 == _resourceMovie2 )
+        ResourceMovie2Ptr resourceMovie2 = stdex::intrusive_static_cast<ResourceMovie2Ptr>(_resource);
+
+        if( m_resourceMovie2 == resourceMovie2 )
         {
             return;
         }
 
-        this->recompile( [this, _resourceMovie2]() {m_resourceMovie2 = _resourceMovie2; } );
+        this->recompile( [this, resourceMovie2]() {m_resourceMovie2 = resourceMovie2; } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceMovie2Ptr & Movie2::getResourceMovie2() const
+    const ResourcePtr & Movie2::getResourceMovie2() const
     {
         return m_resourceMovie2;
     }
@@ -109,7 +114,7 @@ namespace Mengine
         return m_aliasEnvironment;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::interruptElements()
+    bool Movie2::interruptElements_()
     {
         for( const SurfacePtr & surface : m_surfaces )
         {
@@ -166,7 +171,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::checkInterruptElement() const
+    bool Movie2::checkInterruptElement_() const
     {
         for( const SurfacePtr & surface : m_surfaces )
         {
@@ -346,10 +351,10 @@ namespace Mengine
                 ss << _name.c_str() << ", ";
             } );
 
-            LOGGER_ERROR( "movie '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
+            LOGGER_ERROR( "name '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
-                , this->getResourceMovie2()->getFilePath().c_str()
+                , m_resourceMovie2->getFilePath().c_str()
                 , m_compositionName.c_str()
                 , ss.str().c_str()
             );
@@ -367,7 +372,7 @@ namespace Mengine
             if( layer.type == STRINGIZE_STRING_LOCAL( "TextField" ) )
             {
                 TextFieldPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( node == nullptr )
                 {
@@ -385,7 +390,7 @@ namespace Mengine
                 this->addText_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( matrixProxy == nullptr )
                 {
@@ -406,7 +411,7 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie2Slot" ) )
             {
                 Movie2SlotPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( node == nullptr )
                 {
@@ -424,7 +429,7 @@ namespace Mengine
                 this->addSlot_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( matrixProxy == nullptr )
                 {
@@ -445,7 +450,7 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) )
             {
                 HotSpotPolygonPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( node == nullptr )
                 {
@@ -457,7 +462,7 @@ namespace Mengine
                 this->addSocket_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( matrixProxy == nullptr )
                 {
@@ -478,7 +483,7 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) || layer.type == STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) )
             {
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( node == nullptr )
                 {
@@ -493,7 +498,7 @@ namespace Mengine
                 this->addParticle_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( matrixProxy == nullptr )
                 {
@@ -518,7 +523,7 @@ namespace Mengine
 
                 if( resourceImage == nullptr )
                 {
-                    LOGGER_ERROR( "movie '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
+                    LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
                         , this->getName().c_str()
                         , this->getResourceMovie2()->getName().c_str()
                         , this->getCompositionName().c_str()
@@ -530,7 +535,7 @@ namespace Mengine
                 }
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( surface == nullptr )
                 {
@@ -540,11 +545,11 @@ namespace Mengine
                 surface->setResourceImage( resourceImage );
 
                 ShapeQuadFixedPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type, MENGINE_DOCUMENT_FUNCTION );
 
                 if( node == nullptr )
                 {
-                    LOGGER_ERROR( "movie '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                    LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                         , this->getName().c_str()
                         , this->getResourceMovie2()->getName().c_str()
                         , this->getCompositionName().c_str()
@@ -562,7 +567,7 @@ namespace Mengine
                 this->addSprite_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
                 if( matrixProxy == nullptr )
                 {
@@ -582,7 +587,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "movie '%s' resource '%s' composition '%s' layer '%s' invalid create type '%s'"
+                LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid create type '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovie2()->getName().c_str()
                     , this->getCompositionName().c_str()
@@ -597,7 +602,7 @@ namespace Mengine
         for( const ResourceMovie2CompositionSubComposition & subcomposition : composition->subcompositions )
         {
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FUNCTION );
 
             node->setMovie( this );
 
@@ -619,20 +624,21 @@ namespace Mengine
         m_texts.clear();
         m_particleEmitters.clear();
         m_sprites.clear();
+        m_subCompositions.clear();
+
+        for( const MatrixProxyPtr & proxy : m_matrixProxies )
+        {
+            proxy->removeFromParent();
+        }
 
         m_matrixProxies.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Movie2::getDuration() const
-    {
-        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::setWorkAreaFromEvent '%s' invalid setup '%s' not compile"
+            LOGGER_ERROR( "name '%s' invalid setup '%s' not compile"
                 , this->getName().c_str()
                 , _eventName.c_str()
             );
@@ -657,7 +663,7 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::removeWorkArea '%s' not compile"
+            LOGGER_ERROR( "name '%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -704,12 +710,32 @@ namespace Mengine
 
         return subComposition;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie2::hasMovieLayers( const ConstString & _name ) const
+	{
+		if( m_composition == nullptr )
+		{
+			LOGGER_ERROR( "name '%s' invalid test layer '%s' not compile"
+				, this->getName().c_str()
+				, _name.c_str()
+			);
+
+			return false;
+		}
+
+		if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
+		{
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "movie '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "name '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -720,7 +746,7 @@ namespace Mengine
 #ifndef NDEBUG
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
-            LOGGER_ERROR( "movie '%s' layer '%s' not found"
+            LOGGER_ERROR( "name '%s' layer '%s' not found"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -819,7 +845,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "movie '%s' is not compile"
+            LOGGER_ERROR( "name '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -860,7 +886,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "movie '%s' is not compile"
+            LOGGER_ERROR( "name '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -887,7 +913,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "movie '%s' is not compile"
+            LOGGER_ERROR( "name '%s' is not compile"
                 , this->getName().c_str()
             );
 
@@ -909,7 +935,7 @@ namespace Mengine
         ConstString c_name = Helper::stringizeString( _callbackData->name );
 
         Movie2::Camera * old_camera;
-        if( movie2->getCamera( c_name, &old_camera ) == true )
+        if( movie2->getCamera_( c_name, &old_camera ) == true )
         {
             *_cd = old_camera;
 
@@ -917,7 +943,7 @@ namespace Mengine
         }
 
         RenderCameraProjectionPtr renderCameraProjection = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ), MENGINE_DOCUMENT_FUNCTION );
 
         renderCameraProjection->setName( c_name );
 
@@ -937,7 +963,7 @@ namespace Mengine
         renderCameraProjection->setCameraAspect( aspect );
 
         RenderViewportPtr renderViewport = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
 
         renderViewport->setName( c_name );
 
@@ -950,7 +976,7 @@ namespace Mengine
 
         renderViewport->setViewport( vp );
 
-        Movie2::Camera * new_camera = movie2->addCamera( c_name, renderCameraProjection, renderViewport );
+        Movie2::Camera * new_camera = movie2->addCamera_( c_name, renderCameraProjection, renderViewport );
 
         *_cd = new_camera;
 
@@ -963,7 +989,7 @@ namespace Mengine
 
         ConstString c_name = Helper::stringizeString( _callbackData->name );
 
-        movie2->removeCamera( c_name );
+        movie2->removeCamera_( c_name );
     }
     //////////////////////////////////////////////////////////////////////////
     static void __movie_composition_camera_update( const aeMovieCameraUpdateCallbackData * _callbackData, ae_voidptr_t _data )
@@ -1067,7 +1093,7 @@ namespace Mengine
 
                 if( node == nullptr )
                 {
-                    LOGGER_ERROR( "Movie::createMovieSprite_ '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                    LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                         , movie2->getName().c_str()
                         , movie2->getResourceMovie2()->getName().c_str()
                         , movie2->getCompositionName().c_str()
@@ -1185,7 +1211,7 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
-                UnknownParticleEmitterInterfacePtr unknownParticleEmitter2 = node->getUnknown();
+                UnknownParticleEmitterInterface * unknownParticleEmitter2 = node->getUnknown();
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
                 {
@@ -1229,7 +1255,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
                     SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ) );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FUNCTION );
 
                     if( surfaceTrackMatte == nullptr )
                     {
@@ -1265,7 +1291,7 @@ namespace Mengine
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
-                    movie2->addSurface( surfaceTrackMatte );
+                    movie2->addSurface_( surfaceTrackMatte );
 
                     *_nd = surfaceTrackMatte.get();
 
@@ -1283,7 +1309,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
                     SurfacePtr surface = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FUNCTION );
 
                     if( surface == nullptr )
                     {
@@ -1295,7 +1321,7 @@ namespace Mengine
 
                     Resource * resourceVideo = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
-                    UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
+                    UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
                     unknownVideoSurface->setResourceVideo( resourceVideo );
 
@@ -1308,7 +1334,7 @@ namespace Mengine
                     surface->setBlendMode( blend_mode );
                     surface->setPremultiplyAlpha( true );
 
-                    movie2->addSurface( surface );
+                    movie2->addSurface_( surface );
 
                     *_nd = surface.get();
 
@@ -1317,7 +1343,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
                     SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ) );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FUNCTION );
 
                     if( surfaceSound == nullptr )
                     {
@@ -1344,7 +1370,7 @@ namespace Mengine
 
                     surfaceSound->setResourceSound( resourceSound );
 
-                    movie2->addSurface( surfaceSound );
+                    movie2->addSurface_( surfaceSound );
 
                     *_nd = surfaceSound.get();
 
@@ -1634,7 +1660,7 @@ namespace Mengine
         desc->materialName = Helper::stringizeString( _callbackData->description );
 
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
-            ->createProgramVariable( 0, _callbackData->parameter_count );
+            ->createProgramVariable( 0, _callbackData->parameter_count, MENGINE_DOCUMENT_FUNCTION );
 
         for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
         {
@@ -1750,11 +1776,19 @@ namespace Mengine
 
         switch( _callbackData->state )
         {
+        case AE_MOVIE_COMPOSITION_PLAY:
+        case AE_MOVIE_COMPOSITION_STOP:
+        case AE_MOVIE_COMPOSITION_PAUSE:
+        case AE_MOVIE_COMPOSITION_RESUME:
+        case AE_MOVIE_COMPOSITION_LOOP_END:
+            {
+                //Empty
+            }break;
         case AE_MOVIE_COMPOSITION_INTERRUPT:
             {
-                if( m2->interruptElements() == false )
+                if( m2->interruptElements_() == false )
                 {
-                    LOGGER_ERROR( "movie '%s' invalid interrupt elements"
+                    LOGGER_ERROR( "name '%s' invalid interrupt elements"
                         , m2->getName().c_str()
                     );
                 }
@@ -1772,7 +1806,7 @@ namespace Mengine
 
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
-        if( m2->checkInterruptElement() == false )
+        if( m2->checkInterruptElement_() == false )
         {
             return AE_FALSE;
         }
@@ -1894,7 +1928,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2::Camera * Movie2::addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport )
+    Movie2::Camera * Movie2::addCamera_( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport )
     {
         this->addChild( _projection );
         this->addChild( _viewport );
@@ -1910,7 +1944,7 @@ namespace Mengine
         return new_camera;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::removeCamera( const ConstString & _name )
+    bool Movie2::removeCamera_( const ConstString & _name )
     {
         MapCameras::iterator it_found = m_cameras.find( _name );
 
@@ -1921,7 +1955,9 @@ namespace Mengine
 
         Camera & c = it_found->second;
 
+        c.projection->removeFromParent();
         c.projection = nullptr;
+        c.viewport->removeFromParent();
         c.viewport = nullptr;
 
         m_cameras.erase( it_found );
@@ -1929,7 +1965,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasCamera( const ConstString & _name ) const
+    bool Movie2::hasCamera_( const ConstString & _name ) const
     {
         MapCameras::const_iterator it_found = m_cameras.find( _name );
 
@@ -1941,7 +1977,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::getCamera( const ConstString & _name, Camera ** _camera )
+    bool Movie2::getCamera_( const ConstString & _name, Camera ** _camera )
     {
         MapCameras::iterator it_found = m_cameras.find( _name );
 
@@ -1961,7 +1997,7 @@ namespace Mengine
     {
         if( m_resourceMovie2 == nullptr )
         {
-            LOGGER_ERROR( "Movie2::_compile: '%s' can't setup resource"
+            LOGGER_ERROR( "name '%s' can't setup resource"
                 , this->getName().c_str()
             );
 
@@ -1970,7 +2006,7 @@ namespace Mengine
 
         if( m_resourceMovie2.compile() == false )
         {
-            LOGGER_ERROR( "Movie2::_compile '%s' resource %s not compile"
+            LOGGER_ERROR( "name '%s' resource %s not compile"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
             );
@@ -1982,7 +2018,7 @@ namespace Mengine
 
         if( compositionData == nullptr )
         {
-            LOGGER_ERROR( "Movie2::_compile '%s' resource %s not found composition '%s'"
+            LOGGER_ERROR( "name '%s' resource %s not found composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()
@@ -2029,7 +2065,7 @@ namespace Mengine
 
         if( composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::_compile '%s' resource '%s' invalid create composition '%s'"
+            LOGGER_ERROR( "name '%s' resource '%s' invalid create composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()
@@ -2163,7 +2199,7 @@ namespace Mengine
 
             if( this->play( time ) == 0 )
             {
-                LOGGER_ERROR( "Movie2::_afterActivate '%s' resource '%s' auto play return 0"
+                LOGGER_ERROR( "name '%s' resource '%s' auto play return 0"
                     , this->getName().c_str()
                     , this->m_resourceMovie2->getName().c_str()
                 );
@@ -2187,7 +2223,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "movie '%s' invalid compile"
+            LOGGER_ERROR( "name '%s' invalid compile"
                 , this->getName().c_str()
             );
 
@@ -2209,6 +2245,11 @@ namespace Mengine
         return AE_TIME_MILLISECOND( timing );
     }
     //////////////////////////////////////////////////////////////////////////
+    float Movie2::_getDuration() const
+    {
+        return m_duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::_setFirstFrame()
     {
         this->setTime( 0.f );
@@ -2218,7 +2259,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "movie '%s' not activate"
+            LOGGER_ERROR( "name '%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -2301,8 +2342,6 @@ namespace Mengine
         aeMovieRenderMesh mesh;
         while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
         {
-            Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_userdata);
-
             RenderContext context;
 
             if( mesh.camera_userdata != nullptr )
@@ -2411,7 +2450,8 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
-                        const RenderMaterialInterfacePtr & material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
+                            ->getSolidMaterial( blend_mode );
 
                         this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
@@ -2456,7 +2496,8 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
-                        const RenderMaterialInterfacePtr & material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
+                            ->getSolidMaterial( blend_mode );
 
                         this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
@@ -2468,7 +2509,9 @@ namespace Mengine
                             continue;
                         }
 
-                        ResourceImage * resource_image = reinterpret_node_cast<ResourceImage *>(resource_reference);
+                        Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(mesh.resource_userdata);
+
+                        const ResourceImage * resource_image = image_desc->resource;
 
                         const Color & imageColor = resource_image->getColor();
 
@@ -2533,7 +2576,7 @@ namespace Mengine
 
                         if( mesh.shader_userdata == AE_NULLPTR )
                         {
-                            const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
+                            RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
                             this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                         }
@@ -2541,7 +2584,7 @@ namespace Mengine
                         {
                             ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
 
-                            const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
@@ -2713,14 +2756,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSurface( const SurfacePtr & _surface )
+    void Movie2::addSurface_( const SurfacePtr & _surface )
     {
         _surface->compile();
 
         m_surfaces.emplace_back( _surface );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::removeSurface( const SurfacePtr & _surface )
+    void Movie2::removeSurface_( const SurfacePtr & _surface )
     {
         _surface->release();
 

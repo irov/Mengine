@@ -97,7 +97,7 @@ namespace Mengine
         return generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype )
+    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const Char * _doc )
     {
         CategoryKey key;
         key.category = _category;
@@ -107,15 +107,16 @@ namespace Mengine
 
         if( generator == nullptr )
         {
-            LOGGER_ERROR( "prototype '%s:%s' not found"
+            LOGGER_ERROR( "prototype not found '%s:%s' doc '%s'"	
                 , _category.c_str()
                 , _prototype.c_str()
+				, _doc
             );
 
             return nullptr;
         }
 
-        FactorablePtr prototype = generator->generate();
+		FactorablePtr prototype = generator->generate( _doc );
 
         return prototype;
     }

@@ -29,6 +29,7 @@
 #include "Kernel/FactoryPool.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #ifdef __APPLE__
 #	include "TargetConditionals.h"
@@ -512,7 +513,7 @@ namespace Mengine
             , _dynamicLibraryName
         );
 
-        SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject();
+        SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr )("can't create dynamic library '%s'"
             , _dynamicLibraryName

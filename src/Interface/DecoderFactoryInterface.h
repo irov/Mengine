@@ -3,6 +3,8 @@
 #include "Interface/CodecFactoryInterface.h"
 #include "Interface/DecoderInterface.h"
 
+#include "Config/Char.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -10,7 +12,7 @@ namespace Mengine
         : public CodecFactoryInterface
     {
     public:
-        virtual DecoderInterfacePtr createDecoder() = 0;
+        virtual DecoderInterfacePtr createDecoder( const Char * _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;

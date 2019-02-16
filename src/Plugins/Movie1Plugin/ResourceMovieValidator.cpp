@@ -15,6 +15,7 @@
 
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 
@@ -35,7 +36,7 @@ namespace Mengine
 
         if( mt::equal_f_z( frameDuration ) == true )
         {
-            LOGGER_ERROR( "ResourceMovie::_isValid: '%s' group '%s' m_frameDuration == 0.f"
+            LOGGER_ERROR( "'%s' group '%s' m_frameDuration == 0.f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
             );
@@ -53,7 +54,7 @@ namespace Mengine
 
         if( (width > limitMovieWidth && limitMovieWidth != 0U) || (height > limitMovieHeight && limitMovieHeight != 0U) )
         {
-            LOGGER_ERROR( "ResourceMovie::isValid '%s' group '%s' invalid limit %d:%d size %d:%d"
+            LOGGER_ERROR( "'%s' group '%s' invalid limit %d:%d size %d:%d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , limitMovieWidth
@@ -82,7 +83,7 @@ namespace Mengine
             uint32_t layer_parent = layer.parent;
             if( std::find_if( layers.begin(), layers.end(), [layer_parent]( const MovieLayer & _layer ) {return _layer.index == layer_parent; } ) == layers.end() )
             {
-                LOGGER_ERROR( "ResourceMovie::isValid '%s' group '%s' layer %s:%d invalid parent %d"
+                LOGGER_ERROR( "'%s' group '%s' layer %s:%d invalid parent %d"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , layer.name.c_str()
@@ -98,7 +99,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR( "'%s' group '%s' don`t have Key Frames Pack Path"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
             );
@@ -109,11 +110,11 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false );
+            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid open file '%s'"
+            LOGGER_ERROR( "'%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -131,7 +132,7 @@ namespace Mengine
 
             if( dataflowType.empty() == true )
             {
-                LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' you must determine codec for file '%s'"
+                LOGGER_ERROR( "'%s' group '%s' you must determine codec for file '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , _resource->getFilePath().c_str()
@@ -162,7 +163,7 @@ namespace Mengine
         {
             if( framePack->hasLayer( layer.index ) == false )
             {
-                LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer %d '%s' type '%s'"
+                LOGGER_ERROR( "'%s' group '%s' invalid layer %d '%s' type '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , layer.index
@@ -179,7 +180,7 @@ namespace Mengine
             {
                 if( layer.isThreeD() == true )
                 {
-                    LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
+                    LOGGER_ERROR( "'%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , layer.index
@@ -204,7 +205,7 @@ namespace Mengine
                 {
                     if( ::fabsf( layerFrame.source.scale.x ) < MovieImageScale || ::fabsf( layerFrame.source.scale.y ) < MovieImageScale )
                     {
-                        LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+                        LOGGER_ERROR( "'%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
                             , _resource->getGroupName().c_str()
                             , layer.index
@@ -239,7 +240,7 @@ namespace Mengine
 
                     if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
                     {
-                        LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
+                        LOGGER_ERROR( "'%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
                             , _resource->getName().c_str()
                             , _resource->getGroupName().c_str()
                             , layer.index
@@ -269,7 +270,7 @@ namespace Mengine
 
                 if( hide == true )
                 {
-                    LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
+                    LOGGER_ERROR( "'%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , layer.index
@@ -291,7 +292,7 @@ namespace Mengine
                 if( TEXT_SERVICE()
                     ->existText( layer.name, &entry ) == false )
                 {
-                    LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
+                    LOGGER_ERROR( "'%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , layer.index

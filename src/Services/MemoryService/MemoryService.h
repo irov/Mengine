@@ -40,12 +40,12 @@ namespace Mengine
         void clearCacheBuffers() override;
 
     public:
-        MemoryBufferInterfacePtr createMemoryBuffer() override;
-        MemoryProxyInterfacePtr createMemoryProxy() override;
-        MemoryBufferInterfacePtr createMemoryCacheBuffer() override;
-        MemoryCacheInputInterfacePtr createMemoryCacheInput() override;
-        MemoryProxyInputInterfacePtr createMemoryProxyInput() override;
-        MemoryInputInterfacePtr createMemoryInput() override;
+        MemoryBufferInterfacePtr createMemoryBuffer( const Char * _doc ) override;
+        MemoryProxyInterfacePtr createMemoryProxy( const Char * _doc ) override;
+        MemoryBufferInterfacePtr createMemoryCacheBuffer( const Char * _doc ) override;
+        MemoryCacheInputInterfacePtr createMemoryCacheInput( const Char * _doc ) override;
+        MemoryProxyInputInterfacePtr createMemoryProxyInput( const Char * _doc ) override;
+        MemoryInputInterfacePtr createMemoryInput( const Char * _doc ) override;
 
     protected:
         CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line );

@@ -54,6 +54,9 @@ namespace Mengine
             , const RenderTextureInterfacePtr * _textures ) = 0;
 
     public:
+        virtual const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const = 0;
+
+    public:
         virtual void setDebugLineMaterial( const RenderMaterialInterfacePtr & _debugLineMaterial ) = 0;
         virtual const RenderMaterialInterfacePtr & getDebugLineMaterial() const = 0;
 

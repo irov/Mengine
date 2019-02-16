@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
@@ -11,7 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScheduleEventInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onScheduleComplete( uint32_t _id ) = 0;
@@ -21,7 +21,7 @@ namespace Mengine
     typedef IntrusivePtr<ScheduleEventInterface> ScheduleEventInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ScheduleTimingInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onScheduleTiming( uint32_t _id, uint32_t _iterate, float _time ) = 0;
@@ -30,7 +30,7 @@ namespace Mengine
     typedef IntrusivePtr<ScheduleTimingInterface> ScheduleTimingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulePipeInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual float onSchedulePipe( uint32_t _id, uint32_t _index ) = 0;
@@ -39,7 +39,7 @@ namespace Mengine
     typedef IntrusivePtr<SchedulePipeInterface> SchedulePipeInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulerInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool initialize( const ConstString & _name ) = 0;

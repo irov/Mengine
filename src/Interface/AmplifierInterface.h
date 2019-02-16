@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/Interface.h"
+
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/ConstString.h"
@@ -8,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AmplifierMusicCallbackInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onMusicPause() = 0;

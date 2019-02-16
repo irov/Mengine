@@ -12,7 +12,7 @@ namespace Mengine
         SERVICE_DECLARE( "SocketSystem" )
 
     public:
-        virtual SocketInterfacePtr createSocket() = 0;
+        virtual SocketInterfacePtr createSocket( const Char * _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

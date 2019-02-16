@@ -1,14 +1,13 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/RenderProgramInterface.h"
-
-#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderProgramVariableInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _size, uint32_t _count ) = 0;

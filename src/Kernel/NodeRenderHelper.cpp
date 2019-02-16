@@ -2,7 +2,7 @@
 
 #include "Kernel/Node.h"
 
-//#define MENGINE_NEW_RENDER
+#define MENGINE_NEW_RENDER
 
 namespace Mengine
 {

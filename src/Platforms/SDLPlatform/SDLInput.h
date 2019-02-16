@@ -43,7 +43,9 @@ namespace Mengine
         void calcCursorPosition_( int _mx, int _my, mt::vec2f & _point ) const;
 
     protected:
-        uint32_t getFingerIndex_( SDL_FingerID _fingerId );
+        uint32_t acquireFingerIndex_( SDL_FingerID _fingerId );
+        uint32_t releaseFingerIndex_( SDL_FingerID _fingerId );
+        uint32_t getFingerIndex_( SDL_FingerID _fingerId ) const;
 
     protected:
         bool m_keyDown[KC_MAX_CODE];

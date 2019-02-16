@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_changeParent( Node * _oldParent, Node * _newParent )
     {
-        (void)_newParent;
+        MENGINE_UNUSED( _newParent );
 
         if( _oldParent == nullptr )
         {

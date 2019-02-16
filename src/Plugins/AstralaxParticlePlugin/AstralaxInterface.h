@@ -166,8 +166,8 @@ namespace Mengine
         SERVICE_DECLARE( "AstralaxSystem" )
 
     public:
-        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) = 0;
-        virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const Char * _doc ) = 0;
+        virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const Char * _doc ) = 0;
 
     public:
         virtual const RenderMaterialStage * getMaterialStage( int _index ) const = 0;
@@ -186,12 +186,13 @@ namespace Mengine
         SERVICE_DECLARE( "AstralaxService" )
 
     public:
-        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const Char * _doc ) = 0;
 
     public:
         virtual uint32_t getMaxParticlesCount() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #   define ASTRALAX_SERVICE()\
 	((AstralaxServiceInterface *)SERVICE_GET(Mengine::AstralaxServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////

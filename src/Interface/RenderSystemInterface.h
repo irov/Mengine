@@ -67,22 +67,22 @@ namespace Mengine
         virtual void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) = 0;
 
     public:
-        virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType ) = 0;
+        virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc ) = 0;
         virtual bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) = 0;
 
     public:
-        virtual RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType ) = 0;
+        virtual RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc ) = 0;
         virtual bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) = 0;
 
     public:
-        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t _elementSize ) = 0;
-        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) = 0;
-        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile ) = 0;
+        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const Char * _doc ) = 0;
+        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc ) = 0;
+        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc ) = 0;
 
-        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) = 0;
+        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc ) = 0;
         virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
-        virtual RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) = 0;
+        virtual RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc ) = 0;
         virtual bool setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
 
     public:
@@ -108,10 +108,10 @@ namespace Mengine
         virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) = 0;
         virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) = 0;
 
-        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) = 0;
-        virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) = 0;
+        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc ) = 0;
+        virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc ) = 0;
 
-        virtual RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) = 0;
+        virtual RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc ) = 0;
 
     public:
         virtual bool beginScene() = 0;

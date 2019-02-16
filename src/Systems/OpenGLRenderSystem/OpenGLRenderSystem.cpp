@@ -330,9 +330,9 @@ namespace Mengine
         this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType )
+    RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc )
     {
-        OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject();
+		OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject( _doc );
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
@@ -349,9 +349,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr OpenGLRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType )
+    RenderIndexBufferInterfacePtr OpenGLRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc )
     {
-        OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject();
+		OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject( _doc );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -368,9 +368,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize )
+    RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const Char * _doc )
     {
-        OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject();
+		OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
         if( vertexAttribute == nullptr )
         {
@@ -393,11 +393,11 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-        (void)_compile;
+		MENGINE_UNUSED( _compile );
 
-        OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject();
+		OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
         if( shader == nullptr )
         {
@@ -439,11 +439,11 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-        (void)_compile;
+		MENGINE_UNUSED( _compile );
 
-        OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject();
+		OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
         if( shader == nullptr )
         {
@@ -485,9 +485,9 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount )
+    RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc )
     {
-        OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject();
+		OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
         if( program == nullptr )
         {
@@ -539,13 +539,13 @@ namespace Mengine
         MENGINE_UNUSED( _program );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
+    RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc )
     {
-        OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject();
+		OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
         if( variable == nullptr )
         {
-            LOGGER_ERROR( "OpenGLRenderSystem::createProgramVariable invalid create program variable"
+            LOGGER_ERROR( "invalid create program variable"
             );
 
             return nullptr;
@@ -553,7 +553,7 @@ namespace Mengine
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
-            LOGGER_ERROR( "OpenGLRenderSystem::createProgramVariable invalid initialize program variable"
+            LOGGER_ERROR( "invalid initialize program variable"
             );
 
             return nullptr;
@@ -893,7 +893,7 @@ namespace Mengine
             return nullptr;
         }
 
-        OpenGLRenderImagePtr image = m_factoryRenderImage->createObject();
+		OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
 
         if( image == nullptr )
         {
@@ -1138,7 +1138,7 @@ namespace Mengine
             return nullptr;
         }
 
-        OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject();
+		OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject( _doc );
 
         if( texture->initialize( ERIM_DYNAMIC
             , 1
@@ -1159,29 +1159,32 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );
         MENGINE_UNUSED( _channels );
         MENGINE_UNUSED( _format );
+		MENGINE_UNUSED( _doc );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );
         MENGINE_UNUSED( _channels );
         MENGINE_UNUSED( _format );
+		MENGINE_UNUSED( _doc );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
+    RenderImageInterfacePtr OpenGLRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc )
     {
         MENGINE_UNUSED( _renderTarget );
+		MENGINE_UNUSED( _doc );
 
         return nullptr;
     }

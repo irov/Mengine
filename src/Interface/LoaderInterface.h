@@ -1,8 +1,7 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/LoadableInterface.h"
-
-#include "Kernel/Mixin.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Metabuf
@@ -14,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class LoaderInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) = 0;

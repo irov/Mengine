@@ -2,7 +2,9 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/MaterialEnumInterface.h"
 
+#include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -32,6 +34,14 @@ namespace Mengine
             }
         }
 
+        for( Movie2DataImageDesc * desc : m_images )
+        {
+            desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_NORMAL, false, false );
+            desc->materials[EMB_ADD] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_ADD, false, false );
+            desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_SCREEN, false, false );
+            desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_MULTIPLY, false, false );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -40,6 +50,14 @@ namespace Mengine
         for( const ResourcePtr & resource : m_resources )
         {
             resource->decrementReference();
+        }
+
+        for( Movie2DataImageDesc * desc : m_images )
+        {
+            desc->materials[EMB_NORMAL] = nullptr;
+            desc->materials[EMB_ADD] = nullptr;
+            desc->materials[EMB_SCREEN] = nullptr;
+            desc->materials[EMB_MULTIPLY] = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -77,5 +95,21 @@ namespace Mengine
         m_resources.emplace_back( resource );
 
         return resource.get();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Movie2DataImageDesc * Movie2Data::makeImageDesc( ResourceImage * _resource )
+    {
+        Movie2DataImageDesc * desc = m_poolImageDesc.createT();
+
+        desc->resource = _resource;
+
+        m_images.push_back( desc );
+
+        return desc;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2Data::removeImageDesc( Movie2DataImageDesc * _desc )
+    {
+        m_poolImageDesc.destroyT( _desc );
     }
 }

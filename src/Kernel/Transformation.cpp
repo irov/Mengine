@@ -32,6 +32,7 @@ namespace Mengine
     void Transformation::setRelationTransformation( Transformation * _relationTransformation )
     {
         MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
+        MENGINE_ASSERTION( _relationTransformation != this, ("set this relation transformation") );
 
         if( m_relationTransformation != nullptr )
         {
@@ -70,14 +71,14 @@ namespace Mengine
         this->invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::addRelationTransformationChild_( Transformation * _child )
+    void Transformation::addRelationTransformationChild_( Transformation * _childTransformation )
     {
-        m_relationChildren.push_back( _child );
+        m_relationChildren.push_back( _childTransformation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::removeRelationTransformationChild_( Transformation * _child )
+    void Transformation::removeRelationTransformationChild_( Transformation * _childTransformation )
     {
-        VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _child );
+        VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
 
         MENGINE_ASSERTION( it_erase != m_relationChildren.end(), ("remove relation transformation not found") );
 
@@ -87,17 +88,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Transformation::invalidateWorldMatrix()
     {
-        if( m_invalidateWorldMatrix == false )
-        {
-            m_invalidateWorldMatrix = true;
+		if( m_invalidateWorldMatrix == true )
+		{
+			return;
+		}
+         
+		m_invalidateWorldMatrix = true;
 
-            for( Transformation * child : m_relationChildren )
-            {
-                child->invalidateWorldMatrix();
-            }
-        }
-
-        this->_invalidateWorldMatrix();
+		for( Transformation * child : m_relationChildren )
+		{
+			child->invalidateWorldMatrix();
+		}
+        
+		this->_invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::_invalidateWorldMatrix()

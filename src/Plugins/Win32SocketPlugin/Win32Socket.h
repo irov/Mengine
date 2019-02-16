@@ -24,11 +24,11 @@ namespace Mengine
 
     public:
         bool connect( const SocketConnectInfo & _info ) override;
-        bool bind( const SocketConnectInfo & _info, const bool _blocking = true ) override;
+        bool bind( const SocketConnectInfo & _info, bool _blocking = true ) override;
         void disconnect() override;
 
         int checkForClientConnection() override;
-        bool waitForData( size_t _timeoutMs ) override;
+        bool waitForData( uint32_t _timeoutMs ) override;
 
         int send( const void * _data, size_t _numBytes ) override;
         int receive( void * _data, size_t _maxBytes ) override;

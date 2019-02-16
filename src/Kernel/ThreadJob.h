@@ -6,6 +6,9 @@
 
 #include "Kernel/ThreadTask.h"
 
+#include "Config/String.h"
+#include "Config/Char.h"
+
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
 #define MENGINE_THREAD_JOB_WORK_COUNT 32
 #endif
@@ -34,12 +37,10 @@ namespace Mengine
     struct ThreadJobWorkerDesc
     {
         ThreadMutexInterfacePtr mutex;
-
         ThreadWorkerInterfacePtr worker;
 
         AtomicUInt32 id;
-
-        AtomicUInt32 status;
+        Atomic<EThreadStatus> status;
     };
     //////////////////////////////////////////////////////////////////////////
     class ThreadJob
@@ -50,8 +51,8 @@ namespace Mengine
         ~ThreadJob() override;
 
     public:
-        bool initialize( uint32_t _sleep );
-
+        bool initialize( uint32_t _sleep, const Char * _doc );
+        
     public:
         uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
         bool removeWorker( uint32_t _id );
@@ -61,14 +62,16 @@ namespace Mengine
     protected:
         bool _onMain() override;
         void _onUpdate() override;
-
-    protected:
-        bool check_remove( uint32_t _id );
+        void _onFinally() override;
 
     protected:
         uint32_t m_sleep;
 
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
+
+#ifndef NDEBUG
+        String m_doc;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadJob> ThreadJobPtr;

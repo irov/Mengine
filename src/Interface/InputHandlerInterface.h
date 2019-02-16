@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/KeyCode.h"
 
 #include "Config/Char.h"
@@ -86,7 +87,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class InputHandlerInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool handleKeyEvent( const InputKeyEvent & _event ) = 0;

@@ -8,7 +8,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        bool OpenALErrorCheck( const Char * _file, uint32_t _line )
+        bool OpenALErrorCheck( const Char * _method, const Char * _file, uint32_t _line )
         {
             ALenum error = alGetError();
 
@@ -19,7 +19,8 @@ namespace Mengine
 
             const Char * message = alGetString( error );
 
-            LOGGER_ERROR( "OpenAL Error: (%s[%d]) %d:%s"
+            LOGGER_ERROR( "OpenAL Error: method '%s' (%s[%d]) %d:%s"
+                , _method
                 , _file
                 , _line
                 , error

@@ -10,6 +10,7 @@
 #include "Kernel/MemoryHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 #include <math.h>
@@ -35,7 +36,7 @@ namespace Mengine
     bool HotspotImageConverterPNGToHIT::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
+            ->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {
@@ -73,11 +74,11 @@ namespace Mengine
     bool HotspotImageConverterPNGToHIT::convert()
     {
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( m_options.fileGroup, m_options.inputFileName, false );
+            ->openInputFile( m_options.fileGroup, m_options.inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( input_stream == nullptr )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: Image file '%s' was not found"
+            LOGGER_ERROR( "Image file '%s' was not found"
                 , m_options.inputFileName.c_str()
             );
 
@@ -85,11 +86,11 @@ namespace Mengine
         }
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: Image decoder for file '%s' was not found"
+            LOGGER_ERROR( "Image decoder for file '%s' was not found"
                 , m_options.inputFileName.c_str()
             );
 
@@ -98,7 +99,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
+            LOGGER_ERROR( "Image initialize for file '%s' was not found"
                 , m_options.inputFileName.c_str()
             );
 
@@ -128,7 +129,7 @@ namespace Mengine
 
         if( memory == nullptr )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: create memory cache buffer '%d'"
+            LOGGER_ERROR( "create memory cache buffer '%d'"
                 , bufferSize
             );
 
@@ -151,11 +152,11 @@ namespace Mengine
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.fileGroup, m_options.outputFileName );
+            ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
         if( output_stream == nullptr )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
+            LOGGER_ERROR( "HIT file '%s' not create (open file %s)"
                 , m_options.outputFileName.c_str()
                 , m_options.fileGroup->getName().c_str()
             );
@@ -164,11 +165,11 @@ namespace Mengine
         }
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
+            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( encoder == nullptr )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (createEncoder hitPick)"
+            LOGGER_ERROR( "HIT file '%s' not create (createEncoder hitPick)"
                 , m_options.outputFileName.c_str()
             );
 
@@ -177,7 +178,7 @@ namespace Mengine
 
         if( encoder->initialize( output_stream ) == false )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not initialize (createEncoder hitPick)"
+            LOGGER_ERROR( "HIT file '%s' not initialize (createEncoder hitPick)"
                 , m_options.outputFileName.c_str()
             );
 

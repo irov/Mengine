@@ -15,6 +15,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static const ConstStringHolder::size_type MENGINE_STRINGIZE_UNKNOWN_SIZE = ~0U;
+    static const ConstString::hash_type MENGINE_STRINGIZE_UNKNOWN_HASH = -1;
+    //////////////////////////////////////////////////////////////////////////
     class StringizeServiceInterface
         : public ServiceInterface
     {
@@ -46,14 +49,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size )
         {
-            ConstString cstr = stringizeStringSizeHash( _value, (ConstStringHolder::size_type)_size, ((ConstString::hash_type)(-1)) );
+            ConstString cstr = stringizeStringSizeHash( _value, (ConstStringHolder::size_type)_size, MENGINE_STRINGIZE_UNKNOWN_HASH );
 
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeString( const Char * _value )
         {
-            ConstString cstr = stringizeStringSize( _value, ((ConstString::size_type)(-1)) );
+            ConstString cstr = stringizeStringSize( _value, MENGINE_STRINGIZE_UNKNOWN_SIZE );
 
             return cstr;
         }
@@ -88,7 +91,7 @@ namespace Mengine
         {
             ConstString cstr;
             STRINGIZE_SERVICE()
-                ->stringizeInternal( _value, (ConstString::size_type)_size, ((ConstString::hash_type)(-1)), cstr );
+                ->stringizeInternal( _value, (ConstString::size_type)_size, MENGINE_STRINGIZE_UNKNOWN_HASH, cstr );
 
             return cstr;
         }

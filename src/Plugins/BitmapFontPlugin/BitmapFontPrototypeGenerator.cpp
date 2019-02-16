@@ -22,11 +22,11 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer BitmapFontPrototypeGenerator::generate()
+    FactorablePointer BitmapFontPrototypeGenerator::generate( const Char * _doc )
     {
         const FactoryPtr & factory = this->getFactory();
 
-        BitmapFontPtr font = factory->createObject();
+		BitmapFontPtr font = factory->createObject( _doc );
 
         return font;
     }

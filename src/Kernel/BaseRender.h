@@ -21,8 +21,13 @@ namespace Mengine
 
     public:
         void setRelationRender( RenderInterface * _relationRender ) override;
+        void setRelationRenderFront( RenderInterface * _relationRender ) override;
         void removeRelationRender() override;
         inline BaseRender * getRelationRender() const override;
+
+    public:
+        void moveRelationRenderFront( RenderInterface * _childRender ) override;
+        void moveRelationRenderBack( RenderInterface * _childRender ) override;        
 
     public:
         void foreachChildren( const LambdaRender & _lambda ) override;
@@ -44,8 +49,9 @@ namespace Mengine
         virtual void _setLocalHide( bool _localHide );
 
     protected:
-        void addRelationRenderChildren_( BaseRender * _child );
-        void removeRelationRenderChildren_( BaseRender * _child );
+        void addRelationRenderChildrenBack_( BaseRender * _childRender );
+        void addRelationRenderChildrenFront_( BaseRender * _childRender );
+        void removeRelationRenderChildren_( BaseRender * _childRender );
 
     public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;

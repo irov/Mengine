@@ -45,6 +45,7 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/Date.h"
+#include "Kernel/Document.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -186,6 +187,10 @@ PLUGIN_EXPORT( Steam );
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
 PLUGIN_EXPORT( NodeDebugger );
+#endif
+
+#ifdef MENGINE_PLUGIN_POSIX_SOCKET_STATIC
+PLUGIN_EXPORT( PosixSocket );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
@@ -700,6 +705,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
 #endif
 
+#ifdef MENGINE_PLUGIN_POSIX_SOCKET_STATIC
+        MENGINE_ADD_PLUGIN( PosixSocket, "initialize Plugin PosixSocket..." );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native..." );
 #endif
@@ -773,7 +782,7 @@ namespace Mengine
         for( const String & moduleName : modules )
         {
             if( MODULE_SERVICE()
-                ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "Application Failed to run module '%s'"
                     , moduleName.c_str()
@@ -793,7 +802,7 @@ namespace Mengine
             for( const String & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                    ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
                 {
                     LOGGER_ERROR( "Application Failed to run dev module '%s'"
                         , moduleName.c_str()

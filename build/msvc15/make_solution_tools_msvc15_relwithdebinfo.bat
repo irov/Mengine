@@ -1,1 +1,1 @@
-@call make_solution_tools_msvc15 RelWithDebInfo
+@call %~dp0make_solution_tools_msvc15 RelWithDebInfo

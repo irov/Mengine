@@ -15,6 +15,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Config/Stringstream.h"
 
@@ -54,7 +55,7 @@ namespace Mengine
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             THREAD_SERVICE()
-                ->createThread( threadName, -1, __FILE__, __LINE__ );
+                ->createThread( threadName, -1, MENGINE_DOCUMENT_FUNCTION );
 
             m_threads.emplace_back( threadName );
 
@@ -139,7 +140,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
+		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -212,7 +213,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
+        ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -291,7 +292,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject();
+        ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -392,7 +393,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject();
+        ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 

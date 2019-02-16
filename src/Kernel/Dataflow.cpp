@@ -13,7 +13,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        DataPointer getDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow )
+        DataPointer getDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const Char * _doc )
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
@@ -23,7 +23,7 @@ namespace Mengine
             }
 
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false );
+                ->openInputFile( _fileGroup, _filePath, false, _doc );
 
             if( stream == nullptr )
             {
@@ -51,7 +51,7 @@ namespace Mengine
             return data;
         }
         //////////////////////////////////////////////////////////////////////////
-        DataPointer popDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow )
+        DataPointer popDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const Char * _doc )
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
@@ -61,7 +61,7 @@ namespace Mengine
             }
 
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false );
+				->openInputFile( _fileGroup, _filePath, false, _doc );
 
             if( stream == nullptr )
             {

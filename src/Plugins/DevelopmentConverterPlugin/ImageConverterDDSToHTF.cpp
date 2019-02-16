@@ -8,6 +8,7 @@
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
@@ -50,11 +51,11 @@ namespace Mengine
         FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, full_input, false );
+            ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream_intput == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterPVRToHTF::convert: %s invalid open input file"
+            LOGGER_ERROR( "invalid open input file '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -62,11 +63,11 @@ namespace Mengine
         }
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterPVRToHTF::convert: %s invalid create decoder"
+            LOGGER_ERROR( "invalid create decoder for '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -75,7 +76,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream_intput ) == false )
         {
-            LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid prepare decoder"
+            LOGGER_ERROR( "invalid prepare decoder for '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -90,9 +91,9 @@ namespace Mengine
 
         if( data_buffer == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid cache memory %d"
-                , m_options.inputFileName.c_str()
+            LOGGER_ERROR( "invalid cache memory %d for '%s'"                
                 , data_full_size
+				, m_options.inputFileName.c_str()
             );
 
             return false;
@@ -113,7 +114,7 @@ namespace Mengine
 
             if( decoder->setOptions( &decoder_options ) == false )
             {
-                LOGGER_ERROR( "ImageConverterPVRToHTF::convert: %s invalid optionize decoder"
+                LOGGER_ERROR( "invalid optionize decoder '%s'"
                     , m_options.inputFileName.c_str()
                 );
 
@@ -122,7 +123,7 @@ namespace Mengine
 
             if( decoder->rewind() == false )
             {
-                LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid rewind"
+                LOGGER_ERROR( "invalid rewind '%s'"
                     , m_options.inputFileName.c_str()
                 );
 
@@ -131,7 +132,7 @@ namespace Mengine
 
             if( decoder->decode( miplevel_data_memory, miplevel_data_size ) == 0 )
             {
-                LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid decode"
+                LOGGER_ERROR( "invalid decode '%s'"
                     , m_options.inputFileName.c_str()
                 );
 
@@ -142,20 +143,20 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr stream_output = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, full_output );
+            ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream_output == nullptr )
         {
-            LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid open output %s"
-                , m_options.inputFileName.c_str()
+            LOGGER_ERROR( "invalid open output '%s' for '%s'"
                 , full_output.c_str()
+				, m_options.inputFileName.c_str()
             );
 
             return false;
         }
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "htfImage" ) );
+            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( encoder->initialize( stream_output ) == false )
         {

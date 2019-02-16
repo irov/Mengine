@@ -9,6 +9,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -55,7 +56,7 @@ namespace Mengine
         m_videoDecoderCacher.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder() const
+    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder( const Char * _doc ) const
     {
         const VideoDecoderInterfacePtr & cacheVideoDecoder = m_videoDecoderCacher.findCache();
 
@@ -70,11 +71,11 @@ namespace Mengine
         const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr videoStream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, true );
+            ->openInputFile( fileGroup, filePath, true, _doc );
 
         if( videoStream == nullptr )
         {
-            LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't open video file '%s'"
+            LOGGER_ERROR( "group '%s' name '%s' can't open video file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
@@ -86,11 +87,11 @@ namespace Mengine
         const ConstString & codecType = this->getCodecType();
 
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
-            ->createDecoderT<VideoDecoderInterfacePtr>( codecType );
+            ->createDecoderT<VideoDecoderInterfacePtr>( codecType, _doc );
 
         if( videoDecoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't create video decoder for file '%s'"
+            LOGGER_ERROR( "group '%s' name '%s' can't create video decoder for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
@@ -126,7 +127,7 @@ namespace Mengine
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {
-            LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't setup options for file '%s'"
+            LOGGER_ERROR( "group '%s' name '%s' can't setup options for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
@@ -137,7 +138,7 @@ namespace Mengine
 
         if( videoDecoder->prepareData( videoStream ) == false )
         {
-            LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't initialize video decoder for file '%s'"
+            LOGGER_ERROR( "group '%s' name '%s' can't initialize video decoder for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
                 , this->getFilePath().c_str()

@@ -14,6 +14,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "math/utils.h"
 #include <algorithm>
@@ -44,10 +45,10 @@ namespace Mengine
         if( m_supportStream == true )
         {
             m_threadJobSoundBufferUpdate = THREAD_SERVICE()
-                ->createJob( 50 );
+                ->createJob( 50, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
-                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, __FILE__, __LINE__ );
+                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
                 ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate );
@@ -321,7 +322,7 @@ namespace Mengine
             return nullptr;
         }
 
-        SoundIdentityPtr emitter = m_factorySoundEmitter->createObject();
+		SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         emitter->id = new_id;
@@ -422,7 +423,7 @@ namespace Mengine
     SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, _streamable );
+            ->openInputFile( _fileGroup, _filePath, _streamable, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -435,7 +436,7 @@ namespace Mengine
         }
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
+            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( soundDecoder == nullptr )
         {
@@ -1285,7 +1286,7 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject();
+			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             SoundBufferInterfacePtr soundBuffer = _identity->source->getSoundBuffer();
 

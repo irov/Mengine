@@ -15,6 +15,7 @@
 #include "stdex/dynamic_array.h"
 
 #include "Kernel/Factory.h"
+#include "Kernel/Pool.h"
 
 #include "math/mat4.h"
 #include "math/vec4.h"
@@ -109,7 +110,7 @@ namespace Mengine
         uint32_t flags;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderPass> RenderPassPtr;
+    //typedef IntrusivePtr<RenderPass> RenderPassPtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderService
         : public ServiceBase<RenderServiceInterface>
@@ -162,7 +163,7 @@ namespace Mengine
             , const RenderBatchPtr & _batch
             , const RenderProgramVariableInterfacePtr & _variable ) const;
 
-        const RenderPassPtr & requestRenderPass_( const RenderContext * _context
+        RenderPass * requestRenderPass_( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , uint32_t _vertexCount, uint32_t _indexCount );
@@ -225,9 +226,9 @@ namespace Mengine
         void restoreRenderSystemStates_();
 
         void renderPasses_();
-        void renderPass_( const RenderPassPtr & _renderPass );
+        void renderPass_( const RenderPass * _renderPass );
 
-        void renderObjects_( const RenderPassPtr & _renderPass );
+        void renderObjects_( const RenderPass * _renderPass );
         void renderObject_( RenderObject * _renderObject );
 
     protected:
@@ -238,7 +239,7 @@ namespace Mengine
 
     protected:
         void insertRenderPasses_();
-        void insertRenderObjects_( const RenderPassPtr & _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
+        void insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
         bool insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t _vbPos, uint32_t _ibPos ) const;
 
         void flushRender_();
@@ -318,7 +319,10 @@ namespace Mengine
         typedef Vector<RenderBatchPtr> VectorRenderBatch;
         VectorRenderBatch m_renderBatches;
 
-        typedef Vector<RenderPassPtr> VectorRenderPass;
+        typedef Pool<RenderPass, 128> PoolRenderPass;
+        PoolRenderPass m_poolRenderPass;
+
+        typedef Vector<RenderPass *> VectorRenderPass;
         VectorRenderPass m_renderPasses;
 
         typedef List<VectorRenderVertex2D> ListDebugVertices;
@@ -342,6 +346,6 @@ namespace Mengine
 
     protected:
         void batchRenderObjectNormal_( ArrayRenderObject::iterator _begin, ArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
-        void batchRenderObjectSmart_( const RenderPassPtr & _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
+        void batchRenderObjectSmart_( const RenderPass * _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
     };
 }

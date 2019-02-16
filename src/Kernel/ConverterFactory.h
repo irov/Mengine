@@ -25,9 +25,9 @@ namespace Mengine
         }
 
     protected:
-        ConverterInterfacePtr createConverter() override
+        ConverterInterfacePtr createConverter( const Char * _doc ) override
         {
-            IntrusivePtr<T> converter = m_factory->createObject();
+            IntrusivePtr<T> converter = m_factory->createObject( _doc );
 
             return converter;
         }

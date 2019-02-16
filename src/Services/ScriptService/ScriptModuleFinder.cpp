@@ -10,6 +10,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 
@@ -91,7 +92,7 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         {
-            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject();
+            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             loader->setDataflow( m_dataflowPY );
             loader->setModule( _kernel, _module );
@@ -106,7 +107,7 @@ namespace Mengine
 #endif
 
         {
-            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject();
+			ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             loader->setDataflow( m_dataflowPYZ );
             loader->setModule( _kernel, _module );

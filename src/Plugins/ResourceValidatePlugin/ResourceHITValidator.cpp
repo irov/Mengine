@@ -6,6 +6,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -29,7 +30,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false );
+            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -46,7 +47,7 @@ namespace Mengine
         const ConstString & codecType = _resource->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( codecType );
+            ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {

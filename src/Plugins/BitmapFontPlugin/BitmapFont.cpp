@@ -12,6 +12,7 @@
 #include "Kernel/IniUtil.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -94,7 +95,7 @@ namespace Mengine
             ->findCodecType( m_pathFontImage );
 
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( m_fileGroup, m_pathFontImage, fontImageCodec );
+            ->loadTexture( m_fileGroup, m_pathFontImage, fontImageCodec, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_textureFont == nullptr )
         {

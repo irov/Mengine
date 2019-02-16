@@ -57,7 +57,16 @@ ENDMACRO()
 # solution
 
 MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
-    SET(${Plugin} ${Toggle} CACHE BOOL ${MSG} FORCE)
+    OPTION(${Plugin}_FORCE_ENABLE ${MSG} OFF)
+    OPTION(${Plugin}_FORCE_DISABLE ${MSG} OFF)
+    
+    IF(${Plugin}_FORCE_ENABLE)
+        SET(${Plugin} ON CACHE BOOL ${MSG} FORCE)
+    ELSEIF(${Plugin}_FORCE_DISABLE)
+        SET(${Plugin} OFF CACHE BOOL ${MSG} FORCE)
+    ELSE()
+        SET(${Plugin} ${Toggle} CACHE BOOL ${MSG} FORCE)
+    ENDIF()
     
     IF(${Plugin})
         SET(${Plugin}_DLL ${DLL} CACHE BOOL ${MSG} FORCE)

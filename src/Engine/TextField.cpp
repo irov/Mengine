@@ -553,6 +553,18 @@ namespace Mengine
     void TextField::calcTextViewport( Viewport & _viewport ) const
     {
         const TextFontInterfacePtr & font = this->getFont();
+
+        if( font == nullptr )
+        {
+            mt::box2f box;
+            mt::insideout_box( box );
+
+            _viewport.begin = box.minimum;
+            _viewport.end = box.maximum;
+
+            return;
+        }
+
         float lineOffset = this->calcLineOffset();
 
         float linesOffset = this->calcLinesOffset( lineOffset, font );

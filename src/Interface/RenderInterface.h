@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/Colorable.h"
 #include "Kernel/BoundingBox.h"
 #include "Kernel/RenderContext.h"
@@ -13,13 +14,20 @@ namespace Mengine
     typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderInterface
-        : public Colorable
+        : public Interface
+        , public Colorable
         , public BoundingBox
     {
     public:
         virtual void setRelationRender( RenderInterface * _relationRender ) = 0;
+        virtual void setRelationRenderFront( RenderInterface * _relationRender ) = 0;
         virtual void removeRelationRender() = 0;
         virtual RenderInterface * getRelationRender() const = 0;
+
+    public:
+        virtual void moveRelationRenderFront( RenderInterface * _childRender ) = 0;
+        virtual void moveRelationRenderBack( RenderInterface * _childRender ) = 0;        
+
 
     public:
         typedef Lambda<void( RenderInterface * )> LambdaRender;

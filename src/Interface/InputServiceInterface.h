@@ -1,9 +1,8 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputHandlerInterface.h"
-
-#include "Kernel/Mixin.h"
 
 #include "Config/Typedef.h"
 
@@ -29,7 +28,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class InputMousePositionProviderInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) = 0;

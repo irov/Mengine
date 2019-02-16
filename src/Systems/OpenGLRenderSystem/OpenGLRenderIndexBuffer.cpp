@@ -6,6 +6,7 @@
 #include "OpenGLRenderEnum.h"
 
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -88,7 +89,7 @@ namespace Mengine
         const uint32_t bufferSize = m_lockCount * m_indexSize;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         memory->newBuffer( bufferSize, "OpenGLRenderIndexBuffer", __FILE__, __LINE__ );
 

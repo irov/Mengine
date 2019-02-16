@@ -5,6 +5,8 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Kernel/Document.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -24,7 +26,7 @@ namespace Mengine
         MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryBuffer();
+                ->createMemoryBuffer( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
@@ -67,7 +69,7 @@ namespace Mengine
         MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _doc, const Char * _file, uint32_t _line )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _category, _filePath, _stream );
+                ->openInputFile( _category, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
@@ -79,7 +81,7 @@ namespace Mengine
         MemoryInterfacePtr createMemoryBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryBuffer();
+                ->createMemoryBuffer( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
@@ -93,7 +95,7 @@ namespace Mengine
         MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryCacheBuffer();
+                ->createMemoryCacheBuffer( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
@@ -161,7 +163,7 @@ namespace Mengine
         MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _doc, const Char * _file, uint32_t _line )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _category, _filePath, _stream );
+                ->openInputFile( _category, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
@@ -175,7 +177,7 @@ namespace Mengine
         MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _doc, const Char * _file, uint32_t _line )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _category, _filePath, _stream );
+                ->openInputFile( _category, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 

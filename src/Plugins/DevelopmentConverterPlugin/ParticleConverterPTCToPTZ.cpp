@@ -8,6 +8,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
@@ -64,7 +65,7 @@ namespace Mengine
 
         if( data_memory == nullptr )
         {
-            LOGGER_ERROR( "ParticleConverterPTCToPTZ::convert_: invalid cache memory '%s'"
+            LOGGER_ERROR( "invalid cache memory '%s'"
                 , full_input.c_str()
             );
 
@@ -72,11 +73,11 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr output = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, full_output );
+            ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
         if( output == nullptr )
         {
-            LOGGER_ERROR( "ParticleConverterPTCToPTZ::convert_: invalid open '%s'"
+            LOGGER_ERROR( "invalid open '%s'"
                 , full_output.c_str()
             );
 
@@ -85,7 +86,7 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( output, m_archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), false, data_memory, data_size, EAC_BEST ) == false )
         {
-            LOGGER_ERROR( "ParticleConverterPTCToPTZ::convert_: invalid write '%s'"
+            LOGGER_ERROR( "invalid write '%s'"
                 , full_output.c_str()
             );
 
@@ -99,7 +100,7 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( _stream, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) ) == false )
         {
-            LOGGER_ERROR( "ParticleConverterPTCToPTZ::validateVersion: invalid magic header"
+            LOGGER_ERROR( "invalid magic header"
             );
 
             return false;

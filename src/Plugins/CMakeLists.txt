@@ -66,6 +66,10 @@ if(MENGINE_PLUGIN_NODEDEBUGRENDER)
     ADD_SUBDIRECTORY(NodeDebugRenderPlugin)
 endif()
 
+if(MENGINE_PLUGIN_NODELEAKDETECTOR)
+    ADD_SUBDIRECTORY(NodeLeakDetectorPlugin)
+endif()
+
 if(MENGINE_PLUGIN_RESOURCEVALIDATE)
     ADD_SUBDIRECTORY(ResourceValidatePlugin)
 endif()
@@ -82,30 +86,33 @@ if(MENGINE_PLUGIN_RESOURCEDEBUGGER)
     ADD_SUBDIRECTORY(ResourceDebuggerPlugin)
 endif()
 
+if(MENGINE_PLUGIN_POSIX_SOCKET)
+    ADD_SUBDIRECTORY(PosixSocketPlugin)
+endif()
 
 if(MENGINE_PLATFORM_WIN32)
-    ADD_SUBDIRECTORY( Win32SocketPlugin )
-    ADD_SUBDIRECTORY( Win32FileGroupPlugin )    
+    ADD_SUBDIRECTORY(Win32SocketPlugin)
+    ADD_SUBDIRECTORY(Win32FileGroupPlugin)
 endif()
 
 if(MENGINE_PLATFORM_SDL)
-    ADD_SUBDIRECTORY( SDLFileGroupPlugin )
+    ADD_SUBDIRECTORY(SDLFileGroupPlugin)
 endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)
-    ADD_SUBDIRECTORY( Win32ConsoleLogger )
+    ADD_SUBDIRECTORY(Win32ConsoleLogger)
     
-    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
-    ADD_SUBDIRECTORY( XlsExportPlugin )
-    ADD_SUBDIRECTORY( XmlToBinPlugin )
+    ADD_SUBDIRECTORY(DevelopmentConverterPlugin)
+    ADD_SUBDIRECTORY(XlsExportPlugin)
+    ADD_SUBDIRECTORY(XmlToBinPlugin)
 endif()
 
 if(MENGINE_PLUGIN_BITMAPFONT)
-    ADD_SUBDIRECTORY( BitmapFontPlugin )
+    ADD_SUBDIRECTORY(BitmapFontPlugin)
 endif()
 
 if(MENGINE_PLUGIN_TTF)
-    ADD_SUBDIRECTORY( TTFPlugin )
+    ADD_SUBDIRECTORY(TTFPlugin)
 endif()
 
 SET( APPLICATION_DEPENDENCIES

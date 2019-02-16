@@ -1,15 +1,15 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/Scene.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SceneChangeCallbackInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) = 0;

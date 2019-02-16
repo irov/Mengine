@@ -9,15 +9,12 @@
 #include "TextEntry.h"
 
 #include "Kernel/Factory.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHolderLocalString.h"
-
 #include "Kernel/FilePath.h"
+#include "Kernel/Pool.h"
 
 #include "Config/Map.h"
-#include "stdex/template_pool.h"
-
 #include "Config/Typedef.h"
 
 namespace Mengine

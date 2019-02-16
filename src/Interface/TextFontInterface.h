@@ -13,8 +13,6 @@
 #include "Config/String.h"
 #include "Config/VectorString.h"
 
-#include "Kernel/Mixin.h"
-
 #include "math/vec4.h"
 #include "math/uv4.h"
 

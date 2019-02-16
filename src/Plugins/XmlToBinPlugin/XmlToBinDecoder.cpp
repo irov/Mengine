@@ -7,6 +7,8 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
+
 #include "Metacode/Metacode.h"
 
 #include "metabuf/Metadata.hpp"
@@ -141,7 +143,7 @@ namespace Mengine
         );
 
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, m_options.pathProtocol, false );
+            ->openInputFile( m_fileGroup, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( protocol_stream == nullptr )
         {
@@ -155,7 +157,7 @@ namespace Mengine
         size_t protocol_size = protocol_stream->size();
 
         MemoryBufferInterfacePtr memory_protocol = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_protocol == nullptr )
         {
@@ -224,7 +226,7 @@ namespace Mengine
         memory_protocol = nullptr;
 
         InputStreamInterfacePtr xml_stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, m_options.pathXml, false );
+            ->openInputFile( m_fileGroup, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( xml_stream == nullptr )
         {
@@ -247,7 +249,7 @@ namespace Mengine
         }
 
         MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_xml == nullptr )
         {
@@ -296,7 +298,7 @@ namespace Mengine
         xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void*)nullptr );
 
         MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_header == nullptr )
         {
@@ -332,7 +334,7 @@ namespace Mengine
         }
 
         MemoryBufferInterfacePtr memory_bin = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_bin == nullptr )
         {
@@ -377,7 +379,7 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, m_options.pathBin );
+            ->openOutputFile( m_fileGroup, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
 
         if( bin_stream == nullptr )
         {
@@ -430,5 +432,4 @@ namespace Mengine
     {
         return 0.0;
     }
-
 }

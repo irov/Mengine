@@ -3,7 +3,9 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/ThreadMutexScope.h"
 
 #include <algorithm>
@@ -25,15 +27,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]() {
+            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-        if( mutex == nullptr )
-        {
-            return false;
-        }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( mutex );
 
-        m_mutex = mutex;
+            m_mutex = mutex;
+        } );
 
         return true;
     }

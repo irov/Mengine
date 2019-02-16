@@ -8,8 +8,10 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/allocator.h"
 
@@ -73,7 +75,7 @@ namespace Mengine
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
         m_mutexAllocatorPool = THREAD_SYSTEM()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
             , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
@@ -84,7 +86,7 @@ namespace Mengine
             ->getCurrentThreadId();
 
         m_mutexMainCode = THREAD_SYSTEM()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         return true;
     }
@@ -97,14 +99,13 @@ namespace Mengine
 
             task->cancel();
 
-            if( desc.progress == false )
+            if( desc.progress == true )
             {
-                continue;
+                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+                threadIdentity->removeTask();
             }
 
-            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-
-			threadIdentity->removeTask();
+            task->finally();
         }
 
         m_tasks.clear();
@@ -140,13 +141,13 @@ namespace Mengine
         m_factoryThreadJob = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadJobPtr ThreadService::createJob( uint32_t _sleep )
+    ThreadJobPtr ThreadService::createJob( uint32_t _sleep, const Char * _doc )
     {
-        ThreadJobPtr threadJob = m_factoryThreadJob->createObject();
+		ThreadJobPtr threadJob = m_factoryThreadJob->createObject( _doc );
 
-        if( threadJob->initialize( _sleep ) == false )
+        if( threadJob->initialize( _sleep, _doc ) == false )
         {
-            LOGGER_ERROR( "ThreadService::createJob invalid create"
+            LOGGER_ERROR( "invalid create"
             );
 
             return nullptr;
@@ -155,7 +156,7 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const Char * _file, uint32_t _line )
+    bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc )
     {
         if( this->isAvailableService() == false )
         {
@@ -168,12 +169,9 @@ namespace Mengine
         }
 
         ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
-            ->createThread( _priority, _threadName.c_str(), _file, _line );
+            ->createThread( _priority, _doc );
 
-        if( identity == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, false );
 
         ThreadDesc td;
         td.name = _threadName;
@@ -279,16 +277,13 @@ namespace Mengine
                 continue;
             }
 
-            if( desc.progress == false )
+            if( desc.progress == true )
             {
-                m_tasks.erase( it );
-
-                return true;
+                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+                threadIdentity->removeTask();
             }
 
-            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-
-            threadIdentity->removeTask();
+            task->finally();
 
 			m_tasks.erase( it );
             
@@ -306,15 +301,16 @@ namespace Mengine
 
             task->cancel();
 
-            if( desc.progress == false )
-            {
-                continue;
-            }
+			if( desc.progress == true )
+			{
+				const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+				threadIdentity->removeTask();
+			}
 
-            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-
-			threadIdentity->removeTask();
+			task->finally();
         }
+
+        m_tasks.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadQueueInterfacePtr ThreadService::runTaskQueue( uint32_t _packetSize )
@@ -324,7 +320,7 @@ namespace Mengine
             return nullptr;
         }
 
-        ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject();
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         taskQueue->setPacketSize( _packetSize );
 
@@ -364,17 +360,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadService::waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line )
+    void ThreadService::waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc )
     {
         ThreadConditionVariableInterfacePtr conditionVariable = THREAD_SYSTEM()
-            ->createConditionVariable( _file, _line );
+            ->createConditionVariable( _doc );
 
         m_mutexMainCode->lock();
         MainCodeDesc desc;
         desc.conditionVariable = conditionVariable;
         desc.lambda = _lambda;
-        desc.file = _file;
-        desc.line = _line;
+        desc.doc = _doc;
         m_mainCodes.emplace_back( desc );
         m_mutexMainCode->unlock();
 
@@ -435,6 +430,8 @@ namespace Mengine
             }
             else
             {
+				task->finally();
+
                 m_tasks[it_task] = m_tasks.back();
                 m_tasks.pop_back();
                 --it_task_end;
@@ -456,7 +453,7 @@ namespace Mengine
             else
             {
                 m_threadQueues[it_task] = m_threadQueues.back();
-                m_tasks.pop_back();
+				m_threadQueues.pop_back();
                 --it_task_end;
             }
         }
@@ -473,18 +470,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr ThreadService::createMutex( const Char * _file, uint32_t _line )
+    ThreadMutexInterfacePtr ThreadService::createMutex( const Char * _doc )
     {
         if( this->isAvailableService() == false )
         {
             ThreadMutexDummyPtr mutex_dummy =
-                m_factoryThreadMutexDummy->createObject();
+				m_factoryThreadMutexDummy->createObject( _doc );
 
             return mutex_dummy;
         }
 
         ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
-            ->createMutex( _file, _line );
+            ->createMutex( _doc );
 
         return mutex;
     }

@@ -18,10 +18,10 @@ namespace Mengine
         virtual void update() = 0;
 
     public:
-        virtual ThreadJobPtr createJob( uint32_t _sleep ) = 0;
+        virtual ThreadJobPtr createJob( uint32_t _sleep, const Char * _doc ) = 0;
 
     public:
-        virtual bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc, uint32_t _line ) = 0;
+        virtual bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) = 0;
         virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
@@ -40,10 +40,10 @@ namespace Mengine
 
     public:
         typedef Lambda<void()> LambdaMainThreadCode;
-        virtual void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line ) = 0;
+        virtual void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const Char * _doc ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;

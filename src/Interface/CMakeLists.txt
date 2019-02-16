@@ -2,6 +2,7 @@ set( MY_LIB_NAME Interface )
 
 ADD_FILTER(
 src     
+    Interface.h
     ServiceInterface.h
     ServiceProviderInterface.h
 	PluginInterface.h
@@ -50,6 +51,7 @@ src
     PickerTrapInterface.h
     PickerServiceInterface.h
     PlayerInterface.h
+    PrototypeGeneratorInterface.h
     PrototypeServiceInterface.h
     VocabularyServiceInterface.h
     WatchdogInterface.h

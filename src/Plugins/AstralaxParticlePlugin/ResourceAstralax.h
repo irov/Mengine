@@ -32,7 +32,7 @@ namespace Mengine
         const ResourceImagePtr & getResourceImage( uint32_t _index ) const;
 
     public:
-        AstralaxEmitterInterfacePtr createEmitter();
+        AstralaxEmitterInterfacePtr createEmitter( const Char * _doc );
 
     protected:
         bool _compile() override;

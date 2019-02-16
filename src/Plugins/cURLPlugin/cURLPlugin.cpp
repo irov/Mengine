@@ -5,6 +5,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/Document.h"
 
 #include "curl/curl.h"
 
@@ -72,7 +73,7 @@ namespace Mengine
             return 0;
         }
 
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 
@@ -84,7 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLPlugin::postMessage( const String & _url, const MapParams & _params, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 
@@ -96,7 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLPlugin::headerData( const String & _url, const VectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 
@@ -108,7 +109,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLPlugin::getMessage( const String & _url, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 

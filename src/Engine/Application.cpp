@@ -860,7 +860,7 @@ namespace Mengine
                     ->setTextEnable( s_text_enable );
             }
 
-            if( _event.code == KC_O && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_V && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 static bool s_video_enable = true;
 

@@ -772,65 +772,20 @@ namespace Mengine
             ImGui::NextColumn();
             if( ImGui::BeginChild( "Panel" ) )
             {
-                const size_t numTabs = mTabs.size();
-                ImGuiStyle& style = ImGui::GetStyle();
-                float borderSize = style.FrameBorderSize;
-                float borderRounding = style.FrameRounding;
-                ImVec2 itemSpacing = style.ItemSpacing;
-                ImVec4 color = style.Colors[ImGuiCol_Button];
-                ImVec4 colorActive = style.Colors[ImGuiCol_ButtonActive];
-                ImVec4 colorHover = style.Colors[ImGuiCol_ButtonHovered];
-                ImVec4 colorDisabled = style.Colors[ImGuiCol_TextDisabled];
-                style.ItemSpacing.x = 0.f;
-                style.FrameBorderSize = 1.f;
-                style.FrameRounding = 5.f;
-
-                for( size_t i = 0; i < numTabs; ++i )
+                if( ImGui::BeginTabBar( "##Tabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton ) )
                 {
-                    const TabDescriptor& td = mTabs[i];
-
-                    if( i > 0 )
+                    for( auto& tab : mTabs )
                     {
-                        ImGui::SameLine();
-                    }
+                        if( ImGui::BeginTabItem( tab.title.c_str() ) )
+                        {
+                            tab.functor();
 
-                    if( td.enabled )
-                    {
-                        if( mCurrentTab == i )
-                        {
-                            style.Colors[ImGuiCol_Button] = colorActive;
-                            style.Colors[ImGuiCol_ButtonActive] = colorActive;
-                            style.Colors[ImGuiCol_ButtonHovered] = colorActive;
-                        }
-                        else
-                        {
-                            style.Colors[ImGuiCol_Button] = color;
-                            style.Colors[ImGuiCol_ButtonActive] = colorActive;
-                            style.Colors[ImGuiCol_ButtonHovered] = colorHover;
+                            ImGui::EndTabItem();
                         }
                     }
-                    else
-                    {
-                        style.Colors[ImGuiCol_Button] = colorDisabled;
-                        style.Colors[ImGuiCol_ButtonActive] = colorDisabled;
-                        style.Colors[ImGuiCol_ButtonHovered] = colorDisabled;
-                    }
 
-                    if( ImGui::ButtonEx( td.title.c_str(), ImVec2( 0.f, 0.f ), td.enabled ? ImGuiButtonFlags_None : ImGuiButtonFlags_Disabled ) )
-                    {
-                        mCurrentTab = i;
-                    }
+                    ImGui::EndTabBar();
                 }
-
-                style.Colors[ImGuiCol_Button] = color;
-                style.Colors[ImGuiCol_ButtonActive] = colorActive;
-                style.Colors[ImGuiCol_ButtonHovered] = colorHover;
-                style.ItemSpacing = itemSpacing;
-                style.FrameBorderSize = borderSize;
-                style.FrameRounding = borderRounding;
-
-                // draw current tab content
-                mTabs[mCurrentTab].functor();
             }
             ImGui::EndChild();
 

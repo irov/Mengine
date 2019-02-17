@@ -84,6 +84,7 @@ namespace Mengine
             m_arrow->setRenderViewport( nullptr );
             m_arrow->setRenderScissor( nullptr );
 
+            m_arrow->onDestroy();
             m_arrow = nullptr;
         }
 
@@ -229,6 +230,7 @@ namespace Mengine
             m_arrow->setRenderViewport( nullptr );
             m_arrow->setRenderScissor( nullptr );
 
+            m_arrow->onDestroy();
             m_arrow = nullptr;
         }
 

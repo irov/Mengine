@@ -24,10 +24,10 @@ namespace Mengine
         void unregisterFileGroupFactory( const ConstString & _type ) override;
 
     protected:
-        FileGroupInterfacePtr createFileGroup( const ConstString & _type );
+        FileGroupInterfacePtr createFileGroup( const ConstString & _type, const Char * _doc );
 
     public:
-        bool mountFileGroup( const ConstString& _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup ) override;
+        bool mountFileGroup( const ConstString& _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup, const Char * _doc ) override;
         bool unmountFileGroup( const ConstString& _name ) override;
 
     public:

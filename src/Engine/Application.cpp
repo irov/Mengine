@@ -32,6 +32,7 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 
+#include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
 
@@ -632,7 +633,7 @@ namespace Mengine
         );
 
         if( PACKAGE_SERVICE()
-            ->loadPackages( _category, _resourceIniPath ) == false )
+            ->loadPackages( _category, _resourceIniPath, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_CRITICAL( "Application invalid load resource packs"
             );
@@ -646,7 +647,7 @@ namespace Mengine
 
             m_locale = Helper::stringizeString( option_locale );
 
-            LOGGER_WARNING( "Application:initializeGame setup locale '%s'"
+            LOGGER_WARNING( "setup locale '%s'"
                 , m_locale.c_str()
             );
         }
@@ -654,14 +655,14 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        LOGGER_INFO( "Application:initializeGame load game resource tags '%s'"
+        LOGGER_INFO( "load game resource tags '%s'"
             , platformTags.to_str().c_str()
         );
 
         if( PACKAGE_SERVICE()
             ->enablePackages( m_locale, platformTags ) == false )
         {
-            LOGGER_ERROR( "PackageService invalid enable for locale '%s' platform '%s'!"
+            LOGGER_ERROR( "invalid enable for locale '%s' platform '%s'!"
                 , m_locale.c_str()
                 , platformTags.to_str().c_str()
             );
@@ -678,26 +679,9 @@ namespace Mengine
             if( TEXT_SERVICE()
                 ->validate() == false )
             {
-                LOGGER_ERROR( "TextService invalid validate!"
+                LOGGER_ERROR( "invalid validate!"
                 );
             }
-
-            //if( PACKAGE_SERVICE()
-            //    ->validatePackages() == false )
-            //{
-            //    LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!"
-            //    );
-
-            //    bool resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
-
-            //    if( resourceCheckCritical == false )
-            //    {
-            //        LOGGER_CRITICAL( "Fix Resources"
-            //        );
-
-            //        return false;
-            //    }
-            //}
         }
 #endif
 
@@ -876,7 +860,7 @@ namespace Mengine
                     ->setTextEnable( s_text_enable );
             }
 
-            if( _event.code == KC_O && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            if( _event.code == KC_V && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 static bool s_video_enable = true;
 

@@ -55,6 +55,8 @@ namespace Mengine
         D3DFORMAT m_format;
         D3DPOOL m_pool;
         IDirect3DVertexBuffer9 * m_pVB;
+
+        MemoryProxyInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;

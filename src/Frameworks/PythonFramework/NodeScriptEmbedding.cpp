@@ -605,7 +605,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -641,7 +641,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -689,7 +689,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -742,8 +742,8 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -780,17 +780,17 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -2324,13 +2324,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeScriptEmbedding::embedding()
+    bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
-
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel))
+    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(_kernel))
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );
@@ -2399,25 +2396,25 @@ namespace Mengine
 
         NodeScriptMethod * nodeScriptMethod = new FactorableUnique<NodeScriptMethod>();
 
-        pybind::interface_<Mixin>( kernel, "Mixin", true )
+        pybind::interface_<Mixin>( _kernel, "Mixin", true )
             .def_smart_pointer()
             ;
 
-        pybind::interface_<Scriptable, pybind::bases<Mixin> >( kernel, "Scriptable" )
+        pybind::interface_<Scriptable, pybind::bases<Mixin> >( _kernel, "Scriptable" )
             .def_bindable()
             ;
 
-        pybind::interface_<Identity, pybind::bases<Mixin> >( kernel, "Identity" )
+        pybind::interface_<Identity, pybind::bases<Mixin> >( _kernel, "Identity" )
             .def( "setName", &Identity::setName )
             .def( "getName", &Identity::getName )
             .def( "getType", &Identity::getType )
             ;
 
-        pybind::interface_<BoundingBox, pybind::bases<Mixin> >( kernel, "BoundingBox" )
+        pybind::interface_<BoundingBox, pybind::bases<Mixin> >( _kernel, "BoundingBox" )
             .def_proxy_static( "getBoundingBox", nodeScriptMethod, &NodeScriptMethod::s_BoundingBox_getBoundingBox )
             ;
 
-        pybind::interface_<Transformation, pybind::bases<Mixin> >( kernel, "Transformation" )
+        pybind::interface_<Transformation, pybind::bases<Mixin> >( _kernel, "Transformation" )
             .def( "setLocalPosition", &Transformation::setLocalPosition )
             .def( "getLocalPosition", &Transformation::getLocalPosition )
             .def( "setLocalPositionX", &Transformation::setLocalPositionX )
@@ -2465,19 +2462,19 @@ namespace Mengine
             .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::s_Transformation_removeRelationTransformation )
             ;
 
-        pybind::interface_<Compilable, pybind::bases<Mixin> >( kernel, "Compilable" )
+        pybind::interface_<Compilable, pybind::bases<Mixin> >( _kernel, "Compilable" )
             .def( "compile", &Compilable::compile )
             .def( "release", &Compilable::release )
             .def( "isCompile", &Compilable::isCompile )
             ;
 
-        pybind::interface_<Reference, pybind::bases<Mixin> >( kernel, "Reference" )
+        pybind::interface_<Reference, pybind::bases<Mixin> >( _kernel, "Reference" )
             .def( "incrementReference", &Reference::incrementReference )
             .def( "decrementReference", &Reference::decrementReference )
             .def( "countReference", &Reference::countReference )
             ;
 
-        pybind::interface_<FileGroupInterface, pybind::bases<Mixin> >( kernel, "FileGroupInterface" )
+        pybind::interface_<FileGroupInterface, pybind::bases<Mixin> >( _kernel, "FileGroupInterface" )
             .def( "getName", &FileGroupInterface::getName )
             .def( "getCategory", &FileGroupInterface::getCategory )
             .def( "isPacked", &FileGroupInterface::isPacked )
@@ -2486,7 +2483,7 @@ namespace Mengine
             .def( "existDirectory", &FileGroupInterface::existDirectory )
             ;
 
-        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( kernel, "ResourceReference", false )
+        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( _kernel, "ResourceReference", false )
             .def( "setLocale", &Resource::setLocale )
             .def( "getLocale", &Resource::getLocale )
             .def( "setFileGroup", &Resource::setFileGroup )
@@ -2497,7 +2494,7 @@ namespace Mengine
             .def( "uncache", &Resource::uncache )
             ;
 
-        pybind::interface_<Content, pybind::bases<Mixin> >( kernel, "Content", false )
+        pybind::interface_<Content, pybind::bases<Mixin> >( _kernel, "Content", false )
             .def( "setFilePath", &Content::setFilePath )
             .def( "getFilePath", &Content::getFilePath )
             .def( "setCodecType", &Content::setCodecType )
@@ -2510,7 +2507,7 @@ namespace Mengine
             .def( "isValidNoExist", &Content::isValidNoExist )
             ;
 
-        pybind::interface_<ResourceImage, pybind::bases<Resource> >( kernel, "ResourceImage", false )
+        pybind::interface_<ResourceImage, pybind::bases<Resource> >( _kernel, "ResourceImage", false )
             .def( "setMaxSize", &ResourceImage::setMaxSize )
             .def( "getMaxSize", &ResourceImage::getMaxSize )
             .def( "setSize", &ResourceImage::setSize )
@@ -2533,7 +2530,7 @@ namespace Mengine
             .def( "getColor", &ResourceImage::getColor )
             ;
 
-        pybind::interface_<ResourceImageData, pybind::bases<Resource, Content> >( kernel, "ResourceImageData", false )
+        pybind::interface_<ResourceImageData, pybind::bases<Resource, Content> >( _kernel, "ResourceImageData", false )
             .def_deprecated( "setImagePath", &ResourceImageData::setFilePath, "use setFilePath" )
             .def_deprecated( "getImagePath", &ResourceImageData::getFilePath, "use getFilePath" )
             .def( "setImageMaxSize", &ResourceImageData::setImageMaxSize )
@@ -2544,68 +2541,68 @@ namespace Mengine
             .def( "getImageHeight", &ResourceImageData::getImageHeight )
             ;
 
-        pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage, Content> >( kernel, "ResourceImageDefault", false )
+        pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage, Content> >( _kernel, "ResourceImageDefault", false )
             ;
 
-        pybind::interface_<ResourceImageSubstractRGBAndAlpha, pybind::bases<ResourceImage> >( kernel, "ResourceImageSubstractRGBAndAlpha", false )
+        pybind::interface_<ResourceImageSubstractRGBAndAlpha, pybind::bases<ResourceImage> >( _kernel, "ResourceImageSubstractRGBAndAlpha", false )
             ;
 
-        pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage> >( kernel, "ResourceImageSubstract", false )
+        pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage> >( _kernel, "ResourceImageSubstract", false )
             ;
 
-        pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( kernel, "ResourceImageSolid", false )
+        pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( _kernel, "ResourceImageSolid", false )
             ;
 
-        pybind::interface_<ResourceMusic, pybind::bases<Resource, Content> >( kernel, "ResourceMusic", false )
+        pybind::interface_<ResourceMusic, pybind::bases<Resource, Content> >( _kernel, "ResourceMusic", false )
             ;
 
-        pybind::interface_<ResourceImageSequence, pybind::bases<Resource> >( kernel, "ResourceImageSequence", false )
+        pybind::interface_<ResourceImageSequence, pybind::bases<Resource> >( _kernel, "ResourceImageSequence", false )
             ;
 
-        pybind::interface_<ResourceSound, pybind::bases<Resource, Content> >( kernel, "ResourceSound", false )
+        pybind::interface_<ResourceSound, pybind::bases<Resource, Content> >( _kernel, "ResourceSound", false )
             ;
 
-        pybind::interface_<ResourceFile, pybind::bases<Resource> >( kernel, "ResourceFile", false )
+        pybind::interface_<ResourceFile, pybind::bases<Resource> >( _kernel, "ResourceFile", false )
             ;
 
-        pybind::interface_<ResourceShape, pybind::bases<Resource> >( kernel, "ResourceShape", false )
+        pybind::interface_<ResourceShape, pybind::bases<Resource> >( _kernel, "ResourceShape", false )
             .def( "getPolygon", &ResourceShape::getPolygon )
             ;
 
-        pybind::interface_<ResourceCursor, pybind::bases<Resource> >( kernel, "ResourceCursor", false )
+        pybind::interface_<ResourceCursor, pybind::bases<Resource> >( _kernel, "ResourceCursor", false )
             ;
 
-        pybind::interface_<ResourceCursorICO, pybind::bases<ResourceCursor> >( kernel, "ResourceCursorICO", false )
+        pybind::interface_<ResourceCursorICO, pybind::bases<ResourceCursor> >( _kernel, "ResourceCursorICO", false )
             ;
 
-        pybind::interface_<ResourceCursorSystem, pybind::bases<ResourceCursor> >( kernel, "ResourceCursorSystem", false )
+        pybind::interface_<ResourceCursorSystem, pybind::bases<ResourceCursor> >( _kernel, "ResourceCursorSystem", false )
             ;
 
-        pybind::interface_<ResourceWindow, pybind::bases<Resource> >( kernel, "ResourceWindow", false )
+        pybind::interface_<ResourceWindow, pybind::bases<Resource> >( _kernel, "ResourceWindow", false )
             ;
 
-        pybind::interface_<ResourceTestPick, pybind::bases<Resource> >( kernel, "ResourceTestPick", false )
+        pybind::interface_<ResourceTestPick, pybind::bases<Resource> >( _kernel, "ResourceTestPick", false )
             .def_deprecated( "getWidth", &ResourceTestPick::getImageWidth, "use getImageWidth" )
             .def_deprecated( "getHeight", &ResourceTestPick::getImageHeight, "use getImageHeight" )
             .def( "getImageWidth", &ResourceTestPick::getImageWidth )
             .def( "getImageHeight", &ResourceTestPick::getImageHeight )
             ;
 
-        pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick, Content> >( kernel, "ResourceHIT", false )
+        pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick, Content> >( _kernel, "ResourceHIT", false )
             ;
 
-        pybind::interface_<UpdationInterface, pybind::bases<Mixin> >( kernel, "Updation" )
+        pybind::interface_<UpdationInterface, pybind::bases<Mixin> >( _kernel, "Updation" )
             ;
 
-        pybind::interface_<Updatable, pybind::bases<Mixin> >( kernel, "Updatable" )
+        pybind::interface_<Updatable, pybind::bases<Mixin> >( _kernel, "Updatable" )
             .def( "getUpdation", &Updatable::getUpdation )
             ;
 
-        pybind::interface_<Renderable, pybind::bases<Mixin> >( kernel, "Renderable" )
+        pybind::interface_<Renderable, pybind::bases<Mixin> >( _kernel, "Renderable" )
             .def( "getRender", &Renderable::getRender )
             ;
 
-        pybind::interface_<Colorable, pybind::bases<Mixin> >( kernel, "Colorable" )
+        pybind::interface_<Colorable, pybind::bases<Mixin> >( _kernel, "Colorable" )
             .def( "setLocalColor", &Colorable::setLocalColor )
             .def( "getLocalColor", &Colorable::getLocalColor )
             .def( "setLocalColorR", &Colorable::setLocalColorR )
@@ -2625,7 +2622,7 @@ namespace Mengine
             .def( "isSolidColor", &Colorable::isSolidColor )
             ;
 
-        pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox> >( kernel, "RenderInterface" )
+        pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox> >( _kernel, "RenderInterface" )
             .def( "setRelationRender", &RenderInterface::setRelationRender )
             .def( "removeRelationRender", &RenderInterface::removeRelationRender )
             .def( "getRelationRender", &RenderInterface::getRelationRender )
@@ -2646,7 +2643,7 @@ namespace Mengine
             .def( "isExternalRender", &RenderInterface::isExternalRender )
             ;
 
-        pybind::interface_<AnimationInterface, pybind::bases<Mixin> >( kernel, "Animation" )
+        pybind::interface_<AnimationInterface, pybind::bases<Mixin> >( _kernel, "Animation" )
             .def_proxy_static( "play", nodeScriptMethod, &NodeScriptMethod::s_Animation_play )
             .def( "stop", &AnimationInterface::stop )
             .def( "pause", &AnimationInterface::pause )
@@ -2678,19 +2675,19 @@ namespace Mengine
             .def( "getIntervalStart", &AnimationInterface::getIntervalStart )
             ;
 
-        pybind::interface_<Animatable, pybind::bases<Mixin> >( kernel, "Animatable" )
+        pybind::interface_<Animatable, pybind::bases<Mixin> >( _kernel, "Animatable" )
             .def( "getAnimation", &Animatable::getAnimation )
             ;
 
-        pybind::interface_<Eventable, pybind::bases<Mixin> >( kernel, "Eventable" )
+        pybind::interface_<Eventable, pybind::bases<Mixin> >( _kernel, "Eventable" )
             ;
 
-        pybind::interface_<Soundable, pybind::bases<Mixin> >( kernel, "Soundable" )
+        pybind::interface_<Soundable, pybind::bases<Mixin> >( _kernel, "Soundable" )
             .def( "setVolume", &Soundable::setVolume )
             .def( "getVolume", &Soundable::getVolume )
             ;
 
-        pybind::interface_<Affectorable, pybind::bases<Mixin> >( kernel, "Affectorable" )
+        pybind::interface_<Affectorable, pybind::bases<Mixin> >( _kernel, "Affectorable" )
             .def( "addAffector", &Affectorable::addAffector )
             .def( "stopAffector", &Affectorable::stopAffector )
             .def( "stopAllAffectors", &Affectorable::stopAllAffectors )
@@ -2698,7 +2695,7 @@ namespace Mengine
             .def( "getLinearSpeed", &Affectorable::getLinearSpeed )
             ;
 
-        pybind::interface_<Materialable, pybind::bases<Mixin> >( kernel, "Materialable", false )
+        pybind::interface_<Materialable, pybind::bases<Mixin> >( _kernel, "Materialable", false )
             .def( "setMaterialName", &Materialable::setMaterialName )
             .def( "getMaterialName", &Materialable::getMaterialName )
             .def( "setDisableTextureColor", &Materialable::setDisableTextureColor )
@@ -2707,7 +2704,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, Compilable, Renderable, Affectorable> >( _kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -2773,7 +2770,7 @@ namespace Mengine
             .def_proxy_static_args( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accAngleTo )
             ;
 
-        pybind::interface_<Affector, pybind::bases<Updatable> >( kernel, "Affector", true )
+        pybind::interface_<Affector, pybind::bases<Updatable> >( _kernel, "Affector", true )
             .def( "stop", &Affector::stop )
             .def( "getId", &Affector::getId )
             .def( "setFreeze", &Affector::setFreeze )
@@ -2782,7 +2779,7 @@ namespace Mengine
             .def( "getSpeedFactor", &Affector::getSpeedFactor )
             ;
 
-        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( kernel, "Surface", false )
+        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( _kernel, "Surface", false )
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
@@ -2792,18 +2789,18 @@ namespace Mengine
             .def_deprecated( "getColour", &Surface::getColor, "use getColor" )
             ;
 
-        pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )
+        pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( _kernel, "SurfaceSound", false )
             .def( "setResourceSound", &SurfaceSound::setResourceSound )
             .def( "getResourceSound", &SurfaceSound::getResourceSound )
             .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
             ;
 
-        pybind::interface_<SurfaceImage, pybind::bases<Surface> >( kernel, "SurfaceImage", false )
+        pybind::interface_<SurfaceImage, pybind::bases<Surface> >( _kernel, "SurfaceImage", false )
             .def( "setResourceImage", &SurfaceImage::setResourceImage )
             .def( "getResourceImage", &SurfaceImage::getResourceImage )
             ;
 
-        pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceImageSequence", false )
+        pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Eventable, Animatable> >( _kernel, "SurfaceImageSequence", false )
             .def( "setResourceImageSequence", &SurfaceImageSequence::setResourceImageSequence )
             .def( "getResourceImageSequence", &SurfaceImageSequence::getResourceImageSequence )
             .def( "getFrameCount", &SurfaceImageSequence::getFrameCount )
@@ -2813,7 +2810,7 @@ namespace Mengine
             .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
             ;
 
-        pybind::interface_<SurfaceTrackMatte, pybind::bases<Surface> >( kernel, "SurfaceTrackMatte", false )
+        pybind::interface_<SurfaceTrackMatte, pybind::bases<Surface> >( _kernel, "SurfaceTrackMatte", false )
             .def( "setResourceImage", &SurfaceTrackMatte::setResourceImage )
             .def( "getResourceImage", &SurfaceTrackMatte::getResourceImage )
             .def( "setResourceTrackMatteImage", &SurfaceTrackMatte::setResourceTrackMatteImage )
@@ -2822,42 +2819,42 @@ namespace Mengine
             .def( "getTrackMatteMode", &SurfaceTrackMatte::getTrackMatteMode )
             ;
 
-        pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( kernel, "SurfaceSolidColor", false )
+        pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( _kernel, "SurfaceSolidColor", false )
             .def( "setSolidColor", &SurfaceSolidColor::setSolidColor )
             .def( "getSolidColor", &SurfaceSolidColor::getSolidColor )
             .def( "setSolidSize", &SurfaceSolidColor::setSolidSize )
             .def( "getSolidSize", &SurfaceSolidColor::getSolidSize )
             ;
 
-        pybind::interface_<Visitable, pybind::bases<Mixin> >( kernel, "Visitable" )
+        pybind::interface_<Visitable, pybind::bases<Mixin> >( _kernel, "Visitable" )
             ;
 
-        pybind::interface_<ThreadTask, pybind::bases<Visitable> >( kernel, "Task" )
+        pybind::interface_<ThreadTask, pybind::bases<Visitable> >( _kernel, "Task" )
             ;
 
-        pybind::interface_<RenderViewportInterface, pybind::bases<Mixin> >( kernel, "RenderViewportInterface" )
+        pybind::interface_<RenderViewportInterface, pybind::bases<Mixin> >( _kernel, "RenderViewportInterface" )
             .def( "getViewport", &RenderViewportInterface::getViewport )
             ;
 
-        pybind::interface_<RenderViewport, pybind::bases<Node, RenderViewportInterface> >( kernel, "RenderViewport", false )
+        pybind::interface_<RenderViewport, pybind::bases<Node, RenderViewportInterface> >( _kernel, "RenderViewport", false )
             .def( "setFixedViewport", &RenderViewport::setFixedViewport )
             .def( "getFixedViewport", &RenderViewport::getFixedViewport )
             .def( "setViewport", &RenderViewport::setViewport )
             ;
 
-        pybind::interface_<RenderScissorInterface, pybind::bases<Mixin> >( kernel, "RenderScissorInterface" )
+        pybind::interface_<RenderScissorInterface, pybind::bases<Mixin> >( _kernel, "RenderScissorInterface" )
             .def( "getScissorViewport", &RenderScissorInterface::getScissorViewport )
             ;
 
-        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface> >( kernel, "RenderScissor", false )
+        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface> >( _kernel, "RenderScissor", false )
             .def( "setViewport", &RenderScissor::setViewport )
             .def( "getViewport", &RenderScissor::getViewport )
             ;
 
-        pybind::interface_<RenderCameraInterface, pybind::bases<Mixin> >( kernel, "RenderCameraInterface" )
+        pybind::interface_<RenderCameraInterface, pybind::bases<Mixin> >( _kernel, "RenderCameraInterface" )
             ;
 
-        pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface> >( kernel, "RenderCameraOrthogonal", false )
+        pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface> >( _kernel, "RenderCameraOrthogonal", false )
             .def( "setCameraPosition", &RenderCameraOrthogonal::setCameraPosition )
             .def( "setCameraDirection", &RenderCameraOrthogonal::setCameraDirection )
             .def( "setCameraUp", &RenderCameraOrthogonal::setCameraUp )
@@ -2872,7 +2869,7 @@ namespace Mengine
             .def( "getProxyViewMatrix", &RenderCameraOrthogonal::getProxyViewMatrix )
             ;
 
-        pybind::interface_<RenderCameraProjection, pybind::bases<Node, RenderCameraInterface> >( kernel, "RenderCameraProjection", false )
+        pybind::interface_<RenderCameraProjection, pybind::bases<Node, RenderCameraInterface> >( _kernel, "RenderCameraProjection", false )
             .def( "setCameraPosition", &RenderCameraProjection::setCameraPosition )
             .def( "setCameraDirection", &RenderCameraProjection::setCameraDirection )
             .def( "setCameraUp", &RenderCameraProjection::setCameraUp )
@@ -2883,7 +2880,7 @@ namespace Mengine
             .def( "setCameraFar", &RenderCameraProjection::setCameraFar )
             ;
 
-        pybind::interface_<RenderCameraOrthogonalTarget, pybind::bases<Node> >( kernel, "RenderCameraOrthogonalTarget", false )
+        pybind::interface_<RenderCameraOrthogonalTarget, pybind::bases<Node> >( _kernel, "RenderCameraOrthogonalTarget", false )
             .def( "setRenderCameraOrthogonal", &RenderCameraOrthogonalTarget::setRenderCameraOrthogonal )
             .def( "getRenderCameraOrthogonal", &RenderCameraOrthogonalTarget::getRenderCameraOrthogonal )
             .def( "setSpeed", &RenderCameraOrthogonalTarget::setSpeed )
@@ -2894,14 +2891,14 @@ namespace Mengine
             ;
 
 
-        pybind::interface_<RenderScissorInterface, pybind::bases<Mixin> >( kernel, "RenderScissorInterface", false )
+        pybind::interface_<RenderScissorInterface, pybind::bases<Mixin> >( _kernel, "RenderScissorInterface", false )
             .def( "getScissorRect", &RenderScissorInterface::getScissorViewport )
             ;
 
-        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface> >( kernel, "RenderScissorInterface", false )
+        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface> >( _kernel, "RenderScissorInterface", false )
             ;
 
-        pybind::interface_<RenderTargetInterface, pybind::bases<Mixin> >( kernel, "RenderTargetInterface", false )
+        pybind::interface_<RenderTargetInterface, pybind::bases<Mixin> >( _kernel, "RenderTargetInterface", false )
             .def( "getWidth", &RenderTargetInterface::getWidth )
             .def( "getHeight", &RenderTargetInterface::getHeight )
             ;
@@ -2909,12 +2906,12 @@ namespace Mengine
         {
 
 
-            pybind::interface_<SoundEmitter, pybind::bases<Node> >( kernel, "SoundEmitter", false )
+            pybind::interface_<SoundEmitter, pybind::bases<Node> >( _kernel, "SoundEmitter", false )
                 .def( "setSurfaceSound", &SoundEmitter::setSurfaceSound )
                 .def( "getSurfaceSound", &SoundEmitter::getSurfaceSound )
                 ;
 
-            pybind::interface_<TextField, pybind::bases<Node> >( kernel, "TextField", false )
+            pybind::interface_<TextField, pybind::bases<Node> >( _kernel, "TextField", false )
                 .def_deprecated( "setTextByKey", &TextField::setTextID, "use setTextID" )
                 .def( "setTextID", &TextField::setTextID )
                 .def( "removeTextID", &TextField::removeTextID )
@@ -2976,11 +2973,11 @@ namespace Mengine
                 .def( "getCharCount", &TextField::getCharCount )
                 ;
 
-            pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable> >( kernel, "ScriptHolder", false )
+            pybind::interface_<ScriptHolder, pybind::bases<Node, Eventable> >( _kernel, "ScriptHolder", false )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ScriptHolder_setEventListener )
                 ;
 
-            pybind::interface_<Point, pybind::bases<Node> >( kernel, "Point", false )
+            pybind::interface_<Point, pybind::bases<Node> >( _kernel, "Point", false )
                 .def( "setLinkedPoint", &Point::setLinkedPoint )
                 .def( "removeLinkedPoint", &Point::removeLinkedPoint )
                 .def( "getLinkedPoint", &Point::getLinkedPoint )
@@ -2988,7 +2985,7 @@ namespace Mengine
                 .def( "getWidth", &Point::getWidth )
                 ;
 
-            pybind::interface_<Line, pybind::bases<Node> >( kernel, "Line", false )
+            pybind::interface_<Line, pybind::bases<Node> >( _kernel, "Line", false )
                 .def( "setFrom", &Line::setFrom )
                 .def( "getFrom", &Line::getFrom )
                 .def( "setTo", &Line::setTo )
@@ -2997,10 +2994,10 @@ namespace Mengine
                 .def( "getWidth", &Line::getWidth )
                 ;
 
-            pybind::interface_<Layer, pybind::bases<Node> >( kernel, "Layer", false )
+            pybind::interface_<Layer, pybind::bases<Node> >( _kernel, "Layer", false )
                 ;
 
-            pybind::interface_<Layer2D, pybind::bases<Layer> >( kernel, "Layer2D", false )
+            pybind::interface_<Layer2D, pybind::bases<Layer> >( _kernel, "Layer2D", false )
                 .def( "setSize", &Layer2D::setSize )
                 .def( "getSize", &Layer2D::getSize )
                 .def( "setViewport", &Layer2D::setViewport )
@@ -3014,11 +3011,11 @@ namespace Mengine
             //    .def( "getParallaxFactor", &Parallax::getParallaxFactor )
             //    ;
 
-            pybind::interface_<PickerTrapInterface, pybind::bases<Mixin> >( kernel, "PickerTrap", false )
+            pybind::interface_<PickerTrapInterface, pybind::bases<Mixin> >( _kernel, "PickerTrap", false )
                 .def( "pick", &PickerTrapInterface::pick )
                 ;
 
-            pybind::interface_<HotSpot, pybind::bases<Node, Eventable> >( kernel, "HotSpot", false )
+            pybind::interface_<HotSpot, pybind::bases<Node, Eventable> >( _kernel, "HotSpot", false )
                 .def( "testPoint", &HotSpot::testPoint )
                 .def( "setOutward", &HotSpot::setOutward )
                 .def( "getOutward", &HotSpot::getOutward )
@@ -3031,7 +3028,7 @@ namespace Mengine
                 .def_proxy_native_kernel( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
                 ;
 
-            pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >( kernel, "HotSpotPolygon", false )
+            pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >( _kernel, "HotSpotPolygon", false )
                 .def( "setPolygon", &HotSpotPolygon::setPolygon )
                 .def( "getPolygon", &HotSpotPolygon::getPolygon )
                 .def( "clearPoints", &HotSpotPolygon::clearPoints )
@@ -3041,12 +3038,12 @@ namespace Mengine
                 .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_HotSpotPolygon_getWorldPolygon )
                 ;
 
-            pybind::interface_<HotSpotShape, pybind::bases<HotSpotPolygon> >( kernel, "HotSpotShape", false )
+            pybind::interface_<HotSpotShape, pybind::bases<HotSpotPolygon> >( _kernel, "HotSpotShape", false )
                 .def( "setResourceShape", &HotSpotShape::setResourceShape )
                 .def( "getResourceShape", &HotSpotShape::getResourceShape )
                 ;
 
-            pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >( kernel, "HotSpotImage", false )
+            pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >( _kernel, "HotSpotImage", false )
                 .def_deprecated( "setResourceHIT", &HotSpotImage::setResourceTestPick, "use setResourceTestPick" )
                 .def_deprecated( "getResourceHIT", &HotSpotImage::getResourceTestPick, "use getResourceTestPick" )
                 .def( "setResourceTestPick", &HotSpotImage::setResourceTestPick )
@@ -3057,18 +3054,18 @@ namespace Mengine
                 .def( "getHeight", &HotSpotImage::getHeight )
                 ;
 
-            pybind::interface_<HotSpotCircle, pybind::bases<HotSpot> >( kernel, "HotSpotCircle", false )
+            pybind::interface_<HotSpotCircle, pybind::bases<HotSpot> >( _kernel, "HotSpotCircle", false )
                 .def( "setRadius", &HotSpotCircle::setRadius )
                 .def( "getRadius", &HotSpotCircle::getRadius )
                 .def( "setEllipse", &HotSpotCircle::setEllipse )
                 .def( "getEllipse", &HotSpotCircle::getEllipse )
                 ;
 
-            pybind::interface_<HotSpotBubbles, pybind::bases<HotSpot> >( kernel, "HotSpotBubbles", false )
+            pybind::interface_<HotSpotBubbles, pybind::bases<HotSpot> >( _kernel, "HotSpotBubbles", false )
                 .def( "addBubble", &HotSpotBubbles::addBubble )
                 ;
 
-            pybind::interface_<Shape, pybind::bases<Node> >( kernel, "Shape", false )
+            pybind::interface_<Shape, pybind::bases<Node> >( _kernel, "Shape", false )
                 .def( "setSurface", &Shape::setSurface )
                 .def( "getSurface", &Shape::getSurface )
 
@@ -3078,20 +3075,20 @@ namespace Mengine
                 ;
 
             
-            pybind::interface_<ShapePacMan, pybind::bases<Shape> >( kernel, "ShapePacMan", false )
+            pybind::interface_<ShapePacMan, pybind::bases<Shape> >( _kernel, "ShapePacMan", false )
                 .def( "setAngleFrom", &ShapePacMan::setAngleFrom )
                 .def( "getAngleFrom", &ShapePacMan::getAngleFrom )
                 .def( "setAngleTo", &ShapePacMan::setAngleTo )
                 .def( "getAngleTo", &ShapePacMan::getAngleTo )
                 ;
 
-            pybind::interface_<ShapeQuad, pybind::bases<Shape> >( kernel, "ShapeQuad", false )
+            pybind::interface_<ShapeQuad, pybind::bases<Shape> >( _kernel, "ShapeQuad", false )
                 ;
 
-            pybind::interface_<ShapeQuadFixed, pybind::bases<ShapeQuad> >( kernel, "ShapeQuadFixed", false )
+            pybind::interface_<ShapeQuadFixed, pybind::bases<ShapeQuad> >( _kernel, "ShapeQuadFixed", false )
                 ;
 
-            pybind::interface_<ShapeQuadFlex, pybind::bases<ShapeQuad> >( kernel, "ShapeQuadFlex", false )
+            pybind::interface_<ShapeQuadFlex, pybind::bases<ShapeQuad> >( _kernel, "ShapeQuadFlex", false )
                 .def( "setCenterAlign", &ShapeQuadFlex::setCenterAlign )
                 .def( "getCenterAlign", &ShapeQuadFlex::getCenterAlign )
                 .def( "setFlipX", &ShapeQuadFlex::setFlipX )
@@ -3112,11 +3109,11 @@ namespace Mengine
                 .def( "getTextureUVScale", &ShapeQuadFlex::getTextureUVScale )
                 ;
 
-            pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( kernel, "Landscape2D", false )
+            pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( _kernel, "Landscape2D", false )
                 .def( "setBackParts", &Landscape2D::setBackParts )
                 ;
 
-            pybind::interface_<Grid2D, pybind::bases<Node, Materialable> >( kernel, "Grid2D", false )
+            pybind::interface_<Grid2D, pybind::bases<Node, Materialable> >( _kernel, "Grid2D", false )
                 .def( "setResourceImage", &Grid2D::setResourceImage )
                 .def( "getResourceImage", &Grid2D::getResourceImage )
                 .def( "setWidth", &Grid2D::setWidth )
@@ -3130,27 +3127,27 @@ namespace Mengine
                 .def( "setAngle", &Grid2D::setAngle )
                 ;
 
-            pybind::interface_<Gyroscope, pybind::bases<Node> >( kernel, "Gyroscope", false )
+            pybind::interface_<Gyroscope, pybind::bases<Node> >( _kernel, "Gyroscope", false )
                 ;
 
-            pybind::interface_<Interender, pybind::bases<Node> >( kernel, "Interender", false )
+            pybind::interface_<Interender, pybind::bases<Node> >( _kernel, "Interender", false )
                 ;
 
-            pybind::interface_<Isometric, pybind::bases<Node> >( kernel, "Isometric", false )
+            pybind::interface_<Isometric, pybind::bases<Node> >( _kernel, "Isometric", false )
                 ;
 
-            pybind::interface_<MatrixProxy, pybind::bases<Node> >( kernel, "MatrixProxy", false )
+            pybind::interface_<MatrixProxy, pybind::bases<Node> >( _kernel, "MatrixProxy", false )
                 ;
 
 
-            pybind::interface_<Meshget, pybind::bases<Node, Eventable> >( kernel, "Meshget", false )
+            pybind::interface_<Meshget, pybind::bases<Node, Eventable> >( _kernel, "Meshget", false )
                 .def( "setSurface", &Meshget::setSurface )
                 .def( "getSurface", &Meshget::getSurface )
                 .def( "setVertices", &Meshget::setVertices )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
                 ;
 
-            pybind::interface_<Window, pybind::bases<Node> >( kernel, "Window", false )
+            pybind::interface_<Window, pybind::bases<Node> >( _kernel, "Window", false )
                 .def( "setResourceWindow", &Window::setResourceWindow )
                 .def( "getResourceWindow", &Window::getResourceWindow )
                 .def( "setClientSize", &Window::setClientSize )
@@ -3162,7 +3159,7 @@ namespace Mengine
                 ;
         }
 
-        pybind::interface_<SchedulerInterface, pybind::bases<Mixin> >( kernel, "SchedulerInterface", true )
+        pybind::interface_<SchedulerInterface, pybind::bases<Mixin> >( _kernel, "SchedulerInterface", true )
             .def_proxy_static_args( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleInterface_timing )
             .def_proxy_static_args( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleInterface_schedule )
             .def_proxy_static_args( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleInterface_pipe )

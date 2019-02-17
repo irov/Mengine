@@ -23,7 +23,7 @@ namespace Mengine
         virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup ) = 0;
+        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup, const Char * _doc ) = 0;
         virtual bool unmountFileGroup( const ConstString & _name ) = 0;
 
     public:

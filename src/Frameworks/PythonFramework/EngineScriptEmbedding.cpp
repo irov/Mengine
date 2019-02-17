@@ -1324,7 +1324,7 @@ namespace Mengine
             desc.descriptionPath = _descriptionPath;
 
             bool result = PACKAGE_SERVICE()
-                ->addPackage( desc );
+                ->addPackage( desc, MENGINE_DOCUMENT_PYBIND );
 
             return result;
         }
@@ -3361,248 +3361,245 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool EngineScriptEmbedding::embedding()
+    bool EngineScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
         EngineScriptMethod * nodeScriptMethod = new FactorableUnique<EngineScriptMethod>();
 
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
-
-        pybind::def_functor_args( kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
-        pybind::def_functor( kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
+        pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
+        pybind::def_functor( _kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
 
         
-        pybind::def_functor( kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
-        pybind::def_functor( kernel, "removeGlobalScene", nodeScriptMethod, &EngineScriptMethod::removeGlobalScene );
-        pybind::def_functor( kernel, "getGlobalScene", nodeScriptMethod, &EngineScriptMethod::getGlobalScene );
+        pybind::def_functor( _kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
+        pybind::def_functor( _kernel, "removeGlobalScene", nodeScriptMethod, &EngineScriptMethod::removeGlobalScene );
+        pybind::def_functor( _kernel, "getGlobalScene", nodeScriptMethod, &EngineScriptMethod::getGlobalScene );
 
-        pybind::def_functor( kernel, "createScene", nodeScriptMethod, &EngineScriptMethod::s_createScene );
+        pybind::def_functor( _kernel, "createScene", nodeScriptMethod, &EngineScriptMethod::s_createScene );
 
-        pybind::def_functor( kernel, "getCamera2DPosition", nodeScriptMethod, &EngineScriptMethod::s_getCamera2DPosition );
+        pybind::def_functor( _kernel, "getCamera2DPosition", nodeScriptMethod, &EngineScriptMethod::s_getCamera2DPosition );
 
-        pybind::def_functor_kernel( kernel, "createNode", nodeScriptMethod, &EngineScriptMethod::s_createNode );
-        pybind::def_functor( kernel, "destroyNode", nodeScriptMethod, &EngineScriptMethod::s_destroyNode );
+        pybind::def_functor_kernel( _kernel, "createNode", nodeScriptMethod, &EngineScriptMethod::s_createNode );
+        pybind::def_functor( _kernel, "destroyNode", nodeScriptMethod, &EngineScriptMethod::s_destroyNode );
 
-        pybind::def_functor( kernel, "createSurface", nodeScriptMethod, &EngineScriptMethod::s_createSurface );
-        pybind::def_functor( kernel, "createSprite", nodeScriptMethod, &EngineScriptMethod::s_createSprite );
+        pybind::def_functor( _kernel, "createSurface", nodeScriptMethod, &EngineScriptMethod::s_createSurface );
+        pybind::def_functor( _kernel, "createSprite", nodeScriptMethod, &EngineScriptMethod::s_createSprite );
 
-        pybind::def_functor( kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
+        pybind::def_functor( _kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
 
-        pybind::def_functor_args( kernel, "timing", nodeScriptMethod, &EngineScriptMethod::timing );
-        pybind::def_functor( kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::timingRemove );
+        pybind::def_functor_args( _kernel, "timing", nodeScriptMethod, &EngineScriptMethod::timing );
+        pybind::def_functor( _kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::timingRemove );
 
-        pybind::def_functor( kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::createScheduler );
-        pybind::def_functor( kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::destroyScheduler );
+        pybind::def_functor( _kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::createScheduler );
+        pybind::def_functor( _kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::destroyScheduler );
 
-        pybind::def_functor_args( kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );
-        pybind::def_functor( kernel, "scheduleRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemove );
-        pybind::def_functor( kernel, "scheduleRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemoveAll );
-        pybind::def_functor( kernel, "scheduleFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreeze );
-        pybind::def_functor( kernel, "scheduleFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreezeAll );
-        pybind::def_functor( kernel, "scheduleResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleResumeAll );
-        pybind::def_functor( kernel, "scheduleIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleIsFreeze );
-        pybind::def_functor( kernel, "scheduleTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleTime );
+        pybind::def_functor_args( _kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );
+        pybind::def_functor( _kernel, "scheduleRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemove );
+        pybind::def_functor( _kernel, "scheduleRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemoveAll );
+        pybind::def_functor( _kernel, "scheduleFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreeze );
+        pybind::def_functor( _kernel, "scheduleFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreezeAll );
+        pybind::def_functor( _kernel, "scheduleResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleResumeAll );
+        pybind::def_functor( _kernel, "scheduleIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleIsFreeze );
+        pybind::def_functor( _kernel, "scheduleTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleTime );
 
-        pybind::def_functor_args( kernel, "scheduleGlobal", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobal );
-        pybind::def_functor( kernel, "scheduleGlobalRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalRemove );
-        pybind::def_functor( kernel, "scheduleGlobalRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalRemoveAll );
-        pybind::def_functor( kernel, "scheduleGlobalFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreeze );
-        pybind::def_functor( kernel, "scheduleGlobalFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreezeAll );
-        pybind::def_functor( kernel, "scheduleGlobalResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalResumeAll );
-        pybind::def_functor( kernel, "scheduleGlobalIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalIsFreeze );
-        pybind::def_functor_deprecated( kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed, "use scheduleGlobalPassed" );
-        pybind::def_functor( kernel, "scheduleGlobalPassed", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed );
-        pybind::def_functor( kernel, "scheduleGlobalLeft", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalLeft );
+        pybind::def_functor_args( _kernel, "scheduleGlobal", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobal );
+        pybind::def_functor( _kernel, "scheduleGlobalRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalRemove );
+        pybind::def_functor( _kernel, "scheduleGlobalRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalRemoveAll );
+        pybind::def_functor( _kernel, "scheduleGlobalFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreeze );
+        pybind::def_functor( _kernel, "scheduleGlobalFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreezeAll );
+        pybind::def_functor( _kernel, "scheduleGlobalResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalResumeAll );
+        pybind::def_functor( _kernel, "scheduleGlobalIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalIsFreeze );
+        pybind::def_functor_deprecated( _kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed, "use scheduleGlobalPassed" );
+        pybind::def_functor( _kernel, "scheduleGlobalPassed", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed );
+        pybind::def_functor( _kernel, "scheduleGlobalLeft", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalLeft );
 
-        pybind::def_functor( kernel, "getCursorPosition", nodeScriptMethod, &EngineScriptMethod::s_getCursorPosition );
-        pybind::def_functor( kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );
-        pybind::def_functor( kernel, "getMousePosition", nodeScriptMethod, &EngineScriptMethod::s_getMousePosition );
+        pybind::def_functor( _kernel, "getCursorPosition", nodeScriptMethod, &EngineScriptMethod::s_getCursorPosition );
+        pybind::def_functor( _kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );
+        pybind::def_functor( _kernel, "getMousePosition", nodeScriptMethod, &EngineScriptMethod::s_getMousePosition );
 
-        pybind::def_functor( kernel, "setArrow", nodeScriptMethod, &EngineScriptMethod::s_setArrow );
-        pybind::def_functor( kernel, "getArrow", nodeScriptMethod, &EngineScriptMethod::s_getArrow );
-        pybind::def_functor( kernel, "hideArrow", nodeScriptMethod, &EngineScriptMethod::s_hideArrow );
+        pybind::def_functor( _kernel, "setArrow", nodeScriptMethod, &EngineScriptMethod::s_setArrow );
+        pybind::def_functor( _kernel, "getArrow", nodeScriptMethod, &EngineScriptMethod::s_getArrow );
+        pybind::def_functor( _kernel, "hideArrow", nodeScriptMethod, &EngineScriptMethod::s_hideArrow );
 
-        pybind::def_functor( kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );
+        pybind::def_functor( _kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );
 
-        pybind::def_functor( kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::createResource );
-        pybind::def_functor( kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::directResourceCompile );
-        pybind::def_functor( kernel, "directResourceRelease", nodeScriptMethod, &EngineScriptMethod::directResourceRelease );
-        pybind::def_functor( kernel, "getResourceReference", nodeScriptMethod, &EngineScriptMethod::s_getResourceReference );
+        pybind::def_functor( _kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::createResource );
+        pybind::def_functor( _kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::directResourceCompile );
+        pybind::def_functor( _kernel, "directResourceRelease", nodeScriptMethod, &EngineScriptMethod::directResourceRelease );
+        pybind::def_functor( _kernel, "getResourceReference", nodeScriptMethod, &EngineScriptMethod::s_getResourceReference );
 
-        pybind::def_functor( kernel, "directFontCompile", nodeScriptMethod, &EngineScriptMethod::directFontCompile );
-        pybind::def_functor( kernel, "directFontRelease", nodeScriptMethod, &EngineScriptMethod::directFontRelease );
+        pybind::def_functor( _kernel, "directFontCompile", nodeScriptMethod, &EngineScriptMethod::directFontCompile );
+        pybind::def_functor( _kernel, "directFontRelease", nodeScriptMethod, &EngineScriptMethod::directFontRelease );
 
-        pybind::def_functor( kernel, "quitApplication", nodeScriptMethod, &EngineScriptMethod::quitApplication );
-        pybind::def_functor( kernel, "setFullscreenMode", nodeScriptMethod, &EngineScriptMethod::s_setFullscreenMode );
-        pybind::def_functor( kernel, "getFullscreenMode", nodeScriptMethod, &EngineScriptMethod::s_getFullscreenMode );
-        pybind::def_functor( kernel, "setFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedContentResolution );
-        pybind::def_functor( kernel, "getFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedContentResolution );
-        pybind::def_functor( kernel, "setFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedDisplayResolution );
-        pybind::def_functor( kernel, "getFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedDisplayResolution );
+        pybind::def_functor( _kernel, "quitApplication", nodeScriptMethod, &EngineScriptMethod::quitApplication );
+        pybind::def_functor( _kernel, "setFullscreenMode", nodeScriptMethod, &EngineScriptMethod::s_setFullscreenMode );
+        pybind::def_functor( _kernel, "getFullscreenMode", nodeScriptMethod, &EngineScriptMethod::s_getFullscreenMode );
+        pybind::def_functor( _kernel, "setFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedContentResolution );
+        pybind::def_functor( _kernel, "getFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedContentResolution );
+        pybind::def_functor( _kernel, "setFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedDisplayResolution );
+        pybind::def_functor( _kernel, "getFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedDisplayResolution );
 
 
-        pybind::def_functor( kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::renderOneFrame );
-        pybind::def_functor( kernel, "writeImageToFile", nodeScriptMethod, &EngineScriptMethod::s_writeImageToFile );
-        pybind::def_functor( kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
-        pybind::def_functor( kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
-        pybind::def_functor( kernel, "minimizeWindow", nodeScriptMethod, &EngineScriptMethod::minimizeWindow );
+        pybind::def_functor( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::renderOneFrame );
+        pybind::def_functor( _kernel, "writeImageToFile", nodeScriptMethod, &EngineScriptMethod::s_writeImageToFile );
+        pybind::def_functor( _kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
+        pybind::def_functor( _kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
+        pybind::def_functor( _kernel, "minimizeWindow", nodeScriptMethod, &EngineScriptMethod::minimizeWindow );
 
-        pybind::def_functor( kernel, "getCurrentResolution", nodeScriptMethod, &EngineScriptMethod::s_getCurrentResolution );
-        pybind::def_functor( kernel, "getContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getContentResolution );
-        pybind::def_functor( kernel, "getHotSpotImageSize", nodeScriptMethod, &EngineScriptMethod::s_getHotSpotImageSize );
+        pybind::def_functor( _kernel, "getCurrentResolution", nodeScriptMethod, &EngineScriptMethod::s_getCurrentResolution );
+        pybind::def_functor( _kernel, "getContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getContentResolution );
+        pybind::def_functor( _kernel, "getHotSpotImageSize", nodeScriptMethod, &EngineScriptMethod::s_getHotSpotImageSize );
 
-        pybind::def_functor( kernel, "setNopause", nodeScriptMethod, &EngineScriptMethod::s_setNopause );
-        pybind::def_functor( kernel, "getNopause", nodeScriptMethod, &EngineScriptMethod::s_getNopause );
+        pybind::def_functor( _kernel, "setNopause", nodeScriptMethod, &EngineScriptMethod::s_setNopause );
+        pybind::def_functor( _kernel, "getNopause", nodeScriptMethod, &EngineScriptMethod::s_getNopause );
 
-        pybind::def_functor( kernel, "isInViewport", nodeScriptMethod, &EngineScriptMethod::s_isInViewport );
-        pybind::def_functor( kernel, "enableTextureFiltering", nodeScriptMethod, &EngineScriptMethod::s_enableTextureFiltering );
-        pybind::def_functor( kernel, "isTextureFilteringEnabled", nodeScriptMethod, &EngineScriptMethod::s_isTextureFilteringEnabled );
+        pybind::def_functor( _kernel, "isInViewport", nodeScriptMethod, &EngineScriptMethod::s_isInViewport );
+        pybind::def_functor( _kernel, "enableTextureFiltering", nodeScriptMethod, &EngineScriptMethod::s_enableTextureFiltering );
+        pybind::def_functor( _kernel, "isTextureFilteringEnabled", nodeScriptMethod, &EngineScriptMethod::s_isTextureFilteringEnabled );
 
-        pybind::def_functor( kernel, "existText", nodeScriptMethod, &EngineScriptMethod::s_existText );
+        pybind::def_functor( _kernel, "existText", nodeScriptMethod, &EngineScriptMethod::s_existText );
 
-        pybind::def_functor_kernel( kernel, "pickHotspot", nodeScriptMethod, &EngineScriptMethod::s_pickHotspot );
+        pybind::def_functor_kernel( _kernel, "pickHotspot", nodeScriptMethod, &EngineScriptMethod::s_pickHotspot );
 
-        pybind::def_functor( kernel, "blockInput", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerBlockInput );
-        pybind::def_functor( kernel, "setMousePickerHandleValue", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerHandleValue );
+        pybind::def_functor( _kernel, "blockInput", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerBlockInput );
+        pybind::def_functor( _kernel, "setMousePickerHandleValue", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerHandleValue );
 
-        pybind::def_functor( kernel, "setInputMouseButtonEventBlock", nodeScriptMethod, &EngineScriptMethod::s_setInputMouseButtonEventBlock );
-        pybind::def_functor( kernel, "getInputMouseButtonEventBlock", nodeScriptMethod, &EngineScriptMethod::s_getInputMouseButtonEventBlock );
+        pybind::def_functor( _kernel, "setInputMouseButtonEventBlock", nodeScriptMethod, &EngineScriptMethod::s_setInputMouseButtonEventBlock );
+        pybind::def_functor( _kernel, "getInputMouseButtonEventBlock", nodeScriptMethod, &EngineScriptMethod::s_getInputMouseButtonEventBlock );
 
-        pybind::def_functor( kernel, "loadPlugin", nodeScriptMethod, &EngineScriptMethod::s_loadPlugin );
+        pybind::def_functor( _kernel, "loadPlugin", nodeScriptMethod, &EngineScriptMethod::s_loadPlugin );
 
-        pybind::def_functor( kernel, "getRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getRenderCamera2D );
+        pybind::def_functor( _kernel, "getRenderCamera2D", nodeScriptMethod, &EngineScriptMethod::s_getRenderCamera2D );
 
-        pybind::def_functor( kernel, "testHotspot", nodeScriptMethod, &EngineScriptMethod::s_testHotspot );
-        pybind::def_functor( kernel, "polygon_wm", nodeScriptMethod, &EngineScriptMethod::s_polygon_wm );
-        pybind::def_functor( kernel, "polygon_anchor", nodeScriptMethod, &EngineScriptMethod::s_polygon_anchor );
+        pybind::def_functor( _kernel, "testHotspot", nodeScriptMethod, &EngineScriptMethod::s_testHotspot );
+        pybind::def_functor( _kernel, "polygon_wm", nodeScriptMethod, &EngineScriptMethod::s_polygon_wm );
+        pybind::def_functor( _kernel, "polygon_anchor", nodeScriptMethod, &EngineScriptMethod::s_polygon_anchor );
 
-        pybind::def_functor( kernel, "showKeyboard", nodeScriptMethod, &EngineScriptMethod::showKeyboard );
-        pybind::def_functor( kernel, "hideKeyboard", nodeScriptMethod, &EngineScriptMethod::hideKeyboard );
+        pybind::def_functor( _kernel, "showKeyboard", nodeScriptMethod, &EngineScriptMethod::showKeyboard );
+        pybind::def_functor( _kernel, "hideKeyboard", nodeScriptMethod, &EngineScriptMethod::hideKeyboard );
 
-        pybind::def_functor( kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::hasResource );
+        pybind::def_functor( _kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::hasResource );
 
-        pybind::def_functor_args( kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::removeCurrentScene );
+        pybind::def_functor_args( _kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::removeCurrentScene );
 
-        pybind::def_functor_args( kernel, "addMouseMoveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseMoveHandler );
-        pybind::def_functor_args( kernel, "addMouseButtonHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandler );
-        pybind::def_functor_args( kernel, "addMouseButtonHandlerBegin", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerBegin );
-        pybind::def_functor_args( kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerEnd );
-        pybind::def_functor_args( kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
-        pybind::def_functor_args( kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
-        pybind::def_functor_args( kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
+        pybind::def_functor_args( _kernel, "addMouseMoveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseMoveHandler );
+        pybind::def_functor_args( _kernel, "addMouseButtonHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandler );
+        pybind::def_functor_args( _kernel, "addMouseButtonHandlerBegin", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerBegin );
+        pybind::def_functor_args( _kernel, "addMouseButtonHandlerEnd", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerEnd );
+        pybind::def_functor_args( _kernel, "addMouseWheelHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseWheelHandler );
+        pybind::def_functor_args( _kernel, "addKeyHandler", nodeScriptMethod, &EngineScriptMethod::s_addKeyHandler );
+        pybind::def_functor_args( _kernel, "addTextHandler", nodeScriptMethod, &EngineScriptMethod::s_addTextHandler );
 
-        pybind::def_functor( kernel, "removeGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_removeGlobalHandler );
-        pybind::def_functor( kernel, "enableGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_enableGlobalHandler );
+        pybind::def_functor( _kernel, "removeGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_removeGlobalHandler );
+        pybind::def_functor( _kernel, "enableGlobalHandler", nodeScriptMethod, &EngineScriptMethod::s_enableGlobalHandler );
 
-        pybind::def_functor( kernel, "visitChild", nodeScriptMethod, &EngineScriptMethod::s_visitChild );
+        pybind::def_functor( _kernel, "visitChild", nodeScriptMethod, &EngineScriptMethod::s_visitChild );
 
-        pybind::def_functor( kernel, "visitCompiledResources", nodeScriptMethod, &EngineScriptMethod::s_visitCompiledResources );
-        pybind::def_functor( kernel, "visitResources", nodeScriptMethod, &EngineScriptMethod::s_visitResources );
+        pybind::def_functor( _kernel, "visitCompiledResources", nodeScriptMethod, &EngineScriptMethod::s_visitCompiledResources );
+        pybind::def_functor( _kernel, "visitResources", nodeScriptMethod, &EngineScriptMethod::s_visitResources );
 
-        pybind::def_functor( kernel, "incrementResources", nodeScriptMethod, &EngineScriptMethod::s_incrementResources );
-        pybind::def_functor( kernel, "decrementResources", nodeScriptMethod, &EngineScriptMethod::s_decrementResources );
+        pybind::def_functor( _kernel, "incrementResources", nodeScriptMethod, &EngineScriptMethod::s_incrementResources );
+        pybind::def_functor( _kernel, "decrementResources", nodeScriptMethod, &EngineScriptMethod::s_decrementResources );
 
-        pybind::def_functor( kernel, "validResource", nodeScriptMethod, &EngineScriptMethod::s_validResource );
+        pybind::def_functor( _kernel, "validResource", nodeScriptMethod, &EngineScriptMethod::s_validResource );
 
-        pybind::def_functor_kernel( kernel, "getResources", nodeScriptMethod, &EngineScriptMethod::s_getResources );
+        pybind::def_functor_kernel( _kernel, "getResources", nodeScriptMethod, &EngineScriptMethod::s_getResources );
 
-        pybind::def_functor( kernel, "testPlatformTags", nodeScriptMethod, &EngineScriptMethod::s_testPlatformTags );
-        pybind::def_functor( kernel, "hasPlatformTag", nodeScriptMethod, &EngineScriptMethod::s_hasPlatformTag );
-        pybind::def_functor( kernel, "hasTouchpad", nodeScriptMethod, &EngineScriptMethod::s_hasTouchpad );
-        pybind::def_functor_deprecated( kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor, "use getTimeFactor" );
-        pybind::def_functor_deprecated( kernel, "setTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor, "use setTimeFactor" );
-        pybind::def_functor( kernel, "getTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor );
-        pybind::def_functor( kernel, "setTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor );
+        pybind::def_functor( _kernel, "testPlatformTags", nodeScriptMethod, &EngineScriptMethod::s_testPlatformTags );
+        pybind::def_functor( _kernel, "hasPlatformTag", nodeScriptMethod, &EngineScriptMethod::s_hasPlatformTag );
+        pybind::def_functor( _kernel, "hasTouchpad", nodeScriptMethod, &EngineScriptMethod::s_hasTouchpad );
+        pybind::def_functor_deprecated( _kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor, "use getTimeFactor" );
+        pybind::def_functor_deprecated( _kernel, "setTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor, "use setTimeFactor" );
+        pybind::def_functor( _kernel, "getTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor );
+        pybind::def_functor( _kernel, "setTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor );
 
 
-        pybind::def_functor( kernel, "addHomeless", nodeScriptMethod, &EngineScriptMethod::s_addHomeless );
-        pybind::def_functor( kernel, "isHomeless", nodeScriptMethod, &EngineScriptMethod::s_isHomeless );
+        pybind::def_functor( _kernel, "addHomeless", nodeScriptMethod, &EngineScriptMethod::s_addHomeless );
+        pybind::def_functor( _kernel, "isHomeless", nodeScriptMethod, &EngineScriptMethod::s_isHomeless );
 
-        pybind::def_functor( kernel, "cancelTask", nodeScriptMethod, &EngineScriptMethod::s_cancelTask );
-        pybind::def_functor( kernel, "joinTask", nodeScriptMethod, &EngineScriptMethod::s_joinTask );
+        pybind::def_functor( _kernel, "cancelTask", nodeScriptMethod, &EngineScriptMethod::s_cancelTask );
+        pybind::def_functor( _kernel, "joinTask", nodeScriptMethod, &EngineScriptMethod::s_joinTask );
 
-        pybind::def_functor( kernel, "getGameAspect", nodeScriptMethod, &EngineScriptMethod::s_getGameAspect );
-        pybind::def_functor( kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
+        pybind::def_functor( _kernel, "getGameAspect", nodeScriptMethod, &EngineScriptMethod::s_getGameAspect );
+        pybind::def_functor( _kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
 
-        pybind::def_functor_kernel( kernel, "getGameParam", nodeScriptMethod, &EngineScriptMethod::s_getGameParam );
-        pybind::def_functor_kernel( kernel, "getGameParamFloat", nodeScriptMethod, &EngineScriptMethod::s_getGameParamFloat );
-        pybind::def_functor_kernel( kernel, "getGameParamInt", nodeScriptMethod, &EngineScriptMethod::s_getGameParamInt );
-        pybind::def_functor_kernel( kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
+        pybind::def_functor_kernel( _kernel, "getGameParam", nodeScriptMethod, &EngineScriptMethod::s_getGameParam );
+        pybind::def_functor_kernel( _kernel, "getGameParamFloat", nodeScriptMethod, &EngineScriptMethod::s_getGameParamFloat );
+        pybind::def_functor_kernel( _kernel, "getGameParamInt", nodeScriptMethod, &EngineScriptMethod::s_getGameParamInt );
+        pybind::def_functor_kernel( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
 
-        pybind::def_functor( kernel, "hasGameParam", nodeScriptMethod, &EngineScriptMethod::s_hasGameParam );
-        pybind::def_functor( kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
+        pybind::def_functor( _kernel, "hasGameParam", nodeScriptMethod, &EngineScriptMethod::s_hasGameParam );
+        pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
 
-        pybind::def_functor( kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );
+        pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );
 
 
-        pybind::def_functor( kernel, "pushMouseMove", nodeScriptMethod, &EngineScriptMethod::s_pushMouseMove );
-        pybind::def_functor( kernel, "pushMouseButtonEvent", nodeScriptMethod, &EngineScriptMethod::s_pushMouseButtonEvent );
+        pybind::def_functor( _kernel, "pushMouseMove", nodeScriptMethod, &EngineScriptMethod::s_pushMouseMove );
+        pybind::def_functor( _kernel, "pushMouseButtonEvent", nodeScriptMethod, &EngineScriptMethod::s_pushMouseButtonEvent );
 
-        pybind::def_functor( kernel, "platformEvent", nodeScriptMethod, &EngineScriptMethod::s_platformEvent );
+        pybind::def_functor( _kernel, "platformEvent", nodeScriptMethod, &EngineScriptMethod::s_platformEvent );
 
-        pybind::def_functor( kernel, "getProjectCodename", nodeScriptMethod, &EngineScriptMethod::s_getProjectCodename );
+        pybind::def_functor( _kernel, "getProjectCodename", nodeScriptMethod, &EngineScriptMethod::s_getProjectCodename );
 
-        pybind::def_functor( kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
+        pybind::def_functor( _kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
 
 
 
 
-        pybind::def_functor( kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePak );
-        pybind::def_functor( kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePak );
+        pybind::def_functor( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePak );
+        pybind::def_functor( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePak );
 
-        pybind::def_functor( kernel, "existFile", nodeScriptMethod, &EngineScriptMethod::s_existFile );
-        pybind::def_functor( kernel, "removeFile", nodeScriptMethod, &EngineScriptMethod::s_removeFile );
-        pybind::def_functor_kernel( kernel, "parseXml", nodeScriptMethod, &EngineScriptMethod::s_parseXml );
+        pybind::def_functor( _kernel, "existFile", nodeScriptMethod, &EngineScriptMethod::s_existFile );
+        pybind::def_functor( _kernel, "removeFile", nodeScriptMethod, &EngineScriptMethod::s_removeFile );
+        pybind::def_functor_kernel( _kernel, "parseXml", nodeScriptMethod, &EngineScriptMethod::s_parseXml );
 
-        pybind::def_functor( kernel, "visitFonts", nodeScriptMethod, &EngineScriptMethod::s_visitFonts );
-        pybind::def_functor_kernel( kernel, "getFonts", nodeScriptMethod, &EngineScriptMethod::s_getFonts );
-        pybind::def_functor( kernel, "hasFont", nodeScriptMethod, &EngineScriptMethod::s_hasFont );
-        pybind::def_functor( kernel, "validateFont", nodeScriptMethod, &EngineScriptMethod::s_validateFont );
+        pybind::def_functor( _kernel, "visitFonts", nodeScriptMethod, &EngineScriptMethod::s_visitFonts );
+        pybind::def_functor_kernel( _kernel, "getFonts", nodeScriptMethod, &EngineScriptMethod::s_getFonts );
+        pybind::def_functor( _kernel, "hasFont", nodeScriptMethod, &EngineScriptMethod::s_hasFont );
+        pybind::def_functor( _kernel, "validateFont", nodeScriptMethod, &EngineScriptMethod::s_validateFont );
 
-        pybind::def_functor( kernel, "cacheResources", nodeScriptMethod, &EngineScriptMethod::s_cacheResources );
-        pybind::def_functor( kernel, "uncacheResources", nodeScriptMethod, &EngineScriptMethod::s_uncacheResources );
+        pybind::def_functor( _kernel, "cacheResources", nodeScriptMethod, &EngineScriptMethod::s_cacheResources );
+        pybind::def_functor( _kernel, "uncacheResources", nodeScriptMethod, &EngineScriptMethod::s_uncacheResources );
 
-        pybind::def_functor( kernel, "rotateToTrimetric", nodeScriptMethod, &EngineScriptMethod::s_rotateToTrimetric );
-        pybind::def_functor( kernel, "rotateToTrimetric2", nodeScriptMethod, &EngineScriptMethod::s_rotateToTrimetric2 );
+        pybind::def_functor( _kernel, "rotateToTrimetric", nodeScriptMethod, &EngineScriptMethod::s_rotateToTrimetric );
+        pybind::def_functor( _kernel, "rotateToTrimetric2", nodeScriptMethod, &EngineScriptMethod::s_rotateToTrimetric2 );
 
-        pybind::def_functor( kernel, "hotspotCorrect", nodeScriptMethod, &EngineScriptMethod::s_hotspotCorrect );
+        pybind::def_functor( _kernel, "hotspotCorrect", nodeScriptMethod, &EngineScriptMethod::s_hotspotCorrect );
 
-        pybind::def_functor( kernel, "copyUserPicture", nodeScriptMethod, &EngineScriptMethod::s_copyUserPicture );
-        pybind::def_functor( kernel, "copyUserMusic", nodeScriptMethod, &EngineScriptMethod::s_copyUserMusic );
+        pybind::def_functor( _kernel, "copyUserPicture", nodeScriptMethod, &EngineScriptMethod::s_copyUserPicture );
+        pybind::def_functor( _kernel, "copyUserMusic", nodeScriptMethod, &EngineScriptMethod::s_copyUserMusic );
 
-        pybind::def_functor( kernel, "screenToWorldPoint", nodeScriptMethod, &EngineScriptMethod::s_screenToWorldPoint );
-        pybind::def_functor( kernel, "screenToWorldClick", nodeScriptMethod, &EngineScriptMethod::s_screenToWorldClick );
+        pybind::def_functor( _kernel, "screenToWorldPoint", nodeScriptMethod, &EngineScriptMethod::s_screenToWorldPoint );
+        pybind::def_functor( _kernel, "screenToWorldClick", nodeScriptMethod, &EngineScriptMethod::s_screenToWorldClick );
 
-        pybind::def_functor_args( kernel, "addMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_addMousePositionProvider );
-        pybind::def_functor( kernel, "removeMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_removeMousePositionProvider );
+        pybind::def_functor_args( _kernel, "addMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_addMousePositionProvider );
+        pybind::def_functor( _kernel, "removeMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_removeMousePositionProvider );
 
-        pybind::def_functor( kernel, "gridBurnTransparency", nodeScriptMethod, &EngineScriptMethod::s_gridBurnTransparency );
+        pybind::def_functor( _kernel, "gridBurnTransparency", nodeScriptMethod, &EngineScriptMethod::s_gridBurnTransparency );
 
-        pybind::def_functor( kernel, "setLocale", nodeScriptMethod, &EngineScriptMethod::s_setLocale );
+        pybind::def_functor( _kernel, "setLocale", nodeScriptMethod, &EngineScriptMethod::s_setLocale );
 
-        pybind::def_functor_args( kernel, "createAffector", nodeScriptMethod, &EngineScriptMethod::s_createAffector );
-        pybind::def_functor_args( kernel, "addAffector", nodeScriptMethod, &EngineScriptMethod::s_addAffector );
-        pybind::def_functor( kernel, "removeAffector", nodeScriptMethod, &EngineScriptMethod::s_removeAffector );
+        pybind::def_functor_args( _kernel, "createAffector", nodeScriptMethod, &EngineScriptMethod::s_createAffector );
+        pybind::def_functor_args( _kernel, "addAffector", nodeScriptMethod, &EngineScriptMethod::s_addAffector );
+        pybind::def_functor( _kernel, "removeAffector", nodeScriptMethod, &EngineScriptMethod::s_removeAffector );
 
-        pybind::interface_<EngineScriptMethod::AffectorFollower, pybind::bases<Affector> >( kernel, "AffectorFollower" )
+        pybind::interface_<EngineScriptMethod::AffectorFollower, pybind::bases<Affector> >( _kernel, "AffectorFollower" )
             .def( "follow", &EngineScriptMethod::AffectorFollower::follow )
             ;
 
-        pybind::def_functor( kernel, "addNodeFollowerLocalAlpha", nodeScriptMethod, &EngineScriptMethod::s_addNodeFollowerLocalAlpha );
-        pybind::def_functor( kernel, "addShapeFollowerCustomSize", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerCustomSize );
-        pybind::def_functor( kernel, "addShapeFollowerTextureUVScale", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerTextureUVScale );
-        pybind::def_functor( kernel, "removeNodeFollower", nodeScriptMethod, &EngineScriptMethod::s_removeNodeFollower );
+        pybind::def_functor( _kernel, "addNodeFollowerLocalAlpha", nodeScriptMethod, &EngineScriptMethod::s_addNodeFollowerLocalAlpha );
+        pybind::def_functor( _kernel, "addShapeFollowerCustomSize", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerCustomSize );
+        pybind::def_functor( _kernel, "addShapeFollowerTextureUVScale", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerTextureUVScale );
+        pybind::def_functor( _kernel, "removeNodeFollower", nodeScriptMethod, &EngineScriptMethod::s_removeNodeFollower );
 
-        pybind::def_functor( kernel, "moduleMessage", nodeScriptMethod, &EngineScriptMethod::s_moduleMessage );
+        pybind::def_functor( _kernel, "moduleMessage", nodeScriptMethod, &EngineScriptMethod::s_moduleMessage );
 
-        pybind::def_functor( kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
+        pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
 
-        pybind::def_functor( kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
+        pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
-        pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable> >( kernel, "PythonValueFollower" )
+        pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable> >( _kernel, "PythonValueFollower" )
             ;
 
-        pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower> >( kernel, "PythonValueFollowerLinear" )
+        pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower> >( _kernel, "PythonValueFollowerLinear" )
             .def( "setSpeed", &PythonValueFollowerLinear::setSpeed )
             .def( "getSpeed", &PythonValueFollowerLinear::getSpeed )
             .def( "setValue", &PythonValueFollowerLinear::setValue )
@@ -3612,7 +3609,7 @@ namespace Mengine
             .def( "resetValue", &PythonValueFollowerLinear::resetValue )
             ;
 
-        pybind::interface_<PythonValueFollowerAcceleration, pybind::bases<PythonValueFollower> >( kernel, "PythonValueFollowerAcceleration" )
+        pybind::interface_<PythonValueFollowerAcceleration, pybind::bases<PythonValueFollower> >( _kernel, "PythonValueFollowerAcceleration" )
             .def( "setSpeed", &PythonValueFollowerAcceleration::setSpeed )
             .def( "getSpeed", &PythonValueFollowerAcceleration::getSpeed )
             .def( "setAcceleration", &PythonValueFollowerAcceleration::setAcceleration )
@@ -3624,14 +3621,14 @@ namespace Mengine
             .def( "resetValue", &PythonValueFollowerAcceleration::resetValue )
             ;
 
-        pybind::def_functor_args( kernel, "createValueFollowerLinear", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerLinear );
-        pybind::def_functor_args( kernel, "createValueFollowerAcceleration", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerAcceleration );
-        pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
+        pybind::def_functor_args( _kernel, "createValueFollowerLinear", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerLinear );
+        pybind::def_functor_args( _kernel, "createValueFollowerAcceleration", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerAcceleration );
+        pybind::def_functor( _kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
         m_implement = nodeScriptMethod;
 
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( kernel ) );
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( _kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( _kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >() ) == false )
@@ -3645,7 +3642,7 @@ namespace Mengine
             return false;
         }
 
-        pybind::interface_<RandomizerInterface, pybind::bases<Mixin> >( kernel, "Randomizer" )
+        pybind::interface_<RandomizerInterface, pybind::bases<Mixin> >( _kernel, "Randomizer" )
             .def( "setSeed", &RandomizerInterface::setSeed )
             .def( "getRandom", &RandomizerInterface::getRandom )
             .def( "getRandomRange", &RandomizerInterface::getRandomRange )

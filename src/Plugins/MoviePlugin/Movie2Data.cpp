@@ -36,10 +36,10 @@ namespace Mengine
 
         for( Movie2DataImageDesc * desc : m_images )
         {
-            desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_NORMAL, false, false );
-            desc->materials[EMB_ADD] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_ADD, false, false );
-            desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_SCREEN, false, false );
-            desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( desc->resource, ConstString::none(), EMB_MULTIPLY, false, false );
+            desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_NORMAL, false, false );
+            desc->materials[EMB_ADD] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_ADD, false, false );
+            desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_SCREEN, false, false );
+            desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_MULTIPLY, false, false );
         }
 
         return true;
@@ -101,7 +101,7 @@ namespace Mengine
     {
         Movie2DataImageDesc * desc = m_poolImageDesc.createT();
 
-        desc->resource = _resource;
+        desc->resourceImage = _resource;
 
         m_images.push_back( desc );
 

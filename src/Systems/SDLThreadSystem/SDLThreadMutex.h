@@ -4,6 +4,8 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/String.h"
+
 #include "SDL_thread.h"
 
 namespace Mengine
@@ -17,7 +19,7 @@ namespace Mengine
 		~SDLThreadMutex() override;
 
     public:
-        bool initialize( const Char * _doc, uint32_t _line );
+        bool initialize( const Char * _doc );
 
     protected:
         void lock() override;
@@ -32,8 +34,9 @@ namespace Mengine
     protected:
         SDL_mutex * m_cs;
 
-		const Char * m_file;
-		uint32_t m_line;
+#ifndef NDEBUG
+		String m_doc;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLThreadMutex> SDLThreadMutexPtr;

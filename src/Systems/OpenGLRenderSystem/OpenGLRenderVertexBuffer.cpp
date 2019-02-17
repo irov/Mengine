@@ -71,7 +71,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
+    MemoryInterfacePtr OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, const Char * _doc )
     {
         if( m_lockMemory != nullptr )
         {
@@ -89,7 +89,7 @@ namespace Mengine
         const uint32_t bufferSize = m_lockCount * m_vertexSize;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryCacheBuffer( _doc );
 
         memory->newBuffer( bufferSize, "OpenGLRenderVertexBuffer", __FILE__, __LINE__ );
 

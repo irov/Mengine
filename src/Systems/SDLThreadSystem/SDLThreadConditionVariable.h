@@ -4,6 +4,7 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/String.h"
 #include "Config/Char.h"
 
 #include "SDL_thread.h"
@@ -19,7 +20,7 @@ namespace Mengine
         ~SDLThreadConditionVariable() override;
 
     public:
-        bool initialize( const Char * _file, uint32_t _line );
+        bool initialize( const Char * _doc );
 
     protected:
         void wait() override;
@@ -33,8 +34,7 @@ namespace Mengine
         SDL_mutex * m_conditionLock;
 
 #ifndef NDEBUG
-        const Char * m_file;
-        uint32_t m_line;
+        String m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

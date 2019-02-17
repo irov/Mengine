@@ -87,6 +87,7 @@ namespace Mengine
 
             void * memory_buffer = memory->newBuffer( _size, _doc, _file, _line );
 
+            MENGINE_UNUSED( memory_buffer );
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr );
 
             return memory;
@@ -101,6 +102,7 @@ namespace Mengine
 
             void * memory_buffer = memory->newBuffer( _size, _doc, _file, _line );
 
+            MENGINE_UNUSED( memory_buffer );
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr );
 
             return memory;

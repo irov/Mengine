@@ -5,6 +5,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
 
 #include "Config/String.h"
 #include "Config/Char.h"
@@ -21,7 +22,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( int32_t _priority, const Char * _doc );
+        bool initialize( const ConstString & _name, int32_t _priority, const Char * _doc );
 
     public:
         void main();
@@ -34,6 +35,8 @@ namespace Mengine
         void join() override;
 
     protected:
+        ConstString m_name;
+
         HANDLE m_thread;
 
 		CRITICAL_SECTION m_processLock;

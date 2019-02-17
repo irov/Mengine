@@ -121,7 +121,6 @@ SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
 SERVICE_EXTERN( TextService );
 SERVICE_EXTERN( WatchdogService );
-SERVICE_EXTERN( ProfilerService );
 SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
@@ -236,7 +235,7 @@ namespace Mengine
         // mount root
         ConstString c_dir = Helper::stringizeString( "dir" );
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory"
             );
@@ -251,7 +250,7 @@ namespace Mengine
         ConstString c_dev = Helper::stringizeString( "dev" );
         // mount root
         if( FILE_SERVICE()
-            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr ) == false )
+            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory"
             );
@@ -332,7 +331,7 @@ namespace Mengine
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount user directory '%s'"
                 , cs_userPath.c_str()
@@ -625,7 +624,6 @@ namespace Mengine
         SERVICE_CREATE( ResourceService );
         SERVICE_CREATE( TextService );
         SERVICE_CREATE( WatchdogService );
-        SERVICE_CREATE( ProfilerService );
         SERVICE_CREATE( GraveyardService );
         SERVICE_CREATE( PackageService );
         SERVICE_CREATE( UserdataService );

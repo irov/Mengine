@@ -13,10 +13,6 @@ namespace Mengine
         , m_priority( 0 )
         , m_task( nullptr )		
         , m_exit( false )
-#ifndef NDEBUG
-        , m_file( nullptr )
-        , m_line( 0 )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -63,16 +59,15 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
+    bool SDLThreadIdentity::initialize( int32_t _priority, const ConstString & _name, const Char * _doc )
     {
-        MENGINE_UNUSED( _file );
-        MENGINE_UNUSED( _line );
+        MENGINE_UNUSED( _doc );
 
         m_priority = _priority;
+        m_name = _name;
 
 #ifndef NDEBUG
-        m_file = _file;
-        m_line = _line;
+        m_doc = _doc;
 #endif
 
 		SDL_mutex * processLock = SDL_CreateMutex();
@@ -113,7 +108,7 @@ namespace Mengine
         m_conditionLock = conditionLock;
         m_conditionVariable = conditionVariable;
         
-        SDL_Thread * thread = SDL_CreateThread( &s_tread_job, _doc, reinterpret_cast<void *>(this) );
+        SDL_Thread * thread = SDL_CreateThread( &s_tread_job, m_name.c_str(), reinterpret_cast<void *>(this) );
         
         if( thread == nullptr )
         {

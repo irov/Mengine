@@ -7,8 +7,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLThreadMutex::SDLThreadMutex()
         : m_cs( nullptr )
-        , m_file( nullptr )
-		, m_line( 0 )
     {
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -16,10 +14,13 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::initialize( const Char * _file, uint32_t _line )
+    bool SDLThreadMutex::initialize( const Char * _doc )
     {
-        m_file = _file;
-		m_line = _line;
+        MENGINE_UNUSED( _doc );
+
+#ifndef NDEBUG
+        m_doc = _doc;
+#endif
 
         SDL_mutex * cs = SDL_CreateMutex();
 

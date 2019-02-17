@@ -78,9 +78,11 @@ namespace Mengine
         ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( int32_t _priority, const Char * _doc )
+    bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
+
+        m_name = _name;
 
 #ifndef NDEBUG
         m_doc = _doc;
@@ -107,7 +109,7 @@ namespace Mengine
         DWORD threadId = ::GetThreadId( m_thread );
 
 #if defined(_MSC_VER)
-        Detail::SetThreadName( threadId, _doc );
+        Detail::SetThreadName( threadId, _name.c_str() );
 #endif
 
         switch( _priority )

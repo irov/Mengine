@@ -21,9 +21,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line ) override;
-        ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) override;
-        ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _file, uint32_t _line ) override;
+        ThreadIdentityInterfacePtr createThread( const ConstString & _name, int32_t _priority, const Char * _doc ) override;
+        ThreadMutexInterfacePtr createMutex( const Char * _doc ) override;
+        ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

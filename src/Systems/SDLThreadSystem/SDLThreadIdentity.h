@@ -3,6 +3,9 @@
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
+
+#include "Config/String.h"
 #include "Config/Atomic.h"
 
 #include "SDL_thread.h"
@@ -19,7 +22,7 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line );
+        bool initialize( int32_t _priority, const ConstString & _name, const Char * _doc );
         
     public:
         void main();
@@ -36,6 +39,7 @@ namespace Mengine
 
     protected:
         int32_t m_priority;
+        ConstString m_name;
 
         SDL_Thread * m_thread;
 
@@ -49,8 +53,7 @@ namespace Mengine
         AtomicBool m_exit;
 
 #ifndef NDEBUG
-        const Char * m_file;
-        uint32_t m_line;
+        String m_doc;
 #endif
 	};
     //////////////////////////////////////////////////////////////////////////

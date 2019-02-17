@@ -115,11 +115,6 @@ namespace Mengine
         return m_generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::object & EntityPrototypeGenerator::getPythonType() const
-    {
-        return m_type;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool EntityPrototypeGenerator::initialize()
     {
         if( FactoryPrototypeGenerator::initialize() == false )
@@ -150,7 +145,7 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::object & EntityPrototypeGenerator::preparePythonType_()
+    const pybind::object & EntityPrototypeGenerator::getPythonType()
     {
         if( m_type.is_invalid() == false )
         {
@@ -166,7 +161,7 @@ namespace Mengine
                 , m_prototype.c_str()
             );
 
-            return pybind::make_invalid_object_t();
+            return pybind::object::get_invalid();
         }
 
         if( py_type.is_type_class() == true )
@@ -181,7 +176,7 @@ namespace Mengine
                     , m_prototype.c_str()
                 );
 
-                return pybind::make_invalid_object_t();;
+                return pybind::object::get_invalid();
             }
         }
 
@@ -212,7 +207,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer EntityPrototypeGenerator::generate( const Char * _doc )
     {
-        const pybind::object & py_type = this->preparePythonType_();
+        const pybind::object & py_type = this->getPythonType();
 
         if( py_type.is_invalid() == true )
         {

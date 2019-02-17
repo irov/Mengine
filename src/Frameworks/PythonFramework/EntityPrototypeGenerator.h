@@ -27,7 +27,7 @@ namespace Mengine
         const pybind::object & getGenerator() const;
 
     public:
-        const pybind::object & getPythonType() const;
+        const pybind::object & getPythonType();
 
     public:
         bool initialize() override;
@@ -38,9 +38,6 @@ namespace Mengine
 
     protected:
 		FactorablePointer generate( const Char * _doc ) override;
-
-    protected:
-        const pybind::object & preparePythonType_();
 
     protected:
         pybind::kernel_interface * m_kernel;

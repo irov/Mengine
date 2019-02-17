@@ -134,9 +134,9 @@ namespace Mengine
 
         // Create tabs
         mTabs.push_back({
-            "Node properties",
+            "Game debugger",
             true,
-            [this]() { this->DoUIPropertiesTab(); }
+            [this]() { this->DoUIGameDebuggerTab(); }
         });
         mTabs.push_back({
             "Game logger",
@@ -666,140 +666,141 @@ namespace Mengine
     {
         const ImGuiWindowFlags kPanelFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
-        const float leftPanelWidth = 400.0f;
-
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_FirstUseEver );
         ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_Always );
         ImGui::GetStyle().WindowRounding = 0.f;
 
         if( ImGui::Begin( "Node Debugger", nullptr, kPanelFlags ) )
         {
-            ImGui::Columns( 2, nullptr, true );
-            ImGui::SetColumnWidth( 0, leftPanelWidth );
-
-            if( ImGui::CollapsingHeader( "Server:", ImGuiTreeNodeFlags_DefaultOpen ) )
+            if( ImGui::BeginTabBar( "##Tabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton ) )
             {
-                char serverAddress[256] = {0};
-
-                if( !mServerAddress.empty() )
+                for( auto& tab : mTabs )
                 {
-                    std::copy( mServerAddress.begin(), mServerAddress.end(), serverAddress );
-                }
-
-                mServerAddress = DoIPInput( "Address:", mServerAddress );
-
-                ImGui::BeginGroup();
-                {
-                    ImGui::AlignFirstTextHeightToWidgets();
-                    ImGui::TextUnformatted( "IP Port:" );
-                    ImGui::SameLine();
-
-                    const float width = ImGui::CalcItemWidth();
-                    ImGui::PushItemWidth( width * 0.25f );
-                    int port = static_cast<int>(mServerPort);
-                    if( ImGui::InputInt( "##Port", &port, 0, 0, ImGuiInputTextFlags_CharsDecimal ) )
+                    if( ImGui::BeginTabItem( tab.title.c_str() ) )
                     {
-                        mServerPort = static_cast<uint16_t>(port & 0xFFFF);
-                    }
-                    ImGui::PopItemWidth();
-                }
-                ImGui::EndGroup();
+                        tab.functor();
 
-                if( mConnectionStatus == ConnectionStatus::Connected )
-                {
-                    const ImVec4 redButtonColor( 0.5f, 0.f, 0.f, 1.f );
-                    ImGui::PushStyleColor( ImGuiCol_Button, redButtonColor );
-                    ImGui::PushStyleColor( ImGuiCol_ButtonHovered, redButtonColor );
-                    if( ImGui::Button( "Disconnect" ) )
-                    {
-                        OnDisconnectButton();
+                        ImGui::EndTabItem();
                     }
-                    ImGui::PopStyleColor();
-                    ImGui::PopStyleColor();
                 }
-                else if( mConnectionStatus == ConnectionStatus::Disconnected || mConnectionStatus == ConnectionStatus::ConnectionFailed )
-                {
-                    const ImVec4 greenButtonColor( 0.1686f, 0.5686f, 0.f, 1.f );
-                    ImGui::PushStyleColor( ImGuiCol_Button, greenButtonColor );
-                    ImGui::PushStyleColor( ImGuiCol_ButtonHovered, greenButtonColor );
-                    if( ImGui::Button( "Connect" ) )
-                    {
-                        OnConnectButton();
-                    }
-                    ImGui::PopStyleColor();
-                    ImGui::PopStyleColor();
-                }
+
+                ImGui::EndTabBar();
             }
-
-            if( ImGui::CollapsingHeader( "Game controls:" ) )
-            {
-                ImGui::PushItemFlag( ImGuiItemFlags_Disabled, mUpdateSceneOnChange );
-                int hz = mSceneUpdateFreq;
-                if( ImGui::InputInt( "Update freq (hz):", &hz ) )
-                {
-                    mSceneUpdateFreq = std::clamp( hz, 0, 30 );
-                    mSceneUpdateTimer = 0.0;
-                }
-                ImGui::PopItemFlag();
-
-                if( ImGui::Checkbox( "Update scene on change", &mUpdateSceneOnChange ) )
-                {
-                    if( mUpdateSceneOnChange )
-                    {
-                        mSceneUpdateFreq = 0;
-                        mSceneUpdateTimer = 0.0;
-                    }
-                }
-
-                if( ImGui::Button( "Pause game" ) )
-                {
-                    OnPauseButton();
-                }
-            }
-
-            if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
-            {
-                if( mScene )
-                {
-                    if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
-                    {
-                        DoNodeElement( mScene );
-                    }
-                    ImGui::EndChild();
-                }
-            }
-
-            ImGui::NextColumn();
-            if( ImGui::BeginChild( "Panel" ) )
-            {
-                if( ImGui::BeginTabBar( "##Tabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton ) )
-                {
-                    for( auto& tab : mTabs )
-                    {
-                        if( ImGui::BeginTabItem( tab.title.c_str() ) )
-                        {
-                            tab.functor();
-
-                            ImGui::EndTabItem();
-                        }
-                    }
-
-                    ImGui::EndTabBar();
-                }
-            }
-            ImGui::EndChild();
-
-            ImGui::Columns( 1 );
         }
         ImGui::End();
     }
 
-    void NodeDebuggerApp::DoUIPropertiesTab()
+    void NodeDebuggerApp::DoUIGameDebuggerTab()
     {
-        if( mSelectedNode )
+        const float leftPanelWidth = 400.0f;
+
+        ImGui::Columns( 2, nullptr, true );
+        ImGui::SetColumnWidth( 0, leftPanelWidth );
+
+        if( ImGui::CollapsingHeader( "Server:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            DoNodeProperties( mSelectedNode );
+            char serverAddress[256] = {0};
+
+            if( !mServerAddress.empty() )
+            {
+                std::copy( mServerAddress.begin(), mServerAddress.end(), serverAddress );
+            }
+
+            mServerAddress = DoIPInput( "Address:", mServerAddress );
+
+            ImGui::BeginGroup();
+            {
+                ImGui::AlignFirstTextHeightToWidgets();
+                ImGui::TextUnformatted( "IP Port:" );
+                ImGui::SameLine();
+
+                const float width = ImGui::CalcItemWidth();
+                ImGui::PushItemWidth( width * 0.25f );
+                int port = static_cast<int>(mServerPort);
+                if( ImGui::InputInt( "##Port", &port, 0, 0, ImGuiInputTextFlags_CharsDecimal ) )
+                {
+                    mServerPort = static_cast<uint16_t>(port & 0xFFFF);
+                }
+                ImGui::PopItemWidth();
+            }
+            ImGui::EndGroup();
+
+            if( mConnectionStatus == ConnectionStatus::Connected )
+            {
+                const ImVec4 redButtonColor( 0.5f, 0.f, 0.f, 1.f );
+                ImGui::PushStyleColor( ImGuiCol_Button, redButtonColor );
+                ImGui::PushStyleColor( ImGuiCol_ButtonHovered, redButtonColor );
+                if( ImGui::Button( "Disconnect" ) )
+                {
+                    OnDisconnectButton();
+                }
+                ImGui::PopStyleColor();
+                ImGui::PopStyleColor();
+            }
+            else if( mConnectionStatus == ConnectionStatus::Disconnected || mConnectionStatus == ConnectionStatus::ConnectionFailed )
+            {
+                const ImVec4 greenButtonColor( 0.1686f, 0.5686f, 0.f, 1.f );
+                ImGui::PushStyleColor( ImGuiCol_Button, greenButtonColor );
+                ImGui::PushStyleColor( ImGuiCol_ButtonHovered, greenButtonColor );
+                if( ImGui::Button( "Connect" ) )
+                {
+                    OnConnectButton();
+                }
+                ImGui::PopStyleColor();
+                ImGui::PopStyleColor();
+            }
         }
+
+        if( ImGui::CollapsingHeader( "Game controls:" ) )
+        {
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, mUpdateSceneOnChange );
+            int hz = mSceneUpdateFreq;
+            if( ImGui::InputInt( "Update freq (hz):", &hz ) )
+            {
+                mSceneUpdateFreq = std::clamp( hz, 0, 30 );
+                mSceneUpdateTimer = 0.0;
+            }
+            ImGui::PopItemFlag();
+
+            if( ImGui::Checkbox( "Update scene on change", &mUpdateSceneOnChange ) )
+            {
+                if( mUpdateSceneOnChange )
+                {
+                    mSceneUpdateFreq = 0;
+                    mSceneUpdateTimer = 0.0;
+                }
+            }
+
+            if( ImGui::Button( "Pause game" ) )
+            {
+                OnPauseButton();
+            }
+        }
+
+        if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            if( mScene )
+            {
+                if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                {
+                    DoNodeElement( mScene );
+                }
+                ImGui::EndChild();
+            }
+        }
+
+        ImGui::NextColumn();
+
+        if( ImGui::BeginChild( "Panel" ) )
+        {
+            if( mSelectedNode )
+            {
+                DoNodeProperties( mSelectedNode );
+            }
+        }
+        ImGui::EndChild();
+
+        ImGui::Columns( 1 );
     }
 
     void NodeDebuggerApp::DoUILogTab()

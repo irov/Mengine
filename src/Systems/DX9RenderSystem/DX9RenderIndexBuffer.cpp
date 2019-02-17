@@ -55,11 +55,20 @@ namespace Mengine
 
         m_format = s_getD3DIndexFormat();
 
+        MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false )("invalid create memory proxy");
+
+        m_memory = memory;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::finalize()
     {
+        m_memory = nullptr;
+
         if( m_pIB != nullptr )
         {
             ULONG ref = m_pIB->Release();
@@ -109,10 +118,11 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            LOGGER_ERROR( "lock count %d offset %d more max size %d"
+            LOGGER_ERROR( "lock count %d offset %d more max size %d (doc '%s')"
                 , _count
                 , _offset
                 , m_indexCount
+                , _doc
             );
 
             return nullptr;
@@ -134,26 +144,24 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pIB, Lock, (_offset * m_indexSize, _count * m_indexSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "invalid lock count %d offset %d"
+            LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
                 , _offset
+                , _doc
             );
 
             return nullptr;
         }
+        
+        m_memory->setBuffer( lock_memory, _count * m_indexSize, __FILE__, __LINE__ );
 
-        MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-			->createMemoryProxy( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr )("invalid create memory proxy");
-
-        memory->setBuffer( lock_memory, _count * m_indexSize, __FILE__, __LINE__ );
-
-        return memory;
+        return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::unlock()
     {
+        m_memory->setBuffer( nullptr, 0, __FILE__, __LINE__ );
+
         IF_DXCALL( m_pIB, Unlock, () )
         {
             LOGGER_ERROR( "invalid"

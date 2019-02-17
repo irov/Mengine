@@ -180,21 +180,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConstsScriptEmbedding::embedding()
+    bool ConstsScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        pybind::registration_stl_vector_type_cast<ConstString, VectorConstString>(_kernel);
 
-        pybind::registration_stl_vector_type_cast<ConstString, VectorConstString>(kernel);
-
-        pybind::structhash_<ConstString>( kernel, "ConstString" )
+        pybind::structhash_<ConstString>( _kernel, "ConstString" )
             .def_compare( &s_ConstString_compare )
             .def_convert( &ConstString_convert, nullptr )
             .def_repr( &s_ConstString_repr )
             .def_hash( &s_ConstString_hash )
             ;
 
-        pybind::structhash_<FilePath>( kernel, "FilePath" )
+        pybind::structhash_<FilePath>( _kernel, "FilePath" )
             .def_compare( &s_FilePath_compare )
             .def_convert( &FilePath_convert, nullptr )
             .def_repr( &s_FilePath_repr )

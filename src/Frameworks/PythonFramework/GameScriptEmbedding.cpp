@@ -206,7 +206,7 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
-        static void registerGameEventMethods( const ScriptModuleInterfacePtr & _module )
+        static void registerGameEventMethods( pybind::kernel_interface * _kernel, const ScriptModuleInterfacePtr & _module )
         {
             const pybind::module & base_module = _module->getModule();
 
@@ -214,50 +214,50 @@ namespace Mengine
 
             GameServiceInterface * game = GAME_SERVICE();
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onFullscreen", EVENT_GAME_FULLSCREEN );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onFixedContentResolution", EVENT_GAME_FIXED_CONTENT_RESOLUTION );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onFixedDisplayResolution", EVENT_GAME_FIXED_DISPLAY_RESOLUTION );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onRenderViewport", EVENT_GAME_RENDER_VIEWPORT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onGameViewport", EVENT_GAME_VIEWPORT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onFullscreen", EVENT_GAME_FULLSCREEN );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onFixedContentResolution", EVENT_GAME_FIXED_CONTENT_RESOLUTION );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onFixedDisplayResolution", EVENT_GAME_FIXED_DISPLAY_RESOLUTION );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onRenderViewport", EVENT_GAME_RENDER_VIEWPORT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onGameViewport", EVENT_GAME_VIEWPORT );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleKeyEvent", EVENT_GAME_KEY );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleTextEvent", EVENT_GAME_TEXT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleMouseButtonEvent", EVENT_GAME_MOUSE_BUTTON );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleMouseButtonEventBegin", EVENT_GAME_MOUSE_BUTTON_BEGIN );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleMouseButtonEventEnd", EVENT_GAME_MOUSE_BUTTON_END );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleMouseMove", EVENT_GAME_MOUSE_MOVE );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onHandleMouseWheel", EVENT_GAME_MOUSE_WHEEL );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleKeyEvent", EVENT_GAME_KEY );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleTextEvent", EVENT_GAME_TEXT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleMouseButtonEvent", EVENT_GAME_MOUSE_BUTTON );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleMouseButtonEventBegin", EVENT_GAME_MOUSE_BUTTON_BEGIN );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleMouseButtonEventEnd", EVENT_GAME_MOUSE_BUTTON_END );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleMouseMove", EVENT_GAME_MOUSE_MOVE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onHandleMouseWheel", EVENT_GAME_MOUSE_WHEEL );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onAppMouseEnter", EVENT_GAME_APP_MOUSE_ENTER );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onAppMouseLeave", EVENT_GAME_APP_MOUSE_LEAVE );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onTimingFactor", EVENT_GAME_ON_TIMING_FACTOR );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onAppMouseEnter", EVENT_GAME_APP_MOUSE_ENTER );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onAppMouseLeave", EVENT_GAME_APP_MOUSE_LEAVE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onTimingFactor", EVENT_GAME_ON_TIMING_FACTOR );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onPreparation", EVENT_GAME_PREPARATION );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onRun", EVENT_GAME_RUN );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onInitialize", EVENT_GAME_INITIALIZE );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onInitializeRenderResources", EVENT_GAME_INITIALIZE_RENDER_RESOURCES );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onAccountFinalize", EVENT_GAME_ACCOUNT_FINALIZE );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onFinalize", EVENT_GAME_FINALIZE );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onDestroy", EVENT_GAME_DESTROY );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onPreparation", EVENT_GAME_PREPARATION );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onRun", EVENT_GAME_RUN );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onInitialize", EVENT_GAME_INITIALIZE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onInitializeRenderResources", EVENT_GAME_INITIALIZE_RENDER_RESOURCES );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onAccountFinalize", EVENT_GAME_ACCOUNT_FINALIZE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onFinalize", EVENT_GAME_FINALIZE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onDestroy", EVENT_GAME_DESTROY );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onFocus", EVENT_GAME_FOCUS );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onCreateDefaultAccount", EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onCreateGlobalAccount", EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onLoadAccounts", EVENT_GAME_LOAD_ACCOUNTS );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onFocus", EVENT_GAME_FOCUS );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onCreateDefaultAccount", EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onCreateGlobalAccount", EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onLoadAccounts", EVENT_GAME_LOAD_ACCOUNTS );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onCreateAccount", EVENT_GAME_CREATE_ACCOUNT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onDeleteAccount", EVENT_GAME_DELETE_ACCOUNT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onSelectAccount", EVENT_GAME_SELECT_ACCOUNT );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onUnselectAccount", EVENT_GAME_UNSELECT_ACCOUNT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onCreateAccount", EVENT_GAME_CREATE_ACCOUNT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onDeleteAccount", EVENT_GAME_DELETE_ACCOUNT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onSelectAccount", EVENT_GAME_SELECT_ACCOUNT );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onUnselectAccount", EVENT_GAME_UNSELECT_ACCOUNT );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onChangeSoundVolume", EVENT_GAME_CHANGE_SOUND_VOLUME );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onCursorMode", EVENT_GAME_CURSOR_MODE );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onUserEvent", EVENT_GAME_USER );
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onCloseWindow", EVENT_GAME_CLOSE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onChangeSoundVolume", EVENT_GAME_CHANGE_SOUND_VOLUME );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onCursorMode", EVENT_GAME_CURSOR_MODE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onUserEvent", EVENT_GAME_USER );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onCloseWindow", EVENT_GAME_CLOSE );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onOverFillrate", EVENT_GAME_OVER_FILLRATE );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onOverFillrate", EVENT_GAME_OVER_FILLRATE );
 
-            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( py_module, game, "onFrameEnd", EVENT_GAME_FRAME_END );
+            Helper::registerPythonEventReceiverModule<PythonGameEventReceiver>( _kernel, py_module, game, "onFrameEnd", EVENT_GAME_FRAME_END );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -269,7 +269,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GameScriptEmbedding::embedding()
+    bool GameScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -331,7 +331,7 @@ namespace Mengine
             return false;
         }
 
-        Detail::registerGameEventMethods( module );
+        Detail::registerGameEventMethods( _kernel, module );
 
         return true;
     }

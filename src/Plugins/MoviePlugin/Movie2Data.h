@@ -14,7 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct Movie2DataImageDesc
     {
-        const ResourceImage * resource;
+        const ResourceImage * resourceImage;
 
         RenderMaterialInterfacePtr materials[4];
     };

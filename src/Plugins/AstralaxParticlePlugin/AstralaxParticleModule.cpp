@@ -45,7 +45,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )

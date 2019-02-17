@@ -2,13 +2,15 @@
 
 #include "Interface/Interface.h"
 
+#include "pybind/pybind.hpp"
+
 namespace Mengine
 {
     class ScriptEmbeddingInterface
         : public Interface
     {
     public:
-        virtual bool embedding() = 0;
+        virtual bool embedding( pybind::kernel_interface * _kernel ) = 0;
         virtual void ejecting() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

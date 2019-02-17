@@ -384,7 +384,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
-        if( _embedding->embedding() == false )
+        if( _embedding->embedding( m_kernel ) == false )
         {
             return false;
         }

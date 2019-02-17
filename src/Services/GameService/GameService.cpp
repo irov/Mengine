@@ -326,7 +326,7 @@ namespace Mengine
 
             if( defaultArrow == nullptr )
             {
-                LOGGER_WARNING( "Game::initialize failed create defaultArrow 'Default'"
+                LOGGER_WARNING( "failed create defaultArrow 'Default'"
                 );
             }
             else
@@ -351,7 +351,7 @@ namespace Mengine
         if( ACCOUNT_SERVICE()
             ->loadAccounts() == false )
         {
-            LOGGER_ERROR( "Game::initialize failed load accounts"
+            LOGGER_ERROR( "failed load accounts"
             );
         }
 
@@ -566,7 +566,7 @@ namespace Mengine
 
         if( it_find == m_params.end() )
         {
-            LOGGER_ERROR( "Game::getParam not found param '%s'"
+            LOGGER_ERROR( "not found param '%s'"
                 , _paramName.c_str()
             );
 

@@ -42,11 +42,12 @@ namespace Mengine
 
     public:
         //////////////////////////////////////////////////////////////////////////
-        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
+        bool s_addPrototypeFinder( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
         {
             EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
 
-            generator->setGenerator( _generator );
+            generator->setKernel( _kernel );
+            generator->setGenerator( _generator );            
 
             bool successful = PROTOTYPE_SERVICE()
                 ->addPrototype( _category, _prototype, generator );
@@ -54,23 +55,23 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+        bool s_addEntityPrototypeFinder( pybind::kernel_interface * _kernel, const ConstString & _prototype, const pybind::object & _module )
         {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, _module );
+            bool result = s_addPrototypeFinder( _kernel, STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+        bool s_addScenePrototypeFinder( pybind::kernel_interface * _kernel, const ConstString & _prototype, const pybind::object & _module )
         {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, _module );
+            bool result = s_addPrototypeFinder( _kernel, STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addArrowPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
+        bool s_addArrowPrototypeFinder( pybind::kernel_interface * _kernel, const ConstString & _prototype, const pybind::object & _module )
         {
-            bool result = s_addPrototypeFinder( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, _module );
+            bool result = s_addPrototypeFinder( _kernel, STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, _module );
 
             return result;
         }
@@ -117,7 +118,7 @@ namespace Mengine
             EntityPrototypeGeneratorPtr entityGenerator =
                 stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
 
-            pybind::object py_type = entityGenerator->preparePythonType();
+            const pybind::object & py_type = entityGenerator->getPythonType();
 
             return py_type;
         }
@@ -263,17 +264,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool EntityScriptEmbedding::embedding()
+    bool EntityScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
-
-        pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", nullptr, new superclass_new_Entity, new superclass_destroy_Entity, false )
+        pybind::superclass_<Entity, pybind::bases<Node> >( _kernel, "Entity", nullptr, new superclass_new_Entity, new superclass_destroy_Entity, false )
             .def_constructor( pybind::init<>() )
             .def( "getPrototype", &Entity::getPrototype )
             ;
 
-        pybind::superclass_<Arrow, pybind::bases<Entity> >( kernel, "Arrow", nullptr, new superclass_new_Arrow, new superclass_destroy_Arrow, false )
+        pybind::superclass_<Arrow, pybind::bases<Entity> >( _kernel, "Arrow", nullptr, new superclass_new_Arrow, new superclass_destroy_Arrow, false )
             .def_constructor( pybind::init<>() )
             .def( "setOffsetClick", &Arrow::setOffsetClick )
             .def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -283,7 +281,7 @@ namespace Mengine
             .def( "getRadius", &Arrow::getRadius )
             ;
 
-        pybind::superclass_<Scene, pybind::bases<Entity> >( kernel, "Scene", nullptr, new superclass_new_Scene, new superclass_destroy_Scene, false )
+        pybind::superclass_<Scene, pybind::bases<Entity> >( _kernel, "Scene", nullptr, new superclass_new_Scene, new superclass_destroy_Scene, false )
             .def_constructor( pybind::init<>() )
             //.def( "isSubScene", &Scene::isSubScene )
             //.def( "getParentScene", &Scene::getParentScene )
@@ -297,17 +295,17 @@ namespace Mengine
 
         EntityScriptMethod * entityScriptMethod = new FactorableUnique<EntityScriptMethod>();
 
-        pybind::def_functor( kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
-        pybind::def_functor( kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
-        pybind::def_functor( kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
-        pybind::def_functor_kernel( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
-        pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
+        pybind::def_functor_kernel( _kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
+        pybind::def_functor_kernel( _kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
+        pybind::def_functor_kernel( _kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
+        pybind::def_functor_kernel( _kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
+        pybind::def_functor_kernel( _kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 
         m_implement = entityScriptMethod;
 
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Arrow> >( kernel ) );
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), new FactorableUnique<PythonScriptWrapper<Entity> >( kernel ) );
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), new FactorableUnique<PythonScriptWrapper<Scene> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Arrow> >( _kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), new FactorableUnique<PythonScriptWrapper<Entity> >( _kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), new FactorableUnique<PythonScriptWrapper<Scene> >( _kernel ) );
 
         return true;
     }

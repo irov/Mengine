@@ -324,7 +324,7 @@ namespace Mengine
         void                        LoadIconsAtlas();
         const NodeIcon*             GetIconForNodeType( const String & _nodeType );
         void                        DoUI();
-        void                        DoUIPropertiesTab();
+        void                        DoUIGameDebuggerTab();
         void                        DoUILogTab();
         void                        DoUIExampleTab();
         String                      DoIPInput( const String & _title, const String & _inIP );

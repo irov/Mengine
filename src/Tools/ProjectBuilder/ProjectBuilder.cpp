@@ -206,7 +206,7 @@ namespace Mengine
             ->loadPlugin( "XmlToBinPlugin.dll" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -214,7 +214,7 @@ namespace Mengine
         ConstString dev = Helper::stringizeString( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
+            ->mountFileGroup( dev, nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

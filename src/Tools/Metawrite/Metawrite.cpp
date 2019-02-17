@@ -119,7 +119,7 @@ namespace Mengine
         PLUGIN_CREATE( LZ4 );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), Helper::stringizeString( "dir" ), nullptr ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), Helper::stringizeString( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -127,7 +127,7 @@ namespace Mengine
         ConstString dev = Helper::stringizeString( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, Helper::emptyPath(), Helper::stringizeString( "dir" ), nullptr ) == false )
+            ->mountFileGroup( dev, nullptr, Helper::emptyPath(), Helper::stringizeString( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

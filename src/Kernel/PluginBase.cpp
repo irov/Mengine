@@ -40,6 +40,11 @@ namespace Mengine
 
         m_availablePlugin = this->_availablePlugin();
 
+        if( m_availablePlugin == false )
+        {
+            return true;
+        }
+
         bool successful = this->_initializePlugin();
 
         m_initializePlugin = successful;

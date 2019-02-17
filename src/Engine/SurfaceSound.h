@@ -81,7 +81,7 @@ namespace Mengine
         float _getVolume() const override;
 
     public:
-        float _getDuration() const;
+        float _getDuration() const override;
 
     protected:
         bool _compile() override;

@@ -49,13 +49,13 @@ namespace Mengine
         m_factoryWin32ThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int32_t _priority, const Char * _doc )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( const ConstString & _name, int32_t _priority, const Char * _doc )
     {
 		Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr )("invalid create identity");
 
-        if( identity->initialize( _priority, _doc ) == false )
+        if( identity->initialize( _name, _priority, _doc ) == false )
         {
             LOGGER_ERROR( "invalid initialize"
             );

@@ -6,7 +6,6 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/ProfilerInterface.h"
 #include "Interface/UserdataServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"

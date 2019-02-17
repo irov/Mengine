@@ -57,7 +57,6 @@ src
     WatchdogInterface.h
     ArchivatorInterface.h
     ArchiveServiceInterface.h
-    ProfilerInterface.h
     PrefetcherObserverInterface.h
     PrefetcherServiceInterface.h
     AmplifierInterface.h

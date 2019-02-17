@@ -5,6 +5,8 @@
 #include "Interface/ThreadMutexInterface.h"
 #include "Interface/ThreadConditionVariableInterface.h"
 
+#include "Kernel/ConstString.h"
+
 namespace Mengine
 {
     class ThreadSystemInterface
@@ -13,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadSystem" )
 
     public:
-        virtual ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc ) = 0;
+        virtual ThreadIdentityInterfacePtr createThread( const ConstString & _name, int32_t _priority, const Char * _doc ) = 0;
         virtual ThreadMutexInterfacePtr createMutex( const Char * _doc ) = 0;
         virtual ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _doc ) = 0;
 

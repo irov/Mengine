@@ -269,6 +269,11 @@ namespace Mengine
             RenderInterface * oldRenderParent = render->getRelationRender();
             RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
 
+            MENGINE_ASSERTION( newRenderParent != nullptr, ("for node '%s' parent '%s' not found render inheritance"
+                , this->getName().c_str()
+                , _parent->getName().c_str()
+                ) );
+
             if( oldRenderParent != newRenderParent )
             {
                 render->setRelationRender( newRenderParent );
@@ -278,6 +283,11 @@ namespace Mengine
         {
             RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( m_parent );
             RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+            MENGINE_ASSERTION( newRenderParent != nullptr, ("for node '%s' parent '%s' not found render inheritance (multi)"
+                , this->getName().c_str()
+                , _parent->getName().c_str()
+                ) );
 
             if( oldRenderParent != newRenderParent )
             {

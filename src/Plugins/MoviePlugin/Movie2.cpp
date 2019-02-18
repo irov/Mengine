@@ -1291,10 +1291,10 @@ namespace Mengine
                     surfaceTrackMatte->setName( c_name );
 
                     Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
-                    const ResourceImage * resourceImage = imageDesc->resourceImage;
+                    const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
 
                     Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
-                    const ResourceImage * resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
+                    const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
 
                     surfaceTrackMatte->setResourceImage( resourceImage );
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
@@ -1394,7 +1394,7 @@ namespace Mengine
                         surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_MUSIC );
                     }
 
-                    ResourceSound * resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    ResourceSoundPtr resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
                     surfaceSound->setResourceSound( resourceSound );
 
@@ -2539,7 +2539,7 @@ namespace Mengine
 
                         Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(mesh.resource_userdata);
 
-                        const ResourceImage * resource_image = image_desc->resourceImage;
+                        const ResourceImagePtr & resource_image = image_desc->resourceImage;
 
                         const Color & imageColor = resource_image->getColor();
 

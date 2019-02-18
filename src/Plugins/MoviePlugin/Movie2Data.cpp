@@ -78,7 +78,7 @@ namespace Mengine
         return m_movieData;
     }
     //////////////////////////////////////////////////////////////////////////
-    Resource * Movie2Data::getResource( const ae_string_t _resourceName )
+    const ResourcePtr & Movie2Data::getResource( const ae_string_t _resourceName )
     {
         const ResourcePtr & resource = RESOURCE_SERVICE()
             ->getResourceReference( Helper::stringizeString( _resourceName ) );
@@ -89,15 +89,15 @@ namespace Mengine
                 , _resourceName
             );
 
-            return nullptr;
+            return ResourcePtr::none();
         }
 
         m_resources.emplace_back( resource );
 
-        return resource.get();
+        return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2DataImageDesc * Movie2Data::makeImageDesc( ResourceImage * _resource )
+    Movie2DataImageDesc * Movie2Data::makeImageDesc( const ResourceImagePtr & _resource )
     {
         Movie2DataImageDesc * desc = m_poolImageDesc.createT();
 

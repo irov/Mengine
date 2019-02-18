@@ -14,7 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct Movie2DataImageDesc
     {
-        const ResourceImage * resourceImage;
+        ResourceImagePtr resourceImage;
 
         RenderMaterialInterfacePtr materials[4];
     };
@@ -39,9 +39,9 @@ namespace Mengine
         const aeMovieData * getMovieData() const override;
 
     public:
-        Resource * getResource( const ae_string_t _resourceName );
+        const ResourcePtr & getResource( const ae_string_t _resourceName );
 
-        Movie2DataImageDesc * makeImageDesc( ResourceImage * _resource );
+        Movie2DataImageDesc * makeImageDesc( const ResourceImagePtr & _resource );
         void removeImageDesc( Movie2DataImageDesc * _desc );
 
     protected:

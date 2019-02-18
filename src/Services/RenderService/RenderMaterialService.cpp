@@ -670,7 +670,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_equalMaterial( const RenderMaterialPtr & _material
+    static bool s_equalMaterial( const RenderMaterial * _material
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures

@@ -46,14 +46,14 @@ namespace Mengine
                 {
                     const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-                    Resource * data_resource = data->getResource( resource_image->name );
+                    const ResourcePtr & data_resource = data->getResource( resource_image->name );
 
                     if( data_resource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    Movie2DataImageDesc * desc = data->makeImageDesc( (ResourceImage *)data_resource );
+                    Movie2DataImageDesc * desc = data->makeImageDesc( data_resource );
 
                     *_rd = desc;
 
@@ -63,14 +63,14 @@ namespace Mengine
                 {
                     const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
 
-                    Resource * data_resource = data->getResource( resource_video->name );
+                    const ResourcePtr & data_resource = data->getResource( resource_video->name );
 
                     if( data_resource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource;
+                    *_rd = data_resource.get();
 
                     return AE_TRUE;
                 }break;
@@ -78,14 +78,14 @@ namespace Mengine
                 {
                     const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
 
-                    Resource * data_resource = data->getResource( resource_sound->name );
+                    const ResourcePtr & data_resource = data->getResource( resource_sound->name );
 
                     if( data_resource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource;
+                    *_rd = data_resource.get();
 
                     return AE_TRUE;
                 }break;
@@ -93,14 +93,14 @@ namespace Mengine
                 {
                     const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
 
-                    Resource * data_resource = data->getResource( resource_particle->name );
+                    const ResourcePtr & data_resource = data->getResource( resource_particle->name );
 
                     if( data_resource == AE_NULLPTR )
                     {
                         return AE_FALSE;
                     }
 
-                    *_rd = data_resource;
+                    *_rd = data_resource.get();
 
                     return AE_TRUE;
                 }break;
@@ -159,7 +159,7 @@ namespace Mengine
 
                     const Movie2DataImageDesc * image_desc = reinterpret_cast<const Movie2DataImageDesc *>(movie_resource->userdata);
 
-                    const ResourceImage * resource_image = image_desc->resourceImage;
+                    const ResourceImagePtr & resource_image = image_desc->resourceImage;
 
                     ae_uint32_t vertex_count = _callbackData->vertex_count;
 

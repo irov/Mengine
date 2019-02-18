@@ -540,6 +540,7 @@ namespace Mengine
         OPTIONS_SERVICE()
             ->setArguments( arguments );
 
+        SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
 
         if( this->initializeLoggerEngine_() == false )
@@ -584,7 +585,7 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
 
-        SERVICE_CREATE( NotificationService );
+        
 
         if( this->initializeRenderEngine_() == false )
         {

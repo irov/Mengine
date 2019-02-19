@@ -59,6 +59,7 @@ PLUGIN_EXPORT( MetabufLoader );
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
 SERVICE_EXTERN( Platform );
+SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( UnicodeSystem );
@@ -143,6 +144,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
+        SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( OptionsService );
         SERVICE_CREATE( UnicodeSystem );

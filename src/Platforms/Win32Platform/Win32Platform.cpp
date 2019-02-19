@@ -708,37 +708,37 @@ namespace Mengine
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam )
-    {
-        MENGINE_UNUSED( hWnd );
+    ////////////////////////////////////////////////////////////////////////////
+    //bool Win32Platform::wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam )
+    //{
+    //    MENGINE_UNUSED( hWnd );
 
-        BOOL bHandled = FALSE;
-        UINT cInputs = LOWORD( wParam );
-        TOUCHINPUT pInputs[32];
-        if( pInputs ) {
-            if( GetTouchInputInfo( (HTOUCHINPUT)lParam, cInputs, pInputs, sizeof( TOUCHINPUT ) ) ) {
-                for( UINT i = 0; i < cInputs; i++ ) {
-                    TOUCHINPUT ti = pInputs[i];
-                    //do something with each touch input entry
-                }
-                bHandled = TRUE;
-            }
-            else {
-                /* handle the error here */
-            }
-        }
-        else {
-            /* handle the error here, probably out of memory */
-        }
-        if( bHandled ) {
-            // if you handled the message, close the touch input handle and return
-            CloseTouchInputHandle( (HTOUCHINPUT)lParam );
-            return true;
-        }
+    //    BOOL bHandled = FALSE;
+    //    UINT cInputs = LOWORD( wParam );
+    //    TOUCHINPUT pInputs[32];
+    //    if( pInputs ) {
+    //        if( GetTouchInputInfo( (HTOUCHINPUT)lParam, cInputs, pInputs, sizeof( TOUCHINPUT ) ) ) {
+    //            for( UINT i = 0; i < cInputs; i++ ) {
+    //                TOUCHINPUT ti = pInputs[i];
+    //                //do something with each touch input entry
+    //            }
+    //            bHandled = TRUE;
+    //        }
+    //        else {
+    //            /* handle the error here */
+    //        }
+    //    }
+    //    else {
+    //        /* handle the error here, probably out of memory */
+    //    }
+    //    if( bHandled ) {
+    //        // if you handled the message, close the touch input handle and return
+    //        CloseTouchInputHandle( (HTOUCHINPUT)lParam );
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result )
     {
@@ -781,14 +781,14 @@ namespace Mengine
                 handle = true;
                 _result = FALSE;
             }break;
-        case WM_TOUCH:
-            {
-                if( this->wndProcTouch( hWnd, wParam, lParam ) == true )
-                {
-                    handle = true;
-                    _result = FALSE;
-                }
-            }break;
+        //case WM_TOUCH:
+        //    {
+        //        if( this->wndProcTouch( hWnd, wParam, lParam ) == true )
+        //        {
+        //            handle = true;
+        //            _result = FALSE;
+        //        }
+        //    }break;
         case WM_MOUSEMOVE:
             {
                 //::SetFocus( m_hWnd );
@@ -1120,7 +1120,7 @@ namespace Mengine
             return false;
         }
 
-        RegisterTouchWindow( m_hWnd, 0 );
+        //RegisterTouchWindow( m_hWnd, 0 );
 
         HWND hWndFgnd = ::GetForegroundWindow();
 

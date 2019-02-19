@@ -177,7 +177,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
     {
-        m_globalInputHandler = new FactorableUnique<PlayerGlobalInputHandler>();
+        m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>();
 
         m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
 
@@ -199,8 +199,8 @@ namespace Mengine
 
         m_scheduleManagerGlobal = scheduleManagerGlobal;
 
-        m_affectorable = new FactorableUnique<PlayerGlobalAffectorable>();
-        m_affectorableGlobal = new FactorableUnique<PlayerGlobalAffectorable>();
+        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
+        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );
@@ -218,9 +218,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this );
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_DESTROY, this );
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE );
 
         if( m_arrow != nullptr )
         {
@@ -532,7 +532,7 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                Helper::nodeRenderChildren( scene, &context, false );
+                Helper::nodeRenderChildren( scene.get(), &context, false );
             }
             else
             {
@@ -554,7 +554,7 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                Helper::nodeRenderChildren( m_arrow, &context, false );
+                Helper::nodeRenderChildren( m_arrow.get(), &context, false );
             }
             else
             {

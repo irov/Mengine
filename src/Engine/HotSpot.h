@@ -35,7 +35,7 @@ namespace Mengine
         bool isMousePickerOver() const;
 
     public:
-        PickerTrapInterfacePtr getPickerTrap() override;
+        PickerTrapInterface * getPickerTrap() override;
 
     public:
         void setDefaultHandle( bool _handle );
@@ -67,7 +67,7 @@ namespace Mengine
 
     protected:
         PickerTrapState * propagatePickerTrapState() const override;
-        ScriptablePtr propagatePickerScriptable() override;
+        Scriptable * propagatePickerScriptable() override;
 
     protected:
         bool onHandleMouseEnter( float _x, float _y ) override;

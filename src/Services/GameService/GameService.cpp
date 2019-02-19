@@ -383,14 +383,14 @@ namespace Mengine
     {
         CONFIG_SECTION( "Params", m_params );
 
-        GameAccountProviderPtr accountProvider = new FactorableUnique<GameServiceAccountProvider>();
-        accountProvider->setEventable( this );
+        GameAccountProviderPtr accountProvider = Helper::makeFactorableUnique<GameServiceAccountProvider>();
+        accountProvider->setEventable( EventablePtr( this ) );
 
         ACCOUNT_SERVICE()
             ->setAccountProvider( accountProvider );
 
-        GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameServiceSoundVolumeProvider>();
-        soundVolumeProvider->setEventable( this );
+        GameSoundVolumeProviderPtr soundVolumeProvider = Helper::makeFactorableUnique<GameServiceSoundVolumeProvider>();
+        soundVolumeProvider->setEventable( EventablePtr( this ) );
 
         SOUND_SERVICE()
             ->addSoundVolumeProvider( soundVolumeProvider );

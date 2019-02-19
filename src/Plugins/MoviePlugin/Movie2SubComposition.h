@@ -41,8 +41,8 @@ namespace Mengine
         ~Movie2SubComposition() override;
 
     public:
-        void setMovie( const Movie2Ptr & _movie );
-        const Movie2Ptr & getMovie() const;
+        void setMovie( const Movie2 * _movie );
+        const Movie2 * getMovie() const;
 
         void setDuration( float _duration );
         
@@ -82,7 +82,7 @@ namespace Mengine
         void updateTime_();
 
     protected:
-        Movie2Ptr m_movie;
+        const Movie2 * m_movie;
 
         float m_duration;
         float m_frameDuration;

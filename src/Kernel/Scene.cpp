@@ -65,7 +65,7 @@ namespace Mengine
         {
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                const NodePtr & children = *it;
+                NodePtr children( *it );
 
                 it.next_shuffle();
 

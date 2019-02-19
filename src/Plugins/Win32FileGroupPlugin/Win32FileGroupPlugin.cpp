@@ -60,7 +60,7 @@ namespace Mengine
     {
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
-                , new Detail::Win32FileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
+                , Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( STRINGIZE_FILEPATH_LOCAL( "" ) )
             );
 
         Char currentPath[MENGINE_MAX_PATH];
@@ -71,7 +71,7 @@ namespace Mengine
 
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )
-                , new Detail::Win32FileGroupDirectoryFactory( relationPath )
+                , Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( relationPath )
             );
 
         return true;

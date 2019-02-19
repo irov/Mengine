@@ -171,7 +171,7 @@ namespace Mengine
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( new FactorableUnique<MyLogger> );
+            ->registerLogger( Helper::makeFactorableUnique<MyLogger>() );
 
         LOGGER_WARNING( "Inititalizing Config Manager..." );
 
@@ -864,8 +864,8 @@ bool run()
 
     PyObject * py_tools_module = kernel->module_init( "ToolsBuilderPlugin" );
 
-    pybind::registration_type_cast<Mengine::String>(kernel, new extract_String_type);
-    pybind::registration_type_cast<Mengine::WString>(kernel, new extract_WString_type);
+    pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>());
+    pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>());
 
     pybind::registration_stl_vector_type_cast<Mengine::String, stdex::vector<Mengine::String>>(kernel);
     pybind::registration_stl_vector_type_cast<Mengine::WString, stdex::vector<Mengine::WString>>(kernel);

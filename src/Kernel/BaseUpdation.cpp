@@ -17,7 +17,7 @@ namespace Mengine
     void BaseUpdation::activate( uint32_t _mode, uint32_t _deep )
     {
         m_updatableProxyId = UPDATE_SERVICE()
-            ->createUpdatater( _mode, _deep, this );
+            ->createUpdatater( _mode, _deep, UpdationInterfacePtr( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()

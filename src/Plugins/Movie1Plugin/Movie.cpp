@@ -78,7 +78,7 @@ namespace Mengine
             {
                 if( this->createLayers_() == false )
                 {
-                    LOGGER_ERROR( "Movie.setResourceMovie: %s resource %s can't create layers"
+                    LOGGER_ERROR( "%s resource %s can't create layers"
                         , m_name.c_str()
                         , m_resourceMovie->getName().c_str()
                     );
@@ -160,7 +160,7 @@ namespace Mengine
     {
         if( m_resourceMovie.empty() == true )
         {
-            LOGGER_ERROR( "Movie._setTiming: '%s' not activate"
+            LOGGER_ERROR( "'%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -224,13 +224,13 @@ namespace Mengine
         {
             if( this->hasParent() == false )
             {
-                LOGGER_ERROR( "Movie::_play: '%s' is homeless"
+                LOGGER_ERROR( "'%s' is homeless"
                     , this->getName().c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "Movie::_play: '%s' play not activate"
+                LOGGER_ERROR( "'%s' play not activate"
                     , this->getName().c_str()
                 );
             }
@@ -300,7 +300,7 @@ namespace Mengine
 #ifndef NDEBUG
             if( stdex::intrusive_dynamic_cast<MovieMesh2DPtr>(_node) == nullptr )
             {
-                LOGGER_ERROR( "Movie::updateFrameNode_ %s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
+                LOGGER_ERROR( "%s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , _layer.name.c_str()
@@ -393,7 +393,7 @@ namespace Mengine
     {
         if( m_resourceMovie.empty() == true )
         {
-            LOGGER_ERROR( "Movie._setFirstFrame: '%s' not activate"
+            LOGGER_ERROR( "'%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -407,7 +407,7 @@ namespace Mengine
     {
         if( m_resourceMovie.empty() == true )
         {
-            LOGGER_ERROR( "Movie._setLastFrame: '%s' not activate"
+            LOGGER_ERROR( "'%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -502,7 +502,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::filterLayer %s invalid not compile"
+            LOGGER_ERROR( "%s invalid not compile"
                 , m_name.c_str()
             );
 
@@ -520,7 +520,7 @@ namespace Mengine
 
             const NodePtr & node = this->getLayerNode_( layer );
 
-            _visitor->visitMovieNode( this, node );
+            _visitor->visitMovieNode( MoviePtr( this ), node );
         }
 
         for( const MovieLayer & layer : layers )
@@ -545,7 +545,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie.getMovieNode %s resource %s invalid not compile '%s' type '%s'"
+            LOGGER_ERROR( "%s resource %s invalid not compile '%s' type '%s'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -587,7 +587,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_ERROR( "Movie::getMovieNode: '%s' resource '%s' not found node '%s' type '%s'"
+        LOGGER_ERROR( "'%s' resource '%s' not found node '%s' type '%s'"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -601,7 +601,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie.hasMovieNode %s resource %s invalid not compile (%s:%s)"
+            LOGGER_ERROR( "%s resource %s invalid not compile (%s:%s)"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -650,7 +650,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::hasLayer %s resource %s invalid get layer %s not compile"
+            LOGGER_ERROR( "%s resource %s invalid get layer %s not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -727,7 +727,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::setEnableMovieLayers %s resource %s invalid get layer %s not compile"
+            LOGGER_ERROR( "%s resource %s invalid get layer %s not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -765,7 +765,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::setEnableMovieLayer %s resource %s invalid get layer %s not compile"
+            LOGGER_ERROR( "%s resource %s invalid get layer %s not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -801,7 +801,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "Movie::setEnableMovieLayer %s resource %s not found layer %s"
+        LOGGER_ERROR( "%s resource %s not found layer %s"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -814,7 +814,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::getEnableMovieLayer %s resource %s invalid get layer %s not compile"
+            LOGGER_ERROR( "%s resource %s invalid get layer %s not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -850,7 +850,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "Movie::getEnableMovieLayer %s resource %s not found layer %s"
+        LOGGER_ERROR( "%s resource %s not found layer %s"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -863,7 +863,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::getLayer %s resource %s invalid get layer %s not compile"
+            LOGGER_ERROR( "%s resource %s invalid get layer %s not compile"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _name.c_str()
@@ -900,7 +900,7 @@ namespace Mengine
             return true;
         }
 
-        LOGGER_ERROR( "Movie::getLayer %s resource %s not found layer %s"
+        LOGGER_ERROR( "%s resource %s not found layer %s"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _name.c_str()
@@ -1078,7 +1078,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "Movie.createLayers_: %s resource %s can't create layer_node '%s' type '%s'"
+                LOGGER_ERROR( "%s resource %s can't create layer_node '%s' type '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , layer.source.c_str()
@@ -1254,7 +1254,7 @@ namespace Mengine
 
         surface->setResourceImage( resourceImage );
 
-        if( this->setupBlendingMode_( _layer, surface.get() ) == false )
+        if( this->setupBlendingMode_( _layer, surface ) == false )
         {
             return false;
         }
@@ -1317,7 +1317,7 @@ namespace Mengine
 
         if( resource == nullptr )
         {
-            LOGGER_ERROR( "Movie.createMovieImageSolid_: %s resource %s can't compile sprite '%s' imageSolid resource = NULL"
+            LOGGER_ERROR( "%s resource %s can't compile sprite '%s' imageSolid resource = NULL"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _layer.name.c_str()
@@ -1336,7 +1336,7 @@ namespace Mengine
 
         surface->setResourceImage( resource );
 
-        if( this->setupBlendingMode_( _layer, surface.get() ) == false )
+        if( this->setupBlendingMode_( _layer, surface ) == false )
         {
             return false;
         }
@@ -1474,7 +1474,7 @@ namespace Mengine
         surface->setStretch( _layer.stretch );
         surface->setLoop( _layer.loop );
 
-        if( this->setupBlendingMode_( _layer, surface.get() ) == false )
+        if( this->setupBlendingMode_( _layer, surface ) == false )
         {
             return false;
         }
@@ -1490,7 +1490,7 @@ namespace Mengine
         layer_animation->setName( _layer.name );
         layer_animation->setSurface( surface );
 
-        if( this->addMovieNode_( _layer, layer_animation, surface.get(), nullptr, nullptr ) == false )
+        if( this->addMovieNode_( _layer, layer_animation, surface, nullptr, nullptr ) == false )
         {
             return false;
         }
@@ -1630,7 +1630,7 @@ namespace Mengine
 
         surface->setPremultiplyAlpha( true );
 
-        if( this->setupBlendingMode_( _layer, surface.get() ) == false )
+        if( this->setupBlendingMode_( _layer, surface ) == false )
         {
             return false;
         }
@@ -1645,7 +1645,7 @@ namespace Mengine
 
         layer_video->setSurface( surface );
 
-        if( this->addMovieNode_( _layer, layer_video, surface.get(), nullptr, nullptr ) == false )
+        if( this->addMovieNode_( _layer, layer_video, surface, nullptr, nullptr ) == false )
         {
             return false;
         }
@@ -1689,7 +1689,7 @@ namespace Mengine
 
         layer_sound->setSurfaceSound( surfaceSound );
 
-        if( this->addMovieNode_( _layer, layer_sound, surfaceSound.get(), surfaceSound.get(), nullptr ) == false )
+        if( this->addMovieNode_( _layer, layer_sound, surfaceSound, surfaceSound, nullptr ) == false )
         {
             return false;
         }
@@ -1732,7 +1732,7 @@ namespace Mengine
 
         layer_sound->setSurfaceSound( surfaceSound );
 
-        if( this->addMovieNode_( _layer, layer_sound, surfaceSound.get(), surfaceSound.get(), nullptr ) == false )
+        if( this->addMovieNode_( _layer, layer_sound, surfaceSound, surfaceSound, nullptr ) == false )
         {
             return false;
         }
@@ -1828,7 +1828,7 @@ namespace Mengine
 
         surface->setResourceImage( resourceImage );
 
-        if( this->setupBlendingMode_( _layer, surface.get() ) == false )
+        if( this->setupBlendingMode_( _layer, surface ) == false )
         {
             return false;
         }

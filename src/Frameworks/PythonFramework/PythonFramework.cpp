@@ -15,7 +15,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #define ADD_SCRIPT_EMBEDDING(NAME)\
-    if(SCRIPT_SERVICE()->addScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME), new FactorableUnique<NAME>())==false) return false
+    if(SCRIPT_SERVICE()->addScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME), Helper::makeFactorableUnique<NAME>())==false) return false
 
 #define REMOVE_SCRIPT_EMBEDDING(NAME)\
     SCRIPT_SERVICE()->removeScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME))

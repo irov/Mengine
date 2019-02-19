@@ -71,6 +71,7 @@ namespace Mengine
 
     public:
         EventationInterface * getEventation() override;
+        const EventationInterface * getEventation() const override;
 
     public:
         void onCreate();

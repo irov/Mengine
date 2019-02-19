@@ -26,10 +26,10 @@ namespace Mengine
     bool ZipPlugin::_initializePlugin()
     {
         FILE_SERVICE()
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip" ), new FactoryDefault<FileGroupZip>() );
+            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactoryDefault<FileGroupZip>() );
 
         ARCHIVE_SERVICE()
-            ->registerArchivator( STRINGIZE_STRING_LOCAL( "zip" ), new FactorableUnique<ArchivatorZip>() );
+            ->registerArchivator( STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactorableUnique<ArchivatorZip>() );
 
         return true;
     }

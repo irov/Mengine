@@ -24,8 +24,8 @@ namespace Mengine
         ~MovieInternalObject() override;
 
     public:
-        void setMovie( const MoviePtr & _movie );
-        const MoviePtr & getMovie() const;
+        void setMovie( Movie * _movie );
+        Movie * getMovie() const;
 
         void setResourceInternalObject( const ResourceInternalObjectPtr & _resource );
         const ResourceInternalObjectPtr & getResourceInternalObject() const;
@@ -52,7 +52,7 @@ namespace Mengine
 
     protected:
         ResourceHolder<ResourceInternalObject> m_resourceInternalObject;
-        MoviePtr m_movie;
+        Movie * m_movie;
 
         pybind::object m_internalObject;
         NodePtr m_internalNode;

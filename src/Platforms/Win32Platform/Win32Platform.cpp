@@ -1069,7 +1069,7 @@ namespace Mengine
 
         if( alreadyRunning == true )
         {
-            m_alreadyRunningMonitor = new FactorableUnique<Win32AlreadyRunningMonitor>();
+            m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>();
 
             if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
             {
@@ -1174,7 +1174,7 @@ namespace Mengine
 
         if( maxfps == false && vsync == false )
         {
-            m_fpsMonitor = new FactorableUnique<Win32FPSMonitor>();
+            m_fpsMonitor = Helper::makeFactorableUnique<Win32FPSMonitor>();
             m_fpsMonitor->initialize();
 
             m_fpsMonitor->setActive( true );

@@ -311,7 +311,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( KeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc )
     {
-        InputHandlerInterfacePtr handler = new FactorableUnique<Detail::GlobalKeyHandler>( _code, _lambda );
+        InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _code, _lambda );
 
         uint32_t id = this->addGlobalHandler( handler, _doc );
 

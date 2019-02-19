@@ -56,6 +56,18 @@ namespace Mengine
         return event;
     }
     //////////////////////////////////////////////////////////////////////////
+    const EventationInterface * Entity::getEventation() const
+    {
+        if( m_behaviorEventable == nullptr )
+        {
+            return nullptr;
+        }
+
+        const EventationInterface * event = m_behaviorEventable->getEventation();
+
+        return event;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
         EVENTABLE_METHOD( EVENT_ENTITY_PREPARATION )

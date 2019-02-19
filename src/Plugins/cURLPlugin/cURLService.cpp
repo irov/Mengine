@@ -98,7 +98,7 @@ namespace Mengine
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-        task->setReceiver( this );
+        task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url );
 
         if( THREAD_SERVICE()
@@ -128,7 +128,7 @@ namespace Mengine
 		cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-        task->setReceiver( this );
+        task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _params );
 
         if( THREAD_SERVICE()
@@ -158,7 +158,7 @@ namespace Mengine
 		cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-        task->setReceiver( this );
+        task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _headers, _data );
 
         if( THREAD_SERVICE()
@@ -199,7 +199,7 @@ namespace Mengine
 		cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-        task->setReceiver( this );
+        task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _login, _password, _fileGroup, _path );
 
         if( THREAD_SERVICE()

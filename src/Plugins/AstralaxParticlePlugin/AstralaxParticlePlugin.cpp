@@ -34,7 +34,7 @@ namespace Mengine
         SERVICE_CREATE( ParticleSystem );
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
-            , new FactorableUnique<ModuleFactory<AstralaxParticleModule>>() );
+            , Helper::makeFactorableUnique<ModuleFactory<AstralaxParticleModule>>() );
 
         return true;
     }

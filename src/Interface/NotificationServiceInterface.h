@@ -140,10 +140,9 @@ namespace Mengine
         template<class C, class M>
         void addObserverMethod( uint32_t _id, C * _self, M _method )
         {
-            ObserverCallableInterfacePtr callable =
-                new GeneratorMethodObserverCallable<M>( _self, _method );
+            ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<M>( _self, _method ) );
 
-            this->addObserver( _id, _self, callable );
+            this->addObserver( _id, ObservablePtr( _self ), callable );
         }
 
     public:
@@ -180,6 +179,9 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )
+//////////////////////////////////////////////////////////////////////////
+#define NOTIFICATION_REMOVEOBSERVER_THIS( ID )\
+    NOTIFICATION_SERVICE()->removeObserver( ID, Mengine::ObservablePtr(this) )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_NOTIFY( ID, ARGS )\
     NOTIFICATION_SERVICE()->notify_tuple( ID, std::make_tuple ARGS )

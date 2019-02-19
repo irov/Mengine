@@ -433,16 +433,16 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryNodeAffectorCallback;
         //////////////////////////////////////////////////////////////////////////
-        ScriptableAffectorCallbackPtr createNodeAffectorCallback( const ScriptablePtr & _scriptable, const pybind::object & _cb, const pybind::args & _args )
+        ScriptableAffectorCallbackPtr createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb, const pybind::args & _args )
         {
             ScriptableAffectorCallbackPtr callback = m_factoryNodeAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
 
-            callback->initialize( _scriptable, _cb, _args );
+            callback->initialize( ScriptablePtr( _scriptable ), _cb, _args );
 
             return callback;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( const ShapeQuadFlexPtr & _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _shape->isActivate() == false )
             {
@@ -474,7 +474,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_ShapeQuadFlex_setPercentVisibilityStop( const ShapeQuadFlexPtr & _shape )
+        void s_ShapeQuadFlex_setPercentVisibilityStop( ShapeQuadFlex * _shape )
         {
             _shape->stopAffectors( ETA_VISIBILITY );
         }
@@ -922,7 +922,7 @@ namespace Mengine
 
             for( IntrusiveSlugChild it( children ); it.eof() == false; )
             {
-                const NodePtr & child = *it;
+                NodePtr child( *it );
 
                 it.next_shuffle();
 
@@ -1080,7 +1080,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_factoryAffectorVelocity2.create( ETA_POSITION
-                , callback, _node, _velocity, _time, MENGINE_DOCUMENT_PYBIND
+                , callback, NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
             );
 
             if( affector == nullptr )
@@ -1560,7 +1560,7 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateParabolic.create( ETA_POSITION
-                    , callback, _node, _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
+                    , callback, NodePtr( _node ), _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
                 );
 
             if( affector == nullptr )
@@ -1798,7 +1798,7 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorFollowTo.create( ETA_POSITION
-                    , callback, _node, _target, _offset, _distance
+                    , callback, NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , _rotate
                     , _rotationSpeed, _rotationAcceleration, _rotationLimit
@@ -1981,7 +1981,7 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorFollowToW.create( ETA_POSITION
-                    , callback, _node, _target, _offset, _distance
+                    , callback, NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , MENGINE_DOCUMENT_PYBIND
                 );
@@ -2000,7 +2000,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_Node_angleStop( const NodePtr & _node )
+        void s_Node_angleStop( Node * _node )
         {
             _node->stopAffectors( ETA_ANGLE );
             _node->setAngularSpeed( 0.f );
@@ -2024,7 +2024,6 @@ namespace Mengine
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
-            //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -2327,7 +2326,7 @@ namespace Mengine
     bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(_kernel))
+    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class> >(_kernel))
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );

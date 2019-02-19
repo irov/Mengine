@@ -19,6 +19,11 @@ namespace Mengine
         {
             return nullptr;
         };
+
+        virtual const EventationInterface * getEventation() const
+        {
+            return nullptr;
+        };
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Eventable> EventablePtr;
@@ -27,9 +32,9 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline static bool hasEventableReceiver( T * _self, uint32_t _event )
+        inline static bool hasEventableReceiver( const T * _self, uint32_t _event )
         {
-            EventationInterface * eventation = _self->getEventation();
+            const EventationInterface * eventation = _self->getEventation();
 
             if( eventation == nullptr )
             {
@@ -81,6 +86,18 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
+        static const typename T::EventReceiverType * getThisEventRecieverT( const T * _self, uint32_t _event )
+        {
+            typedef const typename T::EventReceiverType * T_EventReceiverTypePtr;
+
+            const EventationInterface * eventation = _self->getEventation();
+
+            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
+
+            return reciever;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
         static T * getThisEventReciever( Eventable * _self, uint32_t _event )
         {
             EventationInterface * eventation = _self->getEventation();
@@ -110,6 +127,7 @@ public:\
 public:\
     DECLARE_EVENTABLE_TYPE( Type );\
     Mengine::EventationInterface * getEventation() override{ return this; }\
+    const Mengine::EventationInterface * getEventation() const override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHODR(Event, R)\

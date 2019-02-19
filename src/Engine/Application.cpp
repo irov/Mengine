@@ -288,8 +288,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalizeService()
     {
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
 
         if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
@@ -326,7 +325,7 @@ namespace Mengine
 
 #	define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<NodePrototypeGenerator<Type, 128> > ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<NodePrototypeGenerator<Type, 128> >() ) == false )\
 		{\
 			return false;\
 		}        
@@ -366,7 +365,7 @@ namespace Mengine
 
 #	define SURFACE_FACTORY(Type)\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<SurfacePrototypeGenerator<Type, 128> > ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, 128>>() ) == false )\
 		{\
 			return false;\
 	    }
@@ -471,7 +470,7 @@ namespace Mengine
     {
         LOGGER_INFO( "Register Scene Manager..." );
 
-        PrototypeGeneratorInterfacePtr generator = new FactorableUnique<SceneCategoryGenerator>;
+        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<SceneCategoryGenerator>();
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), generator ) == false )
@@ -496,7 +495,7 @@ namespace Mengine
 
 #	define ADD_PROTOTYPE( Type ) \
 		if( PROTOTYPE_SERVICE()\
-			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<ResourcePrototypeGenerator<Type, 128> > ) == false )\
+			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>() ) == false )\
 		{\
 			return false;\
 		}
@@ -1014,8 +1013,7 @@ namespace Mengine
         }
         else
         {
-            NOTIFICATION_SERVICE()
-                ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
         }
     }
     //////////////////////////////////////////////////////////////////////////

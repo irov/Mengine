@@ -64,7 +64,7 @@ namespace Mengine
             }
             else
             {
-                IntrusivePtr<T_Receiver> receiver = new FactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>();
 
                 receiver->initialize( _kernel, py_event );
 
@@ -99,7 +99,7 @@ namespace Mengine
             }
             else
             {
-                T_Receiver * receiver = new FactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>();
 
                 receiver->initialize( _kernel, py_method );
 
@@ -136,7 +136,7 @@ namespace Mengine
             }
             else
             {
-                T_Receiver * receiver = new FactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>();
 
                 receiver->initialize( _kernel, py_method );
 

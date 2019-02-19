@@ -47,7 +47,7 @@ namespace Mengine
             EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
 
             generator->setKernel( _kernel );
-            generator->setGenerator( _generator );            
+            generator->setGenerator( _generator );
 
             bool successful = PROTOTYPE_SERVICE()
                 ->addPrototype( _category, _prototype, generator );
@@ -78,8 +78,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const pybind::object & s_createEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
         {
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, pytraceback );
@@ -137,8 +137,8 @@ namespace Mengine
             (void)_args;
             (void)_kwds;
 
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), pytraceback );
@@ -180,8 +180,8 @@ namespace Mengine
             (void)_args;
             (void)_kwds;
 
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
             ArrowPtr arrow = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), pytraceback );
@@ -223,8 +223,8 @@ namespace Mengine
             (void)_args;
             (void)_kwds;
 
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
             ScenePtr scene = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), pytraceback );
@@ -266,12 +266,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EntityScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::superclass_<Entity, pybind::bases<Node> >( _kernel, "Entity", nullptr, new superclass_new_Entity, new superclass_destroy_Entity, false )
+        pybind::superclass_<Entity, pybind::bases<Node> >( _kernel, "Entity", nullptr, pybind::new_adapter_interface_ptr( new superclass_new_Entity ), pybind::destroy_adapter_interface_ptr( new superclass_destroy_Entity ), false )
             .def_constructor( pybind::init<>() )
             .def( "getPrototype", &Entity::getPrototype )
             ;
 
-        pybind::superclass_<Arrow, pybind::bases<Entity> >( _kernel, "Arrow", nullptr, new superclass_new_Arrow, new superclass_destroy_Arrow, false )
+        pybind::superclass_<Arrow, pybind::bases<Entity> >( _kernel, "Arrow", nullptr, pybind::new_adapter_interface_ptr( new superclass_new_Arrow ), pybind::destroy_adapter_interface_ptr( new superclass_destroy_Arrow ), false )
             .def_constructor( pybind::init<>() )
             .def( "setOffsetClick", &Arrow::setOffsetClick )
             .def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -281,16 +281,8 @@ namespace Mengine
             .def( "getRadius", &Arrow::getRadius )
             ;
 
-        pybind::superclass_<Scene, pybind::bases<Entity> >( _kernel, "Scene", nullptr, new superclass_new_Scene, new superclass_destroy_Scene, false )
+        pybind::superclass_<Scene, pybind::bases<Entity> >( _kernel, "Scene", nullptr, pybind::new_adapter_interface_ptr( new superclass_new_Scene ), pybind::destroy_adapter_interface_ptr( new superclass_destroy_Scene ), false )
             .def_constructor( pybind::init<>() )
-            //.def( "isSubScene", &Scene::isSubScene )
-            //.def( "getParentScene", &Scene::getParentScene )
-            //.def( "setRenderTarget", &Scene::setRenderTarget )
-            //.def( "renderSelf", &Scene::renderSelf )
-            //.def( "blockInput", &Scene::blockInput )
-            //.def( "getBlockInput", &Scene::getBlockInput )
-            //.def( "getMainLayer", &Scene::getMainLayer )
-            //.def( "setMainLayer", &Scene::setMainLayer )
             ;
 
         EntityScriptMethod * entityScriptMethod = new FactorableUnique<EntityScriptMethod>();

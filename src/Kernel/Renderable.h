@@ -15,6 +15,11 @@ namespace Mengine
         {
             return nullptr;
         }
+
+        virtual const RenderInterface * getRenderConst() const
+        {
+            return nullptr;
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Renderable> RenderablePtr;
@@ -24,4 +29,5 @@ namespace Mengine
 #define DECLARE_RENDERABLE()\
 public:\
     Mengine::RenderInterface * getRender() override{ return this; }\
+    const Mengine::RenderInterface * getRenderConst() const override{ return this; }\
 protected:

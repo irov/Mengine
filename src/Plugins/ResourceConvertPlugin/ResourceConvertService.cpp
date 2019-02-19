@@ -36,8 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertService::_finalizeService()
     {
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Converter" ) );
     }

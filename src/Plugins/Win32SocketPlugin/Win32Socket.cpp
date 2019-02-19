@@ -184,12 +184,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32Socket::getSendStream() const
     {
-        return this;
+        return OutputStreamInterfacePtr( this );
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr Win32Socket::getReceiveStream() const
     {
-        return this;
+        return InputStreamInterfacePtr( this );
     }
     //////////////////////////////////////////////////////////////////////////
     SOCKET Win32Socket::getSocket() const

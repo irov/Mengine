@@ -77,7 +77,7 @@ namespace Mengine
             return false;
         }
 
-        m_soundEmitter->setSoundListener( this );
+        m_soundEmitter->setSoundListener( SoundListenerInterfacePtr( this ) );
 
         AnimationInterface * animation = this->getAnimation();
         bool loop = animation->isLoop();

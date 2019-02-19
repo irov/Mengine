@@ -127,7 +127,7 @@ namespace Mengine
 
         const RenderTextureInterface * texture = it_found->second;
 
-        return texture;
+        return RenderTextureInterfacePtr( texture );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
@@ -312,7 +312,7 @@ namespace Mengine
             {
                 const RenderTextureInterface * texture = it->second;
 
-                _lambda( texture );
+                _lambda( RenderTextureInterfacePtr( texture ) );
             }
         }
     }
@@ -344,7 +344,7 @@ namespace Mengine
         {
             const RenderTextureInterface * texture = it_found->second;
 
-            return texture;
+            return RenderTextureInterfacePtr( texture );
         }
 
         if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )

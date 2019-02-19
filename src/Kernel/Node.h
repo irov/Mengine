@@ -198,7 +198,7 @@ namespace Mengine
         uint32_t getAffectorableUpdatableLeafDeep() const override;
 
     public:
-        virtual PickerTrapInterfacePtr getPickerTrap();
+        virtual PickerTrapInterface * getPickerTrap();
 
     protected:
         bool m_active;

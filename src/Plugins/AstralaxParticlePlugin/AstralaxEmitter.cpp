@@ -126,7 +126,7 @@ namespace Mengine
 
         if( m_emitterPositionRelative == true )
         {
-            if( emitter->setPositionProvider( this ) == false )
+            if( emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr( this ) ) == false )
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
@@ -153,7 +153,7 @@ namespace Mengine
 
         if( m_emitterCameraRelative == true )
         {
-            if( emitter->setCameraProvider( this ) == false )
+            if( emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr( this ) ) == false )
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
@@ -521,7 +521,7 @@ namespace Mengine
 
         if( m_emitterPositionRelative == true )
         {
-            if( m_emitter->setPositionProvider( this ) == false )
+            if( m_emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr( this ) ) == false )
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
@@ -558,7 +558,7 @@ namespace Mengine
 
         if( m_emitterCameraRelative == true )
         {
-            if( m_emitter->setCameraProvider( this ) == false )
+            if( m_emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr( this ) ) == false )
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()

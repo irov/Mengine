@@ -221,7 +221,7 @@ namespace Mengine
                 return nullptr;
             }
 
-			MySoundNodeListenerPtr snlistener = new FactorableUnique<MySoundNodeListener>( resource, soundBuffer, _cb, _args );
+			MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( resource, soundBuffer, _cb, _args );
 
             sourceEmitter->setSoundListener( snlistener );
 
@@ -594,7 +594,7 @@ namespace Mengine
 
             if( _cb.is_callable() == true )
             {
-                cb = new FactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
+                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
             }
 
             AMPLIFIER_SERVICE()
@@ -783,7 +783,7 @@ namespace Mengine
 
             if( _cb.is_callable() == true )
             {
-                cb = new FactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
+                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
             }
 
             if( AMPLIFIER_SERVICE()

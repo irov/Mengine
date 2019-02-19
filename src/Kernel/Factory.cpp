@@ -44,7 +44,10 @@ namespace Mengine
         object->setFactory( this );
 
 #ifndef NDEBUG
-		NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object, _doc) );
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object, _doc) );
+        }
 #endif
 
         return object;
@@ -55,7 +58,10 @@ namespace Mengine
         STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
 
 #ifndef NDEBUG
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, (this, _object) );
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, (this, _object) );
+        }
 #endif
 
         this->_destroyObject( _object );

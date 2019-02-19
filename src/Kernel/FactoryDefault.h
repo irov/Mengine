@@ -29,4 +29,13 @@ namespace Mengine
             Helper::freeT<Type>( static_cast<Type*>(_obj) );
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class T>
+        FactoryPtr makeFactoryDefault()
+        {
+            return FactoryPtr( new FactoryDefault<T>() );
+        }
+    }
 }

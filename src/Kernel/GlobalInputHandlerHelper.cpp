@@ -102,7 +102,7 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            GlobalKeyHandlerPtr handler = new FactorableUnique<GlobalKeyHandler>( _code, _isDown, _event );
+            GlobalKeyHandlerPtr handler = Helper::makeFactorableUnique<GlobalKeyHandler>( _code, _isDown, _event );
 
             uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
 

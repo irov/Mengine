@@ -89,7 +89,7 @@ namespace Mengine
         }
 
         m_inputMousePositionProviderId = INPUT_SERVICE()
-            ->addMousePositionProvider( new FactorableUnique<ArrowInputMousePositionProvider>( this ) );
+            ->addMousePositionProvider( Helper::makeFactorableUnique<ArrowInputMousePositionProvider>( this ) );
 
         const mt::vec2f & cursor_pos = INPUT_SERVICE()
             ->getCursorPosition( 0 );

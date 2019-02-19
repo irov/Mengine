@@ -51,7 +51,7 @@ namespace Mengine
         template<class T>
         inline ConverterFactoryInterfacePtr registerConverter( const Char * _type )
         {
-            ConverterFactoryInterfacePtr converter = new FactorableUnique<ConverterFactory<T> >();
+            ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T> >();
 
             if( converter->initialize() == false )
             {

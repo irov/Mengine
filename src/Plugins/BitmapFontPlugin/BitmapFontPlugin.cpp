@@ -30,7 +30,7 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" )
-                , new FactorableUnique<BitmapFontPrototypeGenerator>()
+                , Helper::makeFactorableUnique<BitmapFontPrototypeGenerator>()
             );
 
         return true;

@@ -42,7 +42,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) = 0;
+        virtual void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<VisitorMovie2LayerInterface> VisitorMovie2LayerInterfacePtr;

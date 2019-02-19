@@ -10,6 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MovieInternalObject::MovieInternalObject()
+        : m_movie( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -17,12 +18,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieInternalObject::setMovie( const MoviePtr & _movie )
+    void MovieInternalObject::setMovie( Movie * _movie )
     {
         m_movie = _movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    const MoviePtr & MovieInternalObject::getMovie() const
+    Movie * MovieInternalObject::getMovie() const
     {
         return m_movie;
     }
@@ -85,7 +86,7 @@ namespace Mengine
 
         if( py_object.is_invalid() == true )
         {
-            LOGGER_ERROR( "MovieInternalObject::_compile '%s' resource '%s' can't find internal object '%s:%s'"
+            LOGGER_ERROR( "'%s' resource '%s' can't find internal object '%s:%s'"
                 , m_name.c_str()
                 , m_resourceInternalObject->getName().c_str()
                 , internalGroup.c_str()

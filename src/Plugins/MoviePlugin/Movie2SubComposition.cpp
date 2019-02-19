@@ -20,12 +20,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::setMovie( const Movie2Ptr & _movie )
+    void Movie2SubComposition::setMovie( const Movie2 * _movie )
     {
         m_movie = _movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Movie2Ptr & Movie2SubComposition::getMovie() const
+    const Movie2 * Movie2SubComposition::getMovie() const
     {
         return m_movie;
     }

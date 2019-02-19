@@ -354,7 +354,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<CompileResourceVisitor> CompileResourceVisitorPtr;
 
-                CompileResourceVisitorPtr crv = new FactorableUnique<CompileResourceVisitor>();
+                CompileResourceVisitorPtr crv = Helper::makeFactorableUnique<CompileResourceVisitor>();
 
                 RESOURCE_SERVICE()
                     ->visitResources( crv );
@@ -395,7 +395,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<CompleteThreadTaskVisitor> CompleteThreadTaskVisitorPtr;
 
-                CompleteThreadTaskVisitorPtr cttv = new FactorableUnique<CompleteThreadTaskVisitor>();
+                CompleteThreadTaskVisitorPtr cttv = Helper::makeFactorableUnique<CompleteThreadTaskVisitor>();
 
                 PREFETCHER_SERVICE()
                     ->visitPrefetches( cttv );
@@ -648,7 +648,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<MyVisitorFactoryService> MyVisitorFactoryServicePtr;
 
-                MyVisitorFactoryServicePtr mvcts = new FactorableUnique< MyVisitorFactoryService>;
+                MyVisitorFactoryServicePtr mvcts = Helper::makeFactorableUnique<MyVisitorFactoryService>();
                 FACTORY_SERVICE()
                     ->visitFactories( mvcts );
 

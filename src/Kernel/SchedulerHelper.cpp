@@ -92,7 +92,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t schedulerEvent( const SchedulerInterfacePtr & _scheduler, float _delay, const LambdaScheduleEvent & _event )
         {
-            ScheduleEventInterfacePtr event = new FactorableUnique<Detail::HelperScheduleEvent>( _event );
+            ScheduleEventInterfacePtr event = Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _event );
 
             uint32_t id = _scheduler->event( _delay, event );
 
@@ -101,9 +101,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t schedulerTiming( const SchedulerInterfacePtr & _scheduler, const LambdaSchedulePipe & _pipe, const LambdaScheduleTiming & _timing, const LambdaScheduleEvent & _event )
         {
-            SchedulePipeInterfacePtr pipe = new FactorableUnique<Detail::HelperSchedulePipe>( _pipe );
-            ScheduleTimingInterfacePtr timing = new FactorableUnique<Detail::HelperScheduleTiming>( _timing );
-            ScheduleEventInterfacePtr event = _event != nullptr ? new FactorableUnique<Detail::HelperScheduleEvent>( _event ) : nullptr;
+            SchedulePipeInterfacePtr pipe = Helper::makeFactorableUnique<Detail::HelperSchedulePipe>( _pipe );
+            ScheduleTimingInterfacePtr timing = Helper::makeFactorableUnique<Detail::HelperScheduleTiming>( _timing );
+            ScheduleEventInterfacePtr event = _event != nullptr ? Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _event ) : nullptr;
 
             uint32_t id = _scheduler->timing( pipe, timing, event );
 

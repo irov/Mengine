@@ -189,9 +189,9 @@ namespace Mengine
 
         RenderImageLoaderInterfacePtr loader = m_renderImageProvider->getLoader();
 
-        if( loader->load( this ) == false )
+        if( loader->load( RenderImageInterfacePtr( this ) ) == false )
         {
-            LOGGER_ERROR( "OpenGLRenderImage::createTexture Invalid decode image"
+            LOGGER_ERROR( "Invalid decode image"
             );
 
             return false;

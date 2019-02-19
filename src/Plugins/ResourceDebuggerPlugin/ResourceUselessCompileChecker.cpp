@@ -43,8 +43,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_RESOURCE_COMPILE, this );
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_RESOURCE_RELEASE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_COMPILE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_RELEASE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyRestartScenePrepareEnable( const ScenePtr & _scene )
@@ -59,8 +59,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_RESOURCE_COMPILE, this );
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_RESOURCE_RELEASE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_COMPILE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_RELEASE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyResourceCompile( Resource * _resource )

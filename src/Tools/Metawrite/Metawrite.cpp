@@ -99,7 +99,7 @@ namespace Mengine
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( new FactorableUnique<MyLogger> );
+            ->registerLogger( Helper::makeFactorableUnique<MyLogger>() );
 
         SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );

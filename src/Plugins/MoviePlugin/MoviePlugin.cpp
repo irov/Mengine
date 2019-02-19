@@ -185,7 +185,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) override
+            void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) override
             {
                 (void)_index;
 
@@ -222,7 +222,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovie2LayerInterfacePtr visitor = new FactorableUnique<PythonVisitorMovie2Socket>( _kernel, py_list );
+            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Socket>( _kernel, py_list );
             _movie->visitSockets( visitor );
 
             return py_list;
@@ -244,7 +244,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) override
+            void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) override
             {
                 (void)_index;
 
@@ -269,7 +269,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovie2LayerInterfacePtr visitor = new FactorableUnique<PythonVisitorMovie2Slots>( _kernel, py_list );
+            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Slots>( _kernel, py_list );
             _movie->visitSockets( visitor );
 
             return py_list;
@@ -392,26 +392,26 @@ namespace Mengine
                 .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
                 ;
 
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<NodePrototypeGenerator<Movie2, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie2, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<NodePrototypeGenerator<Movie2Slot, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie2Slot, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<ScriptablePrototypeGenerator<Movie2SubComposition, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<Movie2SubComposition, 128>>() ) == false )
         {
             return false;
         }
@@ -424,7 +424,7 @@ namespace Mengine
             return false;
         }
 
-        DataflowAEZPtr dataflowAEZ = new FactorableUnique<DataflowAEZ>();
+        DataflowAEZPtr dataflowAEZ = Helper::makeFactorableUnique<DataflowAEZ>();
 
         dataflowAEZ->setMovieInstance( m_movieInstance );
         dataflowAEZ->setArchivator( archivator );
@@ -437,7 +437,7 @@ namespace Mengine
         VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128>>() ) == false )
         {
             return false;
         }
@@ -453,12 +453,12 @@ namespace Mengine
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
             NODEDEBUGRENDER_SERVICE()
-                ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebugRender>() );
+                ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebugRender>() );
         }
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            ResourceMovie2ValidatorPtr movie2Validator = new FactorableUnique<ResourceMovie2Validator>();
+            ResourceMovie2ValidatorPtr movie2Validator = Helper::makeFactorableUnique<ResourceMovie2Validator>();
 
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );
@@ -468,10 +468,10 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
+            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<LoaderResourceMovie2>() );
         }
 
-        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebuggerBoundingBox>() );
+        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>() );
 
         return true;
     }

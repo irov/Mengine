@@ -68,7 +68,7 @@ namespace Mengine
             return false;
         }
 
-        TTFPrototypeGeneratorPtr generator = new FactorableUnique<TTFPrototypeGenerator>();
+        TTFPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFPrototypeGenerator>();
 
         generator->setFTLibrary( ftlibrary );
 
@@ -82,7 +82,7 @@ namespace Mengine
         m_ftMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-        TTFDataflowPtr dataflowTTF = new FactorableUnique<TTFDataflow>();
+        TTFDataflowPtr dataflowTTF = Helper::makeFactorableUnique<TTFDataflow>();
 
         dataflowTTF->setFTLibrary( ftlibrary );
 
@@ -95,7 +95,7 @@ namespace Mengine
 
         VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF );
 
-        FEDataflowPtr dataflowFE = new FactorableUnique<FEDataflow>();
+        FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>();
 
         if( dataflowFE->initialize() == false )
         {

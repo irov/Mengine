@@ -140,7 +140,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactoryPtr EntityPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = new FactoryPool<PythonEntityBehavior, 128>();
+        FactoryPtr factory = Helper::makeFactoryPool<PythonEntityBehavior, 128>();
 
         return factory;
     }
@@ -180,7 +180,7 @@ namespace Mengine
             }
         }
 
-        m_eventable = new FactorableUnique<PythonEntityEventation>();
+        m_eventable = Helper::makeFactorableUnique<PythonEntityEventation>();
 
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onCreate", EVENT_ENTITY_CREATE );
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onDestroy", EVENT_ENTITY_DESTROY );

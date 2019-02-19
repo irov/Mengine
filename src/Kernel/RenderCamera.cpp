@@ -38,8 +38,7 @@ namespace Mengine
     {
         Node::_deactivate();
 
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCamera::_invalidateWorldMatrix()

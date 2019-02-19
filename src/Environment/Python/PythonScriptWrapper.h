@@ -44,7 +44,8 @@ namespace Mengine
         PythonScriptWrapper( pybind::kernel_interface * _kernel )
             : m_kernel( _kernel )
         {
-            pybind::registration_type_cast<T>(m_kernel, new Helper::ScriptExtract<T>());
+            pybind::type_cast_ptr cast( new Helper::ScriptExtract<T> );
+            pybind::registration_type_cast<T>(m_kernel, cast);
         }
 
         ~PythonScriptWrapper() override

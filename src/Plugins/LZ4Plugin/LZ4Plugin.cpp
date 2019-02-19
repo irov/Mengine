@@ -24,7 +24,7 @@ namespace Mengine
     bool LZ4Plugin::_initializePlugin()
     {
         ARCHIVE_SERVICE()
-            ->registerArchivator( STRINGIZE_STRING_LOCAL( "lz4" ), new FactorableUnique<ArchivatorLZ4>() );
+            ->registerArchivator( STRINGIZE_STRING_LOCAL( "lz4" ), Helper::makeFactorableUnique<ArchivatorLZ4>() );
 
         return true;
     }

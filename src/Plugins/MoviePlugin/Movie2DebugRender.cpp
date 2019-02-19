@@ -22,7 +22,7 @@ namespace Mengine
         _node->foreachRenderSlots( _context, []( Node * _node, const RenderContext * _context )
         {
             NODEDEBUGRENDER_SERVICE()
-                ->renderDebugNode( _node, _context, true );
+                ->renderDebugNode( NodePtr( _node ), _context, true );
         } );
     }
 }

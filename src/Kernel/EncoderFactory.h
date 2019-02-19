@@ -52,7 +52,7 @@ namespace Mengine
         template<class T>
         inline EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type )
         {
-            EncoderFactoryInterfacePtr encoder = new FactorableUnique<EncoderFactory<T>>();
+            EncoderFactoryInterfacePtr encoder = Helper::makeFactorableUnique<EncoderFactory<T>>();
 
             if( encoder->initialize() == false )
             {

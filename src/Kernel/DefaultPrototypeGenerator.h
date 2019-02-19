@@ -20,7 +20,7 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
-            FactoryPtr factory = new FactoryPool<Type, Count>();
+            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>();
 
             return factory;
         }

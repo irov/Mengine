@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kernel/IntrusivePtr.h"
 #include "Kernel/MemoryAllocator.h"
 
 namespace Mengine
@@ -28,4 +29,15 @@ namespace Mengine
             delete this;
         }
     };
+
+    namespace Helper
+    {
+        template<class Base, class ... Args>
+        IntrusivePtr<Base> makeFactorableUnique( Args && ... _args )
+        {
+            Base * factorable = new FactorableUnique<Base>( std::forward<Args>( _args ) ... );
+
+            return IntrusivePtr<Base>( factorable );
+        }
+    }
 }

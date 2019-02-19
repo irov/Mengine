@@ -97,7 +97,7 @@ namespace Mengine
                 {
                     for( IntrusiveSlugChild it( child ); it.eof() == false; )
                     {
-                        NodePtr children = (*it);
+                        NodePtr children( *it );
 
                         it.next_shuffle();
 
@@ -109,7 +109,7 @@ namespace Mengine
         protected:
             void accept( const NodePtr & _node )
             {
-                PickerTrapInterfacePtr trap = _node->getPickerTrap();
+                PickerTrapInterface * trap = _node->getPickerTrap();
 
                 if( trap == nullptr )
                 {

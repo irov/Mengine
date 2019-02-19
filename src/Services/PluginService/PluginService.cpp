@@ -121,7 +121,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->addPlugin( _dynamicLibrary, plugin ) == false )
+        if( this->addPlugin( _dynamicLibrary, PluginInterfacePtr( plugin ) ) == false )
         {
             return false;
         }

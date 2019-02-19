@@ -79,7 +79,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    const NodePtr & children = (*it);
+                    NodePtr children( *it );
 
                     it.next_shuffle();
 
@@ -139,7 +139,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    const NodePtr & children = *it;
+                    NodePtr children( *it );
 
                     it.next_shuffle();
 
@@ -435,7 +435,7 @@ namespace Mengine
 
         for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
         {
-            const NodePtr & node = (*it);
+            NodePtr node( *it );
 
             it.next_shuffle();
 
@@ -469,7 +469,7 @@ namespace Mengine
 
         for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
         {
-            const NodePtr & node = (*it);
+            NodePtr node( *it );
 
             IntrusiveSlugListNodeChild::iterator it_node( node );
 
@@ -501,7 +501,7 @@ namespace Mengine
             return true;
         }
 
-        bool result = m_parent->removeChild( this );
+        bool result = m_parent->removeChild( NodePtr( this ) );
 
         return result;
     }
@@ -656,7 +656,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & child = (*it);
+            NodePtr child( *it );
 
             _lambda( child );
         }
@@ -670,7 +670,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            NodePtr child = (*it);
+            NodePtr child( *it );
 
             _lambda( child );
         }
@@ -684,7 +684,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & child = (*it);
+            NodePtr child( *it );
 
             _lambda( child );
         }
@@ -698,7 +698,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            NodePtr child = (*it);
+            NodePtr child( *it );
 
             if( _lambda( child ) == false )
             {
@@ -715,7 +715,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            NodePtr child = (*it);
+            NodePtr child( *it );
 
             uint32_t childUID = child->getUniqueIdentity();
 
@@ -785,7 +785,7 @@ namespace Mengine
         {
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                const NodePtr & children = (*it);
+                NodePtr children(*it);
 
                 it.next_shuffle();
 
@@ -949,7 +949,7 @@ namespace Mengine
         IntrusiveSlugListNodeChild & parent_children = parent->getChildren();
 
         IntrusiveSlugListNodeChild::iterator it_found =
-            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
+            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), NodePtr( this ) );
 
         if( it_found == parent_children.begin() )
         {
@@ -975,7 +975,7 @@ namespace Mengine
         IntrusiveSlugListNodeChild & parent_children = parent->getChildren();
 
         IntrusiveSlugListNodeChild::iterator it_found =
-            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
+            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), NodePtr( this ) );
 
         ++it_found;
 
@@ -1079,7 +1079,7 @@ namespace Mengine
 
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                const NodePtr & node = *it;
+                NodePtr node(*it);
 
                 it.next_shuffle();
 
@@ -1176,7 +1176,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    const NodePtr & node = (*it);
+                    NodePtr node( *it );
 
                     it.next_shuffle();
 
@@ -1240,7 +1240,7 @@ namespace Mengine
         return deep;
     }
     //////////////////////////////////////////////////////////////////////////
-    PickerTrapInterfacePtr Node::getPickerTrap()
+    PickerTrapInterface * Node::getPickerTrap()
     {
         return nullptr;
     }

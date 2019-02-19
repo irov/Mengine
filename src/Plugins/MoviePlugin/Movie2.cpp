@@ -814,7 +814,7 @@ namespace Mengine
 
             if( mesh.viewport != nullptr )
             {
-                Movie2ScissorPtr scissor = new FactorableUnique<Movie2Scissor>();
+                Movie2ScissorPtr scissor = Helper::makeFactorableUnique<Movie2Scissor>();
 
                 scissor->setViewport( wm, mesh.viewport );
 
@@ -1070,7 +1070,7 @@ namespace Mengine
             return blend_mode;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void updateMatrixProxy( const NodePtr & _node, ae_bool_t _immutable_matrix, const float * _matrix, ae_bool_t _immutable_color, const ae_color_t & _color, ae_color_channel_t _opacity )
+        static void updateMatrixProxy( const Node * _node, ae_bool_t _immutable_matrix, const float * _matrix, ae_bool_t _immutable_color, const ae_color_t & _color, ae_color_channel_t _opacity )
         {
             Node * nodeParent = _node->getParent();
 
@@ -1147,7 +1147,7 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
-                Detail::updateMatrixProxy( node, AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
+                Detail::updateMatrixProxy( node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'r' ) ) == AE_TRUE )
                 {
@@ -1253,7 +1253,7 @@ namespace Mengine
 
                 Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
-                unknownParticleEmitter2->setResourceParticle( resourceParticle );
+                unknownParticleEmitter2->setResourceParticle( ResourcePtr( resourceParticle ) );
 
                 unknownParticleEmitter2->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
@@ -1351,7 +1351,7 @@ namespace Mengine
 
                     UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
-                    unknownVideoSurface->setResourceVideo( resourceVideo );
+                    unknownVideoSurface->setResourceVideo( ResourcePtr( resourceVideo ) );
 
                     EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
 
@@ -1394,9 +1394,9 @@ namespace Mengine
                         surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_MUSIC );
                     }
 
-                    ResourceSoundPtr resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    ResourceSound * resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
-                    surfaceSound->setResourceSound( resourceSound );
+                    surfaceSound->setResourceSound( Helper::makeIntrusivePtr( resourceSound ) );
 
                     movie2->addSurface_( surfaceSound );
 
@@ -2390,7 +2390,7 @@ namespace Mengine
 
             if( mesh.viewport != nullptr )
             {
-                Movie2ScissorPtr scissor = new FactorableUnique<Movie2Scissor>();
+                Movie2ScissorPtr scissor = Helper::makeFactorableUnique<Movie2Scissor>();
 
                 scissor->setViewport( wm, mesh.viewport );
 

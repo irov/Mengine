@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceDebuggerPlugin::_initializePlugin()
     {
-        m_resourceUselessCompileChecker = new FactorableUnique<ResourceUselessCompileChecker>();
+        m_resourceUselessCompileChecker = Helper::makeFactorableUnique<ResourceUselessCompileChecker>();
 
         if( m_resourceUselessCompileChecker->initialize() == false )
         {

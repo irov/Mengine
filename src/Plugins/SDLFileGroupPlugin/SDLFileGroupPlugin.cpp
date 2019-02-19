@@ -28,7 +28,7 @@ namespace Mengine
     {
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
-                , new SDLFileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
+                , Helper::makeFactory<SDLFileGroupDirectoryFactory>( STRINGIZE_FILEPATH_LOCAL( "" ) )
             );
 
         Char utf8_currentPath[MENGINE_MAX_PATH];
@@ -39,7 +39,7 @@ namespace Mengine
 
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )
-                , new SDLFileGroupDirectoryFactory( relationPath )
+                , Helper::makeFactory<SDLFileGroupDirectoryFactory>( relationPath )
             );
 
         return true;

@@ -29,31 +29,31 @@ namespace Mengine
     bool OzzAnimationPlugin::_initializePlugin()
     {
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceOzzSkeleton"_c, new FactorableUnique<DefaultPrototypeGenerator<ResourceOzzSkeleton, 16> > ) == false )
+            ->addPrototype( "Resource"_c, "ResourceOzzSkeleton"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<ResourceOzzSkeleton, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceOzzMesh"_c, new FactorableUnique<DefaultPrototypeGenerator<ResourceOzzMesh, 16> > ) == false )
+            ->addPrototype( "Resource"_c, "ResourceOzzMesh"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<ResourceOzzMesh, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceOzzAnimation"_c, new FactorableUnique < DefaultPrototypeGenerator<ResourceOzzAnimation, 16> > ) == false )
+            ->addPrototype( "Resource"_c, "ResourceOzzAnimation"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<ResourceOzzAnimation, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Sampler"_c, "SamplerOzzAnimation"_c, new FactorableUnique < DefaultPrototypeGenerator<SamplerOzzAnimation, 16> > ) == false )
+            ->addPrototype( "Sampler"_c, "SamplerOzzAnimation"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<SamplerOzzAnimation, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Node"_c, "NodeOzzAnimation"_c, new FactorableUnique < NodePrototypeGenerator<NodeOzzAnimation, 16> > ) == false )
+            ->addPrototype( "Node"_c, "NodeOzzAnimation"_c, Helper::makeFactorableUnique<NodePrototypeGenerator<NodeOzzAnimation, 16>>() ) == false )
         {
             return false;
         }

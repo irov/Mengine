@@ -70,14 +70,9 @@ namespace Mengine
     {
         Node::_deactivate();
 
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE_POST, this );
-
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_DEBUG_TEXT_MODE, this );
-
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_TEXT_MODE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_compile()

@@ -191,7 +191,7 @@ namespace Mengine
             , public BaseRender
         {
         public:
-            RenderLayer2DTarget( const Layer2DPtr & _layer )
+            RenderLayer2DTarget( Layer2D * _layer )
                 : m_layer( _layer )
             {
             }
@@ -212,7 +212,7 @@ namespace Mengine
             }
 
         protected:
-            Layer2DPtr m_layer;
+            Layer2D * m_layer;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -284,7 +284,7 @@ namespace Mengine
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
 
-        m_renderTarget = new FactorableUnique<RenderLayer2DTarget>( this );
+        m_renderTarget = Helper::makeFactorableUnique<RenderLayer2DTarget>( this );
 
         return true;
     }

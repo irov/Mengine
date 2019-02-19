@@ -34,22 +34,22 @@ namespace Mengine
         SERVICE_CREATE( NodeDebugRenderService );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<ArrowDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), new FactorableUnique<PointDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), Helper::makeFactorableUnique<PointDebugRender>() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), new FactorableUnique<HotSpotCircleDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), Helper::makeFactorableUnique<HotSpotCircleDebugRender>() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotImage" ), new FactorableUnique<HotSpotImageDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotImage" ), Helper::makeFactorableUnique<HotSpotImageDebugRender>() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), new FactorableUnique<HotSpotPolygonDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebugRender>() );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ), new FactorableUnique<TextFieldDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebugRender>() );
 
         return true;
     }

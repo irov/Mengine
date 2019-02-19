@@ -41,7 +41,7 @@ namespace Mengine
     void PackageService::_finalizeService()
     {
         NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE, this );
+            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE, ObservablePtr( this ) );
 
         m_packages.clear();
 

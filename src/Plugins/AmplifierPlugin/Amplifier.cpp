@@ -38,7 +38,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     class Amplifier::MyMusicSoundListener
-        : public FactorableUnique<Factorable>
+        : public Factorable
         , public SoundListenerInterface
     {
     public:
@@ -149,7 +149,7 @@ namespace Mengine
 
         if( _callback != nullptr )
         {
-            soundEmitter->setSoundListener( new Amplifier::MyMusicSoundListener( _callback ) );
+            soundEmitter->setSoundListener( Helper::makeFactorableUnique<Amplifier::MyMusicSoundListener>( _callback ) );
         }
 
         if( SOUND_SERVICE()

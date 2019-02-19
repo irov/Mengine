@@ -528,7 +528,7 @@ namespace Mengine
 
         SERVICE_CREATE( OptionsService );
 
-        ArgumentsInterfacePtr arguments = new FactorableUnique<StringArguments>();
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
 
         for( int i = 1; i < argc; ++i )
         {

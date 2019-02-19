@@ -40,4 +40,14 @@ namespace Mengine
         PoolType m_pool;
     };
     //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count, class F = Factory>
+        FactoryPtr makeFactoryPool()
+        {
+            Factory * factory = new FactoryPool<Type, Count, F>();
+
+            return FactoryPtr( factory );
+        }
+    }
 }

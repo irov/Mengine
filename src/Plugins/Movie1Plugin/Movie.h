@@ -52,7 +52,7 @@ namespace Mengine
         : public AnimationEventReceiver
     {
     public:
-        virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) = 0;
+        virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) const = 0;
         virtual NodePtr onMovieActivateInternal( const pybind::object & _internal ) = 0;
         virtual void onMovieDeactivateInternal( const pybind::object & _internal ) = 0;
     };

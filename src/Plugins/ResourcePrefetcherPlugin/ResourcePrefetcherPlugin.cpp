@@ -113,7 +113,7 @@ namespace Mengine
                 return false;
             }
 
-            PyPrefetcherObserverPtr observer = new FactorableUnique<PyPrefetcherObserver>( _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _cb, _args );
 
             RESOURCE_SERVICE()
                 ->foreachGroupResources( fileGroup, _groupName, [observer]( const ResourcePtr & _resource )
@@ -147,7 +147,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = new FactorableUnique<PyPrefetcherObserver>( _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _cb, _args );
 
             TEXT_SERVICE()
                 ->foreachFonts( [observer]( const TextFontInterfacePtr & _textFont )
@@ -184,7 +184,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchScripts( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = new FactorableUnique<PyMutexPrefetcherObserver>( _kernel, _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyMutexPrefetcherObserver>( _kernel, _cb, _args );
 
             SCRIPT_SERVICE()
                 ->prefetchModules( observer );
@@ -230,10 +230,10 @@ namespace Mengine
             pybind::def_function( kernel, "unfetchFonts", &Detail::s_unfetchFonts );
         }
 
-        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), new FactorableUnique<DefaultResourcePrefetcher>() );
-        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), new FactorableUnique<DataflowResourcePrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), Helper::makeFactorableUnique<DefaultResourcePrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), Helper::makeFactorableUnique<DataflowResourcePrefetcher>() );
 
-        ArchiveResourcePrefetcherPtr archivePrefetcherLZ4 = new FactorableUnique<ArchiveResourcePrefetcher>();
+        ArchiveResourcePrefetcherPtr archivePrefetcherLZ4 = Helper::makeFactorableUnique<ArchiveResourcePrefetcher>();
 
         const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
             ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
@@ -247,8 +247,8 @@ namespace Mengine
 
         VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ), archivePrefetcherLZ4 );
 
-        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ), new FactorableUnique<ImageDecoderResourcePrefetcher>() );
-        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ), new FactorableUnique<SoundDecoderResourcePrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ), Helper::makeFactorableUnique<ImageDecoderResourcePrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ), Helper::makeFactorableUnique<SoundDecoderResourcePrefetcher>() );
 
         ResourcePrefetcherInterfacePtr prefetcherImageDecoder = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ) );
 

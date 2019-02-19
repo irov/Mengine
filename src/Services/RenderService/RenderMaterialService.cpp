@@ -887,7 +887,7 @@ namespace Mengine
                 continue;
             }
 
-            return material;
+            return RenderMaterialInterfacePtr( material );
         }
 
         RenderMaterialPtr material = m_factoryMaterial->createObject( MENGINE_DOCUMENT_FUNCTION );
@@ -940,7 +940,7 @@ namespace Mengine
                 continue;
             }
 
-            return material;
+            return RenderMaterialInterfacePtr( material );
         }
 
         RenderMaterialPtr material = m_factoryMaterial->createObject( MENGINE_DOCUMENT_FUNCTION );

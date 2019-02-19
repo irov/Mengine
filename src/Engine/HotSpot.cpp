@@ -38,7 +38,7 @@ namespace Mengine
     {
         if( m_picker == nullptr )
         {
-            LOGGER_ERROR( "HotSpot::isMousePickerOver %s not activate picker"
+            LOGGER_ERROR( "%s not activate picker"
                 , this->getName().c_str()
             );
 
@@ -50,7 +50,7 @@ namespace Mengine
         return picked;
     }
     //////////////////////////////////////////////////////////////////////////
-    PickerTrapInterfacePtr HotSpot::getPickerTrap()
+    PickerTrapInterface * HotSpot::getPickerTrap()
     {
         return this;
     }
@@ -84,7 +84,7 @@ namespace Mengine
     {
         if( m_picker != nullptr )
         {
-            LOGGER_ERROR( "HotSpot::activatePicker_ '%s' alredy activate picker"
+            LOGGER_ERROR( "'%s' alredy activate picker"
                 , this->getName().c_str()
             );
 
@@ -92,7 +92,7 @@ namespace Mengine
         }
 
         m_picker = PICKER_SERVICE()
-            ->regTrap( this );
+            ->regTrap( PickerTrapInterfacePtr( this ) );
 
         PICKER_SERVICE()
             ->updateTraps();
@@ -105,7 +105,7 @@ namespace Mengine
     {
         if( m_picker == nullptr )
         {
-            LOGGER_ERROR( "HotSpot::activatePicker_ '%s' alredy deactivate picker"
+            LOGGER_ERROR( "'%s' alredy deactivate picker"
                 , this->getName().c_str()
             );
 
@@ -306,7 +306,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptablePtr HotSpot::propagatePickerScriptable()
+    Scriptable * HotSpot::propagatePickerScriptable()
     {
         return this;
     }

@@ -1545,7 +1545,7 @@ namespace Mengine
                 return;
             }
 
-            CacheResourceVisitorPtr rv_gac = new FactorableUnique<CacheResourceVisitor>();
+            CacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<CacheResourceVisitor>();
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -1605,7 +1605,7 @@ namespace Mengine
                 return;
             }
 
-            UncacheResourceVisitorPtr rv_gac = new FactorableUnique<UncacheResourceVisitor>();
+            UncacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<UncacheResourceVisitor>();
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -2493,7 +2493,7 @@ namespace Mengine
 
             for( const PickerTrapInterfacePtr & trap : traps )
             {
-                ScriptablePtr scriptable = trap->propagatePickerScriptable();
+                Scriptable * scriptable = trap->propagatePickerScriptable();
 
                 pyret.append( scriptable );
             }
@@ -3159,7 +3159,7 @@ namespace Mengine
                 return;
             }
 
-            ResourceVisitorGetAlreadyCompiledPtr rv_gac = new FactorableUnique<ResourceVisitorGetAlreadyCompiled>( _cb );
+            ResourceVisitorGetAlreadyCompiledPtr rv_gac = Helper::makeFactorableUnique<ResourceVisitorGetAlreadyCompiled>( _cb );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -3202,7 +3202,7 @@ namespace Mengine
                 return;
             }
 
-            MyResourceVisitorPtr rv_gac = new FactorableUnique<MyResourceVisitor>( _cb );
+            MyResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<MyResourceVisitor>( _cb );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -3232,7 +3232,7 @@ namespace Mengine
                 return;
             }
 
-            IncrefResourceVisitorPtr rv_gac = new FactorableUnique<IncrefResourceVisitor>();
+            IncrefResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<IncrefResourceVisitor>();
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -3262,7 +3262,7 @@ namespace Mengine
                 return;
             }
 
-            DecrementResourceVisitorPtr rv_gac = new FactorableUnique<DecrementResourceVisitor>();
+            DecrementResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<DecrementResourceVisitor>();
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -3317,7 +3317,7 @@ namespace Mengine
                 return pybind::list( _kernel );
             }
 
-            GetResourceVisitorPtr rv_gac = new FactorableUnique<GetResourceVisitor>( _kernel );
+            GetResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<GetResourceVisitor>( _kernel );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
@@ -3627,17 +3627,17 @@ namespace Mengine
 
         m_implement = nodeScriptMethod;
 
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( _kernel ) );
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( _kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( _kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( _kernel ) );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32> >() ) == false )
         {
             return false;
         }
@@ -3651,7 +3651,7 @@ namespace Mengine
             ;
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new FactorableUnique<DefaultPrototypeGenerator<MT19937Randomizer, 8> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<MT19937Randomizer, 8> >() ) == false )
         {
             return false;
         }

@@ -399,7 +399,7 @@ namespace Mengine
 
         if( fileLogInterface != nullptr )
         {
-            m_fileLog = new FactorableUnique<FileLogger>();
+            m_fileLog = Helper::makeFactorableUnique<FileLogger>();
 
             LOGGER_SERVICE()
                 ->registerLogger( m_fileLog );
@@ -418,7 +418,7 @@ namespace Mengine
 
         if( nologs == false )
         {
-            m_loggerMessageBox = new FactorableUnique<MessageBoxLogger>();
+            m_loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>();
 
             m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
@@ -531,7 +531,7 @@ namespace Mengine
         DWORD dwConversionFlags = 0;
 #   endif
 
-        ArgumentsInterfacePtr arguments = new FactorableUnique<StringArguments>();
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
 
         for( int32_t i = 1; i != pNumArgs; ++i )
         {

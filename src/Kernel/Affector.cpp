@@ -78,10 +78,10 @@ namespace Mengine
             return false;
         }
 
-        UpdationInterfacePtr updation = this->getUpdation();
+        UpdationInterface * updation = this->getUpdation();
 
         m_updataterId = UPDATE_SERVICE()
-            ->createUpdatater( _updatableMode, _updatableLeaf, updation );
+            ->createUpdatater( _updatableMode, _updatableLeaf, UpdationInterfacePtr( updation ) );
 
         return true;
     }

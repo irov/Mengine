@@ -51,7 +51,7 @@ namespace Mengine
                 m_scriptWrapper = scriptWrapper;
             }
 
-            FactoryPtr factory = new FactoryPool<Type, Count>();
+            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>();
 
             return factory;
         }

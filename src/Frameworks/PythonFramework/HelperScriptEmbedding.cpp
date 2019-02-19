@@ -301,7 +301,7 @@ namespace Mengine
 
             for( IntrusiveSlugChild it( children ); it.eof() == false; )
             {
-                const NodePtr & child = *it;
+                NodePtr child( *it );
 
                 it.next_shuffle();
 
@@ -1157,7 +1157,7 @@ namespace Mengine
         {
             VectorConstString v_accounts;
 
-            AccountVisitorInterfacePtr mav = new FactorableUnique<MyAccountVisitor>( &v_accounts );
+            AccountVisitorInterfacePtr mav = Helper::makeFactorableUnique<MyAccountVisitor>( &v_accounts );
 
             ACCOUNT_SERVICE()
                 ->visitAccounts( mav );
@@ -1358,7 +1358,7 @@ namespace Mengine
 
             if( _cb.is_none() == false )
             {
-                provider = new FactorableUnique<PyAccountSettingProvider>( _kernel, _cb, _args );
+                provider = Helper::makeFactorableUnique<PyAccountSettingProvider>( _kernel, _cb, _args );
             }
 
             const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );
@@ -2941,6 +2941,8 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<HelperScriptMethod> HelperScriptMethodPtr;
+    //////////////////////////////////////////////////////////////////////////
     struct extract_Blobject_type
         : public pybind::type_cast_result<Blobject>
     {
@@ -3128,8 +3130,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HelperScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::registration_type_cast<Blobject>(_kernel, new extract_Blobject_type);
-        pybind::registration_type_cast<Tags>(_kernel, new extract_Tags_type);
+        pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>());
+        pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>());
 
         pybind::registration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(_kernel);
         pybind::registration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(_kernel);
@@ -3137,8 +3139,8 @@ namespace Mengine
         pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
         pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
 
-        pybind::registration_type_cast<String>(_kernel, new extract_String_type);
-        pybind::registration_type_cast<WString>(_kernel, new extract_WString_type);
+        pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>());
+        pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>());
 
         pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
@@ -3146,9 +3148,7 @@ namespace Mengine
         HelperScriptMethod * helperScriptMethod = new FactorableUnique<HelperScriptMethod>();
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
-
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
-
         pybind::def_functor( _kernel, "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
         pybind::def_functor( _kernel, "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
         pybind::def_functor( _kernel, "range_rand", helperScriptMethod, &HelperScriptMethod::mt_range_rand );

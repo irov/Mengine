@@ -339,7 +339,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieSlot>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSlot>( _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), visitor );
 
             return py_list;
@@ -380,7 +380,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieSocket>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSocket>( _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), visitor );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), visitor );
 
@@ -422,7 +422,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieSubMovie>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSubMovie>( _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), visitor );
 
             return py_list;
@@ -458,7 +458,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PyVisitorMovieLayer>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PyVisitorMovieLayer>( _kernel, py_list );
             _movie->visitMovieLayer( _type, visitor );
 
             return py_list;
@@ -878,7 +878,7 @@ namespace Mengine
             return sop;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool Movie_attachMovieSlotNode( Movie * _movie, const ConstString & _slotName, Node * _node )
+        static bool Movie_attachMovieSlotNode( Movie * _movie, const ConstString & _slotName, const NodePtr & _node )
         {
             NodePtr node;
             MoviePtr submovie;
@@ -920,7 +920,7 @@ namespace Mengine
             : public PythonAnimatableEventReceiver<MovieEventReceiver>
         {
         public:
-            pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) override
+            pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) const override
             {
                 return m_cb.call( _group, _name );
             }
@@ -1553,65 +1553,65 @@ namespace Mengine
             pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
             pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
 
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
-            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<NodePrototypeGenerator<Movie, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<NodePrototypeGenerator<MovieSlot, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieSlot, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<NodePrototypeGenerator<MovieSceneEffect, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieSceneEffect, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<NodePrototypeGenerator<MovieInternalObject, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieInternalObject, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<NodePrototypeGenerator<MovieEvent, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieEvent, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<NodePrototypeGenerator<MovieMesh2D, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), Helper::makeFactorableUnique<NodePrototypeGenerator<MovieMesh2D, 128>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceMovie, 64> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceMovie, 64>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceInternalObject, 64> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceInternalObject, 64> >() ) == false )
         {
             return false;
         }
 
-        DataflowInterfacePtr dataflowAEK = new FactorableUnique<DataflowAEK>();
+        DataflowInterfacePtr dataflowAEK = Helper::makeFactorableUnique<DataflowAEK>();
 
         if( dataflowAEK->initialize() == false )
         {
@@ -1633,12 +1633,12 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMovieValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<ResourceMovieValidator>() );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
+            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<LoaderResourceMovie>() );
         }
 
         return true;

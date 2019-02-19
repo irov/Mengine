@@ -9,9 +9,9 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void nodeRenderChildren( const NodePtr & _node, const RenderContext * _context, bool _external )
+        void nodeRenderChildren( const Node * _node, const RenderContext * _context, bool _external )
         {
-            RenderInterface * selfRender = _node->getRender();
+            const RenderInterface * selfRender = _node->getRenderConst();
 
 #ifdef MENGINE_NEW_RENDER
             selfRender->renderWithChildren( _context, _external );
@@ -90,7 +90,7 @@ namespace Mengine
                 }
 
                 const RenderContext * children_context = &self_context;
-                _node->foreachChildrenUnslug( [children_context]( const NodePtr & _child )
+                _node->foreachChildrenUnslug( [children_context]( const Node * _child )
                 {
                     Helper::nodeRenderChildren( _child, children_context, false );
                 } );
@@ -107,7 +107,7 @@ namespace Mengine
             }
             else
             {
-                _node->foreachChildrenUnslug( [_context]( const NodePtr & _child )
+                _node->foreachChildrenUnslug( [_context]( const Node * _child )
                 {
                     Helper::nodeRenderChildren( _child, _context, false );
                 } );

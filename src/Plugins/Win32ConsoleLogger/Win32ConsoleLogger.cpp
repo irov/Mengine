@@ -31,7 +31,7 @@ namespace Mengine
         this->createConsole_();
 
         LOGGER_SERVICE()
-            ->writeHistory( this );
+            ->writeHistory( LoggerInterfacePtr( this ) );
 
         return true;
     }

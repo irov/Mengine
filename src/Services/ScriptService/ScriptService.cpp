@@ -207,14 +207,14 @@ namespace Mengine
             .def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
             ;
 
-        m_loggerWarning = new FactorableUnique<ScriptLogger>();
+        m_loggerWarning = Helper::makeFactorableUnique<ScriptLogger>();
 
         m_loggerWarning->setMessageLevel( LM_WARNING );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
-        m_loggerError = new FactorableUnique<ScriptLogger>();
+        m_loggerError = Helper::makeFactorableUnique<ScriptLogger>();
 
         m_loggerError->setMessageLevel( LM_ERROR );
 
@@ -223,7 +223,7 @@ namespace Mengine
 
         pybind::set_observer_bind_call( new My_observer_bind_call() );
 
-        DataflowPYPtr dataflowPY = new FactorableUnique<DataflowPY>();
+        DataflowPYPtr dataflowPY = Helper::makeFactorableUnique<DataflowPY>();
 
         dataflowPY->setKernel( m_kernel );
 
@@ -234,7 +234,7 @@ namespace Mengine
 
         VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
 
-        DataflowPYZPtr dataflowPYZ = new FactorableUnique<DataflowPYZ>();
+        DataflowPYZPtr dataflowPYZ = Helper::makeFactorableUnique<DataflowPYZ>();
 
         dataflowPYZ->setKernel( m_kernel );
 
@@ -260,7 +260,7 @@ namespace Mengine
             .def_kernel( "load_module", &ScriptModuleFinder::load_module )
             ;
 
-        m_moduleFinder = new FactorableUnique<ScriptModuleFinder>();
+        m_moduleFinder = Helper::makeFactorableUnique<ScriptModuleFinder>();
 
         m_moduleFinder->setDataflowPY( dataflowPY );
         m_moduleFinder->setDataflowPYZ( dataflowPYZ );

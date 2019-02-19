@@ -123,8 +123,7 @@ namespace Mengine
         delete m_warninglogger;
         delete m_errorLogger;
 
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )

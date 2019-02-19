@@ -34,8 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::_finalizeService()
     {
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_ENABLE_PACKAGES );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Validator" ) );
     }

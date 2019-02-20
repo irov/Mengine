@@ -13,6 +13,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PluginInterface.h"
@@ -74,6 +75,7 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( FileService );
@@ -184,6 +186,7 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
         SERVICE_CREATE( MemoryService );
+        SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( VocabularyService );
@@ -1000,11 +1003,17 @@ bool run()
         pybind::tuple_setitem_t( kernel, py_args, i - 3, arg );
     }
 
-    kernel->call_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );
+    PyObject * py_result = kernel->ask_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );
 
     kernel->decref( py_args );
 
-    return true;
+    bool result;
+    if( kernel->extract_bool( py_result, result ) == false )
+    {
+        return false;
+    }
+
+    return result;
 }
 ///////////////////////////////////////////////////////////////////////////////////
 #ifdef _MSC_VER
@@ -1029,7 +1038,21 @@ int main( int argc, char *argv[] )
 
     Mengine::createConsole();
 
-    run();
+    try
+    {
+        if( run() == false )
+        {
+            return 1;
+        }
+    }
+    catch( const std::exception & se )
+    {
+        const char * se_what = se.what();
+
+        MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
+
+        return 1;
+    }
 
     return 0;
 }

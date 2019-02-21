@@ -258,7 +258,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeConfigEngine_()
     {
-        LOGGER_WARNING( "Inititalizing Config Manager..." );
+        LOGGER_MESSAGE( "Inititalizing Config Manager..." );
 
         FilePath gameIniPath;
         if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
@@ -303,9 +303,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_WARNING( "Current Path '%s'"
-            , currentPath
-        );
+        LOGGER_MESSAGE( "Current Path '%s'", currentPath );
 
         // mount root		
         if( FILE_SERVICE()->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
@@ -434,7 +432,7 @@ namespace Mengine
 
         if( developmentMode == true && roamingMode == false || noroamingMode == true )
         {
-            m_logLevel = LM_LOG;
+            m_logLevel = LM_MESSAGE;
         }
         else
         {
@@ -447,7 +445,7 @@ namespace Mengine
         }
         else if( TEST_OPTION_VALUE( "log", "1" ) == true )
         {
-            m_logLevel = LM_LOG;
+            m_logLevel = LM_MESSAGE;
         }
         else if( TEST_OPTION_VALUE( "log", "2" ) == true )
         {
@@ -686,13 +684,13 @@ namespace Mengine
         ::QueryPerformanceCounter( &randomSeed );
         srand( randomSeed.LowPart );
 
-        LOGGER_WARNING( "initialize Plugins..." );
+        LOGGER_MESSAGE( "initialize Plugins..." );
 
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
 		do{LOGGER_INFO( Info );\
 		if(	PLUGIN_CREATE(Name) == false ){\
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
-		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
+		LOGGER_MESSAGE( "Successful %s", Info );}}while(false, false)
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
@@ -819,7 +817,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_WARNING( "Modules Run..." );
+        LOGGER_MESSAGE( "Modules Run..." );
 
         VectorString modules;
         CONFIG_VALUES( "Modules", "Name", modules );
@@ -858,8 +856,7 @@ namespace Mengine
 
         if( renderMaterialsPath.empty() == false )
         {
-            LOGGER_WARNING( "Materials Load..."
-            );
+            LOGGER_MESSAGE( "Materials Load..." );
 
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getDefaultFileGroup();
@@ -871,8 +868,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_WARNING( "Application Create..."
-        );
+        LOGGER_MESSAGE( "Application Create..." );
 
         FilePath resourceIniPath;
         if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
@@ -907,7 +903,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_WARNING( "Creating Render Window..." );
+        LOGGER_MESSAGE( "Creating Render Window..." );
 
         String projectTitle;
 

@@ -1305,7 +1305,7 @@ namespace Mengine
                 return false;
             }
 
-            LOGGER_WARNING( "mountResourcePak name '%s' type '%s' category '%s' path '%s'"
+            LOGGER_MESSAGE( "mount resource pak name '%s' type '%s' category '%s' path '%s'"
                 , _name.c_str()
                 , _type.c_str()
                 , _category.c_str()

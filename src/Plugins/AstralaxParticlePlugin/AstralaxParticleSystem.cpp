@@ -67,7 +67,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_WARNING( "Astralax Magic Particles Version: %s"
+        LOGGER_MESSAGE( "Astralax Magic Particles Version: %s"
             , version
         );
 

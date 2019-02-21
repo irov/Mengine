@@ -299,7 +299,7 @@ namespace Mengine
         bool is_debug = false;
 #endif
 
-        LOGGER_WARNING( "Preparation debug(%d)"
+        LOGGER_MESSAGE( "personality preparation debug(%d)"
             , is_debug
         );
 
@@ -425,8 +425,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::run()
     {
-        LOGGER_WARNING( "Run game"
-        );
+        LOGGER_MESSAGE( "Run game" );
 
         EVENTABLE_METHOD( EVENT_GAME_RUN )
             ->onGameRun();

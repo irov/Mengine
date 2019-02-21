@@ -11,7 +11,7 @@ namespace Mengine
     {
         (void)_png_ptr;
 
-        LOGGER_ERROR( "ImageEncoderPNG::s_handlerError %s"
+        LOGGER_ERROR( "%s"
             , _error
         );
     }
@@ -20,7 +20,7 @@ namespace Mengine
     {
         (void)_png_ptr;
 
-        LOGGER_WARNING( "ImageEncoderPNG::s_handlerWarning %s"
+        LOGGER_WARNING( "%s"
             , _error
         );
     }

@@ -170,21 +170,21 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_WARNING( "DirectX Driver: %s", AdID.Driver );
-        LOGGER_WARNING( "Description: %s", AdID.Description );
-        LOGGER_WARNING( "DeviceName: %s", AdID.DeviceName );
+        LOGGER_MESSAGE( "DirectX Driver: %s", AdID.Driver );
+        LOGGER_MESSAGE( "Description: %s", AdID.Description );
+        LOGGER_MESSAGE( "DeviceName: %s", AdID.DeviceName );
 
-        LOGGER_WARNING( "Version: %u.%u.%u.%u"
+        LOGGER_MESSAGE( "Version: %u.%u.%u.%u"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_WARNING( "VendorId: %u", AdID.VendorId );
-        LOGGER_WARNING( "DeviceId: %u", AdID.DeviceId );
-        LOGGER_WARNING( "SubSysId: %u", AdID.SubSysId );
-        LOGGER_WARNING( "Revision: %u", AdID.Revision );
+        LOGGER_MESSAGE( "VendorId: %u", AdID.VendorId );
+        LOGGER_MESSAGE( "DeviceId: %u", AdID.DeviceId );
+        LOGGER_MESSAGE( "SubSysId: %u", AdID.SubSysId );
+        LOGGER_MESSAGE( "Revision: %u", AdID.Revision );
 
         D3DCAPS9 caps;
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
@@ -379,12 +379,12 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_WARNING( "VertexShaderVersion [%u] [%u]"
+        LOGGER_MESSAGE( "VertexShaderVersion [%u] [%u]"
             , caps.VertexShaderVersion
             , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 )
         );
 
-        LOGGER_WARNING( "PixelShaderVersion [%u] [%u] [%u]"
+        LOGGER_MESSAGE( "PixelShaderVersion [%u] [%u] [%u]"
             , caps.PixelShaderVersion
             , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 )
             , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 )
@@ -780,8 +780,7 @@ namespace Mengine
         }
         else if( hr == D3DERR_DEVICENOTRESET )
         {
-            LOGGER_WARNING( "D3DERR_DEVICENOTRESET"
-            );
+            LOGGER_WARNING( "D3DERR_DEVICENOTRESET" );
 
             if( this->resetDevice_() == false )
             {

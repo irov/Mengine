@@ -56,7 +56,7 @@ namespace Mengine
 
         String buffer = "ffmpeg -loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + full_output + "\"";
 
-        LOGGER_WARNING( "VideoConverterFFMPEGToWEBM:: converting file '%s' to '%s'\n%s"
+        LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
             , full_output.c_str()
             , buffer.c_str()

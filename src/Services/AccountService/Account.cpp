@@ -227,7 +227,7 @@ namespace Mengine
             const Char * value;
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), &value ) == false )
             {
-                LOGGER_WARNING( "account '%s' failed get setting '%s'"
+                LOGGER_MESSAGE( "account '%s' failed get setting '%s'"
                     , m_id.c_str()
                     , key.c_str()
                 );

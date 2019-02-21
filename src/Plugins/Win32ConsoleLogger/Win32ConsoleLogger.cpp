@@ -131,6 +131,8 @@ namespace Mengine
         case LM_WARNING:
             textColor = FOREGROUND_RED | FOREGROUND_GREEN;
             break;
+        case LM_MESSAGE:
+            textColor = FOREGROUND_BLUE | FOREGROUND_RED;
         case LM_INFO:
             textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;
             break;

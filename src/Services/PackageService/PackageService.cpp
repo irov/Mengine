@@ -52,8 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni, const Char * _doc )
     {
-        LOGGER_WARNING( "Packages load..."
-        );
+        LOGGER_MESSAGE( "Packages load..." );
 
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, _fileGroup, _resourceIni ) == false )
@@ -72,7 +71,7 @@ namespace Mengine
 
         for( const String & resourcePack : frameworkPacksSettings )
         {
-            LOGGER_WARNING( "Package '%s'"
+            LOGGER_MESSAGE( "Package '%s'"
                 , resourcePack.c_str()
             );
 
@@ -114,7 +113,7 @@ namespace Mengine
 
         for( const String & resourcePack : resourcePacksSettings )
         {
-            LOGGER_WARNING( "Package '%s'"
+            LOGGER_MESSAGE( "Package '%s'"
                 , resourcePack.c_str()
             );
 
@@ -156,7 +155,7 @@ namespace Mengine
 
         for( const String & languagePack : languagePackSettings )
         {
-            LOGGER_WARNING( "Package '%s'"
+            LOGGER_MESSAGE( "Package '%s'"
                 , languagePack.c_str()
             );
 
@@ -342,7 +341,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::enablePackages( const ConstString & _locale, const Tags & _platformTags )
     {
-        LOGGER_WARNING( "Packages enable..."
+        LOGGER_MESSAGE( "Packages enable..."
         );
 
         VectorPackages packages;

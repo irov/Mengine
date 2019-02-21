@@ -352,7 +352,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::enable()
     {
-        LOGGER_WARNING( "Package enable... '%s'"
+        LOGGER_MESSAGE( "Package enable... '%s'"
             , m_name.c_str()
         );
 

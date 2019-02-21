@@ -70,8 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::_finalizeService()
     {
-        LOGGER_WARNING( "AccountManager::finalize save accounts"
-        );
+        LOGGER_MESSAGE( "save accounts" );
 
         ConstString lastAccount = m_currentAccountID;
         this->unselectCurrentAccount_();
@@ -623,7 +622,7 @@ namespace Mengine
         {
             const ConstString & accountID = validAccount->getID();
 
-            LOGGER_WARNING( "set valid account '%s'"
+            LOGGER_MESSAGE( "set valid account '%s'"
                 , accountID.c_str()
             );
 

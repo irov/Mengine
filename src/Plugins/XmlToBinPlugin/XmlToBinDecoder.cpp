@@ -137,7 +137,7 @@ namespace Mengine
         (void)_buffer;
         (void)_bufferSize;
 
-        LOGGER_WARNING( "xml to bin:\nxml - %s\nbin - %s"
+        LOGGER_MESSAGE( "xml to bin:\nxml - %s\nbin - %s"
             , m_options.pathXml.c_str()
             , m_options.pathBin.c_str()
         );

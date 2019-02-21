@@ -1126,7 +1126,7 @@ namespace Mengine
 
         if( hWndFgnd != m_hWnd )
         {
-            LOGGER_WARNING( "Setup Foreground Window..." );
+            LOGGER_MESSAGE( "Setup Foreground Window..." );
 
             ::ShowWindow( m_hWnd, SW_MINIMIZE );
             ::ShowWindow( m_hWnd, SW_RESTORE );
@@ -1191,7 +1191,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_WARNING( "resolution %d:%d fullscreen %d"
+        LOGGER_MESSAGE( "resolution %d:%d fullscreen %d"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen

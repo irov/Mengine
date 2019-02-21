@@ -217,7 +217,7 @@ namespace Mengine
 
         m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( "en" ) );
 
-        LOGGER_WARNING( "Application::_initialize locale %s"
+        LOGGER_MESSAGE( "locale %s"
             , m_locale.c_str()
         );
 
@@ -267,7 +267,7 @@ namespace Mengine
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }
 
-        LOGGER_WARNING( "Application company '%s' project '%s' version '%d' locale '%s'"
+        LOGGER_MESSAGE( "Application company '%s' project '%s' version '%d' locale '%s'"
             , m_companyName.c_str()
             , m_projectName.c_str()
             , m_projectVersion
@@ -321,7 +321,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
-        LOGGER_WARNING( "Register Object Factory..." );
+        LOGGER_MESSAGE( "Register Object Factory..." );
 
 #	define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -383,7 +383,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseNodeTypes_()
     {
-        LOGGER_WARNING( "Unregister Object Factory..." );
+        LOGGER_MESSAGE( "Unregister Object Factory..." );
 
 #	define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\
@@ -562,7 +562,7 @@ namespace Mengine
         RENDER_SERVICE()
             ->setVSync( vsync );
 
-        LOGGER_WARNING( "Application::createRenderWindow current resolution %d %d %s"
+        LOGGER_MESSAGE( "current resolution %d %d %s"
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
             , fullscreen ? "Fullscreen" : "Window"
@@ -570,7 +570,7 @@ namespace Mengine
 
         this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 
-        LOGGER_INFO( "Application::createRenderWindow render viewport %f %f - %f %f"
+        LOGGER_MESSAGE( "render viewport %f %f - %f %f"
             , m_renderViewport.begin.x
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
@@ -645,7 +645,7 @@ namespace Mengine
 
             m_locale = Helper::stringizeString( option_locale );
 
-            LOGGER_WARNING( "setup locale '%s'"
+            LOGGER_MESSAGE( "setup locale '%s'"
                 , m_locale.c_str()
             );
         }
@@ -1451,12 +1451,12 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getMaxClientResolution( dres );
 
-        LOGGER_WARNING( "Max Client Resolution %u %u"
+        LOGGER_MESSAGE( "Max Client Resolution %u %u"
             , dres.getWidth()
             , dres.getHeight()
         );
 
-        LOGGER_WARNING( "Window Resolution %u %u"
+        LOGGER_MESSAGE( "Window Resolution %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
         );
@@ -1735,7 +1735,7 @@ namespace Mengine
             this->calcWindowResolution( m_currentResolution );
         }
 
-        LOGGER_WARNING( "Application::invalidateWindow_ %d Current Resolution %d %d"
+        LOGGER_MESSAGE( "%d Current Resolution %d %d"
             , fullscreen
             , m_currentResolution.getWidth()
             , m_currentResolution.getHeight()
@@ -1750,9 +1750,8 @@ namespace Mengine
             ->notifyWindowModeChanged( m_currentResolution, fullscreen );
 
         this->calcRenderViewport_( m_currentResolution, m_renderViewport );
-        //m_renderEngine->applyRenderViewport( renderViewport );
 
-        LOGGER_WARNING( "Application::invalidateWindow_ Render Viewport %f %f - %f %f"
+        LOGGER_MESSAGE( "Render Viewport %f %f - %f %f"
             , m_renderViewport.begin.x
             , m_renderViewport.begin.y
             , m_renderViewport.getWidth()
@@ -1779,7 +1778,7 @@ namespace Mengine
             GAME_SERVICE()
                 ->setGameViewport( gameViewport, gameViewportAspect );
 
-            LOGGER_WARNING( "Application::invalidateWindow_ Game Viewport %f %f - %f %f Aspect %f"
+            LOGGER_MESSAGE( "Game Viewport %f %f - %f %f Aspect %f"
                 , gameViewport.begin.x
                 , gameViewport.begin.y
                 , gameViewport.end.x
@@ -1880,7 +1879,7 @@ namespace Mengine
     {
         if( m_locale == _locale )
         {
-            LOGGER_WARNING( "Application::setLocale alredy set locale '%s'"
+            LOGGER_WARNING( "alredy set locale '%s'"
                 , _locale.c_str()
             );
 
@@ -1891,7 +1890,7 @@ namespace Mengine
 
         m_locale = _locale;
 
-        LOGGER_WARNING( "Application::setLocale new locale '%s' old '%s'"
+        LOGGER_MESSAGE( "new locale '%s' old '%s'"
             , m_locale.c_str()
             , prevLocale.c_str()
         );

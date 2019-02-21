@@ -16,7 +16,7 @@ namespace Mengine
         LM_PERFOMANCE = 3,
         LM_STATISTIC = 4,
         LM_WARNING = 5,
-        LM_LOG = 6,
+        LM_MESSAGE = 6,
         LM_INFO = 7,
 
         LM_MAX = 7

@@ -905,8 +905,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::validate() const
     {
-        LOGGER_WARNING( "Validate Texts..."
-        );
+        LOGGER_MESSAGE( "Validate Texts..." );
 
         bool successful = true;
 

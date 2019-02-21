@@ -543,7 +543,7 @@ namespace Mengine
 
         if( resource == nullptr )
         {
-            LOGGER_WARNING( "ResourceManager::getResourceType: resource '%s' does not exist"
+            LOGGER_WARNING( "resource '%s' does not exist"
                 , _name.c_str()
             );
 

@@ -45,6 +45,7 @@ namespace Mengine
 
         bool m_streamable;
     };
-
-    typedef IntrusivePtr<SilentSoundBuffer> SilentSoundBufferPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SilentSoundBuffer, SoundBufferInterface> SilentSoundBufferPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

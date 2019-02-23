@@ -16,7 +16,6 @@ namespace Mengine
         , m_volume( 1.f )
         , m_sourceId( 0 )
         , m_timing( 0.f )
-        , m_soundBuffer( nullptr )
         , m_headMode( true )
         , m_playing( false )
         , m_pausing( false )
@@ -29,9 +28,14 @@ namespace Mengine
         this->releaseSourceId_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundSource::initialize( OpenALSoundSystem * _soundSystem )
+    void OpenALSoundSource::setSoundSystem( OpenALSoundSystem * _soundSystem )
     {
         m_soundSystem = _soundSystem;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    OpenALSoundSystem* OpenALSoundSource::getSoundSystem() const
+    {
+        return m_soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::play()
@@ -103,18 +107,17 @@ namespace Mengine
             return;
         }
 
-        m_playing = false;
+        m_playing = true;
         m_pausing = true;
-
 
         m_soundBuffer->pauseSource( m_sourceId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::resume()
     {
-        if( m_playing == true )
+        if( m_playing == false )
         {
-            return true;
+            return false;
         }
 
         if( m_soundBuffer == nullptr )
@@ -352,7 +355,7 @@ namespace Mengine
         OPENAL_CALL( alSourcef, (_source, AL_GAIN, gain) );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr OpenALSoundSource::getSoundBuffer() const
+    const SoundBufferInterfacePtr & OpenALSoundSource::getSoundBuffer() const
     {
         return m_soundBuffer;
     }

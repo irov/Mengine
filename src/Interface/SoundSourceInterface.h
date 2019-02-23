@@ -40,7 +40,7 @@ namespace Mengine
         virtual bool setPosition( float _posMs ) = 0;
 
         virtual void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) = 0;
-        virtual SoundBufferInterfacePtr getSoundBuffer() const = 0;
+        virtual const SoundBufferInterfacePtr & getSoundBuffer() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundSourceInterface> SoundSourceInterfacePtr;

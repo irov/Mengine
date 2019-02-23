@@ -269,32 +269,39 @@ namespace Mengine
             RenderInterface * oldRenderParent = render->getRelationRender();
             RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
 
-            MENGINE_ASSERTION( newRenderParent != nullptr, ("for node '%s' parent '%s' not found render inheritance"
-                , this->getName().c_str()
-                , _parent->getName().c_str()
-                ) );
-
             if( oldRenderParent != newRenderParent )
             {
-                render->setRelationRender( newRenderParent );
+                if( newRenderParent != nullptr )
+                {
+                    render->setRelationRender( newRenderParent );
+                }
+                else
+                {
+                    render->removeRelationRender();
+                }
             }
         }
         else
         {
             RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( m_parent );
             RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
-
-            MENGINE_ASSERTION( newRenderParent != nullptr, ("for node '%s' parent '%s' not found render inheritance (multi)"
-                , this->getName().c_str()
-                , _parent->getName().c_str()
-                ) );
-
+            
             if( oldRenderParent != newRenderParent )
             {
-                this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                if( newRenderParent != nullptr )
                 {
-                    _render->setRelationRender( newRenderParent );
-                } );
+                    this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                    {
+                        _render->setRelationRender( newRenderParent );
+                    } );
+                }
+                else
+                {
+                    this->foreachRenderCloseChildren( []( RenderInterface * _render )
+                    {
+                        _render->removeRelationRender();
+                    } );
+                }
             }
         }
     }
@@ -310,7 +317,14 @@ namespace Mengine
 
             if( oldRenderParent != newRenderParent )
             {
-                render->setRelationRenderFront( newRenderParent );
+                if( newRenderParent != nullptr )
+                {
+                    render->setRelationRenderFront( newRenderParent );
+                }
+                else
+                {
+                    render->removeRelationRender();
+                }
             }
         }
         else
@@ -320,10 +334,21 @@ namespace Mengine
 
             if( oldRenderParent != newRenderParent )
             {
-                this->foreachReverseRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                if( newRenderParent != nullptr )
                 {
-                    _render->setRelationRenderFront( newRenderParent );
-                } );
+                    this->foreachReverseRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                    {
+                        _render->setRelationRenderFront( newRenderParent );
+                    } );
+                }
+                else
+                {
+                    this->foreachReverseRenderCloseChildren( []( RenderInterface * _render )
+                    {
+                        _render->removeRelationRender();
+                    } );
+                }
+
             }
         }
     }

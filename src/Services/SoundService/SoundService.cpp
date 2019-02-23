@@ -224,15 +224,30 @@ namespace Mengine
 
             this->updateSourceVolume_( identity );
 
-            if( identity->source->resume() == false )
+            if( identity->source->isPlay() == true )
             {
-                LOGGER_ERROR( "invalid resume"
-                );
+                if( identity->source->resume() == false )
+                {
+                    LOGGER_ERROR( "invalid resume (play)"
+                    );
 
-                continue;
+                    continue;
+                }
+
+                this->resumeSoundBufferUpdate_( identity );
             }
+            else
+            {
+                if( identity->source->play() == false )
+                {
+                    LOGGER_ERROR( "invalid resume (stop)"
+                    );
 
-            this->resumeSoundBufferUpdate_( identity );
+                    continue;
+                }
+
+                this->playSoundBufferUpdate_( identity );
+            }            
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -332,7 +347,7 @@ namespace Mengine
         emitter->worker = nullptr;
         emitter->bufferId = 0;
 
-        emitter->timing = 0.f;
+        emitter->time = 0.f;
 
         emitter->state = ESS_STOP;
         emitter->category = _category;
@@ -718,7 +733,7 @@ namespace Mengine
 
             const ThreadWorkerSoundBufferUpdatePtr & worker = identity->worker;
 
-            float identity_timing = identity->timing;
+            float identity_timing = identity->time;
 
             if( (worker != nullptr && worker->isDone() == true) || (worker == nullptr && identity_timing <= 0.f) )
             {
@@ -732,7 +747,7 @@ namespace Mengine
                     soundSource->stop();
                 }
 
-                identity->timing = 0.f;
+                identity->time = 0.f;
 
                 if( identity->listener != nullptr )
                 {
@@ -741,7 +756,7 @@ namespace Mengine
             }
             else
             {
-                identity->timing -= _context->time;
+                identity->time -= _context->time;
             }
         }
 
@@ -810,7 +825,7 @@ namespace Mengine
                 float length_ms = source->getDuration();
                 float pos_ms = source->getPosition();
 
-                identity->timing = length_ms - pos_ms;
+                identity->time = length_ms - pos_ms;
 
                 identity->state = ESS_PLAY;
 
@@ -863,7 +878,7 @@ namespace Mengine
                 source->pause();
                 float pos_ms = source->getPosition();
 
-                identity->timing = pos_ms;
+                identity->time = pos_ms;
 
                 const SoundListenerInterfacePtr & listener = identity->getSoundListener();
 
@@ -872,7 +887,7 @@ namespace Mengine
                     SoundListenerInterfacePtr keep_listener = listener;
                     keep_listener->onSoundPause( identity );
                 }
-            }
+            }break;
         default:
             {
             }break;
@@ -908,7 +923,7 @@ namespace Mengine
                 float length_ms = source->getDuration();
                 float pos_ms = source->getPosition();
 
-                identity->timing = length_ms - pos_ms;
+                identity->time = length_ms - pos_ms;
 
                 identity->state = ESS_PLAY;
 
@@ -933,7 +948,7 @@ namespace Mengine
                     SoundListenerInterfacePtr keep_listener = listener;
                     keep_listener->onSoundResume( identity );
                 }
-            }
+            }break;
         default:
             {
             }break;
@@ -967,8 +982,8 @@ namespace Mengine
                 {
                     SoundSourceInterfacePtr source = identity->source;
 
-                    source->stop();
-                    identity->timing = source->getPosition();
+                    identity->time = source->getPosition();
+                    source->stop();                    
                 }
 
                 if( identity->listener != nullptr )
@@ -976,7 +991,7 @@ namespace Mengine
                     SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
                     keep_listener->onSoundStop( identity );
                 }
-            }
+            }break;
         default:
             {
             }break;
@@ -1191,7 +1206,7 @@ namespace Mengine
             _pos = lengthMs;
         }
 
-        identity->timing = lengthMs - _pos;
+        identity->time = lengthMs - _pos;
 
         bool hasBufferUpdate = identity->worker != nullptr;
 
@@ -1288,7 +1303,7 @@ namespace Mengine
         {
 			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-            SoundBufferInterfacePtr soundBuffer = _identity->source->getSoundBuffer();
+            const SoundBufferInterfacePtr & soundBuffer = _identity->source->getSoundBuffer();
 
             worker->initialize( soundBuffer );
 
@@ -1403,14 +1418,14 @@ namespace Mengine
 
         if( hasBufferUpdate == true )
         {
-            this->stopSoundBufferUpdate_( identity );
+            this->pauseSoundBufferUpdate_( identity );
         }
 
         float pos = source->getPosition();
 
         if( hasBufferUpdate == true )
         {
-            this->playSoundBufferUpdate_( identity );
+            this->resumeSoundBufferUpdate_( identity );
         }
 
         return pos;

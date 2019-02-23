@@ -197,7 +197,7 @@ namespace Mengine
     {
         OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        soundSource->initialize( this );
+        soundSource->setSoundSystem( this );
 
         soundSource->setHeadMode( _isHeadMode );
         soundSource->setSoundBuffer( _buffer );

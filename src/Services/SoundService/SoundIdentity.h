@@ -45,7 +45,7 @@ namespace Mengine
         ThreadWorkerSoundBufferUpdatePtr worker;
         uint32_t bufferId;
 
-        float timing;
+        float time;
         MixerValue volume;
 
         ESoundSourceState state;

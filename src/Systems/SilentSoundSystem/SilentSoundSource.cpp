@@ -252,7 +252,7 @@ namespace Mengine
         return m_headMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SilentSoundSource::getSoundBuffer() const
+    const SoundBufferInterfacePtr & SilentSoundSource::getSoundBuffer() const
     {
         return m_soundBuffer;
     }

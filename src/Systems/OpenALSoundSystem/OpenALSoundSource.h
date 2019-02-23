@@ -20,7 +20,8 @@ namespace Mengine
         ~OpenALSoundSource() override;
 
     public:
-        void initialize( OpenALSoundSystem* _soundSystem );
+        void setSoundSystem( OpenALSoundSystem* _soundSystem );
+        OpenALSoundSystem* getSoundSystem() const;
 
     public:
         bool play() override;
@@ -43,7 +44,7 @@ namespace Mengine
         bool setPosition( float _posMs ) override;
 
         void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
-        SoundBufferInterfacePtr getSoundBuffer() const override;
+        const SoundBufferInterfacePtr & getSoundBuffer() const override;
 
     public:
         void setHeadMode( bool _headMode );
@@ -59,7 +60,6 @@ namespace Mengine
     protected:
         OpenALSoundSystem * m_soundSystem;
 
-        mt::vec3f m_position;
         float m_volume;
 
         ALuint m_sourceId;

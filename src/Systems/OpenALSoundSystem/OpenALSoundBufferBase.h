@@ -57,6 +57,6 @@ namespace Mengine
         bool m_isStereo;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OpenALSoundBufferBase> OpenALSoundBufferBasePtr;
+    typedef IntrusivePtr<OpenALSoundBufferBase, SoundBufferInterface> OpenALSoundBufferBasePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -133,6 +133,7 @@ namespace Mengine
             break;
         case LM_MESSAGE:
             textColor = FOREGROUND_BLUE | FOREGROUND_RED;
+            break;
         case LM_INFO:
             textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;
             break;

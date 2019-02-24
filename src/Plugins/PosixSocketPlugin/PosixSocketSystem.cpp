@@ -33,9 +33,9 @@ namespace Mengine
         m_factorySocket = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    SocketInterfacePtr PosixSocketSystem::createSocket()
+    SocketInterfacePtr PosixSocketSystem::createSocket( const Char * _doc )
     {
-        PosixSocketPtr socket = m_factorySocket->createObject();
+        PosixSocketPtr socket = m_factorySocket->createObject( _doc );
 
         return socket;
     }

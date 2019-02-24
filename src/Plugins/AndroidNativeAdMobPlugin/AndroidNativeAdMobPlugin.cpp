@@ -23,7 +23,7 @@ namespace Mengine
     bool AndroidNativeAdMobPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidAdMob" )
-            , new ModuleFactory<AndroidNativeAdMobModule>() );
+            , Helper::makeModuleFactory<AndroidNativeAdMobModule>() );
 
         return true;
     }

@@ -4,6 +4,7 @@
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Document.h"
 
 #include "Environment/Android/AndroidUtils.h"
 
@@ -87,7 +88,7 @@ namespace Mengine
         static void androidDevToDevSetEventHandler( AndroidNativeDevToDevModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                new FactorableUnique<PythonDevToDevEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonDevToDevEventHandler>( _cb, _args )
             );
         }
     }
@@ -115,7 +116,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidDevToDevOnSimpleCustomEvent", this, &AndroidNativeDevToDevModule::onSimpleCustomEvent );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         m_eventation.setMutex( mutex );
 

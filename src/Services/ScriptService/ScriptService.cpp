@@ -44,6 +44,8 @@ namespace Mengine
     namespace
     {
         //////////////////////////////////////////////////////////////////////////
+#ifdef WIN32
+        //////////////////////////////////////////////////////////////////////////
         static void py_invalid_parameter_handler( const wchar_t * _expression,
             const wchar_t * _function,
             const wchar_t * _file,
@@ -66,12 +68,16 @@ namespace Mengine
                 , traceback );
         }
         //////////////////////////////////////////////////////////////////////////
+#endif
+        //////////////////////////////////////////////////////////////////////////
         class My_observer_bind_call
             : public pybind::observer_bind_call
         {
         public:
             My_observer_bind_call()
+#ifdef WIN32
                 : m_prev_handler_count( 0 )
+#endif
             {
             }
 
@@ -94,23 +100,24 @@ namespace Mengine
 
                 m_counts.emplace_back( count );
 
+#ifdef WIN32
                 if( m_prev_handler_count++ == 0 )
                 {
                     m_prev_handler = _set_invalid_parameter_handler( &py_invalid_parameter_handler );
                     m_prev_mode = _CrtSetReportMode( _CRT_ASSERT, 0 );
                 }
+#endif
             }
 
             void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
             {
-                (void)_kwds;
-                (void)_args;
-
+#ifdef WIN32
                 if( --m_prev_handler_count == 0 )
                 {
                     _set_invalid_parameter_handler( m_prev_handler );
                     _CrtSetReportMode( _CRT_ASSERT, m_prev_mode );
                 }
+#endif
 
                 LOGGER_INFO( "pybind call end %s %s"
                     , _className
@@ -172,9 +179,11 @@ namespace Mengine
             typedef Vector<uint32_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
 
+#ifdef WIN32
             _invalid_parameter_handler m_prev_handler;
             int m_prev_mode;
             uint32_t m_prev_handler_count;
+#endif
         };
     }
     //////////////////////////////////////////////////////////////////////////

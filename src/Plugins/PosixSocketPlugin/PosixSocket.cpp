@@ -188,12 +188,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr PosixSocket::getSendStream() const
     {
-        return this;
+        return OutputStreamInterfacePtr(this);
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr PosixSocket::getReceiveStream() const
     {
-        return this;
+        return InputStreamInterfacePtr(this);
     }
     //////////////////////////////////////////////////////////////////////////
     SOCKET PosixSocket::getSocket() const

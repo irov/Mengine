@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/Document.h"
 
 namespace Mengine
@@ -36,4 +37,15 @@ namespace Mengine
     protected:
         FactoryPtr m_factory;
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class T>
+        ModuleFactoryInterfacePtr makeModuleFactory()
+        {
+            ModuleFactoryInterface * factory = new FactorableUnique<ModuleFactory<T>>();
+
+            return ModuleFactoryInterfacePtr( factory );
+        }
+    }
 }

@@ -4,6 +4,7 @@
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Document.h"
 
 #include "Environment/Android/AndroidUtils.h"
 
@@ -233,7 +234,7 @@ namespace Mengine
         static void androidUnitySetAdsEventHandler( AndroidNativeUnityAdsModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                new FactorableUnique<PythonUnityAdsEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonUnityAdsEventHandler>( _cb, _args )
             );
         }
     }
@@ -257,7 +258,7 @@ namespace Mengine
         pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );        
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         m_eventation.setMutex( mutex );
 

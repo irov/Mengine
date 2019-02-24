@@ -3,6 +3,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "math/box2.h"
 #include "math/utils.h"
@@ -85,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr MovieMesh2D::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid, MENGINE_DOCUMENT_FUNCTION );
 
         if( material == nullptr )
         {

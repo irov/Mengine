@@ -5,6 +5,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -36,7 +37,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage::_compile: '%s' resource is null"
+            LOGGER_ERROR( "'%s' resource is null"
                 , this->getName().c_str()
             );
 
@@ -45,7 +46,7 @@ namespace Mengine
 
         if( m_resourceImage.compile() == false )
         {
-            LOGGER_ERROR( "SurfaceImage::_compile: '%s' resource '%s' is not compile"
+            LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );
@@ -76,7 +77,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImage.getMaxSize: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -92,7 +93,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage.getSize: '%s' not setup resource"
+            LOGGER_ERROR( "'%s' not setup resource"
                 , this->getName().c_str()
             );
 
@@ -108,7 +109,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage.getOffset: '%s' not setup resource"
+            LOGGER_ERROR( "'%s' not setup resource"
                 , this->getName().c_str()
             );
 
@@ -124,7 +125,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImage.getUVCount: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -152,7 +153,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage.getUV: '%s' not setup texture"
+            LOGGER_ERROR( "'%s' not setup texture"
                 , this->getName().c_str()
             );
 
@@ -185,7 +186,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage.correctUV: '%s' not setup texture"
+            LOGGER_ERROR( "'%s' not setup texture"
                 , this->getName().c_str()
             );
 
@@ -226,11 +227,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( material == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage::updateMaterial_ '%s' resource '%s' m_material is NULL"
+            LOGGER_ERROR( "'%s' resource '%s' m_material is NULL"
                 , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );

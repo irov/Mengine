@@ -1,7 +1,7 @@
 #pragma once
 
 #ifndef MENGINE_MAX_TEXTURE_STAGES
-#define MENGINE_MAX_TEXTURE_STAGES 2
+#define MENGINE_MAX_TEXTURE_STAGES 4
 #endif
 
 namespace Mengine

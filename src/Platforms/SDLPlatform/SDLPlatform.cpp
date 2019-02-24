@@ -1034,6 +1034,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::abort()
+    {
+        ::abort();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
 #if defined(TARGET_OS_IPHONE)

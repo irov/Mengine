@@ -53,7 +53,7 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {
-            LOGGER_ERROR( "ImageDecoderHTF::_prepareData invalid load magic header"
+            LOGGER_ERROR( "invalid load magic header"
             );
 
             return false;
@@ -85,7 +85,7 @@ namespace Mengine
     {
         if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "ImageDecoderHTF", __FILE__, __LINE__ ) == false )
         {
-            LOGGER_ERROR( "ImageDecoderHTF::decode invalid load"
+            LOGGER_ERROR( "invalid load"
             );
 
             return 0;

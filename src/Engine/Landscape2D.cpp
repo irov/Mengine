@@ -5,6 +5,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "math/box2.h"
 #include "math/utils.h"
@@ -119,7 +120,7 @@ namespace Mengine
                         return;
                     }
 
-                    RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false );
+                    RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false, MENGINE_DOCUMENT_FUNCTION );
 
                     if( material == nullptr )
                     {

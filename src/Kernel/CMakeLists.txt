@@ -510,6 +510,12 @@ Logger
 )
 
 ADD_FILTER(
+Error
+	Error.h
+	Error.cpp
+)
+
+ADD_FILTER(
 Visitors
     DebugRenderVisitor.h
     DebugRenderVisitor.cpp

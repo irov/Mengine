@@ -110,6 +110,9 @@ namespace Mengine
 
     public:
         virtual bool cmd( const Char * _command ) = 0;
+
+    public:
+        virtual void abort() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

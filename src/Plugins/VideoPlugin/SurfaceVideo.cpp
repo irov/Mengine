@@ -590,7 +590,7 @@ namespace Mengine
     {
         this->updateVideoBuffer_();
 
-        RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false );
+        RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( material == nullptr )
         {

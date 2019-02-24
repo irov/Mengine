@@ -123,6 +123,7 @@ namespace Mengine
         bool getErrorMessage( uint32_t _messageId, Char * _out ) const override;
         void sleep( uint32_t _ms ) override;
         bool cmd( const Char * _command ) override;
+        void abort() override;
 
     protected:
         void changeWindow_( const Resolution & _resolution, bool _fullscreen );

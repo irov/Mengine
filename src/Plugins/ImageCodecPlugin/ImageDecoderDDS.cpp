@@ -30,7 +30,7 @@ namespace Mengine
 
         if( magic != FOURCC( 'D', 'D', 'S', ' ' ) )
         {
-            LOGGER_ERROR( "ImageDecoderDDS::initialize invalid dds magic"
+            LOGGER_ERROR( "invalid dds magic"
             );
 
             return false;
@@ -42,7 +42,7 @@ namespace Mengine
         //Check valid structure sizes
         if( header.dwSize != 124 && header.ddspf.dwSize != 32 )
         {
-            LOGGER_ERROR( "ImageDecoderDDS::initialize invalid dds file header"
+            LOGGER_ERROR( "invalid dds file header"
             );
 
             return false;
@@ -90,7 +90,7 @@ namespace Mengine
 
         if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
         {
-            LOGGER_ERROR( "ImageDecoderDDS::initialize dds file no compress"
+            LOGGER_ERROR( "dds file no compress"
             );
 
             return false;

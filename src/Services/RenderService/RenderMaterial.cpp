@@ -39,8 +39,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterial::update( float _time, float _timing )
     {
-        (void)_time;
-        (void)_timing;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _timing );
+
         //Empty
     }
 }

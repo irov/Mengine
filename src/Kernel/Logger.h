@@ -15,6 +15,7 @@ namespace Mengine
         const LoggerOperator & operator()( const Char * _format, ... ) const;
 
     public:
+        void logMessageArgs( const Char * _format, va_list _args ) const;
         void logMessageStamp( const Char * _msg, uint32_t _size ) const;
         void logMessage( const Char * _msg, uint32_t _size ) const;
 

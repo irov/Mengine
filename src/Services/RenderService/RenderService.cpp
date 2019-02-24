@@ -1343,7 +1343,7 @@ namespace Mengine
                 EPrimitiveType primitiveType = _material->getPrimitiveType();
 
                 const RenderMaterialInterfacePtr & new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr );
+                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
                 if( new_material == nullptr )
                 {

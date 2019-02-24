@@ -63,7 +63,7 @@ namespace Mengine
 
         m_soundEmitter = SOUND_SERVICE()
             ->createSoundIdentity( m_isHeadMode, m_soundBuffer, m_sourceCategory, streamable
-                , MENGINE_DOCUMENT( "SurfaceSound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
+                , MENGINE_DOCUMENT( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
         if( m_soundEmitter == nullptr )
         {
@@ -96,7 +96,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->releaseSoundSource( m_soundEmitter ) == false )
         {
-            LOGGER_ERROR( "SoundEmitter::_release %s emitter invalid release sound %d"
+            LOGGER_ERROR( "'%s' emitter invalid release sound %d"
                 , this->getName().c_str()
                 , m_soundEmitter->getId()
             );
@@ -207,7 +207,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( m_soundEmitter ) == false )
         {
-            LOGGER_ERROR( "SoundEmitter::_play %s invalid play [%d] resource %s"
+            LOGGER_ERROR( "'%s' invalid play [%d] resource '%s'"
                 , this->getName().c_str()
                 , m_soundEmitter->getId()
                 , m_resourceSound->getName().c_str()
@@ -310,7 +310,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setSourceVolume( m_soundEmitter, m_volume, m_volume, forceVolume ) == false )
         {
-            LOGGER_ERROR( "SoundEmitter::setVolume invalid %s:%d %f"
+            LOGGER_ERROR( "invalid %s:%d %f"
                 , m_resourceSound->getName().c_str()
                 , m_soundEmitter->getId()
                 , m_volume
@@ -416,7 +416,7 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( id );
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundResume( const SoundIdentityInterfacePtr & _emitter )
     {
         (void)_emitter;
@@ -426,14 +426,14 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
             ->onAnimationResume( id, 0.f );
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundStop( const SoundIdentityInterfacePtr & _emitter )
     {
         (void)_emitter;
 
         this->stop();
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundEnd( const SoundIdentityInterfacePtr & _emitter )
     {
         (void)_emitter;

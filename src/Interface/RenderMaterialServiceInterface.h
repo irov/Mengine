@@ -40,18 +40,18 @@ namespace Mengine
         virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures ) = 0;
+            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) = 0;
 
         virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures ) = 0;
+            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) = 0;
 
         virtual RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures ) = 0;
+            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) = 0;
 
     public:
         virtual const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const = 0;

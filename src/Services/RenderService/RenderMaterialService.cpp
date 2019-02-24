@@ -9,6 +9,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -110,6 +111,15 @@ namespace Mengine
         m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Blend_Premultiply" );
         m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Intensive" );
         m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Intensive_Premultiply" );
+
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatte_Blend_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatte_Blend_Premultiply_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatte_Intensive_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatte_Intensive_Premultiply_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Blend_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Blend_Premultiply_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Intensive_ExternalAlpha" );
+        m_defaultStageNames[EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( "Texture_TrackMatteInverted_Intensive_Premultiply_ExternalAlpha" );
 
         m_defaultStageNames[EM_TEXTURE_ALPHAMASK_BLEND] = STRINGIZE_STRING_LOCAL( "Texture_AlphaMask_Blend" );
 
@@ -535,22 +545,22 @@ namespace Mengine
             if( is_debug == true )
             {
                 const RenderMaterialInterfacePtr & debugLineMaterial =
-                    this->getMaterial( name, PT_LINELIST, 0, nullptr );
+                    this->getMaterial( name, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
                 this->setDebugLineMaterial( debugLineMaterial );
 
                 const RenderMaterialInterfacePtr & debugTriangleMaterial =
-                    this->getMaterial( name, PT_TRIANGLELIST, 0, nullptr );
+                    this->getMaterial( name, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
                 this->setDebugTriangleMaterial( debugTriangleMaterial );
                 
             }
         }
 
-        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
-        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
-        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
-        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr ) : nullptr;
+        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
 
         return true;
     }
@@ -572,7 +582,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "Invalid parse materials '%s:%s'"
+                LOGGER_ERROR( "invalid parse materials '%s:%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                 );
@@ -816,7 +826,7 @@ namespace Mengine
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial( const ConstString & _materialName
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures )
+        , const RenderTextureInterfacePtr * _textures, const Char * _doc )
     {
         MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
 
@@ -844,7 +854,7 @@ namespace Mengine
             }
         }
 
-        RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures );
+        RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures, _doc );
 
         return material;
     }
@@ -853,7 +863,7 @@ namespace Mengine
         , const RenderMaterialStage * _stage
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures )
+        , const RenderTextureInterfacePtr * _textures, const Char * _doc )
     {
 #ifndef NDEBUG
         if( _stage == nullptr )
@@ -890,7 +900,7 @@ namespace Mengine
             return RenderMaterialInterfacePtr( material );
         }
 
-        RenderMaterialPtr material = m_factoryMaterial->createObject( MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialPtr material = m_factoryMaterial->createObject( _doc );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
@@ -903,20 +913,13 @@ namespace Mengine
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures )
+        , const RenderTextureInterfacePtr * _textures, const Char * _doc )
     {
         const RenderMaterialStage * stage = m_defaultStages[_materialId];
 
-#ifndef NDEBUG
-        if( stage == nullptr )
-        {
-            LOGGER_ERROR( "invalid get stage for material '%s'"
-                , m_defaultStageNames[_materialId].c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( stage, nullptr )("invalid get stage for material '%s'"
+            , m_defaultStageNames[_materialId].c_str()
             );
-
-            return nullptr;
-        }
-#endif
 
         const ConstString & materialName = m_defaultStageNames[_materialId];
 
@@ -943,7 +946,7 @@ namespace Mengine
             return RenderMaterialInterfacePtr( material );
         }
 
-        RenderMaterialPtr material = m_factoryMaterial->createObject( MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialPtr material = m_factoryMaterial->createObject( _doc );
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );

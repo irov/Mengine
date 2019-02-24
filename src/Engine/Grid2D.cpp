@@ -4,8 +4,8 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "math/box2.h"
 #include "math/clamp.h"
@@ -219,7 +219,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Grid2D::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( material == nullptr )
         {

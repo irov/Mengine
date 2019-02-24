@@ -2,6 +2,8 @@
 
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Kernel/Document.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -48,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Line::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr );
+        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
         return material;
     }

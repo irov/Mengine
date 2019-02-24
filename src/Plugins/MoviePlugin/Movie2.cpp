@@ -2612,7 +2612,7 @@ namespace Mengine
                         {
                             ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
 
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false, MENGINE_DOCUMENT_FUNCTION );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
@@ -2724,7 +2724,7 @@ namespace Mengine
                                 vp.to_vec2f()
                             );
 
-                            resourceTrackMatteImage->correctUVImage( v.uv[1], uv_track_matte );
+                            resourceTrackMatteImage->correctUVAlpha( v.uv[1], uv_track_matte );
 
                             v.color = total_mesh_color;
                         }
@@ -2748,7 +2748,7 @@ namespace Mengine
                             uv.from_f2( &track_matte_mesh->uv[index][0] );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVImage( uv_correct, uv );
+                            resourceTrackMatteImage->correctUVAlpha( uv_correct, uv );
 
                             if( bb[0] > uv_correct.x )
                             {

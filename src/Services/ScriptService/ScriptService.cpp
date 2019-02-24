@@ -21,11 +21,19 @@
 #include "Kernel/AssertionVocabulary.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Error.h"
 #include "Kernel/Document.h"
+
+#include "Config/Stringstream.h"
 
 #include "pybind/debug.hpp"
 
+#include "pybind/list.hpp"
+#include "pybind/dict.hpp"
+
 #include <algorithm>
+
+#include <stdlib.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
@@ -35,11 +43,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
+        //////////////////////////////////////////////////////////////////////////
+        static void py_invalid_parameter_handler( const wchar_t * _expression,
+            const wchar_t * _function,
+            const wchar_t * _file,
+            unsigned int _line,
+            uintptr_t pReserved )
+        {
+            MENGINE_UNUSED( pReserved );
+
+            pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+                ->getKernel();
+
+            Char traceback[4096];
+            kernel->get_traceback( traceback, 4096 );
+
+            ERROR_FATAL( "\nInvalid parameter detected in function %ls.\nFile: %ls Line: %d\nExpression: %ls\nTrackeback:\n%s"
+                , _function
+                , _file
+                , _line
+                , _expression
+                , traceback );
+        }
+        //////////////////////////////////////////////////////////////////////////
         class My_observer_bind_call
             : public pybind::observer_bind_call
         {
         public:
             My_observer_bind_call()
+                : m_prev_handler_count( 0 )
             {
             }
 
@@ -61,12 +93,24 @@ namespace Mengine
                     ->getCountMessage( LM_ERROR );
 
                 m_counts.emplace_back( count );
+
+                if( m_prev_handler_count++ == 0 )
+                {
+                    m_prev_handler = _set_invalid_parameter_handler( &py_invalid_parameter_handler );
+                    m_prev_mode = _CrtSetReportMode( _CRT_ASSERT, 0 );
+                }
             }
 
             void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
             {
                 (void)_kwds;
                 (void)_args;
+
+                if( --m_prev_handler_count == 0 )
+                {
+                    _set_invalid_parameter_handler( m_prev_handler );
+                    _CrtSetReportMode( _CRT_ASSERT, m_prev_mode );
+                }
 
                 LOGGER_INFO( "pybind call end %s %s"
                     , _className
@@ -94,25 +138,43 @@ namespace Mengine
                     return;
                 }
 
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call %s::%s and get error!"
-                    , _className
-                    , _functionName
-                    );
-
-                bool exist;
-                PyObject * module_traceback = _kernel->module_import( "traceback", exist );
-
-                if( module_traceback == nullptr )
+                Stringstream ss_args;
+                for( const pybind::object & obj : pybind::tuple( _kernel, _args ) )
                 {
-                    return;
+                    ss_args << _kernel->object_repr( obj.ptr() ) << ", ";
                 }
 
-                _kernel->call_method( module_traceback, "print_stack", "()" );
+                Stringstream ss_kwds;
+                for( const pybind::dict_pair_value & obj : pybind::dict( _kernel, _kwds ) )
+                {
+                    pybind::object key = obj.key();
+                    pybind::object value = obj.value();
+
+                    ss_kwds << _kernel->object_repr( key.ptr() ) << " = " << _kernel->object_repr( value.ptr() ) << ", ";
+                }                
+
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call %s::%s args [(%s)] kwds [(%s)] and get error!"
+                    , _className
+                    , _functionName
+                    , ss_args.str().c_str()
+                    , ss_kwds.str().c_str()
+                    );
+
+                Char traceback[4096];
+                _kernel->get_traceback( traceback, 4096 );
+
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("traceback:\n%s"
+                    , traceback
+                    );
             }
 
         protected:
             typedef Vector<uint32_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
+
+            _invalid_parameter_handler m_prev_handler;
+            int m_prev_mode;
+            uint32_t m_prev_handler_count;
         };
     }
     //////////////////////////////////////////////////////////////////////////

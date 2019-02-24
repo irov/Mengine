@@ -51,7 +51,7 @@ namespace Mengine
 
         if( strncmp( m_etc1_ptr.tag, "PKM 10", 6 ) != 0 )
         {
-            LOGGER_ERROR( "ImageDecoderETC1::initialize Bad or not ETC1 file" );
+            LOGGER_ERROR( "Bad or not ETC1 file" );
 
             return false;
         }

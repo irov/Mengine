@@ -119,6 +119,11 @@ namespace Mengine
         {
             m_uvTextureImage[i] = m_uvImage[i];
         }
+
+        for( uint32_t i = 0; i != 4; ++i )
+        {
+            m_uvTextureAlpha[i] = m_uvAlpha[i];
+        }
     }
     /////////////////////////////////////////////////////////////////////////
 }

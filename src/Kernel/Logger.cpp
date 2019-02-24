@@ -30,14 +30,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... ) const
     {
-        va_list argList;
+        va_list args;
+        va_start( args, _format );
 
-        va_start( argList, _format );
+        this->logMessageArgs( _format, args );
 
+        va_end( args );
+
+        return *this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerOperator::logMessageArgs( const Char * _format, va_list _args ) const
+    {
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
-        int32_t size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, argList );
-
-        va_end( argList );
+        int32_t size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, _args );
 
         if( size < 0 )
         {
@@ -48,7 +54,7 @@ namespace Mengine
 
             if( size < 0 )
             {
-                return *this;
+                return;
             }
 
             str[size] = '\n';
@@ -56,7 +62,7 @@ namespace Mengine
 
             this->logMessage( _format, size + 1 );
 
-            return *this;
+            return;
         }
 
         if( size > (MENGINE_LOGGER_MAX_MESSAGE - 2) )
@@ -75,8 +81,6 @@ namespace Mengine
         {
             this->logMessage( str, size + 1 );
         }
-
-        return *this;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageStamp( const Char * _msg, uint32_t _size ) const

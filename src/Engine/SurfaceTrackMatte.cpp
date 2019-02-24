@@ -106,13 +106,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceTrackMatte::getUV( uint32_t _index ) const
     {
-        if( _index == 0 )
+        switch( _index )
         {
-            return m_resourceImage->getUVTextureImage();
-        }
-        if( _index == 1 )
-        {
-            return m_resourceTrackMatteImage->getUVTextureImage();
+        case 0:
+            {
+                return m_resourceImage->getUVTextureImage();
+            }break;
+        case 1:
+            {
+                return m_resourceTrackMatteImage->getUVTextureImage();
+            }break;
+        default:
+            break;
         }
 
         return mt::uv4f::identity();
@@ -136,7 +141,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource is null"
+            LOGGER_ERROR( "'%s' resource is null"
                 , m_name.c_str()
             );
 
@@ -145,7 +150,7 @@ namespace Mengine
 
         if( m_resourceImage.compile() == false )
         {
-            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
+            LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , m_name.c_str()
                 , m_resourceImage->getName().c_str()
             );
@@ -155,7 +160,7 @@ namespace Mengine
 
         if( m_resourceTrackMatteImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource is null"
+            LOGGER_ERROR( "'%s' resource is null"
                 , m_name.c_str()
             );
 
@@ -164,7 +169,7 @@ namespace Mengine
 
         if( m_resourceTrackMatteImage.compile() == false )
         {
-            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
+            LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , m_name.c_str()
                 , m_resourceTrackMatteImage->getName().c_str()
             );
@@ -184,107 +189,229 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceTrackMatte::_updateMaterial() const
-    {
-        RenderTextureInterfacePtr textures[2];
-
-        textures[0] = m_resourceImage->getTexture();
-        textures[1] = m_resourceTrackMatteImage->getTexture();
-
-        EMaterialBlendMode blendMode = this->getBlendMode();
-        bool premultiply = m_resourceImage->isPremultiply();
-
+    {        
         RenderMaterialInterfacePtr material = nullptr;
 
-        switch( m_trackMatteMode )
+        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
+
+        if( textureAlpha == nullptr )
         {
-        case ESTM_MODE_ALPHA:
+            RenderTextureInterfacePtr textures[2];
+            textures[0] = m_resourceImage->getTexture();
+
+            const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTextureAlpha();
+
+            if( trackMatteTextureAlpha == nullptr )
             {
-                switch( blendMode )
+                textures[1] = m_resourceTrackMatteImage->getTexture();
+            }
+            else
+            {
+                textures[1] = trackMatteTextureAlpha;
+            }
+
+            EMaterialBlendMode blendMode = this->getBlendMode();
+            bool premultiply = m_resourceImage->isPremultiply();
+
+            switch( m_trackMatteMode )
+            {
+            case ESTM_MODE_ALPHA:
                 {
-                case EMB_NORMAL:
+                    switch( blendMode )
                     {
-                        if( premultiply == false )
+                    case EMB_NORMAL:
                         {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures );
-                        }
-                        else
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    case EMB_ADD:
                         {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
-                        }
-                    }break;
-                case EMB_ADD:
-                    {
-                        if( premultiply == false )
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    default:
                         {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE, PT_TRIANGLELIST, 2, textures );
-                        }
-                        else
-                        {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
-                        }
-                    }break;
-                default:
-                    {
-                        LOGGER_ERROR( "SurfaceTrackMatte::_updateMaterial '%s' track matte mode '%d' invalid support blend mode '%d'"
-                            , this->getName().c_str()
-                            , m_trackMatteMode
-                            , blendMode
-                        );
+                            LOGGER_ERROR( "'%s' track matte mode '%d' invalid support blend mode '%d'"
+                                , this->getName().c_str()
+                                , m_trackMatteMode
+                                , blendMode
+                            );
 
-                        return nullptr;
-                    }break;
-                }
-            }break;
-        case ESTM_MODE_ALPHA_INVERTED:
-            {
-                switch( blendMode )
+                            return nullptr;
+                        }break;
+                    }
+                }break;
+            case ESTM_MODE_ALPHA_INVERTED:
                 {
-                case EMB_NORMAL:
+                    switch( blendMode )
                     {
-                        if( premultiply == false )
+                    case EMB_NORMAL:
                         {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures );
-                        }
-                        else
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    case EMB_ADD:
                         {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
-                        }
-                    }break;
-                case EMB_ADD:
-                    {
-                        if( premultiply == false )
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    default:
                         {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE, PT_TRIANGLELIST, 2, textures );
-                        }
-                        else
-                        {
-                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
-                        }
-                    }break;
-                default:
-                    {
-                        LOGGER_ERROR( "SurfaceTrackMatte::_updateMaterial '%s' track matte mode '%d' invalid support blend mode '%d'"
-                            , this->getName().c_str()
-                            , m_trackMatteMode
-                            , blendMode
-                        );
+                            LOGGER_ERROR( "'%s' track matte mode '%d' invalid support blend mode '%d'"
+                                , this->getName().c_str()
+                                , m_trackMatteMode
+                                , blendMode
+                            );
 
-                        return nullptr;
-                    }break;
-                }
-            }break;
-        default:
+                            return nullptr;
+                        }break;
+                    }
+                }break;
+            default:
+                {
+                    LOGGER_ERROR( "'%s' invalid support track matte mode '%d'"
+                        , this->getName().c_str()
+                        , m_trackMatteMode
+                    );
+
+                    return nullptr;
+                }break;
+            }
+        }
+        else
+        {
+            RenderTextureInterfacePtr textures[3];
+            textures[0] = m_resourceImage->getTexture();
+            textures[1] = textureAlpha;
+
+            const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTextureAlpha();
+
+            if( trackMatteTextureAlpha == nullptr )
             {
-                LOGGER_ERROR( "SurfaceTrackMatte::_updateMaterial '%s' invalid support track matte mode '%d'"
-                    , this->getName().c_str()
-                    , m_trackMatteMode
-                );
+                textures[2] = m_resourceTrackMatteImage->getTexture();
+            }
+            else
+            {
+                textures[2] = trackMatteTextureAlpha;
+            }
 
-                return nullptr;
-            }break;
+            EMaterialBlendMode blendMode = this->getBlendMode();
+            bool premultiply = m_resourceImage->isPremultiply();
+
+            switch( m_trackMatteMode )
+            {
+            case ESTM_MODE_ALPHA:
+                {
+                    switch( blendMode )
+                    {
+                    case EMB_NORMAL:
+                        {
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    case EMB_ADD:
+                        {
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    default:
+                        {
+                            LOGGER_ERROR( "'%s' track matte mode '%d' invalid support blend mode '%d'"
+                                , this->getName().c_str()
+                                , m_trackMatteMode
+                                , blendMode
+                            );
+
+                            return nullptr;
+                        }break;
+                    }
+                }break;
+            case ESTM_MODE_ALPHA_INVERTED:
+                {
+                    switch( blendMode )
+                    {
+                    case EMB_NORMAL:
+                        {
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    case EMB_ADD:
+                        {
+                            if( premultiply == false )
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                            else
+                            {
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
+                            }
+                        }break;
+                    default:
+                        {
+                            LOGGER_ERROR( "'%s' track matte mode '%d' invalid support blend mode '%d'"
+                                , this->getName().c_str()
+                                , m_trackMatteMode
+                                , blendMode
+                            );
+
+                            return nullptr;
+                        }break;
+                    }
+                }break;
+            default:
+                {
+                    LOGGER_ERROR( "'%s' invalid support track matte mode '%d'"
+                        , this->getName().c_str()
+                        , m_trackMatteMode
+                    );
+
+                    return nullptr;
+                }break;
+            }
         }
 
         return material;
-    }
-    //////////////////////////////////////////////////////////////////////////
+    }    
 }

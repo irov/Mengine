@@ -1913,6 +1913,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::abort()
+    {
+        ::abort();
+    }
+    //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName )
     {
         LOGGER_INFO( "load dynamic library '%s'"

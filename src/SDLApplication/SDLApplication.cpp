@@ -377,7 +377,7 @@ namespace Mengine
         m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
 #endif
 
-        m_loggerStdio->setVerboseFlag( LM_LOG );
+        m_loggerStdio->setVerboseFlag( LM_MESSAGE );
 
         LOGGER_SERVICE()
             ->registerLogger( m_loggerStdio );
@@ -395,7 +395,7 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            m_logLevel = LM_LOG;
+            m_logLevel = LM_MESSAGE;
         }
         else
         {
@@ -417,7 +417,7 @@ namespace Mengine
                     }break;
                 case 1:
                     {
-                        m_logLevel = LM_LOG;
+                        m_logLevel = LM_MESSAGE;
                     }break;
                 case 2:
                     {

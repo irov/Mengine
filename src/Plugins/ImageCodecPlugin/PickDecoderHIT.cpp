@@ -39,7 +39,7 @@ namespace Mengine
     {
         if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
         {
-            LOGGER_ERROR( "PickEncoderHIT::decode invalid load magic header"
+            LOGGER_ERROR( "invalid load magic header"
             );
 
             return 0;
@@ -57,7 +57,7 @@ namespace Mengine
     {
         if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "PickDecoderHIT", __FILE__, __LINE__ ) == false )
         {
-            LOGGER_ERROR( "PickEncoderHIT::decode invalid load magic header"
+            LOGGER_ERROR( "invalid load magic header"
             );
 
             return 0;

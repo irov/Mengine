@@ -8,6 +8,7 @@
 #include "ResourceImageSequence.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <math.h>
 
@@ -118,7 +119,7 @@ namespace Mengine
     {
         if( m_resourceImageSequence == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImageSequence::_compile: '%s' resource is null"
+            LOGGER_ERROR( "'%s' resource is null"
                 , m_name.c_str()
             );
 
@@ -127,7 +128,7 @@ namespace Mengine
 
         if( m_resourceImageSequence.compile() == false )
         {
-            LOGGER_ERROR( "Animation::_compile: '%s' resource '%s' is not compile"
+            LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , m_name.c_str()
                 , m_resourceImageSequence->getName().c_str()
             );
@@ -139,7 +140,7 @@ namespace Mengine
 
         if( m_currentFrame >= sequenceCount )
         {
-            LOGGER_ERROR( "Animation::_compile: '%s' m_frame(%d) >= sequenceCount(%d)"
+            LOGGER_ERROR( "'%s' m_frame(%d) >= sequenceCount(%d)"
                 , m_name.c_str()
                 , m_currentFrame
                 , sequenceCount
@@ -156,7 +157,7 @@ namespace Mengine
 
             if( resourceImage->compile() == false )
             {
-                LOGGER_ERROR( "SurfaceImageSequence::_updateMaterial '%s' invalid compile %d frame"
+                LOGGER_ERROR( "'%s' invalid compile %d frame"
                     , this->getName().c_str()
                     , m_currentFrame
                 );
@@ -164,11 +165,11 @@ namespace Mengine
                 return false;
             }
 
-            RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, false );
+            RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
 
             if( material == nullptr )
             {
-                LOGGER_ERROR( "SurfaceImageSequence::updateMaterial_ %s resource %s m_material is NULL"
+                LOGGER_ERROR( "'%s' resource '%s' m_material is NULL"
                     , this->getName().c_str()
                     , resourceImage->getName().c_str()
                 );
@@ -224,7 +225,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Animation: '%s' stop not activate"
+            LOGGER_ERROR( "'%s' stop not activate"
                 , getName().c_str()
             );
 
@@ -241,7 +242,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Animation: '%s' end not activate"
+            LOGGER_ERROR( "'%s' end not activate"
                 , getName().c_str()
             );
 
@@ -325,7 +326,7 @@ namespace Mengine
 
             if( _frame >= sequenceCount )
             {
-                LOGGER_ERROR( "Animation.setCurrentFrame: '%s' _frame(%d) >= sequenceCount(%d)"
+                LOGGER_ERROR( "'%s' _frame(%d) >= sequenceCount(%d)"
                     , m_name.c_str()
                     , _frame
                     , sequenceCount
@@ -343,7 +344,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImageSequence.getMaxSize: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -361,7 +362,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImageSequence.getSize: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -379,7 +380,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImageSequence.getOffset: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -397,7 +398,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImageSequence.getUVCount: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -427,7 +428,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImageSequence.getUV: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 
@@ -462,7 +463,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "SurfaceImageSequence::correctUV: '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , this->getName().c_str()
             );
 

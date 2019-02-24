@@ -5,6 +5,7 @@
 #include "Kernel/Materialable.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <math.h>
 
@@ -159,7 +160,7 @@ namespace Mengine
             }
 
             edge.material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures, MENGINE_DOCUMENT_FUNCTION );
         }
 
         this->invalidateVertices();

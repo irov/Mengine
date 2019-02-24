@@ -6,6 +6,7 @@
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -36,10 +37,10 @@ namespace Mengine
 
         for( Movie2DataImageDesc * desc : m_images )
         {
-            desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_NORMAL, false, false );
-            desc->materials[EMB_ADD] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_ADD, false, false );
-            desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_SCREEN, false, false );
-            desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_MULTIPLY, false, false );
+            desc->materials[EMB_NORMAL] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_NORMAL, false, false, MENGINE_DOCUMENT_FUNCTION );
+            desc->materials[EMB_ADD] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_ADD, false, false, MENGINE_DOCUMENT_FUNCTION );
+            desc->materials[EMB_SCREEN] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_SCREEN, false, false, MENGINE_DOCUMENT_FUNCTION );
+            desc->materials[EMB_MULTIPLY] = Helper::makeImageMaterial( desc->resourceImage, ConstString::none(), EMB_MULTIPLY, false, false, MENGINE_DOCUMENT_FUNCTION );
         }
 
         return true;

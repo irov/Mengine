@@ -44,7 +44,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceInterfacePtr ServiceProvider::generateService( TServiceProviderGenerator _generator )
+    ServiceInterfacePtr ServiceProvider::generateService_( FServiceProviderGenerator _generator )
     {
         if( _generator == nullptr )
         {
@@ -57,23 +57,33 @@ namespace Mengine
             return nullptr;
         }
 
-        if( service->initializeService() == false )
-        {
-            return nullptr;
-        }
-
         return service;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, uint32_t _line )
+    bool ServiceProvider::initializeService( FServiceProviderGenerator _generator, bool _safe, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        ServiceInterfacePtr service = this->generateService( _generator );
+        ServiceInterfacePtr service = this->generateService_( _generator );
 
         if( service == nullptr )
         {
-            MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid generate service doc '%s'"
-                , _doc
-                );
+            if( _safe == false )
+            {
+                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid generate service doc '%s'"
+                    , _doc
+                    );
+            }
+
+            return false;
+        }
+
+        if( service->initializeService() == false )
+        {
+            if( _safe == false )
+            {
+                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid initialize service doc '%s'"
+                    , _doc
+                    );
+            }
 
             return false;
         }

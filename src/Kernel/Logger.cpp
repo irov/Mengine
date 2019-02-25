@@ -5,7 +5,6 @@
 
 #include <ctime>
 #include <cstdio>
-#include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_MAX_MESSAGE

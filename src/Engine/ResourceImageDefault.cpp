@@ -150,6 +150,7 @@ namespace Mengine
             for( uint32_t i = 0; i != 4; ++i )
             {
                 m_uvTextureImage[i].x = m_uvImage[i].x * scale;
+                m_uvTextureAlpha[i].x = m_uvAlpha[i].x * scale;
             }
         }
         else
@@ -157,6 +158,7 @@ namespace Mengine
             for( uint32_t i = 0; i != 4; ++i )
             {
                 m_uvTextureImage[i].x = m_uvImage[i].x;
+                m_uvTextureAlpha[i].x = m_uvAlpha[i].x;
             }
         }
 
@@ -169,6 +171,7 @@ namespace Mengine
             for( uint32_t i = 0; i != 4; ++i )
             {
                 m_uvTextureImage[i].y = m_uvImage[i].y * scale;
+                m_uvTextureAlpha[i].y = m_uvAlpha[i].y * scale;
             }
         }
         else
@@ -176,6 +179,7 @@ namespace Mengine
             for( uint32_t i = 0; i != 4; ++i )
             {
                 m_uvTextureImage[i].y = m_uvImage[i].y;
+                m_uvTextureAlpha[i].y = m_uvAlpha[i].y;
             }
         }
     }

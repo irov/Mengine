@@ -3,6 +3,8 @@
 
 #include "Interface/PlatformInterface.h"
 
+#include <stdarg.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

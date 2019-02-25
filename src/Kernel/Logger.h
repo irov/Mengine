@@ -2,6 +2,8 @@
 
 #include "Interface/LoggerServiceInterface.h"
 
+#include <stdarg.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

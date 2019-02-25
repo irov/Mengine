@@ -34,12 +34,15 @@
 #include <algorithm>
 
 #include <stdlib.h>
+#include <crtdbg.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+#ifndef NDEBUG
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -187,6 +190,8 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
     ScriptService::ScriptService()
         : m_kernel( nullptr )
         , m_moduleMenge( nullptr )
@@ -207,7 +212,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void kernel_mutex_lock( void * _ctx )
+    static void s_pybind_kernel_mutex_lock( void * _ctx )
     {
         ScriptService * service = static_cast<ScriptService *>(_ctx);
 
@@ -216,7 +221,7 @@ namespace Mengine
         mutex->lock();
     }
     //////////////////////////////////////////////////////////////////////////
-    static void kernel_mutex_unlock( void * _ctx )
+    static void s_pybind_kernel_mutex_unlock( void * _ctx )
     {
         ScriptService * service = static_cast<ScriptService *>(_ctx);
 
@@ -234,16 +239,22 @@ namespace Mengine
 
         m_mutex = mutex;
 
+#if defined(WIN32) && defined(_DEBUG) && !defined(__MINGW32__)
+        int crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
+        int crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
+        int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
+#endif
+
         pybind::kernel_mutex_t kernel_mutex;
         kernel_mutex.ctx = this;
-        kernel_mutex.lock = &kernel_mutex_lock;
-        kernel_mutex.unlock = &kernel_mutex_unlock;
+        kernel_mutex.lock = &s_pybind_kernel_mutex_lock;
+        kernel_mutex.unlock = &s_pybind_kernel_mutex_unlock;
 
         pybind::kernel_interface * kernel = pybind::initialize( nullptr, &kernel_mutex, nullptr, developmentMode, false, true );
 
         if( kernel == nullptr )
         {
-            LOGGER_ERROR( "ScriptService::initialize invalid initialize pybind"
+            LOGGER_ERROR( "invalid initialize pybind"
             );
 
             return false;
@@ -254,9 +265,9 @@ namespace Mengine
         pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
 
 #if defined(WIN32) && defined(_DEBUG) && !defined(__MINGW32__)
-        _CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );
-        _CrtSetReportMode( _CRT_ERROR, _CRTDBG_MODE_WNDW );
-        _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_MODE_WNDW );
+        _CrtSetReportMode( _CRT_WARN, crt_warn );
+        _CrtSetReportMode( _CRT_ERROR, crt_error );
+        _CrtSetReportMode( _CRT_ASSERT, crt_assert );
 #endif
 
         m_moduleMenge = this->initModule( "Menge" );
@@ -292,7 +303,9 @@ namespace Mengine
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
-        pybind::set_observer_bind_call( new My_observer_bind_call() );
+#ifndef NDEBUG
+        m_kernel->set_observer_bind_call( new My_observer_bind_call() );
+#endif
 
         DataflowPYPtr dataflowPY = Helper::makeFactorableUnique<DataflowPY>();
 
@@ -338,7 +351,7 @@ namespace Mengine
 
         if( m_moduleFinder->initialize() == false )
         {
-            LOGGER_ERROR( "ScriptService::initialize invalid initialize ScriptModuleFinder"
+            LOGGER_ERROR( "invalid initialize ScriptModuleFinder"
             );
 
             return false;
@@ -348,14 +361,7 @@ namespace Mengine
 
         m_moduleFinder->setEmbed( py_moduleFinder );
 
-        //pybind::decref( m_moduleMenge );
-
         kernel->set_module_finder( py_moduleFinder.ptr() );
-
-        //bool gc_exist;
-        //PyObject * gc = pybind::module_import( "gc", gc_exist );
-
-        //pybind::call_method( gc, "disable", "()" );
 
         m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
 
@@ -364,6 +370,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::_finalizeService()
     {
+#ifndef NDEBUG
+        My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
+        delete observer_bind_call;
+#endif
+
         m_kernel->remove_module_finder();
 
         this->removeGlobalModule( "Menge" );
@@ -527,7 +538,7 @@ namespace Mengine
 
         if( module == nullptr )
         {
-            LOGGER_ERROR( "ScriptService::initializeModules invalid import module %s"
+            LOGGER_ERROR( "invalid import module '%s'"
                 , _pack.module.c_str()
             );
 
@@ -541,7 +552,7 @@ namespace Mengine
 
         if( module->onInitialize( _pack.initializer ) == false )
         {
-            LOGGER_ERROR( "ScriptService::initializeModules invalid initialize module %s"
+            LOGGER_ERROR( "invalid initialize module '%s'"
                 , _pack.module.c_str()
             );
 
@@ -576,7 +587,7 @@ namespace Mengine
 
             if( module == nullptr )
             {
-                LOGGER_ERROR( "ScriptService::finalizeModules invalid import module %s"
+                LOGGER_ERROR( "invalid import module '%s'"
                     , pak.module.c_str()
                 );
 
@@ -585,7 +596,7 @@ namespace Mengine
 
             if( module->onFinalize( pak.finalizer ) == false )
             {
-                LOGGER_ERROR( "ScriptService::finalizeModules module '%s' invalid call finalizer"
+                LOGGER_ERROR( "module '%s' invalid call finalizer"
                     , pak.module.c_str()
                 );
 
@@ -718,7 +729,7 @@ namespace Mengine
     {
         if( m_kernel->string_check( _object ) == false )
         {
-            LOGGER_ERROR( "ScriptService::stringize invalid stringize object %s"
+            LOGGER_ERROR( "invalid stringize object '%s'"
                 , m_kernel->object_repr( _object )
             );
 

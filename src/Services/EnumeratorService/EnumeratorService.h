@@ -4,6 +4,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#include "Config/Atomic.h"
+
 namespace Mengine
 {
     class EnumeratorService
@@ -17,6 +19,6 @@ namespace Mengine
         uint32_t generateUniqueIdentity() override;
 
     protected:
-        uint32_t m_enumerator;
+        AtomicUInt32 m_enumerator;
     };
 }

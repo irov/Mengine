@@ -613,7 +613,7 @@ namespace Mengine
         SERVICE_CREATE( VocabularyService );
 
         SERVICE_CREATE( RenderSystem );
-        SERVICE_CREATE( SoundSystem );
+        SERVICE_CREATE_SAFE( SoundSystem );
 
         bool muteMode = HAS_OPTION( "mute" );
 

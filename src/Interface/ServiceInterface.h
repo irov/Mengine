@@ -144,10 +144,10 @@ namespace Mengine
 	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\
-	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), #Name, __FILE__, __LINE__)
+	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), false, #Name, __FILE__, __LINE__)
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_GENERATE( Name, Type )\
-	SERVICE_PROVIDER_GET()->generateServiceT<Type>(&SERVICE_NAME_CREATE(Name), __FILE__, __LINE__)
+#define SERVICE_CREATE_SAFE( Name )\
+	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), true, #Name, __FILE__, __LINE__)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FINALIZE( Type )\
 	SERVICE_PROVIDER_GET()->finalizeServiceT<Type>()

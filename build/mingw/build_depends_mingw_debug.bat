@@ -1,1 +1,1 @@
-@call build_depends_mingw.bat Debug
+@call %~dp0build_depends_mingw.bat Debug

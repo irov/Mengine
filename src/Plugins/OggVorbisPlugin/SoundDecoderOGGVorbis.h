@@ -26,7 +26,7 @@ namespace Mengine
         size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
     public:
-        bool _seek( float _timing ) override;
+        bool _seek( float _time ) override;
         float _tell() const override;
 
     protected:

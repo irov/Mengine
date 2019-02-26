@@ -93,7 +93,7 @@ namespace Mengine
 
         if( opcall_err < 0 )
         {
-            LOGGER_ERROR( "SoundDecoderOGGVorbis::_prepareData invalid ov_open_callbacks [%d]"
+            LOGGER_ERROR( "invalid ov_open_callbacks [%d]"
                 , opcall_err
             );
 
@@ -106,7 +106,7 @@ namespace Mengine
 
         if( vorbisInfo == nullptr )
         {
-            LOGGER_ERROR( "SoundDecoderOGGVorbis::_prepareData invalid ov_info"
+            LOGGER_ERROR( "invalid ov_info"
             );
 
             return false;
@@ -114,7 +114,7 @@ namespace Mengine
 
         if( vorbisInfo->channels != 2 )
         {
-            LOGGER_ERROR( "SoundDecoderOGGVorbis::_prepareData invalid channels %d need %d"
+            LOGGER_ERROR( "invalid channels %d need %d"
                 , vorbisInfo->channels
                 , 2
             );
@@ -179,7 +179,7 @@ namespace Mengine
 
             if( decodeSize == OV_HOLE )
             {
-                LOGGER_CRITICAL( "SoundDecoderOGGVorbis::decode ov_read return OV_HOLE"
+                LOGGER_CRITICAL( "ov_read return OV_HOLE"
                     , decodeSize
                 );
 
@@ -189,7 +189,7 @@ namespace Mengine
 
             if( decodeSize < 0 )
             {
-                LOGGER_ERROR( "SoundDecoderOGGVorbis::decode ov_read return [%d]"
+                LOGGER_ERROR( "ov_read return [%d]"
                     , decodeSize
                 );
 
@@ -219,20 +219,27 @@ namespace Mengine
         return bytesDone;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoderOGGVorbis::_seek( float _timing )
+    bool SoundDecoderOGGVorbis::_seek( float _time )
     {
-        if( _timing >= m_dataInfo.length )
+        if( _time >= m_dataInfo.length )
         {
             LOGGER_ERROR( "SoundDecoderOGGVorbis::seek timing %f > total %f"
-                , _timing
+                , _time
                 , m_dataInfo.length
             );
 
-            _timing = 0.f;
+            _time = 0.f;
         }
 
-        double al_pos = (double)(_timing) * 0.001;
-        int32_t seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
+        double al_time = ov_time_tell( &m_oggVorbisFile );
+        double al_seek = (double)(_time) * 0.001;
+
+        if( abs( al_time - al_seek ) < 0.001 )
+        {
+            return true;
+        }
+
+        int32_t seek_err = ov_time_seek( &m_oggVorbisFile, al_seek );
 
         if( seek_err == OV_EINVAL )
         {
@@ -242,8 +249,8 @@ namespace Mengine
         if( seek_err != 0 )
         {
             //OV_ENOSEEK
-            LOGGER_ERROR( "SoundDecoderOGGVorbis::seek timing %f is %f error %d"
-                , _timing
+            LOGGER_ERROR( "timing %f is %f error %d"
+                , _time
                 , m_dataInfo.length
                 , seek_err
             );

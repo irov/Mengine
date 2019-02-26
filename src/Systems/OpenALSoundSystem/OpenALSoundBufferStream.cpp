@@ -51,12 +51,12 @@ namespace Mengine
         {
             ALuint id = m_alBuffersId[i];
 
-            if( id != 0 )
+            if( id == 0 )
             {
-                m_soundSystem->releaseBufferId( id );
+                continue;
             }
 
-            m_alBuffersId[i] = 0;
+            m_soundSystem->releaseBufferId( id );            
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -167,8 +167,12 @@ namespace Mengine
         
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
-            this->stopSource( m_sourceId );
-            //alSourceRewind( _source );
+            LOGGER_ERROR( "source %d invalid state %d"
+                , m_sourceId
+                , state
+            );
+
+            return false;
         }
 
         OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) ); // clear source buffering
@@ -215,9 +219,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::resumeSource( ALuint _source )
     {
-        (void)_source;
-
-        OPENAL_CALL( alSourcePlay, (m_sourceId) );
+        OPENAL_CALL( alSourcePlay, (_source) );
 
         this->setUpdating_( true );
 
@@ -229,11 +231,12 @@ namespace Mengine
         this->setUpdating_( false );
 
         OPENAL_CALL( alSourcePause, (_source) );
-        //m_soundSystem->clearSourceId( _source );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::stopSource( ALuint _source )
     {
+        OPENAL_CALL( alSourcef, (_source, AL_GAIN, 0.f) );
+
         this->setUpdating_( false );
 
         ALint process_count = 0;
@@ -263,13 +266,18 @@ namespace Mengine
             OPENAL_CALL( alSourceUnqueueBuffers, (_source, 1, &buffer) );
         }
 
-        OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) );
+        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
 
         OPENAL_CALL( alSourceRewind, (_source) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )
     {
+        if( m_updating == _updating )
+        {
+            return;
+        }
+
         m_mutexUpdating->lock();
         m_updating = _updating;
         m_mutexUpdating->unlock();
@@ -312,12 +320,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::update()
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
-
         if( m_updating == false )
         {
             return true;
         }
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
         ALint state;
         OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
@@ -325,13 +333,10 @@ namespace Mengine
         ALint processed_count = 0;
         OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_PROCESSED, &processed_count) );
 
-        ALuint unqueueBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT];
-        OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, processed_count, unqueueBuffersId) );
-
-        for( ALint curr_processed = 0; curr_processed != processed_count; ++curr_processed )
+        while( processed_count-- )
         {
-            // Исключаем их из очереди
-            ALuint bufferId = unqueueBuffersId[curr_processed];
+            ALuint bufferId;
+            OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, 1, &bufferId) );
 
             // Читаем очередную порцию данных
             size_t bytesWritten;
@@ -363,7 +368,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes )
     {
-        char dataBuffer[MENGINE_OPENAL_STREAM_BUFFER_SIZE];
+        uint8_t dataBuffer[MENGINE_OPENAL_STREAM_BUFFER_SIZE];
         size_t bytesWritten = m_soundDecoder->decode( dataBuffer, MENGINE_OPENAL_STREAM_BUFFER_SIZE );
 
         if( bytesWritten == 0 )

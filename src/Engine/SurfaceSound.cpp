@@ -196,11 +196,10 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            return false;
-        }
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
 
-        if( m_soundEmitter == nullptr )
-        {
             return false;
         }
 
@@ -232,8 +231,12 @@ namespace Mengine
     {
         (void)_enumerator;
 
-        if( m_soundEmitter == nullptr )
+        if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
+
             return;
         }
 
@@ -246,8 +249,12 @@ namespace Mengine
         (void)_time;
         (void)_enumerator;
 
-        if( m_soundEmitter == nullptr )
+        if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
+
             return;
         }
 
@@ -290,7 +297,7 @@ namespace Mengine
 
         m_volume = _volume;
 
-        if( m_soundEmitter == nullptr )
+        if( this->isCompile() == false )
         {
             return;
         }
@@ -327,8 +334,12 @@ namespace Mengine
     {
         (void)_value;
 
-        if( m_soundEmitter == nullptr )
+        if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
+
             return;
         }
 
@@ -341,8 +352,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SurfaceSound::_getDuration() const
     {
-        if( m_soundEmitter == nullptr )
+        if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
+
             return 0.f;
         }
 
@@ -363,11 +378,10 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            return;
-        }
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
 
-        if( m_soundEmitter == nullptr )
-        {
             return;
         }
 
@@ -388,11 +402,10 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            return 0.f;
-        }
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
 
-        if( m_soundEmitter == nullptr )
-        {
             return 0.f;
         }
 
@@ -409,7 +422,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundPause( const SoundIdentityInterfacePtr & _emitter )
     {
-        (void)_emitter;
+        MENGINE_UNUSED( _emitter );
 
         uint32_t id = this->getPlayId();
 
@@ -419,7 +432,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundResume( const SoundIdentityInterfacePtr & _emitter )
     {
-        (void)_emitter;
+        MENGINE_UNUSED( _emitter );
 
         uint32_t id = this->getPlayId();
 
@@ -429,14 +442,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundStop( const SoundIdentityInterfacePtr & _emitter )
     {
-        (void)_emitter;
+        MENGINE_UNUSED( _emitter );
 
         this->stop();
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::onSoundEnd( const SoundIdentityInterfacePtr & _emitter )
     {
-        (void)_emitter;
+        MENGINE_UNUSED( _emitter );
 
         this->end();
     }

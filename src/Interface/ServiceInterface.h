@@ -3,7 +3,6 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Factorable.h"
-
 #include "Kernel/Typename.h"
 
 namespace Mengine
@@ -39,8 +38,8 @@ namespace Mengine
         template<class T>
         inline T * getService( const Char * _file, uint32_t _line )
         {
-            (void)_file;
-            (void)_line;
+            MENGINE_UNUSED( _file );
+            MENGINE_UNUSED( _line );
 
             static T * s_service = nullptr;
 

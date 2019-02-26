@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _event >= (sizeof( m_flag ) * 8 - 1) )
         {
             throw;
@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEventReceiver( uint32_t _event )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
         {
             throw;
@@ -84,7 +84,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
         {
             throw;
@@ -105,7 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::hasEventReceiver( uint32_t _event ) const
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
         {
             throw;

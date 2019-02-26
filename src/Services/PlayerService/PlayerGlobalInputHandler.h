@@ -55,7 +55,7 @@ namespace Mengine
             InputHandlerInterfacePtr handler;
             bool enable;
             bool dead;
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             String doc;
 #endif
         };

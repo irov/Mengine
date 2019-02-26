@@ -31,7 +31,7 @@ namespace Mengine
 
         size_t m_size;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String m_relationPath;
         String m_folder;
         String m_fileName;

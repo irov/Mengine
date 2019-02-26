@@ -209,11 +209,6 @@ namespace Mengine
             {
                 break;
             }
-
-            //if( bytesDone >= _bufferSize )
-            //{
-            //    break;
-            //}
         }
 
         return bytesDone;
@@ -223,7 +218,7 @@ namespace Mengine
     {
         if( _time >= m_dataInfo.length )
         {
-            LOGGER_ERROR( "SoundDecoderOGGVorbis::seek timing %f > total %f"
+            LOGGER_ERROR( "timing %f > total %f"
                 , _time
                 , m_dataInfo.length
             );

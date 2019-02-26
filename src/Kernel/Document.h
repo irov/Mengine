@@ -1,6 +1,8 @@
 #pragma once
 
-#ifndef NDEBUG
+#   include "Config/Config.h"
+
+#ifdef MENGINE_DEBUG
 #   include "Config/Char.h"
 #   include <stdio.h>
 #	define MENGINE_DOCUMENT_FUNCTION __FUNCTION__

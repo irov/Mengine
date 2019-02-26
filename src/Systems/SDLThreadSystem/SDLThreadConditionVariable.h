@@ -33,7 +33,7 @@ namespace Mengine
         SDL_cond * m_conditionVariable;
         SDL_mutex * m_conditionLock;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String m_doc;
 #endif
     };

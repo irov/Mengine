@@ -27,7 +27,7 @@ namespace Mengine
         {
             DataInterfacePtr data = this->dataflow( _dataflow, _stream, _doc );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( data == nullptr )
             {
                 return nullptr;

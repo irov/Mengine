@@ -6,6 +6,6 @@
 
 namespace Mengine
 {
-    template<class K, class T, class L = std::less<K>, class A = stdex::stl_allocator<std::pair<const K, T> > >
+    template<class K, class T, class L = std::less<K>, class A = stdex::stl_allocator<std::pair<const K, T>>>
     using Map = std::map<K, T, L, A>;
 }

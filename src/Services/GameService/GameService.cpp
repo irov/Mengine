@@ -243,7 +243,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::update()
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
             ->getDebugInfo();
 
@@ -293,7 +293,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameService::loadPersonality()
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         bool is_debug = true;
 #else
         bool is_debug = false;

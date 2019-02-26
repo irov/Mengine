@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #include "Kernel/IntrusivePtrBase.h"
 #include "Kernel/IntrusivePtr.h"
 

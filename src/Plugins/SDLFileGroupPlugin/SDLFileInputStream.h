@@ -59,7 +59,7 @@ namespace Mengine
 
         STDEX_THREAD_GUARD_INIT;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         FilePath m_relationPath;
 		FilePath m_folderPath;
 		FilePath m_filePath;

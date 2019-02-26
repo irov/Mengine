@@ -45,7 +45,7 @@ namespace Mengine
         if( m_supportStream == true )
         {
             m_threadJobSoundBufferUpdate = THREAD_SERVICE()
-                ->createJob( 50, MENGINE_DOCUMENT_FUNCTION );
+                ->createJob( 25, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
                 ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, MENGINE_DOCUMENT_FUNCTION );
@@ -66,7 +66,7 @@ namespace Mengine
         float voiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
         this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), voiceVolume, 0.f );
 
-        bool musicoff = GET_OPTION_VALUE( "musicoff" );
+        bool musicoff = GET_OPTION_VALUE( "musicoff" ) || GET_OPTION_VALUE( "nomusic" );
 
         if( musicoff == true )
         {
@@ -356,7 +356,7 @@ namespace Mengine
         emitter->looped = false;
         emitter->turn = _streamable ? m_turnStream : m_turnSound;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         emitter->doc = _doc;
 #endif
 
@@ -1382,7 +1382,7 @@ namespace Mengine
                 , MaxSoundPlay
             );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             for( const SoundIdentityPtr & identity : m_soundIdentities )
             {
                 if( identity->streamable == false )

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Hash.h"
+#include "Kernel/HashType.h"
 #include "Config/Char.h"
 
 namespace Mengine

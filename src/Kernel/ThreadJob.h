@@ -69,7 +69,7 @@ namespace Mengine
 
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String m_doc;
 #endif
     };

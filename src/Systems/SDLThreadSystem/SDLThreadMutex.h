@@ -34,7 +34,7 @@ namespace Mengine
     protected:
         SDL_mutex * m_cs;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 		String m_doc;
 #endif
     };

@@ -768,7 +768,7 @@ namespace Mengine
             return;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
         {
             LOGGER_ERROR( "name '%s' layer '%s' not found"

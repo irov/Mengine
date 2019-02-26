@@ -29,7 +29,7 @@ namespace Mengine
         LPDIRECT3DDEVICE9 pD3DDevice = m_target->getDirect3dDevice9();
         LPDIRECT3DTEXTURE9 pD3DTexture = m_target->getDirect3dTexture9();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         DWORD fillmode;
         DXCALL( pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
 

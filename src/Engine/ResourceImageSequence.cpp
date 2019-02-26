@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float ResourceImageSequence::getSequenceDelay( uint32_t _index ) const
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
@@ -94,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceImageSequence::getSequenceResourceName( uint32_t _index ) const
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
@@ -120,7 +120,7 @@ namespace Mengine
     {
         uint32_t sequenceCount = this->getSequenceCount();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( sequenceCount == 0 )
         {
             LOGGER_ERROR( "ResourceImageSequence::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
@@ -157,7 +157,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceImageSequence::getSequenceResource( uint32_t _index ) const
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )

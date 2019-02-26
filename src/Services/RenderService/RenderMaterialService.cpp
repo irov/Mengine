@@ -865,7 +865,7 @@ namespace Mengine
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures, const Char * _doc )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _stage == nullptr )
         {
             LOGGER_ERROR( "invalid get stage for material '%s'"

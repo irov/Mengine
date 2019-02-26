@@ -125,7 +125,7 @@ namespace Mengine
             AstralaxEmitterContainerDesc new_desc;
             new_desc.reference = 0;            
             new_desc.container = container.get();
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 			new_desc.doc = _doc;
 #endif
 
@@ -135,7 +135,7 @@ namespace Mengine
         {
             container->finalize();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"
                 , _doc
                 , it_found->second.doc.c_str()
@@ -908,7 +908,7 @@ namespace Mengine
             return cache.fragmentShader;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         Stringstream ss;
         switch( m_renderPlatform )
         {

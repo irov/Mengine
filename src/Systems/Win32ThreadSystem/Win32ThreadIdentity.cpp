@@ -55,13 +55,13 @@ namespace Mengine
     {
         Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(lpThreadParameter);
 
-#ifdef NDEBUG
+#ifdef MENGINE_DEBUG
         try
 #endif
         {
             thread->main();
         }
-#ifdef NDEBUG
+#ifdef MENGINE_DEBUG
         catch( const std::exception & ex )
         {
             LOGGER_CRITICAL( "Win32ThreadIdentity std::exception exception '%s'"
@@ -84,7 +84,7 @@ namespace Mengine
 
         m_name = _name;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_doc = _doc;
 #endif
 

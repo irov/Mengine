@@ -297,7 +297,7 @@ namespace Mengine
 
         if( _layer.isMesh2D() == true )
         {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( stdex::intrusive_dynamic_cast<MovieMesh2DPtr>(_node) == nullptr )
             {
                 LOGGER_ERROR( "%s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
@@ -1871,7 +1871,7 @@ namespace Mengine
             return false;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( stdex::intrusive_dynamic_cast<TextFieldPtr>(node) == nullptr )
         {
             LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'TextField' but node is %s type %s"
@@ -2083,7 +2083,7 @@ namespace Mengine
 
             const NodePtr & node = this->getLayerNode_( l );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( stdex::intrusive_dynamic_cast<MovieSceneEffectPtr>(node) == nullptr )
             {
                 LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'MovieSceneEffect' but node is %s type %s"
@@ -2568,7 +2568,7 @@ namespace Mengine
             }
             else if( layer.isExtra() == true )
             {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
                 if( stdex::intrusive_dynamic_cast<MovieNodeExtraPtr>(node) == nullptr )
                 {
                     LOGGER_ERROR( "Movie::updateForwardFrame_ %s layer %s must be 'MovieNodeExtra' but node is %s type %s"

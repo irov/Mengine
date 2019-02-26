@@ -189,7 +189,7 @@ namespace Mengine
         desc.enable = true;
         desc.dead = false;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         desc.doc = _doc;
 #endif
 
@@ -358,7 +358,7 @@ namespace Mengine
     {
         this->update();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( m_handlers.empty() == false )
         {
             LOGGER_ERROR( "GlobalHandleSystem::clear global handlers is not empty:"

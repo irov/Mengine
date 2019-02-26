@@ -276,7 +276,7 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_DEBUG", true );
 #else

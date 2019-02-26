@@ -32,7 +32,7 @@ namespace Mengine
         {
 			DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( decoder == nullptr )
             {
                 return nullptr;
@@ -57,7 +57,7 @@ namespace Mengine
         {
 			EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( encoder == nullptr )
             {
                 return nullptr;

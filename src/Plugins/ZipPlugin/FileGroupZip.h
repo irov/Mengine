@@ -5,7 +5,7 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Config/Map.h"
+#include "Config/UnorderedMap.h"
 
 namespace Mengine
 {
@@ -71,7 +71,7 @@ namespace Mengine
             uint32_t compr_method;
         };
 
-        typedef Map<FilePath, FileInfo> MapFileInfo;
+        typedef UnorderedMap<FilePath, FileInfo, Hashgen<FilePath>> MapFileInfo;
         MapFileInfo m_files;
 
         typedef Vector<FilePath> VectorFiles;

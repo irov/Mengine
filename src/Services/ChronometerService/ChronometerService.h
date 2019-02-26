@@ -32,7 +32,7 @@ namespace Mengine
         {
             uint32_t id;
             LambdaChronometer lambda;
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             String doc;
 #endif
         };

@@ -91,7 +91,7 @@ namespace Mengine
     }
 }
 //////////////////////////////////////////////////////////////////////////
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 #   define MENGINE_ASSERTION(Condition, Message) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) Message
 #   define MENGINE_ASSERTION_RETURN(Condition, Message, Ret) if(!(Condition)) return Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) Message
 #   define MENGINE_ASSERTION_RETURN_VOID(Condition, Message) if(!(Condition)) return Helper::makeAssertionReturnOperator() << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) Message

@@ -33,7 +33,7 @@ namespace Mengine
         CRITICAL_SECTION m_conditionLock;
         CONDITION_VARIABLE m_conditionVariable;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String m_doc;
 #endif
     };

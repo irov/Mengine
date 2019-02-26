@@ -6,6 +6,7 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -88,6 +89,10 @@ namespace Mengine
         }
 
         m_mutex = mutex;
+
+        uint32_t FileGroupZipReserveFiles = CONFIG_VALUE( "Engine", "FileGroupZipReserveFiles", 16 * 1024 );
+
+        m_files.reserve( FileGroupZipReserveFiles );
 
         return true;
     }

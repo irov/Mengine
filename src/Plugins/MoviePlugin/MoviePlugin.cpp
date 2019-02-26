@@ -145,7 +145,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( _kernel, py_kwds, _node );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator
@@ -293,7 +293,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( _kernel, py_kwds, _node );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator

@@ -36,7 +36,7 @@ namespace Mengine
 
         if( this->createDirectory( baseDirectoryPath ) == false )
         {
-            LOGGER_ERROR( "Win32FileGroupDirectory::initialize: invalid create directory '%s'"
+            LOGGER_ERROR( "invalid create directory '%s'"
                 , _folderPath.c_str()
             );
 

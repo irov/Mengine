@@ -234,7 +234,7 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, applicationInputStream ) == false )
         {
-            LOGGER_ERROR( "WinApplication::initializeConfigEngine_ Invalid load application settings %s"
+            LOGGER_ERROR( "Invalid load application settings %s"
                 , applicationPath.c_str()
             );
 
@@ -244,7 +244,7 @@ namespace Mengine
         const Char * gameIniPath;
         if( IniUtil::getIniValue( ini, _section, _key, &gameIniPath ) == false )
         {
-            LOGGER_ERROR( "WinApplication::initializeConfigEngine_ Not found Game Path %s"
+            LOGGER_ERROR( "Not found Game Path %s"
                 , applicationPath.c_str()
             );
 
@@ -272,7 +272,7 @@ namespace Mengine
         if( CONFIG_SERVICE()
             ->loadConfig( fileGroup, gameIniPath ) == false )
         {
-            LOGGER_ERROR( "WinApplication::initializeConfigEngine_ invalid load config %s"
+            LOGGER_ERROR( "invalid load config %s"
                 , gameIniPath.c_str()
             );
 
@@ -297,7 +297,7 @@ namespace Mengine
 
         if( currentPathLen == 0 )
         {
-            LOGGER_ERROR( "WinApplication::setupFileService: failed to get current directory"
+            LOGGER_ERROR( "failed to get current directory"
             );
 
             return false;
@@ -937,12 +937,6 @@ namespace Mengine
         {
             return false;
         }
-
-        //mt::vec2f point;
-        //this->calcCursorPosition( point );
-
-        //INPUT_SERVICE()
-        //	->setCursorPosition( 0, point );
 
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )

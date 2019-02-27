@@ -551,16 +551,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::releaseSoundSource( const SoundIdentityInterfacePtr & _element )
     {
-        this->stopSoundBufferUpdate_( _element );
-
-        const SoundSourceInterfacePtr & source = _element->getSoundSource();
-
-        if( source != nullptr )
-        {
-            source->stop();
-            _element->setSoundSource( nullptr );
-        }
-
+        _element->setSoundSource( nullptr );
         _element->setSoundListener( nullptr );
 
         uint32_t id = _element->getId();
@@ -790,6 +781,9 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
             return false;
         }
 
@@ -800,7 +794,6 @@ namespace Mengine
         switch( state )
         {
         case ESS_STOP:
-        case ESS_PAUSE:
             {
                 if( this->checkMaxSoundPlay_() == false )
                 {
@@ -808,8 +801,6 @@ namespace Mengine
                 }
 
                 this->updateSourceVolume_( identity );
-
-                this->stopSoundBufferUpdate_( identity );
 
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
@@ -843,8 +834,54 @@ namespace Mengine
                     this->playSoundBufferUpdate_( identity );
                 }
             }break;
+        case ESS_PAUSE:
+            {
+                if( this->checkMaxSoundPlay_() == false )
+                {
+                    return false;
+                }
+
+                this->updateSourceVolume_( identity );
+
+                const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+                float length_ms = source->getDuration();
+                float pos_ms = source->getPosition();
+
+                identity->time = length_ms - pos_ms;
+
+                identity->state = ESS_PLAY;
+
+                if( identity->turn == true )
+                {
+                    if( source->resume() == false )
+                    {
+                        LOGGER_ERROR( "invalid play %d"
+                            , identity->id
+                        );
+
+                        return false;
+                    }
+
+                    this->resumeSoundBufferUpdate_( identity );
+                }
+
+                const SoundListenerInterfacePtr & listener = identity->getSoundListener();
+
+                if( listener != nullptr )
+                {
+                    SoundListenerInterfacePtr keep_listener = listener;
+                    keep_listener->onSoundResume( identity );
+                }
+            }break;
         default:
             {
+                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                    , identity->state
+                    , identity->doc.c_str()
+                );
+
+                return false;
             }break;
         }
 
@@ -855,6 +892,9 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
             return false;
         }
 
@@ -890,6 +930,12 @@ namespace Mengine
             }break;
         default:
             {
+                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                    , identity->state
+                    , identity->doc.c_str()
+                );
+
+                return false;
             }break;
         }
 
@@ -900,6 +946,9 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
             return false;
         }
 
@@ -951,6 +1000,12 @@ namespace Mengine
             }break;
         default:
             {
+                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                    , identity->state
+                    , identity->doc.c_str()
+                );
+
+                return false;
             }break;
         }
 
@@ -961,12 +1016,17 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
             return false;
         }
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-        switch( identity->state )
+        ESoundSourceState state = identity->state;
+
+        switch( state )
         {
         case ESS_PLAY:
         case ESS_PAUSE:
@@ -983,7 +1043,7 @@ namespace Mengine
                     SoundSourceInterfacePtr source = identity->source;
 
                     identity->time = source->getPosition();
-                    source->stop();                    
+                    source->stop();
                 }
 
                 if( identity->listener != nullptr )
@@ -994,6 +1054,12 @@ namespace Mengine
             }break;
         default:
             {
+                LOGGER_WARNING( "invalid state '%d' (doc '%s')"
+                    , identity->state
+                    , identity->doc.c_str()
+                );
+
+                return false;
             }break;
         }
 
@@ -1212,7 +1278,7 @@ namespace Mengine
 
         if( hasBufferUpdate == true )
         {
-            this->stopSoundBufferUpdate_( identity );
+            this->pauseSoundBufferUpdate_( identity );
         }
 
         float current_pos = source->getPosition();
@@ -1221,7 +1287,7 @@ namespace Mengine
         {
             if( hasBufferUpdate == true )
             {
-                this->playSoundBufferUpdate_( identity );
+                this->resumeSoundBufferUpdate_( identity );
             }
 
             return true;
@@ -1255,7 +1321,7 @@ namespace Mengine
 
         if( hasBufferUpdate == true )
         {
-            this->playSoundBufferUpdate_( identity );
+            this->resumeSoundBufferUpdate_( identity );
         }
 
         return true;

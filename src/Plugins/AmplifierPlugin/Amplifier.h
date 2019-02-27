@@ -44,6 +44,7 @@ namespace Mengine
         SoundIdentityInterfacePtr m_soundEmitter;
 
         bool m_play;
+        bool m_pause;
 
         class MyMusicSoundListener;
     };

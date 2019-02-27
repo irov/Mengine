@@ -332,22 +332,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_setLoop( bool _value )
     {
-        (void)_value;
-
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
             return;
         }
 
-        AnimationInterface * animation = this->getAnimation();
-        bool loop = animation->isLoop();
-
         SOUND_SERVICE()
-            ->setLoop( m_soundEmitter, loop );
+            ->setLoop( m_soundEmitter, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceSound::_getDuration() const

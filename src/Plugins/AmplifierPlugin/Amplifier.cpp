@@ -20,6 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Amplifier::Amplifier()
         : m_play( false )
+        , m_pause( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -199,6 +200,7 @@ namespace Mengine
         m_soundEmitter = soundEmitter;
 
         m_play = true;
+        m_pause = false;
 
         return true;
     }
@@ -206,6 +208,7 @@ namespace Mengine
     void Amplifier::stopMusic()
     {
         m_play = false;
+        m_pause = false;
 
         if( m_soundEmitter != nullptr )
         {
@@ -227,7 +230,8 @@ namespace Mengine
             return false;
         }
 
-        m_play = false;
+        m_play = true;
+        m_pause = true;
 
         SOUND_SERVICE()
             ->pauseEmitter( m_soundEmitter );
@@ -243,6 +247,7 @@ namespace Mengine
         }
 
         m_play = true;
+        m_pause = false;
 
         SOUND_SERVICE()
             ->resumeEmitter( m_soundEmitter );

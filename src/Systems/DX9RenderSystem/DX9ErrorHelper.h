@@ -5,7 +5,7 @@
 #include "Interface/ServiceInterface.h"
 
 #ifndef MENGINE_RENDER_CHECK_ERROR
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 #   define MENGINE_RENDER_CHECK_ERROR
 #endif
 #endif

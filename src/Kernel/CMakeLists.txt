@@ -334,7 +334,7 @@ Core
     IniUtil.h
     IniUtil.cpp
     
-    Hash.h
+    HashType.h
    
     PathString.h
    

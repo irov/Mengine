@@ -273,7 +273,7 @@ namespace Mengine
         TIME_SERVICE()
             ->resetDeltaTime();
 
-#ifdef NDEBUG
+#ifdef MENGINE_DEBUG
         try
 #endif
         {
@@ -352,7 +352,7 @@ namespace Mengine
                 m_update = false;
             }
         }
-#ifdef NDEBUG
+#ifdef MENGINE_DEBUG
         catch( const std::exception & ex )
         {
             LOGGER_CRITICAL( "Exception '%s'"

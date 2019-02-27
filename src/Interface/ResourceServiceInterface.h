@@ -54,7 +54,7 @@ namespace Mengine
                 return false;
             }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( resource == nullptr )
             {
                 return false;

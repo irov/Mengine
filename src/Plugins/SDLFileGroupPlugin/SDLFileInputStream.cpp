@@ -44,7 +44,7 @@ namespace Mengine
     {
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
@@ -134,7 +134,7 @@ namespace Mengine
             return false;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_SERVICE()
@@ -340,7 +340,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::time( uint64_t & _time ) const
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         Char filePath[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
         {

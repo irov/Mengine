@@ -3,7 +3,7 @@
 #include "Kernel/Mixin.h"
 
 #ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
-#   ifndef NDEBUG
+#   ifdef MENGINE_DEBUG
 #       define MENGINE_FACTORABLE_DEBUG
 #   endif
 #else

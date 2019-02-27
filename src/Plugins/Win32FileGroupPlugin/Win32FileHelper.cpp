@@ -30,7 +30,7 @@ namespace Mengine
                 return INVALID_HANDLE_VALUE;
             }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( Win32ValidateFile( pathCorrect ) == false )
             {
                 ::CloseHandle( handle );

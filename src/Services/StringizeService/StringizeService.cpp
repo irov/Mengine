@@ -1,6 +1,6 @@
 #include "StringizeService.h"
 
-#include "Kernel/Hash.h"
+#include "Kernel/HashType.h"
 
 #include "Kernel/FactoryPool.h"
 

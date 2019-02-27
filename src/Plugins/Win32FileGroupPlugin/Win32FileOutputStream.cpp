@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileOutputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath& _filePath )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_relationPath = _relationPath.c_str();
         m_folder = _folderPath.c_str();
         m_fileName = _filePath.c_str();

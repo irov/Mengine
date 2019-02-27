@@ -66,7 +66,7 @@ namespace Mengine
         m_priority = _priority;
         m_name = _name;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_doc = _doc;
 #endif
 

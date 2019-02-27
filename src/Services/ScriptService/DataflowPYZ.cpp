@@ -116,7 +116,7 @@ namespace Mengine
             return false;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( m_kernel->code_check( py_code ) == false )
         {
             LOGGER_ERROR( "module marshal get object not code"

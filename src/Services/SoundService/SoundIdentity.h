@@ -55,7 +55,7 @@ namespace Mengine
         bool looped;
         bool turn;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String doc;
 #endif
     };

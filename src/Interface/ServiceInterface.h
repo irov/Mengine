@@ -71,7 +71,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
                 if( dynamic_cast<T *>(service_ptr) == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid cast to %s"

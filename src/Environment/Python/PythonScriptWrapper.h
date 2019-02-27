@@ -56,7 +56,7 @@ namespace Mengine
     protected:
         PyObject * wrap( Scriptable * _scriptable ) override
         {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( dynamic_cast<T *>(_scriptable) == nullptr )
             {
                 LOGGER_ERROR( "invalid type"

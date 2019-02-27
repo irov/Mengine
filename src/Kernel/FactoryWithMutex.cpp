@@ -1,6 +1,6 @@
 #include "FactoryWithMutex.h"
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 #   include "Interface/NotificationServiceInterface.h"
 #   include "Kernel/Logger.h"
 #   include <stdlib.h>
@@ -37,7 +37,7 @@ namespace Mengine
 
         m_mutex->unlock();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 		NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, ((Factory *)this, object, _doc) );
 #endif
 
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 		NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, ((Factory *)this, _object) );
 #endif
 

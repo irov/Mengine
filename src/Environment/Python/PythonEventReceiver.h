@@ -71,7 +71,7 @@ namespace Mengine
                 event->registerEventReceiver( _event, receiver );
             }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             _kwds.remove( _method );
 #endif
         }

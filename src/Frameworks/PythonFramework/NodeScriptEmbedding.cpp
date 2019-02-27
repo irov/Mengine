@@ -607,7 +607,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator
@@ -643,7 +643,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator
@@ -691,7 +691,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator
@@ -745,7 +745,7 @@ namespace Mengine
             Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
             Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator
@@ -792,7 +792,7 @@ namespace Mengine
             Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onActivate", EVENT_ACTIVATE );
             Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator

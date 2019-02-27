@@ -1966,8 +1966,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getCurrentPath( Char * _currentPath ) const
     {
-        WChar unicode_path[MENGINE_MAX_PATH];
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
+        WChar currentPath[MENGINE_MAX_PATH];
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
@@ -1976,11 +1976,13 @@ namespace Mengine
             return 0;
         }
 
-        unicode_path[len] = L'/';
-        unicode_path[len + 1] = L'\0';
+        Helper::pathCorrectBackslash( currentPath );
+
+        currentPath[len] = L'/';
+        currentPath[len + 1] = L'\0';
 
         size_t path_len;
-        if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &path_len ) == false )
+        if( Helper::unicodeToUtf8( currentPath, _currentPath, MENGINE_MAX_PATH, &path_len ) == false )
         {
             _currentPath[0] = '\0';
 
@@ -2010,17 +2012,14 @@ namespace Mengine
                 return 0;
             }
 
-            currentPath[len] = L'/';
-            currentPath[len + 1] = L'\0';
+            ::PathRemoveBackslash( currentPath );
+            
+            Helper::pathCorrectBackslash( currentPath );
 
-            ::wcscat( currentPath, L"User" );
-            ::wcscat( currentPath, L"/" );
-
-            WChar unicode_path[MENGINE_MAX_PATH];
-            Helper::pathCorrectBackslashTo( unicode_path, currentPath );
+            ::wcscat( currentPath, L"/User/" );
 
             size_t currentPathLen;
-            if( Helper::unicodeToUtf8( unicode_path, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
+            if( Helper::unicodeToUtf8( currentPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
             {
                 return 0;
             }
@@ -2103,7 +2102,11 @@ namespace Mengine
 
         ::PathCombine( roamingPath, roamingPath, projectNameW );
 
+        ::PathRemoveBackslash( roamingPath );
+
         Helper::pathCorrectBackslash( roamingPath );
+
+        ::wcscat( roamingPath, L"/" );
 
         size_t currentPathLen;
         if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )

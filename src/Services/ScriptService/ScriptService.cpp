@@ -152,19 +152,25 @@ namespace Mengine
                 }
 
                 Stringstream ss_args;
-                for( const pybind::object & obj : pybind::tuple( _kernel, _args ) )
+                if( _args != nullptr )
                 {
-                    ss_args << _kernel->object_repr( obj.ptr() ) << ", ";
+                    for( const pybind::object & obj : pybind::tuple( _kernel, _args ) )
+                    {
+                        ss_args << _kernel->object_repr( obj.ptr() ) << ", ";
+                    }
                 }
 
                 Stringstream ss_kwds;
-                for( const pybind::dict_pair_value & obj : pybind::dict( _kernel, _kwds ) )
+                if( _kwds != nullptr )
                 {
-                    pybind::object key = obj.key();
-                    pybind::object value = obj.value();
+                    for( const pybind::dict_pair_value & obj : pybind::dict( _kernel, _kwds ) )
+                    {
+                        pybind::object key = obj.key();
+                        pybind::object value = obj.value();
 
-                    ss_kwds << _kernel->object_repr( key.ptr() ) << " = " << _kernel->object_repr( value.ptr() ) << ", ";
-                }                
+                        ss_kwds << _kernel->object_repr( key.ptr() ) << " = " << _kernel->object_repr( value.ptr() ) << ", ";
+                    }
+                }
 
                 LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call %s::%s args [(%s)] kwds [(%s)] and get error!"
                     , _className

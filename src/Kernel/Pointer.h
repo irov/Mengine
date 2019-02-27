@@ -2,7 +2,7 @@
 
 #include "Kernel/Mixin.h"
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 #include "stdex/mpl.h"
 #endif
 
@@ -100,7 +100,7 @@ namespace Mengine
         {
             T * p = m_pointer.get();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( p == nullptr )
             {
                 return IntrusivePtr<U>();
@@ -128,7 +128,7 @@ namespace Mengine
         {
             T * p = m_pointer.get();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( p == nullptr )
             {
                 return IntrusivePtr<U, UD>();

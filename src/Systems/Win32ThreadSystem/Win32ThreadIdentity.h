@@ -47,7 +47,7 @@ namespace Mengine
 		ThreadTaskInterface * m_task;
         AtomicBool m_exit;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String m_doc;
 #endif
     };

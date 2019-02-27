@@ -637,7 +637,7 @@ namespace Mengine
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         {
             bool developmentMode = HAS_OPTION( "dev" );
             bool roamingMode = HAS_OPTION( "roaming" );
@@ -788,7 +788,7 @@ namespace Mengine
         bool devplugins = false;
         bool devmodules = false;
 #else
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         bool devplugins = true;
         bool devmodules = true;
 #else

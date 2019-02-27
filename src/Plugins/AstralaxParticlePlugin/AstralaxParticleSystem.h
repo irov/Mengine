@@ -70,7 +70,7 @@ namespace Mengine
         {
             uint32_t reference;            
             const AstralaxEmitterContainer * container;
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 			String doc;
 #endif
         };

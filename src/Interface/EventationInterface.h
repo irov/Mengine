@@ -39,7 +39,7 @@ namespace Mengine
 
             EventReceiverInterface * r = reciever.get();
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( dynamic_cast<T>(r) == nullptr )
             {
                 throw;

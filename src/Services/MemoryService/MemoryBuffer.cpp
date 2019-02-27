@@ -11,7 +11,7 @@ namespace Mengine
         : m_memory( nullptr )
         , m_doc( nullptr )
         , m_size( 0 )
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         , m_file( nullptr )
         , m_line( 0 )
 #endif
@@ -50,7 +50,7 @@ namespace Mengine
         m_doc = _doc;
         m_size = _size;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_file = _file;
         m_line = _line;
 #endif

@@ -746,7 +746,7 @@ namespace Mengine
         bool devplugins = false;
         bool devmodules = false;
 #else
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         bool devplugins = true;
         bool devmodules = true;
 #else

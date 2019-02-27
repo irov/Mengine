@@ -18,7 +18,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_doc = _doc;
 #endif
 

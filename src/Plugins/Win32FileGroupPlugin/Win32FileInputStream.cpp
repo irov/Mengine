@@ -42,7 +42,7 @@ namespace Mengine
     {
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_relationPath = _relationPath.c_str();
         m_folder = _folderPath.c_str();
         m_fileName = _filePath.c_str();
@@ -137,7 +137,7 @@ namespace Mengine
             return false;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_SERVICE()

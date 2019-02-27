@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 #	define MENGINE_DOCUMENT_PYBIND []() -> const Char * \
     { \
         static Char buffer[4096]; \

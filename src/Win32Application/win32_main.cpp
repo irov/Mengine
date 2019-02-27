@@ -1,3 +1,5 @@
+#include "Config/Config.h"
+
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Win32Application.h"
@@ -15,7 +17,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
     stdex_allocator_initialize();
 
-#ifdef NDEBUG
+#ifdef MENGINE_DEBUG
     try
 #endif
     {
@@ -34,7 +36,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
         app.finalize();
     }
-#ifdef NDEBUG
+#ifdef MENGINE_DEBUG
     catch( const std::exception & se )
     {
         const char * se_what = se.what();

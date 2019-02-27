@@ -89,7 +89,7 @@ namespace Metabuf
 
         const Mengine::ConstString & value = cache->strings[index];
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         const Mengine::Char * test_value = value.c_str();
 
         const Mengine::Char * s = strstr( test_value, "\\" );

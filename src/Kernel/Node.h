@@ -271,7 +271,7 @@ namespace Mengine
     template<class T>
     inline T reinterpret_node_cast( void * _node )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _node == nullptr )
         {
             return nullptr;
@@ -295,7 +295,7 @@ namespace Mengine
     template<class T>
     inline T node_static_cast( Node * _node )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _node == nullptr )
         {
             return nullptr;
@@ -313,7 +313,7 @@ namespace Mengine
     template<class T>
     inline T node_static_cast( const Node * _node )
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         if( _node == nullptr )
         {
             return nullptr;

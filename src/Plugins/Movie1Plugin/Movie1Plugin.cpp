@@ -952,7 +952,7 @@ namespace Mengine
             Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
             Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
             if( py_kwds.empty() == false )
             {
                 for( pybind::dict::iterator

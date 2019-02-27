@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_destroy()
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         IntrusiveSlugListNodeChild & child = this->getChildren();
 
         for( IntrusiveSlugListNodeChild::iterator

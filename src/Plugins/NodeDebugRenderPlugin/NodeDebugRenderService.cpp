@@ -511,7 +511,7 @@ namespace Mengine
                 protected:
                     void visit_scope( pybind::class_type_scope_interface * _scope ) override
                     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
                         uint32_t count = _scope->getObjectCount();
 #else
                         uint32_t count = 0;

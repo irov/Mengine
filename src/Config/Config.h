@@ -7,3 +7,7 @@
 #ifndef MENGINE_UNUSED
 #define MENGINE_UNUSED(X) ((void)X)
 #endif
+
+#ifndef NDEBUG
+#define MENGINE_DEBUG
+#endif

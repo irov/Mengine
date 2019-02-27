@@ -34,7 +34,10 @@
 #include <algorithm>
 
 #include <stdlib.h>
-#include <crtdbg.h>
+
+#ifdef MENGINE_DEBUG
+#   include <crtdbg.h>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
@@ -42,7 +45,7 @@ SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -303,7 +306,7 @@ namespace Mengine
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         m_kernel->set_observer_bind_call( new My_observer_bind_call() );
 #endif
 
@@ -370,7 +373,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::_finalizeService()
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
         delete observer_bind_call;
 #endif

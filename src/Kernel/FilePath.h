@@ -29,6 +29,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<FilePath> VectorFilePath;
     //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct Hashgen<FilePath>
+    {
+        HashType operator()( const FilePath & _value ) const
+        {
+            return _value.hash();
+        }
+    };
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         FilePath stringizeFilePath( const Char * _value );

@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ChronometerService::_finalizeService()
     {
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         for( const ChronometerDesc & desc : m_chronometers )
         {
             LOGGER_ERROR( "Not remove chronometer '%s'"
@@ -49,7 +49,7 @@ namespace Mengine
         desc.id = new_id;
         desc.lambda = _lambda;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         desc.doc = _doc;
 #endif
 

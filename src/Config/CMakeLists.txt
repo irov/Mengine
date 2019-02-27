@@ -13,6 +13,7 @@ src
     Vector.h
     Deque.h
     Map.h
+    UnorderedMap.h
     List.h
     Tuple.h
     Regex.h

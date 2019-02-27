@@ -35,7 +35,7 @@ namespace Mengine
     protected:
         CRITICAL_SECTION m_cs;
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         String m_doc;
 #endif
     };

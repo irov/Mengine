@@ -4,6 +4,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/Logger.h"
+
 #include <io.h>
 #include <cstdio>
 #include <locale.h>
@@ -28,6 +30,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ConsoleLogger::initialize()
     {
+        LOGGER_MESSAGE( "initialize windows console" );
+
         this->createConsole_();
 
         LOGGER_SERVICE()

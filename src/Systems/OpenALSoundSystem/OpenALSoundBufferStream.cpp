@@ -175,7 +175,8 @@ namespace Mengine
             return false;
         }
 
-        OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) ); // clear source buffering
+        OPENAL_CALL( alSourceRewind, (m_sourceId) );
+        OPENAL_CALL( alSourcei, (m_sourceId, AL_BUFFER, 0) );
         OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
 
         if( m_soundDecoder->seek( _pos ) == false )
@@ -219,6 +220,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::resumeSource( ALuint _source )
     {
+        OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
         OPENAL_CALL( alSourcePlay, (_source) );
 
         this->setUpdating_( true );
@@ -239,36 +241,10 @@ namespace Mengine
 
         this->setUpdating_( false );
 
-        ALint process_count = 0;
-        // Получаем количество отработанных буферов
-        OPENAL_CALL( alGetSourcei, (_source, AL_BUFFERS_PROCESSED, &process_count) );
-
-        // Если таковые существуют то
-        while( process_count-- > 0 )
-        {            
-            // Исключаем их из очереди
-            ALuint buffer = 0;
-
-            OPENAL_CALL( alSourceUnqueueBuffers, (_source, 1, &buffer) );
-        }
-
         OPENAL_CALL( alSourceStop, (_source) );
-
-        ALint queued_count = 0;
-        // unqueue remaining buffers
-        OPENAL_CALL( alGetSourcei, (_source, AL_BUFFERS_QUEUED, &queued_count) );
-
-        while( queued_count-- > 0 )
-        {
-            // Исключаем их из очереди
-            ALuint buffer = 0;
-
-            OPENAL_CALL( alSourceUnqueueBuffers, (_source, 1, &buffer) );
-        }
-
-        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
-
+        
         OPENAL_CALL( alSourceRewind, (_source) );
+        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )
@@ -327,8 +303,13 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
-        ALint state;
-        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
+        ALint state_INITIAL = AL_INITIAL;
+        ALint state_PLAYING = AL_PLAYING;
+        ALint state_PAUSED = AL_PAUSED;
+        ALint state_STOPPED = AL_STOPPED;
+
+        float newVolume;
+        OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
 
         ALint processed_count = 0;
         OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_PROCESSED, &processed_count) );
@@ -350,7 +331,10 @@ namespace Mengine
             OPENAL_CALL( alSourceQueueBuffers, (m_sourceId, 1, &bufferId) );
         }
 
-        if( state != AL_PLAYING && state != AL_PAUSED )
+        ALint state;
+        OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
+
+        if( state == AL_STOPPED )
         {
             ALint queued_count = 0;
             OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );

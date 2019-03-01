@@ -876,10 +876,12 @@ namespace Mengine
             }break;
         default:
             {
+#ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
                     , identity->doc.c_str()
                 );
+#endif
 
                 return false;
             }break;
@@ -930,10 +932,12 @@ namespace Mengine
             }break;
         default:
             {
+#ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
                     , identity->doc.c_str()
                 );
+#endif
 
                 return false;
             }break;
@@ -1000,10 +1004,12 @@ namespace Mengine
             }break;
         default:
             {
+#ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
                     , identity->doc.c_str()
                 );
+#endif
 
                 return false;
             }break;
@@ -1054,10 +1060,12 @@ namespace Mengine
             }break;
         default:
             {
+#ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
                     , identity->doc.c_str()
                 );
+#endif
 
                 return false;
             }break;

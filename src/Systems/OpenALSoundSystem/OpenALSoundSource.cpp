@@ -344,8 +344,8 @@ namespace Mengine
             OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }
 
-        OPENAL_CALL( alSourcei, (_source, AL_LOOPING, AL_FALSE) );
-        OPENAL_CALL( alSource3f, (_source, AL_POSITION, 0.f, 0.f, 0.f) );
+        OPENAL_CALL( alSourcei, (_source, AL_LOOPING, m_loop ? AL_TRUE : AL_FALSE) );
+        OPENAL_CALL( alSource3f, (_source, AL_POSITION, 0.f, 0.f, -1.f) );
         OPENAL_CALL( alSource3f, (_source, AL_VELOCITY, 0.f, 0.f, 0.f) );
         OPENAL_CALL( alSourcef, (_source, AL_MIN_GAIN, 0.f) );
         OPENAL_CALL( alSourcef, (_source, AL_MAX_GAIN, 1.f) );

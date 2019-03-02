@@ -220,7 +220,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::resumeSource( ALuint _source )
     {
-        OPENAL_CALL( alSourcei, (m_sourceId, AL_LOOPING, AL_FALSE) );
         OPENAL_CALL( alSourcePlay, (_source) );
 
         this->setUpdating_( true );

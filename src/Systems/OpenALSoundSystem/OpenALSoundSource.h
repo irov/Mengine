@@ -63,7 +63,7 @@ namespace Mengine
         float m_volume;
 
         ALuint m_sourceId;
-        float m_timing;
+        float m_time;
 
         OpenALSoundBufferBasePtr m_soundBuffer;
 

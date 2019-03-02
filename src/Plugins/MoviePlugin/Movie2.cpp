@@ -1492,6 +1492,8 @@ namespace Mengine
                 }
                 else
                 {
+                    _animation->setTime( AE_TIME_MILLISECOND( _callbackData->offset ) );
+
                     if( _animation->play( time ) == 0 )
                     {
                         return;
@@ -1505,8 +1507,6 @@ namespace Mengine
                         }
                     }
                 }
-
-                _animation->setTime( AE_TIME_MILLISECOND( _callbackData->offset ) );
             }break;
         case AE_MOVIE_STATE_UPDATE_PROCESS:
             {

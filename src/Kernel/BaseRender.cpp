@@ -15,7 +15,8 @@ namespace Mengine
         , m_renderEnable( false )
         , m_hide( false )
         , m_localHide( false )
-        , m_rendering( false )
+        , m_rendering( true )
+        , m_invalidateRendering( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,8 @@ namespace Mengine
         m_relationRender->addRelationRenderChildrenBack_( this );
 
         this->invalidateColor();
+
+        m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRenderFront( RenderInterface * _relationRender )
@@ -55,6 +58,8 @@ namespace Mengine
         m_relationRender->addRelationRenderChildrenFront_( this );
 
         this->invalidateColor();
+
+        m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()
@@ -114,7 +119,7 @@ namespace Mengine
     {
         m_renderEnable = _renderEnable;
 
-        this->updateRendering_();
+        m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setHide( bool _hide )
@@ -128,7 +133,7 @@ namespace Mengine
 
         this->_setHide( _hide );
 
-        this->updateRendering_();
+        m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setHide( bool _hide )
@@ -148,8 +153,6 @@ namespace Mengine
         m_localHide = _localHide;
 
         this->_setLocalHide( _localHide );
-
-        this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setLocalHide( bool _localHide )
@@ -198,6 +201,16 @@ namespace Mengine
         return m_renderCamera;
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRenderTransformation( const RenderTransformationInterfacePtr & _renderTransformation )
+    {
+        m_renderTransformation = _renderTransformation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderTransformationInterfacePtr & BaseRender::getRenderTransformation() const
+    {
+        return m_renderTransformation;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
     {
         m_renderScissor = _scissor;
@@ -220,7 +233,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::renderWithChildren( const RenderContext * _context, bool _external ) const
     {
-        if( m_rendering == false )
+        if( this->isRendering() == false )
         {
             return;
         }
@@ -234,6 +247,7 @@ namespace Mengine
 
         context.viewport = m_renderViewport != nullptr ? m_renderViewport : _context->viewport;
         context.camera = m_renderCamera != nullptr ? m_renderCamera : _context->camera;
+        context.transformation = m_renderTransformation != nullptr ? m_renderTransformation : _context->transformation;
         context.scissor = m_renderScissor != nullptr ? m_renderScissor : _context->scissor;
         context.target = m_renderTarget != nullptr ? m_renderTarget : _context->target;
 
@@ -389,8 +403,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::updateRendering_()
+    void BaseRender::_setLocalTransparent( bool _transparent )
     {
+        MENGINE_UNUSED( _transparent );
+
+        m_invalidateRendering = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::updateRendering_() const
+    {
+        m_invalidateRendering = true;
+
         m_rendering = false;
 
         if( this->isRenderEnable() == false )

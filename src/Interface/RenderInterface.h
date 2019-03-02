@@ -54,6 +54,10 @@ namespace Mengine
         virtual const RenderCameraInterfacePtr & getRenderCamera() const = 0;
 
     public:
+        virtual void setRenderTransformation( const RenderTransformationInterfacePtr & _renderTransformation ) = 0;
+        virtual const RenderTransformationInterfacePtr & getRenderTransformation() const = 0;
+
+    public:
         virtual void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) = 0;
         virtual const RenderScissorInterfacePtr & getRenderScissor() const = 0;
 

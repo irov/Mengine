@@ -10,7 +10,15 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(push, 0) 
+#endif
+
 #include "DbgHelp.h"
+
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(pop) 
+#endif
 
 #include <cstdio>
 

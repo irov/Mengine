@@ -283,7 +283,7 @@ namespace Mengine
                     ->getDeltaTime();
 
                 MSG  msg;
-                while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) == TRUE )
+                while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
                 {
                     ::TranslateMessage( &msg );
                     ::DispatchMessage( &msg );
@@ -460,7 +460,11 @@ namespace Mengine
 
                 Win32Platform * app = (Win32Platform *)createStruct->lpCreateParams;
 
+#ifdef _WIN64
                 ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG_PTR)app );
+#else
+                ::SetWindowLongPtr( hWnd, GWLP_USERDATA, (LONG)app );
+#endif
 
                 return (LRESULT)NULL;
             }
@@ -1013,8 +1017,8 @@ namespace Mengine
             if( wParam == UNICODE_NOCHAR )
             {
                 _result = TRUE;
-                break;
-            }
+
+            }break;
         case WM_CHAR:
             {
                 Char utf8[5];
@@ -1397,10 +1401,10 @@ namespace Mengine
         {
             dwStyle |= WS_CAPTION | WS_VISIBLE;
 
-            bool hasWindowPanel = true;
+            //bool hasWindowPanel = true;
             //m_application->getHasWindowPanel();
 
-            if( hasWindowPanel == true )
+            //if( hasWindowPanel == true )
             {
                 dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
             }
@@ -1708,7 +1712,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
     {
-        WChar szPath[MENGINE_MAX_PATH];
+        WChar szPath[MENGINE_MAX_PATH] = { 0 };
         ::PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH];

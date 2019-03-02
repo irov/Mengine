@@ -117,17 +117,17 @@ namespace Mengine
 
             if( buffer == nullptr )
             {
-                LOGGER_ERROR( "ImageDecoderWEBP::decode invalid create memory for stream"
+                LOGGER_ERROR( "invalid create memory for stream"
                 );
 
-                return false;
+                return 0;
             }
 
             const uint8_t * buffer_memory = buffer->getBuffer();
 
             if( buffer_memory == nullptr )
             {
-                return false;
+                return 0;
             }
 
             size_t buffer_size = buffer->getSize();

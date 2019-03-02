@@ -515,12 +515,6 @@ Error
 	Error.cpp
 )
 
-ADD_FILTER(
-Visitors
-    DebugRenderVisitor.h
-    DebugRenderVisitor.cpp
-)
-
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/boost )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/utf8/source )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/tinyini/include )

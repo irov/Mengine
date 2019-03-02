@@ -190,7 +190,7 @@ namespace Mengine
 
                     _lambda( fp );
 
-                } while( FindNextFile( hFind, &fdFile ) == TRUE );
+                } while( FindNextFile( hFind, &fdFile ) != FALSE );
             }
 
             FindClose( hFind );
@@ -226,7 +226,7 @@ namespace Mengine
 
                 ListDirectoryContents( _dir, _mask, nextPath, _lambda );
 
-            } while( FindNextFile( hFind, &fdFile ) == TRUE );
+            } while( FindNextFile( hFind, &fdFile ) != FALSE );
 
             FindClose( hFind );
         }

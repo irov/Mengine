@@ -995,7 +995,7 @@ namespace Mengine
             return intersect;
         }
 
-        bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, Polygon _p1, const mt::mat4f & _wm2, Polygon _p2 )
+        bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, const Polygon & _p1, const mt::mat4f & _wm2, Polygon _p2 )
         {
             Polygon p1wm;
             _p1.mul_wm( p1wm, _wm1 );
@@ -1008,7 +1008,7 @@ namespace Mengine
             return intersect;
         }
 
-        bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, Polygon _p1, const mt::vec3f & _wm2, Polygon _p2 )
+        bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, const Polygon & _p1, const mt::vec3f & _wm2, Polygon _p2 )
         {
             Polygon p1wm;
             _p1.transpose( p1wm, _wm1.to_vec2f() );

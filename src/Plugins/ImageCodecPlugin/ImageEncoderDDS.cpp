@@ -31,8 +31,10 @@ namespace Mengine
 
         const ImageCodecDataInfo * imageInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
+        size_t write_size = 0;
+
         uint32_t magic = FOURCC( 'D', 'D', 'S', ' ' );
-        m_stream->write( &magic, sizeof( magic ) );
+        write_size += m_stream->write( &magic, sizeof( magic ) );
 
         uint32_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->channels, imageInfo->depth, imageInfo->format );
 
@@ -53,11 +55,10 @@ namespace Mengine
         header.ddspf.dwFlags = DDPF_FOURCC;
         header.ddspf.dwFourCC = s_convertFormatFourCC( imageInfo->format );
 
-        m_stream->write( &header, sizeof( header ) );
+        write_size += m_stream->write( &header, sizeof( header ) );
+        write_size += m_stream->write( _buffer, ddsSize );
 
-        m_stream->write( _buffer, ddsSize );
-
-        return true;
+        return write_size;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -82,13 +82,15 @@ namespace Mengine
         public:
             My_observer_bind_call()
 #ifdef MENGINE_WINDOWS_DEBUG
-                : m_prev_handler_count( 0 )
+                : m_prev_handler( nullptr )
+                , m_prev_mode( 0 )
+                , m_prev_handler_count( 0 )                
 #endif
             {
             }
 
         public:
-            void begin_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+            void begin_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds ) override
             {
                 (void)_kernel;
                 (void)_kwds;
@@ -115,7 +117,7 @@ namespace Mengine
 #endif
             }
 
-            void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+            void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds ) override
             {
 #ifdef MENGINE_WINDOWS_DEBUG
                 if( --m_prev_handler_count == 0 )

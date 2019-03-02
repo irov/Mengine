@@ -220,6 +220,8 @@ namespace Mengine
     {
         if( m_resourceImageMask == nullptr )
         {
+            LOGGER_ERROR( "invalid setup resource image mask" );
+
             return true;
         }
 
@@ -228,6 +230,11 @@ namespace Mengine
 
         if( renderTarget == nullptr )
         {
+            LOGGER_ERROR( "invalid create render target texture [%f, %f]"
+                , m_size.x
+                , m_size.y
+            );
+
             return false;
         }
 
@@ -239,6 +246,9 @@ namespace Mengine
 
         if( renderTargetImage == nullptr )
         {
+            LOGGER_ERROR( "invalid create render target image"
+            );
+
             return false;
         }
 
@@ -247,6 +257,11 @@ namespace Mengine
 
         if( m_resourceImageMask.compile() == false )
         {
+            LOGGER_ERROR( "invalid create render texture [%f, %f]"
+                , m_size.x
+                , m_size.y
+            );
+
             return false;
         }
 
@@ -261,16 +276,18 @@ namespace Mengine
 
         if( material == nullptr )
         {
+            LOGGER_ERROR( "invalid get material" );
+
             return false;
         }
 
         m_materialImageMask = material;
 
-        float hwWidth = (float)renderTarget->getHWWidth();
-        float hwHeight = (float)renderTarget->getHWHeight();
+        float hwWidthInv = renderTarget->getHWWidthInv();
+        float hwHeightInv = renderTarget->getHWHeightInv();
 
-        float uv_width = m_size.x / hwWidth;
-        float uv_height = m_size.y / hwHeight;
+        float uv_width = m_size.x * hwWidthInv;
+        float uv_height = m_size.y * hwHeightInv;
 
         m_verticesImageMaskWM[0].uv[0] = mt::vec2f( 0.f, 0.f );
         m_verticesImageMaskWM[1].uv[0] = mt::vec2f( uv_width, 0.f );
@@ -303,14 +320,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::render( const RenderContext * _context ) const
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderInterfacePtr & Layer2D::makeTargetRender( const RenderContext * _context ) const
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         return m_renderTarget;
     }

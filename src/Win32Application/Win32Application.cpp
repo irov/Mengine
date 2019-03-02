@@ -687,10 +687,10 @@ namespace Mengine
         LOGGER_MESSAGE( "initialize Plugins..." );
 
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
-		do{LOGGER_INFO( Info );\
+		{LOGGER_INFO( Info );\
 		if(	PLUGIN_CREATE(Name) == false ){\
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
-		LOGGER_MESSAGE( "Successful %s", Info );}}while(false, false)
+		LOGGER_MESSAGE( "Successful %s", Info );}}
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );

@@ -104,7 +104,6 @@ namespace Mengine
         uint32_t m_playId;
 
         float m_playTime;
-        float m_duration;
 
         float m_animationSpeedFactor;
         float m_intervalStart;

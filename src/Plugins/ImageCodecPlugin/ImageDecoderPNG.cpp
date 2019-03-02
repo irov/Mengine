@@ -120,6 +120,9 @@ namespace Mengine
         png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
 
 #if defined(PNG_SETJMP_SUPPORTED) && !defined(MENGINE_SETJMP_UNSUPPORTED)
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(push, 0) 
+#endif 
         if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
             LOGGER_ERROR( "ImageDecoderPNG::_prepareData jmp"
@@ -127,6 +130,9 @@ namespace Mengine
 
             return false;
         }
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(pop) 
+#endif
 #endif
 
         png_read_info( m_png_ptr, m_info_ptr );

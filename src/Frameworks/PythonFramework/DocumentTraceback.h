@@ -13,7 +13,7 @@ namespace Mengine
         static Char traceback[4096]; \
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()->getKernel(); \
         kernel->get_traceback(traceback, 4096); \
-        sprintf(buffer, "%s\nfile %s:%d\ncall: %s", traceback, __FILE__, __LINE__, __FUNCTION__); \
+        snprintf(buffer, 4096, "%s\nfile %s:%d\ncall: %s", traceback, __FILE__, __LINE__, __FUNCTION__); \
         return buffer;}()
 #else
 #	define MENGINE_DOCUMENT_PYBIND ""

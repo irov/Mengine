@@ -8,6 +8,8 @@
 
 #include "Config/Vector.h"
 
+#include <type_traits>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -61,14 +63,12 @@ namespace Mengine
             return exist;
         }
         //////////////////////////////////////////////////////////////////////////
-        template<class T>
-        static typename T::EventReceiverType * getThisEventRecieverT( T * _self, uint32_t _event )
+        template<class T, class EventReceiverType = std::conditional_t<std::is_const_v<T>, const typename T::EventReceiverType *, typename T::EventReceiverType *>>
+        static EventReceiverType getThisEventRecieverT( T * _self, uint32_t _event )
         {
-            typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
-
             EventationInterface * eventation = _self->getEventation();
 
-            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
+            EventReceiverType reciever = eventation->getEventRecieverT<EventReceiverType>( _event );
 
             return reciever;
         }
@@ -79,18 +79,6 @@ namespace Mengine
             typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
 
             EventationInterface * eventation = _self->getEventation();
-
-            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
-
-            return reciever;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        template<class T>
-        static const typename T::EventReceiverType * getThisEventRecieverT( const T * _self, uint32_t _event )
-        {
-            typedef const typename T::EventReceiverType * T_EventReceiverTypePtr;
-
-            const EventationInterface * eventation = _self->getEventation();
 
             T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
 

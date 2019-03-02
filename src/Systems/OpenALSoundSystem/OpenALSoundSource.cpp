@@ -15,7 +15,7 @@ namespace Mengine
         : m_soundSystem( nullptr )
         , m_volume( 1.f )
         , m_sourceId( 0 )
-        , m_timing( 0.f )
+        , m_time( 0.f )
         , m_headMode( true )
         , m_playing( false )
         , m_pausing( false )
@@ -61,12 +61,12 @@ namespace Mengine
 
             this->apply_( m_sourceId );
 
-            if( m_soundBuffer->playSource( m_sourceId, m_loop, m_timing ) == false )
+            if( m_soundBuffer->playSource( m_sourceId, m_loop, m_time ) == false )
             {
                 LOGGER_ERROR( "invalid buffer play %d loop %d timing %f"
                     , m_sourceId
                     , m_loop
-                    , m_timing
+                    , m_time
                 );
 
                 return false;
@@ -150,7 +150,7 @@ namespace Mengine
 
         this->releaseSourceId_();
 
-        m_timing = 0.f;
+        m_time = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::isPlay() const
@@ -213,12 +213,12 @@ namespace Mengine
 
         if( m_sourceId == 0 )
         {
-            return m_timing;
+            return m_time;
         }
 
         if( m_pausing == true )
         {
-            return m_timing;
+            return m_time;
         }
 
         float posms = 0.f;
@@ -233,9 +233,9 @@ namespace Mengine
         }
 
         //timing dont assign to zero when m_soundBuffer is stopped!
-        if( fabsf( posms ) < 0.0001f && fabsf( m_timing ) > 0.0001f )
+        if( fabsf( posms ) < 0.0001f && fabsf( m_time ) > 0.0001f )
         {
-            posms = m_timing;
+            posms = m_time;
         }
 
         return posms;
@@ -243,9 +243,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::setPosition( float _posMs )
     {
-        if( m_playing == true )
+        if( ::fabsf( m_time - _posMs ) < 0.01f )
         {
-            return false;
+            return true;
+        }
+
+        m_time = _posMs;
+
+        if( m_playing == false && m_pausing == false )
+        {
+            return true;
         }
 
         float posmc = _posMs;
@@ -271,21 +278,16 @@ namespace Mengine
             posmc = 0.f;
         }
 
-        m_timing = posmc;
+        if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
+        {
+            LOGGER_ERROR( "invalid set time pos %d time %f (play %d)"
+                , m_sourceId
+                , posmc
+                , m_playing
+            );
 
-        //if( m_playing == true || m_pausing == true )
-        //{
-        //	if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
-        //	{
-        //		LOGGER_ERROR("invalid set time pos %d time %f (play %d)"
-        //			, m_sourceId
-        //			, posmc
-        //			, m_playing
-        //			);
-
-        //		return false;
-        //	}
-        //}
+            return false;
+        }
 
         return true;
     }

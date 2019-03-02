@@ -78,15 +78,24 @@ namespace Mengine
 
         decode_size -= decode_size % 4;
 
-        if( m_channels == 1 )
+        switch( m_channels )
         {
-            m_format = AL_FORMAT_MONO16;
-            m_isStereo = false;
-        }
-        else
-        {
-            m_format = AL_FORMAT_STEREO16;
-            m_isStereo = true;
+        case 1:
+            {
+                m_format = AL_FORMAT_MONO16;
+                m_isStereo = false;
+            }break;
+        case 2:
+            {
+                m_format = AL_FORMAT_STEREO16;
+                m_isStereo = true;
+            }break;
+        default:
+            LOGGER_ERROR( "invliad format channels '%d'"
+                , m_channels
+            );
+
+            return false;
         }
 
         ALsizei al_decode_size = (ALsizei)decode_size;
@@ -105,18 +114,19 @@ namespace Mengine
 
         if( state == AL_PLAYING )
         {
-            //alSourceStop( _source );
             OPENAL_CALL( alSourceRewind, (_source) );
-        }
-
-        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) ); // clear source buffering
+            OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
+        }        
 
         OPENAL_CALL( alSourcei, (_source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE) );
         
         OPENAL_CALL( alSourcei, (_source, AL_BUFFER, m_alBufferId) );
 
-        float al_pos = _pos * 0.001f;
-        OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) );
+        if( _pos > 0.f )
+        {
+            float al_pos = _pos * 0.001f;
+            OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) );
+        }
 
         OPENAL_CALL( alSourcePlay, (_source) );
 
@@ -133,9 +143,6 @@ namespace Mengine
     void OpenALSoundBufferMemory::pauseSource( ALuint _source )
     {
         OPENAL_CALL( alSourcePause, (_source) );
-
-        //alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-        //OAL_CHECK_ERROR();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferMemory::stopSource( ALuint _source )
@@ -151,8 +158,8 @@ namespace Mengine
             } while( val == AL_PLAYING );
         }
 
-        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) ); // clear source buffering
         OPENAL_CALL( alSourceRewind, (_source) );
+        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const

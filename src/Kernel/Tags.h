@@ -1,14 +1,13 @@
 #pragma once
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorConstString.h"
 
 #include "Config/Vector.h"
 #include "Config/String.h"
 
 namespace Mengine
 {
-    typedef Vector<ConstString> VectorConstString;
-
     class Tags
     {
     public:

@@ -1139,7 +1139,7 @@ namespace Mengine
             return intersect;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, Polygon _polygon )
+        static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, const Polygon & _polygon )
         {
             if( _movie == nullptr )
             {

@@ -11,7 +11,6 @@ namespace Mengine
     BaseAnimation::BaseAnimation()
         : m_playId( 0 )
         , m_playTime( 0.f )
-        , m_duration( 0.f )
         , m_animationSpeedFactor( 1.f )
         , m_intervalStart( 0.f )
         , m_intervalBegin( 0.f )

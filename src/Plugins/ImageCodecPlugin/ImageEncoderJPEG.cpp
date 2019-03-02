@@ -175,6 +175,9 @@ namespace Mengine
         errorMgr.pub.output_message = &s_jpegOutputMessage;
 
 #if !defined(MENGINE_SETJMP_UNSUPPORTED)
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(push, 0) 
+#endif 
         if( setjmp( errorMgr.setjmp_buffer ) )
         {
             // If we get here, the JPEG code has signaled an error.
@@ -184,6 +187,9 @@ namespace Mengine
 
             return 0;
         }
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(pop) 
+#endif
 #endif
 
         struct jpeg_compress_struct cinfo = { 0 };

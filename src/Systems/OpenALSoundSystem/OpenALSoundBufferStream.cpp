@@ -302,11 +302,6 @@ namespace Mengine
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
-        ALint state_INITIAL = AL_INITIAL;
-        ALint state_PLAYING = AL_PLAYING;
-        ALint state_PAUSED = AL_PAUSED;
-        ALint state_STOPPED = AL_STOPPED;
-
         float newVolume;
         OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
 

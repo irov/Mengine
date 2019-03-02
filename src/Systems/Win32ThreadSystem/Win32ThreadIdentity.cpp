@@ -88,10 +88,10 @@ namespace Mengine
         m_doc = _doc;
 #endif
 
-		InitializeCriticalSection( &m_processLock );
+		::InitializeCriticalSection( &m_processLock );
 
-		InitializeCriticalSection( &m_conditionLock );
-		InitializeConditionVariable( &m_conditionVariable );
+        ::InitializeCriticalSection( &m_conditionLock );
+        ::InitializeConditionVariable( &m_conditionVariable );
 
         m_thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
@@ -147,17 +147,17 @@ namespace Mengine
     {   
         while( m_exit == false )
         {
-            EnterCriticalSection( &m_conditionLock );
-			SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
-            LeaveCriticalSection( &m_conditionLock );
+            ::EnterCriticalSection( &m_conditionLock );
+            ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
+            ::LeaveCriticalSection( &m_conditionLock );
 			
-			EnterCriticalSection( &m_processLock );
+            ::EnterCriticalSection( &m_processLock );
 			if( m_task != nullptr && m_exit == false )
             {
                 m_task->main();
                 m_task = nullptr;
             }
-			LeaveCriticalSection( &m_processLock );
+            ::LeaveCriticalSection( &m_processLock );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -168,16 +168,16 @@ namespace Mengine
             return false;
         }
 
-		if( TryEnterCriticalSection( &m_processLock ) == FALSE )
+		if( ::TryEnterCriticalSection( &m_processLock ) == FALSE )
 		{
 			return false;
 		}
 
 		m_task = _task;
 
-		LeaveCriticalSection( &m_processLock );
+        ::LeaveCriticalSection( &m_processLock );
 
-		WakeConditionVariable( &m_conditionVariable );
+        ::WakeConditionVariable( &m_conditionVariable );
 
         return true;
     }
@@ -189,9 +189,9 @@ namespace Mengine
             return;
         }
 
-		EnterCriticalSection( &m_processLock );
+        ::EnterCriticalSection( &m_processLock );
 		m_task = nullptr;
-		LeaveCriticalSection( &m_processLock );
+        ::LeaveCriticalSection( &m_processLock );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::join()
@@ -203,13 +203,13 @@ namespace Mengine
 
         m_exit = true;
         
-        WakeConditionVariable( &m_conditionVariable );
+        ::WakeConditionVariable( &m_conditionVariable );
         
-        WaitForSingleObject( m_thread, INFINITE );
-        CloseHandle( m_thread );
+        ::WaitForSingleObject( m_thread, INFINITE );
+        ::CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;
 
-		DeleteCriticalSection( &m_processLock );
-        DeleteCriticalSection( &m_conditionLock );
+        ::DeleteCriticalSection( &m_processLock );
+        ::DeleteCriticalSection( &m_conditionLock );
     }
 }

@@ -36,6 +36,7 @@ namespace Mengine
 
         context.viewport = m_renderViewport != nullptr ? m_renderViewport : _context->viewport;
         context.camera = m_renderCamera != nullptr ? m_renderCamera : _context->camera;
+        context.transformation = _context->transformation;
         context.scissor = m_renderScissor != nullptr ? m_renderScissor : _context->scissor;
         context.target = m_renderTarget != nullptr ? m_renderTarget : _context->target;
 

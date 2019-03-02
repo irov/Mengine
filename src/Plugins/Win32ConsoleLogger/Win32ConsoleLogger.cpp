@@ -72,7 +72,7 @@ namespace Mengine
         if( pAttachConsole( (DWORD)-1 ) == FALSE )
         {
             // allocate a console for this app
-            m_createConsole = (AllocConsole() == TRUE);
+            m_createConsole = (AllocConsole() != FALSE);
 
             // set the screen buffer to be big enough to let us scroll text
             HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );

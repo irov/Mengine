@@ -329,12 +329,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleKeyEvent( const InputKeyEvent & _event )
     {
-        bool handler = false;
-
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->handleKeyEvent( _event );
         }
+
+        bool handler = false;
 
         if( handler == false )
         {
@@ -347,12 +347,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleTextEvent( const InputTextEvent & _event )
     {
-        bool handler = false;
-
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->handleTextEvent( _event );
         }
+
+        bool handler = false;
 
         if( handler == false )
         {

@@ -56,7 +56,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Surface::_update( const UpdateContext * _context )
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
+
         //Empty;
 
         return false;

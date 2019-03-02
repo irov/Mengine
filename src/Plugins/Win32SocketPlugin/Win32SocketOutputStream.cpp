@@ -23,7 +23,7 @@ namespace Mengine
 
         if( send_result < 0 )
         {
-            return false;
+            return 0;
         }
 
         return (size_t)send_result;

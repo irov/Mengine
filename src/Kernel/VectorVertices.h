@@ -10,6 +10,7 @@ namespace Mengine
     {
     public:
         VectorVertices();
+        ~VectorVertices();
 
     public:
         inline VectorRenderVertex2D & getVertices();

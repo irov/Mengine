@@ -41,48 +41,16 @@ namespace Mengine
                 RenderContext self_context;
 
                 const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
-
-                if( renderViewport != nullptr )
-                {
-                    self_context.viewport = renderViewport;
-                }
-                else
-                {
-                    self_context.viewport = _context->viewport;
-                }
-
                 const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
-
-                if( renderCamera != nullptr )
-                {
-                    self_context.camera = renderCamera;
-                }
-                else
-                {
-                    self_context.camera = _context->camera;
-                }
-
+                const RenderTransformationInterfacePtr & renderTransformation = selfRender->getRenderTransformation();
                 const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
-
-                if( renderScissor != nullptr )
-                {
-                    self_context.scissor = renderScissor;
-                }
-                else
-                {
-                    self_context.scissor = _context->scissor;
-                }
-
                 const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
 
-                if( renderTarget != nullptr )
-                {
-                    self_context.target = renderTarget;
-                }
-                else
-                {
-                    self_context.target = _context->target;
-                }
+                self_context.viewport = renderViewport != nullptr ? renderViewport : _context->viewport;
+                self_context.camera = renderCamera != nullptr ? renderCamera : _context->camera;
+                self_context.transformation = renderTransformation != nullptr ? renderTransformation : _context->transformation;
+                self_context.scissor = renderScissor != nullptr ? renderScissor : _context->scissor;
+                self_context.target = renderTarget != nullptr ? renderTarget : _context->target;
 
                 if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
@@ -152,9 +120,9 @@ namespace Mengine
                 return RenderViewportInterfacePtr::none();
             }
 
-            const RenderViewportInterfacePtr & viewport_relationRender = Helper::getRenderViewportInheritance( relationRender );
+            const RenderViewportInterfacePtr & relation_viewport = Helper::getRenderViewportInheritance( relationRender );
 
-            return viewport_relationRender;
+            return relation_viewport;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render )
@@ -173,9 +141,30 @@ namespace Mengine
                 return RenderCameraInterfacePtr::none();
             }
 
-            const RenderCameraInterfacePtr & camera_relationRender = Helper::getRenderCameraInheritance( relationRender );
+            const RenderCameraInterfacePtr & relation_camera = Helper::getRenderCameraInheritance( relationRender );
 
-            return camera_relationRender;
+            return relation_camera;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const RenderTransformationInterfacePtr & getRenderTransformationInheritance( RenderInterface * _render )
+        {
+            const RenderTransformationInterfacePtr & transformation = _render->getRenderTransformation();
+
+            if( transformation != nullptr )
+            {
+                return transformation;
+            }
+
+            RenderInterface * relationRender = _render->getRelationRender();
+
+            if( relationRender == nullptr )
+            {
+                return RenderTransformationInterfacePtr::none();
+            }
+
+            const RenderTransformationInterfacePtr & relation_transformation = Helper::getRenderTransformationInheritance( relationRender );
+
+            return relation_transformation;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderScissorInterfacePtr & getRenderScissorInheritance( RenderInterface * _render )
@@ -194,9 +183,9 @@ namespace Mengine
                 return RenderScissorInterfacePtr::none();
             }
 
-            const RenderScissorInterfacePtr & scissor_relationRender = Helper::getRenderScissorInheritance( relationRender );
+            const RenderScissorInterfacePtr & relation_scissor = Helper::getRenderScissorInheritance( relationRender );
 
-            return scissor_relationRender;
+            return relation_scissor;
         }
         //////////////////////////////////////////////////////////////////////////
         const RenderTargetInterfacePtr & getRenderTargetInheritance( RenderInterface * _render )
@@ -215,9 +204,9 @@ namespace Mengine
                 return RenderTargetInterfacePtr::none();
             }
 
-            const RenderTargetInterfacePtr & target_relationRender = Helper::getRenderTargetInheritance( relationRender );
+            const RenderTargetInterfacePtr & relation_target = Helper::getRenderTargetInheritance( relationRender );
 
-            return target_relationRender;
+            return relation_target;
         }
         //////////////////////////////////////////////////////////////////////////
         void getNodeRenderContext( const NodePtr & _node, RenderContext * _context )
@@ -234,6 +223,13 @@ namespace Mengine
             if( camera != nullptr )
             {
                 _context->camera = camera;
+            }
+
+            const RenderTransformationInterfacePtr & transformation = Helper::getNodeRenderTransformationInheritance( _node.get() );
+
+            if( transformation != nullptr )
+            {
+                _context->transformation = transformation;
             }
 
             const RenderScissorInterfacePtr & scissor = Helper::getNodeRenderScissorInheritance( _node.get() );
@@ -294,6 +290,29 @@ namespace Mengine
             }
 
             const RenderCameraInterfacePtr & camera_parent = Helper::getNodeRenderCameraInheritance( parent );
+
+            return camera_parent;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const RenderTransformationInterfacePtr & getNodeRenderTransformationInheritance( Node * _node )
+        {
+            RenderInterface * render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                const RenderTransformationInterfacePtr & transformation = Helper::getRenderTransformationInheritance( render );
+
+                return transformation;
+            }
+
+            Node * parent = _node->getParent();
+
+            if( parent == nullptr )
+            {
+                return RenderTransformationInterfacePtr::none();
+            }
+
+            const RenderTransformationInterfacePtr & camera_parent = Helper::getNodeRenderTransformationInheritance( parent );
 
             return camera_parent;
         }

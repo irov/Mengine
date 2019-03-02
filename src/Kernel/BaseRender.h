@@ -62,6 +62,10 @@ namespace Mengine
         const RenderCameraInterfacePtr & getRenderCamera() const override;
 
     public:
+        void setRenderTransformation( const RenderTransformationInterfacePtr & _renderTransformation ) override;
+        const RenderTransformationInterfacePtr & getRenderTransformation() const override;
+
+    public:
         void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
         const RenderScissorInterfacePtr & getRenderScissor() const override;
 
@@ -114,11 +118,14 @@ namespace Mengine
     protected:
         void invalidateColor() override;
 
+    protected:
+        void _setLocalTransparent( bool _transparent ) override;
+
     public:
         inline bool isRendering() const;
 
     protected:
-        void updateRendering_();
+        void updateRendering_() const;
 
     protected:
         BaseRender * m_relationRender;
@@ -128,6 +135,7 @@ namespace Mengine
 
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
+        RenderTransformationInterfacePtr m_renderTransformation;
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
 
@@ -135,11 +143,18 @@ namespace Mengine
         bool m_renderEnable;
         bool m_hide;
         bool m_localHide;
-        bool m_rendering;
+
+        mutable bool m_rendering;
+        mutable bool m_invalidateRendering;
     };
     //////////////////////////////////////////////////////////////////////////
     inline bool BaseRender::isRendering() const
     {
+        if( m_invalidateRendering == true )
+        {
+            this->updateRendering_();
+        }
+
         return m_rendering;
     }
     //////////////////////////////////////////////////////////////////////////

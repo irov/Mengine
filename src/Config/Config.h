@@ -11,3 +11,9 @@
 #ifndef NDEBUG
 #define MENGINE_DEBUG
 #endif
+
+#ifndef NDEBUG
+#ifdef WIN32
+#define MENGINE_WINDOWS_DEBUG
+#endif
+#endif

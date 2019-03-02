@@ -35,7 +35,7 @@
 
 #include <stdlib.h>
 
-#ifdef MENGINE_DEBUG
+#ifdef MENGINE_WINDOWS_DEBUG
 #   include <crtdbg.h>
 #endif
 
@@ -50,7 +50,7 @@ namespace Mengine
     namespace
     {
         //////////////////////////////////////////////////////////////////////////
-#ifdef WIN32
+#ifdef MENGINE_WINDOWS_DEBUG
         //////////////////////////////////////////////////////////////////////////
         static void py_invalid_parameter_handler( const wchar_t * _expression,
             const wchar_t * _function,
@@ -81,7 +81,7 @@ namespace Mengine
         {
         public:
             My_observer_bind_call()
-#ifdef WIN32
+#ifdef MENGINE_WINDOWS_DEBUG
                 : m_prev_handler_count( 0 )
 #endif
             {
@@ -106,7 +106,7 @@ namespace Mengine
 
                 m_counts.emplace_back( count );
 
-#ifdef WIN32
+#ifdef MENGINE_WINDOWS_DEBUG
                 if( m_prev_handler_count++ == 0 )
                 {
                     m_prev_handler = _set_invalid_parameter_handler( &py_invalid_parameter_handler );
@@ -117,7 +117,7 @@ namespace Mengine
 
             void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
             {
-#ifdef WIN32
+#ifdef MENGINE_WINDOWS_DEBUG
                 if( --m_prev_handler_count == 0 )
                 {
                     _set_invalid_parameter_handler( m_prev_handler );
@@ -191,7 +191,7 @@ namespace Mengine
             typedef Vector<uint32_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
 
-#ifdef WIN32
+#ifdef MENGINE_WINDOWS_DEBUG
             _invalid_parameter_handler m_prev_handler;
             int m_prev_mode;
             uint32_t m_prev_handler_count;
@@ -248,7 +248,7 @@ namespace Mengine
 
         m_mutex = mutex;
 
-#if defined(WIN32) && defined(_DEBUG) && !defined(__MINGW32__)
+#if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
         int crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
         int crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
         int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
@@ -273,7 +273,7 @@ namespace Mengine
 
         pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
 
-#if defined(WIN32) && defined(_DEBUG) && !defined(__MINGW32__)
+#if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
         _CrtSetReportMode( _CRT_WARN, crt_warn );
         _CrtSetReportMode( _CRT_ERROR, crt_error );
         _CrtSetReportMode( _CRT_ASSERT, crt_assert );

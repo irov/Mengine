@@ -23,17 +23,23 @@ namespace Mengine
         SERVICE_DECLARE( "SceneService" )
 
     public:
-        virtual bool setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
-        virtual bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
-        virtual bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+        virtual bool setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+        virtual bool restartCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+        virtual bool removeCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+
+    public:
         virtual void destroyCurrentScene() = 0;
 
+    public:
         virtual const ScenePtr & getCurrentScene() const = 0;
 
     public:
         virtual bool createGlobalScene() = 0;
         virtual void removeGlobalScene() = 0;
         virtual const ScenePtr & getGlobalScene() const = 0;
+
+    public:
+        virtual void update() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -1258,7 +1258,7 @@ namespace Mengine
             return;
         }
 
-        if( m_renderObjects.full() )
+        if( m_renderObjects.full() == true )
         {
             LOGGER_ERROR( "max render objects '%u'"
                 , m_renderObjects.size()
@@ -1277,32 +1277,6 @@ namespace Mengine
 
         RenderPass * rp = this->requestRenderPass_( _context, _material, _variable, _vertexCount, _indexCount );
 
-        mt::box2f bb;
-
-        if( _bb != nullptr )
-        {
-            bb = *_bb;
-        }
-        else
-        {
-            Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
-        }
-
-        const RenderCameraInterfacePtr & camera = rp->camera;
-        const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
-
-        const RenderViewportInterfacePtr & viewport = rp->viewport;
-        const Viewport & vp = viewport->getViewport();
-
-        mt::box2f bb_homogenize;
-        mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
-
-        mt::vec2f vp_scale;
-        vp.calcSize( vp_scale );
-
-        mt::scale_box( bb_homogenize, vp_scale );
-        mt::transpose_box( bb_homogenize, vp.begin );
-
         m_debugInfo.object += 1;
 
         if( m_debugFillrateCalcMode == true && _debug == false )
@@ -1313,6 +1287,9 @@ namespace Mengine
             {
             case PT_TRIANGLELIST:
                 {
+                    const RenderViewportInterfacePtr & viewport = rp->viewport;
+                    const Viewport & vp = viewport->getViewport();
+
                     this->calcQuadSquare_( _vertices, _vertexCount, vp );
                 }break;
             default:
@@ -1376,7 +1353,36 @@ namespace Mengine
         ro.indexData = _indices;
         ro.indexCount = _indexCount;
 
-        ro.bb = bb_homogenize;
+        if( m_batchMode == ERBM_SMART )
+        {
+            mt::box2f bb;
+
+            if( _bb != nullptr )
+            {
+                bb = *_bb;
+            }
+            else
+            {
+                Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
+            }
+
+            const RenderCameraInterfacePtr & camera = rp->camera;
+            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
+
+            const RenderViewportInterfacePtr & viewport = rp->viewport;
+            const Viewport & vp = viewport->getViewport();
+
+            mt::box2f bb_homogenize;
+            mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
+
+            mt::vec2f vp_scale;
+            vp.calcSize( vp_scale );
+
+            mt::scale_box( bb_homogenize, vp_scale );
+            mt::transpose_box( bb_homogenize, vp.begin );
+
+            ro.bb = bb_homogenize;
+        }        
 
         ro.minIndex = 0;
         ro.startIndex = 0;

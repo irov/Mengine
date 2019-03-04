@@ -150,6 +150,7 @@ namespace Mengine
 
         Tags m_platformTags;
         Resolution m_windowResolution;
+        bool m_fullscreen;
 
         float m_activeFrameTime;
         float m_inactiveFrameTime;

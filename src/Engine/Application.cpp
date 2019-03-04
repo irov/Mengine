@@ -283,6 +283,13 @@ namespace Mengine
             this->updateDebugOpenFile_();
         }
 
+        bool novideo = HAS_OPTION( "novideo" );
+
+        if( novideo == true )
+        {
+            this->setVideoEnable( false );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -450,16 +457,16 @@ namespace Mengine
             }
 
         protected:
-			FactorablePointer generate( const Char * _doc ) override
+            FactorablePointer generate( const Char * _doc ) override
             {
                 ScenePtr scene = PROTOTYPE_SERVICE()
-					->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );
 
-				MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr )("can't create '%s' '%s' doc '%s'"
-					, m_category.c_str()
-					, m_prototype.c_str()
-					, _doc
-					);
+                MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr )("can't create '%s' '%s' doc '%s'"
+                    , m_category.c_str()
+                    , m_prototype.c_str()
+                    , _doc
+                    );
 
                 return scene;
             }
@@ -806,6 +813,11 @@ namespace Mengine
                     RENDER_SERVICE()
                         ->enableDebugStepRenderMode( false );
                 }
+            }
+
+            if( _event.code == KC_MULTIPLY && _event.isDown == true )
+            {
+                m_debugPause = !m_debugPause;
             }
 
             if( _event.code == KC_OEM_PLUS && _event.isDown == true )
@@ -1313,7 +1325,7 @@ namespace Mengine
 
         if( m_debugPause == true )
         {
-            time = 0.f;
+            return;
         }
 
         if( _time > m_maxFrameTime )
@@ -1353,8 +1365,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()
     {
-        //PLAYER_SERVICE()
-        //	->updateChangeScene();
+        SCENE_SERVICE()
+            ->update();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()

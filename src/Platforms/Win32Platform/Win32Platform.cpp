@@ -42,8 +42,6 @@ namespace Mengine
     Win32Platform::Win32Platform()
         : m_hInstance( NULL )
         , m_hWnd( NULL )
-        , m_alreadyRunningMonitor( nullptr )
-        , m_fpsMonitor( nullptr )
         , m_active( false )
         , m_update( false )
         , m_icon( 0 )
@@ -61,6 +59,7 @@ namespace Mengine
         , m_lastMouseX( 0 )
         , m_lastMouseY( 0 )
         , m_touchpad( false )
+        , m_fullscreen( false )
     {
         m_projectTitle[0] = '\0';
     }
@@ -331,7 +330,7 @@ namespace Mengine
                         ->render();
 
                     if( sucessful == true )
-                    {                        
+                    {
                         APPLICATION_SERVICE()
                             ->flush();
                     }
@@ -390,11 +389,11 @@ namespace Mengine
         Helper::utf8ToUnicode( _projectTitle, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-	size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
+    size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
     {
         size_t projectTitleLen = Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
 
-		return projectTitleLen;
+        return projectTitleLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const
@@ -407,7 +406,7 @@ namespace Mengine
             return 0;
         }
 
-        WChar unicode_shortpath[MENGINE_MAX_PATH] = { 0 };
+        WChar unicode_shortpath[MENGINE_MAX_PATH] = {0};
         DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
 
         if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
@@ -785,14 +784,14 @@ namespace Mengine
                 handle = true;
                 _result = FALSE;
             }break;
-        //case WM_TOUCH:
-        //    {
-        //        if( this->wndProcTouch( hWnd, wParam, lParam ) == true )
-        //        {
-        //            handle = true;
-        //            _result = FALSE;
-        //        }
-        //    }break;
+            //case WM_TOUCH:
+            //    {
+            //        if( this->wndProcTouch( hWnd, wParam, lParam ) == true )
+            //        {
+            //            handle = true;
+            //            _result = FALSE;
+            //        }
+            //    }break;
         case WM_MOUSEMOVE:
             {
                 //::SetFocus( m_hWnd );
@@ -800,11 +799,11 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                m_mouseEvent.update();
-
-                if( m_cursorInArea == false )
+                if( m_cursorInArea == false && m_fullscreen == false )
                 {
                     m_cursorInArea = true;
+
+                    m_mouseEvent.update();
 
                     ::InvalidateRect( hWnd, NULL, FALSE );
                     ::UpdateWindow( hWnd );
@@ -1202,14 +1201,16 @@ namespace Mengine
         );
 
         m_windowResolution = _resolution;
+        m_fullscreen = _fullscreen;
+        m_cursorInArea = false;
 
-        DWORD dwStyle = this->getWindowStyle_( _fullscreen );
+        DWORD dwStyle = this->getWindowStyle_( m_fullscreen );
 
-        RECT rc = this->getWindowsRect_( m_windowResolution, _fullscreen );
+        RECT rc = this->getWindowsRect_( m_windowResolution, m_fullscreen );
 
         LONG dwExStyle = ::GetWindowLong( m_hWnd, GWL_EXSTYLE );
 
-        if( _fullscreen == false )
+        if( m_fullscreen == false )
         {
             // When switching back to windowed mode, need to reset window size 
             // after device has been restored
@@ -1712,7 +1713,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
     {
-        WChar szPath[MENGINE_MAX_PATH] = { 0 };
+        WChar szPath[MENGINE_MAX_PATH] = {0};
         ::PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
@@ -1929,7 +1930,7 @@ namespace Mengine
         );
 
         Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries
-			->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr );
 
@@ -2017,7 +2018,7 @@ namespace Mengine
             }
 
             ::PathRemoveBackslash( currentPath );
-            
+
             Helper::pathCorrectBackslash( currentPath );
 
             ::wcscat( currentPath, L"/User/" );
@@ -2128,7 +2129,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorPosition( const mt::vec2f & _pos )
     {
-        POINT cPos = { (int32_t)_pos.x, (int32_t)_pos.y };
+        POINT cPos = {(int32_t)_pos.x, (int32_t)_pos.y};
 
         ::ClientToScreen( m_hWnd, &cPos );
 
@@ -2181,7 +2182,7 @@ namespace Mengine
         }
 
         m_active = _active;
-                
+
         bool nopause = APPLICATION_SERVICE()
             ->getNopause();
 

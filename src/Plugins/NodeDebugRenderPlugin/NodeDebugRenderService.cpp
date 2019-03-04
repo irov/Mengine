@@ -266,6 +266,12 @@ namespace Mengine
             return;
         }
 
+        if( m_showDebugText == 0 )
+        {
+            RENDER_SERVICE()
+                ->enableDebugFillrateCalcMode( false );
+        }
+
         if( m_showDebugText != 0 )
         {
             const RenderServiceDebugInfo & rdi = RENDER_SERVICE()
@@ -274,12 +280,6 @@ namespace Mengine
             Stringstream ss;
 
             ss << "FPS: " << m_fps << std::endl;
-
-            if( m_showDebugText == 0 )
-            {
-                RENDER_SERVICE()
-                    ->enableDebugFillrateCalcMode( false );
-            }
 
             if( m_showDebugText > 1 )
             {

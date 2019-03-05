@@ -18,7 +18,7 @@ script:
     - mkdir build_downloads_cmake
     - pushd build_downloads_cmake
     - cmake ../CMake/Downloads/ -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DMENGINE_DOWNLOADS_SILENT=ON
-    - cmake --build .
+    - cmake --build . -- -quiet
     - popd
     
     - mkdir build_dependencies_cmake

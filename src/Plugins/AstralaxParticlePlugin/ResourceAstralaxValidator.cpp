@@ -17,12 +17,11 @@ namespace Mengine
     bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource )
     {
         const FilePath & filePath = _resource->getFilePath();
-        const ConstString & name = _resource->getName();
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-			->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralaxValidator::_validate '%s'", name.c_str() ) );
+			->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralaxValidator::_validate '%s'", _resource->getName().c_str() ) );
 
         if( container == nullptr )
         {

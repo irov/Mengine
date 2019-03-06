@@ -2142,6 +2142,12 @@ namespace Mengine
 
             ae_play_movie_composition( m_composition, timing * 0.001f );
         }
+        else
+        {
+            float timing = this->getTime();
+
+            ae_set_movie_composition_time( m_composition, timing * 0.001f );
+        }
 
         return true;
     }
@@ -2152,6 +2158,13 @@ namespace Mengine
         m_composition = nullptr;
 
         m_cameras.clear();
+
+        for( MapSubCompositions::value_type & value : m_subCompositions )
+        {
+            const Movie2SubCompositionPtr & subComposition = value.second;
+
+            subComposition->finalize();
+        }
 
         for( const SurfacePtr & surface : m_surfaces )
         {

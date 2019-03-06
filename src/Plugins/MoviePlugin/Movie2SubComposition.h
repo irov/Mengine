@@ -59,6 +59,7 @@ namespace Mengine
 
     public:
         bool initialize( const aeMovieComposition * _composition );
+        void finalize();
 
     protected:
         bool _play( uint32_t _playId, float _time ) override;

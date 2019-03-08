@@ -61,6 +61,11 @@ namespace Mengine
             --utf8_size;
         }
 
+        if( _utf8 != nullptr )
+        {
+            _utf8[utf8_size] = '\0';
+        }
+
         if( _utf8Size != nullptr )
         {
             size_t u_utf8_size = static_cast<size_t>(utf8_size);
@@ -108,6 +113,11 @@ namespace Mengine
         if( int_utf8Size == MENGINE_UNICODE_UNKNOWN_SIZE )
         {
             --wc_size;
+        }
+
+        if( _unicode != nullptr )
+        {
+            _unicode[wc_size] = L'\0';
         }
 
         if( _sizeUnicode != nullptr )

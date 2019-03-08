@@ -83,38 +83,56 @@ namespace Mengine
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslash( WChar * _path )
+        void pathCorrectBackslashW( WChar * _path )
         {
-            WChar * pch = wcschr( _path, L'\\' );
+            WChar * pch = ::wcschr( _path, L'\\' );
             while( pch != NULL )
             {
                 *pch = L'/';
 
-                pch = wcschr( pch, L'\\' );
+                pch = ::wcschr( pch, L'\\' );
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashTo( WChar * _out, const WChar * _in )
+        void pathCorrectBackslashToA( Char * _out, const Char * _in )
         {
-            wcscpy( _out, _in );
+            ::strcpy( _out, _in );
 
-            pathCorrectBackslash( _out );
+            pathCorrectBackslashA( _out );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectForwardslash( WChar * _path )
+        void pathCorrectBackslashToW( WChar * _out, const WChar * _in )
         {
-            WChar * pch = wcschr( _path, L'/' );
+            ::wcscpy( _out, _in );
+
+            pathCorrectBackslashW( _out );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectForwardslashW( WChar * _path )
+        {
+            WChar * pch = ::wcschr( _path, L'/' );
             while( pch != NULL )
             {
                 *pch = L'\\';
 
-                pch = wcschr( pch, L'/' );
+                pch = ::wcschr( pch, L'/' );
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathRemoveBackslash( WChar * _path )
+        void pathCorrectForwardslashA( Char * _path )
         {
-            size_t len = wcslen( _path );
+            Char * pch = ::strchr( _path, '/' );
+            while( pch != NULL )
+            {
+                *pch = '\\';
+
+                pch = ::strchr( pch, '/' );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathRemoveBackslashW( WChar * _path )
+        {
+            size_t len = ::wcslen( _path );
 
             WChar * pch = _path + len - 1;
 
@@ -124,9 +142,9 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        bool pathRemoveFileSpec( WChar * _path )
+        bool pathRemoveFileSpecW( WChar * _path )
         {
-            size_t len = wcslen( _path );
+            size_t len = ::wcslen( _path );
 
             if( len == 0 )
             {
@@ -156,25 +174,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashA( Char * _path )
         {
-            Char * pch = strchr( _path, '\\' );
+            Char * pch = ::strchr( _path, '\\' );
             while( pch != NULL )
             {
                 *pch = '/';
 
-                pch = strchr( pch, '\\' );
+                pch = ::strchr( pch, '\\' );
             }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashToA( Char * _out, const Char * _in )
-        {
-            strcpy( _out, _in );
-
-            pathCorrectBackslashA( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathRemoveBackslashA( Char * _path )
         {
-            size_t len = strlen( _path );
+            size_t len = ::strlen( _path );
 
             Char * pch = _path + len - 1;
 
@@ -186,7 +197,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool pathRemoveFileSpecA( Char * _path )
         {
-            size_t len = strlen( _path );
+            size_t len = ::strlen( _path );
 
             if( len == 0 )
             {

@@ -82,8 +82,12 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libwebp)
     set(WEBP_BUILD_WEBP_JS OFF CACHE BOOL "Emscripten build of webp.js" FORCE)
     set(WEBP_NEAR_LOSSLESS OFF CACHE BOOL "Enable near-lossless encoding" FORCE)
 	set(WEBP_ENABLE_SWAP_16BIT_CSP OFF CACHE BOOL "Enable byte swap for 16 bit colorspaces." FORCE)
+    set(ZLIB_LIBRARY ${THIRDPARTY_DIR}/zlib)
+    set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
+
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libwebp )
+add_dependencies(libwebp zlib)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()  
 

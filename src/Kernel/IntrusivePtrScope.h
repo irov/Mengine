@@ -1,8 +1,24 @@
 #pragma once
 
-#include "stdex/intrusive_ptr_scope.h"
+#include "Kernel/IntrusivePtrBase.h"
 
 namespace Mengine
 {
-    using IntrusivePtrScope = stdex::intrusive_ptr_scope;
+    class IntrusivePtrScope
+    {
+    public:
+        explicit IntrusivePtrScope( IntrusivePtrBase * _ptr ) noexcept
+            : m_ptr( _ptr )
+        {
+            m_ptr->incref();
+        }
+
+        ~IntrusivePtrScope() noexcept
+        {
+            m_ptr->decref();
+        }
+
+    protected:
+        IntrusivePtrBase * m_ptr;
+    };
 }

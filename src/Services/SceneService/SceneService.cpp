@@ -31,6 +31,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::_finalizeService()
     {
+        m_commands.clear();
+
         this->destroyCurrentScene();
         this->removeGlobalScene();
     }

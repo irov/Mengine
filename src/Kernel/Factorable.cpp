@@ -7,7 +7,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
-        : m_factory( nullptr )
+        : m_reference( 0 )
+        , m_factory( nullptr )
 #ifdef MENGINE_FACTORABLE_DEBUG
         , m_destroy( false )
         , m_immortal( false )
@@ -44,6 +45,24 @@ namespace Mengine
 #ifdef MENGINE_FACTORABLE_DEBUG
         m_immortal = _value;
 #endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Factorable::incref()
+    {
+        ++m_reference;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Factorable::decref()
+    {
+        if( --m_reference == 0 )
+        {
+            this->destroy();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Factorable::getrefcount() const
+    {
+        return m_reference;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()

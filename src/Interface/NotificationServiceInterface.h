@@ -45,12 +45,12 @@ namespace Mengine
             : m_self( _self )
             , m_method( _method )
         {
-            stdex::intrusive_this_acquire( m_self );
+            IntrusivePtrBase::intrusive_ptr_add_ref( m_self );
         }
 
         ~MethodObserverCallable()
         {
-            stdex::intrusive_this_release( m_self );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( m_self );
         }
 
     protected:

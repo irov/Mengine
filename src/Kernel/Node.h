@@ -11,13 +11,10 @@
 #include "Kernel/Visitable.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/Unknowable.h"
-
 #include "Kernel/Factorable.h"
-
+#include "Kernel/IntrusiveSlugListSize.h"
+#include "Kernel/IntrusiveSlugIterator.h"
 #include "Kernel/Viewport.h"
-
-#include "stdex/intrusive_slug_list_size_ptr.h"
-#include "stdex/intrusive_slug_ptr.h"
 
 namespace Mengine
 {
@@ -32,11 +29,11 @@ namespace Mengine
     typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
-    typedef stdex::intrusive_slug_ptr<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
+    typedef IntrusiveSlugListSize<Node> IntrusiveSlugListNodeChild;
+    typedef IntrusiveSlugIterator<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
     //////////////////////////////////////////////////////////////////////////
     class Node
-        : public stdex::intrusive_slug_linked_ptr<Node>
+        : public stdex::intrusive_slug_linked_ptr<Node, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
         , public Identity
         , public Compilable

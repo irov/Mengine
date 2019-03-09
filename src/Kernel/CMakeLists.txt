@@ -425,6 +425,12 @@ Core
     IntrusivePtr.h
     IntrusivePtrBase.h
     
+    IntrusiveSlug.h
+    IntrusiveSlugIterator.h
+    IntrusiveSlugHead.h
+    IntrusiveSlugListSize.h
+    IntrusiveSlugList.h    
+    
     LoggerBase.cpp
     LoggerBase.h
     

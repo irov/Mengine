@@ -30,7 +30,7 @@ namespace Mengine
         m_mutex->lock();
 
         ++m_count;
-        intrusive_ptr_add_ref( this );
+        IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
         Factorable * object = this->_createObject();
         object->setFactory( this );
@@ -55,7 +55,7 @@ namespace Mengine
         this->_destroyObject( _object );
 
         --m_count;
-        intrusive_ptr_dec_ref( this );
+        IntrusivePtrBase::intrusive_ptr_dec_ref( this );
 
         m_mutex->unlock();
     }

@@ -87,7 +87,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libwebp)
 
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libwebp )
-add_dependencies(libwebp zlib)
+add_dependencies(webp zlib)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()  
 

@@ -30,8 +30,13 @@ namespace Mengine
     public:
         void setImmortal( bool _value );
 
+    protected:
+        void incref() override;
+        void decref() override;
+        uint32_t getrefcount() const override;
+
     private:
-        void destroy() override;
+        virtual void destroy();
 
     protected:
         virtual void _destroy();
@@ -53,6 +58,8 @@ namespace Mengine
 #endif
 
     protected:
+        uint32_t m_reference;
+
         Factory * m_factory;
 
 #ifdef MENGINE_FACTORABLE_DEBUG

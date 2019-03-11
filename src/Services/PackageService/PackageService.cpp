@@ -9,6 +9,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include "Kernel/TagsHelper.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
@@ -326,7 +328,7 @@ namespace Mengine
 
             const Tags & packagePlatform = package->getPlatfromTags();
 
-            if( _platformTags.inTags( packagePlatform ) == false )
+            if( _platformTags.hasTags( packagePlatform ) == false )
             {
                 continue;
             }
@@ -350,7 +352,7 @@ namespace Mengine
         {
             const Tags & packPlatform = pack->getPlatfromTags();
 
-            if( _platformTags.inTags( packPlatform ) == false )
+            if( _platformTags.hasTags( packPlatform ) == false )
             {
                 continue;
             }
@@ -418,7 +420,7 @@ namespace Mengine
         {
             const Tags & platformTags = package->getPlatfromTags();
 
-            if( _platformTag.inTags( platformTags ) == false )
+            if( _platformTag.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -452,7 +454,7 @@ namespace Mengine
         {
             const Tags & platformTags = package->getPlatfromTags();
 
-            if( _platformTag.inTags( platformTags ) == false )
+            if( _platformTag.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -490,7 +492,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid disable locale package '%s' platform '%s'"
                 , _prevLocale.c_str()
-                , platformTags.to_str().c_str()
+                , Helper::tagsToString( platformTags ).c_str()
             );
 
             return;
@@ -500,7 +502,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid enable locale package '%s' platform '%s'"
                 , _currentlocale.c_str()
-                , platformTags.to_str().c_str()
+                , Helper::tagsToString( platformTags ).c_str()
             );
 
             return;

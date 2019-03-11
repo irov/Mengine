@@ -1,27 +1,24 @@
 #pragma once
 
 #include "Interface/LoadableInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
 #include "Kernel/Reference.h"
-
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Unknowable.h"
 #include "Kernel/Contentable.h"
 #include "Kernel/Magicable.h"
-
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/Tags.h"
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
-
     class Resource
         : public Factorable
         , public Compilable
@@ -51,6 +48,10 @@ namespace Mengine
         inline const ConstString & getGroupName() const;
 
     public:
+        void setTags( const Tags & _tags );
+        const Tags & getTags() const;
+
+    public:
         bool initialize();
 
     protected:
@@ -75,6 +76,7 @@ namespace Mengine
         ConstString m_locale;
         FileGroupInterfacePtr m_fileGroup;
         ConstString m_groupName;
+        Tags m_tags;
 
         bool m_cache;
     };

@@ -1862,6 +1862,7 @@ namespace Mengine
 
         DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( MENGINE_DOCUMENT_FUNCTION );
 
+#ifndef NDEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( logcreateimage == true )
@@ -1874,6 +1875,7 @@ namespace Mengine
                 , _hwPixelFormat                
                 );
         }
+#endif
 
         dx9RenderImage->initialize( m_pD3DDevice, _pD3DTexture, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 

@@ -64,7 +64,7 @@ namespace Mengine
         void addModulePath_( const String & _path );
 
     protected:
-        void addResource_( const FilePath & _path, const Tags & _platform, bool _demand, bool _ignored );
+        void addResource_( const FilePath & _path, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored );
         void addTextPath_( const FilePath & _path, const Tags & _platform );
         void addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
         void addFontPath_( const FilePath & _path, const Tags & _tags );
@@ -85,6 +85,7 @@ namespace Mengine
         struct PakResourceDesc
         {
             FilePath path;
+            Tags tags;
             Tags platform;
             bool demand;
             bool ignored;

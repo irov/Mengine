@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 133;
+        return 134;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 406571116; 
+        return 3256173687; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( HeaderError _error )
@@ -474,7 +474,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Compile );
         
                     this->m_File_Compile_successful = true;
-        
                 }break;
             default:
                 break;
@@ -539,49 +538,42 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Debug );
         
                     this->m_Debug_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_RenderPlatform );
         
                     this->m_RenderPlatform_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_AlphaBlend_Enable );
         
                     this->m_AlphaBlend_Enable_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_BlendFactor_Dest );
         
                     this->m_BlendFactor_Dest_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_BlendFactor_Op );
         
                     this->m_BlendFactor_Op_successful = true;
-        
                 }break;
             case 4:
                 {
                     this->read( _buff, _size, _read, this->m_BlendFactor_Source );
         
                     this->m_BlendFactor_Source_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_Program_Name );
         
                     this->m_Program_Name_successful = true;
-        
                 }break;
             default:
                 break;
@@ -650,21 +642,18 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_AddressMode_Border );
         
                     this->m_AddressMode_Border_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_AddressMode_U );
         
                     this->m_AddressMode_U_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_AddressMode_V );
         
                     this->m_AddressMode_V_successful = true;
-        
                 }break;
             default:
                 break;
@@ -706,7 +695,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_RenderPlatform );
         
                     this->m_RenderPlatform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -824,7 +812,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Compile );
         
                     this->m_File_Compile_successful = true;
-        
                 }break;
             default:
                 break;
@@ -864,14 +851,12 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Precompile );
         
                     this->m_Precompile_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_Unique );
         
                     this->m_Unique_successful = true;
-        
                 }break;
             default:
                 break;
@@ -914,7 +899,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1166,14 +1150,12 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Codec );
         
                     this->m_File_Codec_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1221,42 +1203,36 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Alpha );
         
                     this->m_File_Alpha_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_File_Codec );
         
                     this->m_File_Codec_successful = true;
-        
                 }break;
             case 12:
                 {
                     this->read( _buff, _size, _read, this->m_File_NoExist );
         
                     this->m_File_NoExist_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_File_Offset );
         
                     this->m_File_Offset_successful = true;
-        
                 }break;
             case 8:
                 {
                     this->read( _buff, _size, _read, this->m_File_Premultiply );
         
                     this->m_File_Premultiply_successful = true;
-        
                 }break;
             case 10:
                 {
                     this->read( _buff, _size, _read, this->m_File_Size );
         
                     this->m_File_Size_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1305,49 +1281,42 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Alpha );
         
                     this->m_File_Alpha_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_File_Codec );
         
                     this->m_File_Codec_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             case 13:
                 {
                     this->read( _buff, _size, _read, this->m_File_NoExist );
         
                     this->m_File_NoExist_successful = true;
-        
                 }break;
             case 12:
                 {
                     this->read( _buff, _size, _read, this->m_File_Offset );
         
                     this->m_File_Offset_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_File_Premultiply );
         
                     this->m_File_Premultiply_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_File_Size );
         
                     this->m_File_Size_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1490,35 +1459,30 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Image_Alpha );
         
                     this->m_Image_Alpha_successful = true;
-        
                 }break;
             case 12:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Offset );
         
                     this->m_Image_Offset_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Premultiply );
         
                     this->m_Image_Premultiply_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Size );
         
                     this->m_Image_Size_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_Image_UVRotate );
         
                     this->m_Image_UVRotate_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1568,35 +1532,30 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Image_Offset );
         
                     this->m_Image_Offset_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Premultiply );
         
                     this->m_Image_Premultiply_successful = true;
-        
                 }break;
             case 13:
                 {
                     this->read( _buff, _size, _read, this->m_Image_Size );
         
                     this->m_Image_Size_successful = true;
-        
                 }break;
             case 10:
                 {
                     this->read( _buff, _size, _read, this->m_Image_UVAlphaRotate );
         
                     this->m_Image_UVAlphaRotate_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_Image_UVRGBRotate );
         
                     this->m_Image_UVRGBRotate_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1664,14 +1623,12 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_File_Dataflow );
         
                     this->m_File_Dataflow_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1722,42 +1679,36 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Anchor_Point );
         
                     this->m_Anchor_Point_successful = true;
-        
                 }break;
             case 15:
                 {
                     this->read( _buff, _size, _read, this->m_Bounds_Box );
         
                     this->m_Bounds_Box_successful = true;
-        
                 }break;
             case 10:
                 {
                     this->read( _buff, _size, _read, this->m_KeyFramesPackPath_Codec );
         
                     this->m_KeyFramesPackPath_Codec_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_KeyFramesPackPath_Converter );
         
                     this->m_KeyFramesPackPath_Converter_successful = true;
-        
                 }break;
             case 12:
                 {
                     this->read( _buff, _size, _read, this->m_Loop_Segment );
         
                     this->m_Loop_Segment_successful = true;
-        
                 }break;
             case 14:
                 {
                     this->read( _buff, _size, _read, this->m_Offset_Point );
         
                     this->m_Offset_Point_successful = true;
-        
                 }break;
             default:
                 break;
@@ -1896,112 +1847,96 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_AnchorPoint );
         
                     this->m_AnchorPoint_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_BlendingMode );
         
                     this->m_BlendingMode_successful = true;
-        
                 }break;
             case 16:
                 {
                     this->read( _buff, _size, _read, this->m_Loop );
         
                     this->m_Loop_successful = true;
-        
                 }break;
             case 22:
                 {
                     this->read( _buff, _size, _read, this->m_Params );
         
                     this->m_Params_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_Parent );
         
                     this->m_Parent_successful = true;
-        
                 }break;
             case 13:
                 {
                     this->read( _buff, _size, _read, this->m_PlayCount );
         
                     this->m_PlayCount_successful = true;
-        
                 }break;
             case 12:
                 {
                     this->read( _buff, _size, _read, this->m_Polygon );
         
                     this->m_Polygon_successful = true;
-        
                 }break;
             case 18:
                 {
                     this->read( _buff, _size, _read, this->m_Position );
         
                     this->m_Position_successful = true;
-        
                 }break;
             case 20:
                 {
                     this->read( _buff, _size, _read, this->m_Rotation );
         
                     this->m_Rotation_successful = true;
-        
                 }break;
             case 19:
                 {
                     this->read( _buff, _size, _read, this->m_Scale );
         
                     this->m_Scale_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_Shape );
         
                     this->m_Shape_successful = true;
-        
                 }break;
             case 8:
                 {
                     this->read( _buff, _size, _read, this->m_StartInterval );
         
                     this->m_StartInterval_successful = true;
-        
                 }break;
             case 14:
                 {
                     this->read( _buff, _size, _read, this->m_Stretch );
         
                     this->m_Stretch_successful = true;
-        
                 }break;
             case 15:
                 {
                     this->read( _buff, _size, _read, this->m_Switch );
         
                     this->m_Switch_successful = true;
-        
                 }break;
             case 10:
                 {
                     this->read( _buff, _size, _read, this->m_TimeRemap );
         
                     this->m_TimeRemap_successful = true;
-        
                 }break;
             case 21:
                 {
                     this->read( _buff, _size, _read, this->m_Viewport );
         
                     this->m_Viewport_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2058,105 +1993,90 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_AnchorPoint );
         
                     this->m_AnchorPoint_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_BlendingMode );
         
                     this->m_BlendingMode_successful = true;
-        
                 }break;
             case 16:
                 {
                     this->read( _buff, _size, _read, this->m_Loop );
         
                     this->m_Loop_successful = true;
-        
                 }break;
             case 21:
                 {
                     this->read( _buff, _size, _read, this->m_Params );
         
                     this->m_Params_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_Parent );
         
                     this->m_Parent_successful = true;
-        
                 }break;
             case 13:
                 {
                     this->read( _buff, _size, _read, this->m_PlayCount );
         
                     this->m_PlayCount_successful = true;
-        
                 }break;
             case 12:
                 {
                     this->read( _buff, _size, _read, this->m_Polygon );
         
                     this->m_Polygon_successful = true;
-        
                 }break;
             case 18:
                 {
                     this->read( _buff, _size, _read, this->m_Position );
         
                     this->m_Position_successful = true;
-        
                 }break;
             case 20:
                 {
                     this->read( _buff, _size, _read, this->m_Rotation );
         
                     this->m_Rotation_successful = true;
-        
                 }break;
             case 19:
                 {
                     this->read( _buff, _size, _read, this->m_Scale );
         
                     this->m_Scale_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_Shape );
         
                     this->m_Shape_successful = true;
-        
                 }break;
             case 8:
                 {
                     this->read( _buff, _size, _read, this->m_StartInterval );
         
                     this->m_StartInterval_successful = true;
-        
                 }break;
             case 14:
                 {
                     this->read( _buff, _size, _read, this->m_Stretch );
         
                     this->m_Stretch_successful = true;
-        
                 }break;
             case 15:
                 {
                     this->read( _buff, _size, _read, this->m_Switch );
         
                     this->m_Switch_successful = true;
-        
                 }break;
             case 10:
                 {
                     this->read( _buff, _size, _read, this->m_TimeRemap );
         
                     this->m_TimeRemap_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2198,7 +2118,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Dataflow );
         
                     this->m_File_Dataflow_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2272,14 +2191,12 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Bounds );
         
                     this->m_Bounds_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_Master );
         
                     this->m_Master_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2413,28 +2330,24 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_DefaultVolume_Value );
         
                     this->m_DefaultVolume_Value_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_File_Codec );
         
                     this->m_File_Codec_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             case 8:
                 {
                     this->read( _buff, _size, _read, this->m_File_External );
         
                     this->m_File_External_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2477,7 +2390,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2600,28 +2512,24 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_DefaultVolume_Value );
         
                     this->m_DefaultVolume_Value_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_File_Codec );
         
                     this->m_File_Codec_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_IsStreamable_Value );
         
                     this->m_IsStreamable_Value_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2747,42 +2655,36 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_File_Alpha );
         
                     this->m_File_Alpha_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_File_Codec );
         
                     this->m_File_Codec_successful = true;
-        
                 }break;
             case 8:
                 {
                     this->read( _buff, _size, _read, this->m_File_Converter );
         
                     this->m_File_Converter_successful = true;
-        
                 }break;
             case 11:
                 {
                     this->read( _buff, _size, _read, this->m_File_Duration );
         
                     this->m_File_Duration_successful = true;
-        
                 }break;
             case 10:
                 {
                     this->read( _buff, _size, _read, this->m_File_FrameRate );
         
                     this->m_File_FrameRate_successful = true;
-        
                 }break;
             case 9:
                 {
                     this->read( _buff, _size, _read, this->m_File_NoSeek );
         
                     this->m_File_NoSeek_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2839,7 +2741,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_WindowBackground_ResourceImageName );
         
                     this->m_WindowBackground_ResourceImageName_successful = true;
-        
                 }break;
             default:
                 break;
@@ -2977,35 +2878,30 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Count );
         
                     this->m_Count_successful = true;
-        
                 }break;
             case 4:
                 {
                     this->read( _buff, _size, _read, this->m_ImageOffset );
         
                     this->m_ImageOffset_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_ImageSize );
         
                     this->m_ImageSize_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_Immutable );
         
                     this->m_Immutable_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_Subtract );
         
                     this->m_Subtract_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3094,14 +2990,12 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Count );
         
                     this->m_Count_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_Immutable );
         
                     this->m_Immutable_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3169,49 +3063,42 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_AnchorPoint );
         
                     this->m_AnchorPoint_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_Count );
         
                     this->m_Count_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_Opacity );
         
                     this->m_Opacity_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_Position );
         
                     this->m_Position_successful = true;
-        
                 }break;
             case 4:
                 {
                     this->read( _buff, _size, _read, this->m_Rotation );
         
                     this->m_Rotation_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_Scale );
         
                     this->m_Scale_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_Volume );
         
                     this->m_Volume_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3250,14 +3137,12 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Count );
         
                     this->m_Count_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_Immutable );
         
                     this->m_Immutable_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3326,56 +3211,48 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_AnchorPoint );
         
                     this->m_AnchorPoint_successful = true;
-        
                 }break;
             case 8:
                 {
                     this->read( _buff, _size, _read, this->m_Count );
         
                     this->m_Count_successful = true;
-        
                 }break;
             case 6:
                 {
                     this->read( _buff, _size, _read, this->m_Opacity );
         
                     this->m_Opacity_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_Orientation );
         
                     this->m_Orientation_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_Position );
         
                     this->m_Position_successful = true;
-        
                 }break;
             case 4:
                 {
                     this->read( _buff, _size, _read, this->m_Rotation );
         
                     this->m_Rotation_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_Scale );
         
                     this->m_Scale_successful = true;
-        
                 }break;
             case 7:
                 {
                     this->read( _buff, _size, _read, this->m_Volume );
         
                     this->m_Volume_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3552,7 +3429,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Platform );
         
                     this->m_Platform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3641,7 +3517,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Platform );
         
                     this->m_Platform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3674,7 +3549,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Platform );
         
                     this->m_Platform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3759,21 +3633,18 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Demand );
         
                     this->m_Demand_successful = true;
-        
                 }break;
             case 1:
                 {
                     this->read( _buff, _size, _read, this->m_Ignored );
         
                     this->m_Ignored_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_Platform );
         
                     this->m_Platform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3812,6 +3683,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Resources::Meta_Resource::Meta_Resource()
             : Metabuf::Metadata()
+            , m_Tags_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3828,6 +3700,21 @@ namespace Metacode
         void Meta_Pak::Meta_Resources::Meta_Resource::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )
         {
             this->read( _buff, _size, _read, this->m_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id )
+        {
+            switch( _id )
+            {
+            case 2:
+                {
+                    this->read( _buff, _size, _read, this->m_Tags );
+        
+                    this->m_Tags_successful = true;
+                }break;
+            default:
+                break;
+            }
         }
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
@@ -3864,28 +3751,24 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Finalizer );
         
                     this->m_Finalizer_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_Initializer );
         
                     this->m_Initializer_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_Module );
         
                     this->m_Module_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_Platform );
         
                     this->m_Platform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -3918,7 +3801,6 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_Platform );
         
                     this->m_Platform_successful = true;
-        
                 }break;
             default:
                 break;
@@ -4054,28 +3936,24 @@ namespace Metacode
                     this->read( _buff, _size, _read, this->m_CharOffset );
         
                     this->m_CharOffset_successful = true;
-        
                 }break;
             case 3:
                 {
                     this->read( _buff, _size, _read, this->m_Font );
         
                     this->m_Font_successful = true;
-        
                 }break;
             case 5:
                 {
                     this->read( _buff, _size, _read, this->m_LineOffset );
         
                     this->m_LineOffset_successful = true;
-        
                 }break;
             case 2:
                 {
                     this->read( _buff, _size, _read, this->m_Value );
         
                     this->m_Value_successful = true;
-        
                 }break;
             default:
                 break;

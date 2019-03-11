@@ -1,5 +1,7 @@
 #include "PluginBase.h"
 
+#include "Kernel/Logger.h"
+
 #include "Interface/ModuleServiceInterface.h"
 
 namespace Mengine
@@ -42,6 +44,10 @@ namespace Mengine
 
         if( m_availablePlugin == false )
         {
+            LOGGER_WARNING( "plugin '%s' not available"
+                , this->getPluginName()
+            );
+
             return true;
         }
 

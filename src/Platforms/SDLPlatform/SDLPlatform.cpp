@@ -88,7 +88,7 @@ namespace Mengine
         unicode_path[len] = L'/';
         unicode_path[len + 1] = L'\0';
 
-        Helper::pathCorrectBackslashTo( unicode_path, unicode_path );
+        Helper::pathCorrectBackslashToW( unicode_path, unicode_path );
 
         size_t pathLen;
         if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &pathLen ) == false )
@@ -890,7 +890,128 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#	ifdef WIN32
+#ifdef WIN32
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda )
+    {
+        {
+            WChar sPath[MENGINE_MAX_PATH];
+            wsprintf( sPath, L"%s%s%s", _dir, _path, _mask );
+
+            WIN32_FIND_DATA fdFile;
+            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+
+            if( hFind != INVALID_HANDLE_VALUE )
+            {
+                do
+                {
+                    if( wcscmp( fdFile.cFileName, L"." ) == 0
+                        || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                    {
+                        continue;
+                    }
+
+                    if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+                    {
+                        continue;
+                    }
+
+                    WChar unicode_filepath[MENGINE_MAX_PATH];
+                    wsprintf( unicode_filepath, L"%s%s", _path, fdFile.cFileName );
+
+                    Char utf8_filepath[MENGINE_MAX_PATH];
+                    if( Helper::unicodeToUtf8( unicode_filepath, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                    {
+                        FindClose( hFind );
+
+                        return false;
+                    }
+
+                    FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+                    _lambda( fp );
+
+                } while( FindNextFile( hFind, &fdFile ) != FALSE );
+            }
+
+            FindClose( hFind );
+        }
+
+        {
+            WChar sPath[MENGINE_MAX_PATH];
+            wsprintf( sPath, L"%s%s*.*", _dir, _path );
+
+            WIN32_FIND_DATA fdFile;
+            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+
+            if( hFind == INVALID_HANDLE_VALUE )
+            {
+                return true;
+            }
+
+            do
+            {
+                if( wcscmp( fdFile.cFileName, L"." ) == 0
+                    || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                {
+                    continue;
+                }
+
+                if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+                {
+                    continue;
+                }
+
+                WChar nextPath[2048];
+                wsprintf( nextPath, L"%s%s/", _path, fdFile.cFileName );
+
+                s_listDirectoryContents( _dir, _mask, nextPath, _lambda );
+
+            } while( FindNextFile( hFind, &fdFile ) != FALSE );
+
+            FindClose( hFind );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
+    {
+#ifdef WIN32
+        WChar unicode_base[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_mask[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        if( s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda ) == false )
+        {
+            return false;
+        }
+
+        return true;
+#else
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+#ifdef WIN32
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
@@ -956,11 +1077,11 @@ namespace Mengine
         not work. */
         return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
     }
-#	endif
+#endif
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLPlatform::getFileTime( const Char * _filePath ) const
     {
-#	ifdef WIN32	
+#ifdef WIN32	
         WChar unicode_filePath[MENGINE_MAX_PATH];
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
@@ -983,9 +1104,9 @@ namespace Mengine
         ::CloseHandle( handle );
 
         return time;
-#	else
+#else
         return 0U;
-#	endif		
+#endif		
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )

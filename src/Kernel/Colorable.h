@@ -75,7 +75,7 @@ namespace Mengine
         Color m_localColor;
 
         mutable Color m_relationColor;
-        mutable bool m_invalidateColor;
+        mutable bool m_invalidateRelationColor;
 
         bool m_personalTransparent;
         bool m_localTransparent;
@@ -100,7 +100,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     inline bool Colorable::isInvalidateColor() const
     {
-        return m_invalidateColor;
+        return m_invalidateRelationColor;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const Color & Colorable::getPersonalColor() const

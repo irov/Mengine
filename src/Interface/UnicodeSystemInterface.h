@@ -67,16 +67,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         inline bool unicodeToUtf8( const WChar * _unicode, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size = nullptr )
         {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
             size_t unicodeSize = wcslen( _unicode );
 
             size_t utf8Size;
-            if( UNICODE_SYSTEM()
-                ->unicodeToUtf8( _unicode, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
+            if( unicodeService->unicodeToUtf8( _unicode, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
             {
                 return false;
             }
-
-            _utf8[utf8Size] = '\0';
 
             if( _utf8Size != nullptr )
             {
@@ -88,33 +87,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         inline bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity )
         {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
             size_t utf8Size;
-            if( UNICODE_SYSTEM()
-                ->unicodeToUtf8( _unicode, _unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
-            {
-                return false;
-            }
+            bool successful = unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8, _utf8Capacity, &utf8Size );
 
-            _utf8[utf8Size] = '\0';
-
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         inline bool unicodeToUtf8( const WString & _unicode, Char * _utf8, size_t _utf8Capacity )
         {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
             const WChar * unicodeStr = _unicode.c_str();
             size_t unicodeSize = _unicode.size();
 
             size_t utf8Size;
-            if( UNICODE_SYSTEM()
-                ->unicodeToUtf8( unicodeStr, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
-            {
-                return false;
-            }
+            bool successful = unicodeService->unicodeToUtf8( unicodeStr, unicodeSize, _utf8, _utf8Capacity, &utf8Size );
 
-            _utf8[utf8Size] = '\0';
-
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicode( const Char * _utf8, WChar * _unicode, size_t _unicodeCapacity )
@@ -124,14 +115,9 @@ namespace Mengine
             size_t utf8Size = strlen( _utf8 );
 
             size_t unicodeSize;
-            if( unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, &unicodeSize ) == false )
-            {
-                return false;
-            }
+            bool successful = unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
 
-            _unicode[unicodeSize] = L'\0';
-
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity )
@@ -139,14 +125,9 @@ namespace Mengine
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
             size_t unicodeSize;
-            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, &unicodeSize ) == false )
-            {
-                return false;
-            }
+            bool successful = unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
 
-            _unicode[unicodeSize] = L'\0';
-
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicodeSize( const Char * _utf8, WString & _unicode )

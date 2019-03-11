@@ -941,7 +941,10 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::AccountServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
         SERVICE_FINALIZE( Mengine::PickerServiceInterface );
+        SERVICE_FINALIZE( Mengine::SceneServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
+        SERVICE_FINALIZE( Mengine::ApplicationInterface );
+        SERVICE_FINALIZE( Mengine::FrameworkInterface );
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
@@ -950,8 +953,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
-        SERVICE_FINALIZE( Mengine::ApplicationInterface );
-        SERVICE_FINALIZE( Mengine::FrameworkInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );
@@ -963,7 +964,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );
 
-        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
@@ -978,13 +978,14 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ArchiveServiceInterface );
         SERVICE_FINALIZE( Mengine::MemoryServiceInterface );
         SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
-        SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
 
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
-        SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
 
         SERVICE_FINALIZE( Mengine::TimeServiceInterface );
         SERVICE_FINALIZE( Mengine::TimeSystemInterface );
+
+        SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
+        SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
 
@@ -1013,6 +1014,7 @@ namespace Mengine
         }
 
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
+        SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
         SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );

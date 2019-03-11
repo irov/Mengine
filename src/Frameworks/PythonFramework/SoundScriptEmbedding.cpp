@@ -95,7 +95,7 @@ namespace Mengine
                 {
                     uint32_t id = _emitter->getId();
 
-                    LOGGER_ERROR( "MySoundNodeListenerInterface '%s' emitter invalid release sound '%d'"
+                    LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
                         , m_resource->getName().c_str()
                         , id
                     );
@@ -119,7 +119,7 @@ namespace Mengine
                 {
                     uint32_t id = _emitter->getId();
 
-                    LOGGER_ERROR( "MySoundNodeListenerInterface '%s' emitter invalid release sound '%d'"
+                    LOGGER_ERROR( "'%s' emitter invalid release sound '%d'"
                         , m_resource->getName().c_str()
                         , id
                     );

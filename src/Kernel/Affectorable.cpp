@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Affectorable::stopAffector( uint32_t _id )
     {
-        for( TSlugAffector it( m_affectors ); it.eof() == false; )
+        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {
             AffectorPtr affector( *it );
 
@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affectorable::stopAffectors( EAffectorType _type )
     {
-        for( TSlugAffector it( m_affectors ); it.eof() == false; )
+        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {
             AffectorPtr affector( *it );
 
@@ -76,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affectorable::stopAllAffectors()
     {
-        for( TSlugAffector it( m_affectors ); it.eof() == false; )
+        for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
         {
             AffectorPtr affector( *it );
 

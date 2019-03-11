@@ -3,6 +3,7 @@
 #include "Config/Vector.h"
 #include "Config/String.h"
 #include "Config/Deque.h"
+#include "Config/Blobject.h"
 
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
@@ -29,10 +30,8 @@ namespace Mengine
 
     struct NodeDebuggerPacket
     {
-        Vector<uint8_t> payload;
+        Blobject payload;
     };
-
-
 
 #define DESERIALIZE_PROP(NAME)\
     deserializeNodeProp<decltype(this->NAME)>( #NAME, _xmlNode, [this]( decltype(this->NAME) _value ) { this->NAME = _value; } )
@@ -372,7 +371,7 @@ namespace Mengine
         zed_net_socket_t            mSocket;
         Deque<NodeDebuggerPacket>   mIncomingPackets;
         Deque<NodeDebuggerPacket>   mOutgoingPackets;
-        Vector<uint8_t>             mReceivedData;
+        Mengine::Blobject           mReceivedData;
 
         std::thread                 mNetworkThread;
         std::mutex                  mDataMutex;

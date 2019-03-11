@@ -8,7 +8,7 @@ namespace Mengine
     Colorable::Colorable()
         : m_localTransparent( false )
         , m_personalTransparent( false )
-        , m_invalidateColor( false )
+        , m_invalidateRelationColor( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color& Colorable::updateRelationColor( const Color& _parentColor ) const
     {
-        m_invalidateColor = false;
+        m_invalidateRelationColor = false;
 
         m_relationColor = m_localColor;
         m_relationColor *= _parentColor;
@@ -140,13 +140,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Colorable::_setLocalTransparent( bool _transparent )
     {
-        (void)_transparent;
+        MENGINE_UNUSED( _transparent );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Colorable::_setPersonalTransparent( bool _transparent )
     {
-        (void)_transparent;
+        MENGINE_UNUSED( _transparent );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -154,7 +156,7 @@ namespace Mengine
     {
         if( m_localTransparent == false )
         {
-            if( m_localColor.getA() < 0.000f )
+            if( m_localColor.getA() < 0.00390625f )
             {
                 m_localTransparent = true;
 
@@ -163,7 +165,7 @@ namespace Mengine
         }
         else
         {
-            if( m_localColor.getA() > 0.000f )
+            if( m_localColor.getA() > 0.00390625f )
             {
                 m_localTransparent = false;
 
@@ -176,7 +178,7 @@ namespace Mengine
     {
         if( m_personalTransparent == false )
         {
-            if( m_personalColor.getA() < 0.000f )
+            if( m_personalColor.getA() < 0.00390625f )
             {
                 m_personalTransparent = true;
 
@@ -185,7 +187,7 @@ namespace Mengine
         }
         else
         {
-            if( m_personalColor.getA() > 0.000f )
+            if( m_personalColor.getA() > 0.00390625f )
             {
                 m_personalTransparent = false;
 
@@ -196,7 +198,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Colorable::invalidateColor()
     {
-        m_invalidateColor = true;
+        m_invalidateRelationColor = true;
 
         this->_invalidateColor();
     }

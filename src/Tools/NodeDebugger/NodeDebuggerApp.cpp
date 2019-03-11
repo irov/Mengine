@@ -273,7 +273,7 @@ namespace Mengine
 
     void NodeDebuggerApp::CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr )
     {
-        const size_t payloadSize = _packet.payload.size();
+        Blobject::size_type payloadSize = _packet.payload.size();
 
         if( payloadSize < 1024 )
         {
@@ -283,7 +283,7 @@ namespace Mengine
         else
         {
             const size_t maxCompressedSize = ::LZ4_compressBound( static_cast<int>(payloadSize) );
-            Vector<uint8_t> compressedPayload( maxCompressedSize );
+            Mengine::Blobject compressedPayload( maxCompressedSize );
 
             const int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
             if( result < 0 || result >= payloadSize )

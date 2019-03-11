@@ -38,7 +38,7 @@ namespace Mengine
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 
         ++m_count;
-        intrusive_ptr_add_ref( this );
+        IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
         Factorable * object = this->_createObject();
         object->setFactory( this );
@@ -67,7 +67,7 @@ namespace Mengine
         this->_destroyObject( _object );
 
         --m_count;
-        intrusive_ptr_dec_ref( this );
+        IntrusivePtrBase::intrusive_ptr_dec_ref( this );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Factory::isEmptyObjects() const

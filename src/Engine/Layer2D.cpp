@@ -160,14 +160,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
     {
-        m_resourceImageMask = _resourceImageMask;
+        if( _resourceImageMask == nullptr )
+        {
+            LOGGER_ERROR( "image mask is null" );
 
-        m_hasImageMask = true;
+            return false;
+        }
+
+        m_resourceImageMask = _resourceImageMask;
 
         if( this->createRenderTarget_() == false )
         {
+            LOGGER_ERROR( "invalid create render target" );
+
             return false;
         }
+
+        m_hasImageMask = true;
 
         return true;
     }
@@ -218,13 +227,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::createRenderTarget_()
     {
-        if( m_resourceImageMask == nullptr )
-        {
-            LOGGER_ERROR( "invalid setup resource image mask" );
-
-            return true;
-        }
-
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
             ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FUNCTION );
 
@@ -311,18 +313,10 @@ namespace Mengine
         m_materialImageMask = nullptr;
 
         m_resourceImageMask.release();
-        m_resourceImageMask = nullptr;
 
         m_renderTarget = nullptr;
 
         this->setRenderTarget( nullptr );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Layer2D::render( const RenderContext * _context ) const
-    {
-        MENGINE_UNUSED( _context );
-
-        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderInterfacePtr & Layer2D::makeTargetRender( const RenderContext * _context ) const

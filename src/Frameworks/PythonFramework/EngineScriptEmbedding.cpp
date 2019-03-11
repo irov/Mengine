@@ -669,7 +669,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
-        bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
+        bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _cb.is_callable() == false )
             {
@@ -696,7 +696,7 @@ namespace Mengine
             if( currentScene != nullptr && currentScene->getName() == _name )
             {
                 if( SCENE_SERVICE()
-                    ->restartCurrentScene( py_cb ) == false )
+                    ->restartCurrentScene( _immediately, py_cb ) == false )
                 {
                     return false;
                 }
@@ -714,7 +714,7 @@ namespace Mengine
                 scene->setName( _name );
 
                 if( SCENE_SERVICE()
-                    ->setCurrentScene( scene, _destroyOld, py_cb ) == false )
+                    ->setCurrentScene( scene, _immediately, _destroyOld, py_cb ) == false )
                 {
                     scene = nullptr;
 
@@ -2554,7 +2554,7 @@ namespace Mengine
                 ->hasResource( _name, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool removeCurrentScene( const pybind::object & _cb, const pybind::args & _args )
+        bool removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _cb.is_callable() == false )
             {
@@ -2571,7 +2571,7 @@ namespace Mengine
             py_cb->initialize( _cb, _args );
 
             if( SCENE_SERVICE()
-                ->removeCurrentScene( py_cb ) == false )
+                ->removeCurrentScene( _immediately, py_cb ) == false )
             {
                 return false;
             }

@@ -89,6 +89,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::finalize()
+    {
+        m_composition = nullptr;
+        m_subcomposition = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_play( uint32_t _playId, float _time )
     {
         if( m_composition == nullptr )

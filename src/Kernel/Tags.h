@@ -4,7 +4,6 @@
 #include "Kernel/VectorConstString.h"
 
 #include "Config/Vector.h"
-#include "Config/String.h"
 
 namespace Mengine
 {
@@ -16,23 +15,21 @@ namespace Mengine
 
     public:
         void addTag( const ConstString & _tag );
+        void removeTag( const ConstString & _tag );
         bool hasTag( const ConstString & _tag ) const;
-        bool inTags( const Tags & _tag ) const;
+        bool hasTags( const Tags & _tag ) const;
 
         bool empty() const;
         void clear();
 
     public:
-        const VectorConstString & getTags() const;
+        const VectorConstString & getValues() const;
 
     public:
         void swap( Tags & _tags );
 
-    public:
-        String to_str() const;
-
     protected:
-        VectorConstString m_tags;
+        VectorConstString m_values;
     };
 }
 

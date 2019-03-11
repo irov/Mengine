@@ -23,6 +23,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/TagsHelper.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -3017,7 +3018,7 @@ namespace Mengine
         {
             (void)_kernel;
 
-            const VectorConstString & tags = _value.getTags();
+            const VectorConstString & tags = _value.getValues();
 
             PyObject * py_tags = _kernel->list_new( 0 );
 
@@ -3120,6 +3121,49 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    namespace ScriptMethod
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static bool Tags_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Tags * _place, void * _user )
+        {
+            (void)_user;
+
+            if( _kernel->tuple_check( _obj ) == true )
+            {
+                uint32_t size = _kernel->tuple_size( _obj );
+
+                for( uint32_t index = 0; index != size; ++index )
+                {
+                    ConstString tag = pybind::tuple_getitem_t( _kernel, _obj, index );
+
+                    _place->addTag( tag );
+                }
+
+                return true;
+            }
+            else if( _kernel->list_check( _obj ) == true )
+            {
+                uint32_t size = _kernel->list_size( _obj );
+
+                for( uint32_t index = 0; index != size; ++index )
+                {
+                    ConstString tag = pybind::list_getitem_t( _kernel, _obj, index );
+
+                    _place->addTag( tag );
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static String Tags_repr( Tags * _tags )
+        {
+            return Helper::tagsToString( *_tags );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     HelperScriptEmbedding::HelperScriptEmbedding()
     {
     }
@@ -3144,6 +3188,17 @@ namespace Mengine
 
         pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+
+        pybind::struct_<Tags>( _kernel, "Tags" )
+            .def_convert( &ScriptMethod::Tags_convert, nullptr )
+            .def_repr( &ScriptMethod::Tags_repr )
+            .def( "addTag", &Tags::addTag )
+            .def( "removeTag", &Tags::removeTag )
+            .def( "hasTag", &Tags::hasTag )
+            .def( "hasTags", &Tags::hasTags )
+            .def( "empty", &Tags::empty )
+            .def( "clear", &Tags::clear )
+            ;
 
         HelperScriptMethod * helperScriptMethod = new FactorableUnique<HelperScriptMethod>();
 

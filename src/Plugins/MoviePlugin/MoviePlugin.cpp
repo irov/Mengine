@@ -374,6 +374,7 @@ namespace Mengine
                 .def( "hasSocket", &Movie2::hasSocket )
                 .def( "findText", &Movie2::findText )
                 .def( "hasText", &Movie2::hasText )
+				.def( "hasMovieLayers", &Movie2::hasMovieLayers )
                 .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
                 ;
 

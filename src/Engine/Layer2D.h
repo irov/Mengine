@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Layer.h"
-#include "Kernel/BaseRender.h"
+#include "Kernel/NoneRender.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -16,7 +16,7 @@ namespace Mengine
 
     class Layer2D
         : public Layer
-        , public BaseRender
+        , public NoneRender
     {
         DECLARE_VISITABLE( Layer );
         DECLARE_RENDERABLE();
@@ -48,9 +48,6 @@ namespace Mengine
     protected:
         bool _activate() override;
         void _deactivate() override;
-
-    protected:
-        void render( const RenderContext * _context ) const override;
 
     protected:
         const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;

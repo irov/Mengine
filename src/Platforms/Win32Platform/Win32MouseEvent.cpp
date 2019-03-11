@@ -25,9 +25,10 @@ namespace Mengine
         POINT pt;
         ::GetCursorPos( &pt );
 
-        HWND wfp = WindowFromPoint( pt );
-
-        if( m_hWnd != wfp )
+        RECT rect;
+        ::GetWindowRect( m_hWnd, &rect );
+        
+        if( !::PtInRect( &rect, pt ) )
         {
             ::KillTimer( m_hWnd, m_uTimer );
             m_uTimer = 0;
@@ -43,7 +44,7 @@ namespace Mengine
             return;
         }
 
-        m_uTimer = ::SetTimer( m_hWnd, UTIMER_MOUSE_EVENT, 10, NULL );
+        m_uTimer = ::SetTimer( m_hWnd, UTIMER_MOUSE_EVENT, 20, NULL );
 
         if( m_uTimer == 0 )
         {

@@ -50,7 +50,7 @@ namespace Mengine
     bool Win32FileMappedStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
     {
         WChar concatenatePath[MENGINE_MAX_PATH];
-        if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
+        if( Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()

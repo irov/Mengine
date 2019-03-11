@@ -337,7 +337,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFiles & _lambda ) const
+    bool FileGroupZip::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _mask );

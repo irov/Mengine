@@ -30,7 +30,7 @@ namespace Mengine
     {
         if( m_resourceImageName.empty() == true )
         {
-            LOGGER_ERROR( "ResourceImageSubstract::_compile '%s' not setup image resource"
+            LOGGER_ERROR( "'%s' not setup image resource"
                 , this->getName().c_str()
             );
 
@@ -42,7 +42,7 @@ namespace Mengine
 
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
+            LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getGroupName().c_str()
@@ -78,6 +78,11 @@ namespace Mengine
         for( uint32_t i = 0; i != 4; ++i )
         {
             m_uvTextureImage[i] = m_uvImage[i];
+        }
+
+        for( uint32_t i = 0; i != 4; ++i )
+        {
+            m_uvTextureAlpha[i] = m_uvAlpha[i];
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Mengine
         HANDLE Win32CreateFile( const WChar * _filePath, DWORD _desiredAccess, DWORD _sharedMode, DWORD _creationDisposition )
         {
             WChar pathCorrect[MENGINE_MAX_PATH];
-            Helper::pathCorrectBackslashTo( pathCorrect, _filePath );
+            Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
             HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
                 _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -76,7 +76,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool Win32ConcatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity )
+        size_t Win32ConcatenateFilePathA( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _concatenatePath, size_t _capacity )
         {
             size_t relationSize = _relationPath.size();
             size_t folderSize = _folderPath.size();
@@ -86,27 +86,37 @@ namespace Mengine
 
             if( filePathSize >= MENGINE_MAX_PATH )
             {
-                return false;
+                return MENGINE_PATH_INVALID_LENGTH;
             }
 
-            Char filePath[MENGINE_MAX_PATH];
-            stdex::memorycopy( filePath, 0, _relationPath.c_str(), relationSize );
-            stdex::memorycopy( filePath, relationSize, _folderPath.c_str(), folderSize );
-            stdex::memorycopy( filePath, relationSize + folderSize, _filePath.c_str(), fileSize );
+            stdex::memorycopy_safe( _concatenatePath, 0, _capacity, _relationPath.c_str(), relationSize );
+            stdex::memorycopy_safe( _concatenatePath, relationSize, _capacity, _folderPath.c_str(), folderSize );
+            stdex::memorycopy_safe( _concatenatePath, relationSize + folderSize, _capacity, _filePath.c_str(), fileSize );
 
-            filePath[filePathSize] = '\0';
-            filePathSize += 1; //Null
+            _concatenatePath[filePathSize] = '\0';
 
-            WChar filePathW[MENGINE_MAX_PATH];
-            if( UNICODE_SYSTEM()
-                ->utf8ToUnicode( filePath, filePathSize, filePathW, _capacity, nullptr ) == false )
+            Helper::pathCorrectBackslashA( _concatenatePath );
+
+            return filePathSize;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        size_t Win32ConcatenateFilePathW( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity )
+        {
+            Char utf8_filePath[MENGINE_MAX_PATH];
+            size_t utf8_filePathLen = Win32ConcatenateFilePathA( _relationPath, _folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
+
+            if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
             {
-                return false;
+                return MENGINE_PATH_INVALID_LENGTH;
             }
 
-            Helper::pathCorrectBackslashTo( _concatenatePath, filePathW );
+            if( UNICODE_SYSTEM()
+                ->utf8ToUnicode( utf8_filePath, utf8_filePathLen, _concatenatePath, _capacity, nullptr ) == false )
+            {
+                return MENGINE_PATH_INVALID_LENGTH;
+            }
 
-            return true;
+            return utf8_filePathLen;
         }
     }
 }

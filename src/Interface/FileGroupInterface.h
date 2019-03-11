@@ -7,13 +7,12 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Lambda.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const FilePath & )> LambdaFiles;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
@@ -43,7 +42,7 @@ namespace Mengine
         virtual bool createDirectory( const FilePath & _folderPath ) const = 0;
 
     public:
-        virtual bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFiles & _lambda ) const = 0;
+        virtual bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;
 
     public:
         virtual InputStreamInterfacePtr createInputFile( const FilePath & _filePath, bool _streaming, const Char * _doc ) = 0;

@@ -33,7 +33,7 @@ namespace Mengine
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];
-        if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()

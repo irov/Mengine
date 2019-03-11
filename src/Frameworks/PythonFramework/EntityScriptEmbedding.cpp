@@ -149,7 +149,7 @@ namespace Mengine
 
             Entity * entity_ptr = entity.get();
 
-            stdex::intrusive_this_acquire( entity_ptr );
+            IntrusivePtrBase::intrusive_ptr_add_ref( entity_ptr );
 
             return entity_ptr;
         }
@@ -166,7 +166,7 @@ namespace Mengine
 
             Entity * entity_ptr = static_cast<Entity *>(_impl);
 
-            stdex::intrusive_this_release( entity_ptr );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( entity_ptr );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ namespace Mengine
 
             Arrow * arrow_ptr = arrow.get();
 
-            stdex::intrusive_this_acquire( arrow_ptr );
+            IntrusivePtrBase::intrusive_ptr_add_ref( arrow_ptr );
 
             return arrow_ptr;
         }
@@ -209,7 +209,7 @@ namespace Mengine
 
             Arrow * arrow_ptr = static_cast<Arrow *>(_impl);
 
-            stdex::intrusive_this_release( arrow_ptr );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( arrow_ptr );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -235,7 +235,7 @@ namespace Mengine
 
             Scene * scene_ptr = scene.get();
 
-            stdex::intrusive_this_acquire( scene_ptr );
+            IntrusivePtrBase::intrusive_ptr_add_ref( scene_ptr );
 
             return scene_ptr;
         }
@@ -252,7 +252,7 @@ namespace Mengine
 
             Scene * scene_ptr = static_cast<Scene *>(_impl);
 
-            stdex::intrusive_this_release( scene_ptr );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( scene_ptr );
         }
     };
     //////////////////////////////////////////////////////////////////////////

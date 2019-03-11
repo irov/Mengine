@@ -8,6 +8,7 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Params.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
@@ -94,6 +95,9 @@ namespace Mengine
     public:
         virtual bool existFile( const Char * _path ) = 0;
         virtual bool removeFile( const Char * _path ) = 0;
+
+    public:
+        virtual bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;
 
     public:
         virtual uint64_t getFileTime( const Char * _path ) const = 0;

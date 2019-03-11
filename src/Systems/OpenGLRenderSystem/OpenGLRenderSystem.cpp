@@ -97,7 +97,7 @@ namespace Mengine
 
             if( stage.texture != nullptr )
             {
-                stdex::intrusive_ptr_release( stage.texture );
+                IntrusivePtrBase::intrusive_ptr_release( stage.texture );
                 stage.texture = nullptr;
             }
         }
@@ -667,6 +667,7 @@ namespace Mengine
             {
                 break;
             }
+
 #ifdef MENGINE_OPENGL_ES
             GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
 #else
@@ -683,12 +684,12 @@ namespace Mengine
     {
         TextureStage & tStage = m_textureStage[_stage];
 
-        stdex::intrusive_ptr_release( tStage.texture );
+        IntrusivePtrBase::intrusive_ptr_release( tStage.texture );
 
         if( _texture != nullptr )
         {
             OpenGLRenderImage * texture = stdex::intrusive_get<OpenGLRenderImage *>( _texture );
-            stdex::intrusive_ptr_setup( tStage.texture, texture );
+            IntrusivePtrBase::intrusive_ptr_setup( tStage.texture, texture );
         }
         else
         {

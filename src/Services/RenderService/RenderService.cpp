@@ -147,9 +147,9 @@ namespace Mengine
 
         for( RenderObject & ro : m_renderObjects )
         {
-            stdex::intrusive_ptr_release( ro.material );
-            stdex::intrusive_ptr_release( ro.vertexBuffer );
-            stdex::intrusive_ptr_release( ro.indexBuffer );
+            IntrusivePtrBase::intrusive_ptr_release( ro.material );
+            IntrusivePtrBase::intrusive_ptr_release( ro.vertexBuffer );
+            IntrusivePtrBase::intrusive_ptr_release( ro.indexBuffer );
         }
 
         for( RenderPass * rp : m_renderPasses )
@@ -694,9 +694,9 @@ namespace Mengine
             _renderObject->dipIndiciesNum
         );
 
-        stdex::intrusive_ptr_release( _renderObject->material );
-        stdex::intrusive_ptr_release( _renderObject->vertexBuffer );
-        stdex::intrusive_ptr_release( _renderObject->indexBuffer );
+        IntrusivePtrBase::intrusive_ptr_release( _renderObject->material );
+        IntrusivePtrBase::intrusive_ptr_release( _renderObject->vertexBuffer );
+        IntrusivePtrBase::intrusive_ptr_release( _renderObject->indexBuffer );
 
         ++m_debugInfo.dips;
     }
@@ -1258,7 +1258,7 @@ namespace Mengine
             return;
         }
 
-        if( m_renderObjects.full() )
+        if( m_renderObjects.full() == true )
         {
             LOGGER_ERROR( "max render objects '%u'"
                 , m_renderObjects.size()
@@ -1277,32 +1277,6 @@ namespace Mengine
 
         RenderPass * rp = this->requestRenderPass_( _context, _material, _variable, _vertexCount, _indexCount );
 
-        mt::box2f bb;
-
-        if( _bb != nullptr )
-        {
-            bb = *_bb;
-        }
-        else
-        {
-            Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
-        }
-
-        const RenderCameraInterfacePtr & camera = rp->camera;
-        const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
-
-        const RenderViewportInterfacePtr & viewport = rp->viewport;
-        const Viewport & vp = viewport->getViewport();
-
-        mt::box2f bb_homogenize;
-        mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
-
-        mt::vec2f vp_scale;
-        vp.calcSize( vp_scale );
-
-        mt::scale_box( bb_homogenize, vp_scale );
-        mt::transpose_box( bb_homogenize, vp.begin );
-
         m_debugInfo.object += 1;
 
         if( m_debugFillrateCalcMode == true && _debug == false )
@@ -1313,6 +1287,9 @@ namespace Mengine
             {
             case PT_TRIANGLELIST:
                 {
+                    const RenderViewportInterfacePtr & viewport = rp->viewport;
+                    const Viewport & vp = viewport->getViewport();
+
                     this->calcQuadSquare_( _vertices, _vertexCount, vp );
                 }break;
             default:
@@ -1358,7 +1335,7 @@ namespace Mengine
 
         RenderObject & ro = m_renderObjects.emplace();
 
-        stdex::intrusive_ptr_setup( ro.material, ro_material );
+        IntrusivePtrBase::intrusive_ptr_setup( ro.material, ro_material.get() );
 
         uint32_t materialId = ro.material->getId();
         ro.materialSmartId = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
@@ -1367,8 +1344,8 @@ namespace Mengine
 
         const RenderBatchPtr & batch = rp->batch;
 
-        stdex::intrusive_ptr_setup( ro.indexBuffer, batch->indexBuffer );
-        stdex::intrusive_ptr_setup( ro.vertexBuffer, batch->vertexBuffer );
+        IntrusivePtrBase::intrusive_ptr_setup( ro.indexBuffer, batch->indexBuffer.get() );
+        IntrusivePtrBase::intrusive_ptr_setup( ro.vertexBuffer, batch->vertexBuffer.get() );
 
         ro.vertexData = _vertices;
         ro.vertexCount = _vertexCount;
@@ -1376,7 +1353,36 @@ namespace Mengine
         ro.indexData = _indices;
         ro.indexCount = _indexCount;
 
-        ro.bb = bb_homogenize;
+        if( m_batchMode == ERBM_SMART )
+        {
+            mt::box2f bb;
+
+            if( _bb != nullptr )
+            {
+                bb = *_bb;
+            }
+            else
+            {
+                Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
+            }
+
+            const RenderCameraInterfacePtr & camera = rp->camera;
+            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
+
+            const RenderViewportInterfacePtr & viewport = rp->viewport;
+            const Viewport & vp = viewport->getViewport();
+
+            mt::box2f bb_homogenize;
+            mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
+
+            mt::vec2f vp_scale;
+            vp.calcSize( vp_scale );
+
+            mt::scale_box( bb_homogenize, vp_scale );
+            mt::transpose_box( bb_homogenize, vp.begin );
+
+            ro.bb = bb_homogenize;
+        }        
 
         ro.minIndex = 0;
         ro.startIndex = 0;
@@ -1601,9 +1607,9 @@ namespace Mengine
             _ro->dipVerticesNum += ro_bath_begin->vertexCount;
             _ro->dipIndiciesNum += ro_bath_begin->indexCount;
 
-            stdex::intrusive_ptr_release( ro_bath_begin->material );
-            stdex::intrusive_ptr_release( ro_bath_begin->vertexBuffer );
-            stdex::intrusive_ptr_release( ro_bath_begin->indexBuffer );
+            IntrusivePtrBase::intrusive_ptr_release( ro_bath_begin->material );
+            IntrusivePtrBase::intrusive_ptr_release( ro_bath_begin->vertexBuffer );
+            IntrusivePtrBase::intrusive_ptr_release( ro_bath_begin->indexBuffer );
 
             ro_bath_begin->dipVerticesNum = 0;
             ro_bath_begin->dipIndiciesNum = 0;
@@ -1687,9 +1693,9 @@ namespace Mengine
             _ro->dipVerticesNum += ro_bath->vertexCount;
             _ro->dipIndiciesNum += ro_bath->indexCount;
 
-            stdex::intrusive_ptr_release( ro_bath->material );
-            stdex::intrusive_ptr_release( ro_bath->vertexBuffer );
-            stdex::intrusive_ptr_release( ro_bath->indexBuffer );
+            IntrusivePtrBase::intrusive_ptr_release( ro_bath->material );
+            IntrusivePtrBase::intrusive_ptr_release( ro_bath->vertexBuffer );
+            IntrusivePtrBase::intrusive_ptr_release( ro_bath->indexBuffer );
 
             ro_bath->dipVerticesNum = 0;
             ro_bath->dipIndiciesNum = 0;

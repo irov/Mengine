@@ -3,11 +3,10 @@
 #include "Kernel/AffectorType.h"
 #include "Kernel/Mixin.h"
 #include "Kernel/UpdateContext.h"
+#include "Kernel/IntrusiveSlugList.h"
+#include "Kernel/IntrusiveSlugIterator.h"
 
 #include "math/vec3.h"
-
-#include "stdex/intrusive_slug_list_ptr.h"
-#include "stdex/intrusive_slug_ptr.h"
 
 namespace Mengine
 {
@@ -43,8 +42,8 @@ namespace Mengine
         virtual uint32_t getAffectorableUpdatableLeafDeep() const = 0;
 
     protected:
-        typedef stdex::intrusive_slug_list_ptr<Affector> IntrusiveSlugListAffector;
-        typedef stdex::intrusive_slug_ptr<IntrusiveSlugListAffector> TSlugAffector;
+        typedef IntrusiveSlugList<Affector> IntrusiveSlugListAffector;
+        typedef IntrusiveSlugIterator<IntrusiveSlugListAffector> IntrusiveSlugAffector;
 
         IntrusiveSlugListAffector m_affectors;
 

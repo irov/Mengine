@@ -147,13 +147,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFiles & _lambda ) const
+    bool SDLFileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        MENGINE_UNUSED( _folderPath );
-        MENGINE_UNUSED( _mask );
-        MENGINE_UNUSED( _lambda );
+        Char utf8_base[MENGINE_MAX_PATH];
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), utf8_base, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
+                , m_folderPath.c_str()
+                , _filePath.c_str()
+            );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            return false;
+        }
+
+        Helper::pathCorrectForwardslashA( utf8_base );
+
+        PLATFORM_SERVICE()
+            ->findFiles( utf8_base, _filePath.c_str(), _mask, _lambda );
 
         return false;
     }

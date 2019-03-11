@@ -6,7 +6,7 @@ SET( SOURCE_DIR ${THIRDPARTY_DIR}/Python )
 
 REMOVE_DEFINITIONS(-Doverride)
 
-include(ConfigureChecks.cmake)
+#include(ConfigureChecks.cmake)
 
 #option(WITH_THREAD "compile in rudimentary thread support" OFF)
 #option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)

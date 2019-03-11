@@ -285,7 +285,7 @@ namespace Mengine
         {
             RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( m_parent );
             RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
-            
+
             if( oldRenderParent != newRenderParent )
             {
                 if( newRenderParent != nullptr )
@@ -355,7 +355,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::moveChildRenderFront_( const NodePtr & _child )
     {
-        RenderInterface * render = this->getRender();        
+        RenderInterface * render = this->getRender();
 
         if( render != nullptr )
         {
@@ -381,7 +381,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::moveChildRenderBack_( const NodePtr & _child )
     {
-        RenderInterface * render = this->getRender();        
+        RenderInterface * render = this->getRender();
 
         if( render != nullptr )
         {
@@ -433,8 +433,8 @@ namespace Mengine
                 this->setRelationRender_( _parent );
             }break;
         }
-        
-        this->setRelationTransformation( _parent );        
+
+        this->setRelationTransformation( _parent );
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -625,7 +625,7 @@ namespace Mengine
                 {
                     this->moveChildRenderBack_( _child );
                 }break;
-            }            
+            }
         }
         else
         {
@@ -810,14 +810,14 @@ namespace Mengine
         {
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                NodePtr children(*it);
+                NodePtr children( *it );
 
                 it.next_shuffle();
 
                 children->visitChildren( _visitor );
             }
         }
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
     {
@@ -1065,7 +1065,7 @@ namespace Mengine
     void Node::_changeParent( Node * _oldParent, Node * _newParent )
     {
         MENGINE_UNUSED( _oldParent );
-        MENGINE_UNUSED( _newParent);
+        MENGINE_UNUSED( _newParent );
 
         //Empty
     }
@@ -1104,7 +1104,7 @@ namespace Mengine
 
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                NodePtr node(*it);
+                NodePtr node( *it );
 
                 it.next_shuffle();
 
@@ -1115,7 +1115,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::setSpeedFactor( float _speedFactor )
     {
-        MENGINE_UNUSED( _speedFactor);
+        MENGINE_UNUSED( _speedFactor );
 
         //TODO: REMOVE
     }

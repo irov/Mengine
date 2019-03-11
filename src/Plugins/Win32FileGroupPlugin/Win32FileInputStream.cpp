@@ -110,8 +110,9 @@ namespace Mengine
     bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath, bool _streaming )
     {
         MENGINE_UNUSED( _streaming );
-
-        if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
+        
+        if( fullPathLen == MENGINE_PATH_INVALID_LENGTH )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()

@@ -21,7 +21,7 @@ namespace Mengine
     typedef IntrusivePtr<AffectorCallbackInterface> AffectorCallbackInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class Affector
-        : public stdex::intrusive_slug_linked_ptr<Affector, IntrusivePtr, IntrusivePtrBase>
+        : public stdex::intrusive_slug_linked_ptr<Affector, void, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
         , public Updatable
         , public BaseUpdation

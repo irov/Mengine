@@ -9,11 +9,11 @@ namespace Mengine
 {
     template<class T>
     class IntrusiveSlug
-        : public stdex::intrusive_slug_linked_ptr<typename T::value_type, IntrusivePtr, IntrusivePtrBase>
+    : public stdex::intrusive_slug_linked_ptr<typename T::value_type, typename T::derived_type, IntrusivePtr, IntrusivePtrBase>
     {
     public:
         IntrusiveSlug()
-            : stdex::intrusive_slug_linked_ptr<typename T::value_type, IntrusivePtr, IntrusivePtrBase>( stdex::EILT_SLUG )
+            : stdex::intrusive_slug_linked_ptr<typename T::value_type, typename T::derived_type, IntrusivePtr, IntrusivePtrBase>( stdex::EILT_SLUG )
         {
         }
 

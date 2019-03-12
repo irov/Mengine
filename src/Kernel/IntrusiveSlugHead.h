@@ -7,13 +7,13 @@
 
 namespace Mengine
 { 
-    template<class T>
+    template<class T, class D = void>
     class IntrusiveSlugHead
-        : public stdex::intrusive_slug_linked_ptr<T, IntrusivePtr, IntrusivePtrBase>
+        : public stdex::intrusive_slug_linked_ptr<T, D, IntrusivePtr, IntrusivePtrBase>
     {
     public:
         IntrusiveSlugHead()
-            : stdex::intrusive_slug_linked_ptr<T, IntrusivePtr, IntrusivePtrBase>( stdex::EILT_END )
+            : stdex::intrusive_slug_linked_ptr<T, D, IntrusivePtr, IntrusivePtrBase>( stdex::EILT_END )
         {
         }
 

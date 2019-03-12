@@ -6,7 +6,6 @@ Metabuf
 	Metacode.h
     Metatype.cpp
     Metatype.h
-    Metacache.cpp
     Metacache.h
     protocol.xml
 )

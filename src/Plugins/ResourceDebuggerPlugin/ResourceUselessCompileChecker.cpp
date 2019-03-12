@@ -35,32 +35,32 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyChangeSceneEnableFinally( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_COMPILE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_RELEASE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyRestartScenePrepareEnable( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyRestartSceneEnableFinally( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
 
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_COMPILE );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESOURCE_RELEASE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyResourceCompile( Resource * _resource )

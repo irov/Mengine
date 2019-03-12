@@ -38,6 +38,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 
+#include "Kernel/TagsHelper.h"
 
 #include "Kernel/Entity.h"
 #include "Kernel/Arrow.h"
@@ -661,7 +662,7 @@ namespace Mengine
             ->getPlatformTags();
 
         LOGGER_INFO( "load game resource tags '%s'"
-            , platformTags.to_str().c_str()
+            , Helper::tagsToString( platformTags ).c_str()
         );
 
         if( PACKAGE_SERVICE()
@@ -669,7 +670,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid enable for locale '%s' platform '%s'!"
                 , m_locale.c_str()
-                , platformTags.to_str().c_str()
+                , Helper::tagsToString( platformTags ).c_str()
             );
 
             return false;

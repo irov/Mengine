@@ -2241,7 +2241,6 @@ namespace Mengine
     void Win32Platform::setCursorPosition( const mt::vec2f & _pos )
     {
         POINT cPos = {(int32_t)_pos.x, (int32_t)_pos.y};
-
         ::ClientToScreen( m_hWnd, &cPos );
 
         ::SetCursorPos( cPos.x, cPos.y );

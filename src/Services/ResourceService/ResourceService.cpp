@@ -71,7 +71,7 @@ namespace Mengine
         m_resources.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _ignored )
+    bool ResourceService::loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
@@ -111,9 +111,9 @@ namespace Mengine
 
             const FilePath & path = meta_include.get_Path();
 
-            if( this->loadResources( _locale, _fileGroup, path, _ignored ) == false )
+            if( this->loadResources( _locale, _fileGroup, path, _tags, _ignored ) == false )
             {
-                LOGGER_ERROR( "load %s:%s resource invalid load include %s"
+                LOGGER_ERROR( "load '%s:%s' resource invalid load include %s"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
                     , path.c_str()
@@ -139,7 +139,7 @@ namespace Mengine
             bool unique = true;
             meta_resource->get_Unique( &unique );
 
-            ResourcePtr has_resource = nullptr;
+            ResourcePtr has_resource;
             if( this->hasResource( name, &has_resource ) == true )
             {
                 if( unique == false )
@@ -149,7 +149,7 @@ namespace Mengine
 
                 const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
 
-                LOGGER_ERROR( "path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+                LOGGER_ERROR( "path '%s' already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
@@ -178,6 +178,8 @@ namespace Mengine
 
                 return false;
             }
+
+            resource->setTags( _tags );
 
             LoaderInterfacePtr loader = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
@@ -220,7 +222,7 @@ namespace Mengine
                 if( NOTIFICATION_SERVICE()
                     ->notify( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, resource ) == false )
                 {
-                    LOGGER_ERROR( "resource %s type [%s] invalid convert"
+                    LOGGER_ERROR( "resource '%s' type [%s] invalid convert"
                         , name.c_str()
                         , type.c_str()
                     );
@@ -580,6 +582,23 @@ namespace Mengine
 
         for( const ResourcePtr & resource : resources )
         {
+            _lambda( resource );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceService::foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const
+    {
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtr & resource = value.element;
+
+            const Tags & resourceTags = resource->getTags();
+
+            if( resourceTags.hasTags( _tags ) == false )
+            {
+                continue;
+            }
+
             _lambda( resource );
         }
     }

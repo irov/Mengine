@@ -8554,12 +8554,58 @@ namespace Metacode
                         return this->m_Path;
                     }
                     
+                    bool has_Tags() const
+                    {
+                        return m_Tags_successful;
+                    }
+                    
+                    template<class C, class M>
+                    bool getm_Tags( C _self, M _method ) const
+                    {
+                        if( m_Tags_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        (_self->*_method)( this->m_Tags );
+                    
+                        return true;
+                    }
+                    
+                    bool get_Tags( Mengine::Tags * _value ) const
+                    {
+                        if( m_Tags_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        *_value = this->m_Tags;
+                    
+                        return true;
+                    }
+                    
+                    bool getd_Tags( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                    {
+                        if( m_Tags_successful == false )
+                        {
+                            *_value = _default;
+                    
+                            return false;
+                        }
+                    
+                        *_value = this->m_Tags;
+                    
+                        return true;
+                    }
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
                 public:
                 protected:
                 protected:
                     Mengine::FilePath m_Path;
+                    bool m_Tags_successful;
+                    Mengine::Tags m_Tags;
                 };
                 
             protected:

@@ -74,7 +74,7 @@ namespace Mengine
             stdex::array_string<128> platform_section;
             platform_section.append( _section );
 
-            const VectorConstString & tags = _platform.getTags();
+            const VectorConstString & tags = _platform.getValues();
 
             for( const ConstString & tag : tags )
             {
@@ -103,7 +103,7 @@ namespace Mengine
             stdex::array_string<128> platform_section;
             platform_section.append( _section );
 
-            const VectorConstString & tags = _platform.getTags();
+            const VectorConstString & tags = _platform.getValues();
 
             for( const ConstString & tag : tags )
             {
@@ -132,7 +132,7 @@ namespace Mengine
             stdex::array_string<128> platform_section;
             platform_section.append( _section );
 
-            const VectorConstString & tags = _platform.getTags();
+            const VectorConstString & tags = _platform.getValues();
 
             stdex::array_string<128> platform_section_found;
 

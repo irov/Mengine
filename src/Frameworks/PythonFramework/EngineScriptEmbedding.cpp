@@ -2506,7 +2506,7 @@ namespace Mengine
             const Tags & platformTags = PLATFORM_SERVICE()
                 ->getPlatformTags();
 
-            bool successful = platformTags.inTags( _tags );
+            bool successful = platformTags.hasTags( _tags );
 
             return successful;
         }
@@ -3268,6 +3268,24 @@ namespace Mengine
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
+        void s_incrementResourcesTags( const Tags & _tags )
+        {
+            RESOURCE_SERVICE()
+                ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
+            {
+                _resource->incrementReference();
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_decrementResourcesTags( const Tags & _tags )
+        {
+            RESOURCE_SERVICE()
+                ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
+            {
+                _resource->decrementReference();
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
         class GetResourceVisitor
             : public Visitor
             , public Factorable
@@ -3498,6 +3516,8 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "incrementResources", nodeScriptMethod, &EngineScriptMethod::s_incrementResources );
         pybind::def_functor( _kernel, "decrementResources", nodeScriptMethod, &EngineScriptMethod::s_decrementResources );
+        pybind::def_functor( _kernel, "incrementResourcesTags", nodeScriptMethod, &EngineScriptMethod::s_incrementResourcesTags );
+        pybind::def_functor( _kernel, "decrementResourcesTags", nodeScriptMethod, &EngineScriptMethod::s_decrementResourcesTags );
 
         pybind::def_functor( _kernel, "validResource", nodeScriptMethod, &EngineScriptMethod::s_validResource );
 

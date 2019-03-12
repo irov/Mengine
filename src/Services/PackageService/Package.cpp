@@ -256,7 +256,11 @@ namespace Mengine
                 const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
                 const FilePath & Path = meta_resource.get_Path();
-                this->addResource_( Path, platform, demand, ignored );
+
+                Tags tags;
+                meta_resource.get_Tags( &tags );
+
+                this->addResource_( Path, tags, platform, demand, ignored );
             }
         }
 
@@ -375,13 +379,13 @@ namespace Mengine
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {
-            if( desc.platform.empty() == false && platformTags.inTags( desc.platform ) == false )
+            if( desc.platform.empty() == false && platformTags.hasTags( desc.platform ) == false )
             {
                 continue;
             }
 
             if( RESOURCE_SERVICE()
-                ->loadResources( m_locale, m_fileGroup, desc.path, desc.ignored ) == false )
+                ->loadResources( m_locale, m_fileGroup, desc.path, desc.tags, desc.ignored ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s:%s' resource '%s'"
                     , m_path.c_str()
@@ -395,7 +399,7 @@ namespace Mengine
 
         for( const PakFontDesc & desc : m_pathFonts )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -414,7 +418,7 @@ namespace Mengine
 
         for( const PakTextDesc & desc : m_pathTexts )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -433,7 +437,7 @@ namespace Mengine
 
         for( const PakDataDesc & desc : m_datas )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -453,7 +457,7 @@ namespace Mengine
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -498,7 +502,7 @@ namespace Mengine
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -512,7 +516,7 @@ namespace Mengine
 
         for( const PakFontDesc & desc : m_pathFonts )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -525,7 +529,7 @@ namespace Mengine
 
         for( const PakTextDesc & desc : m_pathTexts )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -538,7 +542,7 @@ namespace Mengine
 
         for( const PakDataDesc & desc : m_datas )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -551,7 +555,7 @@ namespace Mengine
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
                 continue;
             }
@@ -639,10 +643,11 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addResource_( const FilePath & _path, const Tags & _platform, bool _demand, bool _ignored )
+    void Package::addResource_( const FilePath & _path, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored )
     {
         PakResourceDesc desc;
         desc.path = _path;
+        desc.tags = _tags;
         desc.platform = _platform;
         desc.demand = _demand;
         desc.ignored = _ignored;

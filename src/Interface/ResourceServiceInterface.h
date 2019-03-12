@@ -8,9 +8,9 @@
 #include "Config/Lambda.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Pointer.h"
-
 #include "Kernel/Factory.h"
 
 namespace Mengine
@@ -26,8 +26,8 @@ namespace Mengine
         SERVICE_DECLARE( "ResourceService" )
 
     public:
-        virtual bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path, bool _ignored ) = 0;
-        virtual bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
+        virtual bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const Tags & _tags, bool _ignored ) = 0;
+        virtual bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) = 0;
 
     public:
         virtual PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const = 0;
@@ -77,12 +77,15 @@ namespace Mengine
         typedef Lambda<void( const ResourcePtr & )> LambdaResource;
         virtual void foreachResources( const LambdaResource & _lambda ) const = 0;
         virtual void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const = 0;
+        virtual void foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const = 0;
 
     public:
         virtual void visitResources( const VisitorPtr & _visitor ) const = 0;
         virtual void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const = 0;
     };
-
+}
+//////////////////////////////////////////////////////////////////////////
 #define RESOURCE_SERVICE()\
     ((Mengine::ResourceServiceInterface *)SERVICE_GET(Mengine::ResourceServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////
+

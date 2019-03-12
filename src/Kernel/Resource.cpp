@@ -33,6 +33,16 @@ namespace Mengine
         m_groupName = _groupName;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Resource::setTags( const Tags & _tags )
+    {
+        m_tags = _tags;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Tags & Resource::getTags() const
+    {
+        return m_tags;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Resource::initialize()
     {
         bool successful = this->_initialize();
@@ -49,14 +59,8 @@ namespace Mengine
     {
         bool result = this->compile();
 
-        //LOGGER_WARNING("Resource compile %s %s %s"
-        //    , this->getName().c_str()
-        //    , this->getType().c_str()
-        //    , this->getCategory().c_str()
-        //    );
-
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESOURCE_COMPILE, (this) );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, (this) );
 #endif
 
         return result;
@@ -67,7 +71,7 @@ namespace Mengine
         this->release();
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_NOTIFY( NOTIFICATOR_RESOURCE_RELEASE, (this) );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, (this) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -75,7 +79,7 @@ namespace Mengine
     {
         if( this->incrementReference() == false )
         {
-            LOGGER_ERROR( "ResourceReference::cache: '%s:%s' invalid increment reference"
+            LOGGER_ERROR( "resource '%s:%s' invalid increment reference"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
             );

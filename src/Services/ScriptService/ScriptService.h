@@ -36,6 +36,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     protected:
         pybind::kernel_interface * getKernel() override;

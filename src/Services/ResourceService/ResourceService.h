@@ -27,8 +27,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path, bool _ignored ) override;
-        bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) override;
+        bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const Tags & _tags, bool _ignored ) override;
+        bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
 
     public:
         PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const override;
@@ -48,6 +48,7 @@ namespace Mengine
     public:
         void foreachResources( const LambdaResource & _lambda ) const override;
         void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const override;
+        void foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const override;
 
     public:
         void visitResources( const VisitorPtr & _visitor ) const override;

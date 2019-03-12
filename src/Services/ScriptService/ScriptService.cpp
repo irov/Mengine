@@ -287,6 +287,10 @@ namespace Mengine
             , m_moduleMenge
         );
 
+        this->addGlobalModule( "Mengine"
+            , m_moduleMenge
+        );
+
         uint32_t python_version = kernel->get_python_version();
 
         this->addGlobalModule( "_PYTHON_VERSION"
@@ -389,6 +393,7 @@ namespace Mengine
         m_kernel->remove_module_finder();
 
         this->removeGlobalModule( "Menge" );
+        this->removeGlobalModule( "Mengine" );
         this->removeGlobalModule( "_PYTHON_VERSION" );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ClassWrapping" ) );
@@ -415,6 +420,11 @@ namespace Mengine
         m_factoryScriptModule = nullptr;
 
         m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::_stopService()
+    {
+        m_kernel->collect();
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * ScriptService::getKernel()

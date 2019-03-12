@@ -1,7 +1,8 @@
 #include "ScriptModule.h"
 
-#include "Kernel/Eventable.h"
+#include "Interface/ScriptServiceInterface.h"
 
+#include "Kernel/Eventable.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -26,7 +27,7 @@ namespace Mengine
     {
         if( m_module.has_attr( _method ) == false )
         {
-            LOGGER_ERROR( "ScriptModule::onInitialize invalid has initializer %s"
+            LOGGER_ERROR( "invalid has initializer %s"
                 , _method.c_str()
             );
 
@@ -39,7 +40,7 @@ namespace Mengine
 
         if( py_result.is_invalid() == true )
         {
-            LOGGER_ERROR( "ScriptModule::onInitialize invalid call initializer %s"
+            LOGGER_ERROR( "invalid call initializer %s"
                 , _method.c_str()
             );
 
@@ -48,7 +49,7 @@ namespace Mengine
 
         if( py_result.is_bool() == false )
         {
-            LOGGER_ERROR( "ScriptModule::onInitialize invalid call initializer %s need return bool [True|False] but return is '%s'"
+            LOGGER_ERROR( "invalid call initializer %s need return bool [True|False] but return is '%s'"
                 , _method.c_str()
                 , py_result.repr()
             );
@@ -65,7 +66,7 @@ namespace Mengine
     {
         if( m_module.has_attr( _method ) == false )
         {
-            LOGGER_ERROR( "ScriptModule::onFinalize invalid has finalizer %s"
+            LOGGER_ERROR( "invalid has finalizer %s"
                 , _method.c_str()
             );
 
@@ -75,6 +76,11 @@ namespace Mengine
         pybind::object module_function = m_module.get_attr( _method );
 
         module_function.call();
+
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        kernel->collect();
 
         return true;
     }

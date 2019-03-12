@@ -15,19 +15,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Tags::addTag( const ConstString & _tag )
     {
-        m_tags.emplace_back( _tag );
+        m_values.emplace_back( _tag );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Tags::removeTag( const ConstString & _tag )
+    {
+        VectorConstString::const_iterator it_found = std::find( m_values.begin(), m_values.end(), _tag );
+
+        if( it_found == m_values.end() )
+        {
+            return;
+        }
+
+        m_values.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Tags::hasTag( const ConstString & _tag ) const
     {
-        VectorConstString::const_iterator it_found = std::find( m_tags.begin(), m_tags.end(), _tag );
+        VectorConstString::const_iterator it_found = std::find( m_values.begin(), m_values.end(), _tag );
 
-        return it_found != m_tags.end();
+        return it_found != m_values.end();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Tags::inTags( const Tags & _tag ) const
+    bool Tags::hasTags( const Tags & _tag ) const
     {
-        for( const ConstString & tag : _tag.m_tags )
+        for( const ConstString & tag : _tag.m_values )
         {
             if( this->hasTag( tag ) == false )
             {
@@ -40,39 +52,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Tags::empty() const
     {
-        return m_tags.empty();
+        return m_values.empty();
     }
     //////////////////////////////////////////////////////////////////////////
     void Tags::clear()
     {
-        m_tags.clear();
+        m_values.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    const VectorConstString & Tags::getTags() const
+    const VectorConstString & Tags::getValues() const
     {
-        return m_tags;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    String Tags::to_str() const
-    {
-        String str;
-
-        str += '[';
-
-        for( const ConstString & tag : m_tags )
-        {
-            str.append( tag.c_str(), tag.size() );
-
-            str += ' ';
-        }
-
-        str += ']';
-
-        return str;
+        return m_values;
     }
     //////////////////////////////////////////////////////////////////////////
     void Tags::swap( Tags & _tags )
     {
-        m_tags.swap( _tags.m_tags );
+        m_values.swap( _tags.m_values );
     }
 }

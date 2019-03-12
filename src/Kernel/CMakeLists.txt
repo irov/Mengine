@@ -367,6 +367,9 @@ Core
     Tags.h
     Tags.cpp
     
+    TagsHelper.h
+    TagsHelper.cpp
+    
     StringFormat.h
 	StringFormat.cpp
     

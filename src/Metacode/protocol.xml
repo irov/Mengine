@@ -1,4 +1,4 @@
-<Protocol Version = "133">
+<Protocol Version = "134">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -477,6 +477,7 @@
           
           <Node Name="Resource">
             <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+            <Attribute Name="Tags" Type="Mengine::Tags"/>
           </Node>
         </Node>
 

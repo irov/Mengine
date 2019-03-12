@@ -422,6 +422,11 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ScriptService::_stopService()
+    {
+        m_kernel->collect();
+    }
+    //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * ScriptService::getKernel()
     {
         return m_kernel;

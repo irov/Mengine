@@ -33,7 +33,7 @@ namespace Mengine
     typedef IntrusiveSlugIterator<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
     //////////////////////////////////////////////////////////////////////////
     class Node
-        : public stdex::intrusive_slug_linked_ptr<Node, IntrusivePtr, IntrusivePtrBase>
+        : public stdex::intrusive_slug_linked_ptr<Node, void, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
         , public Identity
         , public Compilable

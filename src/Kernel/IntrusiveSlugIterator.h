@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/IntrusivePtrBase.h"
 #include "Kernel/IntrusiveSlug.h"
 
 #include "stdex/intrusive_slug_linked_ptr.h"
@@ -12,9 +14,10 @@ namespace Mengine
     public:
         typedef T list_type;
         typedef typename list_type::value_type value_type;
-        typedef IntrusivePtr<value_type> value_type_ptr;
-        typedef stdex::intrusive_slug_linked_ptr<value_type, IntrusivePtr, IntrusivePtrBase> linked_type;
-        typedef IntrusivePtr<linked_type> linked_type_ptr;
+        typedef typename list_type::derived_type derived_type;
+        typedef IntrusivePtr<value_type, derived_type> value_type_ptr;
+        typedef stdex::intrusive_slug_linked_ptr<value_type, derived_type, IntrusivePtr, IntrusivePtrBase> linked_type;
+        typedef IntrusivePtr<linked_type, void> linked_type_ptr;
         typedef IntrusiveSlug<list_type> slug_type;
 
     public:

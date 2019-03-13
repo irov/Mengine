@@ -21,57 +21,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArchiveService::registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator )
-    {
-        m_archivators.emplace( _type, _archivator );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ArchiveService::unregisterArchivator( const ConstString & _type )
-    {
-        MapArchivators::iterator it_found = m_archivators.find( _type );
-
-        if( it_found == m_archivators.end() )
-        {
-            LOGGER_ERROR( "not registry archivator '%s'"
-                , _type.c_str()
-            );
-
-            return;
-        }
-
-        m_archivators.erase( it_found );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ArchiveService::hasArchivator( const ConstString & _type ) const
-    {
-        MapArchivators::const_iterator it_found = m_archivators.find( _type );
-
-        if( it_found == m_archivators.end() )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ArchivatorInterfacePtr & ArchiveService::getArchivator( const ConstString & _type ) const
-    {
-        MapArchivators::const_iterator it_found = m_archivators.find( _type );
-
-        if( it_found == m_archivators.end() )
-        {
-            LOGGER_ERROR( "not registry archivator '%s'"
-                , _type.c_str()
-            );
-
-            return ArchivatorInterfacePtr::none();
-        }
-
-        const ArchivatorInterfacePtr & archivator = it_found->second;
-
-        return archivator;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
     {
         MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, "ArchiveService", __FILE__, __LINE__ );

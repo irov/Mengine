@@ -2,9 +2,10 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FilePath.h"
@@ -37,8 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::_initializeService()
     {
-        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
         if( archivator == nullptr )
         {

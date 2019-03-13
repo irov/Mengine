@@ -9,7 +9,7 @@
 #include "Config/String.h"
 
 #ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
-#define MENGINE_NODELEAKDETECTOR_HASHSIZE 1
+#define MENGINE_NODELEAKDETECTOR_HASHSIZE 1021
 #endif
 
 namespace Mengine

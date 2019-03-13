@@ -2,9 +2,10 @@
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -97,8 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinDecoder::initialize()
     {
-        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
         if( archivator == nullptr )
         {

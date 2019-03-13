@@ -19,10 +19,6 @@ namespace Mengine
         SERVICE_DECLARE( "FileService" )
 
     public:
-        virtual void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) = 0;
-        virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
-
-    public:
         virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup, const Char * _doc ) = 0;
         virtual bool unmountFileGroup( const ConstString & _name ) = 0;
 

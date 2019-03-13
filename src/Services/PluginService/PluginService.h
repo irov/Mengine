@@ -22,6 +22,7 @@ namespace Mengine
     public:
         bool loadPlugin( const Char * _dynamicLibraryName ) override;
         bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic ) override;
+        void unloadPlugins() override;
 
     public:
         bool addPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, const PluginInterfacePtr & _plugin ) override;

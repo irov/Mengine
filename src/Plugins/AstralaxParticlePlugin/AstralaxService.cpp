@@ -3,10 +3,9 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
-
 #include "Kernel/Viewport.h"
 
 #include "math/box2.h"
@@ -39,8 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxService::_initializeService()
     {
-        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
         if( archivator == nullptr )
         {

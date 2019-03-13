@@ -331,28 +331,27 @@ namespace Mengine
             return false;
         }
 
-        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
+        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
 
         DataflowPYZPtr dataflowPYZ = Helper::makeFactorableUnique<DataflowPYZ>();
 
         dataflowPYZ->setKernel( m_kernel );
 
-        const ArchivatorInterfacePtr & archivatorZIP = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "zip" ) );
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ) );
 
-        if( archivatorZIP == nullptr )
+        if( archivator == nullptr )
         {
             return false;
         }
 
-        dataflowPYZ->setArchivator( archivatorZIP );
+        dataflowPYZ->setArchivator( archivator );
 
         if( dataflowPYZ->initialize() == false )
         {
             return false;
         }
 
-        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ );
+        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ );
 
         pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
             .def_kernel( "find_module", &ScriptModuleFinder::find_module )
@@ -625,13 +624,15 @@ namespace Mengine
             }
         }
 
+        m_kernel->collect();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
     {
-        DataflowInterfacePtr dataflowPY = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
-        DataflowInterfacePtr dataflowPYZ = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
+        DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
+        DataflowInterfacePtr dataflowPYZ = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         for( const ScriptModulePack & pack : m_bootstrapperModules )
         {

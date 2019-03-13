@@ -57,8 +57,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_initializeModule()
     {
-        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
-        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>() );
+        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
+        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>() );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
@@ -73,8 +73,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::_finalizeModule()
     {
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ) );
 
@@ -287,7 +287,7 @@ namespace Mengine
 
         const ConstString & type = _node->getType();
 
-        NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
+        NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
 
         if( boundingBox != nullptr )
         {
@@ -430,7 +430,7 @@ namespace Mengine
                 , false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::privateInit()
+    bool NodeDebuggerModule::privateInit()
     {
         m_shouldRecreateServer = true;
 
@@ -448,8 +448,16 @@ namespace Mengine
 
         m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ) );
 
-        m_compressor = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        if( archivator == nullptr )
+        {
+            return false;
+        }
+
+        m_archivator = archivator;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::recreateServer()
@@ -473,17 +481,17 @@ namespace Mengine
     {
         const size_t payloadSize = _packet.payload.size();
 
-        if( m_compressor == nullptr || payloadSize < 1024 )
+        if( m_archivator == nullptr || payloadSize < 1024 )
         {
             _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
             _hdr.uncompressedSize = 0; // packet is not compressed
         }
         else
         {
-            const size_t maxCompressedSize = m_compressor->compressBound( payloadSize );
+            const size_t maxCompressedSize = m_archivator->compressBound( payloadSize );
             Vector<uint8_t> compressedPayload( maxCompressedSize );
             size_t compressedSize = 0;
-            const bool success = m_compressor->compress( compressedPayload.data(), maxCompressedSize, _packet.payload.data(), payloadSize, compressedSize, EAC_NORMAL );
+            const bool success = m_archivator->compress( compressedPayload.data(), maxCompressedSize, _packet.payload.data(), payloadSize, compressedSize, EAC_NORMAL );
             if( success == false || compressedSize >= payloadSize )
             {
                 _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
@@ -512,7 +520,7 @@ namespace Mengine
         {
             _packet.payload.resize( _hdr.uncompressedSize );
             size_t uncompressedDataSize = 0;
-            const bool success = m_compressor->decompress( _packet.payload.data(), _hdr.uncompressedSize, _receivedData, _hdr.compressedSize, uncompressedDataSize );
+            const bool success = m_archivator->decompress( _packet.payload.data(), _hdr.uncompressedSize, _receivedData, _hdr.compressedSize, uncompressedDataSize );
             MENGINE_ASSERTION( success == true && uncompressedDataSize == _hdr.uncompressedSize, ( "Packet decompression failed!" ) );
         }
     }

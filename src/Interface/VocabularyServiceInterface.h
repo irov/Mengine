@@ -7,38 +7,45 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef Lambda<void( const ConstString & _prototype, const MixinPtr & )> LambdaVocabulary;
+    //////////////////////////////////////////////////////////////////////////
     class VocabularyServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "VocalubaryService" )
+        SERVICE_DECLARE( "VocabularyService" )
 
     public:
         virtual bool setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable ) = 0;
         virtual MixinPointer removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
+        virtual bool hasFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
-#ifndef MENGINE_MASTER_RELEASE
-    public:
-        typedef Lambda<void( const ConstString & _prototype, const MixinPtr & )> LambdaFactorable;
-        virtual void foreachFactorable( const ConstString & _category, const LambdaFactorable & _lambda ) const = 0;
-#endif
+    public:        
+        virtual void foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define VOCALUBARY_SERVICE()\
+#define VOCABULARY_SERVICE()\
 	((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define VOCALUBARY_SET(Interface, Category, Prototype, Factorable)\
-    VOCALUBARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>(Factorable))
+#define VOCABULARY_SET(Interface, Category, Prototype, Factorable)\
+    VOCABULARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>(Factorable))
 //////////////////////////////////////////////////////////////////////////
-#define VOCALUBARY_GET(Category, Prototype)\
-    VOCALUBARY_SERVICE()->getFactorable(Category, Prototype)
+#define VOCABULARY_REMOVE(Category, Prototype)\
+    VOCABULARY_SERVICE()->removeFactorable(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////
-#define VOCALUBARY_REMOVE(Category, Prototype)\
-    VOCALUBARY_SERVICE()->removeFactorable(Category, Prototype)
+#define VOCABULARY_GET(Category, Prototype)\
+    VOCABULARY_SERVICE()->getFactorable(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////
+#define VOCABULARY_HAS(Category, Prototype)\
+    VOCABULARY_SERVICE()->hasFactorable(Category, Prototype)
+//////////////////////////////////////////////////////////////////////////
+
 
 
 

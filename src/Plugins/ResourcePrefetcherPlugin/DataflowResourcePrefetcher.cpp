@@ -29,7 +29,7 @@ namespace Mengine
         const FilePath & filePath = content->getFilePath();
         const ConstString & dataflowType = content->getDataflowType();
 
-        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
         if( PREFETCHER_SERVICE()
             ->prefetchData( fileGroup, filePath, dataflow, _observer ) == false )

@@ -3,9 +3,9 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
-
 #include "Kernel/FilePath.h"
 
 #include "Win32FileGroupDirectory.h"
@@ -58,10 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupPlugin::_initializePlugin()
     {
-        FILE_SERVICE()
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
-                , Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( STRINGIZE_FILEPATH_LOCAL( "" ) )
-            );
+        VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( STRINGIZE_FILEPATH_LOCAL( "" ) ) );
 
         Char currentPath[MENGINE_MAX_PATH];
         PLATFORM_SERVICE()
@@ -69,20 +66,14 @@ namespace Mengine
 
         FilePath relationPath = Helper::stringizeFilePath( currentPath );
 
-        FILE_SERVICE()
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )
-                , Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( relationPath )
-            );
+        VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( relationPath ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupPlugin::_finalizePlugin()
     {
-        FILE_SERVICE()
-            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" ) );
-
-        FILE_SERVICE()
-            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ) );
     }
 }

@@ -2326,7 +2326,7 @@ namespace Mengine
     bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class> >(_kernel))
+    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class> >(_kernel))
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );
@@ -3186,7 +3186,7 @@ namespace Mengine
     void NodeScriptEmbedding::ejecting()
     {
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
-    VOCALUBARY_REMOVE(STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class))
+    VOCABULARY_REMOVE(STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class))
 
         UNSCRIPT_CLASS_WRAPPING( Node );
         UNSCRIPT_CLASS_WRAPPING( Layer );

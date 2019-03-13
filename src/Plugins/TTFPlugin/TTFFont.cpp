@@ -102,7 +102,7 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            DataflowInterfacePtr dataflowFE = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+            DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
             FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
@@ -133,7 +133,7 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            DataflowInterfacePtr dataflowFE = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+            DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
             FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
@@ -182,7 +182,7 @@ namespace Mengine
             }
         }
 
-        DataflowInterfacePtr dataflowTTF = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+        DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
         TTFDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FUNCTION );
 
@@ -246,7 +246,7 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+            DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
                 
             if( PREFETCHER_SERVICE()
                 ->prefetchData( m_fileGroup, m_ttfFEPath, dataflow, _observer ) == false )
@@ -256,7 +256,7 @@ namespace Mengine
         }
 
         {
-            DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+            DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
             if( PREFETCHER_SERVICE()
                 ->prefetchData( m_fileGroup, m_ttfPath, dataflow, _observer ) == false )

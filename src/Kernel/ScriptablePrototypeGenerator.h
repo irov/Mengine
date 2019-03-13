@@ -41,7 +41,7 @@ namespace Mengine
             {
                 const ConstString & prototype = this->getPrototype();
 
-                ScriptWrapperInterfacePtr scriptWrapper = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
+                ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
 
                 if( scriptWrapper == nullptr )
                 {

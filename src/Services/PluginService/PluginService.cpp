@@ -36,16 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::_finalizeService()
     {
-        VectorPlugins reverse_plugins = m_plugins;
-        std::reverse( reverse_plugins.begin(), reverse_plugins.end() );
-
-        m_plugins.clear();
-
-        for( PluginDesc & desc : reverse_plugins )
-        {
-            desc.plugin->finalizePlugin();
-            desc.plugin = nullptr;
-        }
+        this->unloadPlugins();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const Char * _dynamicLibraryName )
@@ -127,6 +118,28 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::unloadPlugins()
+    {
+        VectorPlugins reverse_plugins = m_plugins;
+        std::reverse( reverse_plugins.begin(), reverse_plugins.end() );
+
+        m_plugins.clear();
+
+        for( PluginDesc & desc : reverse_plugins )
+        {
+            if( desc.plugin->isSystemPlugin() == true && 
+                this->isInitializeService() == true )
+            {
+                m_plugins.emplace_back( desc );
+
+                continue;
+            }
+
+            desc.plugin->finalizePlugin();
+            desc.plugin = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::addPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, const PluginInterfacePtr & _plugin )

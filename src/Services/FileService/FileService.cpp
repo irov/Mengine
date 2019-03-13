@@ -6,6 +6,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
 
@@ -33,9 +34,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
-        for( MapFileSystem::reverse_iterator
-            it = m_fileSystemMap.rbegin(),
-            it_end = m_fileSystemMap.rend();
+        for( MapFileGroups::reverse_iterator
+            it = m_fileGroups.rbegin(),
+            it_end = m_fileGroups.rend();
             it != it_end;
             ++it )
         {
@@ -44,36 +45,14 @@ namespace Mengine
             group->finalize();
         }
 
-        m_factoryFileGroups.clear();
-        m_fileSystemMap.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FileService::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
-    {
-        m_factoryFileGroups.emplace( _type, _factory );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void FileService::unregisterFileGroupFactory( const ConstString & _type )
-    {
-        TFactoryFileGroups::iterator it_found = m_factoryFileGroups.find( _type );
-
-        if( it_found == m_factoryFileGroups.end() )
-        {
-            LOGGER_ERROR( "not registry factory '%s'"
-                , _type.c_str()
-            );
-
-            return;
-        }
-
-        m_factoryFileGroups.erase( it_found );
+        m_fileGroups.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const Char * _doc )
     {
-        TFactoryFileGroups::iterator it_found = m_factoryFileGroups.find( _type );
+        FactoryPtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
 
-        if( it_found == m_factoryFileGroups.end() )
+        if( factory == nullptr )
         {
             LOGGER_ERROR( "not registry factory '%s'"
                 , _type.c_str()
@@ -81,8 +60,6 @@ namespace Mengine
 
             return nullptr;
         }
-
-        const FactoryPtr & factory = it_found->second;
 
 		FileGroupInterfacePtr fileGroup = factory->createObject( _doc );
 
@@ -106,9 +83,9 @@ namespace Mengine
             , _type.c_str()
         );
 
-        MapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
+        MapFileGroups::iterator it_find = m_fileGroups.find( _name );
 
-        if( it_find != m_fileSystemMap.end() )
+        if( it_find != m_fileGroups.end() )
         {
             LOGGER_ERROR( "already mount '%s'\n"
                 "Remount would be performed"
@@ -151,15 +128,15 @@ namespace Mengine
             *_fileGroup = fileGroup;
         }
 
-        m_fileSystemMap.emplace( _name, fileGroup );
+        m_fileGroups.emplace( _name, fileGroup );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileService::unmountFileGroup( const ConstString & _name )
     {
-        MapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
-        if( it_find == m_fileSystemMap.end() )
+        MapFileGroups::iterator it_find = m_fileGroups.find( _name );
+        if( it_find == m_fileGroups.end() )
         {
             LOGGER_ERROR( "not mount '%s'"
                 , _name.c_str()
@@ -177,16 +154,16 @@ namespace Mengine
             m_defaultFileGroup = nullptr;
         }
 
-        m_fileSystemMap.erase( it_find );
+        m_fileGroups.erase( it_find );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileService::hasFileGroup( const ConstString& _name, FileGroupInterfacePtr * _fileGroup ) const
     {
-        MapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
+        MapFileGroups::const_iterator it_find = m_fileGroups.find( _name );
 
-        if( it_find == m_fileSystemMap.end() )
+        if( it_find == m_fileGroups.end() )
         {
             return false;
         }
@@ -201,9 +178,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & FileService::getFileGroup( const ConstString & _name ) const
     {
-        MapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
+        MapFileGroups::const_iterator it_find = m_fileGroups.find( _name );
 
-        if( it_find == m_fileSystemMap.end() )
+        if( it_find == m_fileGroups.end() )
         {
             LOGGER_ERROR( "not mount '%s'"
                 , _name.c_str()

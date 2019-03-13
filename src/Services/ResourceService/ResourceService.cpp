@@ -181,7 +181,7 @@ namespace Mengine
 
             resource->setTags( _tags );
 
-            LoaderInterfacePtr loader = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
+            LoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
             if( loader == nullptr )
             {

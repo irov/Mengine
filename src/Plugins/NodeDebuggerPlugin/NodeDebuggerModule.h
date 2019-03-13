@@ -77,7 +77,7 @@ namespace Mengine
         bool absorbBoundingBox( const NodePtr & node, mt::box2f & _bb ) const;
 
     protected:
-        void privateInit();
+        bool privateInit();
         void recreateServer();
         void compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
         void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
@@ -111,6 +111,6 @@ namespace Mengine
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Vector<uint8_t> m_receivedData;
         VectorNodePath m_selectedNodePath;
-        ArchivatorInterfacePtr m_compressor;
+        ArchivatorInterfacePtr m_archivator;
     };
 }

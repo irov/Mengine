@@ -32,6 +32,7 @@ namespace Mengine
     protected:
         bool isInitializePlugin() const override;
         bool isAvailablePlugin() const override;
+        bool isSystemPlugin() const override;
 
     protected:
         void destroy() override;
@@ -40,6 +41,7 @@ namespace Mengine
         virtual bool _initializePlugin();
         virtual void _finalizePlugin();
         virtual bool _availablePlugin() const;
+        virtual bool _systemPlugin() const;
 
     protected:
         bool addDependencyService( const Char * _name );
@@ -49,6 +51,7 @@ namespace Mengine
         bool m_dynamicLoad;
         bool m_initializePlugin;
         bool m_availablePlugin;
+        bool m_systemPlugin;
 
         typedef Vector<String> VectorDependencyServices;
         VectorDependencyServices m_dependencyServices;

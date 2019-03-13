@@ -332,7 +332,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeUserDirectory_()
     {
-        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        Char userPath[MENGINE_MAX_PATH] = {0};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -562,6 +562,7 @@ namespace Mengine
 
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
+        SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( LoggerService );
 
         if( this->initializeLogEngine_() == false )
@@ -571,10 +572,7 @@ namespace Mengine
 
         SERVICE_CREATE( Platform );
 
-        
-
         SERVICE_CREATE( PluginService );
-
         SERVICE_CREATE( FileService );
 
         if( this->initializeFileEngine_() == false )
@@ -608,9 +606,8 @@ namespace Mengine
 
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
-        
+
         SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( VocabularyService );
 
         SERVICE_CREATE( RenderSystem );
         SERVICE_CREATE_SAFE( SoundSystem );
@@ -645,7 +642,7 @@ namespace Mengine
 
             if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
             {
-                Char userPath[MENGINE_MAX_PATH] = { 0 };
+                Char userPath[MENGINE_MAX_PATH] = {0};
                 PLATFORM_SERVICE()
                     ->getUserPath( userPath );
 
@@ -664,7 +661,7 @@ namespace Mengine
         SERVICE_CREATE( RenderTextureService );
 
         SERVICE_CREATE( SceneService );
-        SERVICE_CREATE( ResourceService );        
+        SERVICE_CREATE( ResourceService );
         SERVICE_CREATE( TextService );
         SERVICE_CREATE( WatchdogService );
         SERVICE_CREATE( GraveyardService );
@@ -839,7 +836,7 @@ namespace Mengine
         {
             VectorString devModules;
             CONFIG_VALUES( "DevModules", "Name", devModules );
-            
+
             for( const String & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
@@ -1011,7 +1008,10 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
-        SERVICE_FINALIZE( Mengine::PluginServiceInterface );
+
+        PLUGIN_SERVICE()
+            ->unloadPlugins();
+
         SERVICE_FINALIZE( Mengine::InputServiceInterface );
         SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
 
@@ -1033,7 +1033,6 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::ArchiveServiceInterface );
         SERVICE_FINALIZE( Mengine::MemoryServiceInterface );
-        SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
 
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
 
@@ -1044,6 +1043,8 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
+
+        SERVICE_FINALIZE( Mengine::PluginServiceInterface );
 
         if( m_fileLog != nullptr )
         {
@@ -1070,6 +1071,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
         SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
+        SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
 

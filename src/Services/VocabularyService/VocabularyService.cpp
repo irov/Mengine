@@ -1,7 +1,5 @@
 #include "VocabularyService.h"
 
-#include "Interface/ConfigServiceInterface.h"
-
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -20,9 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VocabularyService::_initializeService()
     {
-        uint32_t VocabularyHashTableSize = CONFIG_VALUE( "Engine", "VocabularyHashTableSize", 1024 );
-
-        m_mixins.reserve( VocabularyHashTableSize );
+        m_mixins.reserve( 1024 );
 
         return true;
     }
@@ -31,21 +27,19 @@ namespace Mengine
     {
         MENGINE_ASSERTION( m_mixins.empty(), ("Vocabulary not empty!") );
 
+#ifdef MENGINE_DEBUG
         for( const HashtableMixins::value_type & value : m_mixins )
         {
             const CategoryKey & key = value.key;
 
-            LOGGER_ERROR( "Vocabulary category %s key %s not clear"
+            LOGGER_ERROR( "Vocabulary category '%s' key '%s' not clear"
                 , key.category.c_str()
                 , key.type.c_str()
             );
         }
+#endif
 
         m_mixins.clear();
-
-#ifndef MENGINE_MASTER_RELEASE
-        m_mixinss.clear();
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable )
@@ -56,11 +50,7 @@ namespace Mengine
 
         m_mixins.insert( key, _factorable );
 
-#ifndef MENGINE_MASTER_RELEASE
-        m_mixinss[_category][_type] = _factorable;
-#endif
-
-        LOGGER_INFO( "add '%s:%s'"
+        LOGGER_INFO( "add vocabulary '%s:%s'"
             , _category.c_str()
             , _type.c_str()
         );
@@ -76,14 +66,10 @@ namespace Mengine
 
         MixinPtr mixin = m_mixins.remove( key );
 
-#ifndef MENGINE_MASTER_RELEASE
-        m_mixinss[_category].erase( _type );
-
-        if( m_mixinss[_category].empty() == true )
-        {
-            m_mixinss.erase( _category );
-        }
-#endif
+        LOGGER_INFO( "remove vocabulary '%s:%s'"
+            , _category.c_str()
+            , _type.c_str()
+        );
 
         return mixin;
     }
@@ -99,26 +85,33 @@ namespace Mengine
         return mixin;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_MASTER_RELEASE
-    //////////////////////////////////////////////////////////////////////////
-    void VocabularyService::foreachFactorable( const ConstString & _category, const LambdaFactorable & _lambda ) const
+    bool VocabularyService::hasFactorable( const ConstString & _category, const ConstString & _type ) const
     {
-        MapMixinss::const_iterator it_found = m_mixinss.find( _category );
+        CategoryKey key;
+        key.category = _category;
+        key.type = _type;
 
-        if( it_found == m_mixinss.end() )
+        if( m_mixins.find( key ) == nullptr )
         {
-            return;
+            return false;
         }
 
-        const MapMixins & mixins = it_found->second;
-
-        for( const MapMixins::value_type & value : mixins )
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void VocabularyService::foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const
+    {
+        for( const HashtableMixins::value_type & value : m_mixins )
         {
-            const ConstString & type = value.first;
-            const MixinPtr & factorable = value.second;
+            if( value.key.category != _category )
+            {
+                continue;
+            }
+
+            const ConstString & type = value.key.type;
+            const MixinPtr & factorable = value.element;
 
             _lambda( type, factorable );
         }
     }
-#endif
 }

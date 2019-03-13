@@ -1,7 +1,7 @@
 #include "LZ4Plugin.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "ArchivatorLZ4.h"
 
@@ -23,15 +23,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LZ4Plugin::_initializePlugin()
     {
-        ARCHIVE_SERVICE()
-            ->registerArchivator( STRINGIZE_STRING_LOCAL( "lz4" ), Helper::makeFactorableUnique<ArchivatorLZ4>() );
+        VOCABULARY_SET( ArchivatorInterface, STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ), Helper::makeFactorableUnique<ArchivatorLZ4>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void LZ4Plugin::_finalizePlugin()
     {
-        ARCHIVE_SERVICE()
-            ->unregisterArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
     }
 }

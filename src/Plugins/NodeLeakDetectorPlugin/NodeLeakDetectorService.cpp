@@ -32,6 +32,22 @@ namespace Mengine
     {
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_CREATE_OBJECT, this, &NodeLeakDetectorService::notifyDebugCreateObject );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_DESTROY_OBJECT, this, &NodeLeakDetectorService::notifyDebugDestroyObject );
+
+        LOGGER_STATISTIC( "==================================================================" );
+        LOGGER_STATISTIC( "==================================================================" );
+        LOGGER_STATISTIC( "**************************MEMORY LEAK*****************************" );
+        LOGGER_STATISTIC( "==================================================================" );
+        LOGGER_STATISTIC( "==================================================================" );
+
+        this->getNodeLeak( 0, []( const Factory * _factory, const Factorable *, const Char * _doc ){
+            LOGGER_STATISTIC( "leak '%s' doc: %s"
+                , _factory->getName()
+                , _doc
+            );
+        } );
+
+        LOGGER_STATISTIC( "==================================================================" );
+        LOGGER_STATISTIC( "==================================================================" );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeLeakDetectorService::increfGeneration()

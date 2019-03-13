@@ -11,6 +11,7 @@ namespace Mengine
         : m_dynamicLoad( false )
         , m_initializePlugin( false )
         , m_availablePlugin( true )
+        , m_systemPlugin( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,6 +34,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::_systemPlugin() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PluginBase::initializePlugin()
     {
         if( m_initializePlugin == true )
@@ -53,7 +59,18 @@ namespace Mengine
 
         bool successful = this->_initializePlugin();
 
+        if( successful == false )
+        {
+            LOGGER_WARNING( "plugin '%s' not initialize"
+                , this->getPluginName()
+            );
+
+            return false;
+        }
+
         m_initializePlugin = successful;
+
+        m_systemPlugin = this->_systemPlugin();
 
         return m_initializePlugin;
     }
@@ -94,6 +111,11 @@ namespace Mengine
     bool PluginBase::isAvailablePlugin() const
     {
         return m_availablePlugin;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::isSystemPlugin() const
+    {
+        return m_systemPlugin;
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::destroy()

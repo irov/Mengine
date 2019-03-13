@@ -2,7 +2,7 @@
 #include "ImageVerifyHTF.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Stream.h"
 
@@ -36,8 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderHTF::_initialize()
     {
-        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
         if( archivator == nullptr )
         {

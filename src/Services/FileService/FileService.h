@@ -19,10 +19,6 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
-    public:
-        void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) override;
-        void unregisterFileGroupFactory( const ConstString & _type ) override;
-
     protected:
         FileGroupInterfacePtr createFileGroup( const ConstString & _type, const Char * _doc );
 
@@ -34,6 +30,7 @@ namespace Mengine
         bool hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const override;
         const FileGroupInterfacePtr & getFileGroup( const ConstString& _fileGroupName ) const override;
 
+    public:
         const FileGroupInterfacePtr & getDefaultFileGroup() const override;
 
     public:
@@ -43,10 +40,7 @@ namespace Mengine
     private:
         FileGroupInterfacePtr m_defaultFileGroup;
 
-        typedef Map<ConstString, FactoryPtr> TFactoryFileGroups;
-        TFactoryFileGroups m_factoryFileGroups;
-
-        typedef Map<ConstString, FileGroupInterfacePtr> MapFileSystem;
-        MapFileSystem m_fileSystemMap;
+        typedef Map<ConstString, FileGroupInterfacePtr> MapFileGroups;
+        MapFileGroups m_fileGroups;
     };
 }

@@ -50,7 +50,7 @@ namespace Mengine
     {
         const ConstString & resourceType = _resource->getType();
 
-        const ResourceValidatorInterfacePtr & validator = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
+        const ResourceValidatorInterfacePtr & validator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
 
         if( validator == nullptr )
         {

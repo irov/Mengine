@@ -112,9 +112,15 @@ namespace Mengine
     private:
         void destroy() override
         {
+            this->_destroyService();
             this->_destroy();
 
             delete this;
+        }
+
+        virtual void _destroyService()
+        {
+            //Empty
         }
 
     protected:

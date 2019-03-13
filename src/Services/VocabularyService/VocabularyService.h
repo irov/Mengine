@@ -27,11 +27,10 @@ namespace Mengine
         bool setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable ) override;
         MixinPointer removeFactorable( const ConstString & _category, const ConstString & _type ) override;
         MixinPointer getFactorable( const ConstString & _category, const ConstString & _type ) const override;
+        bool hasFactorable( const ConstString & _category, const ConstString & _type ) const override;
 
-#ifndef MENGINE_MASTER_RELEASE
     protected:
-        void foreachFactorable( const ConstString & _category, const LambdaFactorable & _lambda ) const override;
-#endif
+        void foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const override;
 
     protected:
         struct CategoryKey
@@ -55,11 +54,5 @@ namespace Mengine
 
         typedef Hashtable<CategoryKey, MixinPtr, CategoryKeyHashgen> HashtableMixins;
         HashtableMixins m_mixins;
-
-#ifndef MENGINE_MASTER_RELEASE
-        typedef Map<ConstString, MixinPtr> MapMixins;
-        typedef Map<ConstString, MapMixins> MapMixinss;
-        MapMixinss m_mixinss;
-#endif
     };
 }

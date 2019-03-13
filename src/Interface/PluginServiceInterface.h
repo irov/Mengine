@@ -16,6 +16,7 @@ namespace Mengine
     public:
         virtual bool loadPlugin( const Char * _dynamicLibraryName ) = 0;
         virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic ) = 0;
+        virtual void unloadPlugins() = 0;
 
     public:
         virtual bool addPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, const PluginInterfacePtr & _plugin ) = 0;

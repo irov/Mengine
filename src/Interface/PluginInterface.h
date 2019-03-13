@@ -31,6 +31,7 @@ namespace Mengine
     public:
         virtual bool isInitializePlugin() const = 0;
         virtual bool isAvailablePlugin() const = 0;
+        virtual bool isSystemPlugin() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PluginInterface> PluginInterfacePtr;

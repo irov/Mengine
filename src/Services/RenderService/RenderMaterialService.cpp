@@ -1010,7 +1010,7 @@ namespace Mengine
 
         if( it_found != m_materialStageIndexer.end() )
         {
-            LOGGER_ERROR( "RenderMaterialService::createRenderStageGroup '%s' is already created"
+            LOGGER_ERROR( "'%s' is already created"
                 , _name.c_str()
             );
 
@@ -1021,7 +1021,7 @@ namespace Mengine
 
         if( cache_stage == nullptr )
         {
-            LOGGER_ERROR( "RenderMaterialService::createRenderStageGroup '%s' invalid cache"
+            LOGGER_ERROR( "'%s' invalid cache"
                 , _name.c_str()
             );
 

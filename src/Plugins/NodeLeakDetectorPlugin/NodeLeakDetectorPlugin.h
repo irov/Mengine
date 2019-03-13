@@ -15,6 +15,7 @@ namespace Mengine
 
     protected:
         bool _availablePlugin() const override;
+        bool _systemPlugin() const override;
 
     protected:
         bool _initializePlugin() override;

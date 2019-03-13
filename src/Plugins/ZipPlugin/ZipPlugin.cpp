@@ -2,7 +2,7 @@
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "FileGroupZip.h"
 #include "ArchivatorZip.h"
@@ -25,21 +25,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ZipPlugin::_initializePlugin()
     {
-        FILE_SERVICE()
-            ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactoryDefault<FileGroupZip>() );
-
-        ARCHIVE_SERVICE()
-            ->registerArchivator( STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactorableUnique<ArchivatorZip>() );
+        VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactoryDefault<FileGroupZip>() );
+        VOCABULARY_SET( ArchivatorInterface, STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ), Helper::makeFactorableUnique<ArchivatorZip>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ZipPlugin::_finalizePlugin()
     {
-        FILE_SERVICE()
-            ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip" ) );
-
-        ARCHIVE_SERVICE()
-            ->unregisterArchivator( STRINGIZE_STRING_LOCAL( "zip" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "zip" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ) );
     }
 }

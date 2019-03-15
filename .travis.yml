@@ -23,7 +23,7 @@ script:
     
     - mkdir -p build_temp/build_xcode_ios_sdl/$BUILD_CONFIGURATION
     - pushd build_temp/build_xcode_ios_sdl/$BUILD_CONFIGURATION
-    - cmake -G"Xcode" "$PWD/../../../CMake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_CONFIGURATION -DMENGINE_DEPENDENCE_CURL=OFF -DCMAKE_TOOLCHAIN_FILE="$PWD/../../../dependencies/ios-cmake/ios.toolchain.cmake" -DIOS_PLATFORM=OS64 -DENABLE_BITCODE=FALSE
+    - cmake -G"Xcode" "$PWD/../../../CMake/Depends_Xcode_IOS_SDL" -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DCMAKE_CONFIGURATION_TYPES:STRING=$BUILD_CONFIGURATION -DMENGINE_BUILD_ONLY_EXECUTABLE_MODULE=ON -DMENGINE_DEPENDENCE_CURL=OFF -DCMAKE_TOOLCHAIN_FILE="$PWD/../../../dependencies/ios-cmake/ios.toolchain.cmake" -DIOS_PLATFORM=OS64 -DENABLE_BITCODE=FALSE
     - cmake --build . -- -quiet
     - popd
     

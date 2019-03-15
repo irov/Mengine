@@ -740,7 +740,7 @@ namespace Mengine
 	{
 		if( m_composition == nullptr )
 		{
-			LOGGER_ERROR( "name '%s' invalid test layer '%s' not compile"
+			LOGGER_ERROR( "movie2 '%s' not compile (layer '%s')"
 				, this->getName().c_str()
 				, _name.c_str()
 			);
@@ -2055,9 +2055,9 @@ namespace Mengine
             return false;
         }
 
-        const Movie2DataInterfacePtr & movieData = m_resourceMovie2->getMovieData();
+        const Movie2DataInterfacePtr & data = m_resourceMovie2->getData();
 
-        const aeMovieData * data = movieData->getMovieData();
+        const aeMovieData * movieData = data->getMovieData();
 
         aeMovieCompositionProviders providers;
         ae_clear_movie_composition_providers( &providers );
@@ -2089,7 +2089,7 @@ namespace Mengine
         providers.subcomposition_deleter = &__movie_subcomposition_deleter;
         providers.subcomposition_state = &__movie_subcomposition_state;
 
-        const aeMovieComposition * composition = ae_create_movie_composition( data, compositionData, AE_TRUE, &providers, this );
+        const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
         if( composition == nullptr )
         {

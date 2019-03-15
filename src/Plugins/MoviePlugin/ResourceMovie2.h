@@ -68,17 +68,18 @@ namespace Mengine
         ~ResourceMovie2() override;
 
     public:
-        bool hasComposition( const ConstString & _name ) const;
-        float getCompositionDuration( const ConstString & _name ) const;
-        float getCompositionFrameDuration( const ConstString & _name ) const;
+        bool hasComposition( const ConstString & _compositionName ) const;
+        bool hasCompositionLayer( const ConstString & _compositionName, const ConstString & _layerName ) const;
+        float getCompositionDuration( const ConstString & _compositionName ) const;
+        float getCompositionFrameDuration( const ConstString & _compositionName ) const;
 
     public:
-        const Movie2DataInterfacePtr & getMovieData() const;
-        const aeMovieCompositionData * getCompositionData( const ConstString & _name ) const;
+        const Movie2DataInterfacePtr & getData() const;
+        const aeMovieCompositionData * getCompositionData( const ConstString & _compositionName ) const;
 
     public:
         void setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition );
-        const ResourceMovie2CompositionDesc * getCompositionDesc( const ConstString & _name ) const;
+        const ResourceMovie2CompositionDesc * getCompositionDesc( const ConstString & _compositionName ) const;
 
     public:
         typedef Lambda<void( const ConstString &, const ResourceMovie2CompositionDesc & )> LambdaCompositionDescs;
@@ -89,7 +90,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        Movie2DataInterfacePtr m_movieData;
+        Movie2DataInterfacePtr m_data;
 
         typedef Map<ConstString, ResourceMovie2CompositionDesc> MapCompositions;
         MapCompositions m_compositions;

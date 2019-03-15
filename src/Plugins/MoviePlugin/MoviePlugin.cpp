@@ -389,6 +389,7 @@ namespace Mengine
 
             pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( kernel, "ResourceMovie2", false )
                 .def( "hasComposition", &ResourceMovie2::hasComposition )
+                .def( "hasCompositionLayer", &ResourceMovie2::hasCompositionLayer )
                 .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
                 .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
                 ;

@@ -61,10 +61,10 @@ namespace Mengine
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "global" ), Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( STRINGIZE_FILEPATH_LOCAL( "" ) ) );
 
         Char currentPath[MENGINE_MAX_PATH];
-        PLATFORM_SERVICE()
+        size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
-        FilePath relationPath = Helper::stringizeFilePath( currentPath );
+        FilePath relationPath = Helper::stringizeFilePathSize( currentPath, currentPathLen );
 
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( relationPath ) );
 

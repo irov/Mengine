@@ -102,7 +102,7 @@ namespace Mengine
             std::copy( sdl_unicode, sdl_unicode + unicodeSize, _unicode );
         }
 
-        if( _utf8 != nullptr )
+        if( _unicode != nullptr )
         {
             _unicode[unicodeSize] = L'\0';
         }

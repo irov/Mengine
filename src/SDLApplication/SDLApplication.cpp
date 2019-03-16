@@ -525,7 +525,6 @@ namespace Mengine
         m_serviceProvider = serviceProvider;
 
         SERVICE_CREATE( FactoryService );
-
         SERVICE_CREATE( OptionsService );
 
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
@@ -542,6 +541,7 @@ namespace Mengine
 
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
+        SERVICE_CREATE( VocabularyService );
 
         if( this->initializeLoggerEngine_() == false )
         {
@@ -549,9 +549,7 @@ namespace Mengine
         }
 
         SERVICE_CREATE( UnicodeSystem );
-
         SERVICE_CREATE( Platform );
-
         SERVICE_CREATE( PluginService );
 
         if( this->initializeFileEngine_() == false )
@@ -574,7 +572,6 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( ArchiveService );
 
         if( this->initializeArchiveService_() == false )
@@ -583,9 +580,7 @@ namespace Mengine
         }
 
         SERVICE_CREATE( ThreadSystem );
-        SERVICE_CREATE( ThreadService );
-
-        
+        SERVICE_CREATE( ThreadService );        
 
         if( this->initializeRenderEngine_() == false )
         {
@@ -606,19 +601,15 @@ namespace Mengine
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
         SERVICE_CREATE( EnumeratorService );
-
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
-
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
         SERVICE_CREATE( Framework );
-
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );
-
         SERVICE_CREATE( ChronometerService );
         SERVICE_CREATE( AccountService );
         SERVICE_CREATE( SceneService );

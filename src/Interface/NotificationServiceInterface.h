@@ -152,9 +152,7 @@ namespace Mengine
         template<class ... Args>
         inline bool notify( uint32_t _id, const Args & ... _args )
         {
-            ArgsObserverVisitorCallable<Args...> visitor( std::make_tuple( _args... ) );
-
-            bool successful = this->visitObservers( _id, &visitor );
+            bool successful = this->notify_tuple( _id, std::make_tuple( _args... ) );
 
             return successful;
         }

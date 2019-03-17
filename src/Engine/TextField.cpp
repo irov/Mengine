@@ -52,14 +52,9 @@ namespace Mengine
             return false;
         }
 
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
-
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
-
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, this, &TextField::notifyChangeTextAliasArguments );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, this, &TextField::notifyChangeTextAliasArguments );
 
         this->invalidateTextLines();
 
@@ -68,11 +63,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_deactivate()
     {
-        Node::_deactivate();
-
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_POST );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_TEXT_MODE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS );
+
+        Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_compile()

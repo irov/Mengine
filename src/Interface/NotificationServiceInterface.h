@@ -101,7 +101,7 @@ namespace Mengine
     class ArgsObserverVisitorCallable
         : public ObserverVisitorCallableInterface
     {
-        typedef ArgsObserverCallable< std::remove_reference_t<Args> ...> args_callable_type;
+        typedef ArgsObserverCallable< std::remove_const_t<std::remove_reference_t<Args>> ...> args_callable_type;
 
     public:
         ArgsObserverVisitorCallable( const Tuple<Args...> & _args )

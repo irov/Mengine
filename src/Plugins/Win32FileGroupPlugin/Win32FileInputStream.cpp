@@ -37,7 +37,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
 		if( SERVICE_EXIST( NotificationServiceInterface ) == true )
 		{
-			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_fileName.c_str(), m_streaming );
+			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
 		}
 #endif
 
@@ -53,9 +53,10 @@ namespace Mengine
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
 #ifdef MENGINE_DEBUG
-        m_relationPath = _relationPath.c_str();
-        m_folderPath = _folderPath.c_str();
-        m_fileName = _filePath.c_str();
+        m_relationPath = _relationPath;
+        m_folderPath = _folderPath;
+        m_filePath = _filePath;
+
 		m_streaming = _streaming;
 #endif
 

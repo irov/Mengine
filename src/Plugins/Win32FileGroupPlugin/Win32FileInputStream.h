@@ -60,9 +60,9 @@ namespace Mengine
         STDEX_THREAD_GUARD_INIT;
 
 #ifdef MENGINE_DEBUG
-        String m_relationPath;
-        String m_folderPath;
-        String m_fileName;
+        FilePath m_relationPath;
+        FilePath m_folderPath;
+        FilePath m_filePath;
 
 		bool m_streaming;
 #endif

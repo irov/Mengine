@@ -22,7 +22,9 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
+#ifdef MENGINE_DEBUG
         , m_streaming( false )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,6 +35,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLFileInputStream::close_()
     {
+#ifdef MENGINE_DEBUG
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
+        }
+#endif
+
         if( m_rwops != nullptr )
         {
             SDL_RWclose( m_rwops );
@@ -48,6 +57,8 @@ namespace Mengine
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
+
+        m_streaming = _streaming;
 #endif
 
         Char fullPath[MENGINE_MAX_PATH];
@@ -87,8 +98,6 @@ namespace Mengine
         m_carriage = 0;
         m_capacity = 0;
         m_reading = 0;
-
-        m_streaming = _streaming;
 
         if( m_offset != 0 )
         {
@@ -137,8 +146,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_SERVICE()
-                ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
         }
 #endif
 

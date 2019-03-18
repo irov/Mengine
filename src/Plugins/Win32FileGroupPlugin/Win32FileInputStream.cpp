@@ -21,6 +21,9 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
+#ifdef MENGINE_DEBUG
+		, m_streaming( false )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,6 +34,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32FileInputStream::close_()
     {
+#ifdef MENGINE_DEBUG
+		if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+		{
+			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_fileName.c_str(), m_streaming );
+		}
+#endif
+
         if( m_hFile != INVALID_HANDLE_VALUE )
         {
             ::CloseHandle( m_hFile );
@@ -44,12 +54,13 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         m_relationPath = _relationPath.c_str();
-        m_folder = _folderPath.c_str();
+        m_folderPath = _folderPath.c_str();
         m_fileName = _filePath.c_str();
+		m_streaming = _streaming;
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath, _streaming ) == false )
+        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
         {
             return false;
         }
@@ -107,9 +118,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath, bool _streaming )
+    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
     {
-        MENGINE_UNUSED( _streaming );
         size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
         
         if( fullPathLen == MENGINE_PATH_INVALID_LENGTH )
@@ -141,8 +151,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_SERVICE()
-                ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), _streaming );
+			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
         }
 #endif
 

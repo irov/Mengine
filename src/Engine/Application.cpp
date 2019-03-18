@@ -609,8 +609,7 @@ namespace Mengine
         PLAYER_SERVICE()
             ->initializeRenderResources();
 
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
+		NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
         GAME_SERVICE()
             ->setRenderViewport( m_renderViewport, m_contentResolution );
@@ -887,20 +886,14 @@ namespace Mengine
 
                 s_text_debug = !s_text_debug;
 
-                NOTIFICATION_SERVICE()
-                    ->notify( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
+                NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
             }
 
             if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
-                NOTIFICATION_SERVICE()
-                    ->notify( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
-
-                NOTIFICATION_SERVICE()
-                    ->notify( NOTIFICATOR_RELOAD_LOCALE );
-
-                NOTIFICATION_SERVICE()
-                    ->notify( NOTIFICATOR_RELOAD_LOCALE_POST );
+				NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_PREPARE );
+				NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE );
+				NOTIFICATION_NOTIFY( NOTIFICATOR_RELOAD_LOCALE_POST );
 
                 const ConstString & locale = APPLICATION_SERVICE()
                     ->getLocale();
@@ -1021,8 +1014,7 @@ namespace Mengine
     {
         if( m_debugFileOpen == true )
         {
-            NOTIFICATION_SERVICE()
-                ->addObserverMethod( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
+			NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
         }
         else
         {
@@ -1774,8 +1766,7 @@ namespace Mengine
         RENDER_SERVICE()
             ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
 
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
+		NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
         if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
         {
@@ -1908,14 +1899,9 @@ namespace Mengine
             , prevLocale.c_str()
         );
 
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
-
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
-
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, m_locale );
+		NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_PREPARE, prevLocale, m_locale );
+		NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
+		NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_LOCALE_POST, prevLocale, m_locale );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getLocale() const

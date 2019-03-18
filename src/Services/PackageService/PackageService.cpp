@@ -32,8 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::_initializeService()
     {
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
+		NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
         m_factoryPackage = new FactoryPool<Package, 8>();
 
@@ -394,8 +393,7 @@ namespace Mengine
             }
         }
 
-        if( NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_ENGINE_ENABLE_PACKAGES ) == false )
+        if( NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_ENABLE_PACKAGES ) == false )
         {
             LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!" );
 

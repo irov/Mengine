@@ -219,8 +219,7 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
             if( _ignored == false )
             {
-                if( NOTIFICATION_SERVICE()
-                    ->notify( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, resource ) == false )
+                if( NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, resource ) == false )
                 {
                     LOGGER_ERROR( "resource '%s' type [%s] invalid convert"
                         , name.c_str()

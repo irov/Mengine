@@ -2,6 +2,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Tuple.h"
+#include "Config/Lambda.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
@@ -28,17 +29,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ObserverCallableInterface> ObserverCallableInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    template<class ... Args>
+    template<uint32_t ID>
     class ArgsObserverCallable
         : public ObserverCallableInterface
     {
     public:
-        virtual void call( Args ... _args ) = 0;
+        virtual void call( const typename Notificator<ID>::args_type & _args ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class C, class M, class ... Args>
+    template<uint32_t ID, class C, class M, class ... Args>
     class MethodObserverCallable
-        : public ArgsObserverCallable<Args ...>
+		: public ArgsObserverCallable<ID>
     {
     public:
         MethodObserverCallable( C * _self, M _method )
@@ -54,77 +55,45 @@ namespace Mengine
         }
 
     protected:
-        void call( Args ... _args ) override
+        void call( const typename Notificator<ID>::args_type & _args ) override
         {
-            (m_self->*m_method)(_args...);
+			this->call_with_tuple( _args, std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
         }
+
+		template<uint32_t ... I>
+		void call_with_tuple( const typename Notificator<ID>::args_type & _args, std::integer_sequence<uint32_t, I...> )
+		{
+			(m_self->*m_method)(std::get<I>( _args )...);
+		}
 
     protected:
         C * m_self;
         M m_method;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class T>
+    template<uint32_t ID, class T>
     class GeneratorMethodObserverCallable;
     //////////////////////////////////////////////////////////////////////////
-    template<class C, class ... P>
-    class GeneratorMethodObserverCallable<void (C::*)(P...)>
-        : public MethodObserverCallable < C, void (C::*)(P...), std::remove_const_t<std::remove_reference_t<P>> ... >
+    template<uint32_t ID, class C, class ... P>
+    class GeneratorMethodObserverCallable<ID, void (C::*)(P...)>
+		: public MethodObserverCallable<ID, C, void (C::*)(P...), P ...>
     {
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) )
-            : MethodObserverCallable<C, void (C::*)(P...), std::remove_const_t<std::remove_reference_t<P>> ...>( _self, _method )
+			: MethodObserverCallable<ID, C, void (C::*)(P...), P ...>( _self, _method )
         {
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class C, class ... P>
-    class GeneratorMethodObserverCallable<void (C::*)(P...) const>
-        : public MethodObserverCallable < C, void (C::*)(P...) const, std::remove_const_t<std::remove_reference_t<P>> ... >
+    template<uint32_t ID, class C, class ... P>
+    class GeneratorMethodObserverCallable<ID, void (C::*)(P...) const>
+        : public MethodObserverCallable<ID, C, void (C::*)(P...) const, P ...>
     {
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) const )
-            : MethodObserverCallable<C, void (C::*)(P...) const, std::remove_const_t<std::remove_reference_t<P>> ...>( _self, _method )
+			: MethodObserverCallable<ID, C, void (C::*)(P...) const, P ...>( _self, _method )
         {
         }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class ObserverVisitorCallableInterface
-    {
-    public:
-        virtual void visit( const ObserverCallableInterfacePtr & _callable ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ObserverVisitorCallableInterface> ObserverVisitorCallableInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    template<class ... Args>
-    class ArgsObserverVisitorCallable
-        : public ObserverVisitorCallableInterface
-    {
-        typedef ArgsObserverCallable< std::remove_const_t<std::remove_reference_t<Args>> ...> args_callable_type;
-
-    public:
-        ArgsObserverVisitorCallable( const Tuple<Args...> & _args )
-            : m_args( _args )
-        {
-        }
-
-    protected:
-        void visit( const ObserverCallableInterfacePtr & _callable ) override
-        {
-            args_callable_type * callable_args = _callable.getT<args_callable_type *>();
-
-            this->call_with_tuple( callable_args, std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
-        }
-
-        template<uint32_t ... I>
-        void call_with_tuple( args_callable_type * _callable, std::integer_sequence<uint32_t, I...> )
-        {
-            _callable->call( std::get<I>( m_args )... );
-        }
-
-    protected:
-        const Tuple<Args...> & m_args;
     };
     //////////////////////////////////////////////////////////////////////////
     class NotificationServiceInterface
@@ -137,32 +106,39 @@ namespace Mengine
         virtual void removeObserver( uint32_t _id, const ObservablePtr & _observer ) = 0;
 
     public:
-        template<class C, class M>
-        void addObserverMethod( uint32_t _id, C * _self, M _method )
+        template<uint32_t ID, class C, class M>
+		void addObserverMethod( C * _self, M _method )
         {
-            ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<M>( _self, _method ) );
+			ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
 
-            this->addObserver( _id, ObservablePtr( _self ), callable );
+            this->addObserver( ID, ObservablePtr( _self ), callable );
         }
 
     public:
-        virtual bool visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) = 0;
+		typedef Lambda<void( const ObserverCallableInterfacePtr & )> LambdaObserver;
+        virtual bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) = 0;
 
     public:
-        template<class ... Args>
-        inline bool notify( uint32_t _id, const Args & ... _args )
+        template<uint32_t ID, class ... Args>
+        inline bool notify( const Args & ... _args )
         {
-            bool successful = this->notify_tuple( _id, std::make_tuple( _args... ) );
+			bool successful = this->notify_tuple<ID>( std::make_tuple( _args... ) );
 
             return successful;
         }
 
-        template<class ... Args>
-        inline bool notify_tuple( uint32_t _id, const Tuple<Args...> & _args )
+	protected:
+        template<uint32_t ID>
+		inline bool notify_tuple( const typename Notificator<ID>::args_type & _args )
         {
-            ArgsObserverVisitorCallable<Args...> visitor( _args );
+			typedef ArgsObserverCallable<ID> args_observer_type;
 
-            bool successful = this->visitObservers( _id, &visitor );
+			bool successful = this->visitObservers( ID, [&_args]( const ObserverCallableInterfacePtr & _observer )
+			{
+				args_observer_type * args_observer = _observer.getT<args_observer_type *>();
+
+				args_observer->call( _args );
+			} );
 
             return successful;
         }
@@ -173,7 +149,7 @@ namespace Mengine
     ((Mengine::NotificationServiceInterface*)SERVICE_GET(Mengine::NotificationServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method )\
-    NOTIFICATION_SERVICE()->addObserverMethod( ID, Observer, Method )
+    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )
@@ -181,6 +157,6 @@ namespace Mengine
 #define NOTIFICATION_REMOVEOBSERVER_THIS( ID )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Mengine::ObservablePtr(this) )
 //////////////////////////////////////////////////////////////////////////
-#define NOTIFICATION_NOTIFY( ID, ARGS )\
-    NOTIFICATION_SERVICE()->notify_tuple( ID, std::make_tuple ARGS )
+#define NOTIFICATION_NOTIFY( ID, ... )\
+    NOTIFICATION_SERVICE()->notify<ID>( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////

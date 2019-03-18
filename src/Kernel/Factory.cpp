@@ -46,7 +46,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object, _doc) );
+			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, this, object, _doc );
         }
 #endif
 
@@ -60,7 +60,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, (this, _object) );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, this, _object );
         }
 #endif
 

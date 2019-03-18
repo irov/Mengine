@@ -1355,6 +1355,17 @@ namespace Mengine
                 return false;
             }
 
+            if( _kernel->unicode_check( _defaultValue ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' default value is not UNICODE '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , _kernel->object_repr( _defaultValue )
+                );
+
+                return false;
+            }
+
             PyAccountSettingProviderPtr provider = nullptr;
 
             if( _cb.is_none() == false )
@@ -1395,7 +1406,7 @@ namespace Mengine
 
             if( account == nullptr )
             {
-                LOGGER_ERROR( "s_changeAccountSetting: account not found '%s'"
+                LOGGER_ERROR( "account not found '%s'"
                     , _accountID.c_str()
                 );
 
@@ -1404,9 +1415,20 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "s_changeAccountSetting: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
+                );
+
+                return false;
+            }
+
+            if( _kernel->unicode_check( _value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' value is not UNICODE '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , _kernel->object_repr( _value )
                 );
 
                 return false;

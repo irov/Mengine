@@ -55,14 +55,14 @@ namespace Mengine
 
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE];
 
-		bool m_streaming;
-
         STDEX_THREAD_GUARD_INIT;
 
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;
 		FilePath m_folderPath;
 		FilePath m_filePath;
+
+        bool m_streaming;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

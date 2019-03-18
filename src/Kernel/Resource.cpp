@@ -60,7 +60,7 @@ namespace Mengine
         bool result = this->compile();
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, (this) );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this );
 #endif
 
         return result;
@@ -71,7 +71,7 @@ namespace Mengine
         this->release();
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, (this) );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

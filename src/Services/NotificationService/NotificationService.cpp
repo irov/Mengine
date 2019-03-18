@@ -97,7 +97,7 @@ namespace Mengine
         this->removeObserver_( _id, _observer );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NotificationService::visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor )
+    bool NotificationService::visitObservers( uint32_t _id, const LambdaObserver & _lambda )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
@@ -118,7 +118,7 @@ namespace Mengine
         {
             try
             {
-                _visitor->visit( desc.callable );
+				_lambda( desc.callable );
             }
             catch( const ExceptionNotificationFailed & )
             {

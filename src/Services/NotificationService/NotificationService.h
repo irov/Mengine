@@ -26,7 +26,7 @@ namespace Mengine
         void removeObserver( uint32_t _id, const ObservablePtr & _observer ) override;
 
     public:
-        bool visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) override;
+        bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
     public:
         void addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable );

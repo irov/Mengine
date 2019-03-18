@@ -28,8 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceConvertService::_initializeService()
     {
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, this, &ResourceConvertService::convertResource_ );
+		NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, this, &ResourceConvertService::convertResource_ );
 
         return true;
     }

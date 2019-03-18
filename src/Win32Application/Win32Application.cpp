@@ -979,8 +979,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( Mengine::NotificationServiceInterface ) == true )
         {
-            NOTIFICATION_SERVICE()
-                ->notify( NOTIFICATOR_ENGINE_FINALIZE );
+			NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
         }
 
         SERVICE_PROVIDER_STOP();

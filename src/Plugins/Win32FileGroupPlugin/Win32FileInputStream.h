@@ -40,7 +40,7 @@ namespace Mengine
         bool memory( void ** _memory, size_t * _size ) override;
 
     protected:
-        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath, bool _streaming );
+        bool openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath );
         void close_();
         bool read_( void * _buf, size_t _size, size_t & _read );
         bool seek_( size_t _pos );
@@ -61,8 +61,10 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         String m_relationPath;
-        String m_folder;
+        String m_folderPath;
         String m_fileName;
+
+		bool m_streaming;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

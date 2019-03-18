@@ -23,8 +23,7 @@ namespace Mengine
             return true;
         }
 
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderViewport::notifyChangeWindowResolution );
+		NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderViewport::notifyChangeWindowResolution );
 
         this->invalidateViewport_();
 

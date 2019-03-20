@@ -47,8 +47,6 @@
 #include "Kernel/ResourceImage.h"
 #include "Engine/ResourceCursorICO.h"
 
-#include "Kernel/Affector.h"
-
 #include "Kernel/String.h"
 #include "Kernel/CRC32.h"
 

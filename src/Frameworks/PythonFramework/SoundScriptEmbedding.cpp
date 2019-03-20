@@ -9,7 +9,6 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Kernel/Affectorable.h"
-#include "Kernel/Affector.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/AssertionFactory.h"
 

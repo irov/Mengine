@@ -83,6 +83,7 @@ ADD_FILTER(
 Affector
 	Affector.h
 	Affector.cpp
+    AffectorCallbackInterface.h
     AffectorHelper.h
     AffectorHelper.cpp
 	AffectorType.h

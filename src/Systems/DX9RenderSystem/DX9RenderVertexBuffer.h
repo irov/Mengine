@@ -27,7 +27,7 @@ namespace Mengine
         uint32_t getVertexSize() const override;
 
     protected:
-        bool enable() override;
+        void enable() override;
         void disable() override;
 
     protected:

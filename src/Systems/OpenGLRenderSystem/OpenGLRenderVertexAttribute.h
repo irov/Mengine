@@ -24,7 +24,7 @@ namespace Mengine
         bool compile( GLuint _program );
 
     public:
-        bool enable() override;
+        void enable() override;
         void disable() override;
 
     protected:

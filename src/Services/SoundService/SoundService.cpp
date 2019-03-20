@@ -1109,6 +1109,51 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SoundService::isEmitterStop( const SoundIdentityInterfacePtr & _identity ) const
+    {
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
+            return false;
+        }
+
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+
+        return identity->state == ESS_STOP;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::isEmitterPlay( const SoundIdentityInterfacePtr & _identity ) const
+    {
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
+            return false;
+        }
+
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+
+        return identity->state == ESS_PLAY;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::isEmitterPause( const SoundIdentityInterfacePtr & _identity ) const
+    {
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "identity is nullptr"
+            );
+
+            return false;
+        }
+
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+
+        return identity->state == ESS_PAUSE;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SoundService::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )
     {
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);

@@ -19,7 +19,7 @@ namespace Mengine
         virtual void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) = 0;
 
     public:
-        virtual bool enable() = 0;
+        virtual void enable() = 0;
         virtual void disable() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

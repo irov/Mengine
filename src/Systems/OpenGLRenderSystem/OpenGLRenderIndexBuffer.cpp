@@ -121,14 +121,9 @@ namespace Mengine
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderIndexBuffer::enable()
+    void OpenGLRenderIndexBuffer::enable()
     {
-        IF_GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) )
-        {
-            return false;
-        }
-
-        return true;
+        GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderIndexBuffer::disable()

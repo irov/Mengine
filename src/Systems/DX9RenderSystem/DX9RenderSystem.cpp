@@ -1298,10 +1298,7 @@ namespace Mengine
             return true;
         }
 
-        if( _vertexBuffer->enable() == false )
-        {
-            return false;
-        }
+        _vertexBuffer->enable();
 
         m_vertexBufferEnable = true;
 
@@ -1336,10 +1333,7 @@ namespace Mengine
             return true;
         }
 
-        if( _indexBuffer->enable() == false )
-        {
-            return false;
-        }
+        _indexBuffer->enable();
 
         m_indexBufferEnable = true;
 
@@ -1753,10 +1747,7 @@ namespace Mengine
         {
             DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
 
-            if( dx9_program->enable( m_pD3DDevice ) == false )
-            {
-                return;
-            }
+            dx9_program->enable( m_pD3DDevice );
         }
         else
         {
@@ -1764,7 +1755,6 @@ namespace Mengine
 
             DXCALL( m_pD3DDevice, SetPixelShader, (nullptr) );
         }
-        //None
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )

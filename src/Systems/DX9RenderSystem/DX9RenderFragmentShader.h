@@ -27,7 +27,7 @@ namespace Mengine
         bool compile( IDirect3DDevice9 * _pD3DDevice );
 
     public:
-        bool enable( IDirect3DDevice9 * _pD3DDevice );
+        void enable( IDirect3DDevice9 * _pD3DDevice );
 
     protected:
         IDirect3DPixelShader9 * m_shader;

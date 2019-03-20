@@ -48,13 +48,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderFragmentShader::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX9RenderFragmentShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        IF_DXCALL( _pD3DDevice, SetPixelShader, (m_shader) )
-        {
-            return false;
-        }
-
-        return true;
+        DXCALL( _pD3DDevice, SetPixelShader, (m_shader) );
     }
 }

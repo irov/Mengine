@@ -56,14 +56,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX9RenderProgram::enable( IDirect3DDevice9 * _pD3DDevice )
     {
         if( m_vertexShader != nullptr )
         {
-            if( m_vertexShader->enable( _pD3DDevice ) == false )
-            {
-                return false;
-            }
+            m_vertexShader->enable( _pD3DDevice );
         }
         else
         {
@@ -72,10 +69,8 @@ namespace Mengine
 
         if( m_fragmentShader != nullptr )
         {
-            if( m_fragmentShader->enable( _pD3DDevice ) == false )
-            {
-                return false;
-            }
+            m_fragmentShader->enable( _pD3DDevice );
+            
         }
         else
         {
@@ -84,13 +79,8 @@ namespace Mengine
 
         if( m_vertexAttribute != nullptr )
         {
-            if( m_vertexAttribute->enable() == false )
-            {
-                return false;
-            }
+            m_vertexAttribute->enable();
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )

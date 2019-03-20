@@ -3,6 +3,7 @@
 #include "Config/Lambda.h"
 
 #include "Kernel/Affector.h"
+#include "Kernel/AffectorCallbackInterface.h"
 #include "Kernel/Factory.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ValueInterpolator.h"

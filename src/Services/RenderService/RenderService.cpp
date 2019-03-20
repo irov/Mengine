@@ -192,7 +192,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "RenderService::createRenderWindow:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -828,7 +828,7 @@ namespace Mengine
         m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
         m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 
-        LOGGER_INFO( "RenderService::restoreRenderSystemStates_ texture stages %d"
+        LOGGER_INFO( "texture stages %d"
             , MENGINE_MAX_TEXTURE_STAGES
         );
     }
@@ -1776,7 +1776,7 @@ namespace Mengine
 
         if( stdex::memorycopy_safe( memory_buffer, _vbPos * _vertexSize, memory_size, _renderObject->vertexData, _renderObject->vertexCount * _vertexSize ) == false )
         {
-            LOGGER_ERROR( "RenderService::insertRenderObject_ vertex buffer overrlow!"
+            LOGGER_ERROR( "vertex buffer overrlow!"
             );
 
             return false;

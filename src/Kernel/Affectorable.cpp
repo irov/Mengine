@@ -1,5 +1,4 @@
 #include "Kernel/Affectorable.h"
-#include "Kernel/Affector.h"
 
 #include "Interface/EnumeratorServiceInterface.h"
 

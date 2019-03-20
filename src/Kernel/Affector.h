@@ -11,15 +11,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class AffectorCallbackInterface
-        : public Factorable
-    {
-    public:
-        virtual void onAffectorEnd( AFFECTOR_ID _id, bool _isEnd ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AffectorCallbackInterface> AffectorCallbackInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class Affector
         : public stdex::intrusive_slug_linked_ptr<Affector, void, IntrusivePtr, IntrusivePtrBase>
         , public Factorable
@@ -87,5 +78,4 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Affector> AffectorPtr;
     //////////////////////////////////////////////////////////////////////////
-
 }

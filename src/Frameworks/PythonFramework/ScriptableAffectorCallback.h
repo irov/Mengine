@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Affector.h"
+#include "Kernel/AffectorCallbackInterface.h"
+
 #include "Kernel/Scriptable.h"
 
 #include "pybind/pybind.hpp"

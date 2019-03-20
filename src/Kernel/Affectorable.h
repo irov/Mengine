@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kernel/Affector.h"
 #include "Kernel/AffectorType.h"
 #include "Kernel/Mixin.h"
 #include "Kernel/UpdateContext.h"
@@ -10,8 +11,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Affector> AffectorPtr;
     //////////////////////////////////////////////////////////////////////////
     class Affectorable
         : public Mixin

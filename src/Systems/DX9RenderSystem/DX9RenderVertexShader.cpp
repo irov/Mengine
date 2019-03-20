@@ -47,13 +47,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
+    void DX9RenderVertexShader::enable( IDirect3DDevice9 * _pD3DDevice )
     {
-        IF_DXCALL( _pD3DDevice, SetVertexShader, (m_shader) )
-        {
-            return false;
-        }
-
-        return true;
+        DXCALL( _pD3DDevice, SetVertexShader, (m_shader) );
     }
 }

@@ -34,7 +34,7 @@ namespace Mengine
         void draw( const void * _buffer, size_t _size ) override;
         
     public:
-        bool enable() override;
+        void enable() override;
         void disable() override;
 
     protected:

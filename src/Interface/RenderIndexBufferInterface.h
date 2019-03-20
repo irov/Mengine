@@ -15,7 +15,7 @@ namespace Mengine
         virtual uint32_t getIndexSize() const = 0;
 
     public:
-        virtual bool enable() = 0;
+        virtual void enable() = 0;
         virtual void disable() = 0;
 
     public:

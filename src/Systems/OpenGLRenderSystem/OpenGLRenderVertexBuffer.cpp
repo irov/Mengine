@@ -121,14 +121,9 @@ namespace Mengine
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexBuffer::enable()
+    void OpenGLRenderVertexBuffer::enable()
     {
-        IF_GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) )
-        {
-            return false;
-        }
-
-        return true;
+        GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexBuffer::disable()

@@ -180,14 +180,9 @@ namespace Mengine
         //ToDO
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::enable()
+    void DX9RenderIndexBuffer::enable()
     {
-        IF_DXCALL( m_pD3DDevice, SetIndices, (m_pIB) )
-        {
-            return false;
-        }
-
-        return true;
+        DXCALL( m_pD3DDevice, SetIndices, (m_pIB) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::disable()

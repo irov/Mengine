@@ -78,11 +78,9 @@ namespace Mengine
         return m_elementSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexAttribute::enable()
+    void DX9RenderVertexAttribute::enable()
     {
         DXCALL( m_pD3DDevice, SetVertexDeclaration, (m_vertexDeclaration) );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::disable()

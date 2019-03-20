@@ -26,7 +26,7 @@ namespace Mengine
         bool compile( IDirect3DDevice9 * _pD3DDevice );
 
     public:
-        bool enable() override;
+        void enable() override;
         void disable() override;
 
     public:

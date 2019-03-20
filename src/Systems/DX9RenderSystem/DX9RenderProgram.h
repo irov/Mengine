@@ -33,7 +33,7 @@ namespace Mengine
         bool compile( IDirect3DDevice9 * _pD3DDevice );
 
     public:
-        bool enable( IDirect3DDevice9 * _pD3DDevice );
+        void enable( IDirect3DDevice9 * _pD3DDevice );
 
     public:
         void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );

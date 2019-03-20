@@ -24,7 +24,7 @@ namespace Mengine
         uint32_t getIndexSize() const override;
 
     protected:
-        bool enable() override;
+        void enable() override;
         void disable() override;
         
     protected:

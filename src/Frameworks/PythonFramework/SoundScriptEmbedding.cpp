@@ -491,6 +491,24 @@ namespace Mengine
                 ->resumeEmitter( _emitter );
         }
         //////////////////////////////////////////////////////////////////////////
+        bool isSoundStop( const SoundIdentityInterfacePtr & _emitter )
+        {
+            return SOUND_SERVICE()
+                ->isEmitterStop( _emitter );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isSoundPlay( const SoundIdentityInterfacePtr & _emitter )
+        {
+            return SOUND_SERVICE()
+                ->isEmitterPlay( _emitter );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool isSoundPause( const SoundIdentityInterfacePtr & _emitter )
+        {
+            return SOUND_SERVICE()
+                ->isEmitterPause( _emitter );
+        }
+        //////////////////////////////////////////////////////////////////////////
         void voiceStop( const SoundIdentityInterfacePtr & _emitter )
         {
             SOUND_SERVICE()
@@ -865,6 +883,9 @@ namespace Mengine
         pybind::def_functor( _kernel, "soundStop", soundScriptMethod, &SoundScriptMethod::soundStop );
         pybind::def_functor( _kernel, "soundPause", soundScriptMethod, &SoundScriptMethod::soundPause );
         pybind::def_functor( _kernel, "soundResume", soundScriptMethod, &SoundScriptMethod::soundResume );
+        pybind::def_functor( _kernel, "isSoundStop", soundScriptMethod, &SoundScriptMethod::isSoundStop );
+        pybind::def_functor( _kernel, "isSoundPlay", soundScriptMethod, &SoundScriptMethod::isSoundPlay );
+        pybind::def_functor( _kernel, "isSoundPause", soundScriptMethod, &SoundScriptMethod::isSoundPause );
         pybind::def_functor( _kernel, "soundSourceSetVolume", soundScriptMethod, &SoundScriptMethod::soundSourceSetVolume );
         pybind::def_functor( _kernel, "soundSourceGetVolume", soundScriptMethod, &SoundScriptMethod::soundSourceGetVolume );
         pybind::def_functor( _kernel, "soundSetVolume", soundScriptMethod, &SoundScriptMethod::soundSetVolume );

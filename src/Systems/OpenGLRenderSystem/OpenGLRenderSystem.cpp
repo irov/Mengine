@@ -629,22 +629,12 @@ namespace Mengine
             GLCALL( glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
         }
 
-        if( m_currentIndexBuffer->enable() == false )
-        {
-            return;
-        }
-
-        if( m_currentVertexBuffer->enable() == false )
-        {
-            return;
-        }
+        m_currentIndexBuffer->enable();
+        m_currentVertexBuffer->enable();
 
         const RenderVertexAttributeInterfacePtr & vertexAttribute = m_currentProgram->getVertexAttribute();
 
-        if( vertexAttribute->enable() == false )
-        {
-            return;
-        }
+        vertexAttribute->enable();
 
         GLenum mode = s_getGLPrimitiveMode( _type );
         const RenderIndex * baseIndex = nullptr;

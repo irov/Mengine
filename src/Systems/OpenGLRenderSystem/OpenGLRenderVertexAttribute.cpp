@@ -74,7 +74,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexAttribute::enable()
+    void OpenGLRenderVertexAttribute::enable()
     {
         for( const Attribute & attribute : m_attributes )
         {
@@ -84,30 +84,14 @@ namespace Mengine
 
             GLenum gl_type = s_getGLVertexAttributeType( attribute.type );
 
-            IF_GLCALL( glVertexAttribPointer, (attribute_location
+            GLCALL( glVertexAttribPointer, (attribute_location
                 , attribute.size
                 , gl_type
                 , attribute.normalized
                 , attribute.stride
                 , reinterpret_cast<const GLvoid *>(attribute.offset)
-                ) )
-            {
-                LOGGER_ERROR( "vertex attribute '%s' invalid setup uniform '%s' location '%u' size '%u' type '%u' normalized '%u' stride '%u' offset '%u'"
-                    , m_name.c_str()
-                    , attribute.uniform.c_str()
-                    , attribute.location
-                    , attribute.size
-                    , gl_type
-                    , attribute.normalized
-                    , attribute.stride
-                    , attribute.offset
-                );
-
-                return false;
-            }
+                ) );
         }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::disable()

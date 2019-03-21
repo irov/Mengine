@@ -1234,6 +1234,8 @@ namespace Mengine
 #endif
 
 #if defined(TARGET_OS_IPHONE)
+        SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, "1" );
+
         m_window = SDL_CreateWindow( m_projectTitle.c_str()
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED

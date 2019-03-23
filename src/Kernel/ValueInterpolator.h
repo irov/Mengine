@@ -132,9 +132,16 @@ namespace Mengine
 
             float dt = m_time / m_duration;
 
-            float easing_dt = _easing->easing( dt );
+            if( _easing != nullptr )
+            {
+                float easing_dt = _easing->easing( dt );
 
-            this->_update( easing_dt, _out );
+                this->_update( easing_dt, _out );
+            }
+            else
+            {
+                this->_update( dt, _out );
+            }
         }
 
         bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used )
@@ -164,9 +171,16 @@ namespace Mengine
 
             float dt = m_time / m_duration;
 
-            float easing_dt = _easing->easing( dt );
+            if( _easing != nullptr )
+            {
+                float easing_dt = _easing->easing( dt );
 
-            this->_update( easing_dt, _out );
+                this->_update( easing_dt, _out );
+            }
+            else
+            {
+                this->_update( dt, _out );
+            }
 
             m_delta = (*_out) - m_prev;
             m_prev = (*_out);

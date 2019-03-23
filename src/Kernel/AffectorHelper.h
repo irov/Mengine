@@ -144,14 +144,16 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type 
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaType & _lambda
                 , const T & _pos, const T & _dir, float _speed )
             {
                 AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
                 if( affector->initialize( _lambda, _pos, _dir, _speed ) == false )
@@ -187,7 +189,9 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const EasingInterfacePtr & _easing, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _lambda
                 , const T & _start, const T & _end, float _time )
             {
@@ -231,14 +235,16 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _lambda
                 , const T & _start, const T & _end, const T & _v0, float _time )
             {
                 AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
                 if( affector->initialize( _lambda, _start, _end, _v0, _time ) == false )
@@ -277,14 +283,16 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _points
                 , float _time )
             {
                 AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
                 if( affector->initialize( _settuper, _getterFrom, _getterTo, _points, _time ) == false )

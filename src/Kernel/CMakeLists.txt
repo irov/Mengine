@@ -83,6 +83,11 @@ ADD_FILTER(
 Affector
 	Affector.h
 	Affector.cpp
+    BaseAffector.h
+    BaseAffector.cpp
+    LambdaAffector.h
+    LambdaAffectorInterpolate.h
+    LambdaAffectorAccumulateLinear.h
     AffectorCallbackInterface.h
     AffectorHelper.h
     AffectorHelper.cpp

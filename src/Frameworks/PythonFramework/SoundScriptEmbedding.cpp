@@ -7,6 +7,7 @@
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Affectorable.h"
 #include "Kernel/AffectorHelper.h"
@@ -419,12 +420,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorSound;
         //////////////////////////////////////////////////////////////////////////
-        void soundFadeIn( pybind::kernel_interface * _kernel, const SoundIdentityInterfacePtr & _emitter, float _time, const pybind::object & _cb, const pybind::args & _args )
+        void soundFadeIn( pybind::kernel_interface * _kernel, const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _kernel, _emitter, _cb, _args );
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
+                    , easing
                     , callback, [this, _emitter]( float _volume ) { this->___soundFade( _emitter, _volume ); }
                     , 1.f, 0.f, _time
                 );
@@ -435,7 +439,7 @@ namespace Mengine
             affectorable->addAffector( affector );
         }
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundFadeOut( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, float _time, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr soundFadeOut( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _kernel, _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
@@ -458,8 +462,11 @@ namespace Mengine
                 return nullptr;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
+                    , easing
                     , nullptr, [this, sourceEmitter]( float _value ) { this->___soundFade( sourceEmitter, _value ); }
                     , 0.f, 1.f, _time
                 );
@@ -765,17 +772,20 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorMusic;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t musicFadeIn( pybind::kernel_interface * _kernel, float _time, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t musicFadeIn( pybind::kernel_interface * _kernel, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( SERVICE_EXIST( AmplifierInterface ) == false )
             {
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _kernel, _cb, _args );
 
             AffectorPtr affector =
                 m_affectorCreatorMusic.create( ETA_POSITION
+                    , easing
                     , callback
                     , [this]( float _value ) { this->___musicFade( _value ); }
                     , 1.f, 0.f, _time
@@ -789,7 +799,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( SERVICE_EXIST( AmplifierInterface ) == false )
             {
@@ -813,8 +823,11 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             AffectorPtr affector =
                 m_affectorCreatorMusic.create( ETA_POSITION
+                    , easing
                     , nullptr
                     , [this]( float _value ) { this->___musicFade( _value ); }
                     , 0.f, 1.f, _time

@@ -690,8 +690,8 @@ namespace Mengine
 
             float rr2 = sqrtf( rr ) * _radius;
 
-            float x = ::cosf( rp );
-            float y = ::sinf( rp );
+            float x = MT_cosf( rp );
+            float y = MT_sinf( rp );
 
             float xr = x * rr2;
             float yr = y * rr2;
@@ -732,7 +732,7 @@ namespace Mengine
 
         float mt_sqrtf( float a )
         {
-            return ::sqrtf( a );
+            return MT_sqrtf( a );
         }
 
         float mt_powf( float a, float b )
@@ -747,32 +747,32 @@ namespace Mengine
 
         float mt_cosf( float a )
         {
-            return ::cosf( a );
+            return MT_cosf( a );
         }
 
         float mt_sinf( float a )
         {
-            return ::sinf( a );
+            return MT_sinf( a );
         }
 
         float mt_cosf_deg( float a )
         {
-            return ::cosf( a * mt::constant::deg2rad );
+            return MT_cosf( a * mt::constant::deg2rad );
         }
 
         float mt_sinf_deg( float a )
         {
-            return ::sinf( a * mt::constant::deg2rad );
+            return MT_sinf( a * mt::constant::deg2rad );
         }
 
         float mt_tanf( float a )
         {
-            return ::tanf( a );
+            return MT_tanf( a );
         }
 
         float mt_acosf( float a )
         {
-            return ::acosf( a );
+            return MT_acosf( a );
         }
 
         float mt_atanf( float _x )

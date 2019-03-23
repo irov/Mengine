@@ -40,6 +40,8 @@ src
 	ApplicationInterface.h
 	InputServiceInterface.h
     InputHandlerInterface.h
+    EasingInterface.h
+    EasingServiceInterface.h
 
 	ConverterInterface.h
 	ConverterFactoryInterface.h

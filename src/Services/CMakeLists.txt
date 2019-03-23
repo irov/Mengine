@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY( TextService )
+ADD_SUBDIRECTORY( EasingService )
 ADD_SUBDIRECTORY( CodecService )
 ADD_SUBDIRECTORY( DataService )
 ADD_SUBDIRECTORY( MemoryService )

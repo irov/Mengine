@@ -266,8 +266,12 @@ namespace Mengine
     {
         if( m_soundEmitter != nullptr )
         {
-            SOUND_SERVICE()
-                ->stopEmitter( m_soundEmitter );
+            if( SOUND_SERVICE()
+                ->isEmitterStop( m_soundEmitter ) == false )
+            {
+                SOUND_SERVICE()
+                    ->stopEmitter( m_soundEmitter );
+            }
         }
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
@@ -278,11 +282,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_end( uint32_t _enumerator )
     {
-        if( m_soundEmitter != nullptr )
-        {
-            SOUND_SERVICE()
-                ->stopEmitter( m_soundEmitter );
-        }
+        //if( m_soundEmitter != nullptr )
+        //{
+        //    SOUND_SERVICE()
+        //        ->stopEmitter( m_soundEmitter );
+        //}
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );

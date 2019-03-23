@@ -11,16 +11,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseAffector::setEasing( const EasingInterfacePtr & _easing )
-    {
-        m_easing = _easing;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const EasingInterfacePtr & BaseAffector::getEasing() const
-    {
-        return m_easing;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void BaseAffector::setCallback( const AffectorCallbackInterfacePtr & _cb )
     {
         m_cb = _cb;

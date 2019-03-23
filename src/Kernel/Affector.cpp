@@ -71,6 +71,16 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void Affector::setEasing( const EasingInterfacePtr & _easing )
+    {
+        m_easing = _easing;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const EasingInterfacePtr & Affector::getEasing() const
+    {
+        return m_easing;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Affector::prepare( uint32_t _updatableMode, uint32_t _updatableLeaf )
     {
         if( this->_prepare() == false )

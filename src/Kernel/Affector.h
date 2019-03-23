@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/EasingInterface.h"
+
 #include "Kernel/AffectorType.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/BaseUpdation.h"
@@ -35,6 +37,10 @@ namespace Mengine
         void setFreeze( bool _value ) noexcept;
         bool getFreeze() const noexcept;
 
+    public:
+        void setEasing( const EasingInterfacePtr & _easing );
+        const EasingInterfacePtr & getEasing() const;
+
     protected:
         virtual void _setFreeze( bool _value );
 
@@ -68,6 +74,8 @@ namespace Mengine
     protected:
         EAffectorType m_type;
         AFFECTOR_ID m_id;
+
+        EasingInterfacePtr m_easing;
 
         uint32_t m_updataterId;
 

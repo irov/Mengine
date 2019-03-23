@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/EasingInterface.h"
+
 #include "math/utils.h"
 
 namespace Mengine
@@ -25,7 +27,7 @@ namespace Mengine
             return m_started;
         }
 
-        virtual bool update( const UpdateContext * _context, T * _out, float * _used ) = 0;
+        virtual bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used ) = 0;
 
     protected:
         bool m_started;
@@ -58,8 +60,10 @@ namespace Mengine
             return true;
         }
 
-        bool update( const UpdateContext * _context, T * _out, float * _used ) override
+        bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used ) override
         {
+            MENGINE_UNUSED( _easing );
+
             *_used = _context->time;
 
             if( ValueAccumulator<T>::m_started == false )
@@ -117,7 +121,7 @@ namespace Mengine
             return m_prev;
         }
 
-        void step( float _time, T * _out )
+        void step( const EasingInterfacePtr & _easing, float _time, T * _out )
         {
             if( _time > m_duration )
             {
@@ -128,10 +132,12 @@ namespace Mengine
 
             float dt = m_time / m_duration;
 
-            this->_update( dt, _out );
+            float easing_dt = _easing->easing( dt );
+
+            this->_update( easing_dt, _out );
         }
 
-        bool update( const UpdateContext * _context, T * _out, float * _used )
+        bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used )
         {
             if( m_started == false )
             {
@@ -158,7 +164,9 @@ namespace Mengine
 
             float dt = m_time / m_duration;
 
-            this->_update( dt, _out );
+            float easing_dt = _easing->easing( dt );
+
+            this->_update( easing_dt, _out );
 
             m_delta = (*_out) - m_prev;
             m_prev = (*_out);

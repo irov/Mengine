@@ -29,6 +29,7 @@
 #include "Interface/FrameworkInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/EasingServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -87,6 +88,7 @@ SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( TimeService );
 SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( PluginService );
+SERVICE_EXTERN( EasingService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( UpdateService );
@@ -633,6 +635,7 @@ namespace Mengine
         SERVICE_CREATE( ChronometerService );
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
+        SERVICE_CREATE( EasingService );
 
 #ifdef MENGINE_DEBUG
         {

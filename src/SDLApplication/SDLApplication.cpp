@@ -34,6 +34,7 @@
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/EasingServiceInterface.h"
 
 #include <cstdio>
 #include <clocale>
@@ -127,6 +128,7 @@ SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
+SERVICE_EXTERN( EasingService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( ChronometerService );
@@ -623,6 +625,7 @@ namespace Mengine
         SERVICE_CREATE( PlayerService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
+        SERVICE_CREATE( EasingService );
 
         SERVICE_CREATE( Application );
 

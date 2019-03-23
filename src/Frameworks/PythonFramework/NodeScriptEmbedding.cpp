@@ -442,16 +442,19 @@ namespace Mengine
             return callback;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_ShapeQuadFlex_setPercentVisibilityTo( ShapeQuadFlex * _shape, float _time, const mt::vec4f& _percent, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _shape->isActivate() == false )
             {
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4.create( ETA_VISIBILITY
+                , easing
                 , callback
                 , [_shape]( const mt::vec4f & _v ) { _shape->setPercentVisibility( _v ); }
                 , _shape->getPercentVisibility(), _percent, _time
@@ -1104,7 +1107,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -1116,10 +1119,13 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );                
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinear.create( ETA_POSITION
+                    , easing
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                     , _node->getLocalPosition(), _point, _time
@@ -1431,8 +1437,10 @@ namespace Mengine
         protected:
             bool _affect( const UpdateContext * _context, float * _used ) override
             {
+                const EasingInterfacePtr & easing = this->getEasing();
+
                 mt::vec3f position;
-                bool finish = m_interpolator.update( _context, &position, _used );
+                bool finish = m_interpolator.update( easing, _context, &position, _used );
 
                 this->updateDirection_( _context, position );
                 this->updatePosition_( position );
@@ -2008,7 +2016,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_nodeAffectorCreatorInterpolateLinearFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2025,9 +2033,12 @@ namespace Mengine
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_ANGLE
+                , easing
                 , callback
                 , [_node]( float _v ) {_node->setOrientationX( _v ); }
                 , correct_angle_from, correct_angle_to, _time
@@ -2107,7 +2118,7 @@ namespace Mengine
             _node->stopAffectors( ETA_SCALE );
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2119,9 +2130,12 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear.create( ETA_SCALE
+                , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setScale( _v ); }
                 , _node->getScale(), _scale, _time
@@ -2151,7 +2165,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color> m_nodeAffectorCreatorInterpolateLinearColor;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node == nullptr )
             {
@@ -2189,10 +2203,13 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinearColor.create( ETA_COLOR
+                    , easing
                     , callback
                     , [render]( const Color & _v ) { render->setLocalColor( _v ); }
                     , render->getLocalColor(), _color, _time
@@ -2232,7 +2249,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node == nullptr )
             {
@@ -2271,10 +2288,13 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_COLOR
+                    , easing
                     , callback
                     , [render]( float _v ) { render->setLocalAlpha( _v ); }
                     , render->getLocalAlpha(), _alpha, _time

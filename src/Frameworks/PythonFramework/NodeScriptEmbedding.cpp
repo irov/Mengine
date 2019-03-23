@@ -943,7 +943,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -955,9 +955,12 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear.create( ETA_POSITION
+                , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _dir, _speed
@@ -1046,15 +1049,16 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const Char * _doc )
             {
                 AffectorVelocity2Ptr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
-
                 affector->setNode( _node );
 
                 affector->initialize( _velocity, _time );
@@ -1068,7 +1072,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryAffectorVelocity2 m_factoryAffectorVelocity2;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -1080,10 +1084,14 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_factoryAffectorVelocity2.create( ETA_POSITION
-                , callback, NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
+                , easing
+                , callback
+                , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
             );
 
             if( affector == nullptr )
@@ -1156,7 +1164,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -1168,12 +1176,16 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             const mt::vec3f & linearSpeed = _node->getLinearSpeed();
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic.create( ETA_POSITION
-                , callback, [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
+                , easing
+                , callback
+                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _point, linearSpeed, _time
             );
 
@@ -1200,6 +1212,7 @@ namespace Mengine
             , float _time
             , const mt::vec3f& _to
             , const mt::vec3f& _v0
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1213,12 +1226,15 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             const mt::vec3f & from = _node->getLocalPosition();
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
-                , callback
+                , easing
+                , callback                
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
             , [from]() { return from; }
             , [_to]() { return _to; }
@@ -1247,6 +1263,7 @@ namespace Mengine
             , float _time
             , const NodePtr & _follow
             , const mt::vec3f & _offset
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1265,12 +1282,15 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             const mt::vec3f & node_pos = _node->getWorldPosition();
             
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
-                , callback
+                , easing
+                , callback                
                 , [_node]( const mt::vec3f & _v ) { _node->setWorldPosition( _v ); }
             , [node_pos]() { return node_pos; }
             , [_follow, _offset]() { return _follow->getWorldPosition() + _offset; }
@@ -1307,6 +1327,7 @@ namespace Mengine
             , const mt::vec3f& _to
             , const mt::vec3f& _v0
             , const mt::vec3f& _v1
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1320,10 +1341,13 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateCubicBezier.create( ETA_POSITION
+                    , easing
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
             , [_node]() {return _node->getLocalPosition(); }
@@ -1357,6 +1381,7 @@ namespace Mengine
             , const mt::vec3f& _v0
             , const mt::vec3f& _v1
             , const mt::vec3f& _v2
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1370,10 +1395,13 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateQuarticBezier.create( ETA_POSITION
+                    , easing
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
             , [_node]() { return _node->getLocalPosition(); }
@@ -1525,15 +1553,16 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const Char * _doc )
             {
 				AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
-
                 affector->setNode( _node );
 
                 affector->initialize( _end, _v0, _time );
@@ -1551,6 +1580,7 @@ namespace Mengine
             , float _time
             , const mt::vec3f& _end
             , const mt::vec3f& _v0
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1564,11 +1594,15 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateParabolic.create( ETA_POSITION
-                    , callback, NodePtr( _node ), _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
+                    , easing
+                    , callback
+                    , NodePtr( _node ), _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
                 );
 
             if( affector == nullptr )
@@ -1753,7 +1787,9 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
                 , bool _rotate
                 , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const Char * _doc )
@@ -1761,7 +1797,7 @@ namespace Mengine
                 AffectorCreatorFollowToPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
                 if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotate, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
@@ -1789,6 +1825,7 @@ namespace Mengine
             , float _rotationSpeed
             , float _rotationAcceleration
             , float _rotationLimit
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1802,11 +1839,15 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorFollowTo.create( ETA_POSITION
-                    , callback, NodePtr( _node ), _target, _offset, _distance
+                    , easing
+                    , callback                    
+                    , NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , _rotate
                     , _rotationSpeed, _rotationAcceleration, _rotationLimit
@@ -1941,14 +1982,16 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type, const AffectorCallbackInterfacePtr & _cb
+            AffectorPtr create( EAffectorType _type
+                , const EasingInterfacePtr & _easing
+                , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
                 , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const Char * _doc )
             {
                 AffectorCreatorFollowToWPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
-
+                affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
                 if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit ) == false )
@@ -1972,6 +2015,7 @@ namespace Mengine
             , float _moveSpeed
             , float _moveAcceleration
             , float _moveLimit
+            , const ConstString & _easingType
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1985,11 +2029,15 @@ namespace Mengine
                 return 0;
             }
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorFollowToW.create( ETA_POSITION
-                    , callback, NodePtr( _node ), _target, _offset, _distance
+                    , easing
+                    , callback
+                    , NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , MENGINE_DOCUMENT_PYBIND
                 );
@@ -2067,7 +2115,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2087,10 +2135,13 @@ namespace Mengine
             float correct_angle_to = _angle;
             //mt::angle_correct_interpolate_from_to( angle, _angle, correct_angle_from, correct_angle_to );
 
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( ETA_ANGLE
+                    , easing
                     , callback
                     , [_node]( float _v ) {_node->setOrientationX( _v ); }
                     , correct_angle_from, correct_angle_to, angularSpeed, _time

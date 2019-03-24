@@ -7,6 +7,7 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
+#include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/IntrusivePtrScope.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Assertion.h"
@@ -375,7 +376,31 @@ namespace Mengine
         }
         else
         {
-            //ToDo
+            MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildRenderMiddle_( const NodePtr & _after, const NodePtr & _child )
+    {
+        RenderInterface * render = this->getRender();
+
+        if( render != nullptr )
+        {
+            RenderInterface * afterRender = _after->getRender();
+            RenderInterface * childRender = _child->getRender();
+
+            if( afterRender != nullptr && childRender != nullptr )
+            {
+                render->moveRelationRenderMiddle( afterRender, childRender );
+            }
+            else
+            {
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            }
+        }
+        else
+        {
+            MENGINE_ASSERTION_NOT_IMPLEMENTED();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -401,7 +426,7 @@ namespace Mengine
         }
         else
         {
-            //ToDo
+            MENGINE_ASSERTION_NOT_IMPLEMENTED();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -600,11 +625,27 @@ namespace Mengine
                 return;
             }
 
+            const NodePtr & frontNode = m_children.front();
             const NodePtr & backNode = m_children.back();
 
-            if( backNode == _child )
+            switch( _mode )
             {
-                return;
+            case ENCI_FRONT:
+                {
+                    if( frontNode == _child )
+                    {
+                        return;
+                    }
+                }break;
+            case ENCI_BACK:
+                {
+                    if( backNode == _child )
+                    {
+                        return;
+                    }
+                }break;
+            default:
+                break;
             }
 
             this->eraseChild_( _child );
@@ -619,7 +660,7 @@ namespace Mengine
                 }break;
             case ENCI_MIDDLE:
                 {
-
+                    this->moveChildRenderMiddle_( *_insert, _child );
                 }break;
             case ENCI_BACK:
                 {

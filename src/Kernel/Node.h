@@ -130,6 +130,7 @@ namespace Mengine
         void setRelationRender_( Node * _parent );
         void setRelationRenderFront_( Node * _parent );
         void moveChildRenderFront_( const NodePtr & _child );
+        void moveChildRenderMiddle_( const NodePtr & _after, const NodePtr & _child );
         void moveChildRenderBack_( const NodePtr & _child );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;

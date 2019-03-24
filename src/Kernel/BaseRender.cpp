@@ -90,6 +90,17 @@ namespace Mengine
         this->addRelationRenderChildrenFront_( childRender );
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender )
+    {
+        MENGINE_ASSERTION( m_relationRenderChildren.empty() == false, ("move child is empty") );
+
+        BaseRender * afterRender = static_cast<BaseRender *>(_afterRender);
+        BaseRender * childRender = static_cast<BaseRender *>(_childRender);
+
+        this->removeRelationRenderChildren_( childRender );
+        this->addRelationRenderChildrenAfter_( afterRender, childRender );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::moveRelationRenderBack( RenderInterface * _childRender )
     {
         MENGINE_ASSERTION( m_relationRenderChildren.empty() == false, ("move child is empty") );
@@ -179,6 +190,15 @@ namespace Mengine
         MENGINE_ASSERTION( it_erase != m_relationRenderChildren.end(), ("remove relation child is not found") );
 
         m_relationRenderChildren.erase( it_erase );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::addRelationRenderChildrenAfter_( BaseRender * _afterRender, BaseRender * _childRender )
+    {
+        VectorBaseRender::iterator it_insert = std::find( m_relationRenderChildren.begin(), m_relationRenderChildren.end(), _afterRender );
+
+        MENGINE_ASSERTION( it_insert != m_relationRenderChildren.end(), ("after relation child is not found") );
+
+        m_relationRenderChildren.insert( it_insert, _childRender );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _viewport )

@@ -26,6 +26,7 @@ namespace Mengine
 
     public:
         virtual void moveRelationRenderFront( RenderInterface * _childRender ) = 0;
+        virtual void moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender ) = 0;
         virtual void moveRelationRenderBack( RenderInterface * _childRender ) = 0;        
 
 

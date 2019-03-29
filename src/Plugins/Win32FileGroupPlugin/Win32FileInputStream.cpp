@@ -50,6 +50,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming )
     {
+        MENGINE_UNUSED( _streaming );
+
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
 #ifdef MENGINE_DEBUG

@@ -539,7 +539,7 @@ namespace Mengine
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
-        const void * triangle_indices_buffer_data = &triangle_indices.front();
+        const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
         size_t triangle_indices_buffer_size = triangle_indices.size() * sizeof( Detail::Mesh::VectorTriangleIndices::value_type );
 
         m_indexBuffer->draw( triangle_indices_buffer_data, triangle_indices_buffer_size );

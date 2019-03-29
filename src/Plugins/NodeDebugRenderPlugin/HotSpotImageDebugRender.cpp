@@ -17,13 +17,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpotImageDebugRender::_render( const RenderContext * _context, HotSpotImage * _node )
     {
-        RenderVertex2D * vertices = RENDER_SERVICE()
-            ->getDebugRenderVertex2D( 4 * 2 );
-
-        if( vertices == nullptr )
-        {
-            return;
-        }
+        VectorRenderVertex2D & vertices = RENDER_SERVICE()
+            ->getDebugRenderVertex2D( 8 );
 
         uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
@@ -52,7 +47,6 @@ namespace Mengine
         vertices[7].position.x = box.minimum.x;
         vertices[7].position.y = box.minimum.y;
 
-
         for( uint32_t i = 0; i != 8; ++i )
         {
             vertices[i].position.z = 0.f;
@@ -64,6 +58,6 @@ namespace Mengine
             vertices[i].uv[1].y = 0.f;
         }
 
-        Helper::nodeDebugRenderLine( _context, vertices, 8 );
+        Helper::nodeDebugRenderLine( _context, vertices );
     }
 }

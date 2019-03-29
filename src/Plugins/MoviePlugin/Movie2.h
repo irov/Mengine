@@ -9,8 +9,8 @@
 
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
-#include "Kernel/RenderVertex2D.h"
-#include "Kernel/RenderIndex.h"
+#include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorRenderIndex.h"
 #include "Kernel/MatrixProxy.h"
 
 #include "Engine/ShapeQuadFixed.h"

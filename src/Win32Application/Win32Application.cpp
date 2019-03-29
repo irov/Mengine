@@ -1041,6 +1041,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::TimeServiceInterface );
         SERVICE_FINALIZE( Mengine::TimeSystemInterface );
 
+        SERVICE_FINALIZE( Mengine::EasingServiceInterface );
         SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
         SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
 

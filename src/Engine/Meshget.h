@@ -8,7 +8,8 @@
 #include "Kernel/Surface.h"
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
-#include "Kernel/RenderVertex2D.h"
+#include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorRenderIndex.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseUpdation.h"
 

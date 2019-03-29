@@ -2362,8 +2362,8 @@ namespace Mengine
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
 
-        RenderVertex2D * vertices_buffer = m_vertices.empty() == false ? &m_vertices.front() : nullptr;
-        RenderIndex * indices_buffer = m_indices.empty() == false ? &m_indices.front() : nullptr;
+        RenderVertex2D * vertices_buffer = m_vertices.empty() == false ? m_vertices.data() : nullptr;
+        RenderIndex * indices_buffer = m_indices.empty() == false ? m_indices.data() : nullptr;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 

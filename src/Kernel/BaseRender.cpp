@@ -353,14 +353,6 @@ namespace Mengine
             ->addRenderLine( _context, _material, _vertices, _vertexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertex2D * BaseRender::getDebugRenderVertex2D( uint32_t _count ) const
-    {
-        RenderVertex2D * vertices = RENDER_SERVICE()
-            ->getDebugRenderVertex2D( _count );
-
-        return vertices;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const RenderMaterialInterfacePtr & BaseRender::getDebugMaterial() const
     {
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()

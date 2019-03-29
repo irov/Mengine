@@ -785,7 +785,7 @@ namespace Mengine
 
         const mt::mat4f & worldMatrix = mt::mat4f::identity();
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->setWorldMatrix( worldMatrix );
 
         m_currentRenderScissor = nullptr;
@@ -804,7 +804,7 @@ namespace Mengine
         m_depthBufferWriteEnable = false;
         m_alphaBlendEnable = false;
 
-        for( int32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
             this->restoreTextureStage_( i );
         }
@@ -827,10 +827,6 @@ namespace Mengine
         m_renderSystem->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
         m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
         m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
-
-        LOGGER_INFO( "texture stages %d"
-            , MENGINE_MAX_TEXTURE_STAGES
-        );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const
@@ -1008,7 +1004,7 @@ namespace Mengine
             {
                 const mt::mat4f & worldMatrix = _renderPass->transformation->getTransformationWorldMatrix();
 
-                RENDER_SYSTEM()
+                m_renderSystem
                     ->setWorldMatrix( worldMatrix );
 
                 m_currentRenderTransformation = _renderPass->transformation;
@@ -1020,7 +1016,7 @@ namespace Mengine
             {
                 const mt::mat4f & worldMatrix = mt::mat4f::identity();
 
-                RENDER_SYSTEM()
+                m_renderSystem
                     ->setWorldMatrix( worldMatrix );
 
                 m_currentRenderTransformation = nullptr;
@@ -1442,26 +1438,22 @@ namespace Mengine
         this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertex2D * RenderService::getDebugRenderVertex2D( uint32_t _count )
+    VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( uint32_t _count )
     {
         m_debugVertices.emplace_back( VectorRenderVertex2D() );
         VectorRenderVertex2D & vertices_array = m_debugVertices.back();
         vertices_array.resize( _count );
 
-        RenderVertex2D * vertices = &vertices_array.front();
-
-        return vertices;
+        return vertices_array;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndex * RenderService::getDebugRenderIndex( uint32_t _count )
+    VectorRenderIndex & RenderService::getDebugRenderIndex( uint32_t _count )
     {
         m_debugIndices.emplace_back( VectorRenderIndex() );
         VectorRenderIndex & indices_array = m_debugIndices.back();
         indices_array.resize( _count );
 
-        RenderIndex * indices = &indices_array.front();
-
-        return indices;
+        return indices_array;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setBatchMode( ERenderBatchMode _mode )

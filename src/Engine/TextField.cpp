@@ -368,7 +368,7 @@ namespace Mengine
             return;
         }
 
-        const VectorRenderVertex2D::value_type * vertices = &textVertices.front();
+        const VectorRenderVertex2D::value_type * vertices = textVertices.data();
 
         const mt::box2f * bb = this->getBoundingBox();
 

@@ -6,7 +6,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        void nodeDebugRenderLine( const RenderContext * _context, RenderVertex2D * _vertices, uint32_t _count )
+        void nodeDebugRenderLine( const RenderContext * _context, const VectorRenderVertex2D & _vertices )
         {
             const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
                 ->getDebugLineMaterial();
@@ -14,8 +14,8 @@ namespace Mengine
             RENDER_SERVICE()
                 ->addRenderLine( _context
                     , debugMaterial
-                    , _vertices
-                    , _count
+                    , _vertices.data()
+                    , _vertices.size()
                     , nullptr
                     , true );
         }
@@ -25,13 +25,8 @@ namespace Mengine
             uint32_t numpoints = _count;
             uint32_t vertexCount = numpoints * 2;
 
-            RenderVertex2D * vertices = RENDER_SERVICE()
+            VectorRenderVertex2D & vertices = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( vertexCount );
-
-            if( vertices == nullptr )
-            {
-                return;
-            }
 
             std::vector<mt::vec2f> ring( numpoints );
 
@@ -78,7 +73,7 @@ namespace Mengine
                 }
             }
 
-            Helper::nodeDebugRenderLine( _context, vertices, vertexCount );
+            Helper::nodeDebugRenderLine( _context, vertices );
         }
         //////////////////////////////////////////////////////////////////////////
         void nodeDebugRenderPolygon( const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, uint32_t _color )
@@ -92,13 +87,8 @@ namespace Mengine
 
             uint32_t vertexCount = numpoints * 2;
 
-            RenderVertex2D * vertices = RENDER_SERVICE()
+            VectorRenderVertex2D & vertices = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( vertexCount );
-
-            if( vertices == nullptr )
-            {
-                return;
-            }
 
             const VectorPoints & points = _polygon.getPoints();
 
@@ -137,7 +127,7 @@ namespace Mengine
                 }
             }
 
-            Helper::nodeDebugRenderLine( _context, vertices, vertexCount );
+            Helper::nodeDebugRenderLine( _context, vertices );
         }
     }
 }

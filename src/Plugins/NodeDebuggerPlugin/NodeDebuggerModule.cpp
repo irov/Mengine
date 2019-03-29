@@ -267,7 +267,8 @@ namespace Mengine
             ThreadMutexScope mutexLock( m_dataMutex );
             if( !m_incomingPackets.empty() )
             {
-                this->processPacket( m_incomingPackets.front() );
+                NodeDebuggerPacket & packet = m_incomingPackets.front();
+                this->processPacket( packet );
                 m_incomingPackets.pop_front();
             }
         }
@@ -368,7 +369,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
             ->getDebugTriangleMaterial();
 
-        RenderVertex2D * vertices = RENDER_SERVICE()
+        VectorRenderVertex2D & vertices = RENDER_SERVICE()
             ->getDebugRenderVertex2D( 8 );
 
         float offset = 2.0f;
@@ -389,8 +390,8 @@ namespace Mengine
             vertices[index].color = color;
         }
 
-        RenderIndex * indices = RENDER_SERVICE()
-            ->getDebugRenderIndex( 2 * 3 * 4 );
+        VectorRenderIndex & indices = RENDER_SERVICE()
+            ->getDebugRenderIndex( 24 );
 
         indices[0 * 6 + 0 * 3 + 0] = 0;
         indices[0 * 6 + 0 * 3 + 1] = 1;
@@ -424,8 +425,8 @@ namespace Mengine
             ->addRenderObject( &node_context
                 , debugMaterial
                 , nullptr
-                , vertices, 8
-                , indices, 24
+                , vertices.data(), vertices.size()
+                , indices.data(), indices.size()
                 , &bbox
                 , false );
     }

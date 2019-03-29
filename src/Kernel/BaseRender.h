@@ -109,7 +109,6 @@ namespace Mengine
             , const mt::box2f * _bb, bool _debug ) const;
 
     protected:
-        RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) const;
         const RenderMaterialInterfacePtr & getDebugMaterial() const;
 
     protected:

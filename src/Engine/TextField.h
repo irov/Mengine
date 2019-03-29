@@ -12,7 +12,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/RenderVertex2D.h"
+#include "Kernel/VectorRenderVertex2D.h"
 
 #include "Config/Vector.h"
 

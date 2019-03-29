@@ -10,6 +10,8 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorRenderIndex.h"
 
 #include "stdex/static_array.h"
 #include "stdex/dynamic_array.h"
@@ -26,7 +28,7 @@
 #include "Kernel/ConstString.h"
 
 #ifndef MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX
-#	define MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX 512
+#define MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX 512
 #endif
 
 namespace Mengine
@@ -169,8 +171,8 @@ namespace Mengine
             , uint32_t _vertexCount, uint32_t _indexCount );
 
     public:
-        RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
-        RenderIndex * getDebugRenderIndex( uint32_t _count ) override;
+        VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) override;
+        VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) override;
 
     public:
         void setBatchMode( ERenderBatchMode _mode ) override;

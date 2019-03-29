@@ -9,8 +9,8 @@
 
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
-#include "Kernel/RenderVertex2D.h"
-#include "Kernel/RenderIndex.h"
+#include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorRenderIndex.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

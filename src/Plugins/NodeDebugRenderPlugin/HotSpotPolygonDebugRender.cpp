@@ -28,13 +28,8 @@ namespace Mengine
 
         uint32_t vertexCount = numpoints * 2;
 
-        RenderVertex2D * vertices = RENDER_SERVICE()
+        VectorRenderVertex2D & vertices = RENDER_SERVICE()
             ->getDebugRenderVertex2D( vertexCount );
-
-        if( vertices == nullptr )
-        {
-            return;
-        }
 
         uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
@@ -82,6 +77,6 @@ namespace Mengine
             }
         }
 
-        Helper::nodeDebugRenderLine( _context, vertices, vertexCount );
+        Helper::nodeDebugRenderLine( _context, vertices );
     }
 }

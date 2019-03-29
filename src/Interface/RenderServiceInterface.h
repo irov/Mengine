@@ -32,6 +32,8 @@
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"
 #include "Kernel/RenderContext.h"
+#include "Kernel/VectorRenderIndex.h"
+#include "Kernel/VectorRenderVertex2D.h"
 
 #include "Config/Typedef.h"
 
@@ -82,8 +84,8 @@ namespace Mengine
             , const mt::box2f * _bb, bool _debug ) = 0;
 
     public:
-        virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
-        virtual RenderIndex * getDebugRenderIndex( uint32_t _count ) = 0;
+        virtual VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) = 0;
+        virtual VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) = 0;
 
     public:
         virtual void setBatchMode( ERenderBatchMode _mode ) = 0;

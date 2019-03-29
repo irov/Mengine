@@ -417,6 +417,9 @@ Core
     
     RenderVertex2D.h
     RenderIndex.h
+    
+    VectorRenderVertex2D.h
+    VectorRenderIndex.h
    
     Magic.h    
     Mixin.h

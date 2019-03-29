@@ -28,12 +28,12 @@ namespace Mengine
         SERVICE_DECLARE( "cURLService" );
 
     public:
-        virtual HttpRequestID getMessage( const String & _url, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID postMessage( const String & _url, const MapParams & _params, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:
-        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _category, const FilePath & _path, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _category, const FilePath & _path, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:
         virtual bool cancelRequest( HttpRequestID _id ) = 0;

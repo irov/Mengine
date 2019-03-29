@@ -63,7 +63,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////        
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLPlugin::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestID cURLPlugin::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( _category );
@@ -78,43 +78,43 @@ namespace Mengine
         receiver->initialize( _cb, _args );
 
         uint32_t id = CURL_SERVICE()
-            ->downloadAsset( _url, _login, _password, fileGroup, _filepath, receiver );
+            ->downloadAsset( _url, _login, _password, fileGroup, _filepath, _timeout, receiver );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLPlugin::postMessage( const String & _url, const MapParams & _params, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestID cURLPlugin::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->postMessage( _url, _params, receiver );
+            ->postMessage( _url, _params, _timeout, receiver );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLPlugin::headerData( const String & _url, const VectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestID cURLPlugin::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->headerData( _url, _headers, _data, receiver );
+            ->headerData( _url, _headers, _data, _timeout, receiver );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLPlugin::getMessage( const String & _url, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestID cURLPlugin::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->getMessage( _url, receiver );
+            ->getMessage( _url, _timeout, receiver );
 
         return id;
     }

@@ -5,8 +5,10 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryWithMutex.h"
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
@@ -47,7 +49,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::initialize()
     {
-        m_factoryScriptModuleLoader = new FactoryPool<ScriptModuleLoader, 8>();
+        FactoryWithMutexPtr factory = Helper::makeFactoryPool<ScriptModuleLoader, 8, FactoryWithMutex>();
+
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        factory->setMutex( mutex );
+
+        m_factoryScriptModuleLoader = factory;
 
         return true;
     }

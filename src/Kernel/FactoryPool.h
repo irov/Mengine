@@ -43,11 +43,11 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, uint32_t Count, class F = Factory>
-        FactoryPtr makeFactoryPool()
+        IntrusivePtr<F> makeFactoryPool()
         {
             Factory * factory = new FactoryPool<Type, Count, F>();
 
-            return FactoryPtr( factory );
+            return IntrusivePtr<F>( factory );
         }
     }
 }

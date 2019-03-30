@@ -1675,20 +1675,24 @@ namespace Mengine
     {
         ConstString materialName;
         RenderProgramVariableInterfacePtr programVariable;
+        ae_uint32_t indexOffset;
     };
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptrptr_t _sd, ae_voidptr_t _ud )
     {
-        (void)_callbackData;
-        (void)_sd;
-        (void)_ud;
+        AE_UNUSED( _ud );
 
         ShaderDesc * desc = Helper::allocateT<ShaderDesc>();
 
         desc->materialName = Helper::stringizeString( _callbackData->description );
 
+        desc->indexOffset = 1;
+
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
-            ->createProgramVariable( 0, _callbackData->parameter_count, MENGINE_DOCUMENT_FUNCTION );
+            ->createProgramVariable( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FUNCTION );
+
+        float shader_uvsl[4] = { 0.f, 0.f, 1.f, 1.f };
+        programVariable->setPixelVariableFloats( "uvsl", 0, shader_uvsl, 4, 1 );
 
         for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
         {
@@ -1706,7 +1710,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, desc->indexOffset + index, shader_values, 1, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
                 {
@@ -1714,7 +1718,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, desc->indexOffset + index, shader_values, 1, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
                 {
@@ -1725,7 +1729,7 @@ namespace Mengine
                     shader_values[2] = color_value.b;
                     shader_values[3] = 1.f;
 
-                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 4, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, desc->indexOffset + index, shader_values, 4, 1 );
                 }break;
             }
         }
@@ -1766,13 +1770,13 @@ namespace Mengine
             {
                 shader_values[0] = _callbackData->value;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1, 1 );
+                programVariable->updatePixelVariableFloats( desc->indexOffset + _callbackData->index, shader_values, 1, 1 );
             }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
             {
                 shader_values[0] = _callbackData->value;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1, 1 );
+                programVariable->updatePixelVariableFloats( desc->indexOffset + _callbackData->index, shader_values, 1, 1 );
             }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
             {
@@ -1781,13 +1785,13 @@ namespace Mengine
                 shader_values[2] = _callbackData->color.b;
                 shader_values[3] = 1.f;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 4, 1 );
+                programVariable->updatePixelVariableFloats( desc->indexOffset + _callbackData->index, shader_values, 4, 1 );
             }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_TIME:
             {
                 shader_values[0] = _callbackData->value;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1, 1 );
+                programVariable->updatePixelVariableFloats( desc->indexOffset + _callbackData->index, shader_values, 1, 1 );
             }break;
         }
     }
@@ -2608,6 +2612,21 @@ namespace Mengine
                             }
                         }
 
+                        if( mesh.shader_userdata != AE_NULLPTR )
+                        {
+                            ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
+
+                            const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
+
+                            mt::vec2f uv_zero;
+                            mt::vec2f uv_one;
+                            resource_image->correctUVImage( uv_zero, mt::vec2f( 0.f, 0.f ) );
+                            resource_image->correctUVImage( uv_one, mt::vec2f( 1.f, 1.f ) );
+
+                            float uvsl[4] = { uv_zero.x, uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
+                            programVariable->setPixelVariableFloats( "uvsl", 0, uvsl, 4, 1 );
+                        }
+
                         RenderIndex * indices = indices_buffer + index_iterator;
                         index_iterator += mesh.indexCount;
 
@@ -2749,11 +2768,11 @@ namespace Mengine
 
                         const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
 
-                        float bb[4];
-                        bb[0] = std::numeric_limits<float>::max();
-                        bb[1] = std::numeric_limits<float>::max();
-                        bb[2] = -std::numeric_limits<float>::max();
-                        bb[3] = -std::numeric_limits<float>::max();
+                        float uvbb[4];
+                        uvbb[0] = std::numeric_limits<float>::max();
+                        uvbb[1] = std::numeric_limits<float>::max();
+                        uvbb[2] = -std::numeric_limits<float>::max();
+                        uvbb[3] = -std::numeric_limits<float>::max();
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {
@@ -2763,28 +2782,28 @@ namespace Mengine
                             mt::vec2f uv_correct;
                             resourceTrackMatteImage->correctUVAlpha( uv_correct, uv );
 
-                            if( bb[0] > uv_correct.x )
+                            if( uvbb[0] > uv_correct.x )
                             {
-                                bb[0] = uv_correct.x;
+                                uvbb[0] = uv_correct.x;
                             }
 
-                            if( bb[1] > uv_correct.y )
+                            if( uvbb[1] > uv_correct.y )
                             {
-                                bb[1] = uv_correct.y;
+                                uvbb[1] = uv_correct.y;
                             }
 
-                            if( bb[2] < uv_correct.x )
+                            if( uvbb[2] < uv_correct.x )
                             {
-                                bb[2] = uv_correct.x;
+                                uvbb[2] = uv_correct.x;
                             }
 
-                            if( bb[3] < uv_correct.y )
+                            if( uvbb[3] < uv_correct.y )
                             {
-                                bb[3] = uv_correct.y;
+                                uvbb[3] = uv_correct.y;
                             }
                         }
 
-                        programVariable->setPixelVariableFloats( "uvbb", 0, bb, 4, 1 );
+                        programVariable->setPixelVariableFloats( "uvbb", 0, uvbb, 4, 1 );
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 

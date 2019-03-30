@@ -10,6 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     cURLThreadTask::cURLThreadTask()
         : m_id( 0 )
+		, m_timeout( -1 )
         , m_code( 0 )
         , m_status( CURLE_OK )
     {
@@ -28,6 +29,16 @@ namespace Mengine
     {
         return m_id;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void cURLThreadTask::setTimeout( int32_t _timeout )
+	{
+		m_timeout = _timeout;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32_t cURLThreadTask::getTimeout() const
+	{
+		return m_timeout;
+	}
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setReceiver( const cURLReceiverInterfacePtr & _receiver )
     {
@@ -50,6 +61,12 @@ namespace Mengine
         CURL * curl = curl_easy_init();
 
         this->_onCURL( curl );
+
+		if( m_timeout != -1 )
+		{
+			curl_easy_setopt( curl, CURLOPT_TIMEOUT, m_timeout );
+
+		}
 
         curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, false );
 

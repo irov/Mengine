@@ -2623,7 +2623,7 @@ namespace Mengine
                             resource_image->correctUVImage( uv_zero, mt::vec2f( 0.f, 0.f ) );
                             resource_image->correctUVImage( uv_one, mt::vec2f( 1.f, 1.f ) );
 
-                            float uvsl[4] = { uv_zero.x, uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
+                            float uvsl[4] = { -uv_zero.x, -uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
                             programVariable->setPixelVariableFloats( "uvsl", 0, uvsl, 4, 1 );
                         }
 

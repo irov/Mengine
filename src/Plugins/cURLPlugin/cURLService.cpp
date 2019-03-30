@@ -91,25 +91,16 @@ namespace Mengine
         curl_global_cleanup();
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::getMessage( const String & _url, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
+		task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url );
-
-        if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-        {
-            LOGGER_ERROR( "url '%s' invalid add task"
-                , _url.c_str()
-            );
-
-            return 0;
-        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -118,28 +109,29 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
+		{
+			LOGGER_ERROR( "url '%s' invalid add task"
+				, _url.c_str()
+			);
+
+			return 0;
+		}
+
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::postMessage( const String & _url, const MapParams & _params, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
 		cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
+		task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _params );
-
-        if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-        {
-            LOGGER_ERROR( "url '%s' invalid add task"
-                , _url.c_str()
-            );
-
-            return 0;
-        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -148,28 +140,29 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
+		{
+			LOGGER_ERROR( "url '%s' invalid add task"
+				, _url.c_str()
+			);
+
+			return 0;
+		}
+
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::headerData( const String & _url, const VectorString & _headers, const String & _data, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
 		cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
+		task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _headers, _data );
-
-        if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-        {
-            LOGGER_ERROR( "url '%s' invalid add task"
-                , _url.c_str()
-            );
-
-            return 0;
-        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -178,10 +171,20 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
+		{
+			LOGGER_ERROR( "url '%s' invalid add task"
+				, _url.c_str()
+			);
+
+			return 0;
+		}
+
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
         if( _fileGroup->existFile( _path ) == true )
         {
@@ -199,20 +202,9 @@ namespace Mengine
 		cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
+		task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _login, _password, _fileGroup, _path );
-
-        if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-        {
-            LOGGER_ERROR( "url '%s' category '%s' path '%s' invalid add task"
-                , _url.c_str()
-                , _fileGroup->getName().c_str()
-                , _path.c_str()
-            );
-
-            return 0;
-        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -220,6 +212,18 @@ namespace Mengine
         desc.receiver = _receiver;
 
         m_receiverDescs.push_back( desc );
+
+		if( THREAD_SERVICE()
+			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
+		{
+			LOGGER_ERROR( "url '%s' category '%s' path '%s' invalid add task"
+				, _url.c_str()
+				, _fileGroup->getName().c_str()
+				, _path.c_str()
+			);
+
+			return 0;
+		}
 
         return task_id;
     }
@@ -237,6 +241,10 @@ namespace Mengine
 
             return true;
         }
+
+		LOGGER_ERROR( "request '%d' not found"
+			, _id
+		);
 
         return false;
     }
@@ -265,7 +273,16 @@ namespace Mengine
                 receiver->onHttpRequestComplete( _id, _status, _error, _response, _code, _successful );
             }
 
-            break;
+            return;
         }
+
+		LOGGER_ERROR( "invalid request '%u' complete (status '%u' error '%s' response '%s' code '%u' successful '%d'"
+			, _id
+			, _status
+			, _error.c_str()
+			, _response.c_str()
+			, _code
+			, _successful
+		);
     }
 }

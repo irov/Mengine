@@ -29,7 +29,23 @@ macro(DOWNLOAD_URL NAME URL)
         SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
         
         URL ${URL}
+        DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
+
+        CONFIGURE_COMMAND ""
+        BUILD_COMMAND ""
+        UPDATE_COMMAND ""
+        INSTALL_COMMAND ""
+    )
+    
+    add_library(${NAME} STATIC IMPORTED)
+endmacro()
+
+macro(DOWNLOAD_URL_HASH NAME URL HASH_ALGO HASH)
+    ExternalProject_Add(${NAME}_download PREFIX ${NAME}
+        SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
         
+        URL ${URL}
+        URL_HASH ${HASH_ALGO}=${HASH}
         DOWNLOAD_NO_PROGRESS ${MENGINE_DOWNLOAD_NO_PROGRESS}
 
         CONFIGURE_COMMAND ""

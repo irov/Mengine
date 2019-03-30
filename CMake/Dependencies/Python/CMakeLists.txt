@@ -2,22 +2,11 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET( SOURCE_DIR ${THIRDPARTY_DIR}/Python )
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/Python)
 
 REMOVE_DEFINITIONS(-Doverride)
 
-#include(ConfigureChecks.cmake)
-
-#option(WITH_THREAD "compile in rudimentary thread support" OFF)
-#option(WITH_DOC_STRINGS "Enable if you want documentation strings in extension modules" OFF)
-#option(Py_USING_UNICODE "Enable unicode support" ON)
-#option(Py_DEBUG "Build debugging interpreter" OFF)
-#option(WITH_PYMALLOC "Define if you want to compile in Python-specific mallocs" ON)
-#option(HAVE_LARGEFILE_SUPPORT "Large file support " ON)
-
 set(extraLibs)
-
-set(THREAD_SRC)
 
 if(HAVE_LIBM)
   set(extraLibs ${extraLibs} ${HAVE_LIBM})
@@ -26,10 +15,6 @@ endif()
 if(HAVE_LIBUTIL)
   set(extraLibs ${extraLibs} ${HAVE_LIBUTIL})
 endif()
-
-set(MACHDEP_SRCS ) #conf 
-
-set(SIGNAL_SRCS )    # configure
 
 set(MOD_SRCS )
 
@@ -59,7 +44,7 @@ else()
   set(PY_POSIX_NAME posix)
 endif()
 
-#add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
+add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
 
 add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
 add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
@@ -75,7 +60,22 @@ add_python_module(binascii MOD_SRCS ${SOURCE_DIR}/Modules/binascii.c)
 add_python_module(unicodedata MOD_SRCS ${SOURCE_DIR}/Modules/unicodedata.c)
 add_python_module(cPickle MOD_SRCS ${SOURCE_DIR}/Modules/cPickle.c)
 add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/cStringIO.c)
-add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/_weakref.c)
+add_python_module(_weakref MOD_SRCS ${SOURCE_DIR}/Modules/_weakref.c)
+add_python_module(_lsprof MOD_SRCS ${SOURCE_DIR}/Modules/_lsprof.c)
+add_python_module(rotatingtree MOD_SRCS ${SOURCE_DIR}/Modules/rotatingtree.c)
+add_python_module(errno MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
+add_python_module(_functools MOD_SRCS ${SOURCE_DIR}/Modules/_functoolsmodule.c)
+add_python_module(time MOD_SRCS ${SOURCE_DIR}/Modules/timemodule.c)
+#add_python_module(thread MOD_SRCS ${SOURCE_DIR}/Modules/threadmodule.c)
+
+set(PLATFORM_SRCS)
+if(WIN32)
+    set(PLATFORM_SRCS 
+        )
+endif()
+
+
+
 
 
 set( HAVE_CHROOT 0 )
@@ -203,8 +203,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/dtoa.c
                 ${SOURCE_DIR}/Python/random.c
-                ${THREAD_SRC}
-                ${DYNLOAD_SRC}
+                ${SOURCE_DIR}/Python/thread.c
                 )
 
 set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c
@@ -252,6 +251,7 @@ add_library( ${PROJECT_NAME} STATIC
               ${PARSER_SRCS}
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}
+              ${PLATFORM_SRCS}
               ${MODULE_SRCS} )
 
 target_link_libraries(${PROJECT_NAME} ${extraLibs})

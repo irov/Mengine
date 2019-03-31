@@ -46,7 +46,7 @@ namespace Mengine
         void stopTasks() override;
 
     public:
-        ThreadQueueInterfacePtr runTaskQueue( uint32_t _packetSize ) override;
+        ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const Char * _doc ) override;
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
     public:

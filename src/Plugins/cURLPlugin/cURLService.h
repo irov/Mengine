@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/ThreadQueueInterface.h"
+
 #include "cURLInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -38,6 +40,11 @@ namespace Mengine
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override;
 
     protected:
+        ThreadQueueInterfacePtr m_threadQueue;
+
+        typedef Vector<ConstString> VectorThreads;
+        VectorThreads m_threads;
+
         struct ReceiverDesc
         {
             uint32_t id;

@@ -314,14 +314,14 @@ namespace Mengine
         m_tasks.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadQueueInterfacePtr ThreadService::runTaskQueue( uint32_t _packetSize )
+    ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const Char * _doc )
     {
         if( this->isAvailableService() == false )
         {
             return nullptr;
         }
 
-		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( MENGINE_DOCUMENT_FUNCTION );
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( _doc );
 
         taskQueue->setPacketSize( _packetSize );
 

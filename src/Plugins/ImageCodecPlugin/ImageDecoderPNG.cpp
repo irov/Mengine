@@ -70,11 +70,10 @@ namespace Mengine
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
         m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
-        //m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
 
         if( m_png_ptr == nullptr )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::initialize Can't create read structure"
+            LOGGER_ERROR( "Can't create read structure"
             );
 
             return false;
@@ -84,7 +83,7 @@ namespace Mengine
 
         if( m_info_ptr == nullptr )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::initialize Can't create info structure"
+            LOGGER_ERROR( "Can't create info structure"
             );
 
             png_destroy_write_struct( &m_png_ptr, nullptr );
@@ -107,7 +106,7 @@ namespace Mengine
 
         if( png_sig_cmp( png_check, (png_size_t)0, PNG_BYTES_TO_CHECK ) != 0 )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::_prepareData Bad or not PNG file"
+            LOGGER_ERROR( "Bad or not PNG file"
             );
 
             return false;
@@ -125,7 +124,7 @@ namespace Mengine
 #endif 
         if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::_prepareData jmp"
+            LOGGER_ERROR( "jmp"
             );
 
             return false;
@@ -158,7 +157,7 @@ namespace Mengine
 #else
         if( bit_depth == 16 )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::_prepareData not support scale 16 to 8 bit"
+            LOGGER_ERROR( "not support scale 16 to 8 bit"
             );
 
             return false;
@@ -211,7 +210,7 @@ namespace Mengine
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::decode invalid bufferSize %d != (%d * %d)"
+            LOGGER_ERROR( "invalid bufferSize %d != (%d * %d)"
                 , _bufferSize
                 , m_options.pitch
                 , m_dataInfo.height
@@ -281,7 +280,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
+                LOGGER_ERROR( "DEFAULT not support chanells %d - %d"
                     , m_dataInfo.channels
                     , m_options.channels
                 );
@@ -329,7 +328,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ImageDecoderPNG::decode DF_READ_ALPHA_ONLY not support chanells %d - %d"
+                LOGGER_ERROR( "DF_READ_ALPHA_ONLY not support chanells %d - %d"
                     , m_dataInfo.channels
                     , m_options.channels
                 );
@@ -391,7 +390,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ImageDecoderPNG::decode DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
+                LOGGER_ERROR( "DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
                     , m_dataInfo.channels
                     , m_options.channels
                 );
@@ -401,7 +400,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "ImageDecoderPNG::decode unsupport options flag %d"
+            LOGGER_ERROR( "unsupport options flag %d"
                 , m_options.flags
             );
 
@@ -424,7 +423,7 @@ namespace Mengine
 
         if( m_png_ptr == nullptr )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::_rewind Can't create read structure"
+            LOGGER_ERROR( "Can't create read structure"
             );
 
             return false;
@@ -434,7 +433,7 @@ namespace Mengine
 
         if( m_info_ptr == nullptr )
         {
-            LOGGER_ERROR( "ImageDecoderPNG::_rewind Can't create info structure"
+            LOGGER_ERROR( "Can't create info structure"
             );
 
             png_destroy_write_struct( &m_png_ptr, nullptr );

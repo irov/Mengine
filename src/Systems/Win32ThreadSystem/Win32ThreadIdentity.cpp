@@ -168,18 +168,25 @@ namespace Mengine
             return false;
         }
 
+        bool successful = false;
+
 		if( ::TryEnterCriticalSection( &m_processLock ) == FALSE )
 		{
 			return false;
 		}
 
-		m_task = _task;
+        if( m_task == nullptr )
+        {
+            m_task = _task;
+
+            ::WakeConditionVariable( &m_conditionVariable );
+
+            successful = true;
+        }        
 
         ::LeaveCriticalSection( &m_processLock );
-
-        ::WakeConditionVariable( &m_conditionVariable );
-
-        return true;
+        
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::removeTask()

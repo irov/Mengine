@@ -262,7 +262,7 @@ namespace Mengine
     {
         _task->cancel();
 
-        for( VectorThreadTaskDesc::const_iterator
+        for( VectorThreadTaskDesc::iterator
             it = m_tasks.begin(),
             it_end = m_tasks.end();
             it != it_end;
@@ -285,7 +285,8 @@ namespace Mengine
 
             task->finally();
 
-			m_tasks.erase( it );
+            *it = m_tasks.back();
+            m_tasks.pop_back();
             
             return true;
         }
@@ -420,7 +421,7 @@ namespace Mengine
             it_task != it_task_end;
             /*++it*/ )
         {
-            const ThreadTaskDesc & handle = m_tasks[it_task];
+            ThreadTaskDesc handle = m_tasks[it_task];
 
             const ThreadTaskInterfacePtr & task = handle.task;
 
@@ -444,7 +445,7 @@ namespace Mengine
             it_task != it_task_end;
             /*++it*/ )
         {
-            const ThreadQueuePtr & pool = m_threadQueues[it_task];
+            ThreadQueuePtr pool = m_threadQueues[it_task];
 
             if( pool->update() == false )
             {

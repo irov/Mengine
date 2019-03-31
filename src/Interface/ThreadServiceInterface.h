@@ -35,7 +35,7 @@ namespace Mengine
         virtual void stopTasks() = 0;
 
     public:
-        virtual ThreadQueueInterfacePtr runTaskQueue( uint32_t _packetSize ) = 0;
+        virtual ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const Char * _doc ) = 0;
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:

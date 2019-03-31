@@ -46,7 +46,7 @@ namespace Mengine
         uint32_t PrefetcherServicePacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()
-            ->runTaskQueue( PrefetcherServicePacketSize );
+            ->createTaskQueue( PrefetcherServicePacketSize, MENGINE_DOCUMENT_FUNCTION );
 
         for( uint32_t index = 0; index != PrefetcherServiceThreadCount; ++index )
         {

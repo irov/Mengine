@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
@@ -15,6 +16,8 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+
+#include "Config/Stringstream.h"
 
 #include "curl/curl.h"
 
@@ -51,10 +54,23 @@ namespace Mengine
             return false;
         }
 
-        if( THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "cURLService" ), -1, MENGINE_DOCUMENT_FUNCTION ) == false )
+        uint32_t cURLServiceThreadCount = CONFIG_VALUE( "cURLService", "ThreadCount", 4 );
+
+        m_threadQueue = THREAD_SERVICE()
+            ->createTaskQueue( 1, MENGINE_DOCUMENT_FUNCTION );
+
+        for( uint32_t index = 0; index != cURLServiceThreadCount; ++index )
         {
-            return false;
+            Stringstream ss;
+            ss << "ThreadcURLService_" << index;
+            ConstString threadName = Helper::stringizeString( ss.str() );
+
+            THREAD_SERVICE()
+                ->createThread( threadName, -1, MENGINE_DOCUMENT_FUNCTION );
+
+            m_threads.emplace_back( threadName );
+
+            m_threadQueue->addThread( threadName );
         }
 
         m_factoryTaskGetMessage = new FactoryPool<cURLGetMessageThreadTask, 8>();
@@ -75,8 +91,21 @@ namespace Mengine
 
         m_receiverDescs.clear();
 
-        THREAD_SERVICE()
-            ->destroyThread( STRINGIZE_STRING_LOCAL( "cURLService" ) );
+        for( const ConstString & threadName : m_threads )
+        {
+            THREAD_SERVICE()
+                ->destroyThread( threadName );
+        }
+
+        m_threads.clear();
+
+        if( m_threadQueue != nullptr )
+        {
+            THREAD_SERVICE()
+                ->cancelTaskQueue( m_threadQueue );
+
+            m_threadQueue = nullptr;
+        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
@@ -109,15 +138,7 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
-		if( THREAD_SERVICE()
-			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-		{
-			LOGGER_ERROR( "url '%s' invalid add task"
-				, _url.c_str()
-			);
-
-			return 0;
-		}
+        m_threadQueue->addTask( task );
 
         return task_id;
     }
@@ -140,15 +161,7 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
-		if( THREAD_SERVICE()
-			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-		{
-			LOGGER_ERROR( "url '%s' invalid add task"
-				, _url.c_str()
-			);
-
-			return 0;
-		}
+        m_threadQueue->addTask( task );
 
         return task_id;
     }
@@ -171,15 +184,7 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
-		if( THREAD_SERVICE()
-			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-		{
-			LOGGER_ERROR( "url '%s' invalid add task"
-				, _url.c_str()
-			);
-
-			return 0;
-		}
+        m_threadQueue->addTask( task );
 
         return task_id;
     }
@@ -213,17 +218,7 @@ namespace Mengine
 
         m_receiverDescs.push_back( desc );
 
-		if( THREAD_SERVICE()
-			->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
-		{
-			LOGGER_ERROR( "url '%s' category '%s' path '%s' invalid add task"
-				, _url.c_str()
-				, _fileGroup->getName().c_str()
-				, _path.c_str()
-			);
-
-			return 0;
-		}
+        m_threadQueue->addTask( task );
 
         return task_id;
     }
@@ -266,7 +261,8 @@ namespace Mengine
 
             cURLReceiverInterfacePtr receiver = desc.receiver;
 
-            m_receiverDescs.erase( it );
+            *it = m_receiverDescs.back();
+            m_receiverDescs.pop_back();
 
             if( receiver != nullptr )
             {

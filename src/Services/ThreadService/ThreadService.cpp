@@ -237,7 +237,7 @@ namespace Mengine
 
         if( state == false )
         {
-            LOGGER_ERROR( "ThreadService::addTask invalid run"
+            LOGGER_ERROR( "invalid run"
             );
 
             return false;

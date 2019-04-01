@@ -65,7 +65,6 @@ namespace Mengine
 		if( m_timeout != -1 )
 		{
 			curl_easy_setopt( curl, CURLOPT_TIMEOUT, m_timeout );
-
 		}
 
         curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, false );

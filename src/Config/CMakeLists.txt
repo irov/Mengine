@@ -2,6 +2,7 @@ SET( MY_LIB_NAME Config )
 
 ADD_FILTER(
 src
+    ArrayString.h
     Blobject.h
     Char.h
     String.h

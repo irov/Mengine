@@ -1673,7 +1673,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ShaderDesc
     {
-        ConstString materialName;
+        ConstString materialNameBlend;
+        ConstString materialNameBlendExternalAlpha;
         RenderProgramVariableInterfacePtr programVariable;
         ae_uint32_t indexOffset;
     };
@@ -1684,7 +1685,17 @@ namespace Mengine
 
         ShaderDesc * desc = Helper::allocateT<ShaderDesc>();
 
-        desc->materialName = Helper::stringizeString( _callbackData->description );
+        ArrayString<64> materialNameBlend;
+        materialNameBlend.append( _callbackData->description );
+        materialNameBlend.append( "_Blend" );
+
+        desc->materialNameBlend = Helper::stringizeString( materialNameBlend.c_str() );
+
+        ArrayString<64> materialNameBlendExternalAlpha;
+        materialNameBlend.append( _callbackData->description );
+        materialNameBlend.append( "_Blend_ExternalAlpha" );
+
+        desc->materialNameBlendExternalAlpha = Helper::stringizeString( materialNameBlendExternalAlpha.c_str() );
 
         desc->indexOffset = 1;
 
@@ -2644,7 +2655,46 @@ namespace Mengine
                         {
                             ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
 
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false, MENGINE_DOCUMENT_FUNCTION );
+                            ConstString materialName;
+
+                            if( resource_image->getTextureAlpha() == nullptr )
+                            {
+                                switch( blend_mode )
+                                {
+                                case EMB_NORMAL:
+                                    {
+                                        materialName = shader_desc->materialNameBlend;
+                                    }break;
+                                default:
+                                    {
+                                        LOGGER_ERROR( "invalid support shader material blend mode '%d' (Normal)"
+                                            , blend_mode
+                                        );
+
+                                        continue;
+                                    }break;
+                                }
+                            }
+                            else
+                            {
+                                switch( blend_mode )
+                                {
+                                case EMB_NORMAL:
+                                    {
+                                        materialName = shader_desc->materialNameBlendExternalAlpha;
+                                    }break;
+                                default:
+                                    {
+                                        LOGGER_ERROR( "invalid support shader material blend mode '%d' (ExternalAlpha)"
+                                            , blend_mode
+                                        );
+
+                                        continue;
+                                    }break;
+                                }
+                            }
+
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FUNCTION );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 

@@ -2491,11 +2491,6 @@ namespace Mengine
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            v.uv[0].x = 0.f;
-                            v.uv[0].y = 0.f;
-                            v.uv[1].x = 0.f;
-                            v.uv[1].y = 0.f;
-
                             v.color = total_mesh_color;
                         }
 
@@ -2536,11 +2531,6 @@ namespace Mengine
                             vp.from_f3( &mesh.position[index][0] );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
-
-                            v.uv[0].x = 0.f;
-                            v.uv[0].y = 0.f;
-                            v.uv[1].x = 0.f;
-                            v.uv[1].y = 0.f;
 
                             v.color = total_mesh_color;
                         }

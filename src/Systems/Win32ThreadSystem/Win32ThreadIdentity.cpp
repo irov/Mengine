@@ -88,7 +88,7 @@ namespace Mengine
         m_doc = _doc;
 #endif
 
-		::InitializeCriticalSection( &m_processLock );
+        ::InitializeCriticalSection( &m_processLock );
 
         ::InitializeCriticalSection( &m_conditionLock );
         ::InitializeConditionVariable( &m_conditionVariable );
@@ -144,15 +144,15 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
-    {   
+    {
         while( m_exit == false )
         {
             ::EnterCriticalSection( &m_conditionLock );
             ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             ::LeaveCriticalSection( &m_conditionLock );
-			
+
             ::EnterCriticalSection( &m_processLock );
-			if( m_task != nullptr && m_exit == false )
+            if( m_task != nullptr && m_exit == false )
             {
                 m_task->main();
                 m_task = nullptr;
@@ -163,17 +163,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
-		if( m_exit == true )
+        if( m_exit == true )
+        {
+            return false;
+        }
+
+        if( ::TryEnterCriticalSection( &m_processLock ) == FALSE )
         {
             return false;
         }
 
         bool successful = false;
-
-		if( ::TryEnterCriticalSection( &m_processLock ) == FALSE )
-		{
-			return false;
-		}
 
         if( m_task == nullptr )
         {
@@ -182,10 +182,10 @@ namespace Mengine
             ::WakeConditionVariable( &m_conditionVariable );
 
             successful = true;
-        }        
+        }
 
         ::LeaveCriticalSection( &m_processLock );
-        
+
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ namespace Mengine
         }
 
         ::EnterCriticalSection( &m_processLock );
-		m_task = nullptr;
+        m_task = nullptr;
         ::LeaveCriticalSection( &m_processLock );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -209,9 +209,9 @@ namespace Mengine
         }
 
         m_exit = true;
-        
+
         ::WakeConditionVariable( &m_conditionVariable );
-        
+
         ::WaitForSingleObject( m_thread, INFINITE );
         ::CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;

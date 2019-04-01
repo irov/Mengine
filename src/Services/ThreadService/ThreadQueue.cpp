@@ -49,9 +49,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::addTask( const ThreadTaskInterfacePtr & _task )
     {
+        if( m_cancel == true )
+        {
+            return;
+        }
+
         _task->preparation();
 
         m_threadTasks.emplace_back( _task );
+
+        for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
+        {
+            this->updateCurrentTask_( currentTask );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::cancel()

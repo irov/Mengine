@@ -38,14 +38,6 @@ macro(ADD_PYTHON_MODULE _NAME _STATIC_SRCS)
   endif()
 endmacro()
 
-if(WIN32)
-  set(PY_POSIX_NAME nt)
-else()
-  set(PY_POSIX_NAME posix)
-endif()
-
-add_python_module(${PY_POSIX_NAME}  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
-
 add_python_module(signal    MOD_SRCS ${SOURCE_DIR}/Modules/signalmodule.c)
 add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
@@ -61,12 +53,22 @@ add_python_module(unicodedata MOD_SRCS ${SOURCE_DIR}/Modules/unicodedata.c)
 add_python_module(cPickle MOD_SRCS ${SOURCE_DIR}/Modules/cPickle.c)
 add_python_module(cStringIO MOD_SRCS ${SOURCE_DIR}/Modules/cStringIO.c)
 add_python_module(_weakref MOD_SRCS ${SOURCE_DIR}/Modules/_weakref.c)
-add_python_module(_lsprof MOD_SRCS ${SOURCE_DIR}/Modules/_lsprof.c)
-add_python_module(rotatingtree MOD_SRCS ${SOURCE_DIR}/Modules/rotatingtree.c)
-add_python_module(errno MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
-add_python_module(_functools MOD_SRCS ${SOURCE_DIR}/Modules/_functoolsmodule.c)
-add_python_module(time MOD_SRCS ${SOURCE_DIR}/Modules/timemodule.c)
-#add_python_module(thread MOD_SRCS ${SOURCE_DIR}/Modules/threadmodule.c)
+
+if(WIN32 AND MSVC)
+    add_python_module(nt  MOD_SRCS ${SOURCE_DIR}/Modules/posixmodule.c)
+
+    add_python_module(_lsprof MOD_SRCS ${SOURCE_DIR}/Modules/_lsprof.c)
+    add_python_module(rotatingtree MOD_SRCS ${SOURCE_DIR}/Modules/rotatingtree.c)
+    add_python_module(errno MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
+    add_python_module(_functools MOD_SRCS ${SOURCE_DIR}/Modules/_functoolsmodule.c)
+    add_python_module(time MOD_SRCS ${SOURCE_DIR}/Modules/timemodule.c)
+endif()
+
+
+set(DEBUG_SRCS)
+if(WIN32 AND MSVC)
+
+endif()
 
 set(PLATFORM_SRCS)
 if(WIN32)

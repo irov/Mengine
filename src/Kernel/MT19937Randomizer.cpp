@@ -5,8 +5,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MT19937Randomizer::MT19937Randomizer()
     {
-        uint32_t min_value = (m_engineRandomize.min)();
-        uint32_t max_value = (m_engineRandomize.max)();
+        std::mt19937::result_type min_value = (m_engineRandomize.min)();
+        std::mt19937::result_type max_value = (m_engineRandomize.max)();
 
         m_epsilon = 1.f / float( max_value - min_value );
     }

@@ -117,6 +117,11 @@ namespace Mengine
             , _msg
         );
 
+		if( size2 == -1 )
+		{
+			return;
+		}
+
         str2[size2 + 0] = '\n';
         str2[size2 + 1] = 0;
 

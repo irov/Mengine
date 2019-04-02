@@ -35,7 +35,7 @@ namespace Mengine
 
 namespace std
 {
-    template<> inline void swap( Mengine::Tags & _left, Mengine::Tags & _right )
+    template<> inline void swap( Mengine::Tags & _left, Mengine::Tags & _right ) noexcept
     {
         _left.swap( _right );
     }

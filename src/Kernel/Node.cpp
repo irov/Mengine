@@ -487,6 +487,8 @@ namespace Mengine
         {
             NodePtr node( *it );
 
+            IntrusiveSlugListNodeChild::iterator it_node( node );
+
             it.next_shuffle();
 
             node->deactivate();
@@ -501,8 +503,6 @@ namespace Mengine
             node->release();
 
             node->removeParent_();
-
-            IntrusiveSlugListNodeChild::iterator it_node( node );
 
             m_children.erase( it_node );
 
@@ -551,7 +551,7 @@ namespace Mengine
             return true;
         }
 
-        bool result = m_parent->removeChild( NodePtr( this ) );
+        bool result = m_parent->removeChild( NodePtr::from( this ) );
 
         return result;
     }
@@ -710,8 +710,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::eraseChild_( const NodePtr & _node )
     {
-        IntrusiveSlugListNodeChild::iterator it_node( _node, true );
-        m_children.erase( it_node );
+        m_children.remove( _node );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachChildren( const LambdaNode & _lambda ) const

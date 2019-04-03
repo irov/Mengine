@@ -577,6 +577,8 @@ namespace Mengine
 
             if( this->loadAccount_( account ) == false )
             {
+                m_accounts.erase( accountID );
+
                 LOGGER_ERROR( "invalid load account '%s'"
                     , accountID.c_str()
                 );

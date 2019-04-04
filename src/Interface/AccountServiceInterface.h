@@ -33,6 +33,7 @@ namespace Mengine
         virtual AccountInterfacePtr createGlobalAccount() = 0;
 
     public:
+		virtual bool hasAccount( const ConstString& _accountID ) const = 0;
         virtual void deleteAccount( const ConstString& _accountID ) = 0;
         virtual bool selectAccount( const ConstString& _accountID ) = 0;
 
@@ -60,7 +61,7 @@ namespace Mengine
         virtual const ConstString & getCurrentAccountID() const = 0;
 
     public:
-        virtual AccountInterfacePtr getAccount( const ConstString& _accountID ) = 0;
+        virtual const AccountInterfacePtr & getAccount( const ConstString& _accountID ) const = 0;
 
     public:
         virtual void visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const = 0;

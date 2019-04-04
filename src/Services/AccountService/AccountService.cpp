@@ -272,6 +272,18 @@ namespace Mengine
 
         return newAccount;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool AccountService::hasAccount( const ConstString& _accountID ) const
+	{
+		MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
+
+		if( it_find == m_accounts.end() )
+		{
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     void AccountService::deleteAccount( const ConstString& _accountID )
     {
@@ -353,9 +365,9 @@ namespace Mengine
         return m_currentAccountID;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::getAccount( const ConstString& _accountID )
+    const AccountInterfacePtr & AccountService::getAccount( const ConstString& _accountID ) const
     {
-        MapAccounts::iterator it_found = m_accounts.find( _accountID );
+        MapAccounts::const_iterator it_found = m_accounts.find( _accountID );
 
         if( it_found == m_accounts.end() )
         {
@@ -363,10 +375,10 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            return nullptr;
+            return AccountInterfacePtr::none();
         }
 
-        AccountInterfacePtr account = it_found->second;
+        const AccountInterfacePtr & account = it_found->second;
 
         return account;
     }
@@ -588,6 +600,21 @@ namespace Mengine
 
             validAccount = account;
         }
+
+		if( this->hasAccount( selectAccountID ) == false )
+		{
+			selectAccountID.clear();
+		}
+
+		if( this->hasAccount( m_defaultAccountID ) == false )
+		{
+			m_defaultAccountID.clear();
+		}
+
+		if( this->hasAccount( m_globalAccountID ) == false )
+		{
+			m_globalAccountID.clear();
+		}
 
         if( selectAccountID.empty() == false )
         {

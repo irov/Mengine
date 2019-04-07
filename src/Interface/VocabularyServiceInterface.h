@@ -11,9 +11,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const ConstString & _prototype, const MixinPtr & )> LambdaVocabulary;
-    //////////////////////////////////////////////////////////////////////////
     class VocabularyServiceInterface
         : public ServiceInterface
     {
@@ -26,6 +23,7 @@ namespace Mengine
         virtual bool hasFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
     public:        
+        typedef Lambda<void( const ConstString & _prototype, const MixinPtr & )> LambdaVocabulary;
         virtual void foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const = 0;
     };
 }

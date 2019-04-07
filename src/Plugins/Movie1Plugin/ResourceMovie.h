@@ -184,12 +184,6 @@ namespace Mengine
         MovieLayerCamera3D camera;
     };
     //////////////////////////////////////////////////////////////////////////
-    class VisitorResourceMovie
-    {
-    public:
-        virtual void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class ResourceMovie
         : public Resource
         , public Content
@@ -255,7 +249,8 @@ namespace Mengine
         bool hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** _layer ) const;
 
     public:
-        void visitResourceMovie( VisitorResourceMovie * _visitor );
+        typedef Lambda<void( const MovieFramePackInterfacePtr &, const MovieLayer & )> LambdaResourceMovie;
+        void foreachResourceMovie( const LambdaResourceMovie & _lambda );
 
     protected:
         bool _compile() override;

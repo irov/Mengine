@@ -250,7 +250,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie::visitResourceMovie( VisitorResourceMovie * _visitor )
+    void ResourceMovie::foreachResourceMovie( const LambdaResourceMovie & _lambda )
     {
         if( this->isCompile() == false )
         {
@@ -264,7 +264,7 @@ namespace Mengine
 
         for( const MovieLayer & layer : m_layers )
         {
-            _visitor->visitLayer( m_keyFramePack, layer );
+            _lambda( m_keyFramePack, layer );
         }
     }
     //////////////////////////////////////////////////////////////////////////

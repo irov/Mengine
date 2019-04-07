@@ -33,6 +33,9 @@ src
     ResourceMovieValidator.cpp
     ResourceMovieValidator.h
     
+    MovieScriptEmbedding.cpp
+    MovieScriptEmbedding.h
+    
     DataflowAEK.h
     DataflowAEK.cpp
     MovieFramePack.h

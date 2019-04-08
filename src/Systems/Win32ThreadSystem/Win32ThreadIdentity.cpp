@@ -78,7 +78,7 @@ namespace Mengine
         ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const Char * _doc )
+    bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -87,6 +87,8 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         m_doc = _doc;
 #endif
+
+        m_mutex = _mutex;
 
         ::InitializeCriticalSection( &m_processLock );
 
@@ -154,7 +156,9 @@ namespace Mengine
             ::EnterCriticalSection( &m_processLock );
             if( m_task != nullptr && m_exit == false )
             {
+                m_mutex->lock();
                 m_task->main();
+                m_mutex->unlock();
                 m_task = nullptr;
             }
             ::LeaveCriticalSection( &m_processLock );
@@ -177,7 +181,15 @@ namespace Mengine
 
         if( m_task == nullptr )
         {
-            m_task = _task;
+            if( _task->run( m_mutex ) == true )
+            {
+                m_task = _task;
+            }
+            else
+            {
+                LOGGER_ERROR( "invalid run"
+                );
+            }
 
             ::WakeConditionVariable( &m_conditionVariable );
 

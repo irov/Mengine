@@ -5,7 +5,7 @@ src
 	ThreadService.h
 	ThreadService.cpp
     ThreadQueue.h
-    ThreadQueue.cpp    
+    ThreadQueue.cpp
     ThreadMutexDummy.h
 )
 

@@ -177,7 +177,7 @@ namespace Mengine
         if( correct_count == m_size )
         {
             size_t bytesRead;
-            if( this->read_( _buf, correct_count, bytesRead ) == false )
+            if( this->read_( _buf, 0, correct_count, &bytesRead ) == false )
             {
                 return 0;
             }
@@ -200,10 +200,9 @@ namespace Mengine
             }
 
             size_t toRead = correct_count - tail;
-            void * toBuffer = (uint8_t *)_buf + tail;
 
             size_t bytesRead;
-            if( this->read_( toBuffer, toRead, bytesRead ) == false )
+            if( this->read_( _buf, tail, toRead, &bytesRead ) == false )
             {
                 return 0;
             }
@@ -233,7 +232,7 @@ namespace Mengine
         }
 
         size_t bytesRead;
-        if( this->read_( m_readCache, MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE, bytesRead ) == false )
+        if( this->read_( m_readCache, 0, MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE, &bytesRead ) == false )
         {
             return 0;
         }
@@ -250,10 +249,12 @@ namespace Mengine
         return readSize + tail;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::read_( void * _buf, size_t _size, size_t & _read )
+    bool Win32FileInputStream::read_( void * _buf, size_t _offset, size_t _size, size_t * _read )
     {
+        uint8_t * buf_offset = (uint8_t *)_buf + _offset;
+
         DWORD bytesRead = 0;
-        if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
+        if( ::ReadFile( m_hFile, buf_offset, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
         {
             DWORD dwError = GetLastError();
 
@@ -266,7 +267,7 @@ namespace Mengine
             return false;
         }
 
-        _read = (size_t)bytesRead;
+        *_read = (size_t)bytesRead;
 
         return true;
     }

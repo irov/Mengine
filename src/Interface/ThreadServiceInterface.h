@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ThreadQueueInterface.h"
 
+#include "Kernel/ThreadEnum.h"
 #include "Kernel/ThreadJob.h"
 #include "Kernel/ConstString.h"
 #include "Config/Lambda.h"

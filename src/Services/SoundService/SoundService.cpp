@@ -48,7 +48,7 @@ namespace Mengine
                 ->createJob( 25, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
-                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, MENGINE_DOCUMENT_FUNCTION );
+                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
                 ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate );

@@ -66,7 +66,7 @@ namespace Mengine
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             THREAD_SERVICE()
-                ->createThread( threadName, -1, MENGINE_DOCUMENT_FUNCTION );
+                ->createThread( threadName, MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FUNCTION );
 
             m_threads.emplace_back( threadName );
 

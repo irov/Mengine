@@ -262,6 +262,7 @@ Vertices
 
 ADD_FILTER(
 ThreadTask
+    ThreadEnum.h
 	ThreadTask.h
 	ThreadTask.cpp
     ThreadJob.h

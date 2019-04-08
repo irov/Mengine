@@ -44,7 +44,7 @@ namespace Mengine
         m_finish = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTask::run()
+    bool ThreadTask::run( const ThreadMutexInterfacePtr & _mutex )
     {
         if( m_run == true ||
             m_cancel == true ||
@@ -53,6 +53,8 @@ namespace Mengine
         {
             return false;
         }
+
+        m_mutex = _mutex;
 
         m_run = this->_onRun();
 
@@ -137,6 +139,8 @@ namespace Mengine
 
         if( m_finish == true )
         {
+            m_mutex = nullptr;
+
             m_complete = true;
 
             this->_onComplete( m_successful );
@@ -147,8 +151,23 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::finally()
 	{
+        m_mutex = nullptr;
+
 		this->_onFinally();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTask::join()
+    {
+        if( m_cancel == true ||
+            m_finish == true ||
+            m_complete == true )
+        {
+            return;
+        }
+
+        m_mutex->lock();
+        m_mutex->unlock();
+    }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::_onUpdate()
     {
@@ -160,5 +179,10 @@ namespace Mengine
         MENGINE_UNUSED( _successful );
 
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadMutexInterfacePtr & ThreadTask::getMutex() const
+    {
+        return m_mutex;
     }
 }

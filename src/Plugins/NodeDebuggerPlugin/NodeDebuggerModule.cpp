@@ -439,7 +439,7 @@ namespace Mengine
             ->createJob( 50u, MENGINE_DOCUMENT_FUNCTION );
 
         THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), -1, MENGINE_DOCUMENT_FUNCTION );
+            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FUNCTION );
 
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob );

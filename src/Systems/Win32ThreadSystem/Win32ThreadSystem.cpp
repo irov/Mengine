@@ -55,7 +55,11 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr )("invalid create identity");
 
-        if( identity->initialize( _name, _priority, _doc ) == false )
+        ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+
+        if( identity->initialize( _name, _priority, mutex, _doc ) == false )
         {
             LOGGER_ERROR( "invalid initialize"
             );

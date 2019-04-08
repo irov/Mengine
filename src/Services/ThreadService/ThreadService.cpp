@@ -233,16 +233,6 @@ namespace Mengine
             return false;
         }
 
-        bool state = _task->run();
-
-        if( state == false )
-        {
-            LOGGER_ERROR( "invalid run"
-            );
-
-            return false;
-        }
-
         ThreadTaskDesc desc;
 
         desc.task = _task;

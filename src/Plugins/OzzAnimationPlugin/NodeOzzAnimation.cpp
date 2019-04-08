@@ -228,7 +228,7 @@ namespace Mengine
         }
 
         m_vertexMemory = MEMORY_SERVICE()
-			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
             ->createVertexBuffer( 1, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );

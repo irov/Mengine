@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::_initializeService()
     {
-		NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this, &ResourceValidateService::visitableResources_ );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this, &ResourceValidateService::visitableResources_ );
 
         return true;
     }

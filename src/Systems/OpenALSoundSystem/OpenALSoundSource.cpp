@@ -131,7 +131,7 @@ namespace Mengine
         }
 
         m_soundBuffer->resumeSource( m_sourceId );
-        
+
         m_playing = true;
         m_pausing = false;
 
@@ -341,7 +341,7 @@ namespace Mengine
         }
         else
         {
-            OPENAL_CALL( alSourcei, ( _source, AL_SOURCE_RELATIVE, AL_FALSE ));
+            OPENAL_CALL( alSourcei, (_source, AL_SOURCE_RELATIVE, AL_FALSE) );
             OPENAL_CALL( alSourcef, (_source, AL_ROLLOFF_FACTOR, 1.f) );
             OPENAL_CALL( alSource3f, (_source, AL_DIRECTION, 0.f, 0.f, 0.f) );
         }

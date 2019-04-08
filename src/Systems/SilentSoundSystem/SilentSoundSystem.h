@@ -43,7 +43,7 @@ namespace Mengine
     public:
         uint32_t genBufferId();
         void releaseBufferId( uint32_t _bufferId );
-        
+
     protected:
         FactoryPtr m_factorySilentSoundBuffer;
         FactoryPtr m_factorySilentSoundSource;

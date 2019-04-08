@@ -114,7 +114,7 @@ namespace Mengine
         }
 
         m_soundBuffer->resume( m_sourceId );
-        
+
         m_playing = true;
         m_pausing = false;
 

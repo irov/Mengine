@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowPY::create( const Char * _doc )
     {
-		ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
+        ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( py_code == nullptr )
         {
-            LOGGER_ERROR( "invalid marshal get object" 
+            LOGGER_ERROR( "invalid marshal get object"
             );
 
             return false;

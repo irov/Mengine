@@ -16,6 +16,6 @@ namespace Mengine
 
     public:
         bool embedding( pybind::kernel_interface * _kernel ) override;
-        void ejecting() override;
+        void ejecting( pybind::kernel_interface * _kernel ) override;
     };
 }

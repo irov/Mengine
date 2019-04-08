@@ -367,7 +367,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-		TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( pak->initialize( _fileGroup, _filePath ) == false )
         {
@@ -464,7 +464,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
-		TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( pak->initialize( _fileGroup, _path ) == false )
         {
@@ -691,7 +691,7 @@ namespace Mengine
             return true;
         }
 
-		TextEntryPtr textEntry = m_factoryTextEntry->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextEntryPtr textEntry = m_factoryTextEntry->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
@@ -859,7 +859,7 @@ namespace Mengine
 
         m_aliasesArguments[key] = _arguments;
 
-		NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _environment, _alias );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _environment, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
     void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )

@@ -754,13 +754,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MathScriptEmbedding::ejecting()
+    void MathScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
-
-        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(kernel);
-        pybind::unregistration_stl_vector_type_cast<Polygon, Vector<Polygon>>(kernel);
+        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<Polygon, Vector<Polygon>>(_kernel);
     }
 }
 

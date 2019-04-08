@@ -553,7 +553,7 @@ namespace Mengine
                     this->getMaterial( name, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
                 this->setDebugTriangleMaterial( debugTriangleMaterial );
-                
+
             }
         }
 

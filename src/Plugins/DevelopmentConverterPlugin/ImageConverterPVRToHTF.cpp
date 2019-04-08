@@ -81,9 +81,9 @@ namespace Mengine
 
         if( data_buffer == nullptr )
         {
-            LOGGER_ERROR( "invalid cache memory %d for '%s'"                
+            LOGGER_ERROR( "invalid cache memory %d for '%s'"
                 , data_full_size
-				, m_options.inputFileName.c_str()
+                , m_options.inputFileName.c_str()
             );
 
             return false;
@@ -139,7 +139,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid open output '%s' for file '%s'"
                 , full_output.c_str()
-				, m_options.inputFileName.c_str()
+                , m_options.inputFileName.c_str()
             );
 
             return false;

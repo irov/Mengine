@@ -22,7 +22,7 @@ namespace Mengine
         void initialize( SilentSoundSystem * _soundSystem );
 
     public:
-        bool play() override;        
+        bool play() override;
         void stop() override;
         void pause() override;
         bool resume() override;

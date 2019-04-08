@@ -16,8 +16,8 @@ namespace Mengine
         SERVICE_DECLARE( "RenderTextureService" )
 
     public:
-		virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codec, const Char * _doc ) = 0;
-		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codec, const Char * _doc ) = 0;
+        virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc ) = 0;
 
     public:
         virtual RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) = 0;

@@ -189,7 +189,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceTrackMatte::_updateMaterial() const
-    {        
+    {
         RenderMaterialInterfacePtr material = nullptr;
 
         const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
@@ -413,5 +413,5 @@ namespace Mengine
         }
 
         return material;
-    }    
+    }
 }

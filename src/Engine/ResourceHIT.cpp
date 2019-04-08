@@ -78,7 +78,7 @@ namespace Mengine
         m_mipmaplevel = dataInfo->mipmaplevel;
 
         MemoryBufferInterfacePtr mipmap = MEMORY_SERVICE()
-			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( mipmap == nullptr )
         {

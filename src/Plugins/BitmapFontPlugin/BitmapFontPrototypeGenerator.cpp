@@ -26,7 +26,7 @@ namespace Mengine
     {
         const FactoryPtr & factory = this->getFactory();
 
-		BitmapFontPtr font = factory->createObject( _doc );
+        BitmapFontPtr font = factory->createObject( _doc );
 
         return font;
     }

@@ -302,8 +302,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void EntityScriptEmbedding::ejecting()
+    void EntityScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
+        MENGINE_UNUSED( _kernel );
+
         m_implement = nullptr;
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );

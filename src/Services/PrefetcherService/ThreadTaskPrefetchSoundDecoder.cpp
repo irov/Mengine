@@ -54,7 +54,7 @@ namespace Mengine
         }
 
         m_soundDecoder = CODEC_SERVICE()
-			->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_soundDecoder == nullptr )
         {

@@ -239,7 +239,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryCacheInputInterfacePtr MemoryService::createMemoryCacheInput( const Char * _doc )
     {
-		MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject( _doc );
+        MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject( _doc );
 
         memoryCache->setMemoryManager( this );
 
@@ -248,28 +248,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryProxyInputInterfacePtr MemoryService::createMemoryProxyInput( const Char * _doc )
     {
-		MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject( _doc );
+        MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject( _doc );
 
         return memoryProxy;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInputInterfacePtr MemoryService::createMemoryInput( const Char * _doc )
     {
-		MemoryInputPtr memory = m_factoryMemoryInput->createObject( _doc );
+        MemoryInputPtr memory = m_factoryMemoryInput->createObject( _doc );
 
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryBufferInterfacePtr MemoryService::createMemoryBuffer( const Char * _doc )
     {
-		MemoryPtr memory = m_factoryMemoryBuffer->createObject( _doc );
+        MemoryPtr memory = m_factoryMemoryBuffer->createObject( _doc );
 
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryProxyInterfacePtr MemoryService::createMemoryProxy( const Char * _doc )
     {
-		MemoryProxyPtr memory = m_factoryMemoryProxy->createObject( _doc );
+        MemoryProxyPtr memory = m_factoryMemoryProxy->createObject( _doc );
 
         return memory;
     }

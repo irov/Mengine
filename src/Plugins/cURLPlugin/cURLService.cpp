@@ -127,7 +127,7 @@ namespace Mengine
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-		task->setTimeout( _timeout );
+        task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url );
 
@@ -147,10 +147,10 @@ namespace Mengine
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-		cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
+        cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-		task->setTimeout( _timeout );
+        task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _params );
 
@@ -170,10 +170,10 @@ namespace Mengine
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-		cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
+        cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-		task->setTimeout( _timeout );
+        task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _headers, _data );
 
@@ -204,10 +204,10 @@ namespace Mengine
 
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-		cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FUNCTION );
+        cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
-		task->setTimeout( _timeout );
+        task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
         task->initialize( _url, _login, _password, _fileGroup, _path );
 
@@ -237,9 +237,9 @@ namespace Mengine
             return true;
         }
 
-		LOGGER_ERROR( "request '%d' not found"
-			, _id
-		);
+        LOGGER_ERROR( "request '%d' not found"
+            , _id
+        );
 
         return false;
     }
@@ -272,13 +272,13 @@ namespace Mengine
             return;
         }
 
-		LOGGER_ERROR( "invalid request '%u' complete (status '%u' error '%s' response '%s' code '%u' successful '%d'"
-			, _id
-			, _status
-			, _error.c_str()
-			, _response.c_str()
-			, _code
-			, _successful
-		);
+        LOGGER_ERROR( "invalid request '%u' complete (status '%u' error '%s' response '%s' code '%u' successful '%d'"
+            , _id
+            , _status
+            , _error.c_str()
+            , _response.c_str()
+            , _code
+            , _successful
+        );
     }
 }

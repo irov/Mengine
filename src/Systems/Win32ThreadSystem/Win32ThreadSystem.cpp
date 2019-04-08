@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( const ConstString & _name, int32_t _priority, const Char * _doc )
     {
-		Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
+        Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr )("invalid create identity");
 
@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const Char * _doc )
     {
-		Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( _doc );
+        Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
 

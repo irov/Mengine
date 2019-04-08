@@ -374,7 +374,7 @@ namespace Mengine
                 , _groupName.c_str()
                 , _name.c_str()
                 , _type.c_str()
-				, _doc
+                , _doc
             );
 
             return nullptr;

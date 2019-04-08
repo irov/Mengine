@@ -96,7 +96,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
     {
-		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
+        AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
         if( container == nullptr )
         {
@@ -123,10 +123,10 @@ namespace Mengine
         if( it_found == m_containers.end() )
         {
             AstralaxEmitterContainerDesc new_desc;
-            new_desc.reference = 0;            
+            new_desc.reference = 0;
             new_desc.container = container.get();
 #ifdef MENGINE_DEBUG
-			new_desc.doc = _doc;
+            new_desc.doc = _doc;
 #endif
 
             it_found = m_containers.emplace( id, new_desc ).first;
@@ -153,7 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterInterfacePtr AstralaxParticleSystem::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const Char * _doc )
     {
-		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject( _doc );
+        AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject( _doc );
 
         if( emitter->initialize( this, _container ) == false )
         {

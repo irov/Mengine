@@ -118,7 +118,7 @@ namespace Mengine
                 return;
             }
 
-			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( packet->initialize( m_packetSize ) == false )
             {

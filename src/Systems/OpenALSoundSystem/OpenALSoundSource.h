@@ -26,7 +26,7 @@ namespace Mengine
     public:
         bool play() override;
         void stop() override;
-        void pause() override;        
+        void pause() override;
         bool resume() override;
 
     public:

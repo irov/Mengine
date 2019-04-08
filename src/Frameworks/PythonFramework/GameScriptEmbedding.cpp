@@ -336,8 +336,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameScriptEmbedding::ejecting()
+    void GameScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
+        MENGINE_UNUSED( _kernel );
+
         //Empty
     }
 }

@@ -46,7 +46,7 @@ namespace Mengine
             return glyph;
         }
 
-		BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FUNCTION );
+        BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( glyph->initialize( _category, _path ) == false )
         {

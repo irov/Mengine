@@ -87,5 +87,5 @@ namespace Mengine
             , this->getType().c_str()
             , this->getMovieName().c_str()
         );
-    }    
+    }
 }

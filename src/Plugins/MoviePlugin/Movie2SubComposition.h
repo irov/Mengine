@@ -45,7 +45,7 @@ namespace Mengine
         const Movie2 * getMovie() const;
 
         void setDuration( float _duration );
-        
+
 
         void setFrameDuration( float _frameDuration );
         float getFrameDuration() const;

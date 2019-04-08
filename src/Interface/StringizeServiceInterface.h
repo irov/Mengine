@@ -66,7 +66,7 @@ namespace Mengine
             const Char * value_str = _value.c_str();
             String::size_type value_size = _value.size();
 
-            ConstString cstr = stringizeStringSize( value_str, static_cast<ConstString::size_type>( value_size ) );
+            ConstString cstr = stringizeStringSize( value_str, static_cast<ConstString::size_type>(value_size) );
 
             return cstr;
         }

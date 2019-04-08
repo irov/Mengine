@@ -42,7 +42,7 @@ namespace Mengine
         const FilePath & filePath = this->getFilePath();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-			->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralax::compile '%s'", this->getName().c_str() ) );
+            ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralax::compile '%s'", this->getName().c_str() ) );
 
         if( container == nullptr )
         {

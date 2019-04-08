@@ -277,7 +277,7 @@ namespace Mengine
 
         mt::box2f bb_screen;
         Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb, bb_screen );
-                       
+
         *_bb = bb_screen;
     }
 }

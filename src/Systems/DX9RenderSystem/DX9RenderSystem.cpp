@@ -1615,9 +1615,9 @@ namespace Mengine
     {
         DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr )("invalid create attribute %s"
-			, _name.c_str()
-			);
+        MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr )("invalid create attribute %s"
+            , _name.c_str()
+            );
 
         if( attribute->initialize( _name, _elementSize ) == false )
         {
@@ -1633,11 +1633,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
+        DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader '%s'"
-			, _name.c_str()
-			);
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader '%s'"
+            , _name.c_str()
+            );
 
         if( shader->initialize( _name, _memory, _compile ) == false )
         {
@@ -1669,11 +1669,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
+        DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader %s"
-			, _name.c_str()
-			);
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader %s"
+            , _name.c_str()
+            );
 
         if( shader->initialize( _name, _memory, _compile ) == false )
         {
@@ -1709,9 +1709,9 @@ namespace Mengine
 
         DX9RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr )("invalid create program '%s'"
-			, _name.c_str()
-			);
+        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr )("invalid create program '%s'"
+            , _name.c_str()
+            );
 
         if( program->initialize( _name, _vertex, _fragment, _vertexAttribute ) == false )
         {
@@ -1768,12 +1768,12 @@ namespace Mengine
     {
         DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr )("invalid create program variable"
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr )("invalid create program variable"
             );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
-			LOGGER_ERROR( "invalid initialize program variable"
+            LOGGER_ERROR( "invalid initialize program variable"
             );
 
             return nullptr;
@@ -1857,13 +1857,13 @@ namespace Mengine
 
         if( logcreateimage == true )
         {
-            LOGGER_STATISTIC("create texture '%s' size %d:%d channels %d format %d"                
+            LOGGER_STATISTIC( "create texture '%s' size %d:%d channels %d format %d"
                 , _doc
-                , _hwWidth                
+                , _hwWidth
                 , _hwHeight
                 , _hwChannels
-                , _hwPixelFormat                
-                );
+                , _hwPixelFormat
+            );
         }
 #endif
 

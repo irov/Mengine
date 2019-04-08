@@ -123,7 +123,7 @@ namespace Mengine
 
         RenderMaterialInterfacePtr m_debugLineMaterial;
         RenderMaterialInterfacePtr m_debugTriangleMaterial;
-        
+
         typedef Map<ConstString, RenderVertexShaderInterfacePtr> MapRenderVertexShaders;
         MapRenderVertexShaders m_vertexShaders;
 

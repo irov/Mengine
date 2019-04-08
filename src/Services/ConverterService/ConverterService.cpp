@@ -76,7 +76,7 @@ namespace Mengine
             return nullptr;
         }
 
-		ConverterInterfacePtr converter = factory->createConverter( _doc );
+        ConverterInterfacePtr converter = factory->createConverter( _doc );
 
         if( converter == nullptr )
         {
@@ -158,7 +158,7 @@ namespace Mengine
         if( options.fileGroup->existFile( options.outputFileName ) == true )
         {
             InputStreamInterfacePtr oldFile = FILE_SERVICE()
-				->openInputFile( options.fileGroup, options.inputFileName, false, _doc );
+                ->openInputFile( options.fileGroup, options.inputFileName, false, _doc );
 
             if( oldFile == nullptr )
             {
@@ -177,7 +177,7 @@ namespace Mengine
             oldFile = nullptr;
 
             InputStreamInterfacePtr newFile = FILE_SERVICE()
-				->openInputFile( options.fileGroup, options.outputFileName, false, _doc );
+                ->openInputFile( options.fileGroup, options.outputFileName, false, _doc );
 
             if( newFile == nullptr )
             {

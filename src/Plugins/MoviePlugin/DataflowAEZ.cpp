@@ -241,7 +241,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowAEZ::create( const Char * _doc )
     {
-		Movie2DataPtr data = m_factoryMovieData->createObject( _doc );
+        Movie2DataPtr data = m_factoryMovieData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

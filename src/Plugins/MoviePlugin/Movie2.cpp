@@ -238,7 +238,7 @@ namespace Mengine
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_userdata);
 
                         const mt::box2f * bb = node->getBoundingBox();
-                        
+
                         if( bb != nullptr )
                         {
                             mt::merge_box( bbwm, *bb );
@@ -490,7 +490,7 @@ namespace Mengine
             {
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( node == nullptr )
@@ -507,7 +507,7 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( matrixProxy == nullptr )
@@ -546,7 +546,7 @@ namespace Mengine
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( surface == nullptr )
@@ -580,7 +580,7 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() ) 
+                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( matrixProxy == nullptr )
@@ -735,26 +735,26 @@ namespace Mengine
 
         return subComposition;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie2::hasMovieLayers( const ConstString & _name ) const
-	{
-		if( m_composition == nullptr )
-		{
-			LOGGER_ERROR( "movie2 '%s' not compile (layer '%s')"
-				, this->getName().c_str()
-				, _name.c_str()
-			);
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasMovieLayers( const ConstString & _name ) const
+    {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "movie2 '%s' not compile (layer '%s')"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
-		{
-			return false;
-		}
+        if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
+        {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
     {

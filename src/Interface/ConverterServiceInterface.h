@@ -18,7 +18,7 @@ namespace Mengine
         virtual bool registerConverter( const ConstString& _type, const ConverterFactoryInterfacePtr & _converter ) = 0;
         virtual bool unregisterConverter( const ConstString& _type ) = 0;
 
-	public:
+    public:
         virtual ConverterInterfacePtr createConverter( const ConstString & _type, const Char * _doc ) = 0;
 
     public:

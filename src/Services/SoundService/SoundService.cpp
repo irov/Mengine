@@ -247,7 +247,7 @@ namespace Mengine
                 }
 
                 this->playSoundBufferUpdate_( identity );
-            }            
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -337,7 +337,7 @@ namespace Mengine
             return nullptr;
         }
 
-		SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
+        SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         emitter->id = new_id;
@@ -1453,7 +1453,7 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             const SoundBufferInterfacePtr & soundBuffer = _identity->source->getSoundBuffer();
 

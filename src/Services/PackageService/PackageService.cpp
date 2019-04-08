@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::_initializeService()
     {
-		NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
         m_factoryPackage = new FactoryPool<Package, 8>();
 

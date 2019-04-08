@@ -39,12 +39,12 @@ namespace Mengine
 
         HANDLE m_thread;
 
-		CRITICAL_SECTION m_processLock;
+        CRITICAL_SECTION m_processLock;
 
         CRITICAL_SECTION m_conditionLock;
         CONDITION_VARIABLE m_conditionVariable;
 
-		ThreadTaskInterface * m_task;
+        ThreadTaskInterface * m_task;
         AtomicBool m_exit;
 
 #ifdef MENGINE_DEBUG

@@ -41,5 +41,5 @@ namespace Mengine
 
     protected:
         LambdaSettuper m_settuper;
-    };    
+    };
 }

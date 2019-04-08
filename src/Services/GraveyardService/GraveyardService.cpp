@@ -153,7 +153,7 @@ namespace Mengine
         RenderTextureGraveEntry & entry = *it_found;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-			->createRenderTexture( entry.image, entry.width, entry.height, _doc );
+            ->createRenderTexture( entry.image, entry.width, entry.height, _doc );
 
         entry.image = nullptr;
 

@@ -26,7 +26,7 @@ namespace Mengine
     protected:
         void _complete( bool _isEnd ) override;
 
-    protected:        
+    protected:
         AffectorCallbackInterfacePtr m_cb;
     };
 }

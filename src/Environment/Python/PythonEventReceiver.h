@@ -18,11 +18,11 @@ namespace Mengine
     {
     public:
         PythonEventReceiver()
-            : m_kernel( nullptr ) 
+            : m_kernel( nullptr )
         {
         };
 
-        ~PythonEventReceiver() override 
+        ~PythonEventReceiver() override
         {
         };
 

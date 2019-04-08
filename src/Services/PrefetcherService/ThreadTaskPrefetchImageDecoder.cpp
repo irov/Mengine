@@ -81,7 +81,7 @@ namespace Mengine
         }
 
         MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
-			->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
         if( memoryInput == nullptr )
         {

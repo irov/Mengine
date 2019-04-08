@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class C, class M, class ... Args>
     class MethodObserverCallable
-		: public ArgsObserverCallable<ID>
+        : public ArgsObserverCallable<ID>
     {
     public:
         MethodObserverCallable( C * _self, M _method )
@@ -57,14 +57,14 @@ namespace Mengine
     protected:
         void call( const typename Notificator<ID>::args_type & _args ) override
         {
-			this->call_with_tuple( _args, std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
+            this->call_with_tuple( _args, std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
         }
 
-		template<uint32_t ... I>
-		void call_with_tuple( const typename Notificator<ID>::args_type & _args, std::integer_sequence<uint32_t, I...> )
-		{
-			(m_self->*m_method)(std::get<I>( _args )...);
-		}
+        template<uint32_t ... I>
+        void call_with_tuple( const typename Notificator<ID>::args_type & _args, std::integer_sequence<uint32_t, I...> )
+        {
+            (m_self->*m_method)(std::get<I>( _args )...);
+        }
 
     protected:
         C * m_self;
@@ -76,11 +76,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class C, class ... P>
     class GeneratorMethodObserverCallable<ID, void (C::*)(P...)>
-		: public MethodObserverCallable<ID, C, void (C::*)(P...), P ...>
+        : public MethodObserverCallable<ID, C, void (C::*)(P...), P ...>
     {
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) )
-			: MethodObserverCallable<ID, C, void (C::*)(P...), P ...>( _self, _method )
+            : MethodObserverCallable<ID, C, void (C::*)(P...), P ...>( _self, _method )
         {
         }
     };
@@ -91,7 +91,7 @@ namespace Mengine
     {
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) const )
-			: MethodObserverCallable<ID, C, void (C::*)(P...) const, P ...>( _self, _method )
+            : MethodObserverCallable<ID, C, void (C::*)(P...) const, P ...>( _self, _method )
         {
         }
     };
@@ -107,38 +107,38 @@ namespace Mengine
 
     public:
         template<uint32_t ID, class C, class M>
-		void addObserverMethod( C * _self, M _method )
+        void addObserverMethod( C * _self, M _method )
         {
-			ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
+            ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
 
             this->addObserver( ID, ObservablePtr( _self ), callable );
         }
 
     public:
-		typedef Lambda<void( const ObserverCallableInterfacePtr & )> LambdaObserver;
+        typedef Lambda<void( const ObserverCallableInterfacePtr & )> LambdaObserver;
         virtual bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) = 0;
 
     public:
         template<uint32_t ID, class ... Args>
         inline bool notify( const Args & ... _args )
         {
-			bool successful = this->notify_tuple<ID>( std::make_tuple( _args... ) );
+            bool successful = this->notify_tuple<ID>( std::make_tuple( _args... ) );
 
             return successful;
         }
 
-	protected:
+    protected:
         template<uint32_t ID>
-		inline bool notify_tuple( const typename Notificator<ID>::args_type & _args )
+        inline bool notify_tuple( const typename Notificator<ID>::args_type & _args )
         {
-			typedef ArgsObserverCallable<ID> args_observer_type;
+            typedef ArgsObserverCallable<ID> args_observer_type;
 
-			bool successful = this->visitObservers( ID, [&_args]( const ObserverCallableInterfacePtr & _observer )
-			{
-				args_observer_type * args_observer = _observer.getT<args_observer_type *>();
+            bool successful = this->visitObservers( ID, [&_args]( const ObserverCallableInterfacePtr & _observer )
+            {
+                args_observer_type * args_observer = _observer.getT<args_observer_type *>();
 
-				args_observer->call( _args );
-			} );
+                args_observer->call( _args );
+            } );
 
             return successful;
         }

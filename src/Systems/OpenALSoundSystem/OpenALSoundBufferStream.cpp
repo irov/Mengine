@@ -56,7 +56,7 @@ namespace Mengine
                 continue;
             }
 
-            m_soundSystem->releaseBufferId( id );            
+            m_soundSystem->releaseBufferId( id );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ namespace Mengine
 
         ALint state = 0;
         OPENAL_CALL( alGetSourcei, (m_sourceId, AL_SOURCE_STATE, &state) );
-        
+
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
             LOGGER_ERROR( "source %d invalid state %d"
@@ -241,7 +241,7 @@ namespace Mengine
         this->setUpdating_( false );
 
         OPENAL_CALL( alSourceStop, (_source) );
-        
+
         OPENAL_CALL( alSourceRewind, (_source) );
         OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
     }

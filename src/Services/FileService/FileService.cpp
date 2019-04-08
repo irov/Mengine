@@ -61,7 +61,7 @@ namespace Mengine
             return nullptr;
         }
 
-		FileGroupInterfacePtr fileGroup = factory->createObject( _doc );
+        FileGroupInterfacePtr fileGroup = factory->createObject( _doc );
 
         if( fileGroup == nullptr )
         {
@@ -201,7 +201,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr FileService::openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streaming, const Char * _doc )
     {
-		InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming, _doc );
+        InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming, _doc );
 
         if( file == nullptr )
         {
@@ -228,7 +228,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileService::openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const Char * _doc )
     {
-		OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
+        OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
         if( file == nullptr )
         {

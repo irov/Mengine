@@ -33,6 +33,9 @@ src
     ResourceMovie2Validator.h
     Movie2DebuggerBoundingBox.h
     Movie2DebuggerBoundingBox.cpp
+    
+    Movie2ScriptEmbedding.h
+    Movie2ScriptEmbedding.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

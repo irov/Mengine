@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class MovieScriptEmbedding
+    class Movie2ScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        MovieScriptEmbedding();
-        ~MovieScriptEmbedding() override;
+        Movie2ScriptEmbedding();
+        ~Movie2ScriptEmbedding() override;
 
     public:
         bool embedding( pybind::kernel_interface * _kernel ) override;

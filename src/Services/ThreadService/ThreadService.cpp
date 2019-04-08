@@ -243,7 +243,8 @@ namespace Mengine
 
         m_tasks.emplace_back( desc );
 
-        this->tryFastProcessTask_( desc );
+        ThreadTaskDesc & try_desc = m_tasks.back();
+        this->tryFastProcessTask_( try_desc );
 
         return true;
     }
@@ -395,12 +396,14 @@ namespace Mengine
                         continue;
                     }
 
-                    if( desc_thread.identity->processTask( task ) == true )
+                    if( desc_thread.identity->processTask( task ) == false )
                     {
-                        desc_task.identity = desc_thread.identity;
-                        desc_task.progress = true;
-                        break;
+                        continue;
                     }
+                     
+                    desc_task.identity = desc_thread.identity;
+                    desc_task.progress = true;
+                    break;
                 }
             }
         }
@@ -449,15 +452,18 @@ namespace Mengine
             }
         }
 
-        VectorMainCodeDescs mainCodes;
-        m_mutexMainCode->lock();
-        std::swap( m_mainCodes, mainCodes );
-        m_mutexMainCode->unlock();
-
-        for( const MainCodeDesc & desc : mainCodes )
+        if( m_mainCodes.empty() == false )
         {
-            desc.lambda();
-            desc.conditionVariable->wake();
+            VectorMainCodeDescs mainCodes;
+            m_mutexMainCode->lock();
+            std::swap( m_mainCodes, mainCodes );
+            m_mutexMainCode->unlock();
+
+            for( const MainCodeDesc & desc : mainCodes )
+            {
+                desc.lambda();
+                desc.conditionVariable->wake();
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -282,9 +282,8 @@ namespace Mengine
         {
             ++receiver->refcount;
 
-            if( _observer == nullptr )
-                _observer->onPrefetchAlreadyExist();
-
+            _observer->onPrefetchAlreadyExist();
+            
             return true;
         }
 
@@ -343,13 +342,13 @@ namespace Mengine
             return false;
         }
 
-        PrefetchReceiver * receiver;
-        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        ThreadTaskPrefetchPtr prefetcher;
+        if( this->popPrefetch_( _fileGroup, _filePath, &prefetcher ) == false )
         {
             return false;
         }
 
-        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = stdex::intrusive_static_cast<ThreadTaskPrefetchDataflowPtr>(receiver->prefetcher);
+        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = stdex::intrusive_static_cast<ThreadTaskPrefetchDataflowPtr>(prefetcher);
 
         const DataInterfacePtr & prefetch_data = prefetcherDataflow->getData();
 
@@ -455,7 +454,10 @@ namespace Mengine
             return true;
         }
 
-        receiver.prefetcher->cancel();
+        if( receiver.prefetcher->cancel() == true )
+        {
+            receiver.prefetcher->join();
+        }
 
         m_prefetchReceiver.erase( it_found );
 
@@ -517,7 +519,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver )
+    bool PrefetcherService::popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * _prefetch )
     {
         MapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
@@ -531,16 +533,21 @@ namespace Mengine
         if( receiver.prefetcher->isComplete() == false ||
             receiver.prefetcher->isSuccessful() == false )
         {
-            --receiver.refcount;
+            receiver.refcount = 0;
 
-            receiver.prefetcher->cancel();
+            if( receiver.prefetcher->cancel() == true )
+            {
+                receiver.prefetcher->join();
+            }
 
             m_prefetchReceiver.erase( it_found );
 
             return false;
         }
 
-        *_receiver = &receiver;
+        *_prefetch = receiver.prefetcher;
+
+        m_prefetchReceiver.erase( it_found );
 
         return true;
     }

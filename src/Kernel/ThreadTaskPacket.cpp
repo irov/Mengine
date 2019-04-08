@@ -92,6 +92,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPacket::_onJoin()
+    {
+        for( const ThreadTaskPtr & task : m_tasks )
+        {
+            task->join();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPacket::_onComplete( bool _successful )
     {
         (void)_successful;

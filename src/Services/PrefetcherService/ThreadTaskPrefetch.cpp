@@ -38,8 +38,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onComplete( bool _successful )
     {
-        (void)_successful;
-
         m_fileGroup = nullptr;
         m_stream = nullptr;
 

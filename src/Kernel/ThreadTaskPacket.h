@@ -28,6 +28,7 @@ namespace Mengine
         bool _onRun() override;
         void _onCancel() override;
         void _onUpdate() override;
+        void _onJoin() override;
 
     protected:
         void _onComplete( bool _successful ) override;

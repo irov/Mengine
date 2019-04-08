@@ -113,6 +113,8 @@ namespace Mengine
             _currentTask->isComplete() == true ||
             _currentTask->isCancel() == true )
         {
+            _currentTask = nullptr;
+
             if( m_threadTasks.empty() == true )
             {
                 return;
@@ -165,11 +167,6 @@ namespace Mengine
                 }
 
                 _currentTask = packet;
-            }
-
-            if( _currentTask == nullptr )
-            {
-                return;
             }
         }
     }

@@ -98,11 +98,15 @@ namespace Mengine
         {
             task->join();
         }
+
+        m_childMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPacket::_onComplete( bool _successful )
     {
-        (void)_successful;
+        MENGINE_UNUSED( _successful );
+
+        m_childMutex = nullptr;
 
         m_tasks.clear();
     }

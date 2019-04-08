@@ -23,8 +23,10 @@ namespace Mengine
             , public Factorable
         {
         public:
-            PyPrefetcherObserver( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb( _cb )
+            PyPrefetcherObserver( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
+                : m_category( _category )
+                , m_groupName( _groupName )
+                , m_cb( _cb )
                 , m_args( _args )
                 , m_count( 0 )
                 , m_successful( true )
@@ -66,7 +68,9 @@ namespace Mengine
 
                 if( --m_count == 0 )
                 {
-                    m_cb.call_args( false, m_args );
+                    m_cb.call_args( m_successful, m_args );
+                    m_cb.reset();
+                    m_args.reset();
                 }
             }
 
@@ -77,10 +81,15 @@ namespace Mengine
                 if( --m_count == 0 )
                 {
                     m_cb.call_args( m_successful, m_args );
+                    m_cb.reset();
+                    m_args.reset();
                 }
             }
 
         protected:
+            ConstString m_category;
+            ConstString m_groupName;
+
             pybind::object m_cb;
             pybind::args m_args;
 
@@ -105,7 +114,7 @@ namespace Mengine
                 return false;
             }
 
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _category, _groupName, _cb, _args );
 
             RESOURCE_SERVICE()
                 ->foreachGroupResources( fileGroup, _groupName, [&observer]( const ResourcePtr & _resource )
@@ -144,10 +153,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( ConstString::none(), ConstString::none(), _cb, _args );
 
             TEXT_SERVICE()
-                ->foreachFonts( [observer]( const TextFontInterfacePtr & _textFont )
+                ->foreachFonts( [&observer]( const TextFontInterfacePtr & _textFont )
             {
                 _textFont->prefetch( observer );
             } );
@@ -161,8 +170,8 @@ namespace Mengine
             : public PyPrefetcherObserver
         {
         public:
-            PyMutexPrefetcherObserver( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
-                : PyPrefetcherObserver( _cb, _args )
+            PyMutexPrefetcherObserver( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
+                : PyPrefetcherObserver( _category, _groupName, _cb, _args )
                 , m_kernel( _kernel )
             {
                 m_kernel->acquire_mutex();
@@ -181,7 +190,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchScripts( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyMutexPrefetcherObserver>( _kernel, _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyMutexPrefetcherObserver>( _kernel, ConstString::none(), ConstString::none(), _cb, _args );
 
             SCRIPT_SERVICE()
                 ->prefetchModules( observer );

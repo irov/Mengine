@@ -32,10 +32,13 @@ namespace Mengine
         void main() override;
 
     public:
-        bool run() override;
+        bool run( const ThreadMutexInterfacePtr & _mutex ) override;
         bool cancel() override;
         bool update() override;
 		void finally() override;
+
+    public:
+        void join() override;
 
     protected:
         virtual void _onPreparation();
@@ -50,7 +53,12 @@ namespace Mengine
     protected:
         virtual void _onComplete( bool _successful );
 
+    protected:
+        const ThreadMutexInterfacePtr & getMutex() const;
+
     private:
+        ThreadMutexInterfacePtr m_mutex;
+
         AtomicBool m_run;
         AtomicBool m_complete;
         AtomicBool m_finish;

@@ -7,6 +7,7 @@
 
 #include "ResourcePrefetcherServiceInterface.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
 #include "pybind/pybind.hpp"
@@ -91,6 +92,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
         {
+            LOGGER_STATISTIC( "prefetch resources category '%s' group '%s'"
+                , _category.c_str()
+                , _groupName.c_str()
+            );
+
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _category );
 
@@ -115,6 +121,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
         {
+            LOGGER_STATISTIC( "unfetch resources category '%s' group '%s'"
+                , _category.c_str()
+                , _groupName.c_str()
+            );
+
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _category );
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadIdentityInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -22,7 +23,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( const ConstString & _name, int32_t _priority, const Char * _doc );
+        bool initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const Char * _doc );
 
     public:
         void main();
@@ -36,6 +37,8 @@ namespace Mengine
 
     protected:
         ConstString m_name;
+
+        ThreadMutexInterfacePtr m_mutex;
 
         HANDLE m_thread;
 

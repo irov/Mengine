@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/ThreadMutexInterface.h"
+
 #include "Kernel/Mixin.h"
 
 #include "Config/Config.h"
@@ -22,9 +24,12 @@ namespace Mengine
         virtual void finally() = 0;
 
     public:
-        virtual bool run() = 0;
+        virtual bool run( const ThreadMutexInterfacePtr & _mutex ) = 0;
         virtual bool cancel() = 0;
         virtual bool update() = 0;
+
+    public:
+        virtual void join() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskInterface> ThreadTaskInterfacePtr;

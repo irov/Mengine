@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         ThreadTaskPacket();
+        ~ThreadTaskPacket() override;
 
     public:
         bool initialize( uint32_t _packetSize );
@@ -34,6 +35,8 @@ namespace Mengine
     protected:
         typedef Vector<ThreadTaskPtr> VectorThreadTasks;
         VectorThreadTasks m_tasks;
+
+        ThreadMutexInterfacePtr m_childMutex;
     };
 
     typedef IntrusivePtr<ThreadTaskPacket> ThreadTaskPacketPtr;

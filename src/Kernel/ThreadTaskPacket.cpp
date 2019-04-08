@@ -1,6 +1,10 @@
 #include "ThreadTaskPacket.h"
 
+#include "Interface/ThreadSystemInterface.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -9,9 +13,20 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ThreadTaskPacket::~ThreadTaskPacket()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPacket::initialize( uint32_t _packetSize )
     {
         m_tasks.reserve( _packetSize );
+
+        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
+
+        m_childMutex = mutex;
 
         return true;
     }
@@ -37,7 +52,9 @@ namespace Mengine
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
+            m_childMutex->lock();
             task->main();
+            m_childMutex->unlock();
         }
 
         return true;
@@ -47,7 +64,7 @@ namespace Mengine
     {
         for( const ThreadTaskPtr & task : m_tasks )
         {
-            task->run();
+            task->run( m_childMutex );
         }
 
         return true;

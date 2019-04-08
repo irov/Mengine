@@ -314,8 +314,8 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( m_fileGroup, fullpath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( m_fileGroup, fullpath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

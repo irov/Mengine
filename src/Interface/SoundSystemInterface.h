@@ -15,7 +15,7 @@
 #include "math/vec3.h"
 
 namespace Mengine
-{    
+{
     class SoundSystemInterface
         : public ServiceInterface
     {

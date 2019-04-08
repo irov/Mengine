@@ -107,16 +107,16 @@ namespace Mengine
 
         if( generator == nullptr )
         {
-            LOGGER_ERROR( "prototype not found '%s:%s' doc '%s'"	
+            LOGGER_ERROR( "prototype not found '%s:%s' doc '%s'"
                 , _category.c_str()
                 , _prototype.c_str()
-				, _doc
+                , _doc
             );
 
             return nullptr;
         }
 
-		FactorablePtr prototype = generator->generate( _doc );
+        FactorablePtr prototype = generator->generate( _doc );
 
         return prototype;
     }

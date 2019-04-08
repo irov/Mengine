@@ -21,6 +21,9 @@ src
     cURLHeaderDataThreadTask.h
     cURLPostMessageThreadTask.cpp
     cURLPostMessageThreadTask.h
+    
+    cURLScriptEmbedding.cpp
+    cURLScriptEmbedding.h
 	)
 
 add_definitions(-DCURL_STATICLIB)

@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         virtual bool embedding( pybind::kernel_interface * _kernel ) = 0;
-        virtual void ejecting() = 0;
+        virtual void ejecting( pybind::kernel_interface * _kernel ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScriptEmbeddingInterface> ScriptEmbeddingInterfacePtr;

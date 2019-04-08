@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr FEDataflow::create( const Char * _doc )
     {
-		FEDataPtr data = m_factoryFEData->createObject( _doc );
+        FEDataPtr data = m_factoryFEData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

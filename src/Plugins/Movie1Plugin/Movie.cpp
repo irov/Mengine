@@ -1403,7 +1403,7 @@ namespace Mengine
         }
 
         HotSpotImagePtr layer_hotspotimage = PROTOTYPE_SERVICE()
-			->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotImage" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( layer_hotspotimage == nullptr )
         {
@@ -1930,7 +1930,7 @@ namespace Mengine
     bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
     {
         NodePtr layer_particles = PROTOTYPE_SERVICE()
-			->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( layer_particles == nullptr )
         {

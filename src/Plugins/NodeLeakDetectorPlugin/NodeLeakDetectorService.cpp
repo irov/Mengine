@@ -39,7 +39,7 @@ namespace Mengine
         LOGGER_STATISTIC( "==================================================================" );
         LOGGER_STATISTIC( "==================================================================" );
 
-        this->getNodeLeak( 0, []( const Factory * _factory, const Factorable *, const Char * _doc ){
+        this->getNodeLeak( 0, []( const Factory * _factory, const Factorable *, const Char * _doc ) {
             LOGGER_STATISTIC( "leak '%s' doc: %s"
                 , _factory->getName()
                 , _doc

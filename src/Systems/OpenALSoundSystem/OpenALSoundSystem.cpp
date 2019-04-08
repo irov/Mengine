@@ -211,7 +211,7 @@ namespace Mengine
 
         if( _isStream == false || SERVICE_AVAILABLE( ThreadServiceInterface ) == false )
         {
-			OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( MENGINE_DOCUMENT_FUNCTION );
+            OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer->initialize( this ) == false )
             {
@@ -222,7 +222,7 @@ namespace Mengine
         }
         else
         {
-			OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( MENGINE_DOCUMENT_FUNCTION );
+            OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer->initialize( this ) == false )
             {

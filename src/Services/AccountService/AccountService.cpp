@@ -258,7 +258,7 @@ namespace Mengine
             return nullptr;
         }
 
-		AccountPtr newAccount = m_factoryAccounts->createObject( MENGINE_DOCUMENT_FUNCTION );
+        AccountPtr newAccount = m_factoryAccounts->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
@@ -272,18 +272,18 @@ namespace Mengine
 
         return newAccount;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool AccountService::hasAccount( const ConstString& _accountID ) const
-	{
-		MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
+    //////////////////////////////////////////////////////////////////////////
+    bool AccountService::hasAccount( const ConstString& _accountID ) const
+    {
+        MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
 
-		if( it_find == m_accounts.end() )
-		{
-			return false;
-		}
+        if( it_find == m_accounts.end() )
+        {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void AccountService::deleteAccount( const ConstString& _accountID )
     {
@@ -530,7 +530,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get AccountEnumerator failed '%s'"
@@ -601,20 +601,20 @@ namespace Mengine
             validAccount = account;
         }
 
-		if( this->hasAccount( selectAccountID ) == false )
-		{
-			selectAccountID.clear();
-		}
+        if( this->hasAccount( selectAccountID ) == false )
+        {
+            selectAccountID.clear();
+        }
 
-		if( this->hasAccount( m_defaultAccountID ) == false )
-		{
-			m_defaultAccountID.clear();
-		}
+        if( this->hasAccount( m_defaultAccountID ) == false )
+        {
+            m_defaultAccountID.clear();
+        }
 
-		if( this->hasAccount( m_globalAccountID ) == false )
-		{
-			m_globalAccountID.clear();
-		}
+        if( this->hasAccount( m_globalAccountID ) == false )
+        {
+            m_globalAccountID.clear();
+        }
 
         if( selectAccountID.empty() == false )
         {

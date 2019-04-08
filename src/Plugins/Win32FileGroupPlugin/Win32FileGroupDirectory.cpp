@@ -85,7 +85,7 @@ namespace Mengine
     {
         WChar unicode_filePath[MENGINE_MAX_PATH];
         size_t unicode_filePathLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, _fileName, unicode_filePath, MENGINE_MAX_PATH );
-        
+
         if( unicode_filePathLen == MENGINE_PATH_INVALID_LENGTH )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
@@ -176,10 +176,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc )
     {
-		MENGINE_UNUSED( _fileName );
-		MENGINE_UNUSED( _streaming );
+        MENGINE_UNUSED( _fileName );
+        MENGINE_UNUSED( _streaming );
 
-		Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
+        Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
 
         return inputStream;
     }
@@ -213,7 +213,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const Char * _doc )
     {
-		Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
+        Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
 
         return outputStream;
     }

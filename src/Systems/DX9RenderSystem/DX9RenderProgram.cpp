@@ -70,7 +70,7 @@ namespace Mengine
         if( m_fragmentShader != nullptr )
         {
             m_fragmentShader->enable( _pD3DDevice );
-            
+
         }
         else
         {

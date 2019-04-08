@@ -16,10 +16,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleLoader::~ScriptModuleLoader()
     {
-		if( m_kernel != nullptr )
-		{
-			m_kernel->decref( m_module );
-		}
+        if( m_kernel != nullptr )
+        {
+            m_kernel->decref( m_module );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleLoader::setModule( pybind::kernel_interface * _kernel, PyObject * _module )
@@ -59,7 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoader::load_module( pybind::kernel_interface * _kernel, PyObject * _moduleName )
     {
-		ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_fileGroup, m_filePath, m_dataflow, MENGINE_DOCUMENT_FUNCTION );
+        ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_fileGroup, m_filePath, m_dataflow, MENGINE_DOCUMENT_FUNCTION );
 
         if( codeData == nullptr )
         {

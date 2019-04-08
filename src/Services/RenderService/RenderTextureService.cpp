@@ -155,7 +155,7 @@ namespace Mengine
             return nullptr;
         }
 
-		RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
 
         if( texture == nullptr )
         {
@@ -195,7 +195,7 @@ namespace Mengine
             return nullptr;
         }
 
-		RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
 
         return texture;
     }
@@ -366,7 +366,7 @@ namespace Mengine
         //	return atlas_texture;
         //}
 
-		DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( MENGINE_DOCUMENT_FUNCTION );
+        DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( imageProvider == nullptr )
         {
@@ -403,7 +403,7 @@ namespace Mengine
 
         const RenderImageInterfacePtr & image = new_texture->getImage();
 
-		MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr )("invalid get image");
+        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr )("invalid get image");
 
         if( imageLoader->load( image ) == false )
         {

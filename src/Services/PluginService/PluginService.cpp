@@ -129,7 +129,7 @@ namespace Mengine
 
         for( PluginDesc & desc : reverse_plugins )
         {
-            if( desc.plugin->isSystemPlugin() == true && 
+            if( desc.plugin->isSystemPlugin() == true &&
                 this->isInitializeService() == true )
             {
                 m_plugins.emplace_back( desc );

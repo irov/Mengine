@@ -68,10 +68,10 @@ namespace Mengine
 
         struct AstralaxEmitterContainerDesc
         {
-            uint32_t reference;            
+            uint32_t reference;
             const AstralaxEmitterContainer * container;
 #ifdef MENGINE_DEBUG
-			String doc;
+            String doc;
 #endif
         };
 

@@ -31,7 +31,7 @@ namespace Mengine
         virtual const mt::box2f & getCompositionBounds() const = 0;
 
     public:
-		virtual bool hasMovieLayers( const ConstString & _name ) const = 0;
+        virtual bool hasMovieLayers( const ConstString & _name ) const = 0;
         virtual void setEnableMovieLayers( const ConstString & _name, bool _enable ) = 0;
 
     public:

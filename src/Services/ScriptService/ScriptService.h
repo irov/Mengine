@@ -58,6 +58,7 @@ namespace Mengine
     public:
         bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) override;
         void removeScriptEmbedding( const ConstString & _name ) override;
+        void ejectingScriptEmbeddings() override;
 
     public:
         bool bootstrapModules() override;

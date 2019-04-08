@@ -62,6 +62,7 @@ namespace Mengine
     public:
         virtual bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
         virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
+        virtual void ejectingScriptEmbeddings() = 0;
 
     public:
         template<class T>
@@ -80,4 +81,10 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SCRIPT_SERVICE()\
     ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
+//////////////////////////////////////////////////////////////////////////
+#define ADD_SCRIPT_EMBEDDING(NAME)\
+    if(SCRIPT_SERVICE()->addScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME), Helper::makeFactorableUnique<NAME>())==false) return false
+//////////////////////////////////////////////////////////////////////////
+#define REMOVE_SCRIPT_EMBEDDING(NAME)\
+    SCRIPT_SERVICE()->removeScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME))
 //////////////////////////////////////////////////////////////////////////

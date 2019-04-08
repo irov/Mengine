@@ -42,7 +42,7 @@ namespace Mengine
 
     public:
         float getWidth() const;
-        float getHeight() const;        
+        float getHeight() const;
 
     protected:
         bool _compile() override;

@@ -120,7 +120,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
     {
-		SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( sm->initialize( _name ) == false )
         {
@@ -181,7 +181,7 @@ namespace Mengine
 
         m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
 
-		SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( scheduleManager->initialize( "LocalScheduleManager"_c ) == false )
         {
@@ -273,7 +273,7 @@ namespace Mengine
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
         m_camera2D = PROTOTYPE_SERVICE()
-			->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_camera2D->setOrthogonalViewport( vp );
         m_camera2D->enable();
@@ -312,7 +312,7 @@ namespace Mengine
         {
             m_camera2D->release();
             m_camera2D = nullptr;
-        }        
+        }
 
         if( m_viewport2D != nullptr )
         {

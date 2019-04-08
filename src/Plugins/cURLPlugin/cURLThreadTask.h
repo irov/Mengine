@@ -20,8 +20,8 @@ namespace Mengine
         void setRequestId( HttpRequestID _id );
         HttpRequestID getRequestId() const;
 
-		void setTimeout( int32_t _timeout );
-		int32_t getTimeout() const;
+        void setTimeout( int32_t _timeout );
+        int32_t getTimeout() const;
 
         void setReceiver( const cURLReceiverInterfacePtr & _receiver );
         const cURLReceiverInterfacePtr & getReceiver() const;
@@ -44,7 +44,7 @@ namespace Mengine
 
     protected:
         HttpRequestID m_id;
-		int32_t m_timeout;
+        int32_t m_timeout;
         cURLReceiverInterfacePtr m_receiver;
 
         uint32_t m_code;

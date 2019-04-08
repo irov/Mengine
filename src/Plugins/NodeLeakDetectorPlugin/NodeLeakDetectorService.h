@@ -42,7 +42,7 @@ namespace Mengine
         {
             uint32_t generation;
             const Factory * factory;
-            const Factorable * factorable;            
+            const Factorable * factorable;
             String doc;
         };
 

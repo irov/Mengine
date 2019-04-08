@@ -249,7 +249,7 @@ namespace Mengine
         }
 
         MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
-			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_xml == nullptr )
         {

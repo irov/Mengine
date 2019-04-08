@@ -200,7 +200,7 @@ namespace Mengine
                             memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
                             m_receivedData.resize( newSize );
 
-                            hdr = reinterpret_cast<PacketHeader *>( m_receivedData.data() );
+                            hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
                         }
                         else
                         {
@@ -484,7 +484,7 @@ namespace Mengine
 
         if( m_archivator == nullptr || payloadSize < 1024 )
         {
-            _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+            _hdr.compressedSize = static_cast<uint32_t>(payloadSize);
             _hdr.uncompressedSize = 0; // packet is not compressed
         }
         else
@@ -495,13 +495,13 @@ namespace Mengine
             const bool success = m_archivator->compress( compressedPayload.data(), maxCompressedSize, _packet.payload.data(), payloadSize, compressedSize, EAC_NORMAL );
             if( success == false || compressedSize >= payloadSize )
             {
-                _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+                _hdr.compressedSize = static_cast<uint32_t>(payloadSize);
                 _hdr.uncompressedSize = 0; // packet is not compressed
             }
             else
             {
-                _hdr.compressedSize = static_cast<uint32_t>( compressedSize );
-                _hdr.uncompressedSize = static_cast<uint32_t>( payloadSize );
+                _hdr.compressedSize = static_cast<uint32_t>(compressedSize);
+                _hdr.uncompressedSize = static_cast<uint32_t>(payloadSize);
 
                 compressedPayload.resize( compressedSize );
                 _packet.payload.swap( compressedPayload );
@@ -522,7 +522,7 @@ namespace Mengine
             _packet.payload.resize( _hdr.uncompressedSize );
             size_t uncompressedDataSize = 0;
             const bool success = m_archivator->decompress( _packet.payload.data(), _hdr.uncompressedSize, _receivedData, _hdr.compressedSize, uncompressedDataSize );
-            MENGINE_ASSERTION( success == true && uncompressedDataSize == _hdr.uncompressedSize, ( "Packet decompression failed!" ) );
+            MENGINE_ASSERTION( success == true && uncompressedDataSize == _hdr.uncompressedSize, ("Packet decompression failed!") );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -561,7 +561,7 @@ namespace Mengine
         serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
         serializeNodeProp( _render->isHide(), "hide", xmlNode );
         serializeNodeProp( _render->getLocalColor(), "local_color", xmlNode );
-        serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );        
+        serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )

@@ -78,7 +78,7 @@ namespace Mengine
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment ) override;
         const ConstString & getTextAliasEnvironment() const override;
 
-    public:        
+    public:
         bool setWorkAreaFromEvent( const ConstString & _eventName ) override;
         bool removeWorkArea() override;
 
@@ -91,7 +91,7 @@ namespace Mengine
         const Movie2SubCompositionPtr & getSubComposition( const ConstString & _name ) const;
 
     public:
-		bool hasMovieLayers( const ConstString & _name ) const override;
+        bool hasMovieLayers( const ConstString & _name ) const override;
         void setEnableMovieLayers( const ConstString & _name, bool _enable ) override;
 
     public:

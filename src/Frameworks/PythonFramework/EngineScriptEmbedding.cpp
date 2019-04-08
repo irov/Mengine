@@ -968,7 +968,7 @@ namespace Mengine
                 ->generateResource( _type, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr )("invalid create resource '%s'"
-                    , _type.c_str()
+                , _type.c_str()
                 );
 
             return resource;
@@ -1165,7 +1165,7 @@ namespace Mengine
                     ->findCodecType( _fileName );
 
                 ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-					->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_PYBIND );
+                    ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, nullptr );
 
@@ -1205,7 +1205,7 @@ namespace Mengine
         ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
         {
             ResourceImageSolidPtr resource = RESOURCE_SERVICE()
-				->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), MENGINE_DOCUMENT_PYBIND );
+                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
@@ -2566,7 +2566,7 @@ namespace Mengine
             }
 
             PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             py_cb->initialize( _cb, _args );
 
@@ -2702,7 +2702,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseMoveHandlerPtr handler = m_factoryPyGlobalMouseMoveHandlers
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2747,7 +2747,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonPtr handler = m_factoryPyGlobalMouseHandlerButtons
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2793,7 +2793,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonEndPtr handler = m_factoryPyGlobalMouseHandlerButtonEnds
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2833,7 +2833,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2879,7 +2879,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2918,7 +2918,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -2955,7 +2955,7 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler
-				->createObject( MENGINE_DOCUMENT_PYBIND );
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
 
             handler->initialize( _cb, _args );
 
@@ -3386,7 +3386,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
         pybind::def_functor( _kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
 
-        
+
         pybind::def_functor( _kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
         pybind::def_functor( _kernel, "removeGlobalScene", nodeScriptMethod, &EngineScriptMethod::removeGlobalScene );
         pybind::def_functor( _kernel, "getGlobalScene", nodeScriptMethod, &EngineScriptMethod::getGlobalScene );
@@ -3679,8 +3679,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void EngineScriptEmbedding::ejecting()
+    void EngineScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
+        MENGINE_UNUSED( _kernel );
+
         m_implement = nullptr;
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );

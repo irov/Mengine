@@ -172,8 +172,8 @@ namespace Mengine
                 return nullptr;
             }
 
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
             bool streamable = resource->isStreamable();
 
@@ -221,7 +221,7 @@ namespace Mengine
                 return nullptr;
             }
 
-			MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( resource, soundBuffer, _cb, _args );
+            MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( resource, soundBuffer, _cb, _args );
 
             sourceEmitter->setSoundListener( snlistener );
 
@@ -402,10 +402,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundAffectorCallbackPtr createSoundAffectorCallback( pybind::kernel_interface * _kernel, const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
         {
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
-			SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( pytraceback );
+            SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( pytraceback );
 
             callback->initialize( _emitter, _cb, _args );
 
@@ -760,8 +760,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MusicAffectorCallbackPtr createMusicAffectorCallback( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
         {
-			Char pytraceback[4096];
-			_kernel->get_traceback( pytraceback, 4096 );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
             MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( pytraceback );
 
@@ -935,8 +935,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundScriptEmbedding::ejecting()
+    void SoundScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
+        MENGINE_UNUSED( _kernel );
+
         m_implement = nullptr;
     }
 }

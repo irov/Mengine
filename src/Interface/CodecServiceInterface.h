@@ -30,7 +30,7 @@ namespace Mengine
         template<class T>
         T createDecoderT( const ConstString& _type, const Char * _doc )
         {
-			DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
+            DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
 
 #ifdef MENGINE_DEBUG
             if( decoder == nullptr )
@@ -55,7 +55,7 @@ namespace Mengine
         template<class T>
         T createEncoderT( const ConstString& _type, const Char * _doc )
         {
-			EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
+            EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
 
 #ifdef MENGINE_DEBUG
             if( encoder == nullptr )

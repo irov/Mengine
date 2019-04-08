@@ -114,7 +114,7 @@ namespace Mengine
     {
         _t -= 1.f;
 
-        return - _t * _t * _t * _t + 1.f;
+        return -_t * _t * _t * _t + 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingQuartInOut::easing( float _t ) const
@@ -225,7 +225,7 @@ namespace Mengine
 
         _t -= 1.f;
 
-        return -MT_powf( 2.f, 10.f * _t ) * MT_sinf( (_t - 0.3f * 0.25f) * mt::constant::two_pi / 0.3f );        
+        return -MT_powf( 2.f, 10.f * _t ) * MT_sinf( (_t - 0.3f * 0.25f) * mt::constant::two_pi / 0.3f );
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingElasticOut::easing( float _t ) const
@@ -259,19 +259,19 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBackIn::easing( float _t ) const
-    {        
+    {
         return _t * _t * (2.70158f * _t - 1.70158f);
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBackOut::easing( float _t ) const
-    {        
+    {
         _t -= 1.f;
 
         return _t * _t * (2.70158f * _t + 1.70158f) + 1.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBackInOut::easing( float _t ) const
-    {        
+    {
         _t *= 2.f;
 
         if( _t < 1.f )
@@ -313,7 +313,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     float EasingBounceIn::easing( float _t ) const
-    {        
+    {
         return 1.f - bounce( 1.f - _t );
     }
     //////////////////////////////////////////////////////////////////////////

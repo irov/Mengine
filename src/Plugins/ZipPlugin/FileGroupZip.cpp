@@ -327,11 +327,11 @@ namespace Mengine
             }
         }
 
-        if( *mask == '\0' ) 
+        if( *mask == '\0' )
         {
             return 0;
         }
-        else 
+        else
         {
             return 1;
         }
@@ -426,13 +426,13 @@ namespace Mengine
 
         if( _streaming == true )
         {
-			InputStreamInterfacePtr stream = m_category->createInputFile( _fileName, true, _doc );
+            InputStreamInterfacePtr stream = m_category->createInputFile( _fileName, true, _doc );
 
             return stream;
         }
 
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-			->createMemoryInput( _doc );
+            ->createMemoryInput( _doc );
 
         return memory;
     }
@@ -566,7 +566,7 @@ namespace Mengine
 
             if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
-				LOGGER_ERROR( "pak '%s' file '%s' failed inflate"
+                LOGGER_ERROR( "pak '%s' file '%s' failed inflate"
                     , m_path.c_str()
                     , _fileName.c_str()
                 );
@@ -580,9 +580,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile( const Char * _doc )
     {
-		MENGINE_UNUSED( _doc );
+        MENGINE_UNUSED( _doc );
 
-		LOGGER_ERROR( "unsupport method" );
+        LOGGER_ERROR( "unsupport method" );
 
         return nullptr;
     }

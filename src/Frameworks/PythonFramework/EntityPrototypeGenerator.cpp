@@ -221,7 +221,7 @@ namespace Mengine
             LOGGER_ERROR( "can't create object '%s' '%s' (invalid create) doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
-				, _doc
+                , _doc
             );
 
             return nullptr;
@@ -235,7 +235,7 @@ namespace Mengine
             LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
-				, _doc
+                , _doc
             );
 
             return nullptr;
@@ -247,7 +247,7 @@ namespace Mengine
 
         const FactoryPtr & factory = this->getFactory();
 
-		PythonEntityBehaviorPtr behavior = factory->createObject( _doc );
+        PythonEntityBehaviorPtr behavior = factory->createObject( _doc );
         behavior->setScriptObject( py_entity );
 
         entity->setBehavior( behavior );

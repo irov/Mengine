@@ -201,15 +201,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstsScriptEmbedding::ejecting()
+    void ConstsScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        pybind::unregistration_stl_vector_type_cast<ConstString, VectorConstString>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<ConstString, VectorConstString>(kernel);
-
-        kernel->remove_from_module( "ConstString", nullptr );
-        kernel->remove_from_module( "FilePath", nullptr );
+        _kernel->remove_from_module( "ConstString", nullptr );
+        _kernel->remove_from_module( "FilePath", nullptr );
     }
 }
 

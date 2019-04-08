@@ -194,7 +194,7 @@ namespace Mengine
         m_dataTTF = data;
 
         FT_Face face;
-        
+
         if( this->loadFaceGlyph_( 'A', &face ) == false )
         {
             return false;
@@ -247,7 +247,7 @@ namespace Mengine
         if( m_ttfFEPath.empty() == false )
         {
             DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-                
+
             if( PREFETCHER_SERVICE()
                 ->prefetchData( m_fileGroup, m_ttfFEPath, dataflow, _observer ) == false )
             {

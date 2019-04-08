@@ -1127,7 +1127,7 @@ namespace Mengine
                 return 0;
             }
 
-            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );                
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -1234,7 +1234,7 @@ namespace Mengine
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
                 , easing
-                , callback                
+                , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
             , [from]() { return from; }
             , [_to]() { return _to; }
@@ -1285,12 +1285,12 @@ namespace Mengine
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
             const mt::vec3f & node_pos = _node->getWorldPosition();
-            
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
                 , easing
-                , callback                
+                , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setWorldPosition( _v ); }
             , [node_pos]() { return node_pos; }
             , [_follow, _offset]() { return _follow->getWorldPosition() + _offset; }
@@ -1558,7 +1558,7 @@ namespace Mengine
                 , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const Char * _doc )
             {
-				AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
+                AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
                 affector->setEasing( _easing );
@@ -1846,7 +1846,7 @@ namespace Mengine
             AffectorPtr affector =
                 m_nodeAffectorCreatorFollowTo.create( ETA_POSITION
                     , easing
-                    , callback                    
+                    , callback
                     , NodePtr( _node ), _target, _offset, _distance
                     , _moveSpeed, _moveAcceleration, _moveLimit
                     , _rotate
@@ -3144,7 +3144,7 @@ namespace Mengine
                 .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getWorldImageCenter )
                 ;
 
-            
+
             pybind::interface_<ShapePacMan, pybind::bases<Shape> >( _kernel, "ShapePacMan", false )
                 .def( "setAngleFrom", &ShapePacMan::setAngleFrom )
                 .def( "getAngleFrom", &ShapePacMan::getAngleFrom )
@@ -3254,8 +3254,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeScriptEmbedding::ejecting()
+    void NodeScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
+        MENGINE_UNUSED( _kernel );
+
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
     VOCABULARY_REMOVE(STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class))
 

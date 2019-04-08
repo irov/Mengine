@@ -140,7 +140,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -283,7 +283,7 @@ namespace Mengine
             ++receiver->refcount;
 
             if( _observer == nullptr )
-            _observer->onPrefetchAlreadyExist();
+                _observer->onPrefetchAlreadyExist();
 
             return true;
         }

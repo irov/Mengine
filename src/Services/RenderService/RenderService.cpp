@@ -336,7 +336,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "WhitePixelTexture");
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "WhitePixelTexture" );
 
         if( texture == nullptr )
         {
@@ -724,7 +724,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreRenderSystemStates_()
     {
-        m_renderBatches.clear();        
+        m_renderBatches.clear();
         m_renderObjects.clear();
 
         for( RenderPass * rp : m_renderPasses )
@@ -1118,7 +1118,7 @@ namespace Mengine
             return batch;
         }
 
-		RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FUNCTION );
+        RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         new_batch->vertexAttribute = _vertexAttribute;
 
@@ -1378,7 +1378,7 @@ namespace Mengine
             mt::transpose_box( bb_homogenize, vp.begin );
 
             ro.bb = bb_homogenize;
-        }        
+        }
 
         ro.minIndex = 0;
         ro.startIndex = 0;

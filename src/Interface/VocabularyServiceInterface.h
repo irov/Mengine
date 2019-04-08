@@ -25,7 +25,7 @@ namespace Mengine
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
         virtual bool hasFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
-    public:        
+    public:
         virtual void foreachVocabulary( const ConstString & _category, const LambdaVocabulary & _lambda ) const = 0;
     };
 }

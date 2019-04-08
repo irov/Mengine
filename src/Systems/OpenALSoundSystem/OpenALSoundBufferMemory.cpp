@@ -116,10 +116,10 @@ namespace Mengine
         {
             OPENAL_CALL( alSourceRewind, (_source) );
             OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
-        }        
+        }
 
         OPENAL_CALL( alSourcei, (_source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE) );
-        
+
         OPENAL_CALL( alSourcei, (_source, AL_BUFFER, m_alBufferId) );
 
         if( _pos > 0.f )
@@ -166,7 +166,7 @@ namespace Mengine
     {
         float al_pos = _pos * 0.001f;
         IF_OPENAL_CALL( alSourcef, (_source, AL_SEC_OFFSET, al_pos) )
-        { 
+        {
             return false;
         }
 

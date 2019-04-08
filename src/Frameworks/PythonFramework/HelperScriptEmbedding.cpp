@@ -81,27 +81,27 @@ namespace Mengine
         }
 
     public:
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_refcount( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
             return _kernel->refcount( _obj );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_is_class( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
             return _kernel->is_class( _obj );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_is_type_class( pybind::kernel_interface * _kernel, PyTypeObject * _type )
         {
             return _kernel->is_type_class( _type );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_is_wrap( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
             return _kernel->is_wrap( _obj );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         const ConstString & s_getLanguagePack()
         {
             const ConstString & locale = APPLICATION_SERVICE()
@@ -109,7 +109,7 @@ namespace Mengine
 
             return locale;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_isometric_length_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
         {
             mt::vec3f iso_v0 = _v0;
@@ -122,7 +122,7 @@ namespace Mengine
 
             return iso_length;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_isometric_sqrlength_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
         {
             mt::vec3f iso_v0 = _v0;
@@ -135,7 +135,7 @@ namespace Mengine
 
             return iso_length;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         WString s_utf8ToUnicode( const String & _utf8 )
         {
             WString unicode;
@@ -143,7 +143,7 @@ namespace Mengine
 
             return unicode;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         String s_unicodeToUtf8( const WString & _unicode )
         {
             String utf8;
@@ -151,7 +151,7 @@ namespace Mengine
 
             return utf8;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_debug()
         {
             printf( "debug!\n" );
@@ -160,7 +160,7 @@ namespace Mengine
             _asm int 3;
 #endif			
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_debugNode( Node * _node )
         {
             (void)_node;
@@ -171,7 +171,7 @@ namespace Mengine
             _asm int 3;
 #endif	
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasGameData( const ConstString & _name )
         {
             bool result = USERDATA_SERVICE()
@@ -179,7 +179,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_writeGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
         {
             size_t size;
@@ -215,7 +215,7 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_loadGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _pickleTypes )
         {
             MemoryInterfacePtr binaryBuffer = USERDATA_SERVICE()
@@ -246,55 +246,55 @@ namespace Mengine
 
             return py_data;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isAltDown() const
         {
             return INPUT_SERVICE()
                 ->isAltDown();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isShiftDown() const
         {
             return INPUT_SERVICE()
                 ->isShiftDown();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isCtrlDown() const
         {
             return INPUT_SERVICE()
                 ->isControlDown();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isKeyDown( uint32_t _keyCode ) const
         {
             return INPUT_SERVICE()
                 ->isKeyDown( _keyCode );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isExclusiveKeyDown( uint32_t _keyCode ) const
         {
             return INPUT_SERVICE()
                 ->isExclusiveKeyDown( _keyCode );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isAnyKeyDown() const
         {
             return INPUT_SERVICE()
                 ->isAnyKeyDown();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isAnyMouseButtonDown() const
         {
             return INPUT_SERVICE()
                 ->isAnyMouseButtonDown();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isMouseButtonDown( uint32_t _button ) const
         {
             return INPUT_SERVICE()
                 ->isMouseButtonDown( _button );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_printChildren2( const NodePtr & _node, uint32_t _tab )
         {
             IntrusiveSlugListNodeChild & children = _node->getChildren();
@@ -325,12 +325,12 @@ namespace Mengine
                 s_printChildren2( child, _tab + 1 );
             }
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_printChildren( const NodePtr & _node )
         {
             s_printChildren2( _node, 0 );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
         {
             (void)_category;
@@ -338,7 +338,7 @@ namespace Mengine
 
             return 0U;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_intersectPathVsCircle( const pybind::list & _path, const mt::vec3f & _position, float _radius )
         {
             pybind::list::size_type path_count = _path.size();
@@ -383,7 +383,7 @@ namespace Mengine
 
             return false;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         pybind::object s_selectRandomPointFromPathRadius( pybind::kernel_interface * _kernel, const pybind::list & _path, const mt::vec3f & _position, float _radius )
         {
             pybind::list::size_type path_count = _path.size();
@@ -417,12 +417,12 @@ namespace Mengine
 
             return pybind::make_object_t( _kernel, vr );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_reloadModule( pybind::kernel_interface * _kernel, PyObject * _module )
         {
             return _kernel->module_reload( _module );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         String s_makeUID( uint32_t _length )
         {
             MENGINE_ASSERTION( _length < 1024, ("max UID length equal 1024") );
@@ -432,7 +432,7 @@ namespace Mengine
 
             return String( uid, _length );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         String s_getTextFromID( const ConstString & _textId )
         {
             const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
@@ -447,19 +447,19 @@ namespace Mengine
 
             return value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_setTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId, const ConstString & _textId )
         {
             TEXT_SERVICE()
                 ->setTextAlias( _aliasEnvironment, _aliasId, _textId );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_removeTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             TEXT_SERVICE()
                 ->removeTextAlias( _aliasEnvironment, _aliasId );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             bool exist = TEXT_SERVICE()
@@ -467,7 +467,7 @@ namespace Mengine
 
             return exist;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         const ConstString & s_getTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             const ConstString & textId = TEXT_SERVICE()
@@ -475,7 +475,7 @@ namespace Mengine
 
             return textId;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_setTextAliasArguments( const ConstString & _aliasEnvironment, const ConstString & _aliasId, const pybind::args & _args )
         {
             size_t args_count = _args.size();
@@ -524,13 +524,13 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_removeTextAliasArguments( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             TEXT_SERVICE()
                 ->removeTextAliasArguments( _aliasEnvironment, _aliasId );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_getJoystickAxis( uint32_t _index )
         {
             float axis = PLATFORM_SERVICE()
@@ -538,7 +538,7 @@ namespace Mengine
 
             return axis;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_addChronometer( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
         {
             uint32_t id = CHRONOMETER_SERVICE()
@@ -549,7 +549,7 @@ namespace Mengine
 
             return id;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_removeChronometer( uint32_t _id )
         {
             bool successful = CHRONOMETER_SERVICE()
@@ -557,7 +557,7 @@ namespace Mengine
 
             return successful;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::box2f s_getHotSpotPolygonBoundingBox( const HotSpotPolygonPtr & _hotspotPolygon )
         {
             mt::box2f bb;
@@ -584,7 +584,7 @@ namespace Mengine
 
             return bb;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -600,7 +600,7 @@ namespace Mengine
             PLATFORM_SERVICE()
                 ->setCursorPosition( adapt_pos );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isValidWindowMode()
         {
             //bool check = APPLICATION_SERVICE()
@@ -610,13 +610,13 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         void s_addGlobalModule( const Char * _name, PyObject * _module )
         {
             SCRIPT_SERVICE()
                 ->addGlobalModule( _name, _module );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float filterpowf( const pybind::list & l, float _pow )
         {
             if( l.empty() == true )
@@ -644,34 +644,34 @@ namespace Mengine
 
             return s;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t mt_enumerator()
         {
             uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
             return new_id;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         int32_t mt_rand( int32_t a )
         {
             return mt::rand( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_randf( float a )
         {
             return mt::randf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         int32_t mt_range_rand( int32_t a, int32_t b )
         {
             return mt::range_rand( a, b );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_range_randf( float a, float b )
         {
             return mt::range_randf( a, b );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_around_randf( float a, float b )
         {
             float v_low = a - a * b;
@@ -681,7 +681,7 @@ namespace Mengine
 
             return v;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::vec2f mt_radius_randf( float _radius )
         {
             float rp = mt::randf( mt::constant::two_pi );
@@ -697,7 +697,7 @@ namespace Mengine
 
             return mt::vec2f( xr, yr );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t mt_rounding( uint32_t _value, uint32_t _round )
         {
             uint32_t floor_value = _value / _round;
@@ -705,7 +705,7 @@ namespace Mengine
 
             return round_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_roundingf( float _value, float _round )
         {
             float floor_value = floorf( _value / _round );
@@ -713,87 +713,87 @@ namespace Mengine
 
             return round_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_pi()
         {
             return mt::constant::pi;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_deg2rad( float _deg )
         {
             return _deg * mt::constant::deg2rad;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_rad2deg( float _rad )
         {
             return _rad * mt::constant::rad2deg;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_sqrtf( float a )
         {
             return MT_sqrtf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_powf( float a, float b )
         {
             return ::powf( a, b );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_absf( float a )
         {
             return ::fabsf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_cosf( float a )
         {
             return MT_cosf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_sinf( float a )
         {
             return MT_sinf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_cosf_deg( float a )
         {
             return MT_cosf( a * mt::constant::deg2rad );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_sinf_deg( float a )
         {
             return MT_sinf( a * mt::constant::deg2rad );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_tanf( float a )
         {
             return MT_tanf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_acosf( float a )
         {
             return MT_acosf( a );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_atanf( float _x )
         {
             return ::atanf( _x );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_logf( float _x )
         {
             return ::logf( _x );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_log10f( float _x )
         {
             return ::log10f( _x );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         double mt_log10( double _x )
         {
             return ::log10( _x );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t mt_fibo( uint32_t _n )
         {
             if( _n == 0 )
@@ -809,7 +809,7 @@ namespace Mengine
 
             return fn;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint64_t mt_fibo_bine( uint64_t _n )
         {
             const double nf = (double)_n;
@@ -825,14 +825,14 @@ namespace Mengine
 
             return fbine64;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_dot_v2_v2( const mt::vec2f & _a, const mt::vec2f & _b )
         {
             float d = mt::dot_v2_v2( _a, _b );
 
             return d;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::vec2f mt_direction_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
         {
             mt::vec2f direction;
@@ -840,7 +840,7 @@ namespace Mengine
 
             return direction;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::vec3f mt_direction_v3_v3( const mt::vec3f & _from, const mt::vec3f & _to )
         {
             mt::vec3f direction;
@@ -848,7 +848,7 @@ namespace Mengine
 
             return direction;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float mt_angle_from_v2_v2( const mt::vec2f & _from, const mt::vec2f & _to )
         {
             mt::vec2f direction;
@@ -861,7 +861,7 @@ namespace Mengine
 
             return angle;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::vec2f mt_norm_v2( const mt::vec2f & _vec )
         {
             mt::vec2f v_n;
@@ -869,7 +869,7 @@ namespace Mengine
 
             return v_n;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::vec3f mt_norm_v3( const mt::vec3f & _vec )
         {
             mt::vec3f v_n;
@@ -877,7 +877,7 @@ namespace Mengine
 
             return v_n;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_intersectsEllipseVsPoint( const mt::vec2f & _pos, float _radius, float _ellipse, const mt::vec2f & _point )
         {
             mt::vec2f v = _point - _pos;
@@ -893,7 +893,7 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_intersectsBoxes( const mt::vec2f & _minFirst, const mt::vec2f & _maxFirst, const mt::vec2f & _minSecond, const mt::vec2f & _maxSecond )
         {
             mt::box2f box_first( _minFirst, _maxFirst );
@@ -903,7 +903,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         mt::vec2f projectionPointToLine( const mt::vec2f & _point, const mt::vec2f & _v0, const mt::vec2f & _v1 )
         {
             mt::vec2f dir = _v1 - _v0;
@@ -933,7 +933,7 @@ namespace Mengine
 
             return line_point;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         pybind::tuple s_angle_correct_interpolate_from_to( pybind::kernel_interface * _kernel, float _from, float _to )
         {
             float correct_angle_from;
@@ -945,7 +945,7 @@ namespace Mengine
 
             return py_result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_angle_between_two_vectors( const mt::vec2f & _v1, const mt::vec2f & _v2 )
         {
             mt::vec2f v1_norm;
@@ -960,7 +960,7 @@ namespace Mengine
 
             return angle;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         pybind::list s_getPolygonPoints( pybind::kernel_interface * _kernel, const Polygon & _polygon )
         {
             const VectorPoints & points = _polygon.getPoints();
@@ -969,7 +969,7 @@ namespace Mengine
 
             return py_list;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         const Polygon & s_intersectionPolygons( const Polygon & _p1, const Polygon & _p2 )
         {
             VectorGeolygon output;
@@ -984,14 +984,14 @@ namespace Mengine
 
             return outer;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_intersectsPolygons( const Polygon & _p1, const Polygon & _p2 )
         {
             bool intersect = Helper::intersects( _p1, _p2 );
 
             return intersect;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, const Polygon & _p1, const mt::mat4f & _wm2, Polygon _p2 )
         {
             Polygon p1wm;
@@ -1004,7 +1004,7 @@ namespace Mengine
 
             return intersect;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, const Polygon & _p1, const mt::vec3f & _wm2, Polygon _p2 )
         {
             Polygon p1wm;
@@ -1017,7 +1017,7 @@ namespace Mengine
 
             return intersect;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
 #ifdef PYBIND_VISIT_OBJECTS
         class MyObjectVisits
             : public pybind::pybind_visit_objects
@@ -1038,7 +1038,7 @@ namespace Mengine
             pybind::list m_py_list;
         };
 #endif
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         pybind::list s_objects( pybind::kernel_interface * _kernel )
         {
             pybind::list py_list( _kernel );
@@ -1050,7 +1050,7 @@ namespace Mengine
 
             return py_list;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         pybind::list s_textures( pybind::kernel_interface * _kernel )
         {
             pybind::list py_list( _kernel );
@@ -1065,21 +1065,21 @@ namespace Mengine
 
             return py_list;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         double s_watchdog( const ConstString & _tag )
         {
             double watch = WATCHDOG( _tag );
 
             return watch;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_isPointInsidePolygon( const mt::vec2f & _point, const Polygon & _polygon )
         {
             bool result = Helper::intersects( _polygon, _point );
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint64_t s_getTimeMs()
         {
             uint64_t ms = TIME_SYSTEM()
@@ -1087,7 +1087,7 @@ namespace Mengine
 
             return ms;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint64_t s_getTime()
         {
             uint64_t ms = s_getTimeMs();
@@ -1096,7 +1096,7 @@ namespace Mengine
 
             return s;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_getDate()
         {
             std::time_t ctTime;
@@ -1104,7 +1104,7 @@ namespace Mengine
 
             return static_cast<uint32_t>(ctTime);
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         String s_getTimeString()
         {
             std::time_t ctTime;
@@ -1119,7 +1119,7 @@ namespace Mengine
 
             return str.str();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         class MyAccountVisitor
             : public AccountVisitorInterface
             , public Factorable
@@ -1149,7 +1149,7 @@ namespace Mengine
             MyAccountVisitor( const MyAccountVisitor & );
             void operator = ( const MyAccountVisitor & );
         };
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         VectorConstString s_getAccounts()
         {
             VectorConstString v_accounts;
@@ -1161,7 +1161,7 @@ namespace Mengine
 
             return v_accounts;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_addSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             if( ACCOUNT_SERVICE()
@@ -1179,7 +1179,7 @@ namespace Mengine
 
             return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1197,7 +1197,7 @@ namespace Mengine
 
             return s_changeAccountSetting( _kernel, accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSettingBool( const ConstString & _setting, bool _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1215,7 +1215,7 @@ namespace Mengine
 
             return s_changeAccountSettingBool( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSettingInt( const ConstString & _setting, int32_t _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1233,7 +1233,7 @@ namespace Mengine
 
             return s_changeAccountSettingInt( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSettingUInt( const ConstString & _setting, uint32_t _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1251,7 +1251,7 @@ namespace Mengine
 
             return s_changeAccountSettingUInt( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSettingUInt64( const ConstString & _setting, uint64_t _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1269,7 +1269,7 @@ namespace Mengine
 
             return s_changeAccountSettingUInt64( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSettingFloat( const ConstString & _setting, float _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1287,7 +1287,7 @@ namespace Mengine
 
             return s_changeAccountSettingFloat( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeSettingStrings( const ConstString & _setting, const VectorWString & _values )
         {
             if( ACCOUNT_SERVICE()
@@ -1305,7 +1305,7 @@ namespace Mengine
 
             return s_changeAccountSettingStrings( accountID, _setting, _values );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         class PyAccountSettingProvider
             : public Factorable
             , public AccountSettingProviderInterface
@@ -1334,9 +1334,9 @@ namespace Mengine
             pybind::object m_cb;
             pybind::args m_args;
         };
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PyAccountSettingProvider> PyAccountSettingProviderPtr;
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
@@ -1375,10 +1375,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasAccountSetting( const ConstString & _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1394,10 +1394,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _value )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1436,10 +1436,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSettingBool( const ConstString & _accountID, const ConstString & _setting, bool _value )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1467,10 +1467,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSettingInt( const ConstString & _accountID, const ConstString & _setting, int32_t _value )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1499,10 +1499,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSettingUInt( const ConstString & _accountID, const ConstString & _setting, uint32_t _value )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1531,10 +1531,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSettingUInt64( const ConstString & _accountID, const ConstString & _setting, uint64_t _value )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1563,10 +1563,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSettingFloat( const ConstString & _accountID, const ConstString & _setting, float _value )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1595,10 +1595,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeAccountSettingStrings( const ConstString & _accountID, const ConstString & _setting, const VectorWString & _values )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -1639,7 +1639,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_addGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             if( ACCOUNT_SERVICE()
@@ -1656,7 +1656,7 @@ namespace Mengine
 
             return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasGlobalSetting( const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1673,7 +1673,7 @@ namespace Mengine
 
             return s_hasAccountSetting( accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1690,7 +1690,7 @@ namespace Mengine
 
             return s_changeAccountSetting( _kernel, accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSettingBool( const ConstString & _setting, bool _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1707,7 +1707,7 @@ namespace Mengine
 
             return s_changeAccountSettingBool( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSettingInt( const ConstString & _setting, int32_t _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1724,7 +1724,7 @@ namespace Mengine
 
             return s_changeAccountSettingInt( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSettingUInt( const ConstString & _setting, uint32_t _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1741,7 +1741,7 @@ namespace Mengine
 
             return s_changeAccountSettingUInt( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSettingUInt64( const ConstString & _setting, uint64_t _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1758,7 +1758,7 @@ namespace Mengine
 
             return s_changeAccountSettingUInt64( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSettingFloat( const ConstString & _setting, float _value )
         {
             if( ACCOUNT_SERVICE()
@@ -1775,7 +1775,7 @@ namespace Mengine
 
             return s_changeAccountSettingFloat( accountID, _setting, _value );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_changeGlobalSettingStrings( const ConstString & _setting, const VectorWString & _values )
         {
             if( ACCOUNT_SERVICE()
@@ -1792,7 +1792,7 @@ namespace Mengine
 
             return s_changeAccountSettingStrings( accountID, _setting, _values );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasSetting( const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1810,7 +1810,7 @@ namespace Mengine
 
             return s_hasAccountSetting( accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getCurrentAccountUID( pybind::kernel_interface * _kernel )
         {
             if( ACCOUNT_SERVICE()
@@ -1827,7 +1827,7 @@ namespace Mengine
 
             return s_getAccountUID( _kernel, accountID );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1845,7 +1845,7 @@ namespace Mengine
 
             return s_getAccountSetting( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1863,7 +1863,7 @@ namespace Mengine
 
             return s_getAccountSettingBool( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1881,7 +1881,7 @@ namespace Mengine
 
             return s_getAccountSettingInt( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1899,7 +1899,7 @@ namespace Mengine
 
             return s_getAccountSettingUInt( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1917,7 +1917,7 @@ namespace Mengine
 
             return s_getAccountSettingUInt64( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1935,7 +1935,7 @@ namespace Mengine
 
             return s_getAccountSettingFloat( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -1953,7 +1953,7 @@ namespace Mengine
 
             return s_getAccountSettingStrings( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_getSettingFloatDefault( const ConstString & _setting, float _default )
         {
             if( ACCOUNT_SERVICE()
@@ -1971,7 +1971,7 @@ namespace Mengine
 
             return s_getAccountSettingFloatDefault( accountID, _setting, _default );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         bool s_getConfigBool( const Char * _section, const Char * _key, bool _default )
         {
             bool result = CONFIG_SERVICE()
@@ -1979,7 +1979,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         int32_t s_getConfigInt( const Char * _section, const Char * _key, int32_t _default )
         {
             int32_t result = CONFIG_SERVICE()
@@ -1987,7 +1987,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_getConfigUInt( const Char * _section, const Char * _key, uint32_t _default )
         {
             uint32_t result = CONFIG_SERVICE()
@@ -1995,7 +1995,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         uint64_t s_getConfigUInt64( const Char * _section, const Char * _key, uint64_t _default )
         {
             uint64_t result = CONFIG_SERVICE()
@@ -2003,7 +2003,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_getConfigFloat( const Char * _section, const Char * _key, float _default )
         {
             float result = CONFIG_SERVICE()
@@ -2011,7 +2011,7 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         const Char * s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
         {
 
@@ -2020,10 +2020,10 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountUID( pybind::kernel_interface * _kernel, const ConstString & _accountID )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2041,10 +2041,10 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2066,10 +2066,10 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2109,10 +2109,10 @@ namespace Mengine
 
             return _kernel->ret_none();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2151,10 +2151,10 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2193,10 +2193,10 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2235,10 +2235,10 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2280,10 +2280,10 @@ namespace Mengine
 
             return l.ret();
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2322,10 +2322,10 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         float s_getAccountSettingFloatDefault( const ConstString& _accountID, const ConstString & _setting, float _default )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2367,7 +2367,7 @@ namespace Mengine
 
             return value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalAccountUID( pybind::kernel_interface * _kernel )
         {
             if( ACCOUNT_SERVICE()
@@ -2384,7 +2384,7 @@ namespace Mengine
 
             return s_getAccountUID( _kernel, accountID );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -2401,7 +2401,7 @@ namespace Mengine
 
             return s_getAccountSetting( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             (void)_kernel;
@@ -2420,7 +2420,7 @@ namespace Mengine
 
             return s_getAccountSettingBool( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -2437,7 +2437,7 @@ namespace Mengine
 
             return s_getAccountSettingInt( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -2454,7 +2454,7 @@ namespace Mengine
 
             return s_getAccountSettingUInt( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -2471,7 +2471,7 @@ namespace Mengine
 
             return s_getAccountSettingUInt64( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -2488,7 +2488,7 @@ namespace Mengine
 
             return s_getAccountSettingFloat( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
             if( ACCOUNT_SERVICE()
@@ -2505,7 +2505,7 @@ namespace Mengine
 
             return s_getAccountSettingStrings( _kernel, accountID, _setting );
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_createAccount( pybind::kernel_interface * _kernel )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
@@ -2522,7 +2522,7 @@ namespace Mengine
 
             return py_value;
         }
-		//////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_createGlobalAccount( pybind::kernel_interface * _kernel )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
@@ -2663,7 +2663,7 @@ namespace Mengine
                 return false;
             }
 
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2736,7 +2736,7 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( account == nullptr )
@@ -2806,7 +2806,7 @@ namespace Mengine
 
         bool s_hasAccountPickleFile( const ConstString & _accountID, const WString & _fileName )
         {
-			const AccountInterfacePtr & account = ACCOUNT_SERVICE()
+            const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
             if( ACCOUNT_SERVICE()
@@ -3489,26 +3489,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HelperScriptEmbedding::ejecting()
+    void HelperScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
         m_implement = nullptr;
 
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        pybind::unregistration_type_cast<Blobject>(_kernel);
+        pybind::unregistration_type_cast<Tags>(_kernel);
 
-        pybind::unregistration_type_cast<Blobject>(kernel);
-        pybind::unregistration_type_cast<Tags>(kernel);
+        pybind::unregistration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(kernel);
-        pybind::unregistration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(kernel);
+        pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
+        pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
 
-        pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(kernel);
-        pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(kernel);
+        pybind::unregistration_type_cast<String>(_kernel);
+        pybind::unregistration_type_cast<WString>(_kernel);
 
-        pybind::unregistration_type_cast<String>(kernel);
-        pybind::unregistration_type_cast<WString>(kernel);
-
-        pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(kernel);
-        pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(kernel);
+        pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
     }
 }

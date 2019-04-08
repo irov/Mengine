@@ -71,7 +71,7 @@ namespace Mengine
         m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
         m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
         m_factoryThreadJob = new FactoryPool<ThreadJob, 16>();
-        
+
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
         m_mutexAllocatorPool = THREAD_SYSTEM()
@@ -143,7 +143,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadJobPtr ThreadService::createJob( uint32_t _sleep, const Char * _doc )
     {
-		ThreadJobPtr threadJob = m_factoryThreadJob->createObject( _doc );
+        ThreadJobPtr threadJob = m_factoryThreadJob->createObject( _doc );
 
         if( threadJob->initialize( _sleep, _doc ) == false )
         {
@@ -287,7 +287,7 @@ namespace Mengine
 
             *it = m_tasks.back();
             m_tasks.pop_back();
-            
+
             return true;
         }
 
@@ -302,13 +302,13 @@ namespace Mengine
 
             task->cancel();
 
-			if( desc.progress == true )
-			{
-				const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-				threadIdentity->removeTask();
-			}
+            if( desc.progress == true )
+            {
+                const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+                threadIdentity->removeTask();
+            }
 
-			task->finally();
+            task->finally();
         }
 
         m_tasks.clear();
@@ -321,7 +321,7 @@ namespace Mengine
             return nullptr;
         }
 
-		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( _doc );
+        ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( _doc );
 
         taskQueue->setPacketSize( _packetSize );
 
@@ -431,7 +431,7 @@ namespace Mengine
             }
             else
             {
-				task->finally();
+                task->finally();
 
                 m_tasks[it_task] = m_tasks.back();
                 m_tasks.pop_back();
@@ -454,7 +454,7 @@ namespace Mengine
             else
             {
                 m_threadQueues[it_task] = m_threadQueues.back();
-				m_threadQueues.pop_back();
+                m_threadQueues.pop_back();
                 --it_task_end;
             }
         }
@@ -476,7 +476,7 @@ namespace Mengine
         if( this->isAvailableService() == false )
         {
             ThreadMutexDummyPtr mutex_dummy =
-				m_factoryThreadMutexDummy->createObject( _doc );
+                m_factoryThreadMutexDummy->createObject( _doc );
 
             return mutex_dummy;
         }

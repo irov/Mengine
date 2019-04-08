@@ -22,6 +22,9 @@ src
     ImageDecoderResourcePrefetcher.cpp
     SoundDecoderResourcePrefetcher.h
     SoundDecoderResourcePrefetcher.cpp
+    
+    ResourcePrefetcherScriptEmbedding.h
+    ResourcePrefetcherScriptEmbedding.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

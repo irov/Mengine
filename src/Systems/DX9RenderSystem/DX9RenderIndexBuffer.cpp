@@ -152,7 +152,7 @@ namespace Mengine
 
             return nullptr;
         }
-        
+
         m_memory->setBuffer( lock_memory, _count * m_indexSize, __FILE__, __LINE__ );
 
         return m_memory;

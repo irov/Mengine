@@ -995,20 +995,21 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::AccountServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
-        SERVICE_FINALIZE( Mengine::PickerServiceInterface );
+        SERVICE_FINALIZE( Mengine::PlayerServiceInterface );        
         SERVICE_FINALIZE( Mengine::SceneServiceInterface );
-        SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
-        SERVICE_FINALIZE( Mengine::ApplicationInterface );
+        SERVICE_FINALIZE( Mengine::PickerServiceInterface );
+        SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
+        SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
+        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
+        SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::FrameworkInterface );
+        SERVICE_FINALIZE( Mengine::ScriptServiceInterface );        
+        SERVICE_FINALIZE( Mengine::ApplicationInterface );
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
-        SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
-        SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
-        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
-        SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
 
         PLUGIN_SERVICE()
@@ -1021,8 +1022,7 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );
-
-        SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
+                
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
         SERVICE_FINALIZE( Mengine::RenderServiceInterface );

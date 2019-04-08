@@ -53,7 +53,7 @@ namespace Mengine
         }
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-			->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {

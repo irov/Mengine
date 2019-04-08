@@ -22,7 +22,7 @@ namespace Mengine
         , m_capacity( 0 )
         , m_reading( 0 )
 #ifdef MENGINE_DEBUG
-		, m_streaming( false )
+        , m_streaming( false )
 #endif
     {
     }
@@ -35,10 +35,10 @@ namespace Mengine
     void Win32FileInputStream::close_()
     {
 #ifdef MENGINE_DEBUG
-		if( SERVICE_EXIST( NotificationServiceInterface ) == true )
-		{
-			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
-		}
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CLOSE_FILE, m_folderPath.c_str(), m_filePath.c_str(), m_streaming );
+        }
 #endif
 
         if( m_hFile != INVALID_HANDLE_VALUE )
@@ -59,7 +59,7 @@ namespace Mengine
         m_folderPath = _folderPath;
         m_filePath = _filePath;
 
-		m_streaming = _streaming;
+        m_streaming = _streaming;
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];
@@ -124,7 +124,7 @@ namespace Mengine
     bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
     {
         size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
-        
+
         if( fullPathLen == MENGINE_PATH_INVALID_LENGTH )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
@@ -154,7 +154,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), m_streaming );
         }
 #endif
 

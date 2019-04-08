@@ -84,7 +84,7 @@ namespace Mengine
 #ifdef MENGINE_WINDOWS_DEBUG
                 : m_prev_handler( nullptr )
                 , m_prev_mode( 0 )
-                , m_prev_handler_count( 0 )                
+                , m_prev_handler_count( 0 )
 #endif
             {
             }
@@ -414,16 +414,16 @@ namespace Mengine
 
         m_bootstrapperModules.clear();
 
+        m_mutex = nullptr;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
         m_factoryScriptModule = nullptr;
-
-        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::_stopService()
     {
-        m_kernel->collect();
+        //m_kernel->collect();
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * ScriptService::getKernel()
@@ -500,7 +500,24 @@ namespace Mengine
     {
         const ScriptEmbeddingInterfacePtr & embedding = m_embeddings.remove( _name );
 
-        embedding->ejecting();
+        if( embedding == nullptr )
+        {
+            return;
+        }
+
+        embedding->ejecting( m_kernel );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::ejectingScriptEmbeddings()
+    {
+        for( const HashtableEmbeddings::value_type & value : m_embeddings )
+        {
+            const ScriptEmbeddingInterfacePtr & embedding = value.element;
+
+            embedding->ejecting( m_kernel );
+        }
+
+        m_embeddings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptService::bootstrapModules()
@@ -624,8 +641,6 @@ namespace Mengine
             }
         }
 
-        m_kernel->collect();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -710,7 +725,7 @@ namespace Mengine
             return nullptr;
         }
 
-		ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( module->initialize( pybind::module( m_kernel, py_module ) ) == false )
         {

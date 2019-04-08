@@ -31,7 +31,7 @@ namespace Mengine
         AccountInterfacePtr createGlobalAccount() override;
 
     public:
-		bool hasAccount( const ConstString& _accountID ) const override;
+        bool hasAccount( const ConstString& _accountID ) const override;
         void deleteAccount( const ConstString& _accountID ) override;
         bool selectAccount( const ConstString& _accountID ) override;
 

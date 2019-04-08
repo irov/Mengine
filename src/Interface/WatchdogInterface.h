@@ -7,7 +7,7 @@
 #include "Config/Typedef.h"
 
 namespace Mengine
-{    
+{
     class WatchdogInterface
         : public ServiceInterface
     {

@@ -32,7 +32,7 @@ namespace Mengine
     {
         const FactoryPtr & factory = this->getFactory();
 
-		TTFFontPtr font = factory->createObject( _doc );
+        TTFFontPtr font = factory->createObject( _doc );
 
         font->setFTLibrary( m_ftlibrary );
 

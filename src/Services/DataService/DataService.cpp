@@ -35,10 +35,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-		DataInterfacePtr data = _dataflow->create( _doc );
+        DataInterfacePtr data = _dataflow->create( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr )("invalid create data '%s'"
-			, _doc);
+        MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr )("invalid create data '%s'"
+            , _doc);
 
         if( _dataflow->load( data, _stream, _doc ) == false )
         {

@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowPYZ::create( const Char * _doc )
     {
-		ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
+        ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

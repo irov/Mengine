@@ -14,12 +14,6 @@
 
 #include "Kernel/FactorableUnique.h"
 
-#define ADD_SCRIPT_EMBEDDING(NAME)\
-    if(SCRIPT_SERVICE()->addScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME), Helper::makeFactorableUnique<NAME>())==false) return false
-
-#define REMOVE_SCRIPT_EMBEDDING(NAME)\
-    SCRIPT_SERVICE()->removeScriptEmbedding( STRINGIZE_STRING_LOCAL(#NAME))
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Framework, Mengine::PythonFramework );
 //////////////////////////////////////////////////////////////////////////
@@ -40,7 +34,7 @@ namespace Mengine
         ADD_SCRIPT_EMBEDDING( MathScriptEmbedding );
         ADD_SCRIPT_EMBEDDING( HelperScriptEmbedding );
         ADD_SCRIPT_EMBEDDING( NodeScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( EntityScriptEmbedding );        
+        ADD_SCRIPT_EMBEDDING( EntityScriptEmbedding );
         ADD_SCRIPT_EMBEDDING( SoundScriptEmbedding );
         ADD_SCRIPT_EMBEDDING( EngineScriptEmbedding );
 
@@ -49,6 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::_finalizeService()
     {
+        SCRIPT_SERVICE()
+            ->ejectingScriptEmbeddings();
+
         REMOVE_SCRIPT_EMBEDDING( ConstsScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( MathScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( HelperScriptEmbedding );
@@ -56,6 +53,11 @@ namespace Mengine
         REMOVE_SCRIPT_EMBEDDING( EntityScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( SoundScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( EngineScriptEmbedding );
+
+        //pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+        //    ->getKernel();
+
+        //kernel->collect();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::onFrameworkInitialize()

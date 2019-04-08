@@ -64,7 +64,7 @@ namespace Mengine
         FilePath m_folderPath;
         FilePath m_filePath;
 
-		bool m_streaming;
+        bool m_streaming;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

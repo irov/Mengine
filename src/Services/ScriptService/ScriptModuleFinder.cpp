@@ -116,7 +116,7 @@ namespace Mengine
 #endif
 
         {
-			ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             loader->setDataflow( m_dataflowPYZ );
             loader->setModule( _kernel, _module );

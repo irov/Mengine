@@ -1508,8 +1508,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieScriptEmbedding::ejecting()
+    void MovieScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
+        _kernel->remove_from_module( "Movie", nullptr );
+        _kernel->remove_from_module( "MovieSlot", nullptr );
+        _kernel->remove_from_module( "MovieInternalObject", nullptr );
+        _kernel->remove_from_module( "MovieMesh2D", nullptr );
+        _kernel->remove_from_module( "ResourceMovie", nullptr );
+        _kernel->remove_from_module( "ResourceInternalObject", nullptr );
+        _kernel->remove_from_module( "intersectsMoviesHotspot", nullptr );
+        _kernel->remove_from_module( "intersectMoviesHotspotVsPolygon", nullptr );
+        _kernel->remove_from_module( "getMovieSlotsPosition", nullptr );
+        _kernel->remove_from_module( "getMovieSlotPosition", nullptr );
+        _kernel->remove_from_module( "getMovieDuration", nullptr );
+        _kernel->remove_from_module( "getNullObjectsFromResourceMovie", nullptr );
+        _kernel->remove_from_module( "hasMovieSlot", nullptr );
+        _kernel->remove_from_module( "hasMovieSubMovie", nullptr );
+        _kernel->remove_from_module( "hasMovieSocket", nullptr );
+        _kernel->remove_from_module( "hasMovieEvent", nullptr );
+        _kernel->remove_from_module( "getMovieSlotsPosition", nullptr );
+        _kernel->remove_from_module( "getMovieSlotPosition", nullptr );
+
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );

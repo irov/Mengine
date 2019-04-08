@@ -11,6 +11,8 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#include "MovieScriptEmbedding.h"
+
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -72,6 +74,8 @@ namespace Mengine
     bool Movie1Plugin::_initializePlugin()
     {
         this->addDependencyService( "PrefetcherService" );
+
+        ADD_SCRIPT_EMBEDDING( MovieScriptEmbedding );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie, 128>>() ) == false )
@@ -156,6 +160,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie1Plugin::_finalizePlugin()
     {
+        REMOVE_SCRIPT_EMBEDDING( MovieScriptEmbedding );
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
 

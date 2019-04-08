@@ -119,6 +119,9 @@ namespace Mengine
         if( m_run == false ||
             m_finish == true )
         {
+            m_successful = false;
+            m_finish = true;
+
             m_complete = true;
 
             this->_onComplete( false );
@@ -143,7 +146,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTask::update()
     {
-        if( m_run == false || m_complete == true )
+        if( m_run == false )
+        {
+            return false;
+        }
+
+        if( m_complete == true || m_cancel == true )
         {
             return true;
         }
@@ -164,8 +172,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTask::finally()
 	{
-        m_mutex = nullptr;
-
 		this->_onFinally();
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -535,9 +535,9 @@ namespace Mengine
             {
                 _desc.identity = desc_thread.identity;
                 _desc.progress = true;
-
-                break;
             }
+
+            break;
         }
     }
 }

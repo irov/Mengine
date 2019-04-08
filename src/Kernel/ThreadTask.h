@@ -49,6 +49,7 @@ namespace Mengine
         virtual void _onCancel();
 		virtual void _onFinally();
         virtual void _onUpdate();
+        virtual void _onJoin();
 
     protected:
         virtual void _onComplete( bool _successful );

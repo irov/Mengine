@@ -108,7 +108,7 @@ namespace Mengine
             PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _cb, _args );
 
             RESOURCE_SERVICE()
-                ->foreachGroupResources( fileGroup, _groupName, [observer]( const ResourcePtr & _resource )
+                ->foreachGroupResources( fileGroup, _groupName, [&observer]( const ResourcePtr & _resource )
             {
                 RESOURCEPREFETCHER_SERVICE()
                     ->prefetchResource( _resource, observer );

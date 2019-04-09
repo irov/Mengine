@@ -22,7 +22,7 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( int32_t _priority, const ConstString & _name, const Char * _doc );
+        bool initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const Char * _doc );
         
     public:
         void main();
@@ -40,6 +40,8 @@ namespace Mengine
     protected:
         int32_t m_priority;
         ConstString m_name;
+
+        ThreadMutexInterfacePtr m_mutex;
 
         SDL_Thread * m_thread;
 

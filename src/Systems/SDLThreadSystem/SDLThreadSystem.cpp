@@ -52,7 +52,11 @@ namespace Mengine
 			, _doc
 			);
 
-        if( identity->initialize( _priority, _name, _doc ) == false )
+        ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+
+        if( identity->initialize( _priority, _name, mutex, _doc ) == false )
         {
             LOGGER_ERROR("invalid initialize thread '%s' (doc: %s)"
                 , _name.c_str()

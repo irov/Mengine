@@ -59,12 +59,14 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( int32_t _priority, const ConstString & _name, const Char * _doc )
+    bool SDLThreadIdentity::initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
         m_priority = _priority;
         m_name = _name;
+
+        m_mutex = _mutex;
 
 #ifdef MENGINE_DEBUG
         m_doc = _doc;
@@ -136,7 +138,9 @@ namespace Mengine
 
             if( m_task != nullptr && m_exit == false )
             {
+                m_mutex->lock();
                 m_task->main();
+                m_mutex->unlock();
                 m_task = nullptr;
             }
 
@@ -162,7 +166,15 @@ namespace Mengine
 
         if( m_task == nullptr )
         {
-            m_task = _task;
+            if( _task->run( m_mutex ) == true )
+            {
+                m_task = _task;
+            }
+            else
+            {
+                LOGGER_ERROR( "invalid run"
+                );
+            }
 
             SDL_CondSignal( m_conditionVariable );
 

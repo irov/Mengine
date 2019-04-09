@@ -14,7 +14,7 @@ extern "C" {
     extern void initbinascii( void );
     extern void initzlib( void );
 
-#ifndef NDEBUG
+#if defined(WIN32) && !defined(NDEBUG)
     extern void PyMarshal_Init( void );
     extern void initcStringIO( void );
     extern void init_lsprof( void );
@@ -38,7 +38,7 @@ extern "C" {
     { "gc", initgc },
     { "_weakref", init_weakref },
 
-#ifndef NDEBUG
+#if defined(WIN32) && !defined(NDEBUG)
     { "cStringIO", initcStringIO },
     { "marshal", PyMarshal_Init },
     { "_lsprof", init_lsprof },

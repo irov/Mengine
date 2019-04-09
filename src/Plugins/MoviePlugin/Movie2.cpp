@@ -1692,8 +1692,8 @@ namespace Mengine
         desc->materialNameBlend = Helper::stringizeString( materialNameBlend.c_str() );
 
         ArrayString<64> materialNameBlendExternalAlpha;
-        materialNameBlend.append( _callbackData->description );
-        materialNameBlend.append( "_Blend_ExternalAlpha" );
+        materialNameBlendExternalAlpha.append( _callbackData->description );
+        materialNameBlendExternalAlpha.append( "_Blend_ExternalAlpha" );
 
         desc->materialNameBlendExternalAlpha = Helper::stringizeString( materialNameBlendExternalAlpha.c_str() );
 

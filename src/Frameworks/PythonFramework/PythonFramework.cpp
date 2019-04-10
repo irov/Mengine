@@ -53,11 +53,6 @@ namespace Mengine
         REMOVE_SCRIPT_EMBEDDING( EntityScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( SoundScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( EngineScriptEmbedding );
-
-        //pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-        //    ->getKernel();
-
-        //kernel->collect();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::onFrameworkInitialize()

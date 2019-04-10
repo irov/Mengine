@@ -1516,6 +1516,7 @@ namespace Mengine
         _kernel->remove_from_module( "MovieMesh2D", nullptr );
         _kernel->remove_from_module( "ResourceMovie", nullptr );
         _kernel->remove_from_module( "ResourceInternalObject", nullptr );
+
         _kernel->remove_from_module( "intersectsMoviesHotspot", nullptr );
         _kernel->remove_from_module( "intersectMoviesHotspotVsPolygon", nullptr );
         _kernel->remove_from_module( "getMovieSlotsPosition", nullptr );

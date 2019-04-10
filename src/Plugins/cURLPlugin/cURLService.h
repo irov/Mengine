@@ -24,6 +24,7 @@ namespace Mengine
         void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     protected:
         HttpRequestID getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) override;

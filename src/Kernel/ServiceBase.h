@@ -93,6 +93,11 @@ namespace Mengine
     protected:
         void stopService() override
         {
+            if( m_stopService == true )
+            {
+                return;
+            }
+
             m_stopService = true;
 
             this->_stopService();

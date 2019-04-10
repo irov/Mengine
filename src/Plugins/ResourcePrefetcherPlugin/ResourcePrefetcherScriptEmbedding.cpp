@@ -231,11 +231,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        _kernel->undef_adapter( "prefetchResources", nullptr );
-        _kernel->undef_adapter( "unfetchResources", nullptr );
-        _kernel->undef_adapter( "prefetchFonts", nullptr );
-        _kernel->undef_adapter( "prefetchScripts", nullptr );
-        _kernel->undef_adapter( "unfetchFonts", nullptr );
+        _kernel->remove_from_module( "prefetchResources", nullptr );
+        _kernel->remove_from_module( "unfetchResources", nullptr );
+        _kernel->remove_from_module( "prefetchFonts", nullptr );
+        _kernel->remove_from_module( "prefetchScripts", nullptr );
+        _kernel->remove_from_module( "unfetchFonts", nullptr );
     }
 }
 

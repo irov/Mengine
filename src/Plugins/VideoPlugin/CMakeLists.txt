@@ -17,6 +17,9 @@ src
 	
 	SurfaceVideo.cpp
 	SurfaceVideo.h
+    
+    VideoScriptEmbedding.cpp
+    VideoScriptEmbedding.h
 	
 	ResourceVideoValidator.cpp
 	ResourceVideoValidator.h

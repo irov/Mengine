@@ -40,7 +40,15 @@ namespace Mengine
 
         bool successful = this->_onMain();
 
-        m_successful = successful;
+        if( m_cancel == true )
+        {
+            m_successful = false;
+        }
+        else
+        {
+            m_successful = successful;
+        }
+        
         m_finish = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -122,10 +130,6 @@ namespace Mengine
             m_successful = false;
             m_finish = true;
 
-            m_complete = true;
-
-            this->_onComplete( false );
-
             return false;
         }
 
@@ -162,9 +166,12 @@ namespace Mengine
         {
             m_mutex = nullptr;
 
-            m_complete = true;
+            if( m_complete == false )
+            {
+                m_complete = true;
 
-            this->_onComplete( m_successful );
+                this->_onComplete( m_successful );
+            }
         }
 
         return m_finish;
@@ -189,9 +196,12 @@ namespace Mengine
 
         m_mutex = nullptr;
 
-        m_complete = true;
+        if( m_complete == false )
+        {
+            m_complete = true;
 
-        this->_onComplete( false );
+            this->_onComplete( false );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTask::_onUpdate()

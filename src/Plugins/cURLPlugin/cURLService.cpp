@@ -83,6 +83,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
+
+        m_factoryTaskDownloadAsset = nullptr;
+        m_factoryTaskPostMessage = nullptr;
+        m_factoryTaskHeaderData = nullptr;
+        m_factoryTaskGetMessage = nullptr;
+
+        curl_global_cleanup();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLService::_stopService()
+    {
         for( const ReceiverDesc & desc : m_receiverDescs )
         {
             THREAD_SERVICE()
@@ -106,18 +121,6 @@ namespace Mengine
 
             m_threadQueue = nullptr;
         }
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
-
-        m_factoryTaskDownloadAsset = nullptr;
-        m_factoryTaskPostMessage = nullptr;
-        m_factoryTaskHeaderData = nullptr;
-        m_factoryTaskGetMessage = nullptr;
-
-        curl_global_cleanup();
     }
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )

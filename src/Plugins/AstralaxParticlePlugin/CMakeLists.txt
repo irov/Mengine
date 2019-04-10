@@ -18,6 +18,9 @@ src
     LoaderResourceAstralax.h
     AstralaxService.h
 	AstralaxService.cpp
+    
+    AstralaxScriptEmbedding.cpp
+    AstralaxScriptEmbedding.h
 
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h

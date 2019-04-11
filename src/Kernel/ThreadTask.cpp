@@ -124,16 +124,18 @@ namespace Mengine
             return false;
         }
 
+        this->_onCancel();
+
         if( m_run == false ||
             m_finish == true )
         {
             m_successful = false;
             m_finish = true;
 
+            this->_onComplete( false );
+
             return false;
         }
-
-        this->_onCancel();
 
         return true;
     }

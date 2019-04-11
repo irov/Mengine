@@ -1671,7 +1671,7 @@ namespace Mengine
         ae_uint8_t type;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct ShaderDesc
+    struct Movie2ShaderDesc
     {
         ConstString materialNameBlend;
         ConstString materialNameBlendExternalAlpha;
@@ -1683,7 +1683,7 @@ namespace Mengine
     {
         AE_UNUSED( _ud );
 
-        ShaderDesc * desc = Helper::allocateT<ShaderDesc>();
+        Movie2ShaderDesc * desc = Helper::allocateT<Movie2ShaderDesc>();
 
         ArrayString<64> materialNameBlend;
         materialNameBlend.append( _callbackData->description );
@@ -1757,7 +1757,7 @@ namespace Mengine
         (void)_callbackData;
         (void)_ud;
 
-        ShaderDesc * desc = reinterpret_cast<ShaderDesc *>(_callbackData->element_userdata);
+        Movie2ShaderDesc * desc = reinterpret_cast<Movie2ShaderDesc *>(_callbackData->element_userdata);
 
         desc->programVariable = nullptr;
 
@@ -1769,7 +1769,7 @@ namespace Mengine
         (void)_callbackData;
         (void)_ud;
 
-        ShaderDesc * desc = reinterpret_cast<ShaderDesc *>(_callbackData->element_userdata);
+        Movie2ShaderDesc * desc = reinterpret_cast<Movie2ShaderDesc *>(_callbackData->element_userdata);
 
         const RenderProgramVariableInterfacePtr & programVariable = desc->programVariable;
 
@@ -2615,7 +2615,7 @@ namespace Mengine
 
                         if( mesh.shader_userdata != AE_NULLPTR )
                         {
-                            ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
+                            Movie2ShaderDesc * shader_desc = reinterpret_cast<Movie2ShaderDesc *>(mesh.shader_userdata);
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
@@ -2624,7 +2624,7 @@ namespace Mengine
                             resource_image->correctUVImage( uv_zero, mt::vec2f( 0.f, 0.f ) );
                             resource_image->correctUVImage( uv_one, mt::vec2f( 1.f, 1.f ) );
 
-                            float uvsl[4] = { -uv_zero.x, -uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
+                            float uvsl[4] = { uv_zero.x, uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
                             programVariable->setPixelVariableFloats( "uvsl", 0, uvsl, 4, 1 );
                         }
 
@@ -2643,7 +2643,7 @@ namespace Mengine
                         }
                         else
                         {
-                            ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
+                            Movie2ShaderDesc * shader_desc = reinterpret_cast<Movie2ShaderDesc *>(mesh.shader_userdata);
 
                             ConstString materialName;
 

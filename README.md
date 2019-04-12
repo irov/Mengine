@@ -31,3 +31,5 @@ Mengine is an multiple platforms engine for creating and running graphical games
 Удачи в сборке, и использованию!
 
 [![CodeFactor](https://www.codefactor.io/repository/github/irov/mengine/badge)](https://www.codefactor.io/repository/github/irov/mengine)
+
+[![Beerpay](https://beerpay.io/irov/Mengine/badge.svg?style=flat)](https://beerpay.io/irov/Mengine)

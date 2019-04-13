@@ -2555,11 +2555,16 @@ namespace Mengine
                             continue;
                         }
 
-                        Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(mesh.resource_userdata);
+                        const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(mesh.resource);
+                        (void)resource_image;
 
-                        const ResourceImagePtr & resource_image = image_desc->resourceImage;
+                        ae_userdata_t resource_userdata = ae_get_movie_resource_userdata( mesh.resource );
 
-                        const Color & imageColor = resource_image->getColor();
+                        Movie2DataImageDesc * image_desc = reinterpret_cast<Movie2DataImageDesc *>(resource_userdata);
+
+                        const ResourceImagePtr & resourceImage = image_desc->resourceImage;
+
+                        const Color & imageColor = resourceImage->getColor();
 
                         ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
 
@@ -2594,8 +2599,8 @@ namespace Mengine
                                 const float * uv2 = mesh.uv[index];
                                 uv.from_f2( uv2 );
 
-                                resource_image->correctUVImage( v.uv[0], uv );
-                                resource_image->correctUVAlpha( v.uv[1], uv );
+                                resourceImage->correctUVImage( uv, v.uv + 0 );
+                                resourceImage->correctUVAlpha( uv, v.uv + 1 );
                             }
                         }
                         else
@@ -2621,8 +2626,8 @@ namespace Mengine
 
                             mt::vec2f uv_zero;
                             mt::vec2f uv_one;
-                            resource_image->correctUVImage( uv_zero, mt::vec2f( 0.f, 0.f ) );
-                            resource_image->correctUVImage( uv_one, mt::vec2f( 1.f, 1.f ) );
+                            resourceImage->correctUVImage( mt::vec2f( 0.f, 0.f ), &uv_zero );
+                            resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
 
                             float uvsl[4] = { uv_zero.x, uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
                             programVariable->setPixelVariableFloats( "uvsl", 0, uvsl, 4, 1 );
@@ -2647,7 +2652,7 @@ namespace Mengine
 
                             ConstString materialName;
 
-                            if( resource_image->getTextureAlpha() == nullptr )
+                            if( resourceImage->getTextureAlpha() == nullptr )
                             {
                                 switch( blend_mode )
                                 {
@@ -2684,7 +2689,7 @@ namespace Mengine
                                 }
                             }
 
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FUNCTION );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resourceImage, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FUNCTION );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
@@ -2724,8 +2729,8 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            surface->correctUV( 0, v.uv[0], uv );
-                            surface->correctUV( 1, v.uv[1], uv );
+                            surface->correctUV( 0, uv, v.uv + 0 );
+                            surface->correctUV( 1, uv, v.uv + 1 );
 
                             v.color = total_mesh_color;
                         }
@@ -2788,7 +2793,7 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            resourceImage->correctUVImage( v.uv[0], uv );
+                            resourceImage->correctUVImage( uv, v.uv + 0 );
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -2796,7 +2801,7 @@ namespace Mengine
                                 vp.to_vec2f()
                             );
 
-                            resourceTrackMatteImage->correctUVAlpha( v.uv[1], uv_track_matte );
+                            resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
 
                             v.color = total_mesh_color;
                         }
@@ -2820,7 +2825,7 @@ namespace Mengine
                             uv.from_f2( &track_matte_mesh->uv[index][0] );
 
                             mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv_correct, uv );
+                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
 
                             if( uvbb[0] > uv_correct.x )
                             {

@@ -60,27 +60,27 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImage::correctUVImage( mt::vec2f & _out, const mt::vec2f & _in ) const
+    void ResourceImage::correctUVImage( const mt::vec2f & _in, mt::vec2f * _out ) const
     {
         if( m_uvImageRotate == false )
         {
-            mt::uv4_quad_point( _out, m_uvTextureImage, _in );
+            mt::uv4_quad_point( *_out, m_uvTextureImage, _in );
         }
         else
         {
-            mt::multiply_tetragon_uv4_v2( _out, m_uvTextureImage, _in );
+            mt::multiply_tetragon_uv4_v2( *_out, m_uvTextureImage, _in );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImage::correctUVAlpha( mt::vec2f & _out, const mt::vec2f & _in ) const
+    void ResourceImage::correctUVAlpha( const mt::vec2f & _in, mt::vec2f * _out ) const
     {
         if( m_uvAlphaRotate == false )
         {
-            mt::uv4_quad_point( _out, m_uvTextureAlpha, _in );
+            mt::uv4_quad_point( *_out, m_uvTextureAlpha, _in );
         }
         else
         {
-            mt::multiply_tetragon_uv4_v2( _out, m_uvTextureAlpha, _in );
+            mt::multiply_tetragon_uv4_v2( *_out, m_uvTextureAlpha, _in );
         }
     }
 }

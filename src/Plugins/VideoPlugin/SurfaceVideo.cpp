@@ -246,11 +246,11 @@ namespace Mengine
         return m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    void SurfaceVideo::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
     {
-        (void)_index;
+        MENGINE_UNUSED( _index );
 
-        mt::uv4_quad_point( _out, m_uv, _in );
+        mt::uv4_quad_point( *_out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceVideo::getColor() const
@@ -260,8 +260,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_stop( uint32_t _playId )
     {
-        (void)_playId;
-
         m_needUpdateVideoBuffer = false;
 
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
@@ -272,8 +270,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_end( uint32_t _playId )
     {
-        (void)_playId;
-
         m_needUpdateVideoBuffer = false;
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
@@ -282,8 +278,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_play( uint32_t _playId, float _time )
     {
-        (void)_playId;
-        (void)_time;
+        MENGINE_UNUSED( _playId );
+        MENGINE_UNUSED( _time );
 
         m_time = 0.f;
         m_needUpdateVideoBuffer = true;
@@ -304,8 +300,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_restart( uint32_t _playId, float _time )
     {
-        (void)_time;
-        (void)_playId;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _playId );
 
         m_time = 0.f;
         m_needUpdateVideoBuffer = true;

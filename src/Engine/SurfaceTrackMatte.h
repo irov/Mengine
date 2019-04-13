@@ -53,7 +53,7 @@ namespace Mengine
 
         const Color & getColor() const override;
 
-        void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
+        void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) override;
 
     protected:
         bool _compile() override;

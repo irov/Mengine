@@ -177,11 +177,11 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    void SurfaceSound::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
     {
-        (void)_index;
+        MENGINE_UNUSED( _index );
 
-        _out = _in;
+        *_out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceSound::getColor() const

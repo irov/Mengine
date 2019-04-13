@@ -125,6 +125,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "service is stop" );
+
+            return 0;
+        }
+
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
@@ -148,6 +155,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "service is stop" );
+
+            return 0;
+        }
+
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
@@ -171,6 +185,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "service is stop" );
+
+            return 0;
+        }
+
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
@@ -194,6 +215,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "service is stop" );
+
+            return 0;
+        }
+
         if( _fileGroup->existFile( _path ) == true )
         {
             LOGGER_ERROR( "url '%s' category '%s' file alredy exist '%s'"
@@ -228,6 +256,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLService::cancelRequest( HttpRequestID _id )
     {
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "service is stop" );
+
+            return 0;
+        }
+
         for( ReceiverDesc & desc : m_receiverDescs )
         {
             if( desc.id != _id )

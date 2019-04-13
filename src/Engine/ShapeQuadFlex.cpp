@@ -232,7 +232,7 @@ namespace Mengine
             for( uint32_t v = 0; v != 4; ++v )
             {
                 mt::vec2f uv_correct;
-                m_surface->correctUV( i, uv_correct, uv_percentVisibility[v] );
+                m_surface->correctUV( i, uv_percentVisibility[v], &uv_correct );
 
                 m_verticesWM[v].uv[i] = uv_correct * m_textureUVScale + m_textureUVOffset;
             }

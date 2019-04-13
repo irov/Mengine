@@ -182,7 +182,7 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImage::correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in )
+    void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
     {
         if( m_resourceImage == nullptr )
         {
@@ -197,11 +197,11 @@ namespace Mengine
         {
         case 0:
             {
-                m_resourceImage->correctUVImage( _out, _in );
+                m_resourceImage->correctUVImage( _in, _out );
             } break;
         case 1:
             {
-                m_resourceImage->correctUVAlpha( _out, _in );
+                m_resourceImage->correctUVAlpha( _in, _out );
             } break;
         default:
             {

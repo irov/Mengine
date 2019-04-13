@@ -165,8 +165,8 @@ namespace Mengine
         {
             const mt::vec2f & uv = m_shape->uv[i];
 
-            m_resourceImage->correctUVImage( m_verticesWM[i].uv[0], uv );
-            m_resourceImage->correctUVAlpha( m_verticesWM[i].uv[1], uv );
+            m_resourceImage->correctUVImage( uv, m_verticesWM[i].uv + 0 );
+            m_resourceImage->correctUVAlpha( uv, m_verticesWM[i].uv + 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -2629,7 +2629,22 @@ namespace Mengine
                             resourceImage->correctUVImage( mt::vec2f( 0.f, 0.f ), &uv_zero );
                             resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
 
-                            float uvsl[4] = { uv_zero.x, uv_zero.y, 1.f / (uv_one.x - uv_zero.x), 1.f / (uv_one.y - uv_zero.y) };
+                            const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
+                            
+                            float textureWidthInv = texture->getWidthInv();
+                            float textureHeightInv = texture->getHeightInv();
+
+                            float u = uv_one.x - uv_zero.x;
+                            
+                            float ou = uv_zero.x - resource_image->offset_x * textureWidthInv;
+                            float du = resource_image->base_width / resource_image->trim_width * u;
+
+                            float v = uv_one.y - uv_zero.y;
+
+                            float ov = uv_zero.y - resource_image->offset_y * textureHeightInv;
+                            float dv = resource_image->base_height / resource_image->trim_height * v;
+
+                            float uvsl[4] = { -ou, -ov, 1.f / du, 1.f / dv };
                             programVariable->setPixelVariableFloats( "uvsl", 0, uvsl, 4, 1 );
                         }
 

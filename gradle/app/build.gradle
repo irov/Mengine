@@ -1,12 +1,21 @@
 apply plugin: 'com.android.application'
 
+
 android {
     signingConfigs {
         config {
-            keyAlias 'DungeonRaider'
-            keyPassword '123456'
-            storeFile file('D:/Projects/DungeonRaider_Work/Android/DungeonRaider.jks')
-            storePassword '123456'
+            if (project.hasProperty("RELEASE_STORE_FILE")) {
+                print 'RELEASE_STORE_FILE = '
+                println RELEASE_STORE_FILE
+
+                print 'RELEASE_KEY_ALIAS = '
+                println RELEASE_KEY_ALIAS
+
+                storeFile file(RELEASE_STORE_FILE)
+                storePassword RELEASE_STORE_PASSWORD
+                keyAlias RELEASE_KEY_ALIAS
+                keyPassword RELEASE_KEY_PASSWORD
+            }
         }
     }
     buildToolsVersion '28.0.3'
@@ -66,7 +75,15 @@ android {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
             res.srcDirs = ['res']
-            assets.srcDirs = ['data']
+
+			if (findProperty("ASSETS_SRC_DIR")) {
+                print 'ASSETS_SRC_DIR = '
+                println ASSETS_SRC_DIR
+
+                assets.srcDirs = [ASSETS_SRC_DIR]
+            } else {
+                assets.srcDirs = ['data']
+            }
         }
     }
     aaptOptions {

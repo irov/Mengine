@@ -994,9 +994,9 @@ namespace Mengine
         }
 
         SERVICE_FINALIZE( Mengine::AccountServiceInterface );
-        SERVICE_FINALIZE( Mengine::GameServiceInterface );
-        SERVICE_FINALIZE( Mengine::PlayerServiceInterface );        
         SERVICE_FINALIZE( Mengine::SceneServiceInterface );
+        SERVICE_FINALIZE( Mengine::GameServiceInterface );
+        SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
         SERVICE_FINALIZE( Mengine::PickerServiceInterface );
         SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );

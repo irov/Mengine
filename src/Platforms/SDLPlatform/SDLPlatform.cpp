@@ -316,7 +316,47 @@ namespace Mengine
             return false;
         }
 
-        m_accelerometer = SDL_JoystickOpen( 0 );
+        // Search accelerometer device among joysticks
+        int numJoysticks = SDL_NumJoysticks();
+
+        for( int deviceIndex = 0; deviceIndex < numJoysticks; deviceIndex++ )
+        {
+            SDL_Joystick * joystick = SDL_JoystickOpen(deviceIndex);
+
+            if (!joystick)
+            {
+                continue;
+            }
+
+            const Char * joystickName = SDL_JoystickName(joystick);
+
+            bool isAccelerometer = false;
+
+            if( strcmp( joystickName, "Android Accelerometer" ) == 0 )
+            {
+                isAccelerometer = true;
+            }
+            else if( strcmp( joystickName, "IOS Accelerometer" ) == 0 )
+            {
+                isAccelerometer = true;
+            }
+
+            if (isAccelerometer)
+            {
+                LOGGER_WARNING("Accelerometer found: %s"
+                    , joystickName
+                );
+
+                m_accelerometer = joystick;
+                break;
+            }
+        }
+
+        if ( m_accelerometer == nullptr )
+        {
+            LOGGER_WARNING("Accelerometer not found"
+            );
+        }
 
         m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>();
 
@@ -340,6 +380,11 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
 
         m_factoryDynamicLibraries = nullptr;
+
+        if (SDL_JoystickGetAttached(m_accelerometer)) {
+            SDL_JoystickClose(m_accelerometer);
+            m_accelerometer = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::update()

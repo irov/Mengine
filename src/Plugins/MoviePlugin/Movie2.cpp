@@ -2675,9 +2675,11 @@ namespace Mengine
                             resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
 
                             const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
-                            
-                            float textureWidthInv = texture->getWidthInv();
-                            float textureHeightInv = texture->getHeightInv();
+
+                            const RenderImageInterfacePtr & image = texture->getImage();
+
+                            float textureWidthInv = image->getHWWidthInv();
+                            float textureHeightInv = image->getHWHeightInv();
 
                             float u = uv_one.x - uv_zero.x;
                             

@@ -24,6 +24,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/Stringstream.h"
 
@@ -1282,10 +1283,7 @@ namespace Mengine
                     SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FUNCTION );
 
-                    if( surfaceTrackMatte == nullptr )
-                    {
-                        return AE_FALSE;
-                    }
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, AE_FALSE );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
@@ -1293,10 +1291,11 @@ namespace Mengine
                     Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
                     const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
 
+                    surfaceTrackMatte->setResourceImage( resourceImage );
+
                     Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
                     const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
-
-                    surfaceTrackMatte->setResourceImage( resourceImage );
+                    
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
                     ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer );
@@ -1319,7 +1318,53 @@ namespace Mengine
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
-                    movie2->addSurface_( surfaceTrackMatte );
+                    movie2->addSurface_( surfaceTrackMatte, true );
+
+                    *_nd = surfaceTrackMatte.get();
+
+                    return AE_TRUE;
+                }break;
+            case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+                {
+                    SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FUNCTION );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, AE_FALSE );
+
+                    ConstString c_name = Helper::stringizeString( layer_name );
+                    surfaceTrackMatte->setName( c_name );
+
+                    //Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    //const ResourceImagePtr & resourceImage = imageDesc->resourceImage;
+                    
+                    //surfaceTrackMatte->setResourceImage( resourceImage );
+
+                    Movie2DataImageDesc * imageTrackMatteDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
+                    const ResourceImagePtr & resourceTrackMatteImage = imageTrackMatteDesc->resourceImage;
+
+                    surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
+
+                    ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer );
+
+                    switch( track_matte_mode )
+                    {
+                    case AE_MOVIE_TRACK_MATTE_ALPHA:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA );
+                        }break;
+                    case AE_MOVIE_TRACK_MATTE_ALPHA_INVERTED:
+                        {
+                            surfaceTrackMatte->setTrackMatteMode( ESTM_MODE_ALPHA_INVERTED );
+                        }break;
+                    default:
+                        break;
+                    }
+
+                    EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
+
+                    surfaceTrackMatte->setBlendMode( blend_mode );
+
+                    movie2->addSurface_( surfaceTrackMatte, false );
 
                     *_nd = surfaceTrackMatte.get();
 
@@ -1362,7 +1407,7 @@ namespace Mengine
                     surface->setBlendMode( blend_mode );
                     surface->setPremultiplyAlpha( true );
 
-                    movie2->addSurface_( surface );
+                    movie2->addSurface_( surface, true );
 
                     *_nd = surface.get();
 
@@ -1398,7 +1443,7 @@ namespace Mengine
 
                     surfaceSound->setResourceSound( Helper::makeIntrusivePtr( resourceSound ) );
 
-                    movie2->addSurface_( surfaceSound );
+                    movie2->addSurface_( surfaceSound, true );
 
                     *_nd = surfaceSound.get();
 
@@ -2767,7 +2812,6 @@ namespace Mengine
             {
                 switch( mesh.layer_type )
                 {
-                case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
                         if( mesh.vertexCount == 0 )
@@ -2869,6 +2913,112 @@ namespace Mengine
 
                         this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
+                case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+                    {
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
+                        SurfaceTrackMatte * surfaceTrackMatte = reinterpret_node_cast<SurfaceTrackMatte *>(mesh.element_userdata);
+
+                        RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
+                        vertex_iterator += mesh.vertexCount;
+
+                        Movie2DataImageDesc * imageDesc = reinterpret_cast<Movie2DataImageDesc *>(ae_get_movie_resource_userdata( mesh.resource ));
+                        surfaceTrackMatte->setResourceImage( imageDesc->resourceImage );
+
+                        surfaceTrackMatte->compile();
+
+                        const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
+                        const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
+
+                        const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_userdata);
+
+                        const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
+
+                        const Color & imageColor = resourceImage->getColor();
+
+                        ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+
+                        if( (total_mesh_color & 0xFF000000) == 0 )
+                        {
+                            continue;
+                        }
+
+                        for( uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            RenderVertex2D & v = vertices[index];
+
+                            mt::vec3f vp;
+                            vp.from_f3( mesh.position[index] );
+
+                            mt::mul_v3_v3_m4( v.position, vp, wm );
+
+                            mt::vec2f uv;
+                            uv.from_f2( &mesh.uv[index][0] );
+
+                            resourceImage->correctUVImage( uv, v.uv + 0 );
+
+                            mt::vec2f uv_track_matte = mt::calc_point_uv(
+                                mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
+                                mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
+                                vp.to_vec2f()
+                            );
+
+                            resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
+
+                            v.color = total_mesh_color;
+                        }
+
+                        RenderIndex * indices = indices_buffer + index_iterator;
+                        index_iterator += mesh.indexCount;
+
+                        stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
+
+                        const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
+
+                        float uvbb[4];
+                        uvbb[0] = std::numeric_limits<float>::max();
+                        uvbb[1] = std::numeric_limits<float>::max();
+                        uvbb[2] = -std::numeric_limits<float>::max();
+                        uvbb[3] = -std::numeric_limits<float>::max();
+
+                        for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
+                        {
+                            mt::vec2f uv;
+                            uv.from_f2( &track_matte_mesh->uv[index][0] );
+
+                            mt::vec2f uv_correct;
+                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
+
+                            if( uvbb[0] > uv_correct.x )
+                            {
+                                uvbb[0] = uv_correct.x;
+                            }
+
+                            if( uvbb[1] > uv_correct.y )
+                            {
+                                uvbb[1] = uv_correct.y;
+                            }
+
+                            if( uvbb[2] < uv_correct.x )
+                            {
+                                uvbb[2] = uv_correct.x;
+                            }
+
+                            if( uvbb[3] < uv_correct.y )
+                            {
+                                uvbb[3] = uv_correct.y;
+                            }
+                        }
+
+                        programVariable->setPixelVariableFloats( "uvbb", 0, uvbb, 4, 1 );
+
+                        const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
+
+                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                    }break;
                 default:
                     break;
                 }
@@ -2876,9 +3026,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSurface_( const SurfacePtr & _surface )
+    void Movie2::addSurface_( const SurfacePtr & _surface, bool _compile )
     {
-        _surface->compile();
+        if( _compile == true )
+        {
+            _surface->compile();
+        }
 
         m_surfaces.emplace_back( _surface );
     }

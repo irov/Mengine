@@ -101,7 +101,6 @@ ModuleInvader
 
 INCLUDE_DIRECTORIES(    
     ${THIRDPARTY_DIR}/Box2D
-    ${THIRDPARTY_DIR}/metabuf/include
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/libmath/include
     ${THIRDPARTY_DIR}/fastpathfinder/include

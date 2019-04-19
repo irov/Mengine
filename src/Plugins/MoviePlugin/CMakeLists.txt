@@ -38,6 +38,8 @@ src
     Movie2ScriptEmbedding.cpp
 )
 
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmovie/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )

@@ -2969,6 +2969,15 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
+            if( py_handler == nullptr )
+            {
+                LOGGER_ERROR( "s_removeKeyHandler %d handler invalid"
+                    , _id
+                );
+
+                return false;
+            }
+
             InputHandlerInterfacePtr handler = globalHandleSystem->removeGlobalHandler( _id );
 
             PyGlobalBaseHandlerPtr py_handler = stdex::intrusive_dynamic_cast<PyGlobalBaseHandlerPtr>(handler);

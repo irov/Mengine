@@ -22,7 +22,7 @@ add_definitions(-DPYBIND_PYTHON_VERSION=342)
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/pugixml/src
     ${THIRDPARTY_DIR}/metabuf/include
-	${THIRDPARTY_DIR}/metabuf/xml2metabuf
+	${THIRDPARTY_DIR}/metabuf/src/xml2metabuf
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/libmovie/include
     ${THIRDPARTY_DIR}/tinyini/include

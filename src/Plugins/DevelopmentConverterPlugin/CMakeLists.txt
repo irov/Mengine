@@ -30,6 +30,8 @@ src
     ImageConverterPNGToACF.h    
 )
 
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+
 add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

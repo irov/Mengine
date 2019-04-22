@@ -10,12 +10,13 @@ src
 	XmlToBinInterface.h
 )
 
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf/include
-					 ${THIRDPARTY_DIR}/metabuf/xml2metabuf
+					 ${THIRDPARTY_DIR}/metabuf/src
                      ${THIRDPARTY_DIR}/utf8/source
                      ${THIRDPARTY_DIR}/libmath/include
 )

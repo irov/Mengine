@@ -310,9 +310,6 @@ namespace Mengine
                 ->finalizeRenderResources();
         }
 
-        SCENE_SERVICE()
-            ->destroyCurrentScene();
-
         m_cursorResource = nullptr;
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );

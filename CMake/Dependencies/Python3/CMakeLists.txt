@@ -82,11 +82,6 @@ set( HAVE_WAIT4 0 )
 set( HAVE_DEVICE_MACROS 0 )
 
 
-file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
-
-#configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
-file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
-
 ############################## 
 
 set(P_SRCS                                     

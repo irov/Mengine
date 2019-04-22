@@ -14,8 +14,8 @@
 
 #include "metabuf/Metadata.hpp"
 
-#include "Xml2Metabuf.hpp"
-#include "Xml2Metacode.hpp"
+#include "xml2metabuf/Xml2Metabuf.hpp"
+#include "xml2metabuf/Xml2Metacode.hpp"
 
 #include "Config/Blobject.h"
 
@@ -322,7 +322,7 @@ namespace Mengine
         uint32_t xml_meta_version = xml_meta->getVersion();
 
         size_t header_size;
-        if( xml_metabuf.header( memory_header_buffer, Metacode::header_size, xml_meta_version, header_size ) == false )
+        if( xml_metabuf.header( memory_header_buffer, Metacode::header_size, xml_meta_version, &header_size ) == false )
         {
             LOGGER_ERROR( "error header '%s' version '%u' error:\n%s"
                 , m_options.pathXml.c_str()
@@ -356,7 +356,7 @@ namespace Mengine
         }
 
         size_t bin_size;
-        if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, bin_size ) == false )
+        if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, &bin_size ) == false )
         {
             LOGGER_ERROR( "error convert %s error:\n%s"
                 , m_options.pathXml.c_str()

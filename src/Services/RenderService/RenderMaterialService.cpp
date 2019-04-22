@@ -216,7 +216,7 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _fileName, &datablock, exist ) == false )
+            ->load( _fileGroup, _fileName, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
         {
             if( exist == false )
             {
@@ -571,7 +571,7 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _fileName, &datablock, exist ) == false )
+            ->load( _fileGroup, _fileName, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
         {
             if( exist == false )
             {

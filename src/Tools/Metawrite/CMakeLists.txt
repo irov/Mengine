@@ -5,6 +5,8 @@ src
     Metawrite.cpp
 )
 
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/tiniini/include
     ${THIRDPARTY_DIR}/libmath/include

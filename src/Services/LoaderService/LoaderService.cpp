@@ -71,7 +71,7 @@ namespace Mengine
         return m_protocolPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metadata * _metadata, bool & _exist ) const
+    bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool & _exist ) const
     {
         LOGGER_INFO( "pak '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -105,7 +105,7 @@ namespace Mengine
         }
 
         bool reimport = false;
-        bool done = this->importBin_( file_bin, _metadata, &reimport );
+        bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport );
 
 #ifndef MENGINE_MASTER_RELEASE
         if( reimport == true )
@@ -131,14 +131,14 @@ namespace Mengine
             file_bin = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-            done = this->importBin_( file_bin, _metadata, nullptr );
+            done = this->importBin_( file_bin, _metadata, _metaVersion, nullptr );
         }
 #endif
 
         return done;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Metabuf::Metadata * _metadata ) const
+    bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
@@ -164,12 +164,12 @@ namespace Mengine
         uint32_t needVersion;
         uint32_t readProtocol;
         uint32_t needProtocol;
-        uint32_t metaMetaVersion = _metadata->getVersion();
+        uint32_t metaMetaVersion = _metaVersion;
         uint32_t needMetaVersion;
 
-        Metacode::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
+        Metabuf::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
 
-        if( result != Metacode::HEADER_SUCCESSFUL )
+        if( result != Metabuf::HEADER_SUCCESSFUL )
         {
             return false;
         }
@@ -177,7 +177,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metadata * _metadata, bool * _reimport ) const
+    bool LoaderService::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * _reimport ) const
     {
         size_t size = _stream->size();
 
@@ -197,12 +197,12 @@ namespace Mengine
         uint32_t needVersion;
         uint32_t readProtocol;
         uint32_t needProtocol;
-        uint32_t metaMetaVersion = _metadata->getVersion();
+        uint32_t metaMetaVersion = _metaVersion;
         uint32_t needMetaVersion;
 
-        Metacode::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
+        Metabuf::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
 
-        if( result != Metacode::HEADER_SUCCESSFUL )
+        if( result != Metabuf::HEADER_SUCCESSFUL )
         {
             if( _reimport == nullptr )
             {
@@ -276,7 +276,7 @@ namespace Mengine
                 ->stringize( str, stringSize, stringHash, buffer );
         }
 
-        if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)&m_metacache ) == false )
+        if( _metadata->parse( binary_memory, bin_size, read_size, (void *)&m_metacache ) == false )
         {
             LOGGER_ERROR( "invlid parse (error)"
             );

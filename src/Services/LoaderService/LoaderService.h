@@ -34,11 +34,11 @@ namespace Mengine
         const FilePath & getProtocolPath() const override;
 
     public:
-        bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
-        bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const override;
+        bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool & _exist ) const override;
+        bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, uint32_t _metaVersion ) const override;
 
     private:
-        bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;
+        bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool * _reimport ) const;
         bool openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
 
 #ifndef MENGINE_MASTER_RELEASE

@@ -226,7 +226,6 @@ Resource\\\\HIT
 INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}
     ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/metabuf/include
     ${THIRDPARTY_DIR}/utf8/source
     ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/libmath/include

@@ -37,6 +37,7 @@ if(MENGINE_PLUGIN_ASTRALAX_DLL)
 endif()
 
 add_definitions(-DMAGIC_3D)
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/pybind/include    

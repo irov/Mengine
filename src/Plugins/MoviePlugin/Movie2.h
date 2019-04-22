@@ -141,7 +141,7 @@ namespace Mengine
         void _removeChild( const NodePtr & _node ) override;
 
     public:
-        void addSurface_( const SurfacePtr & _surface );
+        void addSurface_( const SurfacePtr & _surface, bool _compile );
         void removeSurface_( const SurfacePtr & _surface );
 
     public:

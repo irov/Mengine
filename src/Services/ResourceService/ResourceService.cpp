@@ -17,6 +17,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Mengine::ResourceService );
 //////////////////////////////////////////////////////////////////////////
@@ -77,7 +79,7 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, exist ) == false )
+            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
         {
             if( exist == false )
             {
@@ -241,7 +243,7 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _pak, _path, &datablock, exist ) == false )
+            ->load( _pak, _path, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
         {
             if( exist == false )
             {

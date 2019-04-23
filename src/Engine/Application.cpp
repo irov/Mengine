@@ -700,8 +700,8 @@ namespace Mengine
         {
             if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
             {
-                unsigned int *p = nullptr; 
-                *p = 0xBADF00D;
+                PLATFORM_SERVICE()
+                    ->createProcessDump();
             }
 
             if( _event.code == KC_F6 && _event.isDown )

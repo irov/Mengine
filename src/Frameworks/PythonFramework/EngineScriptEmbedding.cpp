@@ -2832,6 +2832,8 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
+            MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+
             const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels
                 ->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -2878,6 +2880,8 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
+            MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+
             PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins
                 ->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -2917,6 +2921,8 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
+            MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+
             PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler
                 ->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -2954,6 +2960,8 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
+            MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, 0 );
+
             PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler
                 ->createObject( MENGINE_DOCUMENT_PYBIND );
 
@@ -2968,6 +2976,8 @@ namespace Mengine
         {
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, false );
 
             InputHandlerInterfacePtr handler = globalHandleSystem->removeGlobalHandler( _id );
 
@@ -2991,6 +3001,8 @@ namespace Mengine
         {
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( globalHandleSystem, false );
 
             bool successful = globalHandleSystem->enableGlobalHandler( _id, _value );
 

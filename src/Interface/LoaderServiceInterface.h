@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Metabuf
 {
-    class Metadata;
+    class Metaparse;
 }
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -26,8 +26,8 @@ namespace Mengine
         virtual const FilePath & getProtocolPath() const = 0;
 
     public:
-        virtual bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const = 0;
-        virtual bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const = 0;
+        virtual bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metaparse * _metadata, uint32_t _metaVersion, bool & _exist ) const = 0;
+        virtual bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, uint32_t _metaVersion ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

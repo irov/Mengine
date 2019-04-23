@@ -85,7 +85,6 @@ SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( InputService );
-SERVICE_EXTERN( TimeService );
 SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( EasingService );
@@ -634,7 +633,6 @@ namespace Mengine
         SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( ChronometerService );
         SERVICE_CREATE( TimeSystem );
-        SERVICE_CREATE( TimeService );
         SERVICE_CREATE( EasingService );
 
 #ifdef MENGINE_DEBUG
@@ -1038,7 +1036,6 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
 
-        SERVICE_FINALIZE( Mengine::TimeServiceInterface );
         SERVICE_FINALIZE( Mengine::TimeSystemInterface );
 
         SERVICE_FINALIZE( Mengine::EasingServiceInterface );

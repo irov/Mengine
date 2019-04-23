@@ -301,6 +301,7 @@ namespace Mengine
                 
         pybind::def_functor( kernel, "androidFacebookInitialize", this, &AndroidNativeFacebookModule::initializeSDK );
         pybind::def_functor( kernel, "androidFacebookIsLoggedIn", this, &AndroidNativeFacebookModule::isLoggedIn );
+        pybind::def_functor( kernel, "androidFacebookGetAccessToken", this, &AndroidNativeFacebookModule::getAccessToken );
         pybind::def_functor( kernel, "androidFacebookPerformLogin", this, &AndroidNativeFacebookModule::performLogin );
         pybind::def_functor( kernel, "androidFacebookGetUser", this, &AndroidNativeFacebookModule::getUser );
         pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );

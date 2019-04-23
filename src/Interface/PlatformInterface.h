@@ -58,6 +58,8 @@ namespace Mengine
 
         virtual bool setProcessDPIAware() = 0;
 
+        virtual bool createProcessDump() = 0;
+
         virtual size_t getCurrentPath( Char * _path ) const = 0;
         virtual size_t getUserPath( Char * _path ) const = 0;
 

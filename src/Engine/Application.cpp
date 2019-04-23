@@ -698,6 +698,12 @@ namespace Mengine
 
         if( developmentMode == true )
         {
+            if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
+            {
+                unsigned int *p = nullptr; 
+                *p = 0xBADF00D;
+            }
+
             if( _event.code == KC_F6 && _event.isDown )
             {
                 if( (m_debugMask & MENGINE_DEBUG_HOTSPOTS) != 0 )

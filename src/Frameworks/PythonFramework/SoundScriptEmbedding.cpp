@@ -12,6 +12,7 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionResourceType.h"
 
 #include "Config/Lambda.h"
 
@@ -155,6 +156,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr s_createSoundSource( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
         {
+            MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSound *, nullptr, "createSoundSource resource '%s' type does not match 'ResourceSound'"
+                , _resourceName.c_str()
+            );
+
             const ResourceSoundPtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 

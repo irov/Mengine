@@ -49,16 +49,19 @@ namespace Mengine
             return *this;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _info )
+        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
-            Char assert_message[2048];
-            snprintf( assert_message, 2048, "File [%s:%d] Assertion: '%s' info '%s'"
+            LOGGER_ERROR( "File [%s:%d] Assertion: '%s'"
                 , _file
                 , _line
-                , _test
-                , _info );
+                , _test );
 
-            LOGGER_ERROR( assert_message );
+            va_list args;
+            va_start( args, _format );
+
+            LOGGER_ERROR.logMessageArgs( _format, args );
+
+            va_end( args );
 
             if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level != ASSERTION_LEVEL_FATAL )
             {

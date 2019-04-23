@@ -34,6 +34,8 @@ src
 	MetabufLoaderPlugin.h    
 )
 
+add_definitions(-DMETABUF_EXTERNAL_CONFIG)
+
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )

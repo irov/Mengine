@@ -169,7 +169,7 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( m_fileGroup, m_descriptionPath, &pak, exist ) == false )
+            ->load( m_fileGroup, m_descriptionPath, &pak, Metacode::Meta_Data::getVersion(), exist ) == false )
         {
             LOGGER_ERROR( "invalid resource file '%s:%s' '%s'"
                 , m_path.c_str()

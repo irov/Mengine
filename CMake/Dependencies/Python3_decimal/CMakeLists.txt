@@ -15,8 +15,6 @@ set( HAVE_FSYNC 0 )
 set( HAVE_WAIT3 0 )
 set( HAVE_WAIT4 0 )
 set( HAVE_DEVICE_MACROS 0 )
-
-file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
                  
 set(MODULE_SRCS 
                 ${SOURCE_DIR}/Modules/_decimal/_decimal.c

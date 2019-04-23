@@ -117,7 +117,7 @@ namespace Mengine
         FilePath path_bin = Helper::stringizeFilePath( binPath );
 
         if( LOADER_SERVICE()
-            ->load( m_options.fileGroup, path_bin, &keyFramesPack, exist ) == false )
+            ->load( m_options.fileGroup, path_bin, &keyFramesPack, Metacode::Meta_Data::getVersion(), exist ) == false )
         {
             if( exist == false )
             {

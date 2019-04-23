@@ -17,7 +17,6 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf/include )
 
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/metabuf

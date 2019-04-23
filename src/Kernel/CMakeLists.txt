@@ -297,6 +297,7 @@ Core
     AssertionFactory.h
     AssertionFactory.cpp	
 	AssertionNotImplemented.h
+    AssertionResourceType.h
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
     AssertionVocabulary.h

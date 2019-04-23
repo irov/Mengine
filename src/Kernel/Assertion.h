@@ -16,7 +16,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////    
-        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _info );
+        void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... );
         //////////////////////////////////////////////////////////////////////////
         class AssertionOperator
         {

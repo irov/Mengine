@@ -8,10 +8,12 @@
 #include "Interface/TimeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 #include "Win32DynamicLibrary.h"
 
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/Date.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
@@ -19,6 +21,16 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(push, 0) 
+#endif
+
+#include "DbgHelp.h"
+
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#	pragma warning(pop) 
+#endif
 
 #include <cstdio>
 #include <clocale>
@@ -50,6 +62,7 @@ namespace Mengine
         , m_pauseUpdatingTime( -1.f )
         , m_activeFrameTime( 0.f )
         , m_inactiveFrameTime( 100.f )
+        , m_prevTime( 0 )
         , m_cursorInArea( false )
         , m_clickOutArea( false )
         , m_isDoubleClick( false )
@@ -265,12 +278,82 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createProcessDump()
+    {
+        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        this->getUserPath( userPath );
+
+        String processDumpPath;
+        processDumpPath += userPath;
+        processDumpPath += "Process";
+        processDumpPath += "_";
+
+        String date;
+        Helper::makeDateTime( date );
+
+        processDumpPath += date;
+        processDumpPath += ".dmp";
+
+        WString unicode_processDumpPath;
+        Helper::utf8ToUnicode( processDumpPath, unicode_processDumpPath );
+
+        HANDLE hFile = CreateFile( unicode_processDumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+
+        if( hFile == INVALID_HANDLE_VALUE )
+        {
+            return false;
+        }
+
+        HMODULE dbghelp_dll = ::LoadLibrary( L"dbghelp.dll" );
+
+        if( dbghelp_dll == NULL )
+        {
+            ::CloseHandle( hFile );
+
+            return false;
+        }
+
+        typedef BOOL( WINAPI *MINIDUMPWRITEDUMP )(
+            HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
+            CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
+            CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
+            CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
+            );
+
+        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( dbghelp_dll, "MiniDumpWriteDump" );
+
+        if( MiniDumpWriteDump == NULL )
+        {
+            FreeLibrary( dbghelp_dll );
+            ::CloseHandle( hFile );
+
+            return false;
+        }
+
+        HANDLE hProcess = GetCurrentProcess();
+        DWORD dwProcessId = GetCurrentProcessId();
+
+        MINIDUMP_TYPE dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
+
+        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, NULL, NULL, NULL );
+
+        FreeLibrary( dbghelp_dll );
+        ::CloseHandle( hFile );
+
+        if( successful == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::update()
     {
         this->setActive_( true );
-
-        TIME_SERVICE()
-            ->resetDeltaTime();
+        
+        m_prevTime = TIME_SYSTEM()
+            ->getTimeMilliseconds();
 
 #ifdef MENGINE_DEBUG
         try
@@ -278,8 +361,12 @@ namespace Mengine
         {
             while( m_close == false )
             {
-                float frameTime = TIME_SERVICE()
-                    ->getDeltaTime();
+                uint64_t currentTime = TIME_SYSTEM()
+                    ->getTimeMilliseconds();
+
+                float frameTime = (float)(currentTime - m_prevTime);
+
+                m_prevTime = currentTime;
 
                 MSG  msg;
                 while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )

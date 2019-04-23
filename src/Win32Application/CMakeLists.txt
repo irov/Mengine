@@ -12,6 +12,12 @@ CriticalErrorsMonitor
 	CriticalErrorsMonitor.cpp
 )
 
+ADD_FILTER(
+AntifreezeMonitor
+    AntifreezeMonitor.h
+    AntifreezeMonitor.cpp
+)
+
 if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
 main	

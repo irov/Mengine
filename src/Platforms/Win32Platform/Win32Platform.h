@@ -123,6 +123,9 @@ namespace Mengine
         bool setProcessDPIAware() override;
 
     public:
+        bool createProcessDump() override;
+
+    public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         bool wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam );
         bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result );
@@ -150,6 +153,8 @@ namespace Mengine
 
         uint32_t m_icon;
         WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
+
+        uint64_t m_prevTime;
 
         Tags m_platformTags;
         Resolution m_windowResolution;

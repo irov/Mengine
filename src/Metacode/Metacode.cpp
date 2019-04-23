@@ -1381,6 +1381,17 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
+        
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1422,6 +1433,17 @@ namespace Metacode
             (void)_read;
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
         
             return true;
         }
@@ -1465,6 +1487,17 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
+        
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1506,6 +1539,17 @@ namespace Metacode
             (void)_read;
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
         
             return true;
         }
@@ -1549,6 +1593,17 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
+        
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1589,6 +1644,19 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
+        
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1623,6 +1691,17 @@ namespace Metacode
             (void)_read;
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
         
             return true;
         }
@@ -1963,6 +2042,19 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
+        
             uint32_t includeTypeCount;
             Metabuf::readSize( _buff, _size, _read, includeTypeCount );
         
@@ -2076,6 +2168,17 @@ namespace Metacode
             (void)_read;
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
         
             return true;
         }
@@ -2323,6 +2426,17 @@ namespace Metacode
             (void)_read;
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
         
             return true;
         }
@@ -3583,6 +3697,17 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
+        
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3716,6 +3841,17 @@ namespace Metacode
             (void)_read;
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
+        
+            uint32_t attributeCount;
+            Metabuf::readSize( _buff, _size, _read, attributeCount );
+        
+            for( uint32_t i = 0; i != attributeCount; ++i )
+            {
+                uint32_t id;
+                Metabuf::readSize( _buff, _size, _read, id );
+        
+                this->_parseArguments( _buff, _size, _read, id, _userData );
+            }
         
             uint32_t includeTypeCount;
             Metabuf::readSize( _buff, _size, _read, includeTypeCount );

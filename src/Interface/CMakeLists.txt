@@ -65,7 +65,6 @@ src
     GraveyardInterface.h
     GlobalInputHandlerInterface.h
     NotificationServiceInterface.h
-    TimeServiceInterface.h
 	TimeSystemInterface.h
     PackageInterface.h
 	PackageServiceInterface.h

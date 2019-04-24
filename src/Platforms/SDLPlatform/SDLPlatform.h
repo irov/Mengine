@@ -73,6 +73,7 @@ namespace Mengine
         bool getAlwaysFullscreen() const override;
 
         bool setProcessDPIAware() override;
+		bool createProcessDump() override;
 
         size_t getCurrentPath( Char * _path ) const override;
         size_t getUserPath( Char * _path ) const override;
@@ -154,6 +155,8 @@ namespace Mengine
 
         uint32_t m_icon;
         String m_projectTitle;
+
+		uint64_t m_prevTime;
 
         bool m_shouldQuit;
         bool m_running;

@@ -66,8 +66,11 @@ endif()
 
 
 set(DEBUG_SRCS)
-if(WIN32 AND MSVC)
 
+if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+    if(WIN32 AND MSVC)
+    set(DEBUG_SRCS ${DEBUG_SRCS} ${SOURCE_DIR}/Python/thread.c)
+    endif()
 endif()
 
 set(PLATFORM_SRCS)
@@ -204,8 +207,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/formatter_string.c
                 ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/dtoa.c
-                ${SOURCE_DIR}/Python/random.c
-                ${SOURCE_DIR}/Python/thread.c
+                ${SOURCE_DIR}/Python/random.c                
                 )
 
 set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c
@@ -254,6 +256,8 @@ add_library( ${PROJECT_NAME} STATIC
               ${OBJECT_SRCS}
               ${PYTHON_SRCS}
               ${PLATFORM_SRCS}
-              ${MODULE_SRCS} )
+              ${MODULE_SRCS} 
+              ${DEBUG_SRCS}
+              )
 
 target_link_libraries(${PROJECT_NAME} ${extraLibs})

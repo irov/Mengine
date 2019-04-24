@@ -148,7 +148,10 @@ namespace Mengine
 
         m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
-        ADD_SCRIPT_EMBEDDING( Movie2ScriptEmbedding );
+		if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+		{
+			ADD_SCRIPT_EMBEDDING( Movie2ScriptEmbedding );
+		}
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie2, 128>>() ) == false )
@@ -229,7 +232,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_finalizePlugin()
     {
-        REMOVE_SCRIPT_EMBEDDING( Movie2ScriptEmbedding );
+		if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+		{
+			REMOVE_SCRIPT_EMBEDDING( Movie2ScriptEmbedding );
+		}
 
         ae_delete_movie_instance( m_movieInstance );
         m_movieInstance = nullptr;

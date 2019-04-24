@@ -2612,6 +2612,7 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage, Content> >( _kernel, "ResourceImageDefault", false )
+            .def( "correctUVTexture", &ResourceImageDefault::correctUVTexture )
             ;
 
         pybind::interface_<ResourceImageSubstractRGBAndAlpha, pybind::bases<ResourceImage> >( _kernel, "ResourceImageSubstractRGBAndAlpha", false )

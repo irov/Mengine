@@ -354,7 +354,6 @@ namespace Mengine
         
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
-
 		
 		bool developmentMode = HAS_OPTION( "dev" );
 

@@ -22,7 +22,6 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/TimeServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
@@ -111,7 +110,6 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimeSystem );
-SERVICE_EXTERN( TimeService );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( UpdateService );
@@ -604,7 +602,6 @@ namespace Mengine
         SERVICE_CREATE( InputService );
         SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( TimeSystem );
-        SERVICE_CREATE( TimeService );
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
@@ -974,7 +971,6 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
 
-        SERVICE_FINALIZE( Mengine::TimeServiceInterface );
         SERVICE_FINALIZE( Mengine::TimeSystemInterface );
 
         SERVICE_FINALIZE( Mengine::EasingServiceInterface );

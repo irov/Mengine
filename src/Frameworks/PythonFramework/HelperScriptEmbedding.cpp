@@ -5,7 +5,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/TimeServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UserdataServiceInterface.h"

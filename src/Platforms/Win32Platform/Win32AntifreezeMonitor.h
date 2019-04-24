@@ -5,7 +5,7 @@
 
 namespace Mengine
 {
-    class AntifreezeMonitor
+    class Win32AntifreezeMonitor
     {
     public:
         static void run();

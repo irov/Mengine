@@ -7,8 +7,8 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/TimeServiceInterface.h"
 
 #ifdef WIN32
 #	include "Environment/Windows/WindowsIncluder.h"
@@ -62,6 +62,7 @@ namespace Mengine
         , m_accelerometer( nullptr )
         , m_glContext( nullptr )
         , m_sdlInput( nullptr )
+		, m_prevTime( 0 )
         , m_icon( 0 )
         , m_shouldQuit( false )
         , m_running( false )
@@ -389,13 +390,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::update()
     {
-        TIME_SERVICE()
-            ->resetDeltaTime();
+		m_prevTime = TIME_SYSTEM()
+			->getTimeMilliseconds();
 
         while( true )
         {
-            float frameTime = TIME_SERVICE()
-                ->getDeltaTime();
+			uint64_t currentTime = TIME_SYSTEM()
+				->getTimeMilliseconds();
+
+			float frameTime = (float)(currentTime - m_prevTime);
+
+			m_prevTime = currentTime;
 
             if( m_pause == true )
             {
@@ -644,6 +649,13 @@ namespace Mengine
 
         return false;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool SDLPlatform::createProcessDump()
+	{
+		MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {

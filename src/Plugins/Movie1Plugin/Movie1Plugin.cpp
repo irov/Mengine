@@ -75,7 +75,10 @@ namespace Mengine
     {
         this->addDependencyService( "PrefetcherService" );
 
-        ADD_SCRIPT_EMBEDDING( MovieScriptEmbedding );
+		if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+		{
+			ADD_SCRIPT_EMBEDDING( MovieScriptEmbedding );
+		}
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie, 128>>() ) == false )
@@ -160,7 +163,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie1Plugin::_finalizePlugin()
     {
-        REMOVE_SCRIPT_EMBEDDING( MovieScriptEmbedding );
+		if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+		{
+			REMOVE_SCRIPT_EMBEDDING( MovieScriptEmbedding );
+		}
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );

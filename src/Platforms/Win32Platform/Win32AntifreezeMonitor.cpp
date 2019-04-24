@@ -1,4 +1,4 @@
-#include "AntifreezeMonitor.h"
+#include "Win32AntifreezeMonitor.h"
 
 #include "Interface/PlatformInterface.h"
 
@@ -11,15 +11,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct AntifreezeData
     {
-        std::thread th;
-
         std::atomic<uint32_t> refalive;
         std::atomic<bool> run;
+
+		std::thread th;
     };
     //////////////////////////////////////////////////////////////////////////
     AntifreezeData * g_antifreezeData = nullptr;
     //////////////////////////////////////////////////////////////////////////
-    void AntifreezeMonitor::run()
+    void Win32AntifreezeMonitor::run()
     {
         g_antifreezeData = new AntifreezeData;
 
@@ -44,7 +44,7 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AntifreezeMonitor::stop()
+    void Win32AntifreezeMonitor::stop()
     {
         if( g_antifreezeData != nullptr )
         {
@@ -56,7 +56,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AntifreezeMonitor::ping()
+    void Win32AntifreezeMonitor::ping()
     {
         if( g_antifreezeData != nullptr )
         {

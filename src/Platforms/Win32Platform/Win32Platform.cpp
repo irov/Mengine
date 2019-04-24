@@ -5,12 +5,12 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/TimeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 
 #include "Win32DynamicLibrary.h"
+#include "Win32AntifreezeMonitor.h"
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Date.h"
@@ -355,6 +355,14 @@ namespace Mengine
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
 
+		
+		bool developmentMode = HAS_OPTION( "dev" );
+
+		if( developmentMode == true )
+		{
+			Win32AntifreezeMonitor::run();
+		}
+
 #ifdef MENGINE_DEBUG
         try
 #endif
@@ -367,6 +375,11 @@ namespace Mengine
                 float frameTime = (float)(currentTime - m_prevTime);
 
                 m_prevTime = currentTime;
+
+				if( developmentMode == true )
+				{
+					Win32AntifreezeMonitor::ping();
+				}
 
                 MSG  msg;
                 while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
@@ -446,6 +459,11 @@ namespace Mengine
             );
         }
 #endif
+
+		if( developmentMode == true )
+		{
+			Win32AntifreezeMonitor::stop();
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::stopPlatform()

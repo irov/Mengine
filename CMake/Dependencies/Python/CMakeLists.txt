@@ -67,9 +67,9 @@ endif()
 
 set(DEBUG_SRCS)
 
-if (CMAKE_BUILD_TYPE EQUAL "Debug")
+if (CMAKE_BUILD_TYPE MATCHES "Debug")
     if(WIN32 AND MSVC)
-    set(DEBUG_SRCS ${DEBUG_SRCS} ${SOURCE_DIR}/Python/thread.c)
+        set(DEBUG_SRCS ${DEBUG_SRCS} ${SOURCE_DIR}/Python/thread.c)
     endif()
 endif()
 
@@ -207,7 +207,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
 				${SOURCE_DIR}/Python/formatter_string.c
                 ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/dtoa.c
-                ${SOURCE_DIR}/Python/random.c                
+                ${SOURCE_DIR}/Python/random.c
                 )
 
 set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c

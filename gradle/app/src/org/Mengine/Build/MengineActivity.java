@@ -46,10 +46,8 @@ public class MengineActivity extends SDLActivity {
         };
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    protected void initPlugins()
+    {
         AppEventsLogger.activateApp(getApplication());
 
         _instance = this;
@@ -64,15 +62,61 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Log.e(TAG, "MengineActivity.onCreate()");
+
+        initPlugins();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+
+        Log.e(TAG, "MengineActivity.onStop()");
 
         _instance = null;
     }
 
     @Override
+    public void onPause(){
+        super.onPause();
+
+        Log.e(TAG, "MengineActivity.onPause()");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        Log.e(TAG, "MengineActivity.onResume()");
+        if (_instance != null)
+        {
+            if (_instance.facebookInteractionLayer == null)
+            {
+                Log.e(TAG, "_instance != null AND _instance.facebookInteractionLayer == null");
+            }
+            else
+            {
+                Log.e(TAG, "_instance != null AND _instance.facebookInteractionLayer != null");
+            }
+        }
+        else
+        {
+            Log.e(TAG, "_instance == null -> init plugins");
+
+            initPlugins();
+        }
+    }
+
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Log.e(TAG, "MengineActivity.onActivityResult()");
+
         if (callbackManager != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
@@ -80,6 +124,8 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected SDLSurface createSDLSurface(Context context) {
+        Log.e(TAG, "MengineActivity.createSDLSurface()");
+
         return new MengineSurface(context);
     }
 

@@ -33,10 +33,14 @@ namespace Mengine
         void finalize() override;
 
     public:
+        bool isThreadFlow() const override;
+
+    public:
         DataInterfacePtr create( const Char * _doc ) override;
 
     public:
-        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
+        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
+        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc ) override;
 
     protected:
         FT_Library m_library;

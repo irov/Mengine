@@ -77,7 +77,9 @@ namespace Mengine
             return false;
         }
 
-        if( m_dataflow->load( m_data, m_stream, m_filePath.c_str() ) == false )
+        MemoryInterfacePtr memory = m_dataflow->load( m_stream, m_filePath.c_str() );
+
+        if( memory == nullptr )
         {
             LOGGER_ERROR( "invalide load file '%s':'%s'"
                 , this->getFileGroup()->getName().c_str()
@@ -87,11 +89,41 @@ namespace Mengine
             return false;
         }
 
+        if( m_dataflow->isThreadFlow() == true )
+        {
+            if( m_dataflow->flow( m_data, memory, m_filePath.c_str() ) == false )
+            {
+                LOGGER_ERROR( "invalide flow file '%s':'%s'"
+                    , this->getFileGroup()->getName().c_str()
+                    , this->getFilePath().c_str()
+                );
+
+                return false;
+            }
+        }
+        else
+        {
+            m_memory = memory;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetchDataflow::_onComplete( bool _successful )
     {
+        if( m_dataflow->isThreadFlow() == false && _successful == true )
+        {
+            if( m_dataflow->flow( m_data, m_memory, m_filePath.c_str() ) == false )
+            {
+                LOGGER_ERROR( "invalide flow file '%s':'%s'"
+                    , this->getFileGroup()->getName().c_str()
+                    , this->getFilePath().c_str()
+                );
+
+                return;
+            }
+        }
+
         ThreadTaskPrefetch::_onComplete( _successful );
 
         m_dataflow = nullptr;

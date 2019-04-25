@@ -1,7 +1,6 @@
 #include "DataflowAEK.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/MemoryInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -49,6 +48,11 @@ namespace Mengine
         m_factoryMovieFramePack = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DataflowAEK::isThreadFlow() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowAEK::create( const Char * _doc )
     {
         MovieFramePackPtr data = m_factoryMovieFramePack->createObject( _doc );
@@ -58,23 +62,21 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), "DataflowAEK", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), _doc, __FILE__, __LINE__ );
 
-        if( binaryBuffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid get data (doc: %s)"
-                , _doc
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-            return false;
-        }
-
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
+    {
         MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>( _data );
 
-        void * binaryBuffer_memory = binaryBuffer->getBuffer();
-        size_t binaryBuffer_size = binaryBuffer->getSize();
+        void * binaryBuffer_memory = _memory->getBuffer();
+        size_t binaryBuffer_size = _memory->getSize();
 
         if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )
         {

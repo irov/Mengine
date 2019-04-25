@@ -223,6 +223,17 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
+    static bool s_pybind_kernel_mutex_try_lock( void * _ctx )
+    {
+        ScriptService * service = static_cast<ScriptService *>(_ctx);
+
+        const ThreadMutexInterfacePtr & mutex = service->getMutex();
+
+        bool successful = mutex->try_lock();
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static void s_pybind_kernel_mutex_lock( void * _ctx )
     {
         ScriptService * service = static_cast<ScriptService *>(_ctx);
@@ -258,6 +269,7 @@ namespace Mengine
 
         pybind::kernel_mutex_t kernel_mutex;
         kernel_mutex.ctx = this;
+        kernel_mutex.try_lock = &s_pybind_kernel_mutex_try_lock;
         kernel_mutex.lock = &s_pybind_kernel_mutex_lock;
         kernel_mutex.unlock = &s_pybind_kernel_mutex_unlock;
 

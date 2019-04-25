@@ -45,6 +45,11 @@ namespace Mengine
         m_factoryScriptCodeData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DataflowPY::isThreadFlow() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowPY::create( const Char * _doc )
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
@@ -54,24 +59,29 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPY::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr DataflowPY::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
+        MemoryInterfacePtr memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc, __FILE__, __LINE__ );
 
-        MemoryInterfacePtr source_memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc, __FILE__, __LINE__ );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( source_memory, false );
+        Char * source_buffer = memory->getBuffer();
 
-        Char * source_buffer = source_memory->getBuffer();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, nullptr );
 
         size_t stream_size = _stream->size();
 
         source_buffer[stream_size] = '\n';
         source_buffer[stream_size + 1] = '\0';
 
-        pybind::mutex_scope scope( m_kernel );
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
+    {
+        ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
+
+        Char * source_buffer = _memory->getBuffer();
 
         PyObject * py_code = m_kernel->code_compile_file( source_buffer, _doc );
 
@@ -92,7 +102,7 @@ namespace Mengine
         }
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, py_code ) );
-
+        
         return true;
     }
 }

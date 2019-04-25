@@ -14,7 +14,7 @@ set "CONFIGURATION=%1"
 @popd
 
 @pushd %~dp0..
-@call build_depends.bat "%CD%\..\CMake\Depends_WIN32" build_msvc15\%CONFIGURATION% "Visual Studio 15 2017" %CONFIGURATION%
+@call build_depends.bat "%CD%\..\CMake\Depends_WIN32" build_msvc15\%CONFIGURATION% "Visual Studio 15 2017" %CONFIGURATION% /verbosity:minimal
 @popd
 
 :end

@@ -67,7 +67,7 @@ endif()
 
 set(DEBUG_SRCS)
 
-if (CMAKE_BUILD_TYPE EQUAL "DEBUG")
+if (CMAKE_BUILD_TYPE EQUAL "Debug")
     if(WIN32 AND MSVC)
     set(DEBUG_SRCS ${DEBUG_SRCS} ${SOURCE_DIR}/Python/thread.c)
     endif()

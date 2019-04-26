@@ -31,7 +31,7 @@ namespace Mengine
         void finalize() override;
 
     public:
-        bool DataflowAEZ::isThreadFlow() const override;
+        bool isThreadFlow() const override;
 
     public:
         DataInterfacePtr create( const Char * _doc ) override;

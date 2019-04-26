@@ -56,6 +56,11 @@ namespace Mengine
         m_factoryScriptCodeData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DataflowPYZ::isThreadFlow() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowPYZ::create( const Char * _doc )
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
@@ -76,18 +81,23 @@ namespace Mengine
         return x;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPYZ::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr DataflowPYZ::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
+    {
+        MemoryInterfacePtr memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, _doc, __FILE__, __LINE__ );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DataflowPYZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
         ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
 
-        MemoryInterfacePtr source_memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, "DataflowPYZ", __FILE__, __LINE__ );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( source_memory, false );
-
-        const uint8_t * source_buffer = source_memory->getBuffer();
-        size_t source_size = source_memory->getSize();
+        const uint8_t * source_buffer = _memory->getBuffer();
+        size_t source_size = _memory->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, false );
 

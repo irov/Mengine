@@ -1,14 +1,13 @@
 #pragma once
 
-#include "MovieKeyFrameInterface.h"
-
 #include "Interface/DataflowInterface.h"
+#include "Interface/MemoryInterface.h"
 #include "Interface/ArchivatorInterface.h"
 
+#include "MovieKeyFrameInterface.h"
 #include "MovieFramePack.h"
 
 #include "Kernel/Factorable.h"
-
 #include "Kernel/Factory.h"
 
 namespace Mengine
@@ -26,8 +25,12 @@ namespace Mengine
         void finalize() override;
 
     public:
+        bool isThreadFlow() const override;
+
+    public:
         DataInterfacePtr create( const Char * _doc ) override;
-        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
+        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
+        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc ) override;
 
     protected:
         bool loadBuffer_( MovieFramePack * _pack, const void * _buffer, size_t _size );

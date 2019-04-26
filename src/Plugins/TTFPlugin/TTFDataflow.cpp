@@ -1,6 +1,5 @@
 #include "TTFDataflow.h"
 
-#include "Interface/MemoryInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "TTFData.h"
@@ -61,6 +60,11 @@ namespace Mengine
         m_factoryTTFData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TTFDataflow::isThreadFlow() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr TTFDataflow::create( const Char * _doc )
     {
         TTFDataPtr data = m_factoryTTFData->createObject( _doc );
@@ -70,23 +74,23 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFDataflow::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr TTFDataflow::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        MENGINE_UNUSED( _doc );
+        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc, __FILE__, __LINE__ );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
+    {
         TTFData * data = stdex::intrusive_get<TTFData *>( _data );
 
-        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, "TTFDataflow::load", __FILE__, __LINE__ );
+        data->setTTFMemory( _memory );
 
-        if( memory == nullptr )
-        {
-            return false;
-        }
-
-        data->setTTFMemory( memory );
-
-        FT_Byte * memory_byte = memory->getBuffer();
-        size_t memory_size = memory->getSize();
+        FT_Byte * memory_byte = _memory->getBuffer();
+        size_t memory_size = _memory->getSize();
 
         if( memory_byte == nullptr )
         {
@@ -100,7 +104,8 @@ namespace Mengine
 
         if( err_code != 0 )
         {
-            LOGGER_ERROR( "invalid FT_New_Memory_Face font"
+            LOGGER_ERROR( "invalid FT_New_Memory_Face font (doc: %s)"
+                , _doc
             );
 
             return false;

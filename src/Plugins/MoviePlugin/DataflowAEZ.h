@@ -31,14 +31,17 @@ namespace Mengine
         void finalize() override;
 
     public:
+        bool DataflowAEZ::isThreadFlow() const override;
+
+    public:
         DataInterfacePtr create( const Char * _doc ) override;
 
     public:
-        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
+        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
+        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc ) override;
 
     protected:
         const aeMovieInstance * m_movieInstance;
-
         ArchivatorInterfacePtr m_archivator;
 
         FactoryPtr m_factoryMovieData;

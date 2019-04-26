@@ -1,7 +1,5 @@
 #include "FEDataflow.h"
 
-#include "Interface/MemoryInterface.h"
-
 #include "FEData.h"
 
 #include "Kernel/FactoryPool.h"
@@ -35,6 +33,11 @@ namespace Mengine
         m_factoryFEData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FEDataflow::isThreadFlow() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr FEDataflow::create( const Char * _doc )
     {
         FEDataPtr data = m_factoryFEData->createObject( _doc );
@@ -44,18 +47,23 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FEDataflow::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr FEDataflow::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
+    {
+        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc, __FILE__, __LINE__ );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FEDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
         FEData * data = stdex::intrusive_get<FEData *>( _data );
 
-        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, "FEDataflow::load", __FILE__, __LINE__ );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
-
-        const void * memory_buffer = memory->getBuffer();
-        size_t memory_size = memory->getSize();
+        const void * memory_buffer = _memory->getBuffer();
+        size_t memory_size = _memory->getSize();
 
         fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );
 

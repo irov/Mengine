@@ -40,9 +40,21 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr )("invalid create data '%s'"
             , _doc);
 
-        if( _dataflow->load( data, _stream, _doc ) == false )
+        MemoryInterfacePtr memory = _dataflow->load( _stream, _doc );
+
+        if( memory == nullptr )
         {
-            LOGGER_ERROR( "invalid load data"
+            LOGGER_ERROR( "invalid load data (doc: %s)"
+                , _doc
+            );
+
+            return nullptr;
+        }
+
+        if( _dataflow->flow( data, memory, _doc ) == false )
+        {
+            LOGGER_ERROR( "invalid flow data (doc: %s)"
+                , _doc
             );
 
             return nullptr;

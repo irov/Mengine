@@ -1,6 +1,5 @@
 #include "DataflowAEZ.h"
 
-#include "Interface/MemoryInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Movie2Interface.h"
@@ -239,6 +238,11 @@ namespace Mengine
         m_factoryMovieData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool DataflowAEZ::isThreadFlow() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowAEZ::create( const Char * _doc )
     {
         Movie2DataPtr data = m_factoryMovieData->createObject( _doc );
@@ -248,17 +252,22 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEZ::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr DataflowAEZ::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
+    {
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), _doc, __FILE__, __LINE__ );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DataflowAEZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
         Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );
 
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "DataflowAEZ::load", __FILE__, __LINE__ );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
-
-        void * memory_buffer = memory->getBuffer();
+        void * memory_buffer = _memory->getBuffer();
 
         aeMovieDataProviders data_providers;
         ae_clear_movie_data_providers( &data_providers );

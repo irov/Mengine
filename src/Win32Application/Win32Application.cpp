@@ -140,7 +140,6 @@ PLUGIN_EXPORT( ResourcePrefetcher );
 PLUGIN_EXPORT( ResourceConvert );
 #endif
 
-
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
 PLUGIN_EXPORT( ResourceValidate );
 #endif
@@ -151,6 +150,10 @@ PLUGIN_EXPORT( ResourceDebugger );
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
 PLUGIN_EXPORT( MetabufLoader );
+#endif
+
+#ifdef MENGINE_PLUGIN_WEBP_STATIC
+PLUGIN_EXPORT( WebP );
 #endif
 
 #ifdef MENGINE_PLUGIN_VIDEO_STATIC
@@ -726,6 +729,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
+
+#ifdef MENGINE_PLUGIN_WEBP_STATIC
+        MENGINE_ADD_PLUGIN( WebP, "initialize Plugin WebP..." );
+#endif
 
 #ifdef MENGINE_PLUGIN_VIDEO_STATIC
         MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );

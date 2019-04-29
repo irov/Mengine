@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, shortpath_exportPath, false, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, shortpath_exportPath, false, false, true );
 
         //PyObject * xls_module = pybind::module_init( "Xls" );
 

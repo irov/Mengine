@@ -7,10 +7,6 @@
 #include "ImageDecoderPNG.h"
 #include "ImageDecoderJPEG.h"
 
-#ifdef MENGINE_SUPPORT_DECODER_WEBP
-#		include "ImageDecoderWEBP.h"
-#endif
-
 #include "ImageDecoderDDS.h"
 #include "ImageEncoderDDS.h"
 
@@ -50,10 +46,6 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
         Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
-#ifdef MENGINE_SUPPORT_DECODER_WEBP
-        Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ) );
-#endif
-
         Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
         Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ) );
         Helper::registerDecoder<ImageDecoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
@@ -72,11 +64,6 @@ namespace Mengine
 
         CODEC_SERVICE()
             ->registerCodecExt( "jpeg", STRINGIZE_STRING_LOCAL( "jpegImage" ) );
-
-#ifdef MENGINE_SUPPORT_DECODER_WEBP
-        CODEC_SERVICE()
-            ->registerCodecExt( "webp", STRINGIZE_STRING_LOCAL( "webpImage" ) );
-#endif
 
         CODEC_SERVICE()
             ->registerCodecExt( "pvr", STRINGIZE_STRING_LOCAL( "pvrImage" ) );
@@ -116,10 +103,6 @@ namespace Mengine
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
-
-#ifdef MENGINE_SUPPORT_DECODER_WEBP
-        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "webpImage" ) );
-#endif
 
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "etcImage" ) );

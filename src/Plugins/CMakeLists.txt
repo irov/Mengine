@@ -22,6 +22,10 @@ if(MENGINE_PLUGIN_CURL)
     ADD_SUBDIRECTORY(cURLPlugin)
 endif()
 
+if(MENGINE_PLUGIN_WEBP)
+    ADD_SUBDIRECTORY(WebPPlugin)
+endif()    
+
 if(MENGINE_PLUGIN_VIDEO)
 	ADD_SUBDIRECTORY(VideoPlugin)
 endif()

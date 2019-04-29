@@ -113,7 +113,9 @@ namespace Mengine
     {
         if( m_dataflow->isThreadFlow() == false && _successful == true )
         {
-            if( m_dataflow->flow( m_data, m_memory, m_filePath.c_str() ) == false )
+            MemoryInterfacePtr memory = std::move( m_memory );
+
+            if( m_dataflow->flow( m_data, memory, m_filePath.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()

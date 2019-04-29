@@ -7,14 +7,14 @@
 
 namespace Mengine
 {
-    class ImageCodecPlugin
+    class WebPPlugin
         : public PluginBase
     {
         PLUGIN_DECLARE( "ImageCodec" )
 
     public:
-        ImageCodecPlugin();
-        ~ImageCodecPlugin() override;
+        WebPPlugin();
+        ~WebPPlugin() override;
 
     protected:
         bool _initializePlugin() override;

@@ -497,7 +497,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libpng)
     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/libpng/pnglibconf.h ${THIRDPARTY_DIR}/libpng/pnglibconf.h COPYONLY)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libpng )
-add_dependencies(libpng zlib)
+add_dependencies(png_static zlib)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()
 

@@ -223,35 +223,6 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_pybind_kernel_mutex_try_lock( void * _ctx )
-    {
-        ScriptService * service = static_cast<ScriptService *>(_ctx);
-
-        const ThreadMutexInterfacePtr & mutex = service->getMutex();
-
-        bool successful = mutex->try_lock();
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_pybind_kernel_mutex_lock( void * _ctx )
-    {
-        ScriptService * service = static_cast<ScriptService *>(_ctx);
-
-        const ThreadMutexInterfacePtr & mutex = service->getMutex();
-
-        mutex->lock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_pybind_kernel_mutex_unlock( void * _ctx )
-    {
-        ScriptService * service = static_cast<ScriptService *>(_ctx);
-
-        const ThreadMutexInterfacePtr & mutex = service->getMutex();
-
-        mutex->unlock();
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ScriptService::_initializeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );
@@ -267,13 +238,7 @@ namespace Mengine
         int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif
 
-        pybind::kernel_mutex_t kernel_mutex;
-        kernel_mutex.ctx = this;
-        kernel_mutex.try_lock = &s_pybind_kernel_mutex_try_lock;
-        kernel_mutex.lock = &s_pybind_kernel_mutex_lock;
-        kernel_mutex.unlock = &s_pybind_kernel_mutex_unlock;
-
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, &kernel_mutex, nullptr, developmentMode, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, developmentMode, false, true );
 
         if( kernel == nullptr )
         {

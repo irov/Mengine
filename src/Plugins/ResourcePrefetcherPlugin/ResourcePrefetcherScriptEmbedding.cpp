@@ -166,31 +166,9 @@ namespace Mengine
             return count != 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PyMutexPrefetcherObserver
-            : public PyPrefetcherObserver
+        static bool s_prefetchScripts( const pybind::object & _cb, const pybind::args & _args )
         {
-        public:
-            PyMutexPrefetcherObserver( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
-                : PyPrefetcherObserver( _category, _groupName, _cb, _args )
-                , m_kernel( _kernel )
-            {
-                m_kernel->acquire_mutex();
-            }
-
-            ~PyMutexPrefetcherObserver() override
-            {
-                m_kernel->release_mutex();
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyPrefetcherObserver> PyPrefetcherObserverPtr;
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_prefetchScripts( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
-        {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyMutexPrefetcherObserver>( _kernel, ConstString::none(), ConstString::none(), _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( ConstString::none(), ConstString::none(), _cb, _args );
 
             SCRIPT_SERVICE()
                 ->prefetchModules( observer );
@@ -223,7 +201,7 @@ namespace Mengine
         pybind::def_function_args( _kernel, "prefetchResources", &Detail::s_prefetchResources );
         pybind::def_function( _kernel, "unfetchResources", &Detail::s_unfetchResources );
         pybind::def_function_args( _kernel, "prefetchFonts", &Detail::s_prefetchFonts );
-        pybind::def_function_kernel_args( _kernel, "prefetchScripts", &Detail::s_prefetchScripts );
+        pybind::def_function_args( _kernel, "prefetchScripts", &Detail::s_prefetchScripts );
         pybind::def_function( _kernel, "unfetchFonts", &Detail::s_unfetchFonts );
 
         return true;

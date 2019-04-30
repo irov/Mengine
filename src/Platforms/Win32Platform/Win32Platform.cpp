@@ -1,6 +1,6 @@
 #include "Win32Platform.h"
 
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
@@ -11,6 +11,7 @@
 
 #include "Win32DynamicLibrary.h"
 #include "Win32AntifreezeMonitor.h"
+#include "Win32CriticalErrorsMonitor.h"
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Date.h"
@@ -83,10 +84,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-        // seed randomizer
-        //LARGE_INTEGER randomSeed;
-        //::QueryPerformanceCounter( &randomSeed );
-        //srand( randomSeed.LowPart );
+#ifdef MENGINE_DEBUG
+        {
+            bool developmentMode = HAS_OPTION( "dev" );
+            bool roamingMode = HAS_OPTION( "roaming" );
+            bool noroamingMode = HAS_OPTION( "noroaming" );
+
+            if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
+            {
+                Char userPath[MENGINE_MAX_PATH] = { 0 };
+                this->getUserPath( userPath );
+
+                Win32CriticalErrorsMonitor::run( userPath );
+            }
+        }
+#endif
 
         SYSTEMTIME tm;
         GetLocalTime( &tm );
@@ -348,7 +360,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::update()
+    bool Win32Platform::runPlatform()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::updatePlatform()
     {
         this->setActive_( true );
         
@@ -2221,7 +2240,6 @@ namespace Mengine
         if( developmentMode == true && roamingMode == false || noroamingMode == true )
         {
             WChar currentPath[MENGINE_MAX_PATH];
-
             DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
             if( len == 0 )
@@ -2249,8 +2267,7 @@ namespace Mengine
 
         LPITEMIDLIST itemIDList;
 
-        HRESULT hr = ::SHGetSpecialFolderLocation( NULL,
-            CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
+        HRESULT hr = ::SHGetSpecialFolderLocation( NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
 
         if( hr != S_OK )
         {
@@ -2300,8 +2317,6 @@ namespace Mengine
 
         ::CoTaskMemFree( itemIDList );
 
-        WChar roamingPath[MENGINE_MAX_PATH];
-
         const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME];
@@ -2310,6 +2325,7 @@ namespace Mengine
             return 0;
         }
 
+        WChar roamingPath[MENGINE_MAX_PATH];
         ::PathCombine( roamingPath, currentPath, companyNameW );
 
         const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );

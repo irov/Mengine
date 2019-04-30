@@ -21,6 +21,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -34,6 +35,7 @@
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraHelper.h"
+#include "Kernel/MT19937Randomizer.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/ThreadTask.h"
 
@@ -165,6 +167,11 @@ namespace Mengine
         return m_scheduleManagerGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RandomizerInterfacePtr & PlayerService::getRandomizer() const
+    {
+        return m_randomizer;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const AffectorablePtr & PlayerService::getAffectorable() const
     {
         return m_affectorable;
@@ -199,8 +206,25 @@ namespace Mengine
 
         m_scheduleManagerGlobal = scheduleManagerGlobal;
 
+        m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>();
+
+        if( HAS_OPTION( "seed" ) == true )
+        {
+            uint32_t randomSeed = GET_OPTION_VALUE_UINT32( "seed" );
+            m_randomizer->setSeed( randomSeed );
+        }
+        else
+        {
+            uint64_t milliseconds = TIME_SYSTEM()
+                ->getTimeMilliseconds();
+
+            uint32_t randomSeed = (uint32_t)milliseconds;
+
+            m_randomizer->setSeed( randomSeed );
+        }
+
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
-        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
+        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();               
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );
@@ -255,6 +279,8 @@ namespace Mengine
         }
 
         m_schedulers.clear();
+
+        m_randomizer = nullptr;
 
         m_affectorable = nullptr;
         m_affectorableGlobal = nullptr;

@@ -1,7 +1,7 @@
 #include "ResourcePrefetcherService.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"

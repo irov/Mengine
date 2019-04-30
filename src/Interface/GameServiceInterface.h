@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/UpdationInterface.h"
 #include "Interface/EventationInterface.h"

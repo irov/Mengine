@@ -25,7 +25,15 @@ namespace Mengine
 
     public:
         void setVerboseLevel( EMessageLevel _level ) override;
+        EMessageLevel getVerboseLevel() const override;
+
+    public:
         void setVerboseFlag( uint32_t _flag ) override;
+        uint32_t getVerboseFlag() const override;
+
+    public:
+        void setSilent( bool _silent ) override;
+        bool isSilent() const override;
 
     public:
         bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
@@ -44,6 +52,7 @@ namespace Mengine
     protected:
         EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
+        bool m_silent;
 
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;

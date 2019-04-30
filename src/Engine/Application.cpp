@@ -1,6 +1,6 @@
 #include "Application.h"
 
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -10,7 +10,7 @@
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"

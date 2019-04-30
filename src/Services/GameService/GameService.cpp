@@ -3,7 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/ArchivatorInterface.h"
 
@@ -14,7 +14,7 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "GameServiceAccountProvider.h"
 #include "GameServiceSoundVolumeProvider.h"

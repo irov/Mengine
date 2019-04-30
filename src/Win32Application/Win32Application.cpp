@@ -5,7 +5,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
@@ -45,8 +45,6 @@
 #include <errno.h>
 
 #include "MessageBoxLogger.h"
-
-#include "CriticalErrorsMonitor.h"
 
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
@@ -260,7 +258,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeConfigEngine_()
+    bool Win32Application::initializeConfigService_()
     {
         LOGGER_MESSAGE( "Inititalizing Config Manager..." );
 
@@ -286,7 +284,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeFileEngine_()
+    bool Win32Application::initializeFileService_()
     {
         LOGGER_INFO( "Inititalizing File Service..." );
 
@@ -354,6 +352,64 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Application::initializeOptionsService_()
+    {
+        LPCWSTR lpCmdLine = GetCommandLineW();
+
+        if( lpCmdLine == NULL )
+        {
+            return false;
+        }
+
+        int32_t pNumArgs;
+        LPWSTR * szArglist = CommandLineToArgvW( lpCmdLine, &pNumArgs );
+
+        if( szArglist == NULL )
+        {
+            return false;
+        }
+
+#   if (WINVER >= 0x0600)
+        DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
+#   else
+        DWORD dwConversionFlags = 0;
+#   endif
+
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
+
+        for( int32_t i = 1; i != pNumArgs; ++i )
+        {
+            PWSTR arg = szArglist[i];
+
+            CHAR utf_arg[1024];
+
+            int32_t utf_arg_size = ::WideCharToMultiByte(
+                CP_UTF8
+                , dwConversionFlags
+                , arg
+                , -1
+                , utf_arg
+                , 1024
+                , NULL
+                , NULL
+            );
+
+            if( utf_arg_size <= 0 )
+            {
+                return false;
+            }
+
+            arguments->addArgument( utf_arg );
+        }
+
+        LocalFree( szArglist );
+
+        OPTIONS_SERVICE()
+            ->setArguments( arguments );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeLogFile_()
     {
         bool nologs = HAS_OPTION( "nologs" );
@@ -414,82 +470,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeLogEngine_()
+    bool Win32Application::initializeLogService_()
     {
-        bool nologs = HAS_OPTION( "nologs" );
-
-        if( nologs == false )
+        if( LOGGER_SERVICE()
+            ->isSilent() == true )
         {
-            m_loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>();
-
-            m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
-
-            LOGGER_SERVICE()
-                ->registerLogger( m_loggerMessageBox );
+            return true;
         }
 
-        EMessageLevel m_logLevel;
+        m_loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>();
 
-        bool developmentMode = HAS_OPTION( "dev" );
-        bool roamingMode = HAS_OPTION( "roaming" );
-        bool noroamingMode = HAS_OPTION( "noroaming" );
-
-        if( developmentMode == true && roamingMode == false || noroamingMode == true )
-        {
-            m_logLevel = LM_MESSAGE;
-        }
-        else
-        {
-            m_logLevel = LM_ERROR;
-        }
-
-        if( TEST_OPTION_VALUE( "log", "0" ) == true )
-        {
-            m_logLevel = LM_INFO;
-        }
-        else if( TEST_OPTION_VALUE( "log", "1" ) == true )
-        {
-            m_logLevel = LM_MESSAGE;
-        }
-        else if( TEST_OPTION_VALUE( "log", "2" ) == true )
-        {
-            m_logLevel = LM_WARNING;
-        }
-        else if( TEST_OPTION_VALUE( "log", "3" ) == true )
-        {
-            m_logLevel = LM_ERROR;
-        }
-        else if( TEST_OPTION_VALUE( "log", "4" ) == true )
-        {
-            m_logLevel = LM_CRITICAL;
-        }
-        else if( TEST_OPTION_VALUE( "log", "5" ) == true )
-        {
-            m_logLevel = LM_FATAL;
-        }
+        m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
         LOGGER_SERVICE()
-            ->setVerboseLevel( m_logLevel );
-
-        uint32_t verboseFlag = 0;
-
-        bool profiler = HAS_OPTION( "profiler" );
-
-        if( profiler == true )
-        {
-            verboseFlag |= 0x00000001;
-        }
-
-        LOGGER_SERVICE()
-            ->setVerboseFlag( verboseFlag );
-
-        if( HAS_OPTION( "verbose" ) == true )
-        {
-            LOGGER_SERVICE()
-                ->setVerboseLevel( LM_MAX );
-
-            LOGGER_INFO( "Verbose logging mode enabled" );
-        }
+            ->registerLogger( m_loggerMessageBox );
 
         return true;
     }
@@ -512,64 +506,17 @@ namespace Mengine
 
         SERVICE_CREATE( OptionsService );
 
-        LPCWSTR lpCmdLine = GetCommandLineW();
-
-        if( lpCmdLine == NULL )
+        if( this->initializeOptionsService_() == false )
         {
             return false;
         }
-
-        int32_t pNumArgs;
-        LPWSTR * szArglist = CommandLineToArgvW( lpCmdLine, &pNumArgs );
-
-        if( szArglist == NULL )
-        {
-            return false;
-        }
-
-#   if (WINVER >= 0x0600)
-        DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
-#   else
-        DWORD dwConversionFlags = 0;
-#   endif
-
-        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
-
-        for( int32_t i = 1; i != pNumArgs; ++i )
-        {
-            PWSTR arg = szArglist[i];
-
-            CHAR utf_arg[1024];
-
-            int32_t utf_arg_size = ::WideCharToMultiByte(
-                CP_UTF8
-                , dwConversionFlags
-                , arg
-                , -1
-                , utf_arg
-                , 1024
-                , NULL
-                , NULL
-            );
-
-            if( utf_arg_size <= 0 )
-            {
-                return false;
-            }
-
-            arguments->addArgument( utf_arg );
-        }
-        LocalFree( szArglist );
-
-        OPTIONS_SERVICE()
-            ->setArguments( arguments );
 
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( LoggerService );
 
-        if( this->initializeLogEngine_() == false )
+        if( this->initializeLogService_() == false )
         {
             return false;
         }
@@ -579,14 +526,14 @@ namespace Mengine
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( FileService );
 
-        if( this->initializeFileEngine_() == false )
+        if( this->initializeFileService_() == false )
         {
             return false;
         }
 
         SERVICE_CREATE( ConfigService );
 
-        if( this->initializeConfigEngine_() == false )
+        if( this->initializeConfigService_() == false )
         {
             return false;
         }
@@ -638,22 +585,7 @@ namespace Mengine
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( EasingService );
 
-#ifdef MENGINE_DEBUG
-        {
-            bool developmentMode = HAS_OPTION( "dev" );
-            bool roamingMode = HAS_OPTION( "roaming" );
-            bool noroamingMode = HAS_OPTION( "noroaming" );
 
-            if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
-            {
-                Char userPath[MENGINE_MAX_PATH] = {0};
-                PLATFORM_SERVICE()
-                    ->getUserPath( userPath );
-
-                CriticalErrorsMonitor::run( userPath );
-            }
-        }
-#endif
 
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
@@ -679,11 +611,6 @@ namespace Mengine
         SERVICE_CREATE( EnumeratorService );
 
         SERVICE_CREATE( Application );
-
-        // seed randomizer
-        LARGE_INTEGER randomSeed;
-        ::QueryPerformanceCounter( &randomSeed );
-        srand( randomSeed.LowPart );
 
         LOGGER_MESSAGE( "initialize Plugins..." );
 
@@ -972,7 +899,10 @@ namespace Mengine
     void Win32Application::loop()
     {
         PLATFORM_SERVICE()
-            ->update();
+            ->runPlatform();
+
+        PLATFORM_SERVICE()
+            ->updatePlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()

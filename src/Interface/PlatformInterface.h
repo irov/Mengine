@@ -26,7 +26,8 @@ namespace Mengine
         SERVICE_DECLARE( "PlatformService" );
 
     public:
-        virtual void update() = 0;
+        virtual bool runPlatform() = 0;
+        virtual void updatePlatform() = 0;
         virtual void stopPlatform() = 0;
 
     public:

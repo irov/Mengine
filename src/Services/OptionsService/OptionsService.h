@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -33,6 +33,7 @@ namespace Mengine
     public:
         bool hasOption( const Char * _key ) const override;
         const Char * getOptionValue( const Char * _key ) const override;
+        uint32_t getOptionUInt32( const Char * _key ) const override;
         bool testOptionValue( const Char * _key, const Char * _value ) const override;
 
     protected:

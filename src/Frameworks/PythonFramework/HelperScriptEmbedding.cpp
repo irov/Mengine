@@ -26,7 +26,6 @@
 
 #include "math/vec2.h"
 #include "math/vec3.h"
-#include "math/rand.h"
 
 #include "Kernel/Polygon.h"
 #include "Kernel/PolygonHelper.h"
@@ -410,7 +409,10 @@ namespace Mengine
 
             uint32_t size = (uint32_t)points.size();
 
-            uint32_t index = mt::rand( size );
+            const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                ->getRandomizer();
+
+            uint32_t index = randomizer->getRandom( size );
 
             const mt::vec3f & vr = points[index];
 
@@ -653,22 +655,34 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         int32_t mt_rand( int32_t a )
         {
-            return mt::rand( a );
+            const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                ->getRandomizer();
+
+            return randomizer->getRandom( a );
         }
         //////////////////////////////////////////////////////////////////////////
         float mt_randf( float a )
         {
-            return mt::randf( a );
+            const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                ->getRandomizer();
+
+            return randomizer->getRandomf( a );
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t mt_range_rand( int32_t a, int32_t b )
         {
-            return mt::range_rand( a, b );
+            const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                ->getRandomizer();
+
+            return randomizer->getRandomRange( a, b );
         }
         //////////////////////////////////////////////////////////////////////////
         float mt_range_randf( float a, float b )
         {
-            return mt::range_randf( a, b );
+            const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                ->getRandomizer();
+
+            return randomizer->getRandomRangef( a, b );
         }
         //////////////////////////////////////////////////////////////////////////
         float mt_around_randf( float a, float b )
@@ -683,8 +697,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f mt_radius_randf( float _radius )
         {
-            float rp = mt::randf( mt::constant::two_pi );
-            float rr = mt::randf( 1.f );
+            const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
+                ->getRandomizer();
+
+            float rp = randomizer->getRandomf( mt::constant::two_pi );
+            float rr = randomizer->getRandomf( 1.f );
 
             float rr2 = sqrtf( rr ) * _radius;
 

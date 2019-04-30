@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Config/Typedef.h"
-#include "Config/VectorString.h"
-
 #include "Interface/ServiceInterface.h"
+#include "Interface/ArgumentsInterface.h"
+
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -14,24 +14,28 @@ namespace Mengine
         SERVICE_DECLARE( "OptionsService" )
 
     public:
-        virtual void setArgs( const VectorString & _args ) = 0;
+        virtual void setArguments( const ArgumentsInterfacePtr & _arguments ) = 0;
 
     public:
         virtual bool hasOption( const Char * _key ) const = 0;
         virtual const Char * getOptionValue( const Char * _key ) const = 0;
+        virtual uint32_t getOptionUInt32( const Char * _key ) const = 0;
         virtual bool testOptionValue( const Char * _key, const Char * _value ) const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define OPTIONS_SERVICE()\
     ((Mengine::OptionsServiceInterface *)SERVICE_GET(Mengine::OptionsServiceInterface))
-    //////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 #define HAS_OPTION( key )\
-	OPTIONS_SERVICE()->hasOption( key )
-    //////////////////////////////////////////////////////////////////////////
+	([](){static bool value = OPTIONS_SERVICE()->hasOption( key ); return value;}())
+//////////////////////////////////////////////////////////////////////////
 #define GET_OPTION_VALUE( key )\
-	OPTIONS_SERVICE()->getOptionValue( key )
-    //////////////////////////////////////////////////////////////////////////
+	([](){static const Char * value = OPTIONS_SERVICE()->getOptionValue( key ); return value;}())
+#define GET_OPTION_VALUE_UINT32( key )\
+	([](){static uint32_t value = OPTIONS_SERVICE()->getOptionUInt32( key ); return value;}())
+//////////////////////////////////////////////////////////////////////////
 #define TEST_OPTION_VALUE( key, value )\
 	OPTIONS_SERVICE()->testOptionValue( key, value )
-}
+//////////////////////////////////////////////////////////////////////////
 

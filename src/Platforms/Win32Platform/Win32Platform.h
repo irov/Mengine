@@ -23,7 +23,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void update() override;
+        bool runPlatform() override;
+        void updatePlatform() override;
         void stopPlatform() override;
 
     public:

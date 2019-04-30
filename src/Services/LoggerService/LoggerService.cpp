@@ -1,6 +1,7 @@
 #include "LoggerService.h"
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Document.h"
@@ -16,6 +17,7 @@ namespace Mengine
     LoggerService::LoggerService()
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
+        , m_silent( false )
     {
         for( uint32_t i = 0; i != LM_MAX; ++i )
         {
@@ -29,9 +31,74 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::_initializeService()
     {
-        //Empty
+        bool nologs = HAS_OPTION( "nologs" );
 
-        //ToDo
+        if( nologs == true )
+        {
+            m_silent = true;
+        }
+
+        EMessageLevel logLevel;
+
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool roamingMode = HAS_OPTION( "roaming" );
+        bool noroamingMode = HAS_OPTION( "noroaming" );
+
+        if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
+        {
+            logLevel = LM_MESSAGE;
+        }
+        else
+        {
+            logLevel = LM_ERROR;
+        }
+
+        if( TEST_OPTION_VALUE( "log", "0" ) == true )
+        {
+            logLevel = LM_INFO;
+        }
+        else if( TEST_OPTION_VALUE( "log", "1" ) == true )
+        {
+            logLevel = LM_MESSAGE;
+        }
+        else if( TEST_OPTION_VALUE( "log", "2" ) == true )
+        {
+            logLevel = LM_WARNING;
+        }
+        else if( TEST_OPTION_VALUE( "log", "3" ) == true )
+        {
+            logLevel = LM_ERROR;
+        }
+        else if( TEST_OPTION_VALUE( "log", "4" ) == true )
+        {
+            logLevel = LM_CRITICAL;
+        }
+        else if( TEST_OPTION_VALUE( "log", "5" ) == true )
+        {
+            logLevel = LM_FATAL;
+        }
+
+        this->setVerboseLevel( logLevel );
+
+        uint32_t verboseFlag = 0;
+
+        bool profiler = HAS_OPTION( "profiler" );
+
+        if( profiler == true )
+        {
+            verboseFlag |= 0x00000001;
+        }
+
+        this->setVerboseFlag( verboseFlag );
+
+        if( HAS_OPTION( "verbose" ) == true )
+        {
+            LOGGER_SERVICE()
+                ->setVerboseLevel( LM_MAX );
+
+            LOGGER_INFO( "Verbose logging mode enabled" );
+        }
+
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
         {
             m_threadMutex = THREAD_SERVICE()
@@ -62,13 +129,38 @@ namespace Mengine
         m_verboseLevel = _level;
     }
     //////////////////////////////////////////////////////////////////////////
+    EMessageLevel LoggerService::getVerboseLevel() const
+    {
+        return m_verboseLevel;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseFlag( uint32_t _flag )
     {
         m_verboseFlag = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t LoggerService::getVerboseFlag() const
+    {
+        return m_verboseFlag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::setSilent( bool _silent )
+    {
+        m_silent = _silent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::isSilent() const
+    {
+        return m_silent;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool LoggerService::validMessage( EMessageLevel _level, uint32_t _flag ) const
     {
+        if( m_silent == true )
+        {
+            return false;
+        }
+
         if( m_verboseLevel < _level )
         {
             return false;
@@ -122,7 +214,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::writeHistory( const LoggerInterfacePtr & _logger ) const
     {
-        (void)_logger;
+        MENGINE_UNUSED( _logger );
 
 #ifdef MENGINE_LOGGER_HISTORY
         for( const Record & record : m_history )

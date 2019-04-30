@@ -2,7 +2,7 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/StringizeServiceInterface.h"

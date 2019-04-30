@@ -3,7 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/GameServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 

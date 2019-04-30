@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/DataServiceInterface.h"

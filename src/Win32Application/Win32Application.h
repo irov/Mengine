@@ -45,11 +45,12 @@ namespace Mengine
         void loop();
 
     protected:
-        bool initializeFileEngine_();
+        bool initializeFileService_();
         bool initializeUserDirectory_();
         bool initializeLogFile_();
-        bool initializeLogEngine_();
-        bool initializeConfigEngine_();
+        bool initializeOptionsService_();
+        bool initializeLogService_();
+        bool initializeConfigService_();
         bool initializeArchiveService_();
     
     protected:

@@ -23,7 +23,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -62,10 +62,6 @@
 #include <iomanip>
 
 #include "SDL_filesystem.h"
-
-#ifdef _MSC_VER
-#	define snprintf _snprintf
-#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
@@ -362,11 +358,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeLoggerEngine_()
     {
-        SERVICE_CREATE( LoggerService );
-
-        bool nologs = HAS_OPTION( "nologs" );
-
-        if( nologs == true )
+        if( LOGGER_SERVICE()
+            ->isSilent() == true )
         {
             return true;
         }
@@ -387,60 +380,7 @@ namespace Mengine
         m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
         LOGGER_SERVICE()
-            ->registerLogger( m_loggerMessageBox );
-
-        EMessageLevel m_logLevel;
-
-        bool developmentMode = HAS_OPTION( "dev" );
-
-        if( developmentMode == true )
-        {
-            m_logLevel = LM_MESSAGE;
-        }
-        else
-        {
-            m_logLevel = LM_WARNING;
-        }
-
-        const Char * option_log = GET_OPTION_VALUE( "log" );
-
-        if( option_log != nullptr )
-        {
-            uint32_t option_log_value;
-            if( sscanf( option_log, "%u", &option_log_value ) == 1 )
-            {
-                switch( option_log_value )
-                {
-                case 0:
-                    {
-                        m_logLevel = LM_INFO;
-                    }break;
-                case 1:
-                    {
-                        m_logLevel = LM_MESSAGE;
-                    }break;
-                case 2:
-                    {
-                        m_logLevel = LM_WARNING;
-                    }break;
-                case 3:
-                    {
-                        m_logLevel = LM_ERROR;
-                    }break;
-                }
-            }
-        }
-
-        LOGGER_SERVICE()
-            ->setVerboseLevel( m_logLevel );
-
-        if( HAS_OPTION( "verbose" ) == true )
-        {
-            LOGGER_SERVICE()
-                ->setVerboseLevel( LM_MAX );
-
-            LOGGER_INFO( "Verbose logging mode enabled" );
-        }
+            ->registerLogger( m_loggerMessageBox );        
 
         return true;
     }
@@ -542,6 +482,7 @@ namespace Mengine
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( VocabularyService );
+        SERVICE_CREATE( LoggerService );
 
         if( this->initializeLoggerEngine_() == false )
         {
@@ -902,7 +843,10 @@ namespace Mengine
     void SDLApplication::loop()
     {
         PLATFORM_SERVICE()
-            ->update();
+            ->runPlatform();
+
+        PLATFORM_SERVICE()
+            ->updatePlatform();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()

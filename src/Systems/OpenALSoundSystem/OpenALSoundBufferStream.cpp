@@ -220,7 +220,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::resumeSource( ALuint _source )
     {
-        OPENAL_CALL( alSourcePlay, (_source) );
+        MENGINE_UNUSED( _source );
 
         this->setUpdating_( true );
 
@@ -229,9 +229,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::pauseSource( ALuint _source )
     {
-        this->setUpdating_( false );
+        MENGINE_UNUSED( _source );
 
-        OPENAL_CALL( alSourcePause, (_source) );
+        this->setUpdating_( false );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::stopSource( ALuint _source )
@@ -295,12 +295,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::update()
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
+
         if( m_updating == false )
         {
             return true;
         }
-
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
         float newVolume;
         OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );

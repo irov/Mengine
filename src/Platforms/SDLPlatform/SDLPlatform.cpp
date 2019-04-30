@@ -8,7 +8,7 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #ifdef WIN32
 #	include "Environment/Windows/WindowsIncluder.h"
@@ -388,7 +388,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::update()
+    bool SDLPlatform::runPlatform()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::updatePlatform()
     {
 		m_prevTime = TIME_SYSTEM()
 			->getTimeMilliseconds();

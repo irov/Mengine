@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
@@ -50,6 +50,9 @@ namespace Mengine
     public:
         const SchedulerInterfacePtr & getScheduler() const override;
         const SchedulerInterfacePtr & getGlobalScheduler() const override;
+
+    public:
+        const RandomizerInterfacePtr & getRandomizer() const override;
 
     public:
         const AffectorablePtr & getAffectorable() const override;
@@ -128,6 +131,8 @@ namespace Mengine
 
         SchedulerInterfacePtr m_scheduleManager;
         SchedulerInterfacePtr m_scheduleManagerGlobal;
+
+        RandomizerInterfacePtr m_randomizer;
 
         FactoryPtr m_factoryScheduleManager;
 

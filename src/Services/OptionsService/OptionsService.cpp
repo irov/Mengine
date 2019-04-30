@@ -97,6 +97,27 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t OptionsService::getOptionUInt32( const Char * _key ) const
+    {
+        for( const Option & op : m_options )
+        {
+            if( strcmp( op.key, _key ) != 0 )
+            {
+                continue;
+            }
+
+            uint32_t value_uint32;
+            if( ::sscanf( op.value, "%u", &value_uint32 ) != 1 )
+            { 
+                return 0;
+            }
+
+            return value_uint32;
+        }
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {
         const Char * value = this->getOptionValue( _key );

@@ -20,7 +20,14 @@ namespace Mengine
 
     public:
         virtual void setVerboseLevel( EMessageLevel _level ) = 0;
+        virtual EMessageLevel getVerboseLevel() const = 0;
+
         virtual void setVerboseFlag( uint32_t _flag ) = 0;
+        virtual uint32_t getVerboseFlag() const = 0;
+
+    public:
+        virtual void setSilent( bool _silent ) = 0;
+        virtual bool isSilent() const = 0;
 
     public:
         virtual bool validMessage( EMessageLevel _level, uint32_t _flag ) const = 0;

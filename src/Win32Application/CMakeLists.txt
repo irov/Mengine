@@ -6,12 +6,6 @@ MessageBoxLogger
     MessageBoxLogger.h
 )
 
-ADD_FILTER(
-CriticalErrorsMonitor
-	CriticalErrorsMonitor.h
-	CriticalErrorsMonitor.cpp
-)
-
 if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
 main	

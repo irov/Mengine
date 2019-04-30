@@ -48,11 +48,10 @@ src
 	ConverterServiceInterface.h
 	StringizeServiceInterface.h
     GameServiceInterface.h
-    PlayerInterface.h
+    PlayerServiceInterface.h
     SchedulerInterface.h
     PickerTrapInterface.h
     PickerServiceInterface.h
-    PlayerInterface.h
     PrototypeGeneratorInterface.h
     PrototypeServiceInterface.h
     VocabularyServiceInterface.h

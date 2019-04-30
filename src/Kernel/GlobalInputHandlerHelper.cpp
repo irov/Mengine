@@ -1,7 +1,7 @@
 #include "GlobalInputHandlerHelper.h"
 
 #include "Interface/GlobalInputHandlerInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/FactorableUnique.h"

@@ -4,7 +4,7 @@
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"

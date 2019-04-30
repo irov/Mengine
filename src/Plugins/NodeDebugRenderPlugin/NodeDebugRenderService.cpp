@@ -1,7 +1,7 @@
 #include "NodeDebugRenderService.h"
 
-#include "Interface/OptionsInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/OptionsServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"

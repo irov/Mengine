@@ -4,7 +4,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionVocabulary.h"

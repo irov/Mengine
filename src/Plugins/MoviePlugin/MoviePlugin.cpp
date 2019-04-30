@@ -3,7 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"

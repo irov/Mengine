@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         AFFECTOR_ID addAffector( const AffectorPtr & _affector );
+        bool hasAffector( AFFECTOR_ID _id ) const;
         bool stopAffector( AFFECTOR_ID _id );
 
     public:

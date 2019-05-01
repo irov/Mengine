@@ -39,6 +39,23 @@ namespace Mengine
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Affectorable::hasAffector( AFFECTOR_ID _id ) const
+    {
+        for( const AffectorPtr & affector : m_affectors )
+        {
+            AFFECTOR_ID id = affector->getId();
+
+            if( id != _id )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Affectorable::stopAffector( uint32_t _id )
     {
         for( IntrusiveSlugAffector it( m_affectors ); it.eof() == false; )
@@ -47,12 +64,16 @@ namespace Mengine
 
             it.next_shuffle();
 
-            if( affector->getId() == _id )
-            {
-                affector->stop();
+            AFFECTOR_ID id = affector->getId();
 
-                return true;
+            if( id != _id )
+            {
+                continue;
             }
+
+            affector->stop();
+
+            return true;
         }
 
         return false;

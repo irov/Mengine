@@ -10,7 +10,7 @@ namespace Mengine
     class WebPPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "ImageCodec" )
+        PLUGIN_DECLARE( "WebP" )
 
     public:
         WebPPlugin();

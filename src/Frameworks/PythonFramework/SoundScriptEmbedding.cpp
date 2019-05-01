@@ -33,6 +33,7 @@ namespace Mengine
     {
     public:
         SoundScriptMethod()
+            : m_affectorMusicID( 0 )
         {
             m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>();
             m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>();
@@ -774,7 +775,9 @@ namespace Mengine
 
             return callback;
         }
-        //////////////////////////////////////////////////////////////////////////		
+        //////////////////////////////////////////////////////////////////////////
+        AFFECTOR_ID m_affectorMusicID;
+        //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorMusic;
         //////////////////////////////////////////////////////////////////////////
         uint32_t musicFadeIn( pybind::kernel_interface * _kernel, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -799,7 +802,17 @@ namespace Mengine
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
                 ->getGlobalAffectorable();
 
+            if( m_affectorMusicID != 0 )
+            {
+                if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                {
+                    affectorable->stopAffector( m_affectorMusicID );
+                }
+            }
+
             AFFECTOR_ID id = affectorable->addAffector( affector );
+
+            m_affectorMusicID = id;
 
             return id;
         }
@@ -841,7 +854,17 @@ namespace Mengine
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
                 ->getGlobalAffectorable();
 
+            if( m_affectorMusicID != 0 )
+            {
+                if( affectorable->hasAffector( m_affectorMusicID ) == true )
+                {
+                    affectorable->stopAffector( m_affectorMusicID );
+                }
+            }
+
             AFFECTOR_ID id = affectorable->addAffector( affector );
+
+            m_affectorMusicID = id;
 
             return id;
         }

@@ -292,8 +292,10 @@ namespace Mengine
             return true;
         }
 
+#ifndef NDEBUG
         float newVolume;
         OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
+#endif
 
         ALint processed_count = 0;
         OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_PROCESSED, &processed_count) );

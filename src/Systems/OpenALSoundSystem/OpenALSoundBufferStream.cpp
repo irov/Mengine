@@ -236,14 +236,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::stopSource( ALuint _source )
     {
-        OPENAL_CALL( alSourcef, (_source, AL_GAIN, 0.f) );
+        MENGINE_UNUSED( _source );
 
         this->setUpdating_( false );
-
-        OPENAL_CALL( alSourceStop, (_source) );
-
-        OPENAL_CALL( alSourceRewind, (_source) );
-        OPENAL_CALL( alSourcei, (_source, AL_BUFFER, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::setUpdating_( bool _updating )
@@ -258,14 +253,9 @@ namespace Mengine
         m_mutexUpdating->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::getUpdating_() const
-    {
-        return m_updating;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::setTimePos( ALuint _source, float _pos ) const
     {
-        (void)_source;
+        MENGINE_UNUSED( _source );
 
         bool result = m_soundDecoder->seek( _pos );
 
@@ -274,7 +264,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::getTimePos( ALuint _source, float & _pos ) const
     {
-        (void)_source;
+        MENGINE_UNUSED( _source );
 
         float timeTell = m_soundDecoder->tell();
 
@@ -313,7 +303,6 @@ namespace Mengine
             ALuint bufferId;
             OPENAL_CALL( alSourceUnqueueBuffers, (m_sourceId, 1, &bufferId) );
 
-            // Читаем очередную порцию данных
             size_t bytesWritten;
             this->bufferData_( bufferId, bytesWritten );
 
@@ -330,12 +319,15 @@ namespace Mengine
 
         if( state == AL_STOPPED )
         {
-            ALint queued_count = 0;
-            OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
-
-            if( queued_count == 0 )
+            if( m_looped == false )
             {
-                return false;
+                ALint queued_count = 0;
+                OPENAL_CALL( alGetSourcei, (m_sourceId, AL_BUFFERS_QUEUED, &queued_count) );
+
+                if( queued_count == 0 )
+                {
+                    return false;
+                }
             }
 
             OPENAL_CALL( alSourcePlay, (m_sourceId) );
@@ -349,13 +341,6 @@ namespace Mengine
         uint8_t dataBuffer[MENGINE_OPENAL_STREAM_BUFFER_SIZE];
         size_t bytesWritten = m_soundDecoder->decode( dataBuffer, MENGINE_OPENAL_STREAM_BUFFER_SIZE );
 
-        if( bytesWritten == 0 )
-        {
-            _bytes = 0;
-
-            return true;
-        }
-
         if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE && m_looped == true )
         {
             m_soundDecoder->rewind();
@@ -363,6 +348,12 @@ namespace Mengine
             size_t bytesWritten2 = m_soundDecoder->decode( dataBuffer + bytesWritten, MENGINE_OPENAL_STREAM_BUFFER_SIZE - bytesWritten );
 
             bytesWritten += bytesWritten2;
+        }
+        else if( bytesWritten == 0 )
+        {
+            _bytes = 0;
+
+            return true;
         }
 
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;

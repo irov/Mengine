@@ -60,7 +60,6 @@ namespace Mengine
 
     protected:
         void setUpdating_( bool _updating );
-        bool getUpdating_() const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenALSoundBufferStream> OpenALSoundBufferStreamPtr;

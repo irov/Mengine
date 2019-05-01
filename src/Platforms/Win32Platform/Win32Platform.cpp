@@ -197,7 +197,7 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        const char * option_platform = GET_OPTION_VALUE( "platform" );
+        const Char * option_platform = GET_OPTION_VALUE( "platform" );
 
         if( option_platform != nullptr )
         {
@@ -803,28 +803,28 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_sonvertUTF32toUTF8( UINT32 _utf32, char * _utf8 )
+    static bool s_sonvertUTF32toUTF8( UINT32 _utf32, Char * _utf8 )
     {
         if( _utf32 <= 0x7F ) {
-            _utf8[0] = (char)_utf32;
+            _utf8[0] = (Char)_utf32;
             _utf8[1] = '\0';
         }
         else if( _utf32 <= 0x7FF ) {
-            _utf8[0] = 0xC0 | (char)((_utf32 >> 6) & 0x1F);
-            _utf8[1] = 0x80 | (char)(_utf32 & 0x3F);
+            _utf8[0] = 0xC0 | (Char)((_utf32 >> 6) & 0x1F);
+            _utf8[1] = 0x80 | (Char)(_utf32 & 0x3F);
             _utf8[2] = '\0';
         }
         else if( _utf32 <= 0xFFFF ) {
-            _utf8[0] = 0xE0 | (char)((_utf32 >> 12) & 0x0F);
-            _utf8[1] = 0x80 | (char)((_utf32 >> 6) & 0x3F);
-            _utf8[2] = 0x80 | (char)(_utf32 & 0x3F);
+            _utf8[0] = 0xE0 | (Char)((_utf32 >> 12) & 0x0F);
+            _utf8[1] = 0x80 | (Char)((_utf32 >> 6) & 0x3F);
+            _utf8[2] = 0x80 | (Char)(_utf32 & 0x3F);
             _utf8[3] = '\0';
         }
         else if( _utf32 <= 0x10FFFF ) {
-            _utf8[0] = 0xF0 | (char)((_utf32 >> 18) & 0x0F);
-            _utf8[1] = 0x80 | (char)((_utf32 >> 12) & 0x3F);
-            _utf8[2] = 0x80 | (char)((_utf32 >> 6) & 0x3F);
-            _utf8[3] = 0x80 | (char)(_utf32 & 0x3F);
+            _utf8[0] = 0xF0 | (Char)((_utf32 >> 18) & 0x0F);
+            _utf8[1] = 0x80 | (Char)((_utf32 >> 12) & 0x3F);
+            _utf8[2] = 0x80 | (Char)((_utf32 >> 6) & 0x3F);
+            _utf8[3] = 0x80 | (Char)(_utf32 & 0x3F);
             _utf8[4] = '\0';
         }
         else

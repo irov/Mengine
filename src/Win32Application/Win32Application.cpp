@@ -57,6 +57,11 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+
+#ifndef MENGINE_SETLOCALE
+#define MENGINE_SETLOCALE "C"
+#endif
+
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
 SERVICE_EXTERN( FactoryService );
@@ -490,9 +495,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
-        setlocale( LC_ALL, "C" );
-        //::timeBeginPeriod( 1 );
-
+        ::setlocale( LC_ALL, MENGINE_SETLOCALE );
+        
         ServiceProviderInterface * serviceProvider;
         SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 

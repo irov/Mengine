@@ -22,18 +22,22 @@ android {
     buildToolsVersion '28.0.3'
     compileSdkVersion 26
     defaultConfig {
-//        if (findProperty("ANDROID_APP_ID")) {
-//            print 'ANDROID_APP_ID = '
-//            println ANDROID_APP_ID
-//
-//            applicationId ANDROID_APP_ID
-//        } else {
-//            applicationId "org.Mengine.Build"
-//        }
-        applicationId "org.Mengine.Build"
+        if (findProperty("ANDROID_APP_ID")) {
+            applicationId ANDROID_APP_ID
+        } else {
+            applicationId "org.Mengine.Build"
+        }
+
         minSdkVersion 18
-        versionCode 4
-        versionName "1.6"
+
+        if (findProperty("ANDROID_APP_CODE_VERSION")) {
+            print 'ANDROID_APP_CODE_VERSION = '
+            println ANDROID_APP_CODE_VERSION
+            versionCode ANDROID_APP_CODE_VERSION
+        } else {
+            versionCode 4
+        }
+        versionName "1.7"
         ndk {
             abiFilters 'armeabi-v7a'
         }

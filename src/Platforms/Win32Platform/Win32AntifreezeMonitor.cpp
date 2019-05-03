@@ -25,9 +25,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::run()
     {
+        uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 5U );
+
+        if( seconds == 0U )
+        {
+            return;
+        }
+
         g_antifreezeData = new AntifreezeData;
 
-		g_antifreezeData->seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 5U );
+        g_antifreezeData->seconds = seconds;
         g_antifreezeData->refalive = 0;
         g_antifreezeData->run = true;
 

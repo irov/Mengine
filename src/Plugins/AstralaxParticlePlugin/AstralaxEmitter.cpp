@@ -200,8 +200,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_play( uint32_t _enumerator, float _time )
     {
-        (void)_enumerator;
-        (void)_time;
+        MENGINE_UNUSED( _enumerator );
+        MENGINE_UNUSED( _time );
 
         if( this->isActivate() == false )
         {
@@ -215,8 +215,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_restart( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _enumerator );
 
         if( this->isActivate() == false )
         {
@@ -233,7 +233,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::_pause( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        MENGINE_UNUSED( _enumerator );
 
         if( this->isActivate() == false )
         {
@@ -245,8 +245,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::_resume( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _enumerator );
 
         if( this->isActivate() == false )
         {
@@ -289,7 +289,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_interrupt( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        MENGINE_UNUSED( _enumerator );
 
         if( this->isCompile() == false )
         {

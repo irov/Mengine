@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tinyini/tinyini.h"
+#include "tinyini/tinyini.hpp"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
@@ -34,7 +34,7 @@ namespace Mengine
             FilePath path;
             MemoryStore memory;
 
-            tinyini::tinyini ini;
+            tinyini_t ini;
         };
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );

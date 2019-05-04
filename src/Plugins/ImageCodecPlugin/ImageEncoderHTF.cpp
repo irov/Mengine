@@ -53,7 +53,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderHTF::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HTF ), GET_MAGIC_VERSION( MAGIC_HTF ) ) == false )
         {

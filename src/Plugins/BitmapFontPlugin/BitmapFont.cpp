@@ -130,7 +130,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
     {
-        (void)_layout;
+        MENGINE_UNUSED( _layout );
 
         const BitmapGlyphChar * ch = m_glyph->getGlyphChar( _code );
 
@@ -224,7 +224,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_prepareGlyph( uint32_t _code )
     {
-        (void)_code;
+        MENGINE_UNUSED( _code );
 
         return true;
     }

@@ -789,7 +789,7 @@ namespace Mengine
         const mt::mat4f & wm = this->getWorldMatrix();
 
         ae_userdata_t composition_camera_userdata = ae_get_movie_composition_camera_userdata( m_composition );
-        (void)composition_camera_userdata;
+        AE_UNUSED( composition_camera_userdata );
 
         ae_uint32_t compute_movie_mesh_iterator = 0;
 
@@ -935,7 +935,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_interrupt( uint32_t _playId )
     {
-        (void)_playId;
+        MENGINE_UNUSED( _playId );
 
         if( this->isCompile() == false )
         {
@@ -1020,7 +1020,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void __movie_composition_camera_update( const aeMovieCameraUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
-        (void)_data;
+        AE_UNUSED( _data );
 
         Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(_callbackData->camera_userdata);
 
@@ -1461,8 +1461,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        Movie2 * movie2 = (Movie2 *)_ud;
-        (void)movie2;
+        AE_UNUSED( _ud );
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
 
@@ -1590,7 +1589,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_ud;
+        MENGINE_UNUSED( _ud );
 
         aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
 
@@ -1663,7 +1662,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_track_matte_provider( const aeMovieTrackMatteProviderCallbackData * _callbackData, ae_voidptrptr_t _tmp, ae_voidptr_t _ud )
     {
-        (void)_ud;
+        AE_UNUSED( _ud );
 
         TrackMatteDesc * desc = Helper::allocateT<TrackMatteDesc>();
 
@@ -1678,7 +1677,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_ud;
+        AE_UNUSED( _ud );
 
         switch( _callbackData->state )
         {
@@ -1703,7 +1702,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_track_matte_deleter( const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_ud;
+        AE_UNUSED( _ud );
 
         TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element_userdata);
 
@@ -1799,8 +1798,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_shader_deleter( const aeMovieShaderDeleterCallbackData * _callbackData, ae_userdata_t _ud )
     {
-        (void)_callbackData;
-        (void)_ud;
+        AE_UNUSED( _callbackData );
+        AE_UNUSED( _ud );
 
         Movie2ShaderDesc * desc = reinterpret_cast<Movie2ShaderDesc *>(_callbackData->element_userdata);
 
@@ -1811,8 +1810,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_callbackData;
-        (void)_ud;
+        AE_UNUSED( _callbackData );
+        AE_UNUSED( _ud );
 
         Movie2ShaderDesc * desc = reinterpret_cast<Movie2ShaderDesc *>(_callbackData->element_userdata);
 
@@ -1854,8 +1853,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_callbackData;
-        (void)_ud;
+        AE_UNUSED( _callbackData );
+        AE_UNUSED( _ud );
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, ae_voidptr_t _ud )
@@ -1890,7 +1889,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_extra_interrupt( const aeMovieCompositionExtraInterruptCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_callbackData;
+        AE_UNUSED( _callbackData );
 
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
@@ -1904,7 +1903,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptrptr_t _sed, ae_voidptr_t _ud )
     {
-        (void)_sed;
+        AE_UNUSED( _sed );
 
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
@@ -1943,7 +1942,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_ud;
+        AE_UNUSED( _ud );
 
         Layer * parent_layer = reinterpret_node_cast<Layer *>(_callbackData->scene_effect_userdata);
 
@@ -1998,15 +1997,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_subcomposition_deleter( const aeMovieSubCompositionDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_callbackData;
-        (void)_ud;
+        AE_UNUSED( _callbackData );
+        AE_UNUSED( _ud );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_subcomposition_state( const aeMovieSubCompositionStateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_ud;
+        AE_UNUSED( _ud );
 
         Movie2SubComposition * m2sc = reinterpret_node_cast<Movie2SubComposition *>(_callbackData->subcomposition_userdata);
 
@@ -2120,7 +2119,7 @@ namespace Mengine
         const aeMovieData * movieData = data->getMovieData();
 
         aeMovieCompositionProviders providers;
-        ae_clear_movie_composition_providers( &providers );
+        ae_initialize_movie_composition_providers( &providers );
 
         providers.camera_provider = &__movie_composition_camera_provider;
         providers.camera_deleter = &__movie_composition_camera_deleter;
@@ -2273,18 +2272,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_changeParent( Node * _oldParent, Node * _newParent )
     {
-        (void)_oldParent;
-        (void)_newParent;
+        MENGINE_UNUSED( _oldParent );
+        MENGINE_UNUSED( _newParent );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_addChild( const NodePtr & _node )
     {
-        (void)_node;
+        MENGINE_UNUSED( _node );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_removeChild( const NodePtr & _node )
     {
-        (void)_node;
+        MENGINE_UNUSED( _node );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_afterActivate()
@@ -2436,7 +2439,7 @@ namespace Mengine
         float total_color_a = total_color.getA();
 
         ae_voidptr_t composition_camera_userdata = ae_get_movie_composition_camera_userdata( m_composition );
-        (void)composition_camera_userdata;
+        AE_UNUSED( composition_camera_userdata );
 
         ae_uint32_t compute_movie_mesh_iterator = 0;
 
@@ -2601,7 +2604,6 @@ namespace Mengine
                         }
 
                         const aeMovieResourceImage * resource_image = reinterpret_cast<const aeMovieResourceImage *>(mesh.resource);
-                        (void)resource_image;
 
                         ae_userdata_t resource_userdata = ae_get_movie_resource_userdata( mesh.resource );
 

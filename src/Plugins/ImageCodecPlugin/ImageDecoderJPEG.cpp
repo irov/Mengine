@@ -84,7 +84,8 @@ namespace Mengine
             {
                 num_bytes -= (long)src->bytes_in_buffer;
 
-                (void)s_fill_input_buffer( cinfo );
+                boolean result = s_fill_input_buffer( cinfo );
+                MENGINE_UNUSED( result );
             }
 
             src->next_input_byte += (size_t)num_bytes;

@@ -196,29 +196,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_play( uint32_t _enumerator, float _time )
     {
-        (void)_enumerator;
-        (void)_time;
+        MENGINE_UNUSED( _enumerator );
+        MENGINE_UNUSED( _time );
+
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_restart( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _enumerator );
+
+        //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::_pause( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        MENGINE_UNUSED( _enumerator );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::_resume( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _enumerator );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_stop( uint32_t _enumerator )
@@ -576,7 +584,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_interrupt( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        MENGINE_UNUSED( _enumerator );
+
+        //Empty
 
         return true;
     }

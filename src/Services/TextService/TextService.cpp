@@ -134,7 +134,7 @@ namespace Mengine
 
                     if( str_value_valid != str_value_end )
                     {
-                        LOGGER_ERROR( "TextService::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
+                        LOGGER_ERROR( "'%s:%s' invalid read text key %s value |%s| invalid utf8 char |%s|"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -165,7 +165,7 @@ namespace Mengine
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' charOffset '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' charOffset '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -182,7 +182,7 @@ namespace Mengine
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource %s:%s invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -202,7 +202,7 @@ namespace Mengine
                     float a;
                     if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -219,7 +219,7 @@ namespace Mengine
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' Override '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Override '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -236,7 +236,7 @@ namespace Mengine
                     uint32_t value = 0;
                     if( sscanf( str_value, "%u", &value ) != 1 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Override' '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -251,59 +251,67 @@ namespace Mengine
                     if( strcmp( str_value, "Bottom" ) == 0 )
                     {
                         verticalAlign = ETFVA_BOTTOM;
+
+                        params |= EFP_VERTICAL_ALIGN;
                     }
                     else if( strcmp( str_value, "Center" ) == 0 )
                     {
                         verticalAlign = ETFVA_CENTER;
+
+                        params |= EFP_VERTICAL_ALIGN;
                     }
                     else if( strcmp( str_value, "Top" ) == 0 )
                     {
                         verticalAlign = ETFVA_TOP;
+
+                        params |= EFP_VERTICAL_ALIGN;
                     }
                     else
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
-                    }
-
-                    params |= EFP_VERTICAL_ALIGN;
+                    }                    
                 }
                 else if( strcmp( str_key, "HorizontAlign" ) == 0 )
                 {
                     if( strcmp( str_value, "Left" ) == 0 )
                     {
                         horizontAlign = ETFHA_LEFT;
+
+                        params |= EFP_HORIZONTAL_ALIGN;
                     }
                     else if( strcmp( str_value, "Center" ) == 0 )
                     {
                         horizontAlign = ETFHA_CENTER;
+
+                        params |= EFP_HORIZONTAL_ALIGN;
                     }
                     else if( strcmp( str_value, "Right" ) == 0 )
                     {
                         horizontAlign = ETFHA_RIGHT;
+
+                        params |= EFP_HORIZONTAL_ALIGN;
                     }
                     else
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
                     }
-
-                    params |= EFP_HORIZONTAL_ALIGN;
                 }
                 else if( strcmp( str_key, "CharScale" ) == 0 )
                 {
                     float value = 0;
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' Scale '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' Scale '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()

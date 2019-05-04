@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderDDS::encode( const void * _buffer, size_t _size, const CodecDataInfo* _dataInfo )
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         const ImageCodecDataInfo * imageInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 

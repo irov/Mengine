@@ -12,6 +12,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    struct WindowQuad
+    {
+        mt::vec2f a;
+        mt::vec2f b;
+        mt::vec2f c;
+        mt::vec2f d;
+    };
+    //////////////////////////////////////////////////////////////////////////
     const bool c_WindowWrapU[ResourceWindow_Count] =
     {
         true //ResourceWindow_Background
@@ -203,17 +211,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Window::_updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const
     {
-        (void)_invalidateVertices;
+        MENGINE_UNUSED( _invalidateVertices );
 
-        struct TQuad
-        {
-            mt::vec2f a;
-            mt::vec2f b;
-            mt::vec2f c;
-            mt::vec2f d;
-        };
-
-        TQuad quads[ResourceWindow_Count];
+        WindowQuad quads[ResourceWindow_Count];
 
         const mt::vec2f & offsetLeftTop = m_resourceWindow->getElementOffset( ResourceWindow_LeftTop );
 
@@ -391,7 +391,7 @@ namespace Mengine
                 mt::uv4_scale( uv2, uv_alpha, uvs[i] );
             }
 
-            const TQuad & quad = quads[i];
+            const WindowQuad & quad = quads[i];
 
             RenderVertex2D & v0 = _vertices[i * 4 + 0];
             mt::mul_v3_v3_m4( v0.position, mt::vec3f( quad.a, 0.f ), worldMatrix );

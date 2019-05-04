@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_HIT ), GET_MAGIC_VERSION( MAGIC_HIT ) ) == false )
         {

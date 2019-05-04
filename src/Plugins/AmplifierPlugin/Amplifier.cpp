@@ -55,28 +55,28 @@ namespace Mengine
     protected:
         void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
         {
-            (void)_emitter;
+            MENGINE_UNUSED( _emitter );
 
             m_callback->onMusicPause();
         }
 
         void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
         {
-            (void)_emitter;
+            MENGINE_UNUSED( _emitter );
 
             m_callback->onMusicResume();
         }
 
         void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
         {
-            (void)_emitter;
+            MENGINE_UNUSED( _emitter );
 
             m_callback->onMusicStop();
         }
 
         void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
         {
-            (void)_emitter;
+            MENGINE_UNUSED( _emitter );
 
             m_callback->onMusicEnd();
         }

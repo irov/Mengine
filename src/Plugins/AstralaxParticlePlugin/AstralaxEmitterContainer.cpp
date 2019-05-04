@@ -165,7 +165,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer::loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         HM_FILE mf = Magic_OpenFileInMemory( reinterpret_cast<const char *>(_buffer) );
 

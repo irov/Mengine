@@ -43,7 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevelopmentConverter::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
-        (void)_stream;
+        MENGINE_UNUSED( _stream );
+
+        //Empty
 
         return true;
     }

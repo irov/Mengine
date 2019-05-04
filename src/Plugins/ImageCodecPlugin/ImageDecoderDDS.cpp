@@ -108,8 +108,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderDDS::_decode( void * _buffer, size_t _bufferSize )
     {
-        (void)_bufferSize;
-
         size_t byte = m_stream->read( _buffer, _bufferSize );
 
         return byte;

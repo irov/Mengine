@@ -445,8 +445,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::turnSound( bool _turn )
     {
-        (void)_turn;
-
         if( _turn == true )
         {
             if( AMPLIFIER_SERVICE() )

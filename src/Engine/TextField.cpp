@@ -110,8 +110,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
     {
-        (void)_prevLocale;
-        (void)_currentlocale;
+        MENGINE_UNUSED( _prevLocale );
+        MENGINE_UNUSED( _currentlocale );
 
         this->invalidateTextEntry();
     }

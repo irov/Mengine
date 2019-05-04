@@ -43,8 +43,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotCircle::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
     {
-        (void)_contentResolution;
-        (void)_viewport;
+        MENGINE_UNUSED( _contentResolution );
+        MENGINE_UNUSED( _viewport );
 
         if( m_global == true )
         {
@@ -84,8 +84,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotCircle::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
     {
-        (void)_contentResolution;
-        (void)_viewport;
+        MENGINE_UNUSED( _contentResolution );
+        MENGINE_UNUSED( _viewport );
 
         if( m_global == true )
         {
@@ -131,7 +131,7 @@ namespace Mengine
         }
 
         //TODO:
-        (void)_polygon;
+        MENGINE_UNUSED( _polygon );
 
         bool test = this->testPoint( _camera, _viewport, _contentResolution, _point );
 

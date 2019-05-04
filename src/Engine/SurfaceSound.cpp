@@ -110,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_update( const UpdateContext * _context )
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         return false;
     }
@@ -172,7 +172,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceSound::getUV( uint32_t _index ) const
     {
-        (void)_index;
+        MENGINE_UNUSED( _index );
 
         return mt::uv4f::identity();
     }
@@ -191,8 +191,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_play( uint32_t _enumerator, float _time )
     {
-        (void)_enumerator;
-        (void)_time;
+        MENGINE_UNUSED( _enumerator );
+        MENGINE_UNUSED( _time );
 
         if( this->isCompile() == false )
         {
@@ -220,8 +220,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_restart( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _enumerator );
+
         //ToDo
 
         return false;
@@ -229,7 +230,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_pause( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        MENGINE_UNUSED( _enumerator );
 
         if( this->isCompile() == false )
         {
@@ -246,8 +247,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_resume( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _enumerator );
 
         if( this->isCompile() == false )
         {
@@ -364,7 +365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_interrupt( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        MENGINE_UNUSED( _enumerator );
 
         return false;
     }

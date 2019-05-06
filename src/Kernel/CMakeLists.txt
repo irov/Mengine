@@ -473,6 +473,9 @@ Core
     
     KeyCode.h
     Document.h
+    
+    Ravingcode.h
+    Ravingcode.cpp
 )
 
 ADD_FILTER(

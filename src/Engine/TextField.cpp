@@ -846,7 +846,7 @@ namespace Mengine
                             word_length += char_length;
                         }
 
-                        if( length + word_length > maxLength )
+                        if( length + word_length > maxLength && new_textChunk.value.empty() == false )
                         {
                             length = word_length;
 

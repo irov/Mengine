@@ -24,19 +24,26 @@ android {
     defaultConfig {
         if (findProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
+        } else if (System.getenv('MENGINE_ANDROID_APP_ID')) {
+            applicationId System.getenv('MENGINE_ANDROID_APP_ID')
         } else {
-            applicationId "org.Mengine.Build"
+            applicationId "org.Mengine.Build.MonkeyJob"
         }
+        
+        print 'ANDROID_APP_ID = '
+        println applicationId
 
         minSdkVersion 18
 
         if (findProperty("ANDROID_APP_CODE_VERSION")) {
-            print 'ANDROID_APP_CODE_VERSION = '
-            println ANDROID_APP_CODE_VERSION
             versionCode ANDROID_APP_CODE_VERSION
         } else {
             versionCode 4
         }
+        
+        print 'ANDROID_APP_CODE_VERSION = '
+        println versionCode
+        
         versionName "1.7"
         ndk {
             abiFilters 'armeabi-v7a'
@@ -109,6 +116,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.google.android.gms:play-services-gcm:16.1.0'
     implementation 'com.devtodev:android:1.13'
     implementation 'com.google.android.gms:play-services-base:15.0.1'
     implementation 'com.google.android.gms:play-services-ads:15.0.0'
@@ -123,5 +131,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.8'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

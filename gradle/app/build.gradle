@@ -36,9 +36,11 @@ android {
         minSdkVersion 18
 
         if (findProperty("ANDROID_APP_CODE_VERSION")) {
-            versionCode ANDROID_APP_CODE_VERSION
+            versionCode ANDROID_APP_CODE_VERSION as Integer
+            versionName ANDROID_APP_CODE_VERSION
         } else {
             versionCode 4
+            versionName "4"
         }
         
         print 'ANDROID_APP_CODE_VERSION = '

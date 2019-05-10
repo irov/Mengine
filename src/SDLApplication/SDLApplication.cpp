@@ -63,6 +63,11 @@
 
 #include "SDL_filesystem.h"
 
+#ifndef MENGINE_APPLICATION_INI_PATH
+#define MENGINE_APPLICATION_INI_PATH "application.ini"
+#endif
+
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -258,15 +263,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::getApplicationPath_( const Char * _section, const Char * _key, ConstString & _path )
+    bool SDLApplication::loadApplicationConfig_()
     {
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( fileGroup, applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "Invalid open application settings %s"
+                , applicationPath.c_str()
+            );
+
+            return false;
+        }
 
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, defaultFileGroup, applicationPath ) == false )
+        if( IniUtil::loadIni( ini, stream ) == false )
         {
             LOGGER_ERROR( "Invalid load application settings %s"
                 , applicationPath.c_str()
@@ -275,17 +292,38 @@ namespace Mengine
             return false;
         }
 
-        const Char * gameIniPath;
-        if( IniUtil::getIniValue( ini, _section, _key, &gameIniPath ) == false )
+        const Char * publicConfigPath;
+        if( IniUtil::getIniValue( ini, "Config", "Public", &publicConfigPath ) == false )
         {
-            LOGGER_ERROR( "Not found Game Path %s"
+            if( IniUtil::getIniValue( ini, "Game", "Path", &publicConfigPath ) == false )
+            {
+                LOGGER_ERROR( "Not found public config path '%s'"
+                    , applicationPath.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        m_publicConfigPath = Helper::stringizeFilePath( publicConfigPath );
+
+        const Char * privateConfigPath;
+        if( IniUtil::getIniValue( ini, "Config", "Private", &privateConfigPath ) == true )
+        {
+            m_privateConfigPath = Helper::stringizeFilePath( privateConfigPath );
+        }
+
+        const Char * resourcePath;
+        if( IniUtil::getIniValue( ini, "Resource", "Path", &resourcePath ) == false )
+        {
+            LOGGER_ERROR( "Not found resource path '%s'"
                 , applicationPath.c_str()
             );
 
             return false;
         }
 
-        _path = Helper::stringizeString( gameIniPath );
+        m_resourceConfigPath = Helper::stringizeFilePath( resourcePath );
 
         return true;
     }
@@ -295,20 +333,16 @@ namespace Mengine
         LOGGER_WARNING( "Inititalizing Config Manager..." );
         SERVICE_CREATE( ConfigService );
 
-        FilePath gameIniPath;
-        if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
-        {
-            return false;
-        }
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
         if( CONFIG_SERVICE()
-            ->loadConfig( defaultFileGroup, gameIniPath ) == false )
+            ->loadConfig( defaultFileGroup, m_publicConfigPath, m_privateConfigPath ) == false )
         {
-            LOGGER_ERROR( "invalid load config %s"
-                , gameIniPath.c_str()
+            LOGGER_ERROR( "invalid load config '%s' private '%s'"
+                , m_publicConfigPath.c_str()
+                , m_privateConfigPath.c_str()
             );
 
             return false;
@@ -494,6 +528,11 @@ namespace Mengine
         SERVICE_CREATE( PluginService );
 
         if( this->initializeFileEngine_() == false )
+        {
+            return false;
+        }
+
+        if( this->loadApplicationConfig_() == false )
         {
             return false;
         }
@@ -758,20 +797,11 @@ namespace Mengine
 
         LOGGER_INFO( "Application Create..." );
 
-        FilePath resourceIniPath;
-        if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
-        {
-            LOGGER_CRITICAL( "Application invalid setup resource path"
-            );
-
-            return false;
-        }
-
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
         if( APPLICATION_SERVICE()
-            ->initializeGame( defaultFileGroup, resourceIniPath ) == false )
+            ->initializeGame( defaultFileGroup, m_resourceConfigPath ) == false )
         {
             LOGGER_CRITICAL( "Application invalid initialize game"
             );

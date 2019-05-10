@@ -37,10 +37,9 @@ namespace Mengine
 
     public:
         void loop();
-        void stop();
 
     protected:
-        bool getApplicationPath_( const Char * _section, const Char * _key, ConstString & _path );
+        bool loadApplicationConfig_();
 
     protected:
         bool initializeFileEngine_();
@@ -63,5 +62,9 @@ namespace Mengine
         bool m_active;
 
         bool m_developmentMode;
+
+        FilePath m_publicConfigPath;
+        FilePath m_privateConfigPath;
+        FilePath m_resourceConfigPath;
     };
 }

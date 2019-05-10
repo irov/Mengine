@@ -1,6 +1,8 @@
 #include "CodecService.h"
 
 #include "Interface/CodecInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -20,37 +22,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool CodecService::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
-    {
-        m_factorDecoders.insert( _type, _factory );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    DecoderFactoryInterfacePtr CodecService::unregisterDecoder( const ConstString& _type )
-    {
-        DecoderFactoryInterfacePtr remove_decoder = m_factorDecoders.remove( _type );
-
-        return remove_decoder;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool CodecService::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
-    {
-        m_factorEncoders.insert( _type, _factory );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EncoderFactoryInterfacePtr CodecService::unregisterEncoder( const ConstString& _type )
-    {
-        EncoderFactoryInterfacePtr remove_encoder = m_factorEncoders.remove( _type );
-
-        return remove_encoder;
-    }
-    //////////////////////////////////////////////////////////////////////////
     DecoderInterfacePtr CodecService::createDecoder( const ConstString & _type, const Char * _doc )
     {
-        const DecoderFactoryInterfacePtr & factory = m_factorDecoders.find( _type );
+        DecoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
         if( factory == nullptr )
         {
@@ -79,7 +53,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EncoderInterfacePtr CodecService::createEncoder( const ConstString& _type, const Char * _doc )
     {
-        const EncoderFactoryInterfacePtr & factory = m_factorEncoders.find( _type );
+        EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
         if( factory == nullptr )
         {

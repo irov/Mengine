@@ -1,11 +1,9 @@
 #include "OggVorbisPlugin.h"
 
-//need for mingw - fseeko64
-#include <stdio.h>
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "SoundDecoderOGGVorbis.h"
-
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/DecoderFactory.h"
 

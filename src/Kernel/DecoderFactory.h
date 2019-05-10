@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Interface/CodecInterface.h"
+#include "Interface/DecoderFactoryInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/CodecServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -48,34 +50,36 @@ namespace Mengine
     protected:
         FactoryPtr m_factory;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         inline DecoderFactoryInterfacePtr registerDecoder( const ConstString & _type )
         {
-            DecoderFactoryInterfacePtr decoder = Helper::makeFactorableUnique<DecoderFactory<T>>();
+            DecoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<DecoderFactory<T>>();
 
-            if( decoder->initialize() == false )
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+
+            if( factory->initialize() == false )
             {
+                LOGGER_ERROR( "invalid initialize decoder '%s'"
+                    , _type.c_str()
+                );
+
                 return nullptr;
             }
 
-            if( CODEC_SERVICE()
-                ->registerDecoder( _type, decoder ) == false )
-            {
-                return nullptr;
-            }
+            VOCABULARY_SET( DecoderFactoryInterface, STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type, factory );
 
-            return decoder;
+            return factory;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         inline void unregisterDecoder( const ConstString & _type )
         {
-            DecoderFactoryInterfacePtr decoder = CODEC_SERVICE()
-                ->unregisterDecoder( _type );
+            DecoderFactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
-            if( decoder == nullptr )
+            if( factory == nullptr )
             {
                 LOGGER_ERROR( "invalid unregister decoder '%s'"
                     , _type.c_str()
@@ -84,7 +88,7 @@ namespace Mengine
                 return;
             }
 
-            decoder->finalize();
+            factory->finalize();
         }
     }
 }

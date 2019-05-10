@@ -135,28 +135,26 @@ namespace Mengine
 
             return pathLen;
         }
-        else
+
+        String Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        String Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+
+        char * sdl_prefPath = SDL_GetPrefPath( Project_Company.c_str(), Project_Name.c_str() );
+
+        size_t sdl_prefPathLen = strlen( sdl_prefPath );
+
+        if( sdl_prefPathLen >= MENGINE_MAX_PATH )
         {
-            String Project_Company = CONFIG_VALUE( "Project", "Company", "NONAME" );
-            String Project_Name = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
-
-            char * sdl_prefPath = SDL_GetPrefPath( Project_Company.c_str(), Project_Name.c_str() );
-
-            size_t sdl_prefPathLen = strlen( sdl_prefPath );
-
-            if( sdl_prefPathLen >= MENGINE_MAX_PATH )
-            {
-                SDL_free( sdl_prefPath );
-
-                return 0;
-            }
-
-            Helper::pathCorrectBackslashToA( _path, sdl_prefPath );
-
             SDL_free( sdl_prefPath );
 
-            return sdl_prefPathLen;
+            return 0;
         }
+
+        Helper::pathCorrectBackslashToA( _path, sdl_prefPath );
+
+        SDL_free( sdl_prefPath );
+
+        return sdl_prefPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
     float SDLPlatform::getJoystickAxis( uint32_t _index ) const

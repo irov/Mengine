@@ -14,7 +14,6 @@
 #include "Kernel/ScriptWrapperInterface.h"
 
 #include "pybind/pybind.hpp"
-#include "pybind/stl/stl_type_cast.hpp"
 
 namespace Mengine
 {

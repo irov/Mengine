@@ -2,9 +2,10 @@
 
 #include "OzzAnimationInterface.h"
 
-#include "Kernel/Resource.h"
-
 #include "OzzDetail.h"
+
+#include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 
 #include "Config/Vector.h"
 
@@ -14,17 +15,15 @@ namespace Mengine
 {
     class ResourceOzzMesh
         : public Resource
+        , public Content
         , public UnknownResourceOzzMeshInterface
     {
         DECLARE_UNKNOWABLE();
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceOzzMesh();
         ~ResourceOzzMesh() override;
-
-    public:
-        void setFilePath( const FilePath & _filePath ) override;
-        const FilePath & getFilePath() const override;
 
     public:
         const Detail::Mesh & getMesh() const;
@@ -34,8 +33,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        FilePath m_filePath;
-
         Detail::Mesh m_mesh;
     };
     //////////////////////////////////////////////////////////////////////////

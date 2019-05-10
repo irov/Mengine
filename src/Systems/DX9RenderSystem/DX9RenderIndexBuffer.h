@@ -37,7 +37,7 @@ namespace Mengine
         bool unlock() override;
 
     protected:
-        void draw( const void * _buffer, size_t _size ) override;
+        bool draw( const void * _buffer, size_t _size, const Char * _doc ) override;
 
     protected:
         void onRenderReset() override;

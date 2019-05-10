@@ -62,13 +62,14 @@ namespace Mengine
     public:
         virtual void addRenderMesh( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) = 0;
 
         virtual void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _variable
+            , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
             , const mt::box2f * _bb, bool _debug ) = 0;

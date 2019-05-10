@@ -25,7 +25,7 @@ namespace Mengine
 
     public:
         SamplerOzzAnimation();
-        ~SamplerOzzAnimation();
+        ~SamplerOzzAnimation() override;
 
     public:
         void setResourceOzzAnimation( const ResourcePtr & _resource ) override;
@@ -64,7 +64,7 @@ namespace Mengine
         ResourceOzzAnimationPtr m_resourceOzzAnimation;
         ResourceOzzSkeletonPtr m_resourceOzzSkeleton;
 
-        ozz::animation::SamplingCache* m_cache;
+        ozz::animation::SamplingCache * m_cache;
         ozz::Range<ozz::math::SoaTransform> m_locals;
 
         float m_weight;

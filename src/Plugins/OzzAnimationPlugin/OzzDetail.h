@@ -57,6 +57,9 @@ namespace Mengine
             typedef Vector<uint16_t> VectorTriangleIndices;
             VectorTriangleIndices triangle_indices;
 
+            typedef Vector<uint16_t> VectorJointRemaps;
+            VectorJointRemaps joint_remaps;
+
             // Inverse bind-pose matrices. These are only available for skinned meshes.
             typedef ozz::StdAllocator<ozz::math::Float4x4> OzzAllocatorFloat4x4;
             typedef Vector<ozz::math::Float4x4, OzzAllocatorFloat4x4> VectorInversBindPoses;

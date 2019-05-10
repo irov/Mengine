@@ -233,10 +233,24 @@ namespace Mengine
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
             ->createVertexBuffer( 1, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
 
+        const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
+
+        int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+
+        uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
+
+        vertexBuffer->resize( skinned_data_size );
+
         m_vertexBuffer = vertexBuffer;
 
         RenderIndexBufferInterfacePtr indexStream = RENDER_SYSTEM()
             ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
+
+        const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
+
+        size_t triangle_indices_buffer_size = triangle_indices.size() * sizeof( Detail::Mesh::VectorTriangleIndices::value_type );
+
+        indexStream->resize( triangle_indices_buffer_size );
 
         m_indexBuffer = indexStream;
 
@@ -244,6 +258,11 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture, MENGINE_DOCUMENT_FUNCTION );
+
+        if( material == nullptr )
+        {
+            return false;
+        }
 
         m_material = material;
 
@@ -351,12 +370,13 @@ namespace Mengine
 
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
-        size_t models_count = m_models.count();
+        Detail::Mesh::VectorJointRemaps::size_type joint_remap_count = ozz_mesh.joint_remaps.size();
 
         // Builds skinning matrices, based on the output of the animation stage.
-        for( size_t i = 0; i != models_count; ++i )
+        for( size_t i = 0; i != joint_remap_count; ++i )
         {
-            const ozz::math::Float4x4 & model = m_models[i];
+            uint16_t joint_index = ozz_mesh.joint_remaps[i];
+            const ozz::math::Float4x4 & model = m_models[joint_index];
 
             const ozz::math::Float4x4 & bind_poses = ozz_mesh.inverse_bind_poses[i];
 
@@ -535,14 +555,14 @@ namespace Mengine
         uint32_t vbo_size = skinned_data_size;
         void * vbo_buffer = m_vertexMemory->getBuffer();
 
-        m_vertexBuffer->draw( vbo_buffer, vbo_size );
+        m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FUNCTION );
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
         const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
         size_t triangle_indices_buffer_size = triangle_indices.size() * sizeof( Detail::Mesh::VectorTriangleIndices::value_type );
 
-        m_indexBuffer->draw( triangle_indices_buffer_data, triangle_indices_buffer_size );
+        m_indexBuffer->draw( triangle_indices_buffer_data, triangle_indices_buffer_size, MENGINE_DOCUMENT_FUNCTION );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -562,6 +582,6 @@ namespace Mengine
         new_context.scissor = _context->scissor;
         new_context.target = _context->target;
 
-        this->addRenderMesh( &new_context, m_material, m_vertexBuffer, m_indexBuffer, triangle_indices.size() );
+        this->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, triangle_indices.size() );
     }
 }

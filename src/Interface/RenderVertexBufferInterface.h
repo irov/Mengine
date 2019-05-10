@@ -26,7 +26,7 @@ namespace Mengine
         virtual bool unlock() = 0;
 
     public:
-        virtual void draw( const void * _buffer, size_t _size ) = 0;
+        virtual bool draw( const void * _buffer, size_t _size, const Char * _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;

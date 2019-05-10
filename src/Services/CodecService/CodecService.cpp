@@ -5,6 +5,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionVocabulary.h"
 
 #include <string.h>
 
@@ -20,6 +21,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     CodecService::~CodecService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool CodecService::_initializeService()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CodecService::_finalizeService()
+    {
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "DecoderFactory" ) );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "EncoderFactory" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     DecoderInterfacePtr CodecService::createDecoder( const ConstString & _type, const Char * _doc )

@@ -35,6 +35,7 @@ namespace Mengine
     protected:
         struct CategoryKey
         {
+            HashType hash;
             ConstString category;
             ConstString type;
 
@@ -48,7 +49,7 @@ namespace Mengine
         {
             HashType operator() ( const CategoryKey & _key ) const
             {
-                return _key.category.hash() + _key.type.hash();
+                return _key.hash;
             }
         };
 

@@ -196,6 +196,10 @@ PLUGIN_EXPORT( Win32Socket );
 PLUGIN_EXPORT( NodeDebugger );
 #endif
 
+#ifdef MENGINE_PLUGIN_OZZ_ANIMATION_STATIC
+PLUGIN_EXPORT( OzzAnimation );
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -674,6 +678,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_OZZ_ANIMATION_STATIC
+        MENGINE_ADD_PLUGIN( OzzAnimation, "initialize Plugin OzzAnimation..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC

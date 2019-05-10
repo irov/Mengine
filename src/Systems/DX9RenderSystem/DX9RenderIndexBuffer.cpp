@@ -173,11 +173,30 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size )
+    bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size, const Char * _doc )
     {
-        (void)_buffer;
-        (void)_size;
-        //ToDO
+        void * lock_memory = nullptr;
+        IF_DXCALL( m_pIB, Lock, (0, _size, &lock_memory, D3DLOCK_DISCARD) )
+        {
+            LOGGER_ERROR( "invalid lock size %u (doc '%s')"
+                , _size
+                , _doc
+            );
+
+            return false;
+        }
+
+        stdex::memorycopy( lock_memory, 0, _buffer, _size );
+
+        IF_DXCALL( m_pIB, Unlock, () )
+        {
+            LOGGER_ERROR( "invalid unlock"
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::enable()

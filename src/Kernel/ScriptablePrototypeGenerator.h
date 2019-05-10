@@ -65,7 +65,7 @@ namespace Mengine
 
             if( scriptable == nullptr )
             {
-                LOGGER_ERROR( "can't generate %s %s doc '%s'"
+                LOGGER_ERROR( "can't generate '%s:%s' doc '%s'"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
 					, _doc

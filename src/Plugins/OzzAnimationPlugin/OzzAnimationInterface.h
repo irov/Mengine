@@ -9,6 +9,7 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/Compilable.h"
+#include "Kernel/Scriptable.h"
 
 #include "Kernel/AnimationEventReceiver.h"
 
@@ -31,9 +32,6 @@ namespace Mengine
     class UnknownResourceOzzAnimationInterface
         : public UnknownInterface
     {
-    public:
-        virtual void setFilePath( const FilePath & _filePath ) = 0;
-        virtual const FilePath & getFilePath() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownResourceOzzAnimationInterface> UnknownResourceOzzAnimationInterfacePtr;
@@ -41,9 +39,6 @@ namespace Mengine
     class UnknownResourceOzzSkeletonInterface
         : public UnknownInterface
     {
-    public:
-        virtual void setFilePath( const FilePath & _filePath ) = 0;
-        virtual const FilePath & getFilePath() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownResourceOzzSkeletonInterface> UnknownResourceOzzSkeletonInterfacePtr;
@@ -51,9 +46,6 @@ namespace Mengine
     class UnknownResourceOzzMeshInterface
         : public UnknownInterface
     {
-    public:
-        virtual void setFilePath( const FilePath & _filePath ) = 0;
-        virtual const FilePath & getFilePath() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownResourceOzzMeshInterface> UnknownResourceOzzMeshInterfacePtr;
@@ -63,6 +55,7 @@ namespace Mengine
         , public Updatable
         , public Animatable
         , public Eventable
+        , public Scriptable
     {
     public:
         virtual void setResourceOzzAnimation( const ResourcePtr & _resource ) = 0;

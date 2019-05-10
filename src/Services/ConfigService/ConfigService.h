@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath ) override;
+        bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _publicConfigPath, const FilePath & _privateConfigPath ) override;
 
     public:
         bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
@@ -45,7 +45,8 @@ namespace Mengine
     protected:
         Tags m_platformTags;
 
-        IniUtil::IniStore m_ini;
+        IniUtil::IniStore m_publicINI;
+        IniUtil::IniStore m_privateINI;
     };
 }
 

@@ -5,8 +5,10 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/Ravingcode.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -42,11 +44,18 @@ namespace Mengine
         {
             size_t size = _stream->size();
 
-            char * memory = _ini.memory.allocate( size + 1, "loadInit" );
-            _stream->read( memory, size );
-            memory[size] = '\0';
+            Char * buffer = _ini.memory.allocate( size + 1, MENGINE_DOCUMENT_FUNCTION );
+            _stream->read( buffer, size );
+            buffer[size] = '\0';
 
-            if( tinyini_load( &_ini.ini, memory ) == TINYINI_RESULT_FAILURE )
+            if( buffer[0] == 'R' && buffer[1] == 'G' && buffer[2] == 'C' && buffer[3] == 'D' )
+            {
+                uint32_t parrot = *(uint32_t *)(buffer + 4);
+
+                Helper::ravingcode( parrot, buffer + 8, size - 8, buffer + 8 );
+            }
+
+            if( tinyini_load( &_ini.ini, buffer ) == TINYINI_RESULT_FAILURE )
             {
                 LOGGER_ERROR( "ini invalid load '%s'"
                     , tinyini_get_error_message( &_ini.ini )

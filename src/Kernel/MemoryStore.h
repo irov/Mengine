@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Pointer.h"
-#include "Config/Char.h"
+#include "Config/String.h"
 
 namespace Mengine
 {
@@ -17,7 +17,10 @@ namespace Mengine
 
     protected:
         void * m_memory;
-        const Char * m_doc;
+
+#ifdef MENGINE_DEBUG
+        String m_doc;
+#endif
 
     private:
         MemoryStore( const MemoryStore & );

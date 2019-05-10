@@ -50,7 +50,11 @@ namespace Mengine
         }
         else
         {
+#ifdef MENGINE_DEBUG
+            logLevel = LM_MESSAGE;
+#else
             logLevel = LM_ERROR;
+#endif
         }
 
         if( TEST_OPTION_VALUE( "log", "0" ) == true )

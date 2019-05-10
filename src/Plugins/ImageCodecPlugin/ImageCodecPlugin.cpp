@@ -75,9 +75,6 @@ namespace Mengine
             ->registerCodecExt( "etc", STRINGIZE_STRING_LOCAL( "etcImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "crn", STRINGIZE_STRING_LOCAL( "crnImage" ) );
-
-        CODEC_SERVICE()
             ->registerCodecExt( "htf", STRINGIZE_STRING_LOCAL( "htfImage" ) );
 
         CODEC_SERVICE()

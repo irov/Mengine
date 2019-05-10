@@ -55,6 +55,7 @@ namespace Mengine
         }
 
         CategoryKey key;
+        key.hash = _category.hash() + _prototype.hash();
         key.category = _category;
         key.prototype = _prototype;
 
@@ -71,6 +72,7 @@ namespace Mengine
     bool PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype )
     {
         CategoryKey key;
+        key.hash = _category.hash() + _prototype.hash();
         key.category = _category;
         key.prototype = _prototype;
 
@@ -89,10 +91,21 @@ namespace Mengine
     const PrototypeGeneratorInterfacePtr & PrototypeService::getGenerator( const ConstString & _category, const ConstString & _prototype ) const
     {
         CategoryKey key;
+        key.hash = _category.hash() + _prototype.hash();
         key.category = _category;
         key.prototype = _prototype;
 
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
+
+        if( generator == nullptr )
+        {
+            LOGGER_ERROR( "prototype not found '%s:%s'"
+                , _category.c_str()
+                , _prototype.c_str()
+            );
+
+            return PrototypeGeneratorInterfacePtr::none();
+        }
 
         return generator;
     }
@@ -100,6 +113,7 @@ namespace Mengine
     FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const Char * _doc )
     {
         CategoryKey key;
+        key.hash = _category.hash() + _prototype.hash();
         key.category = _category;
         key.prototype = _prototype;
 

@@ -3,6 +3,7 @@
 #include "OzzAnimationInterface.h"
 
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 
 #include "ozz/animation/runtime/skeleton.h"
 
@@ -10,17 +11,15 @@ namespace Mengine
 {
     class ResourceOzzSkeleton
         : public Resource
+        , public Content
         , public UnknownResourceOzzSkeletonInterface
     {
         DECLARE_UNKNOWABLE();
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceOzzSkeleton();
         ~ResourceOzzSkeleton() override;
-
-    public:
-        void setFilePath( const FilePath & _filePath ) override;
-        const FilePath & getFilePath() const override;
 
     public:
         const ozz::animation::Skeleton & getOzzSkeleton() const;
@@ -30,8 +29,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        FilePath m_filePath;
-
         ozz::animation::Skeleton m_skeleton;
     };
     //////////////////////////////////////////////////////////////////////////

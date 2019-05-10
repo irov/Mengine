@@ -90,6 +90,7 @@ namespace Mengine
 
     protected:
         void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) const;

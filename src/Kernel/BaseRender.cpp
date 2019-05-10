@@ -319,22 +319,23 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderMesh( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
+        , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _indexCount ) const
     {
         RENDER_SERVICE()
-            ->addRenderMesh( _context, _material, _vertexBuffer, _indexBuffer, _indexCount );
+            ->addRenderMesh( _context, _material, _programVariable, _vertexBuffer, _indexBuffer, _indexCount );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-        , const RenderProgramVariableInterfacePtr & _variable
+        , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug ) const
     {
         RENDER_SERVICE()
-            ->addRenderObject( _context, _material, _variable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
+            ->addRenderObject( _context, _material, _programVariable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material

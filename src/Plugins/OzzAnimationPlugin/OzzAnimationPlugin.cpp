@@ -3,7 +3,8 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
-#include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 
 #include "ResourceOzzMesh.h"
@@ -11,6 +12,7 @@
 #include "ResourceOzzAnimation.h"
 
 #include "NodeOzzAnimation.h"
+#include "OzzScriptEmbedding.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( OzzAnimation, Mengine::OzzAnimationPlugin );
@@ -28,26 +30,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OzzAnimationPlugin::_initializePlugin()
     {
+        ADD_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceOzzSkeleton"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<ResourceOzzSkeleton, 16>>() ) == false )
+            ->addPrototype( "Resource"_c, "ResourceOzzSkeleton"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzSkeleton, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceOzzMesh"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<ResourceOzzMesh, 16>>() ) == false )
+            ->addPrototype( "Resource"_c, "ResourceOzzMesh"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzMesh, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceOzzAnimation"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<ResourceOzzAnimation, 16>>() ) == false )
+            ->addPrototype( "Resource"_c, "ResourceOzzAnimation"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzAnimation, 16>>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Sampler"_c, "SamplerOzzAnimation"_c, Helper::makeFactorableUnique<DefaultPrototypeGenerator<SamplerOzzAnimation, 16>>() ) == false )
+            ->addPrototype( "Sampler"_c, "SamplerOzzAnimation"_c, Helper::makeFactorableUnique<ScriptablePrototypeGenerator<SamplerOzzAnimation, 16>>() ) == false )
         {
             return false;
         }
@@ -63,6 +67,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzAnimationPlugin::_finalizePlugin()
     {
+        REMOVE_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+
         PROTOTYPE_SERVICE()
             ->removePrototype( "Resource"_c, "ResourceOzzSkeleton"_c );
 

@@ -21,16 +21,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceOzzMesh::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceOzzMesh::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const Detail::Mesh & ResourceOzzMesh::getMesh() const
     {
         return m_mesh;

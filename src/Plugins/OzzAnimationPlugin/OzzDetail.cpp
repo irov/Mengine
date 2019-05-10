@@ -114,6 +114,7 @@ namespace ozz
             {
                 _archive << mesh.parts;
                 _archive << mesh.triangle_indices;
+                _archive << mesh.joint_remaps;
                 _archive << mesh.inverse_bind_poses;
             }
         }
@@ -126,6 +127,7 @@ namespace ozz
             {
                 _archive >> mesh.parts;
                 _archive >> mesh.triangle_indices;
+                _archive >> mesh.joint_remaps;
                 _archive >> mesh.inverse_bind_poses;
             }
         }

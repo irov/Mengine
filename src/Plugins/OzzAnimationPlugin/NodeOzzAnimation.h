@@ -40,7 +40,7 @@ namespace Mengine
 
     public:
         NodeOzzAnimation();
-        ~NodeOzzAnimation();
+        ~NodeOzzAnimation() override;
 
     public:
         void setResourceOzzImage( const ResourceImagePtr & _resource ) override;
@@ -86,7 +86,7 @@ namespace Mengine
             SamplerOzzAnimationPtr sampler;
         };
 
-        using VectorSamplerOzzAnimations = Vector<SamplerDesc>;
+        typedef Vector<SamplerDesc> VectorSamplerOzzAnimations;
         VectorSamplerOzzAnimations m_samplerOzzAnimations;
 
         ozz::Range<ozz::math::SoaTransform> m_blendedLocals;

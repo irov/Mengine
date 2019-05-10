@@ -17,6 +17,10 @@ namespace Mengine
         ~CodecService() override;
 
     public:
+        bool _initializeService() override;
+        void _finalizeService() override;
+
+    public:
         DecoderInterfacePtr createDecoder( const ConstString & _type, const Char * _doc ) override;
         EncoderInterfacePtr createEncoder( const ConstString & _type, const Char * _doc ) override;
 

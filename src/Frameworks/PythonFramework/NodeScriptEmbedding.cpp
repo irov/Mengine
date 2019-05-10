@@ -896,13 +896,10 @@ namespace Mengine
             return std::string( debugId );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodePtr s_Node_createChildren( pybind::kernel_interface * _kernel, Node * _node, const ConstString & _type )
+        NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
         {
-            Char pytraceback[4096];
-            _kernel->get_traceback( pytraceback, 4096 );
-
             NodePtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, pytraceback );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
 
@@ -2553,17 +2550,6 @@ namespace Mengine
             .def( "existDirectory", &FileGroupInterface::existDirectory )
             ;
 
-        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( _kernel, "ResourceReference", false )
-            .def( "setLocale", &Resource::setLocale )
-            .def( "getLocale", &Resource::getLocale )
-            .def( "setFileGroup", &Resource::setFileGroup )
-            .def( "getFileGroup", &Resource::getFileGroup )
-            .def( "setGroupName", &Resource::setGroupName )
-            .def( "getGroupName", &Resource::getGroupName )
-            .def( "cache", &Resource::cache )
-            .def( "uncache", &Resource::uncache )
-            ;
-
         pybind::interface_<Content, pybind::bases<Mixin> >( _kernel, "Content", false )
             .def( "setFilePath", &Content::setFilePath )
             .def( "getFilePath", &Content::getFilePath )
@@ -2575,6 +2561,21 @@ namespace Mengine
             .def( "getDataflowType", &Content::getDataflowType )
             .def( "setValidNoExist", &Content::setValidNoExist )
             .def( "isValidNoExist", &Content::isValidNoExist )
+            ;
+
+        pybind::interface_<Contentable, pybind::bases<Mixin>>( _kernel, "Contentable", false )
+            .def( "getContent", &Contentable::getContent )
+            ;
+
+        pybind::interface_<Resource, pybind::bases<Contentable, Scriptable, Compilable, Identity, Reference> >( _kernel, "ResourceReference", false )
+            .def( "setLocale", &Resource::setLocale )
+            .def( "getLocale", &Resource::getLocale )
+            .def( "setFileGroup", &Resource::setFileGroup )
+            .def( "getFileGroup", &Resource::getFileGroup )
+            .def( "setGroupName", &Resource::setGroupName )
+            .def( "getGroupName", &Resource::getGroupName )
+            .def( "cache", &Resource::cache )
+            .def( "uncache", &Resource::uncache )
             ;
 
         pybind::interface_<ResourceImage, pybind::bases<Resource> >( _kernel, "ResourceImage", false )
@@ -2812,7 +2813,7 @@ namespace Mengine
 
             .def_proxy_static( "getDebugId", nodeScriptMethod, &NodeScriptMethod::s_Node_getDebugId )
 
-            .def_proxy_static_kernel( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
+            .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
             .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_getAllChildren )
 
             .def_proxy_static_args( "colorTo", nodeScriptMethod, &NodeScriptMethod::s_Node_colorTo )

@@ -45,6 +45,7 @@ namespace Mengine
     bool VocabularyService::setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable )
     {
         CategoryKey key;
+        key.hash = _category.hash() + _type.hash();
         key.category = _category;
         key.type = _type;
 
@@ -61,6 +62,7 @@ namespace Mengine
     MixinPointer VocabularyService::removeFactorable( const ConstString & _category, const ConstString & _type )
     {
         CategoryKey key;
+        key.hash = _category.hash() + _type.hash();
         key.category = _category;
         key.type = _type;
 
@@ -77,6 +79,7 @@ namespace Mengine
     MixinPointer VocabularyService::getFactorable( const ConstString & _category, const ConstString & _type ) const
     {
         CategoryKey key;
+        key.hash = _category.hash() + _type.hash();
         key.category = _category;
         key.type = _type;
 
@@ -88,6 +91,7 @@ namespace Mengine
     bool VocabularyService::hasFactorable( const ConstString & _category, const ConstString & _type ) const
     {
         CategoryKey key;
+        key.hash = _category.hash() + _type.hash();
         key.category = _category;
         key.type = _type;
 

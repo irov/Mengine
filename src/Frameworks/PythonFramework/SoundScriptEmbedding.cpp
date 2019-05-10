@@ -14,6 +14,8 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionResourceType.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "Config/Lambda.h"
 
 #include "Engine/ResourceSound.h"
@@ -155,7 +157,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factorySoundNodeListener;
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr s_createSoundSource( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
         {
             MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSound *, nullptr, "createSoundSource resource '%s' type does not match 'ResourceSound'"
                 , _resourceName.c_str()
@@ -178,14 +180,11 @@ namespace Mengine
                 return nullptr;
             }
 
-            Char pytraceback[4096];
-            _kernel->get_traceback( pytraceback, 4096 );
-
             bool streamable = resource->isStreamable();
 
             SoundIdentityInterfacePtr sourceEmitter = SOUND_SERVICE()
                 ->createSoundIdentity( true, soundBuffer, _category, streamable
-                    , pytraceback
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             if( sourceEmitter == nullptr )
@@ -234,9 +233,9 @@ namespace Mengine
             return sourceEmitter;
         }
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundPlay( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _kernel, _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -260,9 +259,9 @@ namespace Mengine
             return sourceEmitter;
         }
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr voicePlay( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _kernel, _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -302,9 +301,9 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundPlayFromPosition( pybind::kernel_interface * _kernel, const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _kernel, _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -406,12 +405,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factorySoundAffectorCallback;
         //////////////////////////////////////////////////////////////////////////
-        SoundAffectorCallbackPtr createSoundAffectorCallback( pybind::kernel_interface * _kernel, const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
+        SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
         {
-            Char pytraceback[4096];
-            _kernel->get_traceback( pytraceback, 4096 );
-
-            SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( pytraceback );
+            SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
 
             callback->initialize( _emitter, _cb, _args );
 
@@ -426,9 +422,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorSound;
         //////////////////////////////////////////////////////////////////////////
-        void soundFadeIn( pybind::kernel_interface * _kernel, const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+        void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _kernel, _emitter, _cb, _args );
+            SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
@@ -445,9 +441,9 @@ namespace Mengine
             affectorable->addAffector( affector );
         }
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr soundFadeOut( pybind::kernel_interface * _kernel, const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _kernel, _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -764,12 +760,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryMusicAffectorCallback;
         //////////////////////////////////////////////////////////////////////////
-        MusicAffectorCallbackPtr createMusicAffectorCallback( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
+        MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
         {
-            Char pytraceback[4096];
-            _kernel->get_traceback( pytraceback, 4096 );
-
-            MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( pytraceback );
+            MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_PYBIND );
 
             callback->initialize( _cb, _args );
 
@@ -780,7 +773,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorMusic;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t musicFadeIn( pybind::kernel_interface * _kernel, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
             if( SERVICE_EXIST( AmplifierInterface ) == false )
             {
@@ -789,7 +782,7 @@ namespace Mengine
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _kernel, _cb, _args );
+            MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _cb, _args );
 
             AffectorPtr affector =
                 m_affectorCreatorMusic.create( ETA_POSITION
@@ -918,8 +911,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "commonSetVolume", soundScriptMethod, &SoundScriptMethod::commonSetVolume );
         pybind::def_functor( _kernel, "commonGetVolume", soundScriptMethod, &SoundScriptMethod::commonGetVolume );
 
-        pybind::def_functor_kernel_args( _kernel, "soundPlay", soundScriptMethod, &SoundScriptMethod::soundPlay );
-        pybind::def_functor_kernel_args( _kernel, "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::soundPlayFromPosition );
+        pybind::def_functor_args( _kernel, "soundPlay", soundScriptMethod, &SoundScriptMethod::soundPlay );
+        pybind::def_functor_args( _kernel, "soundPlayFromPosition", soundScriptMethod, &SoundScriptMethod::soundPlayFromPosition );
         pybind::def_functor( _kernel, "soundStop", soundScriptMethod, &SoundScriptMethod::soundStop );
         pybind::def_functor( _kernel, "soundPause", soundScriptMethod, &SoundScriptMethod::soundPause );
         pybind::def_functor( _kernel, "soundResume", soundScriptMethod, &SoundScriptMethod::soundResume );
@@ -932,8 +925,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "soundGetVolume", soundScriptMethod, &SoundScriptMethod::soundGetVolume );
         pybind::def_functor( _kernel, "soundGetPosition", soundScriptMethod, &SoundScriptMethod::soundGetPosMs );
         pybind::def_functor( _kernel, "soundSetPosition", soundScriptMethod, &SoundScriptMethod::soundSetPosMs );
-        pybind::def_functor_kernel_args( _kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
-        pybind::def_functor_kernel_args( _kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::soundFadeOut );
+        pybind::def_functor_args( _kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
+        pybind::def_functor_args( _kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::soundFadeOut );
 
         pybind::def_functor_args( _kernel, "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
         pybind::def_functor( _kernel, "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
@@ -947,11 +940,11 @@ namespace Mengine
         pybind::def_functor( _kernel, "musicGetLengthMs", soundScriptMethod, &SoundScriptMethod::musicGetDuration );
         pybind::def_functor( _kernel, "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::musicGetPosMs );
         pybind::def_functor( _kernel, "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::musicSetPosMs );
-        pybind::def_functor_kernel_args( _kernel, "musicFadeIn", soundScriptMethod, &SoundScriptMethod::musicFadeIn );
+        pybind::def_functor_args( _kernel, "musicFadeIn", soundScriptMethod, &SoundScriptMethod::musicFadeIn );
         pybind::def_functor_args( _kernel, "musicFadeOut", soundScriptMethod, &SoundScriptMethod::musicFadeOut );
 
 
-        pybind::def_functor_kernel_args( _kernel, "voicePlay", soundScriptMethod, &SoundScriptMethod::voicePlay );
+        pybind::def_functor_args( _kernel, "voicePlay", soundScriptMethod, &SoundScriptMethod::voicePlay );
         pybind::def_functor( _kernel, "voiceStop", soundScriptMethod, &SoundScriptMethod::voiceStop );
         pybind::def_functor( _kernel, "voicePause", soundScriptMethod, &SoundScriptMethod::voicePause );
         pybind::def_functor( _kernel, "voiceResume", soundScriptMethod, &SoundScriptMethod::voiceResume );

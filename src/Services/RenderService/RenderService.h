@@ -100,12 +100,16 @@ namespace Mengine
 
         RenderBatchPtr batch;
 
+        RenderVertexAttributeInterfacePtr vertexAttribute;
+        RenderVertexBufferInterfacePtr vertexBuffer;
+        RenderIndexBufferInterfacePtr indexBuffer;
+
         RenderViewportInterfacePtr viewport;
         RenderCameraInterfacePtr camera;
         RenderTransformationInterfacePtr transformation;
         RenderScissorInterfacePtr scissor;
         RenderTargetInterfacePtr target;
-        RenderProgramVariableInterfacePtr variable;
+        RenderProgramVariableInterfacePtr programVariable;
 
         const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
@@ -137,6 +141,7 @@ namespace Mengine
     public:
         void addRenderMesh( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) override;
@@ -162,13 +167,17 @@ namespace Mengine
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
 
         bool testRenderPass_( const RenderContext * _context
-            , const RenderBatchPtr & _batch
-            , const RenderProgramVariableInterfacePtr & _variable ) const;
+            , const RenderVertexBufferInterfacePtr & _vertexBuffer
+            , const RenderIndexBufferInterfacePtr & _indexBuffer
+            , const RenderVertexAttributeInterfacePtr & _vertexAttribute
+            , const RenderProgramVariableInterfacePtr & _programVariable ) const;
 
         RenderPass * requestRenderPass_( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _variable
-            , uint32_t _vertexCount, uint32_t _indexCount );
+            , const RenderBatchPtr & _batch
+            , const RenderVertexBufferInterfacePtr & _vertexBuffer
+            , const RenderIndexBufferInterfacePtr & _indexBuffer
+            , const RenderVertexAttributeInterfacePtr & _vertexAttribute
+            , const RenderProgramVariableInterfacePtr & _programVariable );
 
     public:
         VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) override;

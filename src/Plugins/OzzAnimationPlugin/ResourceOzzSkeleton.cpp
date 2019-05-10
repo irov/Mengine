@@ -19,16 +19,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceOzzSkeleton::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceOzzSkeleton::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const ozz::animation::Skeleton & ResourceOzzSkeleton::getOzzSkeleton() const
     {
         return m_skeleton;

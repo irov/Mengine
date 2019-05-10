@@ -51,15 +51,15 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni, const Char * _doc )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIniPath, const Char * _doc )
     {
         LOGGER_MESSAGE( "Packages load..." );
 
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _fileGroup, _resourceIni ) == false )
+        if( IniUtil::loadIni( ini, _fileGroup, _resourceIniPath ) == false )
         {
             LOGGER_ERROR( "invalid load resource settings '%s'"
-                , _resourceIni.c_str()
+                , _resourceIniPath.c_str()
             );
 
             return false;
@@ -86,7 +86,7 @@ namespace Mengine
             if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "'%s' invalid load resource pack no found section for '%s'"
-                    , _resourceIni.c_str()
+                    , _resourceIniPath.c_str()
                     , resourcePack.c_str()
                 );
 
@@ -128,7 +128,7 @@ namespace Mengine
             if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "invalid load '%s' resource pack no found section for '%s'"
-                    , _resourceIni.c_str()
+                    , _resourceIniPath.c_str()
                     , resourcePack.c_str()
                 );
 
@@ -170,7 +170,7 @@ namespace Mengine
             if( IniUtil::hasIniSection( ini, languagePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "invalid load '%s' language pack no found section for '%s'"
-                    , _resourceIni.c_str()
+                    , _resourceIniPath.c_str()
                     , languagePack.c_str()
                 );
 

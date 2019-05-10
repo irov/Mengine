@@ -40,27 +40,54 @@ namespace Mengine
         m_platformTags.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath )
+    bool ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _publicConfigPath, const FilePath & _privateConfigPath )
     {
-        InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
-
-        if( applicationInputStream == nullptr )
+        if( _fileGroup->existFile( _publicConfigPath ) == true )
         {
-            LOGGER_ERROR( "invalid open application settings '%s'"
-                , _applicationPath.c_str()
-            );
+            InputStreamInterfacePtr stream = FILE_SERVICE()
+                ->openInputFile( _fileGroup, _publicConfigPath, false, MENGINE_DOCUMENT_FUNCTION );
 
-            return false;
+            if( stream == nullptr )
+            {
+                LOGGER_ERROR( "invalid open public config '%s'"
+                    , _publicConfigPath.c_str()
+                );
+
+                return false;
+            }
+
+            if( IniUtil::loadIni( m_publicINI, stream ) == false )
+            {
+                LOGGER_ERROR( "invalid load public config '%s'"
+                    , _publicConfigPath.c_str()
+                );
+
+                return false;
+            }
         }
 
-        if( IniUtil::loadIni( m_ini, applicationInputStream ) == false )
+        if( _fileGroup->existFile( _privateConfigPath ) == true )
         {
-            LOGGER_ERROR( "invalid load application settings '%s'"
-                , _applicationPath.c_str()
-            );
+            InputStreamInterfacePtr stream = FILE_SERVICE()
+                ->openInputFile( _fileGroup, _privateConfigPath, false, MENGINE_DOCUMENT_FUNCTION );
 
-            return false;
+            if( stream == nullptr )
+            {
+                LOGGER_ERROR( "invalid open private config '%s'"
+                    , _privateConfigPath.c_str()
+                );
+
+                return false;
+            }
+
+            if( IniUtil::loadIni( m_publicINI, stream ) == false )
+            {
+                LOGGER_ERROR( "invalid load private config '%s'"
+                    , _privateConfigPath.c_str()
+                );
+
+                return false;
+            }
         }
 
         return true;
@@ -164,66 +191,66 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::getValue( const Char * _section, const Char * _key, bool _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t ConfigService::getValue( const Char * _section, const Char * _key, int32_t _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ConfigService::getValue( const Char * _section, const Char * _key, uint32_t _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     uint64_t ConfigService::getValue( const Char * _section, const Char * _key, uint64_t _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     float ConfigService::getValue( const Char * _section, const Char * _key, float _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     double ConfigService::getValue( const Char * _section, const Char * _key, double _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * ConfigService::getValue( const Char * _section, const Char * _key, const Char * _default ) const
     {
-        return Helper::s_getValueString( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueString( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     ConstString ConfigService::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     FilePath ConfigService::getValue( const Char * _section, const Char * _key, const FilePath & _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     Resolution ConfigService::getValue( const Char * _section, const Char * _key, const Resolution & _default ) const
     {
-        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_publicINI, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const
     {
-        Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
+        Helper::s_calcValueT( m_publicINI, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::getValues( const Char * _section, const Char * _key, VectorString & _value ) const
     {
-        Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
+        Helper::s_calcValueT( m_publicINI, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::getSection( const Char * _section, MapParams & _params ) const
     {
-        IniUtil::getIniAllSettings( m_ini, _section, _params );
+        IniUtil::getIniAllSettings( m_publicINI, _section, _params );
     }
 }

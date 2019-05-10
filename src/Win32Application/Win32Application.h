@@ -45,6 +45,9 @@ namespace Mengine
         void loop();
 
     protected:
+        bool loadApplicationConfig_();
+
+    protected:
         bool initializeFileService_();
         bool initializeUserDirectory_();
         bool initializeLogFile_();
@@ -52,14 +55,15 @@ namespace Mengine
         bool initializeLogService_();
         bool initializeConfigService_();
         bool initializeArchiveService_();
-    
-    protected:
-        bool getApplicationPath_( const Char * _section, const Char * _key, ConstString & _value );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
         LoggerInterfacePtr m_fileLog;
         LoggerInterfacePtr m_loggerMessageBox;
+
+        FilePath m_publicConfigPath;
+        FilePath m_privateConfigPath;
+        FilePath m_resourceConfigPath;
     };
 }

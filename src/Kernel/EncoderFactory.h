@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Interface/CodecInterface.h"
+#include "Interface/EncoderFactoryInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Factorable.h"
-
 #include "Kernel/FactoryPool.h"
 
 namespace Mengine
@@ -49,28 +50,33 @@ namespace Mengine
 
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         inline EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type )
         {
-            EncoderFactoryInterfacePtr encoder = Helper::makeFactorableUnique<EncoderFactory<T>>();
+            EncoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<EncoderFactory<T>>();
 
-            if( encoder->initialize() == false )
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+
+            if( factory->initialize() == false )
             {
+                LOGGER_ERROR( "invalid initialize encoder '%s'"
+                    , _type.c_str()
+                );
+
                 return nullptr;
             }
 
-            CODEC_SERVICE()
-                ->registerEncoder( _type, encoder );
+            VOCABULARY_SET( EncoderFactoryInterface, STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type, factory );
 
-            return encoder;
+            return factory;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         inline void unregisterEncoder( const ConstString & _type )
         {
-            EncoderFactoryInterfacePtr encoder = CODEC_SERVICE()
-                ->unregisterEncoder( _type );
+            EncoderFactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
-            if( encoder == nullptr )
+            if( factory == nullptr )
             {
                 LOGGER_ERROR( "invalid unregister encoder '%s'"
                     , _type.c_str()
@@ -79,7 +85,7 @@ namespace Mengine
                 return;
             }
 
-            encoder->finalize();
+            factory->finalize();
         }
     }
 }

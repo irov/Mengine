@@ -1120,6 +1120,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
         {
+            LOGGER_WARNING( "write image to file '%s' path '%s'"
+                , _resource.c_str()
+                , _fileName.c_str()
+            );
+
             const ResourceImagePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resource );
 

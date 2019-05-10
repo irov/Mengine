@@ -18,13 +18,6 @@ namespace Mengine
         SERVICE_DECLARE( "CodecService" )
 
     public:
-        virtual bool registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _decoder ) = 0;
-        virtual DecoderFactoryInterfacePtr unregisterDecoder( const ConstString & _type ) = 0;
-
-        virtual bool registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _encoder ) = 0;
-        virtual EncoderFactoryInterfacePtr unregisterEncoder( const ConstString & _type ) = 0;
-
-    public:
         virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const Char * _doc ) = 0;
 
         template<class T>

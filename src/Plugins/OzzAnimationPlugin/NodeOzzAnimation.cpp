@@ -557,9 +557,6 @@ namespace Mengine
             uint32_t color;
             mt::vec2f uv;
         };
-        
-        OzzVertex * ozzv = (OzzVertex*)vbo_buffer;
-        (void)ozzv;
             
         m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FUNCTION );
 

@@ -3,16 +3,17 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
-#include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/ScriptablePrototypeGenerator.h"
-#include "Kernel/NodePrototypeGenerator.h"
-
 #include "ResourceOzzMesh.h"
 #include "ResourceOzzSkeleton.h"
 #include "ResourceOzzAnimation.h"
 
 #include "NodeOzzAnimation.h"
 #include "OzzScriptEmbedding.h"
+
+#include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( OzzAnimation, Mengine::OzzAnimationPlugin );

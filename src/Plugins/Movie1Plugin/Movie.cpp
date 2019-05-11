@@ -1118,7 +1118,7 @@ namespace Mengine
             {
                 const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
 
-                this->setOrigin( anchorPoint );
+                this->setLocalOrigin( anchorPoint );
             }
         }
         else
@@ -1129,7 +1129,7 @@ namespace Mengine
 
                 const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
 
-                this->setOrigin( offsetPoint );
+                this->setLocalOrigin( offsetPoint );
 
                 mt::vec3f offset = offsetPoint - anchorPoint;
 

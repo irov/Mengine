@@ -547,13 +547,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         mt::mat4f vmperfect;
         float offset_x = -0.5f / (m_windowViewport.end.x - m_windowViewport.begin.x);
@@ -568,13 +562,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         m_modelViewMatrix = _modelViewMatrix;
 
@@ -583,13 +571,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         m_worldMatrix = _worldMatrix;
 
@@ -760,13 +742,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::beginScene()
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 
         HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
 
@@ -812,26 +788,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::endScene()
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DXCALL( m_pD3DDevice, EndScene, () );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::swapBuffers()
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         HRESULT cooperativeLevel = m_pD3DDevice->TestCooperativeLevel();
 
@@ -859,13 +823,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DWORD frameBufferFlags = 0;
 
@@ -929,13 +887,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::updateViewport_( const Viewport & _viewport )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         D3DVIEWPORT9 VP;
 
@@ -1058,13 +1010,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 
         D3DFORMAT dx_format = s_toD3DFormat( Format );
 
@@ -1078,13 +1024,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
@@ -1112,13 +1052,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::releaseResources_()
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "m_pD3DDevice is null"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 
         if( m_vertexBufferEnable == true )
         {
@@ -1180,13 +1114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::restore_()
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "m_pD3DDevice is null"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 
         if( this->releaseResources_() == false )
         {
@@ -1237,13 +1165,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::release_()
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "m_pD3DDevice is null"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         if( this->releaseResources_() == false )
         {
@@ -1341,13 +1263,7 @@ namespace Mengine
     void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _vertexBase,
         uint32_t _minIndex, uint32_t _vertexCount, uint32_t _indexStart, uint32_t _indexCount )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         D3DPRIMITIVETYPE primitiveType = s_toD3DPrimitiveType( _type );
 
@@ -1360,13 +1276,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
@@ -1394,13 +1304,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DWORD src_factor = s_toD3DBlendFactor( _src );
         DWORD dst_factor = s_toD3DBlendFactor( _dst );
@@ -1413,13 +1317,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV, uint32_t _border )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
@@ -1442,13 +1340,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureFactor( uint32_t _color )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DWORD color = _color;
 
@@ -1457,13 +1349,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setCullMode( ECullMode _mode )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         D3DCULL mode = s_toD3DCullMode( _mode );
 
@@ -1472,13 +1358,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         D3DZBUFFERTYPE test = _depthTest ? D3DZB_TRUE : D3DZB_FALSE;
 
@@ -1487,13 +1367,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DWORD dWrite = _depthWrite ? TRUE : FALSE;
 
@@ -1502,13 +1376,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         D3DCMPFUNC func = s_toD3DCmpFunc( _depthFunction );
 
@@ -1517,13 +1385,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setFillMode( EFillMode _mode )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         D3DFILLMODE mode = s_toD3DFillMode( _mode );
 
@@ -1532,13 +1394,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DWORD value = 0;
 
@@ -1567,13 +1423,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DWORD alphaBlend = _alphaBlend ? TRUE : FALSE;
 
@@ -1582,13 +1432,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
@@ -1613,7 +1457,7 @@ namespace Mengine
     {
         DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr )("invalid create attribute %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr, "invalid create attribute %s"
             , _name.c_str()
             );
 
@@ -1633,7 +1477,7 @@ namespace Mengine
     {
         DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
             , _name.c_str()
             );
 
@@ -1669,7 +1513,7 @@ namespace Mengine
     {
         DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader %s"
             , _name.c_str()
             );
 
@@ -1707,7 +1551,7 @@ namespace Mengine
 
         DX9RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr )("invalid create program '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr, "invalid create program '%s'"
             , _name.c_str()
             );
 
@@ -1766,7 +1610,7 @@ namespace Mengine
     {
         DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr )("invalid create program variable"
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr, "invalid create program variable"
             );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
@@ -1796,13 +1640,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setVSync( bool _vSync )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         m_waitForVSync = _vSync;
 
@@ -1831,13 +1669,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "device not created"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
         DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
     }

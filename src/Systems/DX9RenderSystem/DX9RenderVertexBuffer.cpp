@@ -188,7 +188,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::enable()
     {
-        DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pVB, 0, sizeof( RenderVertex2D )) );
+        DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pVB, 0, m_vertexSize) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::disable()

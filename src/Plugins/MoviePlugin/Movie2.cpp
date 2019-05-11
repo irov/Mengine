@@ -1911,7 +1911,7 @@ namespace Mengine
 
         mt::vec3f anchor_point;
         anchor_point.from_f2( _callbackData->anchor_point, 0.f );
-        parent_layer->setOrigin( anchor_point );
+        parent_layer->setLocalOrigin( anchor_point );
 
         mt::vec3f position;
         position.from_f2( _callbackData->position, 0.f );
@@ -1919,7 +1919,7 @@ namespace Mengine
 
         mt::vec3f scale;
         scale.from_f2( _callbackData->scale, 1.f );
-        parent_layer->setScale( scale );
+        parent_layer->setLocalScale( scale );
 
         mt::quatf q;
         q.x = 0.f;
@@ -1928,7 +1928,7 @@ namespace Mengine
         q.w = _callbackData->quaternion[1];
         float angle = quatzw_to_angle( q );
 
-        parent_layer->setOrientationX( angle );
+        parent_layer->setLocalOrientationX( angle );
 
         Color color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
@@ -1948,7 +1948,7 @@ namespace Mengine
 
         mt::vec3f anchor_point;
         anchor_point.from_f2( _callbackData->anchor_point, 0.f );
-        parent_layer->setOrigin( anchor_point );
+        parent_layer->setLocalOrigin( anchor_point );
 
         mt::vec3f position;
         position.from_f2( _callbackData->position, 0.f );
@@ -1956,7 +1956,7 @@ namespace Mengine
 
         mt::vec3f scale;
         scale.from_f2( _callbackData->scale, 1.f );
-        parent_layer->setScale( scale );
+        parent_layer->setLocalScale( scale );
 
         mt::quatf q;
         q.x = 0.f;
@@ -1965,7 +1965,7 @@ namespace Mengine
         q.w = _callbackData->quaternion[1];
         float angle = quatzw_to_angle( q );
 
-        parent_layer->setOrientationX( angle );
+        parent_layer->setLocalOrientationX( angle );
 
         Color color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
@@ -2249,7 +2249,7 @@ namespace Mengine
 
             origin.from_f3( anchorPoint );
 
-            this->setOrigin( origin );
+            this->setLocalOrigin( origin );
         }
 
         for( const SurfacePtr & surface : m_surfaces )

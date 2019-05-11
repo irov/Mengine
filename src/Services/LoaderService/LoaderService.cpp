@@ -270,7 +270,7 @@ namespace Mengine
             int64_t stringHash;
             const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( str, false )("invlid read string (error)");
+            MENGINE_ASSERTION_MEMORY_PANIC( str, false, "invlid read string (error)" );
 
             STRINGIZE_SERVICE()
                 ->stringize( str, stringSize, stringHash, buffer );

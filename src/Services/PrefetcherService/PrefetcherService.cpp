@@ -258,7 +258,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, false )("PrefetcherService::prefetchData: '%s':'%s' invalide dataflow is nullptr"
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, false, "'%s':'%s' invalide dataflow is nullptr"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             );

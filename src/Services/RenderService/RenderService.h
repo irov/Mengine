@@ -36,11 +36,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     enum ERenderObjectFlag
     {
+        RENDER_OBJECT_FLAG_NONE = 0x00000000,
         RENDER_OBJECT_FLAG_DEBUG = 0x00000001
     };
     //////////////////////////////////////////////////////////////////////////
     enum ERenderPassFlag
     {
+        RENDER_PASS_FLAG_NONE = 0x00000000,
         RENDER_PASS_FLAG_SINGLE = 0x00000001
     };
     //////////////////////////////////////////////////////////////////////////
@@ -48,9 +50,6 @@ namespace Mengine
     {
         RenderMaterialInterface * material;
         uint32_t materialSmartId;
-
-        RenderVertexBufferInterface * vertexBuffer;
-        RenderIndexBufferInterface * indexBuffer;
 
         const RenderVertex2D * vertexData;
         uint32_t vertexCount;
@@ -144,7 +143,7 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _indexCount ) override;
+            , uint32_t _vertexCount, uint32_t _indexCount ) override;
 
         void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
@@ -286,8 +285,8 @@ namespace Mengine
         uint32_t m_maxVertexCount;
         uint32_t m_maxIndexCount;
 
-        RenderVertexBufferInterfacePtr m_currentVertexBuffer;
-        RenderIndexBufferInterfacePtr m_currentIndexBuffer;
+        RenderVertexBufferInterfacePtr m_currentRenderVertexBuffer;
+        RenderIndexBufferInterfacePtr m_currentRenderIndexBuffer;
         RenderProgramVariableInterfacePtr m_currentProgramVariable;
 
         RenderProgramVariableInterfacePtr m_defaultProgramVariable;

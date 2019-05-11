@@ -288,7 +288,7 @@ namespace Mengine
         {
             float rad = _angle * mt::constant::deg2rad;
 
-            _transformation->setOrientationX( rad );
+            _transformation->setLocalOrientationX( rad );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_Transformation_removeRelationTransformation( Transformation * _transformation )
@@ -307,8 +307,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Transformation_coordinate( Transformation * _transformation, const mt::vec3f & _coordinate )
         {
-            const mt::vec3f & origin = _transformation->getOrigin();
-            _transformation->setOrigin( origin + _coordinate );
+            const mt::vec3f & origin = _transformation->getLocalOrigin();
+            _transformation->setLocalOrigin( origin + _coordinate );
             _transformation->translate( _coordinate );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1684,7 +1684,7 @@ namespace Mengine
                     mt::vec3f target_orientation;
                     mt::make_euler_angles( target_orientation, mr );
 
-                    const mt::vec3f & node_orientation = m_node->getOrientation();
+                    const mt::vec3f & node_orientation = m_node->getLocalOrientation();
 
                     mt::vec3f correct_rotate_from;
                     mt::vec3f correct_rotate_to;
@@ -1706,7 +1706,7 @@ namespace Mengine
                     mt::vec3f new_orientation;
                     mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
 
-                    m_node->setOrientation( new_orientation );
+                    m_node->setLocalOrientation( new_orientation );
 
                     current_direction = m_node->getAxisDirection();
                 }
@@ -2073,7 +2073,7 @@ namespace Mengine
                 return 0;
             }
 
-            float angle = _node->getOrientationX();
+            float angle = _node->getLocalOrientationX();
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
@@ -2085,7 +2085,7 @@ namespace Mengine
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_ANGLE
                 , easing
                 , callback
-                , [_node]( float _v ) {_node->setOrientationX( _v ); }
+                , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
                 , correct_angle_from, correct_angle_to, _time
             );
 
@@ -2126,7 +2126,7 @@ namespace Mengine
 
             float angularSpeed = _node->getAngularSpeed();
 
-            float angle = _node->getOrientationX();
+            float angle = _node->getLocalOrientationX();
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
@@ -2140,7 +2140,7 @@ namespace Mengine
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( ETA_ANGLE
                     , easing
                     , callback
-                    , [_node]( float _v ) {_node->setOrientationX( _v ); }
+                    , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
                     , correct_angle_from, correct_angle_to, angularSpeed, _time
                 );
 
@@ -2185,8 +2185,8 @@ namespace Mengine
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear.create( ETA_SCALE
                 , easing
                 , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setScale( _v ); }
-                , _node->getScale(), _scale, _time
+                , [_node]( const mt::vec3f & _v ) { _node->setLocalScale( _v ); }
+                , _node->getLocalScale(), _scale, _time
             );
 
             if( affector == nullptr )
@@ -2490,23 +2490,38 @@ namespace Mengine
             .def( "getLocalPositionY", &Transformation::getLocalPositionY )
             .def( "setLocalPositionZ", &Transformation::setLocalPositionZ )
             .def( "getLocalPositionZ", &Transformation::getLocalPositionZ )
-            .def( "setOrigin", &Transformation::setOrigin )
-            .def( "getOrigin", &Transformation::getOrigin )
-            .def( "setScale", &Transformation::setScale )
-            .def( "getScale", &Transformation::getScale )
-            .def( "setSkew", &Transformation::setSkew )
-            .def( "getSkew", &Transformation::getSkew )
-            .def( "setOrientationX", &Transformation::setOrientationX )
-            .def( "getOrientationX", &Transformation::getOrientationX )
-            .def( "setOrientationY", &Transformation::setOrientationY )
-            .def( "getOrientationY", &Transformation::getOrientationY )
-            .def( "setOrientationZ", &Transformation::setOrientationZ )
-            .def( "getOrientationZ", &Transformation::getOrientationZ )
-            .def( "setOrientation", &Transformation::setOrientation )
-            .def( "getOrientation", &Transformation::getOrientation )
+            .def( "setLocalOrigin", &Transformation::setLocalOrigin )
+            .def( "getLocalOrigin", &Transformation::getLocalOrigin )
+            .def( "setLocalScale", &Transformation::setLocalScale )
+            .def( "getLocalScale", &Transformation::getLocalScale )
+            .def( "setLocalSkew", &Transformation::setLocalSkew )
+            .def( "getLocalSkew", &Transformation::getLocalSkew )
+            .def( "setLocalOrientationX", &Transformation::setLocalOrientationX )
+            .def( "getLocalOrientationX", &Transformation::getLocalOrientationX )
+            .def( "setLocalOrientationY", &Transformation::setLocalOrientationY )
+            .def( "getLocalOrientationY", &Transformation::getLocalOrientationY )
+            .def( "setLocalOrientationZ", &Transformation::setLocalOrientationZ )
+            .def( "getLocalOrientationZ", &Transformation::getLocalOrientationZ )
+            .def( "setLocalOrientation", &Transformation::setLocalOrientation )
+            .def( "getLocalOrientation", &Transformation::getLocalOrientation )
 
-            .def( "setAngle", &Transformation::setOrientationX )
-            .def( "getAngle", &Transformation::getOrientationX )
+            .def( "setOrigin", &Transformation::setLocalOrigin )
+            .def( "getOrigin", &Transformation::getLocalOrigin )
+            .def( "setScale", &Transformation::setLocalScale )
+            .def( "getScale", &Transformation::getLocalScale )
+            .def( "setSkew", &Transformation::setLocalSkew )
+            .def( "getSkew", &Transformation::getLocalSkew )
+            .def( "setOrientationX", &Transformation::setLocalOrientationX )
+            .def( "getOrientationX", &Transformation::getLocalOrientationX )
+            .def( "setOrientationY", &Transformation::setLocalOrientationY )
+            .def( "getOrientationY", &Transformation::getLocalOrientationY )
+            .def( "setOrientationZ", &Transformation::setLocalOrientationZ )
+            .def( "getOrientationZ", &Transformation::getLocalOrientationZ )
+            .def( "setOrientation", &Transformation::setLocalOrientation )
+            .def( "getOrientation", &Transformation::getLocalOrientation )
+
+            .def( "setAngle", &Transformation::setLocalOrientationX )
+            .def( "getAngle", &Transformation::getLocalOrientationX )
             .def_proxy_static( "setAngleDeg", nodeScriptMethod, &NodeScriptMethod::s_Transformation_setAngleDeg )
 
             .def( "setDirection", &Transformation::setDirection )

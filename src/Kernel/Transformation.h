@@ -87,26 +87,26 @@ namespace Mengine
         bool isIdentityPosition() const;
 
     public:
-        void setOrigin( const mt::vec3f& _origin );
-        inline const mt::vec3f & getOrigin() const;
+        void setLocalOrigin( const mt::vec3f& _origin );
+        inline const mt::vec3f & getLocalOrigin() const;
 
-        void setScale( const mt::vec3f& _scale );
-        inline const mt::vec3f & getScale() const;
+        void setLocalScale( const mt::vec3f& _scale );
+        inline const mt::vec3f & getLocalScale() const;
 
-        void setSkew( const mt::vec2f & _skew );
-        inline const mt::vec2f & getSkew() const;
+        void setLocalSkew( const mt::vec2f & _skew );
+        inline const mt::vec2f & getLocalSkew() const;
 
-        void setOrientationX( float _angle );
-        inline float getOrientationX() const;
+        void setLocalOrientationX( float _angle );
+        inline float getLocalOrientationX() const;
 
-        void setOrientationY( float _angle );
-        inline float getOrientationY() const;
+        void setLocalOrientationY( float _angle );
+        inline float getLocalOrientationY() const;
 
-        void setOrientationZ( float _angle );
-        inline float getOrientationZ() const;
+        void setLocalOrientationZ( float _angle );
+        inline float getLocalOrientationZ() const;
 
-        void setOrientation( const mt::vec3f & _orientation );
-        inline const mt::vec3f & getOrientation() const;
+        void setLocalOrientation( const mt::vec3f & _orientation );
+        inline const mt::vec3f & getLocalOrientation() const;
 
         bool isIdentityOrientation() const;
 
@@ -185,37 +185,37 @@ namespace Mengine
         return m_position;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f& Transformation::getOrigin() const
+    inline const mt::vec3f& Transformation::getLocalOrigin() const
     {
         return m_origin;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f& Transformation::getScale() const
+    inline const mt::vec3f& Transformation::getLocalScale() const
     {
         return m_scale;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec2f & Transformation::getSkew() const
+    inline const mt::vec2f & Transformation::getLocalSkew() const
     {
         return m_skew;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Transformation::getOrientationX() const
+    inline float Transformation::getLocalOrientationX() const
     {
         return m_orientation.x;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Transformation::getOrientationY() const
+    inline float Transformation::getLocalOrientationY() const
     {
         return m_orientation.y;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Transformation::getOrientationZ() const
+    inline float Transformation::getLocalOrientationZ() const
     {
         return m_orientation.z;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f & Transformation::getOrientation() const
+    inline const mt::vec3f & Transformation::getLocalOrientation() const
     {
         return m_orientation;
     }

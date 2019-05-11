@@ -1279,14 +1279,14 @@ namespace Mengine
         SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
 
 #elif defined(__ANDROID__)
-        //windowFlags |= SDL_WINDOW_FULLSCREEN;
+        windowFlags |= SDL_WINDOW_FULLSCREEN;
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
 
         SDL_SetHint( SDL_HINT_ORIENTATIONS, "Portrait" );
-        //SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
+        SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
 
 #else
         if( _fullscreen == true )

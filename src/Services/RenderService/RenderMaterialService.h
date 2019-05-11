@@ -13,11 +13,11 @@
 #include "stdex/intrusive_list.h"
 
 #ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
-#	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
+#define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
 #endif
 
 #ifndef MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE
-#	define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 1021
+#define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 1021
 #endif
 
 namespace Mengine
@@ -49,6 +49,8 @@ namespace Mengine
         void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
 
     public:
+        const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const override;
+
         const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) override;
 
     public:

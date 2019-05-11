@@ -793,6 +793,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialStage * RenderMaterialService::getMaterialStage( const ConstString & _materialName ) const
+    {
+        MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
+
+        if( it_found == m_materialStageIndexer.end() )
+        {
+            LOGGER_ERROR( "stage '%s' not found"
+                , _materialName.c_str()
+            );
+
+            return nullptr;
+        }
+
+        const RenderMaterialStage * stage = it_found->second;
+
+        return stage;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * RenderMaterialService::cacheStage( const RenderMaterialStage & _other )
     {
         for( uint32_t it = 0; it != m_stageCount; ++it )
@@ -917,7 +935,7 @@ namespace Mengine
     {
         const RenderMaterialStage * stage = m_defaultStages[_materialId];
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stage, nullptr )("invalid get stage for material '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( stage, nullptr, "invalid get stage for material '%s'"
             , m_defaultStageNames[_materialId].c_str()
             );
 

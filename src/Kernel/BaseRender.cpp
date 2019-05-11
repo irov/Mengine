@@ -322,10 +322,10 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , uint32_t _indexCount ) const
+        , uint32_t _vertexCount, uint32_t _indexCount ) const
     {
         RENDER_SERVICE()
-            ->addRenderMesh( _context, _material, _programVariable, _vertexBuffer, _indexBuffer, _indexCount );
+            ->addRenderMesh( _context, _material, _programVariable, _vertexBuffer, _indexBuffer, _vertexCount, _indexCount );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material

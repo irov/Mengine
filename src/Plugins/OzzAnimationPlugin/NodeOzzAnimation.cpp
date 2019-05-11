@@ -231,15 +231,13 @@ namespace Mengine
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
-            ->createVertexBuffer( 1, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
+            ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
 
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
         int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-        uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
-
-        vertexBuffer->resize( skinned_data_size );
+        vertexBuffer->resize( vertex_count );
 
         m_vertexBuffer = vertexBuffer;
 
@@ -248,7 +246,7 @@ namespace Mengine
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
-        size_t triangle_indices_buffer_size = triangle_indices.size() * sizeof( Detail::Mesh::VectorTriangleIndices::value_type );
+        size_t triangle_indices_buffer_size = triangle_indices.size();
 
         indexStream->resize( triangle_indices_buffer_size );
 
@@ -549,20 +547,28 @@ namespace Mengine
         // Renders skin.
         int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
-        uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
-
         // Reallocate vertex buffer.
-        uint32_t vbo_size = skinned_data_size;
+        uint32_t vbo_size = vertex_count;
         void * vbo_buffer = m_vertexMemory->getBuffer();
 
+        struct OzzVertex
+        {
+            mt::vec3f position;
+            uint32_t color;
+            mt::vec2f uv;
+        };
+        
+        OzzVertex * ozzv = (OzzVertex*)vbo_buffer;
+        (void)ozzv;
+            
         m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FUNCTION );
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
         const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
-        size_t triangle_indices_buffer_size = triangle_indices.size() * sizeof( Detail::Mesh::VectorTriangleIndices::value_type );
+        size_t indices_count = triangle_indices.size();
 
-        m_indexBuffer->draw( triangle_indices_buffer_data, triangle_indices_buffer_size, MENGINE_DOCUMENT_FUNCTION );
+        m_indexBuffer->draw( triangle_indices_buffer_data, indices_count, MENGINE_DOCUMENT_FUNCTION );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -582,6 +588,6 @@ namespace Mengine
         new_context.scissor = _context->scissor;
         new_context.target = _context->target;
 
-        this->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, triangle_indices.size() );
+        this->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count );
     }
 }

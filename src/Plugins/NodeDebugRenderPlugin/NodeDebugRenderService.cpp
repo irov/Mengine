@@ -725,7 +725,7 @@ namespace Mengine
             mt::vec2f scale;
             content.calcScale( resolution, scale );
 
-            m_debugText->setScale( mt::vec3f( scale, 1.f ) );
+            m_debugText->setLocalScale( mt::vec3f( scale, 1.f ) );
 
             m_debugText->render( _context );
         }

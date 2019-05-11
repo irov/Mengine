@@ -219,7 +219,7 @@ namespace Mengine
         return (m_transformationFlag & TRANSFORMATION_INVALIDATE_POSITION) == TRANSFORMATION_INVALIDATE_POSITION;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setOrientationX( float _angle )
+    void Transformation::setLocalOrientationX( float _angle )
     {
         if( mt::equal_f_f( m_orientation.x, _angle ) == true )
         {
@@ -240,7 +240,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setOrientationY( float _angle )
+    void Transformation::setLocalOrientationY( float _angle )
     {
         if( mt::equal_f_f( m_orientation.y, _angle ) == true )
         {
@@ -261,7 +261,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setOrientationZ( float _angle )
+    void Transformation::setLocalOrientationZ( float _angle )
     {
         if( mt::equal_f_f( m_orientation.z, _angle ) == true )
         {
@@ -282,7 +282,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setOrientation( const mt::vec3f & _euler )
+    void Transformation::setLocalOrientation( const mt::vec3f & _euler )
     {
         if( mt::cmp_v3_v3( m_orientation, _euler ) == true )
         {
@@ -455,7 +455,7 @@ namespace Mengine
     {
         mt::vec3f new_euler = m_orientation + _euler;
 
-        this->setOrientation( new_euler );
+        this->setLocalOrientation( new_euler );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::coordinate( const mt::vec3f & _delta )
@@ -464,7 +464,7 @@ namespace Mengine
         mt::vec3f new_origin = m_origin + _delta;
 
         this->setLocalPosition( new_pos );
-        this->setOrigin( new_origin );
+        this->setLocalOrigin( new_origin );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::setDirection( const mt::vec3f & _direction, const mt::vec3f & _up )
@@ -475,7 +475,7 @@ namespace Mengine
         mt::vec3f orientation;
         mt::make_euler_angles( orientation, mr );
 
-        this->setOrientation( orientation );
+        this->setLocalOrientation( orientation );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal )
@@ -486,7 +486,7 @@ namespace Mengine
         mt::vec3f orientation;
         mt::make_euler_angles( orientation, mr );
 
-        this->setOrientation( orientation );
+        this->setLocalOrientation( orientation );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::billboardAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _normal )
@@ -499,7 +499,7 @@ namespace Mengine
         mt::vec3f orientation;
         mt::make_euler_angles( orientation, mr );
 
-        this->setOrientation( orientation );
+        this->setLocalOrientation( orientation );
 
         this->setLocalPosition( _position );
     }
@@ -512,7 +512,7 @@ namespace Mengine
         mt::vec3f orientation;
         mt::make_euler_angles( orientation, mr );
 
-        this->setOrientation( orientation );
+        this->setLocalOrientation( orientation );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up )
@@ -525,7 +525,7 @@ namespace Mengine
         mt::vec3f orientation;
         mt::make_euler_angles( orientation, mr );
 
-        this->setOrientation( orientation );
+        this->setLocalOrientation( orientation );
 
         this->setLocalPosition( _position );
     }
@@ -785,7 +785,7 @@ namespace Mengine
         return wp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setOrigin( const mt::vec3f& _origin )
+    void Transformation::setLocalOrigin( const mt::vec3f& _origin )
     {
         if( mt::cmp_v3_v3( m_origin, _origin ) == true )
         {
@@ -806,7 +806,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setScale( const mt::vec3f& _scale )
+    void Transformation::setLocalScale( const mt::vec3f& _scale )
     {
         if( mt::cmp_v3_v3( m_scale, _scale ) == true )
         {
@@ -827,7 +827,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setSkew( const mt::vec2f& _skew )
+    void Transformation::setLocalSkew( const mt::vec2f& _skew )
     {
         if( mt::cmp_v2_v2( m_skew, _skew ) == true )
         {

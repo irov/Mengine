@@ -403,7 +403,7 @@ namespace Mengine
 
         const RenderImageInterfacePtr & image = new_texture->getImage();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr )("invalid get image");
+        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "invalid get image" );
 
         if( imageLoader->load( image ) == false )
         {

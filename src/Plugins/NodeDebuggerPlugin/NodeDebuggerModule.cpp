@@ -547,10 +547,10 @@ namespace Mengine
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Transformation" );
 
         serializeNodeProp( _transformation->getLocalPosition(), "position", xmlNode );
-        serializeNodeProp( _transformation->getOrigin(), "origin", xmlNode );
-        serializeNodeProp( _transformation->getSkew(), "skew", xmlNode );
-        serializeNodeProp( _transformation->getScale(), "scale", xmlNode );
-        serializeNodeProp( _transformation->getOrientation(), "orientation", xmlNode );
+        serializeNodeProp( _transformation->getLocalOrigin(), "origin", xmlNode );
+        serializeNodeProp( _transformation->getLocalSkew(), "skew", xmlNode );
+        serializeNodeProp( _transformation->getLocalScale(), "scale", xmlNode );
+        serializeNodeProp( _transformation->getLocalOrientation(), "orientation", xmlNode );
         serializeNodeProp( _transformation->getWorldPosition(), "worldPosition", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -824,22 +824,22 @@ namespace Mengine
 
             deserializeNodeProp<mt::vec3f>( "origin", transformationNode, [node]( const mt::vec3f & _value )
             {
-                node->setOrigin( _value );
+                node->setLocalOrigin( _value );
             } );
 
             deserializeNodeProp<mt::vec2f>( "skew", transformationNode, [node]( const mt::vec2f & _value )
             {
-                node->setSkew( _value );
+                node->setLocalSkew( _value );
             } );
 
             deserializeNodeProp<mt::vec3f>( "scale", transformationNode, [node]( const mt::vec3f & _value )
             {
-                node->setScale( _value );
+                node->setLocalScale( _value );
             } );
 
             deserializeNodeProp<mt::vec3f>( "orientation", transformationNode, [node]( const mt::vec3f & _value )
             {
-                node->setOrientation( _value );
+                node->setLocalOrientation( _value );
             } );
 
             pugi::xml_node renderNode = _xmlNode.child( "Render" );

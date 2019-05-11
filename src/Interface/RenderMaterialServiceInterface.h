@@ -34,6 +34,8 @@ namespace Mengine
         virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;
 
     public:
+        virtual const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const = 0;
+
         virtual const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) = 0;
 
     public:

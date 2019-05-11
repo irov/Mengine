@@ -772,7 +772,7 @@ namespace Mengine
             ArrowPtr arrow = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( arrow )("Error: can't setup arrow '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( arrow, "Error: can't setup arrow '%s'"
                 , _prototype.c_str()
                 );
 
@@ -964,7 +964,7 @@ namespace Mengine
             ResourcePtr resource = RESOURCE_SERVICE()
                 ->generateResource( _type, MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr )("invalid create resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid create resource '%s'"
                 , _type.c_str()
                 );
 

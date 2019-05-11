@@ -58,7 +58,7 @@ namespace Mengine
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false )("invalid create memory proxy");
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid create memory proxy" );
 
         m_memory = memory;
 

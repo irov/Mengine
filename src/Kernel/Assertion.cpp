@@ -34,6 +34,13 @@ namespace Mengine
         {
         }
         //////////////////////////////////////////////////////////////////////////
+        const AssertionOperator & AssertionOperator::operator()() const
+        {
+            Assertion( m_level, m_test, m_file, m_line, "" );
+
+            return *this;
+        }
+        //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()( const Char * _format, ... ) const
         {
             va_list argList;

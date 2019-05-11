@@ -25,6 +25,7 @@ namespace Mengine
             ~AssertionOperator();
 
         public:
+            const AssertionOperator & operator()() const;
             const AssertionOperator & operator()( const Char * _format, ... ) const;
 
         protected:

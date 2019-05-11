@@ -53,11 +53,11 @@ namespace Mengine
     {
         Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr )("invalid create identity");
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr, "invalid create identity");
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create mutex" );
 
         if( identity->initialize( _name, _priority, mutex, _doc ) == false )
         {
@@ -74,7 +74,7 @@ namespace Mengine
     {
         Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create mutex" );
 
         mutex->initialize( _doc );
 
@@ -85,7 +85,7 @@ namespace Mengine
     {
         Win32ThreadConditionVariablePtr conditionVariable = m_factoryWin32ThreadConditionVariable->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( conditionVariable, nullptr )("invalid create condition variable");
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionVariable, nullptr, "invalid create condition variable" );
 
         conditionVariable->initialize( _doc );
 

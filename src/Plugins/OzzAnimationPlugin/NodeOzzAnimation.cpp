@@ -572,13 +572,15 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        m_renderWorldMatrix = wm;
-
-        if( _context->transformation != nullptr )
+        if( _context->transformation == nullptr )
+        {
+            m_renderWorldMatrix = wm;
+        }
+        else
         {
             const mt::mat4f & transformationWorldMatrix = _context->transformation->getTransformationWorldMatrix();
 
-            m_renderWorldMatrix = m_renderWorldMatrix * transformationWorldMatrix;
+            m_renderWorldMatrix = wm * transformationWorldMatrix;
         }
 
         RenderContext new_context;

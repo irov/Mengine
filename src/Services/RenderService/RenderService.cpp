@@ -142,16 +142,9 @@ namespace Mengine
             return;
         }
 
-        this->restoreRenderSystemStates_();
-
         for( RenderObject & ro : m_renderObjects )
         {
             IntrusivePtrBase::intrusive_ptr_release( ro.material );
-        }
-
-        for( RenderPass * rp : m_renderPasses )
-        {
-            m_poolRenderPass.destroyT( rp );
         }
 
         m_renderObjects.clear();
@@ -178,6 +171,16 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
 
         m_factoryRenderBatch = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::_stopService()
+    {
+        if( m_windowCreated == false )
+        {
+            return;
+        }
+
+        this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,

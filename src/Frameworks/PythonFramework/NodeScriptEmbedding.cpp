@@ -3047,6 +3047,8 @@ namespace Mengine
                 .def( "setHorizontalLeftAlign", &TextField::setHorizontalLeftAlign )
                 .def( "isHorizontalLeftAlign", &TextField::isHorizontalLeftAlign )
 
+                .def( "setVerticalTopAlign", &TextField::setVerticalTopAlign )
+                .def( "isVerticalTopAlign", &TextField::isVerticalTopAlign )
                 .def( "setVerticalBottomAlign", &TextField::setVerticalBottomAlign )
                 .def( "isVerticalBottomAlign", &TextField::isVerticalBottomAlign )
                 .def( "setVerticalCenterAlign", &TextField::setVerticalCenterAlign )

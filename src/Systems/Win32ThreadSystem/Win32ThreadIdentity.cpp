@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#if defined(_MSC_VER)
+#if defined(MENGINE_TOOLCHAIN_MSVC)
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
@@ -110,7 +110,7 @@ namespace Mengine
 
         DWORD threadId = ::GetThreadId( m_thread );
 
-#if defined(_MSC_VER)
+#if defined(MENGINE_TOOLCHAIN_MSVC)
         Detail::SetThreadName( threadId, _name.c_str() );
 #endif
 

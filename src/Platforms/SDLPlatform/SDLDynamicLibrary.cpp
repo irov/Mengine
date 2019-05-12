@@ -37,7 +37,7 @@ namespace Mengine
 
         if( m_instance == nullptr )
         {
-            LOGGER_ERROR( "DynamicLibrary::load %ls failed"
+            LOGGER_ERROR( "'%ls' failed"
                 , m_name.c_str()
             );
 

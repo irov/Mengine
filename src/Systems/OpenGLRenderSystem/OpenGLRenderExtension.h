@@ -2,7 +2,7 @@
 
 #include "OpenGLRenderHeader.h"
 
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
 // textures
 typedef void (APIENTRYP PFNGLACTIVETEXTUREPROC) (GLenum texture);
 typedef void (APIENTRYP PFNGLCLIENTACTIVETEXTUREPROC) (GLenum texture);

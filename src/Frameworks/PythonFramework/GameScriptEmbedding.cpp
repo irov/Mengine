@@ -276,7 +276,7 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG)
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_DEBUG", true );
 #else
@@ -284,7 +284,7 @@ namespace Mengine
             ->addGlobalModuleT( "_DEBUG", false );
 #endif
 
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_WIN32", true );
 #else
@@ -292,7 +292,7 @@ namespace Mengine
             ->addGlobalModuleT( "_WIN32", false );
 #endif
 
-#ifdef __ANDROID__
+#if defined(MENGINE_PLATFORM_ANDROID)
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_ANDROID", true );
 #else
@@ -300,7 +300,7 @@ namespace Mengine
             ->addGlobalModuleT( "_ANDROID", false );
 #endif
 
-#ifdef MENGINE_MASTER_RELEASE
+#if defined(MENGINE_MASTER_RELEASE)
         SCRIPT_SERVICE()
             ->addGlobalModuleT( "_MASTER_RELEASE", true );
 #else

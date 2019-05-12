@@ -429,15 +429,18 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                     newOrientation = SDLActivity.SDL_ORIENTATION_PORTRAIT;
                     break;
             }
-
+            
+            float z = event.values[2];
+            float g = SensorManager.GRAVITY_EARTH;
+            
             if (newOrientation != SDLActivity.mCurrentOrientation) {
                 SDLActivity.mCurrentOrientation = newOrientation;
                 SDLActivity.onNativeOrientationChanged(newOrientation);
             }
 
-            SDLActivity.onNativeAccel(-x / SensorManager.GRAVITY_EARTH,
-                                      y / SensorManager.GRAVITY_EARTH,
-                                      event.values[2] / SensorManager.GRAVITY_EARTH);
+            SDLActivity.onNativeAccel(-x / g,
+                                      y / g,
+                                      z / g);
 
             
         }

@@ -49,7 +49,7 @@
 
 #include "SDLMessageBoxLogger.h"
 
-#if defined(__ANDROID__)
+#ifdef MENGINE_PLATFORM_ANDROID
 #   include "AndroidLogger.h"
 #else
 #   include "SDLStdioLogger.h"
@@ -398,7 +398,7 @@ namespace Mengine
             return true;
         }
 
-#if defined(__ANDROID__)
+#if defined(MENGINE_PLATFORM_ANDROID)
         m_loggerStdio = new FactorableUnique<AndroidLogger>();
 #else
         m_loggerStdio = new FactorableUnique<SDLStdioLogger>();

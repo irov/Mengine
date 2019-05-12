@@ -38,6 +38,8 @@ namespace Mengine
             , blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
             , blendOp( BOP_ADD )
             , alphaBlendEnable( false )
+            , depthBufferTestEnable( false )
+            , depthBufferWriteEnable( false )
         {
         }
 
@@ -52,6 +54,8 @@ namespace Mengine
         EBlendOp blendOp;
 
         bool alphaBlendEnable;
+        bool depthBufferTestEnable;
+        bool depthBufferWriteEnable;
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface

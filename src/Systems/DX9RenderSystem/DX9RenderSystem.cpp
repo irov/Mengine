@@ -49,6 +49,7 @@ namespace Mengine
         , m_pD3DDevice( nullptr )
         , m_hd3d9( NULL )
         , m_fullscreen( true )
+        , m_depth( false )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
         , m_deviceType( D3DDEVTYPE_HAL )
         , m_waitForVSync( false )
@@ -186,8 +187,7 @@ namespace Mengine
         LOGGER_MESSAGE( "SubSysId: %u", AdID.SubSysId );
         LOGGER_MESSAGE( "Revision: %u", AdID.Revision );
 
-        D3DCAPS9 caps;
-        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
+        IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &m_caps) )
         {
             return false;
         }
@@ -202,7 +202,7 @@ namespace Mengine
         //	return false;
         //}
 
-        m_dxMaxCombinedTextureImageUnits = caps.MaxSimultaneousTextures;
+        m_dxMaxCombinedTextureImageUnits = m_caps.MaxSimultaneousTextures;
 
         if( m_dxMaxCombinedTextureImageUnits > MENGINE_MAX_TEXTURE_STAGES )
         {
@@ -267,23 +267,9 @@ namespace Mengine
         m_factoryDX9TargetOffscreen = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
-        bool _fullscreen, bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount )
+    D3DMULTISAMPLE_TYPE DX9RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
     {
-        (void)_bits;
-        (void)_FSAAType;
-        (void)_FSAAQuality;
-
-        m_windowResolution = _resolution;
-
-        mt::vec2f windowSize;
-        m_windowResolution.calcSize( windowSize );
-        m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
-
-        m_fullscreen = _fullscreen;
-        m_waitForVSync = _waitForVSync;
-
-        D3DMULTISAMPLE_TYPE multiSampleType = D3DMULTISAMPLE_NONE;
+        D3DMULTISAMPLE_TYPE MultiSampleType = D3DMULTISAMPLE_NONE;
         for( uint32_t MultiSampleIndex = _MultiSampleCount; MultiSampleIndex != 0; --MultiSampleIndex )
         {
             D3DMULTISAMPLE_TYPE testMultiSampleType = s_getMultiSampleType( MultiSampleIndex );
@@ -303,9 +289,66 @@ namespace Mengine
                 continue;
             }
 
-            multiSampleType = testMultiSampleType;
+            MultiSampleType = testMultiSampleType;
             break;
         }
+
+        return MultiSampleType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    D3DFORMAT DX9RenderSystem::findMatchingZFormat_( D3DFORMAT _backBufferFormat )
+    {
+        const D3DFORMAT DepthFormats[] = { D3DFMT_D32
+            , D3DFMT_D24S8
+            , D3DFMT_D24X4S4
+            , D3DFMT_D24X8
+            , D3DFMT_D16
+            , D3DFMT_D15S1
+            , (D3DFORMAT)0 
+        };
+
+        const D3DFORMAT *pFormatList = DepthFormats;
+
+        while( *pFormatList )
+        {
+            if( SUCCEEDED( m_pD3D->CheckDeviceFormat( m_caps.AdapterOrdinal, m_caps.DeviceType, _backBufferFormat, D3DUSAGE_DEPTHSTENCIL, D3DRTYPE_SURFACE, *pFormatList ) ) )
+            {
+                if( SUCCEEDED( m_pD3D->CheckDepthStencilMatch( m_caps.AdapterOrdinal, m_caps.DeviceType, _backBufferFormat, _backBufferFormat, *pFormatList ) ) )
+                {
+                    break;
+                }
+            }
+
+            ++pFormatList;
+        }
+
+        return *pFormatList;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution
+        , uint32_t _bits
+        , bool _fullscreen
+        , bool _depth
+        , bool _waitForVSync
+        , int32_t _FSAAType
+        , int32_t _FSAAQuality
+        , uint32_t _MultiSampleCount )
+    {
+        MENGINE_DEBUG( _bits );
+        MENGINE_DEBUG( _FSAAType );
+        MENGINE_DEBUG( _FSAAQuality );
+
+        m_windowResolution = _resolution;
+
+        mt::vec2f windowSize;
+        m_windowResolution.calcSize( windowSize );
+        m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
+
+        m_fullscreen = _fullscreen;
+        m_depth = _depth;
+        m_waitForVSync = _waitForVSync;
+
+        D3DMULTISAMPLE_TYPE multiSampleType = this->findMatchingMultiSampleType_( _MultiSampleCount );
 
         ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
         ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
@@ -327,10 +370,18 @@ namespace Mengine
 
         m_d3dppW.Windowed = TRUE;
 
-        m_d3dppW.EnableAutoDepthStencil = FALSE;
-        m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+        if( _depth == true )
+        {
+            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppW.BackBufferFormat );
 
-        //m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+            m_d3dppW.EnableAutoDepthStencil = TRUE;
+            m_d3dppW.AutoDepthStencilFormat = AutoDepthStencilFormat;
+        }
+        else
+        {
+            m_d3dppW.EnableAutoDepthStencil = FALSE;
+            m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+        }
 
         m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
@@ -355,8 +406,18 @@ namespace Mengine
 
         m_d3dppFS.BackBufferFormat = m_displayMode.Format;
 
-        m_d3dppFS.EnableAutoDepthStencil = FALSE;
-        m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+        if( _depth == true )
+        {
+            D3DFORMAT AutoDepthStencilFormat = this->findMatchingZFormat_( m_d3dppFS.BackBufferFormat );
+
+            m_d3dppFS.EnableAutoDepthStencil = TRUE;
+            m_d3dppFS.AutoDepthStencilFormat = AutoDepthStencilFormat;
+        }
+        else
+        {
+            m_d3dppFS.EnableAutoDepthStencil = FALSE;
+            m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+        }
 
         m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
@@ -494,7 +555,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "Mode: %d x %d x %s\n"
+        LOGGER_INFO( "Mode: resolution %d x %d x %s\n"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , s_getD3DFormatName( m_displayMode.Format )
@@ -1360,7 +1421,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
-        D3DZBUFFERTYPE test = _depthTest ? D3DZB_TRUE : D3DZB_FALSE;
+        D3DZBUFFERTYPE test = _depthTest == true ? D3DZB_TRUE : D3DZB_FALSE;
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZENABLE, test) );
     }
@@ -1369,7 +1430,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
-        DWORD dWrite = _depthWrite ? TRUE : FALSE;
+        DWORD dWrite = _depthWrite == true ? TRUE : FALSE;
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ZWRITEENABLE, dWrite) );
     }
@@ -1670,8 +1731,15 @@ namespace Mengine
     void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
+        
+        DWORD Flags = D3DCLEAR_TARGET;
 
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
+        if( m_depth == true )
+        {
+            Flags |= D3DCLEAR_ZBUFFER;
+        }
+
+        DXCALL( m_pD3DDevice, Clear, (0, NULL, Flags, D3DCOLOR_XRGB( _r, _g, _b ), 1.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat, const Char * _doc )

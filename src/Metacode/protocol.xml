@@ -1,4 +1,4 @@
-<Protocol Version = "134">
+<Protocol Version = "135">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -138,7 +138,9 @@
           <Member Node="BlendFactor" Name="Dest" Type="Mengine::EBlendFactor"/>
           <Member Node="BlendFactor" Name="Op" Type="Mengine::EBlendOp"/>
 
-          <Member Node="AlphaBlend" Name="Enable" Type="bool"/>
+          <Member Node="AlphaBlend" Name="Enable" Type="bool" Default = "false"/>
+          <Member Node="DepthBufferTest" Name="Enable" Type="bool" Default = "false"/>
+          <Member Node="DepthBufferWrite" Name="Enable" Type="bool" Default = "false"/>
 
           <Node Name="TextureStages">
             <Attribute Name="Stage" Type="uint32_t" Required="1"/>

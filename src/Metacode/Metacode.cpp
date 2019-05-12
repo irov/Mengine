@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 134;
+        return 135;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3256173687; 
+        return 1830252627; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -676,6 +676,8 @@ namespace Metacode
             , m_BlendFactor_Dest_successful(false)
             , m_BlendFactor_Op_successful(false)
             , m_BlendFactor_Source_successful(false)
+            , m_DepthBufferTest_Enable_successful(false)
+            , m_DepthBufferWrite_Enable_successful(false)
             , m_Program_Name_successful(false)
         {
         }
@@ -763,7 +765,19 @@ namespace Metacode
         
                     this->m_BlendFactor_Source_successful = true;
                 }break;
+            case 8:
+                {
+                    Metabuf::read( _buff, _size, _read, _userData, this->m_DepthBufferTest_Enable );
+        
+                    this->m_DepthBufferTest_Enable_successful = true;
+                }break;
             case 9:
+                {
+                    Metabuf::read( _buff, _size, _read, _userData, this->m_DepthBufferWrite_Enable );
+        
+                    this->m_DepthBufferWrite_Enable_successful = true;
+                }break;
+            case 11:
                 {
                     Metabuf::read( _buff, _size, _read, _userData, this->m_Program_Name );
         
@@ -780,7 +794,7 @@ namespace Metacode
             (void)_count;
             switch( _id )
             {
-            case 8:
+            case 10:
                 {
                     includes_Meta_TextureStages.reserve( _count );
                 }break;
@@ -798,7 +812,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 8:
+            case 10:
                 {
                     includes_Meta_TextureStages.emplace_back( Meta_DataBlock::Meta_Material::Meta_TextureStages() );
                     Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.back();

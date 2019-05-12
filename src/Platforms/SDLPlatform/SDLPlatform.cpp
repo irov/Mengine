@@ -10,7 +10,7 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
 #	include "Environment/Windows/WindowsIncluder.h"
 #endif
 
@@ -31,7 +31,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
-#ifdef __APPLE__
+#if defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_IOS)
 #	include "TargetConditionals.h"
 #endif
 
@@ -46,9 +46,10 @@
 
 #include <sys/stat.h>
 
-
-#ifndef SDL_IPHONE_MAX_GFORCE
-#define SDL_IPHONE_MAX_GFORCE 5.0f
+#if defined(MENGINE_PLATFORM_IOS)
+#   ifndef SDL_IPHONE_MAX_GFORCE
+#   define SDL_IPHONE_MAX_GFORCE 5.0f
+#   endif
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////    
     size_t SDLPlatform::getCurrentPath( Char * _path ) const
     {
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_path[MENGINE_MAX_PATH];
         DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
 
@@ -98,7 +99,7 @@ namespace Mengine
         }
 
         return pathLen;
-#elif TARGET_OS_IPHONE
+#elif defined(MENGINE_PLATFORM_IOS)
         const char deploy_ios_data[] = "deploy-ios-data/";
         strcpy( _path, deploy_ios_data );
 
@@ -116,7 +117,8 @@ namespace Mengine
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 
-        FilePath userPath;
+        FilePath userPat1h;
+        FilePath userPat2h;
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
             Char currentPath[MENGINE_MAX_PATH];
@@ -170,7 +172,7 @@ namespace Mengine
 
         axis *= inv_maxint32f;
 
-#ifdef TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         axis *= SDL_IPHONE_MAX_GFORCE;
 #endif
         return axis;
@@ -193,7 +195,7 @@ namespace Mengine
         SDL_Rect rect;
         SDL_GetDisplayBounds( 0, &rect );
 
-        LOGGER_WARNING( "SDLPlatform::getMaxClientResolution w %d h %d"
+        LOGGER_WARNING( "client resolution width %d height %d"
             , rect.w
             , rect.h
         );
@@ -203,8 +205,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void MySDL_LogOutputFunction( void * _userdata, int _category, SDL_LogPriority _priority, const char * _message )
     {
-        (void)_userdata;
-        (void)_category;
+        MENGINE_UNUSED( _userdata );
+        MENGINE_UNUSED( _category );
 
         EMessageLevel level = LM_INFO;
 
@@ -214,7 +216,7 @@ namespace Mengine
             level = LM_INFO;
             break;
         case SDL_LOG_PRIORITY_DEBUG:
-            level = LM_WARNING;
+            level = LM_MESSAGE;
             break;
         case SDL_LOG_PRIORITY_INFO:
             level = LM_INFO;
@@ -456,7 +458,9 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->endUpdate();
 
+#if defined(MENGINE_PLATFORM_WINDOWS)
             SDL_Delay( 1 );
+#endif
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -529,12 +533,12 @@ namespace Mengine
 
         ;
 
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         APPLICATION_SERVICE()
             ->changeWindowResolution( Resolution( dw, dh ) );
 #endif
 
-#if defined(__ANDROID__)
+#if defined(MENGINE_PLATFORM_ANDROID)
         APPLICATION_SERVICE()
             ->changeWindowResolution( Resolution( dw, dh ) );
 #endif
@@ -590,7 +594,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getDesktopResolution( Resolution & _resolution ) const
     {
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         if( m_window == nullptr )
         {
             return false;
@@ -602,7 +606,7 @@ namespace Mengine
 
         _resolution.setWidth( static_cast<uint32_t>(dw) );
         _resolution.setHeight( static_cast<uint32_t>(dh) );
-#elif defined(__ANDROID__)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         if( m_window == nullptr )
         {
             return false;
@@ -639,9 +643,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::getAlwaysFullscreen() const
     {
-#if TARGET_OS_IPHONE
+#if defined(MENGINE_PLATFORM_IOS)
         return true;
-#elif defined(__ANDROID__)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         return true;
 #endif
 
@@ -745,6 +749,7 @@ namespace Mengine
         MENGINE_UNUSED( _name );
         MENGINE_UNUSED( _path );
         MENGINE_UNUSED( _buffer );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -756,31 +761,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_createDurectoryFullpath( const Char * _fullpath )
     {
-#if defined(__APPLE__)
+#if defined(MENGINE_PLATFORM_MACOS)
         int status = mkdir( _fullpath, 0700 );
 
         if( status != 0 )
         {
-            LOGGER_WARNING( "SDLPlatform::createDirectory '%s' alredy exists"
+            LOGGER_WARNING( "'%s' alredy exists"
                 , _fullpath
             );
 
             return false;
         }
 
-#elif defined(__ANDROID__)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         int status = mkdir( _fullpath, 0700 );
 
         if( status != 0 )
         {
-            LOGGER_WARNING( "SDLPlatform::createDirectory '%s' alredy exists"
+            LOGGER_WARNING( "'%s' alredy exists"
                 , _fullpath
             );
 
             return false;
         }
 
-#elif defined(WIN32)
+#elif defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_fullpath[MENGINE_MAX_PATH];
         Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH );
 
@@ -794,7 +799,7 @@ namespace Mengine
             {
             case ERROR_ALREADY_EXISTS:
                 {
-                    LOGGER_WARNING( "SDLPlatform::createDirectory '%s' alredy exists"
+                    LOGGER_WARNING( "'%s' alredy exists"
                         , _fullpath
                     );
 
@@ -802,7 +807,7 @@ namespace Mengine
                 }break;
             case ERROR_PATH_NOT_FOUND:
                 {
-                    LOGGER_WARNING( "SDLPlatform::createDirectory '%s' not found"
+                    LOGGER_WARNING( "'%s' not found"
                         , _fullpath
                     );
 
@@ -810,7 +815,7 @@ namespace Mengine
                 }break;
             default:
                 {
-                    LOGGER_WARNING( "SDLPlatform::createDirectory '%s' unknown error %d"
+                    LOGGER_WARNING( "'%s' unknown error %d"
                         , _fullpath
                         , err
                     );
@@ -952,7 +957,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
     //////////////////////////////////////////////////////////////////////////
     static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda )
     {
@@ -1041,7 +1046,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_base[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _base, unicode_base, MENGINE_MAX_PATH ) == false )
         {
@@ -1073,7 +1078,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
@@ -1143,7 +1148,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t SDLPlatform::getFileTime( const Char * _filePath ) const
     {
-#ifdef WIN32	
+#if defined(MENGINE_PLATFORM_WINDOWS)
         WChar unicode_filePath[MENGINE_MAX_PATH];
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
@@ -1224,19 +1229,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
     {
-#if defined(TARGET_OS_IPHONE)
+#if defined(MENGINE_PLATFORM_IOS)
         RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen );
-#elif defined(__ANDROID__)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         RENDER_SYSTEM()
             ->onWindowChangeFullscreen( _fullscreen );
 #else
-        //RENDER_SERVICE()
-        //    ->destroyRenderWindow();
-
-        //SDL_Window * old_window = m_window;
-        //SDL_HideWindow( old_window );
-        //SDL_GL_MakeCurrent( old_window, nullptr );
 
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
@@ -1266,7 +1265,7 @@ namespace Mengine
 
         Uint32 windowFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
-#if defined(TARGET_OS_IPHONE)
+#if defined(MENGINE_PLATFORM_IOS)
         windowFlags |= SDL_WINDOW_FULLSCREEN;
         windowFlags |= SDL_WINDOW_BORDERLESS;
         windowFlags |= SDL_WINDOW_ALLOW_HIGHDPI;
@@ -1278,7 +1277,7 @@ namespace Mengine
         //SDL_SetHint( SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight" );
         SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
 
-#elif defined(__ANDROID__)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         windowFlags |= SDL_WINDOW_FULLSCREEN;
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES );
@@ -1295,7 +1294,7 @@ namespace Mengine
         }
 #endif
 
-#if defined(TARGET_OS_IPHONE)
+#if defined(MENGINE_PLATFORM_IOS)
         SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, "1" );
 
         m_window = SDL_CreateWindow( m_projectTitle.c_str()
@@ -1305,7 +1304,7 @@ namespace Mengine
             , -1
             , windowFlags );
 
-#elif defined(__ANDROID__)
+#elif defined(MENGINE_PLATFORM_ANDROID)
         m_window = SDL_CreateWindow( m_projectTitle.c_str()
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
@@ -1314,7 +1313,6 @@ namespace Mengine
             , windowFlags );
 
 #else
-
         int width = static_cast<int>(_resolution.getWidth());
         int height = static_cast<int>(_resolution.getHeight());
 

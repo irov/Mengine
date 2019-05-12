@@ -154,7 +154,7 @@ namespace Mengine
         {
             printf( "debug!\n" );
 
-#if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
             _asm int 3;
 #endif			
         }
@@ -165,7 +165,7 @@ namespace Mengine
 
             printf( "debug node!\n" );
 
-#if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
             _asm int 3;
 #endif	
         }

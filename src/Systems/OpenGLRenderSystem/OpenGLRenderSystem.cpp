@@ -71,7 +71,7 @@ namespace Mengine
     {
         LOGGER_WARNING( "Initializing OpenGL RenderSystem..." );
 
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );
 #else
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
@@ -135,7 +135,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
     {
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
         return RP_OPENGL;
 #else
         return RP_OPENGLES;
@@ -158,7 +158,7 @@ namespace Mengine
 
         m_resolution = _resolution;
 
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
         Mengine::initialize_GLEXT();
 #endif
 
@@ -201,7 +201,7 @@ namespace Mengine
         GLCALL( glDepthMask, (GL_FALSE) );
         GLCALL( glDepthFunc, (GL_LESS) );
 
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
         GLCALL( glMatrixMode, (GL_MODELVIEW) );
         GLCALL( glLoadIdentity, () );
 
@@ -605,7 +605,7 @@ namespace Mengine
 
             if( textureStage.texture == nullptr )
             {
-#ifdef MENGINE_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_ES
                 GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
 #else
                 GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
@@ -658,7 +658,7 @@ namespace Mengine
                 break;
             }
 
-#ifdef MENGINE_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_ES
             GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
 #else
             GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
@@ -710,7 +710,7 @@ namespace Mengine
 
         GLCALL( glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 
-#ifdef MENGINE_OPENGL_ES
+#ifdef MENGINE_RENDER_OPENGL_ES
         GLCALL( glBlendEquation, (blendOp) );
 #else
         GLCALL( glBlendEquation_, (blendOp) );
@@ -780,7 +780,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setFillMode( EFillMode _mode )
     {
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
         const GLenum mode = s_getGLFillMode( _mode );
         glPolygonMode( GL_FRONT_AND_BACK, mode );
 #endif      
@@ -962,7 +962,7 @@ namespace Mengine
                 GLCALL( glDepthMask, (GL_TRUE) );
             }
 
-#ifndef MENGINE_OPENGL_ES
+#ifndef MENGINE_RENDER_OPENGL_ES
             GLCALL( glClearDepth, (static_cast<GLclampd>(_depth)) );
 #endif          
         }

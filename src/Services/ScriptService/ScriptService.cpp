@@ -232,7 +232,7 @@ namespace Mengine
 
         m_mutex = mutex;
 
-#if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
+#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         int crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
         int crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
         int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
@@ -252,7 +252,7 @@ namespace Mengine
 
         pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
 
-#if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
+#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );
         _CrtSetReportMode( _CRT_ERROR, crt_error );
         _CrtSetReportMode( _CRT_ASSERT, crt_assert );

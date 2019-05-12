@@ -22,7 +22,7 @@ namespace Mengine
                 return "GL_INVALID_FRAMEBUFFER_OPERATION";
             case GL_OUT_OF_MEMORY:
                 return "GL_OUT_OF_MEMORY";
-#ifdef WIN32
+#if defined(MENGINE_PLATFORM_WINDOWS)
             case GL_STACK_UNDERFLOW:
                 return "GL_STACK_UNDERFLOW";
             case GL_STACK_OVERFLOW:

@@ -222,8 +222,8 @@ namespace Mengine
             , m_locale.c_str()
         );
 
-#if TARGET_OS_IPHONE
-#elif __ANDROID__
+#if defined(MENGINE_PLATFORM_IOS)
+#elif defined(MENGINE_PLATFORM_ANDROID)
 #else
         m_windowResolution = CONFIG_VALUE( "Window", "Size", Resolution( 1024, 768 ) );
 #endif

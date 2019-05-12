@@ -126,7 +126,7 @@ namespace Mengine
 
         const ozz::animation::Animation & ozz_animation = m_resourceOzzAnimation->getOzzAnimation();
 
-        float duration = ozz_animation.duration();
+        float duration = ozz_animation.duration() * 1000.f;
 
         if( m_time > duration )
         {
@@ -165,7 +165,7 @@ namespace Mengine
         sampling_job.animation = &ozz_animation;
         sampling_job.cache = m_cache;
 
-        float duration = ozz_animation.duration();
+        float duration = ozz_animation.duration() * 1000.f;
         float ratio = m_time / duration;
         sampling_job.ratio = ratio;
         sampling_job.output = m_locals;
@@ -180,8 +180,9 @@ namespace Mengine
     bool SamplerOzzAnimation::_play( uint32_t _playId, float _time )
     {
         (void)_playId;
+        (void)_time;
 
-        m_time = _time;
+        m_time = 0.f;
 
         return true;
     }
@@ -189,8 +190,9 @@ namespace Mengine
     bool SamplerOzzAnimation::_restart( uint32_t _playId, float _time )
     {
         (void)_playId;
+        (void)_time;
 
-        m_time = _time;
+        m_time = 0.f;
 
         return true;
     }
@@ -203,8 +205,9 @@ namespace Mengine
     void SamplerOzzAnimation::_resume( uint32_t _playId, float _time )
     {
         (void)_playId;
+        (void)_time;
 
-        m_time = _time;
+        m_time = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_stop( uint32_t _playId )
@@ -226,5 +229,14 @@ namespace Mengine
         (void)_playId;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float SamplerOzzAnimation::_getDuration() const
+    {
+        const ozz::animation::Animation & ozz_animation = m_resourceOzzAnimation->getOzzAnimation();
+
+        float duration = ozz_animation.duration() * 1000.f;
+
+        return duration;
     }
 }

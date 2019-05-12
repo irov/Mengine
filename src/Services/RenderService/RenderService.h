@@ -344,6 +344,7 @@ namespace Mengine
 
         VectorRenderBatch m_cacheRenderBatches;
 
+        bool m_depthBufferTestEnable;
         bool m_depthBufferWriteEnable;
         bool m_alphaBlendEnable;
 

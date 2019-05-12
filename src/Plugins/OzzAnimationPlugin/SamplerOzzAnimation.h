@@ -60,6 +60,9 @@ namespace Mengine
         void _end( uint32_t _playId ) override;
         bool _interrupt( uint32_t _playId ) override;
 
+    protected:
+        float _getDuration() const override;
+
     public:
         ResourceOzzAnimationPtr m_resourceOzzAnimation;
         ResourceOzzSkeletonPtr m_resourceOzzSkeleton;

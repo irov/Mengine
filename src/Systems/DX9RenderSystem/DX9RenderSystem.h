@@ -41,7 +41,7 @@ namespace Mengine
         const ConstString & getRenderPlatformName() const override;
 
     public:
-        bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen
+        bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth
             , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
         void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
@@ -157,9 +157,12 @@ namespace Mengine
         Resolution m_windowResolution;
         Viewport m_windowViewport;
         bool m_fullscreen;
+        bool m_depth;
 
         IDirect3D9 * m_pD3D;
         IDirect3DDevice9 * m_pD3DDevice;
+
+        D3DCAPS9 m_caps;
 
         D3DPRESENT_PARAMETERS m_d3dppW;
         D3DPRESENT_PARAMETERS m_d3dppFS;
@@ -192,6 +195,10 @@ namespace Mengine
 
     protected:
         void updateWVPInvMatrix_();
+
+    protected:
+        D3DMULTISAMPLE_TYPE findMatchingMultiSampleType_( uint32_t _MultiSampleCount );
+        D3DFORMAT findMatchingZFormat_( D3DFORMAT _backBufferFormat );
 
     protected:
         UINT m_adapterToUse;

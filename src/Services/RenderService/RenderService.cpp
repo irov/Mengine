@@ -41,6 +41,7 @@ namespace Mengine
         , m_currentTextureStage( 0 )
         , m_maxVertexCount( 0 )
         , m_maxIndexCount( 0 )
+        , m_depthBufferTestEnable( false )
         , m_depthBufferWriteEnable( false )
         , m_alphaBlendEnable( false )
         , m_debugFillrateCalcMode( false )
@@ -204,15 +205,15 @@ namespace Mengine
             , m_fullscreen
         );
 
-        uint32_t MultiSampleCount = CONFIG_VALUE( "Engine", "MultiSampleCount", 2U );
+        bool RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
+        uint32_t RenderMultiSampleCount = CONFIG_VALUE( "Engine", "RenderMultiSampleCount", 2U );
 
-        m_windowCreated =
-            m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
-
-        if( m_windowCreated == false )
+        if( m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, RenderEnableAutoDepthStencil, m_vsync, _FSAAType, _FSAAQuality, RenderMultiSampleCount ) == false )
         {
             return false;
         }
+
+        m_windowCreated = true;
 
         this->restoreRenderSystemStates_();
 
@@ -558,6 +559,20 @@ namespace Mengine
             m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
         }
 
+        if( m_depthBufferTestEnable != m_currentStage->depthBufferTestEnable )
+        {
+            m_depthBufferTestEnable = m_currentStage->depthBufferTestEnable;
+
+            m_renderSystem->setDepthBufferTestEnable( m_depthBufferTestEnable );
+        }
+
+        if( m_depthBufferWriteEnable != m_currentStage->depthBufferWriteEnable )
+        {
+            m_depthBufferWriteEnable = m_currentStage->depthBufferWriteEnable;
+
+            m_renderSystem->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+        }
+
         if( m_currentBlendSrc != m_currentStage->blendSrc ||
             m_currentBlendDst != m_currentStage->blendDst ||
             m_currentBlendOp != m_currentStage->blendOp )
@@ -769,6 +784,7 @@ namespace Mengine
         m_currentBlendDst = BF_ZERO;
         m_currentBlendOp = BOP_ADD;
 
+        m_depthBufferTestEnable = false;
         m_depthBufferWriteEnable = false;
         m_alphaBlendEnable = false;
 
@@ -790,7 +806,7 @@ namespace Mengine
         m_renderSystem->setCullMode( CM_CULL_NONE );
         //m_renderSystem->setFillMode( FM_SOLID );
         //m_renderSystem->setFillMode( FM_WIREFRAME );
-        m_renderSystem->setDepthBufferTestEnable( false );
+        m_renderSystem->setDepthBufferTestEnable( m_depthBufferTestEnable );
         m_renderSystem->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
         m_renderSystem->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
         m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );

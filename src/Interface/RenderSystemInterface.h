@@ -50,8 +50,8 @@ namespace Mengine
         virtual const ConstString & getRenderPlatformName() const = 0;
 
     public:
-        virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
-            bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
+        virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth
+            , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
     public:
         // Render frame into _image

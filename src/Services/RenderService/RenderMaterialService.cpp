@@ -471,7 +471,10 @@ namespace Mengine
             meta_Material.get_Debug( &is_debug );
 
             RenderMaterialStage stage;
-            meta_Material.get_AlphaBlend_Enable( &stage.alphaBlendEnable );
+            stage.alphaBlendEnable = meta_Material.get_AlphaBlend_Enable();
+            stage.depthBufferTestEnable = meta_Material.get_DepthBufferTest_Enable();
+            stage.depthBufferWriteEnable = meta_Material.get_DepthBufferWrite_Enable();
+
             meta_Material.get_BlendFactor_Source( &stage.blendSrc );
             meta_Material.get_BlendFactor_Dest( &stage.blendDst );
             meta_Material.get_BlendFactor_Op( &stage.blendOp );

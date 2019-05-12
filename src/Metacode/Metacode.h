@@ -296,7 +296,7 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                bool getm_AlphaBlend_Enable( C _self, M _method ) const
+                void getm_AlphaBlend_Enable( C _self, M _method ) const
                 {
                     if( m_AlphaBlend_Enable_successful == false )
                     {
@@ -304,20 +304,16 @@ namespace Metacode
                     }
                 
                     (_self->*_method)( this->m_AlphaBlend_Enable );
-                
-                    return true;
                 }
                 
-                bool get_AlphaBlend_Enable( bool * _value ) const
+                bool get_AlphaBlend_Enable() const
                 {
                     if( m_AlphaBlend_Enable_successful == false )
                     {
                         return false;
                     }
                 
-                    *_value = this->m_AlphaBlend_Enable;
-                
-                    return true;
+                    return this->m_AlphaBlend_Enable;
                 }
                 
                 bool has_BlendFactor_Dest() const
@@ -408,6 +404,58 @@ namespace Metacode
                     *_value = this->m_BlendFactor_Source;
                 
                     return true;
+                }
+                
+                bool has_DepthBufferTest_Enable() const
+                {
+                    return m_DepthBufferTest_Enable_successful;
+                }
+                
+                template<class C, class M>
+                void getm_DepthBufferTest_Enable( C _self, M _method ) const
+                {
+                    if( m_DepthBufferTest_Enable_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_DepthBufferTest_Enable );
+                }
+                
+                bool get_DepthBufferTest_Enable() const
+                {
+                    if( m_DepthBufferTest_Enable_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    return this->m_DepthBufferTest_Enable;
+                }
+                
+                bool has_DepthBufferWrite_Enable() const
+                {
+                    return m_DepthBufferWrite_Enable_successful;
+                }
+                
+                template<class C, class M>
+                void getm_DepthBufferWrite_Enable( C _self, M _method ) const
+                {
+                    if( m_DepthBufferWrite_Enable_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_DepthBufferWrite_Enable );
+                }
+                
+                bool get_DepthBufferWrite_Enable() const
+                {
+                    if( m_DepthBufferWrite_Enable_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    return this->m_DepthBufferWrite_Enable;
                 }
                 
                 bool has_Program_Name() const
@@ -594,6 +642,10 @@ namespace Metacode
                 Mengine::EBlendOp m_BlendFactor_Op;
                 bool m_BlendFactor_Source_successful;
                 Mengine::EBlendFactor m_BlendFactor_Source;
+                bool m_DepthBufferTest_Enable_successful;
+                bool m_DepthBufferTest_Enable;
+                bool m_DepthBufferWrite_Enable_successful;
+                bool m_DepthBufferWrite_Enable;
                 bool m_Program_Name_successful;
                 Mengine::ConstString m_Program_Name;
             public:

@@ -301,9 +301,12 @@ namespace Metacode
                     if( m_AlphaBlend_Enable_successful == false )
                     {
                         return false;
+                    (_self->*_method)( false );
                     }
-                
-                    (_self->*_method)( this->m_AlphaBlend_Enable );
+                    else
+                    {
+                        (_self->*_method)( this->m_AlphaBlend_Enable );
+                    }
                 }
                 
                 bool get_AlphaBlend_Enable() const
@@ -417,9 +420,12 @@ namespace Metacode
                     if( m_DepthBufferTest_Enable_successful == false )
                     {
                         return false;
+                    (_self->*_method)( false );
                     }
-                
-                    (_self->*_method)( this->m_DepthBufferTest_Enable );
+                    else
+                    {
+                        (_self->*_method)( this->m_DepthBufferTest_Enable );
+                    }
                 }
                 
                 bool get_DepthBufferTest_Enable() const
@@ -443,9 +449,12 @@ namespace Metacode
                     if( m_DepthBufferWrite_Enable_successful == false )
                     {
                         return false;
+                    (_self->*_method)( false );
                     }
-                
-                    (_self->*_method)( this->m_DepthBufferWrite_Enable );
+                    else
+                    {
+                        (_self->*_method)( this->m_DepthBufferWrite_Enable );
+                    }
                 }
                 
                 bool get_DepthBufferWrite_Enable() const

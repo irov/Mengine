@@ -300,8 +300,7 @@ namespace Metacode
                 {
                     if( m_AlphaBlend_Enable_successful == false )
                     {
-                        return false;
-                    (_self->*_method)( false );
+                        (_self->*_method)( false );
                     }
                     else
                     {
@@ -419,8 +418,7 @@ namespace Metacode
                 {
                     if( m_DepthBufferTest_Enable_successful == false )
                     {
-                        return false;
-                    (_self->*_method)( false );
+                        (_self->*_method)( false );
                     }
                     else
                     {
@@ -448,8 +446,7 @@ namespace Metacode
                 {
                     if( m_DepthBufferWrite_Enable_successful == false )
                     {
-                        return false;
-                    (_self->*_method)( false );
+                        (_self->*_method)( false );
                     }
                     else
                     {

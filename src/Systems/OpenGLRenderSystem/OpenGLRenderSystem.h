@@ -53,7 +53,7 @@ namespace Mengine
         const ConstString & getRenderPlatformName() const override;
 
     public:
-        bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
+        bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
     public:
         bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;

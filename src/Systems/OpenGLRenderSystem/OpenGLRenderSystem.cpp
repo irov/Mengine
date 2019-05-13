@@ -147,10 +147,11 @@ namespace Mengine
         return m_renderPlatform;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
+    bool OpenGLRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
     {
         MENGINE_UNUSED( _bits );
         MENGINE_UNUSED( _fullscreen );
+		MENGINE_UNUSED( _depth );
         MENGINE_UNUSED( _waitForVSync );
         MENGINE_UNUSED( _FSAAType );
         MENGINE_UNUSED( _FSAAQuality );
@@ -174,9 +175,6 @@ namespace Mengine
 
         OPENGL_RENDER_CHECK_ERROR();
 
-        //        GLint maxClipPlanes;
-        //        glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
-
         m_glMaxClipPlanes = 0;
 
         GLint maxCombinedTextureImageUnits;
@@ -193,9 +191,7 @@ namespace Mengine
         GLCALL( glEnable, (GL_DEPTH_TEST) );
         GLCALL( glDisable, (GL_STENCIL_TEST) );
         GLCALL( glDisable, (GL_CULL_FACE) );
-        //        GLCALL( glDisable, (GL_LIGHTING) );
         GLCALL( glDisable, (GL_BLEND) );
-        //        GLCALL( glDisable, (GL_ALPHA_TEST) );
         GLCALL( glDisable, (GL_DITHER) );
 
         GLCALL( glDepthMask, (GL_FALSE) );

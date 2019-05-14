@@ -22,7 +22,7 @@
 #include "Interface/LoaderInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/OptionsInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
@@ -858,7 +858,7 @@ bool run()
     da.mem = &stdex_alloc;
     da.obj = &stdex_alloc;
 
-    pybind::kernel_interface * kernel = pybind::initialize( &da, nullptr, szPythonPath, false, false, false );
+    pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, false, false, false );
 
     if( kernel == nullptr )
     {

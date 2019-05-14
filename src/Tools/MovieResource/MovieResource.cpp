@@ -713,7 +713,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         }
 
         aeMovieCompositionProviders composition_providers;
-        ae_clear_movie_composition_providers( &composition_providers );
+        ae_initialize_movie_composition_providers( &composition_providers );
 
         composition_providers.node_provider = &__movie_composition_node_provider;
 

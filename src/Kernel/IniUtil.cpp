@@ -20,6 +20,15 @@ namespace Mengine
     namespace IniUtil
     {
         //////////////////////////////////////////////////////////////////////////
+        IniStore::IniStore()
+        {
+            tinyini_initialize( &ini );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        IniStore::~IniStore()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()

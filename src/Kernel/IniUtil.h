@@ -31,6 +31,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         struct IniStore
         {
+            IniStore();
+            ~IniStore();
+
             FilePath path;
             MemoryStore memory;
 

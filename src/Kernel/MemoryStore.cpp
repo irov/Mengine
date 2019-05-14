@@ -23,6 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryStore::allocate( size_t _size, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
 #ifdef MENGINE_DEBUG
         m_memory = Helper::allocateMemory( _size, _doc );
 

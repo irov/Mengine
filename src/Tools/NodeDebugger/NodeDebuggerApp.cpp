@@ -805,7 +805,6 @@ namespace Mengine
 
     void NodeDebuggerApp::DoUILogTab()
     {
-        char* text = "Log: libe 1\nLog: line 2\nLog: line 3\n";
         ImGui::InputTextMultiline( "", "Log: libe 1\nLog: line 2\nLog: line 3\n", 0, ImVec2( 0.f, 0.f ), ImGuiInputTextFlags_ReadOnly );
     }
 

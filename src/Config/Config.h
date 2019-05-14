@@ -13,29 +13,33 @@
 #endif
 
 #if defined(WIN32)
-#define MENGINE_PLATFORM_WINDOWS
-#elif defined(__APPLE__) && defined(MACOSX)
-#define MENGINE_PLATFORM_MACOS
-#elif defined(__APPLE__) && defined(TARGET_OS_IPHONE)
-#define MENGINE_PLATFORM_IOS
+#   define MENGINE_PLATFORM_WINDOWS
+#elif defined(__APPLE__)
+#   include "TargetConditionals.h"
+#   if defined(TARGET_OS_OSX)
+#       define MENGINE_PLATFORM_OSX
+#   endif
+#   if defined(TARGET_OS_IPHONE)
+#       define MENGINE_PLATFORM_IOS
+#   endif
 #elif defined(__ANDROID__)
-#define MENGINE_PLATFORM_ANDROID
+#   define MENGINE_PLATFORM_ANDROID
 #else
-#error "undefine platform"
+#   error "undefine platform"
 #endif
 
 #if defined(__MINGW32__)
-#define MENGINE_TOOLCHAIN_MINGW
+#   define MENGINE_TOOLCHAIN_MINGW
 #elif defined(_MSC_VER)
-#define MENGINE_TOOLCHAIN_MSVC
+#   define MENGINE_TOOLCHAIN_MSVC
 #endif
 
 #if defined(MENGINE_PLATFORM_IOS) || defined(MENGINE_PLATFORM_ANDROID)
-#define MENGINE_PLATFORM_MOBILE
+#   define MENGINE_PLATFORM_MOBILE
 #endif
 
 #ifndef NDEBUG
-#if defined(MENGINE_PLATFORM_WINDOWS)
-#define MENGINE_WINDOWS_DEBUG
-#endif
+#   if defined(MENGINE_PLATFORM_WINDOWS)
+#       define MENGINE_WINDOWS_DEBUG
+#   endif
 #endif

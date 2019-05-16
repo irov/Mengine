@@ -96,7 +96,15 @@ android {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src', '../../dependencies/SDL2/android-project/app/src/main/java/']
-            res.srcDirs = ['res']
+            
+            if (findProperty("ASSETS_RES_DIR")) {
+                print 'ASSETS_RES_DIR = '
+                println ASSETS_RES_DIR
+
+                res.srcDirs = [ASSETS_RES_DIR]
+            } else {
+                res.srcDirs = ['res']
+            }
 
 			if (findProperty("ASSETS_SRC_DIR")) {
                 print 'ASSETS_SRC_DIR = '
@@ -106,6 +114,11 @@ android {
             } else {
                 assets.srcDirs = ['data']
             }
+          
+            
+            
+            
+            
         }
     }
     aaptOptions {

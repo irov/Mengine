@@ -1880,6 +1880,9 @@ namespace Mengine
                     );
                 }
             }break;
+        case AE_MOVIE_COMPOSITION_LOOP_CONTINUOUS:
+            {
+            }break;
         case AE_MOVIE_COMPOSITION_END:
             {
                 m2->end();

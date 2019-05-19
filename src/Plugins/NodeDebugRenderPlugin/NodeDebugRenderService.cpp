@@ -59,7 +59,7 @@ namespace Mengine
 
             m_globalKeyHandlerF9 = globalHandleSystem->addGlobalKeyHandler( KC_F9, [this]( const InputKeyEvent & _event )
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
                 this->toggleDebugText_();
             }, "NodeDebugRenderService" );
 
@@ -252,7 +252,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::updateDebugInfo( const UpdateContext * _context )
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         //Empty
     }

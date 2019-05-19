@@ -15,18 +15,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_handlerError( png_structp png_ptr, const char * _error )
     {
-        (void)png_ptr;
+        MENGINE_UNUSED( png_ptr );
 
-        LOGGER_ERROR( "ImageDecoderPNG::s_handlerError '%s'"
+        LOGGER_ERROR( "png error: '%s'"
             , _error
         );
     }
     //////////////////////////////////////////////////////////////////////////
     static void PNGAPI s_handlerWarning( png_structp png_ptr, const char * _error )
     {
-        (void)png_ptr;
+        MENGINE_UNUSED( png_ptr );
 
-        LOGGER_INFO( "ImageDecoderPNG::s_handlerWarning '%s'"
+        LOGGER_INFO( "png warning: '%s'"
             , _error
         );
     }
@@ -41,14 +41,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_size_t _size )
     {
-        (void)_png;
+        MENGINE_UNUSED( _png );
 
         return stdex_malloc( _size, "png decoder" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
     {
-        (void)_png;
+        MENGINE_UNUSED( _png );
 
         stdex_free( _ptr, "png decoder" );
     }

@@ -42,7 +42,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_SamplerOzzAnimationInterface_setEventListener( pybind::kernel_interface * _kernel, SamplerOzzAnimationInterface * _sampler, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {

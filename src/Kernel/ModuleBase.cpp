@@ -73,7 +73,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_update( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED( _focus );
 
         //Empty;
     }
@@ -90,14 +90,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_tick( const UpdateContext * _context )
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_render( const RenderContext * _state )
     {
-        (void)_state;
+        MENGINE_UNUSED( _state );
 
         //Empty
     }
@@ -114,16 +114,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_message( const ConstString & _messageName, const MapWParams & _params )
     {
-        (void)_messageName;
-        (void)_params;
+        MENGINE_UNUSED( _messageName );
+        MENGINE_UNUSED( _params );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_messageAll( const ConstString & _messageName, const MapWParams & _params )
     {
-        (void)_messageName;
-        (void)_params;
+        MENGINE_UNUSED( _messageName );
+        MENGINE_UNUSED( _params );
 
         //Empty
     }

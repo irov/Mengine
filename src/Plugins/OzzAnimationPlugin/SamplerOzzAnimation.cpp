@@ -179,8 +179,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_play( uint32_t _playId, float _time )
     {
-        (void)_playId;
-        (void)_time;
+        MENGINE_UNUSED( _playId );
+        MENGINE_UNUSED( _time );
 
         m_time = 0.f;
 
@@ -189,8 +189,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_restart( uint32_t _playId, float _time )
     {
-        (void)_playId;
-        (void)_time;
+        MENGINE_UNUSED( _playId );
+        MENGINE_UNUSED( _time );
 
         m_time = 0.f;
 
@@ -199,13 +199,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_pause( uint32_t _playId )
     {
-        (void)_playId;
+        MENGINE_UNUSED( _playId );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_resume( uint32_t _playId, float _time )
     {
-        (void)_playId;
-        (void)_time;
+        MENGINE_UNUSED( _playId );
+        MENGINE_UNUSED( _time );
 
         m_time = 0.f;
     }
@@ -226,7 +228,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_interrupt( uint32_t _playId )
     {
-        (void)_playId;
+        MENGINE_UNUSED( _playId );
 
         return true;
     }

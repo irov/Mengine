@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_changeParent( Node * _oldParent, Node * _newParent )
     {
-        (void)_newParent;
+        MENGINE_UNUSED( _newParent );
 
         if( _oldParent == nullptr )
         {
@@ -75,7 +75,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's danger)"
+        LOGGER_ERROR( "slot %s:%s movie %s (please don't change parent it's danger)"
             , this->getName().c_str()
             , this->getType().c_str()
             , m_movieName.c_str()
@@ -84,7 +84,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::render( const RenderContext * _context ) const
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         //Empty
     }

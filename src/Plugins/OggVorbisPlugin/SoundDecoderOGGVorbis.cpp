@@ -54,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static int32_t s_closeOgg( void * _datasource )
     {
-        (void)_datasource;
+        MENGINE_UNUSED( _datasource );
 
         return 0;
     }

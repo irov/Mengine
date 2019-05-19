@@ -85,7 +85,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool vec2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec2f * _place, void * _user )
         {
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -150,7 +150,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool vec3f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec3f * _place, void * _user )
         {
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -220,8 +220,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool vec4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec4f * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -257,8 +256,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool uv4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::uv4f * _uv, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -304,8 +302,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool box2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::box2f * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -341,8 +338,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool Polygon_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->list_check( _obj ) == false )
             {
@@ -373,8 +369,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool color_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Color * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -436,8 +431,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool Resolution_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Resolution * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -485,8 +479,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool Viewport_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Viewport * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {
@@ -547,8 +540,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool Rect_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Rect * _place, void * _user )
         {
-            (void)_kernel;
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {

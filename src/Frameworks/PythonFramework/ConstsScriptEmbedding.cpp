@@ -10,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
     {
-        (void)_obj;
+        MENGINE_UNUSED( _obj );
 
         ConstString cs_compare;
         if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
@@ -65,8 +65,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
     {
-        (void)_kernel;
-        (void)_user;
+        MENGINE_UNUSED( _kernel );
+        MENGINE_UNUSED( _user );
 
         ConstString & cstr = *(ConstString*)_place;
 
@@ -92,7 +92,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_FilePath_compare( pybind::kernel_interface * _kernel, PyObject * _obj, FilePath * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
     {
-        (void)_obj;
+        MENGINE_UNUSED( _obj );
 
         FilePath cs_compare;
         if( pybind::extract_value( _kernel, _compare, cs_compare, false ) == false )
@@ -147,8 +147,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool FilePath_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
     {
-        (void)_kernel;
-        (void)_user;
+        MENGINE_UNUSED( _kernel );
+        MENGINE_UNUSED( _user );
 
         FilePath & cstr = *(FilePath*)_place;
 

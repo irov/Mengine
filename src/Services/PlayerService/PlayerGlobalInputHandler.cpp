@@ -262,7 +262,9 @@ namespace Mengine
 
             bool handleTextEvent( const InputTextEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
@@ -270,35 +272,45 @@ namespace Mengine
         protected:
             bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
 
             bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
 
             bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
 
             bool handleMouseMove( const InputMouseMoveEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
 
             bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }

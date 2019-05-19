@@ -82,7 +82,7 @@ namespace Mengine
     public:
         void callback_begin_node( const char * _node )
         {
-            (void)_node;
+            MENGINE_UNUSED( _node );
         }
 
         void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
@@ -363,7 +363,7 @@ namespace Mengine
 
         void callback_end_node( const char * _node )
         {
-            (void)_node;
+            MENGINE_UNUSED( _node );
         }
 
     protected:

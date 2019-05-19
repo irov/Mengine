@@ -174,7 +174,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundSystem::onTurnSound( bool _turn )
     {
-        (void)_turn;
+        MENGINE_UNUSED( _turn );
+
         //if( _turn == false )
         //{
         //    alcMakeContextCurrent( NULL );

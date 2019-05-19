@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_handlerError( png_structp _png_ptr, const char * _error )
     {
-        (void)_png_ptr;
+        MENGINE_UNUSED( _png_ptr );
 
         LOGGER_ERROR( "%s"
             , _error
@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_handlerWarning( png_structp _png_ptr, const char * _error )
     {
-        (void)_png_ptr;
+        MENGINE_UNUSED( _png_ptr );
 
         LOGGER_WARNING( "%s"
             , _error
@@ -43,14 +43,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_size_t _size )
     {
-        (void)_png;
+        MENGINE_UNUSED( _png );
 
         return stdex_malloc( _size, "png encoder" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
     {
-        (void)_png;
+        MENGINE_UNUSED( _png );
 
         stdex_free( _ptr, "png encoder" );
     }
@@ -108,7 +108,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>(_bufferDataInfo);
 
@@ -127,7 +127,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "PNG codec error: unsupported image format channels %d"
+            LOGGER_ERROR( "unsupported image format channels %d"
                 , dataInfo->channels
             );
 
@@ -143,7 +143,6 @@ namespace Mengine
 
         png_set_bgr( m_png_ptr );
 
-        // Write the file header information.
         png_write_info( m_png_ptr, m_info_ptr );
 
         size_t pitch = m_options.pitch;
@@ -155,9 +154,7 @@ namespace Mengine
             png_write_row( m_png_ptr, png_buffer );
             png_buffer += pitch;
         }
-        //}
-        // It is REQUIRED to call this to finish writing the rest of the file
-        // Bug with png_flush
+
         png_write_end( m_png_ptr, m_info_ptr );
 
         size_t writeBytes = pitch * height;

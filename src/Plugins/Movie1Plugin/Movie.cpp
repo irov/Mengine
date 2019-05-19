@@ -216,9 +216,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::_play( uint32_t _playId, float _time )
     {
-        //return false;
-        (void)_playId;
-        (void)_time;
+        MENGINE_UNUSED( _playId );
+        MENGINE_UNUSED( _time );
 
         if( this->isActivate() == false )
         {
@@ -245,8 +244,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::_restart( uint32_t _playId, float _time )
     {
-        (void)_time;
-        (void)_playId;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _playId );
 
         if( this->isActivate() == false )
         {
@@ -260,15 +259,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_pause( uint32_t _playId )
     {
-        (void)_playId;
+        MENGINE_UNUSED( _playId );
 
         this->pauseAnimation_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie::_resume( uint32_t _playId, float _time )
     {
-        (void)_time;
-        (void)_playId;
+        MENGINE_UNUSED( _time );
+        MENGINE_UNUSED( _playId );
 
         this->resumeAnimation_();
     }
@@ -422,7 +421,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::addMovieNode_( const MovieLayer & _layer, const NodePtr & _node, const AnimatablePtr & _animatable, const SoundablePtr & _soundable, const MoviePtr & _movie )
     {
-        (void)_animatable;
+        MENGINE_UNUSED( _animatable );
 
         if( _layer.hasViewport == true )
         {
@@ -2452,7 +2451,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::render( const RenderContext * _context ) const
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         //Empty
     }
@@ -2591,7 +2590,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer, const NodePtr & _node )
     {
-        (void)_time;
+        MENGINE_UNUSED( _time );
 
         float layerIn = _layer.in;
         float layerOut = _layer.out;
@@ -3181,7 +3180,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::_interrupt( uint32_t _playId )
     {
-        (void)_playId;
+        MENGINE_UNUSED( _playId );
 
         const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 

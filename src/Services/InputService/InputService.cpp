@@ -328,7 +328,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::onFocus( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED( _focus );
 
         std::fill( m_keyBuffer, m_keyBuffer + sizeof( m_keyBuffer ), false );
     }

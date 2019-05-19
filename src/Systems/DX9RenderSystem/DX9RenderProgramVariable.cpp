@@ -127,7 +127,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgramVariable::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )
     {
-        (void)_program;
+        MENGINE_UNUSED( _program );
 
         uint32_t vertexEnumerator = 0;
         for( const ProgramVariableDesc & v : m_vertexVariables )

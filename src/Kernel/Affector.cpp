@@ -66,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affector::_setFreeze( bool _value )
     {
-        (void)_value;
+        MENGINE_UNUSED( _value );
 
         //Empty
     }
@@ -138,7 +138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affector::complete( bool _isEnd )
     {
-        (void)_isEnd;
+        MENGINE_UNUSED( _isEnd );
 
         UPDATE_SERVICE()
             ->removeUpdatater( m_updataterId );
@@ -152,7 +152,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Affector::_complete( bool _isEnd )
     {
-        (void)_isEnd;
+        MENGINE_UNUSED( _isEnd );
+
         //Empty
     }
 }

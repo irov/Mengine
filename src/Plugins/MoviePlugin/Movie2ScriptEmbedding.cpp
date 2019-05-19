@@ -29,7 +29,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {
@@ -81,7 +81,7 @@ namespace Mengine
         protected:
             void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) override
             {
-                (void)_index;
+                MENGINE_UNUSED( _index );
 
                 HotSpotPolygonPtr hotspot = stdex::intrusive_static_cast<HotSpotPolygonPtr>(_node);
 
@@ -140,7 +140,7 @@ namespace Mengine
         protected:
             void visitMovieLayer( Movie2 * _movie, uint32_t _index, const NodePtr & _node ) override
             {
-                (void)_index;
+                MENGINE_UNUSED( _index );
 
                 Movie2SlotPtr hotspot = stdex::intrusive_static_cast<Movie2SlotPtr>(_node);
 
@@ -177,7 +177,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_Movie2SubComposition_setEventListener( pybind::kernel_interface * _kernel, Movie2SubComposition * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {

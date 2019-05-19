@@ -110,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::render( const RenderContext * _context ) const
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         //Empty
     }

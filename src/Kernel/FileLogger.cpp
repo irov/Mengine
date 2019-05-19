@@ -92,8 +92,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileLogger::log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
     {
-        (void)_level;
-        (void)_flag;
+        MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _flag );
 
         m_stream->write( _data, _count );
     }

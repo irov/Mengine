@@ -44,26 +44,28 @@ namespace Mengine
         return m_archivator;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
+    static ae_size_t __movie_read_stream( ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _userdata )
     {
-        stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_data + _carriage, _size );
+        ae_uint8_t * memory_userdata = (ae_uint8_t *)_userdata;
+
+        stdex::memorycopy( _buff, 0U, memory_userdata + _carriage, _size );
 
         return _size;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
+    static ae_void_t __movie_copy_stream( ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size, ae_userdata_t _userdata )
     {
-        (void)_data;
+        MENGINE_UNUSED( _userdata );
 
         stdex::memorycopy( _dst, 0U, _src, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
     {
-        (void)_rd;
+        MENGINE_UNUSED( _rd );
 
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
-        (void)resourceMovie2;
+        MENGINE_UNUSED( resourceMovie2 );
 
         aeMovieResourceTypeEnum resource_type = _resource->type;
 

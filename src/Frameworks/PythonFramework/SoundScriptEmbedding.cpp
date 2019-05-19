@@ -77,13 +77,15 @@ namespace Mengine
         protected:
             void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
             {
-                (void)_emitter;
+                MENGINE_UNUSED( _emitter );
+
                 //Empty
             }
 
             void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
             {
-                (void)_emitter;
+                MENGINE_UNUSED( _emitter );
+
                 //Empty
             }
 

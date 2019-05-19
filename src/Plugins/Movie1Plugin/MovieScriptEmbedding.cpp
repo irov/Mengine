@@ -903,7 +903,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * Movie_setEventListener( pybind::kernel_interface * _kernel, Movie * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {

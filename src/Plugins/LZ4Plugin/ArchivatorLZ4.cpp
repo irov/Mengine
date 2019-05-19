@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorLZ4::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _decompressSize )
     {
-        (void)_sourceSize;
+        MENGINE_UNUSED( _sourceSize );
 
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
@@ -76,7 +76,7 @@ namespace Mengine
 
         if( readBytes < 0 )
         {
-            LOGGER_ERROR( "ArchivatorLZ4::decompress invalid uncompress code [%d]"
+            LOGGER_ERROR( "invalid uncompress code [%d]"
                 , readBytes
             );
 

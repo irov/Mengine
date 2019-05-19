@@ -165,8 +165,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::getData( void * _buffer, size_t _pitch )
     {
-        (void)_buffer;
-        (void)_pitch;
+        MENGINE_UNUSED( _buffer );
+        MENGINE_UNUSED( _pitch );
 
         return false;
     }
@@ -184,7 +184,7 @@ namespace Mengine
     void DX9RenderTargetTexture::onRenderReset()
     {
         ULONG refCount = m_pD3DTexture->Release();
-        (void)refCount;
+        MENGINE_UNUSED( refCount );
 
         m_pD3DTexture = nullptr;
     }

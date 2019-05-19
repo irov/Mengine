@@ -34,7 +34,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     void Isometric::_update( const UpdateContext * _context )
     {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
     }

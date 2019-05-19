@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::onTurnSound( bool _turn )
     {
-        (void)_turn;
+        MENGINE_UNUSED( _turn );
     }
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
@@ -94,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::releaseSourceId( uint32_t _sourceId )
     {
-        (void)_sourceId;
+        MENGINE_UNUSED( _sourceId );
 
         //Empty
     }
@@ -108,14 +108,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::releaseBufferId( uint32_t _bufferId )
     {
-        (void)_bufferId;
+        MENGINE_UNUSED( _bufferId );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::clearSourceId( uint32_t _sourceId )
     {
-        (void)_sourceId;
+        MENGINE_UNUSED( _sourceId );
 
         //Empty
     }

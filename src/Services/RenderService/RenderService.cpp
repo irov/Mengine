@@ -2007,7 +2007,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndex * _indices, uint32_t _indicesNum, const Viewport & _viewport )
     {
-        (void)_vertexNum;
+        MENGINE_UNUSED( _vertexNum );
 
         for( uint32_t i = 0; i != (_indicesNum / 3); ++i )
         {

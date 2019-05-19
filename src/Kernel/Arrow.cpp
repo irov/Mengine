@@ -132,7 +132,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Arrow::render( const RenderContext * _state ) const
     {
-        (void)_state;
+        MENGINE_UNUSED( _state );
 
         //Empty
     }

@@ -53,7 +53,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_checkRowTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _row )
     {
-        (void)_height;
+        MENGINE_UNUSED( _height );
 
         const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer) + _row * _width * 4;
 

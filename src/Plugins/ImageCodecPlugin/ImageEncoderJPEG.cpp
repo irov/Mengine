@@ -165,7 +165,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderJPEG::encode( const void * _buffer, size_t _size, const CodecDataInfo* _dataInfo )
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>(_dataInfo);
 

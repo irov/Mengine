@@ -98,7 +98,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
         {
-            (void)_kernel;
+            MENGINE_UNUSED( _kernel );
 
             const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
                 ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
@@ -130,9 +130,9 @@ namespace Mengine
     public:
         void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
         {
-            (void)_scope;
-            (void)_args;
-            (void)_kwds;
+            MENGINE_UNUSED( _scope );
+            MENGINE_UNUSED( _args );
+            MENGINE_UNUSED( _kwds );
 
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_PYBIND );
@@ -155,8 +155,8 @@ namespace Mengine
     public:
         void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
         {
-            (void)_kernel;
-            (void)_scope;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _scope );
 
             Entity * entity_ptr = static_cast<Entity *>(_impl);
 
@@ -170,9 +170,9 @@ namespace Mengine
     public:
         void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
         {
-            (void)_scope;
-            (void)_args;
-            (void)_kwds;
+            MENGINE_UNUSED( _scope );
+            MENGINE_UNUSED( _args );
+            MENGINE_UNUSED( _kwds );
 
             ArrowPtr arrow = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_PYBIND );
@@ -195,8 +195,8 @@ namespace Mengine
     public:
         void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
         {
-            (void)_kernel;
-            (void)_scope;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _scope );
 
             Arrow * arrow_ptr = static_cast<Arrow *>(_impl);
 
@@ -210,9 +210,9 @@ namespace Mengine
     public:
         void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
         {
-            (void)_scope;
-            (void)_args;
-            (void)_kwds;
+            MENGINE_UNUSED( _scope );
+            MENGINE_UNUSED( _args );
+            MENGINE_UNUSED( _kwds );
 
             ScenePtr scene = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
@@ -235,8 +235,8 @@ namespace Mengine
     public:
         void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
         {
-            (void)_kernel;
-            (void)_scope;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _scope );
 
             Scene * scene_ptr = static_cast<Scene *>(_impl);
 

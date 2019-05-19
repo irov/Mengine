@@ -268,7 +268,7 @@ namespace Mengine
 
         void _update( float _dt, T * _out ) override
         {
-            (void)_dt;
+            MENGINE_UNUSED( _dt );
 
             *_out = ValueInterpolator<T>::m_value1 + m_v0 * ValueInterpolator<T>::m_time + m_a * 0.5f * ValueInterpolator<T>::m_time * ValueInterpolator<T>::m_time;
         }

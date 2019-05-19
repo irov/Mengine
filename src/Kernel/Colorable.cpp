@@ -205,13 +205,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Colorable::_setPersonalColor( const Color& _color )
     {
-        (void)_color;
+        MENGINE_UNUSED( _color );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void Colorable::_setPersonalAlpha( float _alpha )
     {
-        (void)_alpha;
+        MENGINE_UNUSED( _alpha );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////

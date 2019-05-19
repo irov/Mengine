@@ -28,7 +28,8 @@ namespace Mengine
         if( m_pVB != nullptr )
         {
             ULONG ref = m_pVB->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
+
             m_pVB = nullptr;
         }
     }
@@ -85,7 +86,8 @@ namespace Mengine
         if( m_pVB != nullptr )
         {
             ULONG ref = m_pVB->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
+
             m_pVB = nullptr;
         }
 
@@ -204,7 +206,7 @@ namespace Mengine
         }
 
         ULONG refCount = m_pVB->Release();
-        (void)refCount;
+        MENGINE_UNUSED( refCount );
 
         m_pVB = nullptr;
     }

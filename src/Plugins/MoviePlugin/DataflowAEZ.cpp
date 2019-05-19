@@ -19,16 +19,16 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
+        static ae_size_t __movie_read_stream( ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size, ae_userdata_t _ud )
         {
-            stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_data + _carriage, _size );
+            stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_ud + _carriage, _size );
 
             return _size;
         }
         //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
+        static ae_void_t __movie_copy_stream( ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size, ae_userdata_t _ud )
         {
-            (void)_data;
+            MENGINE_UNUSED( _ud );
 
             stdex::memorycopy( _dst, 0U, _src, _size );
         }
@@ -185,7 +185,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_userdata_t _ud )
         {
-            (void)_ud;
+            MENGINE_UNUSED( _ud );
 
             if( _callbackData->uv_cache_userdata == AE_NULLPTR )
             {

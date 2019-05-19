@@ -24,7 +24,7 @@ namespace Mengine
         if( m_pD3DTexture != nullptr )
         {
             ULONG ref = m_pD3DTexture->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
 
             m_pD3DTexture = nullptr;
         }
@@ -106,7 +106,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderImage::unlock( uint32_t _level, bool _successful )
     {
-        (void)_successful;
+        MENGINE_UNUSED( _successful );
 
         IF_DXCALL( m_pD3DTexture, UnlockRect, (_level) )
         {

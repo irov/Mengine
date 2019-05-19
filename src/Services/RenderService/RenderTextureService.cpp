@@ -531,7 +531,7 @@ namespace Mengine
             }
         }
 
-        (void)_depth; //ToDo
+        MENGINE_UNUSED( _depth ); //ToDo
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::onRenderTextureDestroy_( RenderTextureInterface * _texture )

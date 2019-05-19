@@ -216,8 +216,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) const
     {
-        (void)_viewport;
-        (void)_camera;
+        MENGINE_UNUSED( _viewport );
+        MENGINE_UNUSED( _camera );
 
         mt::vec2f p1;
         this->calcMouseWorldPosition( _camera, _viewport, _screenPoint, &p1 );
@@ -248,7 +248,9 @@ namespace Mengine
             }break;
         default:
             {
-                MENGINE_ASSERTION_FATAL( false, ("Arrow::calcPointClick arrow type '%d'", arrowType) );
+                MENGINE_ASSERTION_FATAL( false, "arrow type '%d'"
+                    , arrowType
+                );
             }break;
         }
     }

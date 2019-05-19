@@ -17,9 +17,9 @@ namespace Mengine
     {
         Content * content = _resource->getContent();
 
-        MENGINE_ASSERTION_FATAL( content != nullptr, ("resource '%s' is not contentable"
+        MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
             , _resource->getType().c_str()
-            ) );
+        );
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const FilePath & filePath = content->getFilePath();
@@ -38,9 +38,9 @@ namespace Mengine
     {
         Content * content = _resource->getContent();
 
-        MENGINE_ASSERTION_FATAL( content != nullptr, ("resource '%s' is not contentable"
+        MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
             , _resource->getType().c_str()
-            ) );
+        );
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const FilePath & filePath = content->getFilePath();

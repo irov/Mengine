@@ -43,7 +43,7 @@ namespace Mengine
             Glyph glyph;
             if( _font->getGlyph( m_layout, glyphChar, glyphCharNext, &glyph ) == false )
             {
-                LOGGER_ERROR( "TextLine for fontName '%s' invalid glyph %u next %u"
+                LOGGER_ERROR( "fontName '%s' invalid glyph %u next %u"
                     , _font->getName().c_str()
                     , glyphChar
                     , glyphCharNext

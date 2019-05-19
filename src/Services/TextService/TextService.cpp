@@ -274,7 +274,7 @@ namespace Mengine
                             , text_key.c_str()
                             , str_value
                         );
-                    }                    
+                    }
                 }
                 else if( strcmp( str_key, "HorizontAlign" ) == 0 )
                 {

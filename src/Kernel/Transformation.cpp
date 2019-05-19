@@ -31,8 +31,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Transformation::setRelationTransformation( Transformation * _relationTransformation )
     {
-        MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
-        MENGINE_ASSERTION( _relationTransformation != this, ("set this relation transformation") );
+        MENGINE_ASSERTION( _relationTransformation != nullptr, "set nullptr relation transformation" );
+        MENGINE_ASSERTION( _relationTransformation != this, "set this relation transformation" );
 
         if( m_relationTransformation != nullptr )
         {
@@ -80,7 +80,7 @@ namespace Mengine
     {
         VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
 
-        MENGINE_ASSERTION( it_erase != m_relationChildren.end(), ("remove relation transformation not found") );
+        MENGINE_ASSERTION( it_erase != m_relationChildren.end(), "remove relation transformation not found" );
 
         *it_erase = m_relationChildren.back();
         m_relationChildren.pop_back();

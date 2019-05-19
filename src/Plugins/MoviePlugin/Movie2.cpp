@@ -1180,6 +1180,19 @@ namespace Mengine
                     node->setVerticalBottomAlign();
                 }
 
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'a', 's' ) ) == AE_TRUE )
+                {
+                    node->setAutoScale( true );
+                }
+
+                ae_aabb_t aabb;
+                if( ae_get_movie_layer_data_dimension( layer, &aabb ) == AE_TRUE )
+                {
+                    float maxLength = aabb.maximal_x - aabb.minimal_x;
+
+                    node->setMaxLength( maxLength );
+                }
+
                 *_nd = node.get();
 
                 return AE_TRUE;

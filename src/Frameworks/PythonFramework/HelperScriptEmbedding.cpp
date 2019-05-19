@@ -426,7 +426,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String s_makeUID( uint32_t _length )
         {
-            MENGINE_ASSERTION( _length < 1024, ("max UID length equal 1024") );
+            MENGINE_ASSERTION( _length < 1024, "max UID length equal 1024" );
 
             Char uid[1024];
             Helper::makeUID( _length, uid );

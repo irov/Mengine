@@ -568,44 +568,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
-        MENGINE_ASSERTION_RETURN_VOID( _node != nullptr, ("node '%s' invalid add child NULL node"
+        MENGINE_ASSERTION_RETURN_VOID( _node != nullptr, "node '%s' invalid add child NULL node"
             , this->getName().c_str()
-            ) );
+        );
 
         this->addChild_( m_children.end(), _node, ENCI_BACK );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::addChildFront( const NodePtr & _node )
     {
-        MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add front child NULL node"
+        MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add front child NULL node"
             , this->getName().c_str()
-            ) );
+        );
 
         this->addChild_( m_children.begin(), _node, ENCI_FRONT );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
     {
-        MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node (node)"
+        MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add child NULL node (node)"
             , this->getName().c_str()
-            ) );
+        );
 
-        MENGINE_ASSERTION( _after != nullptr, ("node '%s' invalid add after NULL node (node)"
+        MENGINE_ASSERTION( _after != nullptr, "node '%s' invalid add after NULL node (node)"
             , this->getName().c_str()
-            ) );
+        );
 
-        MENGINE_ASSERTION( _node != _after, ("node '%s' invalid add child '%s' is equal after '%s' (node)"
+        MENGINE_ASSERTION( _node != _after, "node '%s' invalid add child '%s' is equal after '%s' (node)"
             , this->getName().c_str()
             , _node->getName().c_str()
             , _after->getName().c_str()
-            ) );
+        );
 
         IntrusiveSlugListNodeChild::iterator it_found =
             stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after );
 
-        MENGINE_ASSERTION( it_found != m_children.end(), ("node '%s' after is not child"
+        MENGINE_ASSERTION( it_found != m_children.end(), "node '%s' after is not child"
             , this->getName().c_str()
-            ) );
+        );
 
         this->addChild_( it_found, _node, ENCI_MIDDLE );
 

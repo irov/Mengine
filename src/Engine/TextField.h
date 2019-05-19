@@ -41,6 +41,10 @@ namespace Mengine
         float getMaxLength() const;
 
     public:
+        void setAutoScale( bool _autoScale );
+        bool getAutoScale() const;
+
+    public:
         void setWrap( bool _wrap );
         bool getWrap() const;
 
@@ -160,6 +164,7 @@ namespace Mengine
         inline bool isInvalidateTextLines() const;
 
         bool updateTextLines_() const;
+        void updateTextLinesWrap_( VectorTextLines & _textLines ) const;
         void updateTextLinesMaxCount_( VectorTextLines & _textLines ) const;
         bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
 
@@ -205,6 +210,7 @@ namespace Mengine
         float m_charScale;
 
         float m_maxLength;
+        mutable float m_autoScaleFactor;
 
         ConstString m_fontName;
 
@@ -222,6 +228,7 @@ namespace Mengine
         mutable mt::vec2f m_textSize;
 
         bool m_wrap;
+        bool m_autoScale;
         bool m_pixelsnap;
 
         bool m_debugMode;

@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainer::~AstralaxEmitterContainer()
     {
-        MENGINE_ASSERTION( m_mf == 0, ("astralax container is not finalized") );
+        MENGINE_ASSERTION( m_mf == 0, "astralax container is not finalized" );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator )
@@ -91,7 +91,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitterContainer::finalize()
     {
-        MENGINE_ASSERTION( m_dublicateCount == 0, ("astralax container has not deleted emitters") );
+        MENGINE_ASSERTION( m_dublicateCount == 0, "astralax container has not deleted emitters" );
 
         Magic_CloseFile( m_mf );
         m_mf = 0;

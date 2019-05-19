@@ -60,10 +60,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Scheduler::event( float _delay, const ScheduleEventInterfacePtr & _event )
     {
-        MENGINE_ASSERTION( _event != nullptr, ("event '%s' delay '%f' event is nullptr"
+        MENGINE_ASSERTION( _event != nullptr, "event '%s' delay '%f' event is nullptr"
             , this->getName().c_str()
             , _delay
-            ) );
+        );
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 

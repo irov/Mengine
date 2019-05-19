@@ -3032,6 +3032,8 @@ namespace Mengine
                 .def_deprecated( "setMaxLen", &TextField::setMaxLength, "use setMaxLength" )
                 .def( "setMaxLength", &TextField::setMaxLength )
                 .def( "getMaxLength", &TextField::getMaxLength )
+                .def( "setAutoScale", &TextField::setAutoScale )
+                .def( "getAutoScale", &TextField::getAutoScale )
 
                 .def_deprecated( "setCenterAlign", &TextField::setHorizontalCenterAlign, "use setHorizontalCenterAlign" )
                 .def_deprecated( "isCenterAlign", &TextField::isHorizontalCenterAlign, "use isHorizontalCenterAlign" )

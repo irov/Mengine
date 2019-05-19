@@ -29,8 +29,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::finalize()
     {
-        MENGINE_ASSERTION( m_handlers.empty() == true, ("finalized player global input has hadlers") );
-        MENGINE_ASSERTION( m_handlersAdd.empty() == true, ("finalized player global input has add hadlers") );
+        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has hadlers" );
+        MENGINE_ASSERTION( m_handlersAdd.empty() == true, "finalized player global input has add hadlers" );
 
         m_handlers.clear();
         m_handlersAdd.clear();

@@ -522,7 +522,7 @@ namespace Mengine
             _packet.payload.resize( _hdr.uncompressedSize );
             size_t uncompressedDataSize = 0;
             const bool success = m_archivator->decompress( _packet.payload.data(), _hdr.uncompressedSize, _receivedData, _hdr.compressedSize, uncompressedDataSize );
-            MENGINE_ASSERTION( success == true && uncompressedDataSize == _hdr.uncompressedSize, ("Packet decompression failed!") );
+            MENGINE_ASSERTION( success == true && uncompressedDataSize == _hdr.uncompressedSize, "Packet decompression failed!" );
         }
     }
     //////////////////////////////////////////////////////////////////////////

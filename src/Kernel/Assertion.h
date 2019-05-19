@@ -93,14 +93,14 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
-#   define MENGINE_ASSERTION(Condition, Message) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) Message
-#   define MENGINE_ASSERTION_RETURN(Condition, Message, Ret) if(!(Condition)) return Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) Message
-#   define MENGINE_ASSERTION_RETURN_VOID(Condition, Message) if(!(Condition)) return Helper::makeAssertionReturnOperator() << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) Message
-#   define MENGINE_ASSERTION_FATAL(Condition, Message) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, #Condition, __FILE__, __LINE__ ) Message
+#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...) if(!(Condition)) return Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_RETURN_VOID(Condition, ...) if(!(Condition)) return Helper::makeAssertionReturnOperator() << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, __FILE__, __LINE__ ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, #Condition, __FILE__, __LINE__ ) (__VA_ARGS__)
 #else
-#   define MENGINE_ASSERTION(Condition, Message)
-#   define MENGINE_ASSERTION_RETURN(Condition, Message, Return)
-#   define MENGINE_ASSERTION_RETURN_VOID(Condition, Message)
-#   define MENGINE_ASSERTION_FATAL(Condition, Message)
+#   define MENGINE_ASSERTION(Condition, ...)
+#   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...)
+#   define MENGINE_ASSERTION_RETURN_VOID(Condition, ...)
+#   define MENGINE_ASSERTION_FATAL(Condition, ...)
 #endif
 //////////////////////////////////////////////////////////////////////////

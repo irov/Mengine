@@ -52,9 +52,9 @@ namespace Mengine
         {
             const VectorObservers & observers = it->second;
 
-            (void)observers;
+            MENGINE_UNUSED( observers );
 
-            MENGINE_ASSERTION( observers.empty() == true, ("finalized notification service has observers") );
+            MENGINE_ASSERTION( observers.empty() == true, "finalized notification service has observers" );
         }
 
         m_mutex = nullptr;

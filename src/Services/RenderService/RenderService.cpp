@@ -1219,12 +1219,12 @@ namespace Mengine
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _vertexCount, uint32_t _indexCount )
     {
-        MENGINE_ASSERTION_FATAL( _context != nullptr, ("context == nullptr") );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, ("_context->viewport == nullptr") );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, ("_context->camera == nullptr") );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, ("_material == nullptr") );
-        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, ("_vertexBuffer == nullptr") );
-        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, ("_indexBuffer == nullptr") );
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr" );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr" );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr" );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr" );
+        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, "_vertexBuffer == nullptr" );
+        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, "_indexBuffer == nullptr" );
 
         if( m_renderObjects.full() == true )
         {
@@ -1296,12 +1296,12 @@ namespace Mengine
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
     {
-        MENGINE_ASSERTION_FATAL( _context != nullptr, ("context == nullptr") );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, ("_context->viewport == nullptr") );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, ("_context->camera == nullptr") );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, ("_material == nullptr") );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, ("_vertices == nullptr") );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, ("_indices == nullptr") );
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr" );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr" );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr" );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr" );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr" );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr" );
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {

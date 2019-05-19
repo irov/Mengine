@@ -29,9 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherService::_finalizeService()
     {
-        MENGINE_ASSERTION( m_prefetchers.empty() == true, ("resource prefetcher service prefetchers not empty '%d'"
+        MENGINE_ASSERTION( m_prefetchers.empty() == true, "resource prefetcher service prefetchers not empty '%d'"
             , m_prefetchers.size()
-            ) );
+        );
 
         m_prefetchers.clear();
     }

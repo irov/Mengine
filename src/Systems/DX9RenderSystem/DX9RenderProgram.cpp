@@ -46,8 +46,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
-        (void)_pD3DDevice;
-
         if( m_vertexAttribute->compile( _pD3DDevice ) == false )
         {
             return false;
@@ -85,9 +83,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
-        (void)_worldMatrix;
-        (void)_viewMatrix;
-        (void)_projectionMatrix;
+        MENGINE_UNUSED( _worldMatrix );
+        MENGINE_UNUSED( _viewMatrix );
+        MENGINE_UNUSED( _projectionMatrix );
 
         DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, _totalPMWInvMatrix.buff(), 4) );
     }

@@ -13,7 +13,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, bool & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint8_t bool_value;
         ar.readPOD( bool_value );
@@ -23,35 +23,35 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, uint8_t & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPOD( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, uint16_t & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPOD( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, uint32_t & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPOD( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, float & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPOD( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::String & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t size;
         ar.readSize( size );
@@ -125,7 +125,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::WChar & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t size;
         ar.readSize( size );
@@ -164,7 +164,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Color & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         float rgba[4];
         ar.readPODs( rgba, 4 );
@@ -174,7 +174,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Polygon & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -197,14 +197,14 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Viewport & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.begin.x, 4 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Floats & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -223,7 +223,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Int8s & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -242,7 +242,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Int16s & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -261,7 +261,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Int32s & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -280,7 +280,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::UInt8s & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -299,7 +299,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::UInt16s & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -318,7 +318,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::UInt32s & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t count;
         ar.readSize( count );
@@ -337,49 +337,49 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec2f & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.x, 2 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec3f & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.x, 3 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec4f & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.x, 4 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::mat4f & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.v0.x, 16 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::box2f & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.minimum.x, 4 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::uv4f & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         ar.readPODs( &_value.p0.x, 8 );
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::EBlendFactor & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t tmp_value;
         ar.readPOD( tmp_value );
@@ -389,7 +389,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::EBlendOp & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t tmp_value;
         ar.readPOD( tmp_value );
@@ -399,7 +399,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ETextureOp & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t tmp_value;
         ar.readPOD( tmp_value );
@@ -409,7 +409,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ETextureArgument & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t tmp_value;
         ar.readPOD( tmp_value );
@@ -419,7 +419,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ETextureAddressMode & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t tmp_value;
         ar.readPOD( tmp_value );
@@ -429,7 +429,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::EVertexAttributeType & _value, void * _userData )
     {
-        (void)_userData;
+        MENGINE_UNUSED( _userData );
 
         uint32_t tmp_value;
         ar.readPOD( tmp_value );

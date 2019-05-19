@@ -19,8 +19,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MemoryProxy::setBuffer( void * _ptr, size_t _size, const Char * _file, uint32_t _line )
     {
-        (void)_file;
-        (void)_line;
+        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _line );
 
         m_ptr = _ptr;
         m_size = _size;

@@ -92,11 +92,11 @@ namespace Mengine
         public:
             void begin_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds ) override
             {
-                (void)_kernel;
-                (void)_kwds;
-                (void)_args;
-                (void)_functionName;
-                (void)_className;
+                MENGINE_UNUSED( _kernel );
+                MENGINE_UNUSED( _kwds );
+                MENGINE_UNUSED( _args );
+                MENGINE_UNUSED( _functionName );
+                MENGINE_UNUSED( _className );
 
                 LOGGER_INFO( "pybind call begin %s %s"
                     , _className
@@ -216,7 +216,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_pybind_logger( void * _user, const char * _msg )
     {
-        (void)_user;
+        MENGINE_UNUSED( _user );
 
         LOGGER_ERROR( "%s"
             , _msg

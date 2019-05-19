@@ -69,7 +69,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderArchive::decodeData_( void * _buffer, size_t _bufferSize ) const
     {
-        (void)_bufferSize;
+        MENGINE_UNUSED( _bufferSize );
 
         size_t decodyByte = 0;
 

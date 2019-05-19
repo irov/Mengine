@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Config/Config.h"
+#include "Config/Vector.h"
+
 #include "ozz/base/maths/simd_math.h"
 #include "ozz/base/maths/simd_math_archive.h"
 #include "ozz/animation/runtime/skeleton.h"
 #include "ozz/base/containers/std_allocator.h"
-
-#include "Config/Vector.h"
 
 namespace Mengine
 {

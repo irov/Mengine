@@ -51,7 +51,7 @@ namespace Mengine
         public:
             const T & operator << ( const AssertionOperator & _op ) const
             {
-                (void)_op;
+                MENGINE_UNUSED( _op );
 
                 return m_value;
             }
@@ -75,7 +75,7 @@ namespace Mengine
         public:
             void operator << ( const AssertionOperator & _op ) const
             {
-                (void)_op;
+                MENGINE_UNUSED( _op );
             }
         };
         //////////////////////////////////////////////////////////////////////////

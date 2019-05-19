@@ -26,12 +26,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MatrixProxy::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation ) const
     {
-        (void)_transformationFlag;
-        (void)_position;
-        (void)_origin;
-        (void)_scale;
-        (void)_skew;
-        (void)_orientation;
+        MENGINE_UNUSED( _transformationFlag );
+        MENGINE_UNUSED( _position );
+        MENGINE_UNUSED( _origin );
+        MENGINE_UNUSED( _scale );
+        MENGINE_UNUSED( _skew );
+        MENGINE_UNUSED( _orientation );
 
         if( m_relationTransformation == nullptr )
         {

@@ -600,8 +600,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
     {
-        (void)_image;
-        (void)_rect;
+        MENGINE_UNUSED( _image );
+        MENGINE_UNUSED( _rect );
 
         return false;
     }
@@ -675,7 +675,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
-        (void)_depth;
+        MENGINE_UNUSED( _depth );
 
         IDirect3DTexture9 * dxTextureInterface = nullptr;
 
@@ -1050,12 +1050,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
     {
-        (void)_fullscreen;
+        MENGINE_UNUSED( _fullscreen );
+
         //Empty
     }
     void DX9RenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
-        (void)_fullscreen;
+        MENGINE_UNUSED( _fullscreen );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1239,14 +1241,16 @@ namespace Mengine
         if( m_pD3DDevice != nullptr )
         {
             ULONG ref = m_pD3DDevice->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
+
             m_pD3DDevice = nullptr;
         }
 
         if( m_pD3D != nullptr )
         {
             ULONG ref = m_pD3D->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
+
             m_pD3D = nullptr;
         }
     }
@@ -1608,7 +1612,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc )
     {
-        (void)_samplerCount;
+        MENGINE_UNUSED( _samplerCount );
 
         DX9RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
@@ -1778,8 +1782,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
     {
-        (void)_image;
-
         m_textureCount--;
 
         uint32_t hwWidth = _image->getHWWidth();

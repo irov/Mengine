@@ -103,8 +103,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
     {
-        (void)_fullscreen;
-        (void)_resolution;
+        MENGINE_UNUSED( _fullscreen );
+        MENGINE_UNUSED( _resolution );
 
         this->invalidateViewport_();
     }

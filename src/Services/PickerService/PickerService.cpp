@@ -693,7 +693,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::handleMouseLeave( const InputMousePositionEvent & _event )
     {
-        (void)_event;
+        MENGINE_UNUSED( _event );
 
         if( m_arrow == nullptr )
         {

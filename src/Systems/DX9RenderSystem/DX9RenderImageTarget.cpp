@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImageTarget::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )
     {
-        (void)_renderImageProvider;
+        MENGINE_UNUSED( _renderImageProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderImageProviderInterfacePtr & DX9RenderImageTarget::getRenderImageProvider() const
@@ -54,18 +54,18 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////
     Pointer DX9RenderImageTarget::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-        (void)_pitch;
-        (void)_level;
-        (void)_rect;
-        (void)_readOnly;
+        MENGINE_UNUSED( _pitch );
+        MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _rect );
+        MENGINE_UNUSED( _readOnly );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderImageTarget::unlock( uint32_t _level, bool _successful )
     {
-        (void)_level;
-        (void)_successful;
+        MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _successful );
 
         return false;
     }

@@ -94,7 +94,7 @@ namespace ozz
 
         void Extern<Mengine::Detail::Part>::Load( IArchive & _archive, Mengine::Detail::Part * _parts, size_t _count, uint32_t _version )
         {
-            (void)_version;
+            MENGINE_UNUSED( _version );
 
             for( Mengine::Detail::Part & part : Mengine::Helper::makeRange( _parts, _count ) )
             {
@@ -121,7 +121,7 @@ namespace ozz
 
         void Extern<Mengine::Detail::Mesh>::Load( IArchive & _archive, Mengine::Detail::Mesh * _meshes, size_t _count, uint32_t _version )
         {
-            (void)_version;
+            MENGINE_UNUSED( _version );
 
             for( Mengine::Detail::Mesh & mesh : Mengine::Helper::makeRange( _meshes, _count ) )
             {

@@ -1392,7 +1392,7 @@ namespace Mengine
 
             void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
             {
-                (void)_node;
+                MENGINE_UNUSED( _node );
 
                 pybind::dict py_attr( m_kernel, _count );
 
@@ -1411,7 +1411,7 @@ namespace Mengine
 
             void callback_end_node( const char * _node )
             {
-                (void)_node;
+                MENGINE_UNUSED( _node );
 
                 pybind::object py_cb_end = m_cb.get_attr( "end" );
 
@@ -1658,8 +1658,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         Polygon s_hotspotCorrect( HotSpotPolygon * _base, const VectorHotSpotPolygons & _overlap )
         {
-            (void)_base;
-            //const Polygon & base_polygon = _base->getPolygon();
+            MENGINE_UNUSED( _base );
 
             Polygon correct_polygon;
 
@@ -2461,7 +2460,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_enableTextureFiltering( bool _enable )
         {
-            (void)_enable;
+            MENGINE_UNUSED( _enable );
+
+            //Empty
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_isTextureFilteringEnabled()
@@ -2608,14 +2609,16 @@ namespace Mengine
         protected:
             bool handleKeyEvent( const InputKeyEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
 
             bool handleTextEvent( const InputTextEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
 
                 return false;
             }
@@ -2623,35 +2626,35 @@ namespace Mengine
         protected:
             bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
 
                 return false;
             }
 
             bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
 
                 return false;
             }
 
             bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
 
                 return false;
             }
 
             bool handleMouseMove( const InputMouseMoveEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
 
                 return false;
             }
 
             bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
             {
-                (void)_event;
+                MENGINE_UNUSED( _event );
 
                 return false;
             }

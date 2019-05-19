@@ -114,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryProxyInput::time( uint64_t & _time ) const
     {
-        (void)_time;
+        MENGINE_UNUSED( _time );
 
         return false;
     }

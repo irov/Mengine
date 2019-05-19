@@ -61,8 +61,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderCamera::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
     {
-        (void)_fullscreen;
-        (void)_resolution;
+        MENGINE_UNUSED( _fullscreen );
+        MENGINE_UNUSED( _resolution );
 
         this->invalidateProjectionMatrix_();
     }

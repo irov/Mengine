@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieEvent::_movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer )
     {
-        (void)_time;
+        MENGINE_UNUSED( _time );
 
         if( m_cb.is_invalid() == true )
         {

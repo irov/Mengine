@@ -65,9 +65,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundBuffer::play( uint32_t _id, bool _looped, float _pos )
     {
-        (void)_id;
-        (void)_looped;
-        (void)_pos;
+        MENGINE_UNUSED( _id );
+        MENGINE_UNUSED( _looped );
+        MENGINE_UNUSED( _pos );
 
         uint64_t time = TIME_SYSTEM()
             ->getTimeMilliseconds();
@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundBuffer::resume( uint32_t _id )
     {
-        (void)_id;
+        MENGINE_UNUSED( _id );
 
         uint64_t time = TIME_SYSTEM()
             ->getTimeMilliseconds();
@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundBuffer::pause( uint32_t _id )
     {
-        (void)_id;
+        MENGINE_UNUSED( _id );
 
         uint64_t time = TIME_SYSTEM()
             ->getTimeMilliseconds();
@@ -103,7 +103,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundBuffer::stop( uint32_t _id )
     {
-        (void)_id;
+        MENGINE_UNUSED( _id );
 
         m_playTime = 0UL;
         m_pauseTime = 0UL;
@@ -111,7 +111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SilentSoundBuffer::getTimePos( uint32_t _id ) const
     {
-        (void)_id;
+        MENGINE_UNUSED( _id );
 
         if( m_pauseTime > m_playTime )
         {

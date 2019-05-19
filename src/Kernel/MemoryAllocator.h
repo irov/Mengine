@@ -19,7 +19,7 @@ namespace Mengine
 
         inline void operator delete (void * _ptr, size_t _size)
         {
-            (void)_size;
+            MENGINE_UNUSED( _size );
 
             stdex_free( _ptr, Typename<T>::value );
         }
@@ -31,7 +31,7 @@ namespace Mengine
 
             inline void operator delete []( void * _ptr, size_t _size )
         {
-            (void)_size;
+            MENGINE_UNUSED( _size );
 
             stdex_free( _ptr, Typename<T>::value );
         }
@@ -91,7 +91,7 @@ namespace Mengine
 
         inline 	void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
         {
-            (void)_doc;
+            MENGINE_UNUSED( _doc );
             void * memory_buffer = stdex_realloc( _buffer, _size, _doc );
 
             return memory_buffer;

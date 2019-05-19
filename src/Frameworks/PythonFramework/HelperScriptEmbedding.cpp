@@ -161,7 +161,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_debugNode( Node * _node )
         {
-            (void)_node;
+            MENGINE_UNUSED( _node );
 
             printf( "debug node!\n" );
 
@@ -331,8 +331,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
         {
-            (void)_category;
-            (void)_group;
+            MENGINE_UNUSED( _category );
+            MENGINE_UNUSED( _group );
 
             return 0U;
         }
@@ -2420,7 +2420,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGlobalSettingBool( pybind::kernel_interface * _kernel, const ConstString & _setting )
         {
-            (void)_kernel;
+            MENGINE_UNUSED( _kernel );
 
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
@@ -2979,8 +2979,8 @@ namespace Mengine
     {
         bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, value_type & _value, bool _nothrow ) override
         {
-            (void)_kernel;
-            (void)_nothrow;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _nothrow );
 
             if( _kernel->string_check( _obj ) == true )
             {
@@ -3004,7 +3004,7 @@ namespace Mengine
 
         PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
         {
-            (void)_kernel;
+            MENGINE_UNUSED( _kernel );
 
             const char * value_str = reinterpret_cast<const char *>(&_value[0]);
             value_type::size_type value_size = _value.size();
@@ -3020,8 +3020,8 @@ namespace Mengine
     {
         bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Tags & _tags, bool _nothrow ) override
         {
-            (void)_kernel;
-            (void)_nothrow;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _nothrow );
 
             if( _kernel->list_check( _obj ) == true )
             {
@@ -3046,7 +3046,7 @@ namespace Mengine
 
         PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Tags>::TCastRef _value ) override
         {
-            (void)_kernel;
+            MENGINE_UNUSED( _kernel );
 
             const VectorConstString & tags = _value.getValues();
 
@@ -3071,8 +3071,8 @@ namespace Mengine
     public:
         bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, String & _value, bool _nothrow ) override
         {
-            (void)_kernel;
-            (void)_nothrow;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _nothrow );
 
             if( _kernel->string_check( _obj ) == true )
             {
@@ -3097,7 +3097,7 @@ namespace Mengine
     public:
         PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<String>::TCastRef _value ) override
         {
-            (void)_kernel;
+            MENGINE_UNUSED( _kernel );
 
             const String::value_type * value_str = _value.c_str();
             String::size_type value_size = _value.size();
@@ -3114,8 +3114,8 @@ namespace Mengine
     public:
         bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, WString & _value, bool _nothrow ) override
         {
-            (void)_kernel;
-            (void)_nothrow;
+            MENGINE_UNUSED( _kernel );
+            MENGINE_UNUSED( _nothrow );
 
             if( _kernel->unicode_check( _obj ) == true )
             {
@@ -3140,7 +3140,7 @@ namespace Mengine
     public:
         PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<WString>::TCastRef _value ) override
         {
-            (void)_kernel;
+            MENGINE_UNUSED( _kernel );
 
             const WString::value_type * value_str = _value.c_str();
             WString::size_type value_size = _value.size();
@@ -3156,7 +3156,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool Tags_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Tags * _place, void * _user )
         {
-            (void)_user;
+            MENGINE_UNUSED( _user );
 
             if( _kernel->tuple_check( _obj ) == true )
             {

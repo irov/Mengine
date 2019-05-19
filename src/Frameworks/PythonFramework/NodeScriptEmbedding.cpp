@@ -175,7 +175,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
         {
-            (void)_kwds;
+            MENGINE_UNUSED( _kwds );
 
             size_t args_count = _kernel->tuple_size( _args );
 
@@ -600,7 +600,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {
@@ -684,7 +684,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_Meshget_setEventListener( pybind::kernel_interface * _kernel, Meshget * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {
@@ -737,7 +737,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_ScriptHolder_setEventListener( pybind::kernel_interface * _kernel, ScriptHolder * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {
@@ -774,7 +774,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {
@@ -821,8 +821,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_HotSpot_removeEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
-            (void)_kwds;
+            MENGINE_UNUSED( _args );
+            MENGINE_UNUSED( _kwds );
 
             _node->removeEvents();
 
@@ -843,7 +843,7 @@ namespace Mengine
         {
             _node->removeChildren( []( const NodePtr & _child )
             {
-                (void)_child;
+                MENGINE_UNUSED( _child );
             } );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -861,7 +861,7 @@ namespace Mengine
         {
             _node->destroyChildren( []( const NodePtr & _child )
             {
-                (void)_child;
+                MENGINE_UNUSED( _child );
             } );
         }
         //////////////////////////////////////////////////////////////////////////

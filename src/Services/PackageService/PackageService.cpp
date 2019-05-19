@@ -480,8 +480,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PackageService::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
     {
-        (void)_prevLocale;
-        (void)_currentlocale;
+        MENGINE_UNUSED( _prevLocale );
+        MENGINE_UNUSED( _currentlocale );
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();

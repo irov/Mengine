@@ -131,7 +131,7 @@ namespace Mengine
     protected:
         virtual bool _seek( float _timing )
         {
-            (void)_timing;
+            MENGINE_UNUSED( _timing );
 
             return false;
         }

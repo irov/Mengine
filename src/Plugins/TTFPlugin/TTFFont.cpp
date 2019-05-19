@@ -433,7 +433,7 @@ namespace Mengine
         if( it_found != glyphs.end() )
         {
             const TTFGlyph & g = *it_found;
-            (void)g;
+            MENGINE_UNUSED( g );
 
             return true;
         }

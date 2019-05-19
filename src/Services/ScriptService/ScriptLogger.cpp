@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptLogger::py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
     {
-        (void)_kwds;
+        MENGINE_UNUSED( _kwds );
 
         if( _kernel->tuple_check( _args ) == false )
         {

@@ -72,7 +72,8 @@ namespace Mengine
         if( m_pIB != nullptr )
         {
             ULONG ref = m_pIB->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
+
             m_pIB = nullptr;
         }
     }
@@ -97,7 +98,8 @@ namespace Mengine
         if( m_pIB != nullptr )
         {
             ULONG ref = m_pIB->Release();
-            (void)ref;
+            MENGINE_UNUSED( ref );
+
             m_pIB = nullptr;
         }
 
@@ -216,8 +218,8 @@ namespace Mengine
             return;
         }
 
-        ULONG refCount = m_pIB->Release();
-        (void)refCount;
+        ULONG ref = m_pIB->Release();
+        MENGINE_UNUSED( ref );
 
         m_pIB = nullptr;
     }

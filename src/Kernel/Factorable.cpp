@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factorable::setImmortal( bool _value )
     {
-        (void)_value;
+        MENGINE_UNUSED( _value );
 
 #ifdef MENGINE_FACTORABLE_DEBUG
         m_immortal = _value;

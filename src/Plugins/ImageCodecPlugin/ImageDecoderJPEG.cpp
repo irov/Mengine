@@ -8,21 +8,22 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     struct DecoderJPEGSourceManager
-        : public jpeg_source_mgr
     {
+        jpeg_source_mgr base;
+
         InputStreamInterface * stream;
         JOCTET * buffer;
         boolean start_of_file;
     };
     //////////////////////////////////////////////////////////////////////////
-    static noreturn_t s_jpegErrorExit( j_common_ptr _cinfo )
+    METHODDEF( noreturn_t ) s_jpegErrorExit( j_common_ptr _cinfo )
     {
         {
             char buffer[JMSG_LENGTH_MAX] = { 0 };
 
             (*_cinfo->err->format_message)(_cinfo, buffer);
 
-            LOGGER_ERROR( "ImageDecoderJPEG::ErrorMessage %s"
+            LOGGER_ERROR( "jpeg error: %s"
                 , buffer
             );
         }
@@ -33,18 +34,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static noreturn_t s_jpegOutputMessage( j_common_ptr _cinfo )
+    METHODDEF( noreturn_t ) s_jpegOutputMessage( j_common_ptr _cinfo )
     {
         char buffer[JMSG_LENGTH_MAX] = { 0 };
 
         (*_cinfo->err->format_message)(_cinfo, buffer);
 
-        LOGGER_ERROR( "ImageDecoderJPEG::OutputMessage %s"
+        LOGGER_ERROR( "jpeg message: %s"
             , buffer
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void )	s_init_source( j_decompress_ptr cinfo )
+    METHODDEF( void ) s_init_source( j_decompress_ptr cinfo )
     {
         DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
@@ -67,35 +68,37 @@ namespace Mengine
             nbytes = 2;
         }
 
-        src->next_input_byte = src->buffer;
-        src->bytes_in_buffer = nbytes;
+        src->base.next_input_byte = src->buffer;
+        src->base.bytes_in_buffer = nbytes;
         src->start_of_file = FALSE;
 
         return TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void )	s_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
+    METHODDEF( void ) s_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
     {
         DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
         if( num_bytes > 0 )
         {
-            while( num_bytes > (long)src->bytes_in_buffer )
+            while( num_bytes > (long)src->base.bytes_in_buffer )
             {
-                num_bytes -= (long)src->bytes_in_buffer;
+                num_bytes -= (long)src->base.bytes_in_buffer;
 
                 boolean result = s_fill_input_buffer( cinfo );
                 MENGINE_UNUSED( result );
             }
 
-            src->next_input_byte += (size_t)num_bytes;
-            src->bytes_in_buffer -= (size_t)num_bytes;
+            src->base.next_input_byte += (size_t)num_bytes;
+            src->base.bytes_in_buffer -= (size_t)num_bytes;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    METHODDEF( void )	s_term_source( j_decompress_ptr cinfo )
+    METHODDEF( void ) s_term_source( j_decompress_ptr cinfo )
     {
-        (void)cinfo;
+        MENGINE_UNUSED( cinfo );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     GLOBAL( void ) s_jpeg_mengine_src( j_decompress_ptr cinfo, InputStreamInterface * _stream )
@@ -113,14 +116,14 @@ namespace Mengine
 
         DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
-        src->init_source = s_init_source;
-        src->fill_input_buffer = s_fill_input_buffer;
-        src->skip_input_data = s_skip_input_data;
-        src->resync_to_restart = jpeg_resync_to_restart; // use default method 
-        src->term_source = s_term_source;
+        src->base.init_source = &s_init_source;
+        src->base.fill_input_buffer = &s_fill_input_buffer;
+        src->base.skip_input_data = &s_skip_input_data;
+        src->base.resync_to_restart = jpeg_resync_to_restart; // use default method 
+        src->base.term_source = s_term_source;
+        src->base.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
+        src->base.next_input_byte = nullptr;	// until buffer loaded 
         src->stream = _stream;
-        src->bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
-        src->next_input_byte = nullptr;	// until buffer loaded 
     }
     //////////////////////////////////////////////////////////////////////////
     static int32_t s_getQuality( const jpeg_decompress_struct * _jpegObject )

@@ -122,13 +122,13 @@ protected:
     Helper::hasEventableReceiver( this, Event ) == false ? R : Helper::getThisEventRecieverT( this, Event )
 
 #define EVENTABLE_METHOD(Event)\
-    EVENTABLE_METHODR(Event, ((void)0))
+    EVENTABLE_METHODR(Event, MENGINE_UNUSED(0))
 
 #define EVENTABLE_OTHER_METHODR(Self, Event, R)\
     Self == nullptr ? R : Helper::hasEventableReceiver( Self, Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
 
 #define EVENTABLE_OTHER_METHOD(Self, Event)\
-    EVENTABLE_OTHER_METHODR(Self, Event, ((void)0))
+    EVENTABLE_OTHER_METHODR(Self, Event, MENGINE_UNUSED(0))
 
 #define EVENTABLE_METHODRS(Self, Event, R)\
     Helper::hasEventableReceiver( Self, Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
@@ -137,4 +137,4 @@ protected:
     Self == nullptr ? R : Helper::hasEventableReceiver( Self, Event ) == false ? R : Helper::getThisEventReciever<Type>( Self, Event )
 
 #define EVENTABLE_OTHER_METHODT(Self, Event, Type)\
-    EVENTABLE_OTHER_METHODRT(Self, Event, ((void)0), Type)
+    EVENTABLE_OTHER_METHODRT(Self, Event, MENGINE_UNUSED(0), Type)

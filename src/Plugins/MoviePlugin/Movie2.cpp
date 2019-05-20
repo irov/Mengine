@@ -374,7 +374,7 @@ namespace Mengine
             {
                 TextFieldPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( node == nullptr )
@@ -1182,6 +1182,7 @@ namespace Mengine
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'a', 's' ) ) == AE_TRUE )
                 {
+					node->setWrap( false );
                     node->setAutoScale( true );
                 }
 

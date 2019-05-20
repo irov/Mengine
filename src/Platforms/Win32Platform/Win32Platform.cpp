@@ -868,7 +868,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result )
     {
-        (void)hWnd;
+        MENGINE_UNUSED( hWnd );
 
         bool handle = false;
 
@@ -1945,7 +1945,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getFileTime( const Char * _path ) const
     {
-        (void)_path;
+        MENGINE_UNUSED( _path );
 
         return 0U;
     }
@@ -2383,14 +2383,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::onEvent( const ConstString & _event, const MapWParams & _params )
     {
-        (void)_event;
-        (void)_params;
+        MENGINE_UNUSED( _event );
+        MENGINE_UNUSED( _params );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     float Win32Platform::getJoystickAxis( uint32_t _index ) const
     {
-        (void)_index;
+        MENGINE_UNUSED( _index );
+
         //FixMe
 
         return 0.f;

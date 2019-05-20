@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketInputStream::seek( size_t _pos )
     {
-        (void)_pos;
+        MENGINE_UNUSED( _pos );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -40,7 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketInputStream::skip( size_t _pos )
     {
-        (void)_pos;
+        MENGINE_UNUSED( _pos );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketInputStream::time( uint64_t & _time ) const
     {
-        (void)_time;
+        MENGINE_UNUSED( _time );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -79,8 +79,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32SocketInputStream::memory( void ** _memory, size_t * _size )
     {
-        (void)_memory;
-        (void)_size;
+        MENGINE_UNUSED( _memory );
+        MENGINE_UNUSED( _size );
 
         //Empty
 

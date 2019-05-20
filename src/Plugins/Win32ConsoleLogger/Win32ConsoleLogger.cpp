@@ -110,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
     {
-        (void)_flag;
+        MENGINE_UNUSED( _flag );
 
         HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
 

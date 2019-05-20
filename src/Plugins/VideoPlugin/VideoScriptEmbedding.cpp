@@ -23,7 +23,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {

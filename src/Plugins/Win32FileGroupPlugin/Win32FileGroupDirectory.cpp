@@ -186,7 +186,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
     {
-        (void)_streaming;
+        MENGINE_UNUSED( _streaming );
 
         if( _stream == nullptr )
         {

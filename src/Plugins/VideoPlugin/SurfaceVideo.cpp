@@ -241,7 +241,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceVideo::getUV( uint32_t _index ) const
     {
-        (void)_index;
+        MENGINE_UNUSED( _index );
 
         return m_uv;
     }
@@ -577,7 +577,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_interrupt( uint32_t _playId )
     {
-        (void)_playId;
+        MENGINE_UNUSED( _playId );
 
         return true;
     }

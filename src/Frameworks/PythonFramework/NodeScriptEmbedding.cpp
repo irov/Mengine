@@ -636,7 +636,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
         {
-            (void)_args;
+            MENGINE_UNUSED( _args );
 
             if( _kwds == nullptr )
             {

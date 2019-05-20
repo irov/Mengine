@@ -432,7 +432,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * _buffer, size_t _size )
     {
-        (void)_size;
+        MENGINE_UNUSED( _size );
 
         if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
         {
@@ -775,12 +775,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float & _pts )
     {
-        (void)_request;
-        (void)_pts;
+        MENGINE_UNUSED( _request );
+        MENGINE_UNUSED( _pts );
 
         EVideoDecoderReadState state = VDRS_SUCCESS;
 
-        // theora processing...
         ogg_packet packet;
 
         for( ;; )
@@ -796,10 +795,6 @@ namespace Mengine
                 return VDRS_FAILURE;
             }
 
-            // не хватает данных в логическом потоке theora
-            // надо надергать данных из физического потока и затолкать их в логический поток
-
-            // читаем данные из файла
             size_t bytes = this->read_buffer_data_();
 
             if( bytes == 0 )
@@ -809,17 +804,11 @@ namespace Mengine
 
             ogg_page page;
             while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
-                // декодируем данные из буфера в страницы (ogg_page)
-                // пока они не кончатся в буфере
             {
-                // пихаем эти страницы в соотв. логические потоки
                 ogg_stream_pagein( &m_oggStreamState, &page );
             }
         }
 
-        // удачно декодировали. в пакете содержится декодированная ogg-информация
-        // (то бишь закодированная theora-информация)
-        // загружаем пакет в декодер theora
         if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
         {
             return VDRS_FAILURE;
@@ -841,8 +830,7 @@ namespace Mengine
         ogg_packet packet;
 
         for( ;; )
-        {
-            // theora processing...			
+        {		
             for( ;; )
             {
                 int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
@@ -856,10 +844,6 @@ namespace Mengine
                     return VDRS_FAILURE;
                 }
 
-                // не хватает данных в логическом потоке theora
-                // надо надергать данных из физического потока и затолкать их в логический поток
-
-                // читаем данные из файла
                 size_t bytes = this->read_buffer_data_();
 
                 if( bytes == 0 )
@@ -869,10 +853,7 @@ namespace Mengine
 
                 ogg_page page;
                 while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
-                    // декодируем данные из буфера в страницы (ogg_page)
-                    // пока они не кончатся в буфере
                 {
-                    // пихаем эти страницы в соотв. логические потоки
                     ogg_stream_pagein( &m_oggStreamState, &page );
                 }
             }
@@ -891,9 +872,6 @@ namespace Mengine
             break;
         }
 
-        // удачно декодировали. в пакете содержится декодированная ogg-информация
-        // (то бишь закодированная theora-информация)
-        // загружаем пакет в декодер theora
         if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
         {
             return false;
@@ -914,10 +892,6 @@ namespace Mengine
             return true;
         }
 
-        //uint32_t frame_last = (uint32_t)((m_dataInfo.duration - frameTiming) / frameTiming);
-
-        //float test_timing = _timing + frameTiming;
-
         if( frame_time > frame_seek )
         {
             if( this->_rewind() == false )
@@ -930,10 +904,6 @@ namespace Mengine
                 return true;
             }
         }
-
-        //bool successful = this->seekToFrame( _time );
-
-        //return successful;
 
         return true;
     }

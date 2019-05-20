@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * XlsScriptLogger::py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
     {
-        (void)_kwds;
+        MENGINE_UNUSED( _kwds );
 
         if( _kernel->tuple_check( _args ) == false )
         {
@@ -55,8 +55,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * XlsScriptLogger::py_flush( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
     {
-        (void)_args;
-        (void)_kwds;
+        MENGINE_UNUSED( _args );
+        MENGINE_UNUSED( _kwds );
 
         return _kernel->ret_none();
     }

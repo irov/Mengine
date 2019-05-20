@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_write_wstring( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
     {
-        (void)_user;
+        MENGINE_UNUSED( _user );
 
         uint32_t utf8_size = (uint32_t)strlen( _value );
 
@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_write_wchar_t( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
     {
-        (void)_user;
+        MENGINE_UNUSED( _user );
 
         uint32_t utf8_size = (uint32_t)strlen( _value );
 

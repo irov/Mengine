@@ -363,7 +363,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static voidpf s_alloc_func( voidpf opaque, uInt items, uInt size )
     {
-        (void)opaque;
+        MENGINE_UNUSED( opaque );
 
         void * memory = stdex_malloc( items * size, "FileGroupZip" );
 
@@ -372,7 +372,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     static void s_free_func( voidpf opaque, voidpf address )
     {
-        (void)opaque;
+        MENGINE_UNUSED( opaque );
 
         stdex_free( address, "FileGroupZip" );
     }
@@ -589,8 +589,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file )
     {
-        (void)_fileName;
-        (void)_file;
+        MENGINE_UNUSED( _fileName );
+        MENGINE_UNUSED( _file );
 
         LOGGER_ERROR( "'%s' unsupport method"
             , _fileName.c_str()

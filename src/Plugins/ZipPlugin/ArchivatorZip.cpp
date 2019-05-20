@@ -68,14 +68,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static voidpf my_alloc_func( voidpf opaque, uInt items, uInt size )
     {
-        (void)opaque;
+        MENGINE_UNUSED( opaque );
 
         return stdex_malloc( items * size, "ArchivatorZip" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void my_free_func( voidpf opaque, voidpf address )
     {
-        (void)opaque;
+        MENGINE_UNUSED( opaque );
 
         stdex_free( address, "ArchivatorZip" );
     }

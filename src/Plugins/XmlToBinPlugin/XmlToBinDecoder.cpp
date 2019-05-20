@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_write_utf8( Metabuf::Xml2Metabuf * _metabuf, const char * _value, void * _user )
     {
-        (void)_user;
+        MENGINE_UNUSED( _user );
 
         size_t len = strlen( _value );
         const char * text_it = _value;
@@ -87,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XmlToBinDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
     {
-        (void)_dataInfo;
+        MENGINE_UNUSED( _dataInfo );
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -134,8 +134,8 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////////
     size_t XmlToBinDecoder::decode( void * _buffer, size_t _bufferSize )
     {
-        (void)_buffer;
-        (void)_bufferSize;
+        MENGINE_UNUSED( _buffer );
+        MENGINE_UNUSED( _bufferSize );
 
         LOGGER_MESSAGE( "xml to bin:\nxml - %s\nbin - %s"
             , m_options.pathXml.c_str()
@@ -423,7 +423,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinDecoder::seek( float _timing )
     {
-        (void)_timing;
+        MENGINE_UNUSED( _timing );
 
         return false;
     }

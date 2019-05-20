@@ -57,15 +57,12 @@ namespace Mengine
         return realsize;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int32_t XFERInfoCallback( void * _userp
-        , curl_off_t _dltotal, curl_off_t _dlnow
-        , curl_off_t _ultotal, curl_off_t _ulnow
-    )
+    static int32_t XFERInfoCallback( void * _userp, curl_off_t _dltotal, curl_off_t _dlnow, curl_off_t _ultotal, curl_off_t _ulnow )
     {
-        (void)_dltotal;
-        (void)_dlnow;
-        (void)_ultotal;
-        (void)_ulnow;
+        MENGINE_UNUSED( _dltotal );
+        MENGINE_UNUSED( _dlnow );
+        MENGINE_UNUSED( _ultotal );
+        MENGINE_UNUSED( _ulnow );
 
         cURLGetAssetThreadTask * task = (cURLGetAssetThreadTask *)_userp;
 

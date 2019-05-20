@@ -270,7 +270,7 @@ namespace Mengine
         for( const VectorTextLine2 & lines2 : layouts )
         {
             float alignOffsetX = m_textLineAlignOffsets[textLineAlignOffsetIterator++];
-            offset.x = alignOffsetX;
+            offset.x = alignOffsetX * m_autoScaleFactor;
 
             for( const VectorTextLine & lines : lines2 )
             {
@@ -905,7 +905,7 @@ namespace Mengine
         VectorTextLines textLines;
         Helper::split( textLines, textChars, line_delims );
 
-        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount == ~0)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
+        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
             , this->getName().c_str()
         );
 

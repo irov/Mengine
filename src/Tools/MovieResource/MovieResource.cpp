@@ -518,7 +518,7 @@ static void my_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _da
     (void)_ud;
 }
 //////////////////////////////////////////////////////////////////////////
-static size_t my_read_stream( void * _data, void * _buff, size_t _carriage, size_t _size )
+static size_t my_read_stream( void * _buff, size_t _carriage, size_t _size, ae_userdata_t _data )
 {
     AE_UNUSED( _carriage );
 
@@ -529,7 +529,7 @@ static size_t my_read_stream( void * _data, void * _buff, size_t _carriage, size
     return s;
 }
 //////////////////////////////////////////////////////////////////////////
-static void my_copy_stream( void * _data, const void * _src, void * _dst, size_t _size )
+static void my_copy_stream( const void * _src, void * _dst, size_t _size, ae_userdata_t _data )
 {
     AE_UNUSED( _data );
 

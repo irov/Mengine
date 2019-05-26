@@ -10,7 +10,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_version()
     {
-        return 7;
+        return 8;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
@@ -173,75 +173,57 @@ namespace Metacode
         
                 switch( id )
                 {
-                case 5:
+                case 4:
                     {
-                        includes_Meta_FragmentShader.reserve( includeCount );
+                        includes_Meta_FragmentShader.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_DataBlock::Meta_FragmentShader & metadata : includes_Meta_FragmentShader )
                         {
-                            includes_Meta_FragmentShader.emplace_back( Meta_DataBlock::Meta_FragmentShader() );
-                            Meta_DataBlock::Meta_FragmentShader & metadata = includes_Meta_FragmentShader.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 2:
+                case 1:
                     {
-                        includes_Meta_Include.reserve( includeCount );
+                        includes_Meta_Include.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_DataBlock::Meta_Include & metadata : includes_Meta_Include )
                         {
-                            includes_Meta_Include.emplace_back( Meta_DataBlock::Meta_Include() );
-                            Meta_DataBlock::Meta_Include & metadata = includes_Meta_Include.back();
-        
-                            metadata.parse( _buff, _size, _read, _userData );
-                        }
-                    }break;
-                case 7:
-                    {
-                        includes_Meta_Material.reserve( includeCount );
-        
-                        for( uint32_t j = 0; j != includeCount; ++j )
-                        {
-                            includes_Meta_Material.emplace_back( Meta_DataBlock::Meta_Material() );
-                            Meta_DataBlock::Meta_Material & metadata = includes_Meta_Material.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 6:
                     {
-                        includes_Meta_Program.reserve( includeCount );
+                        includes_Meta_Material.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_DataBlock::Meta_Material & metadata : includes_Meta_Material )
                         {
-                            includes_Meta_Program.emplace_back( Meta_DataBlock::Meta_Program() );
-                            Meta_DataBlock::Meta_Program & metadata = includes_Meta_Program.back();
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 5:
+                    {
+                        includes_Meta_Program.resize( includeCount );
         
+                        for( Meta_DataBlock::Meta_Program & metadata : includes_Meta_Program )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 2:
+                    {
+                        includes_Meta_VertexAttribute.resize( includeCount );
+        
+                        for( Meta_DataBlock::Meta_VertexAttribute & metadata : includes_Meta_VertexAttribute )
+                        {
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 3:
                     {
-                        includes_Meta_VertexAttribute.reserve( includeCount );
+                        includes_Meta_VertexShader.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_DataBlock::Meta_VertexShader & metadata : includes_Meta_VertexShader )
                         {
-                            includes_Meta_VertexAttribute.emplace_back( Meta_DataBlock::Meta_VertexAttribute() );
-                            Meta_DataBlock::Meta_VertexAttribute & metadata = includes_Meta_VertexAttribute.back();
-        
-                            metadata.parse( _buff, _size, _read, _userData );
-                        }
-                    }break;
-                case 4:
-                    {
-                        includes_Meta_VertexShader.reserve( includeCount );
-        
-                        for( uint32_t j = 0; j != includeCount; ++j )
-                        {
-                            includes_Meta_VertexShader.emplace_back( Meta_DataBlock::Meta_VertexShader() );
-                            Meta_DataBlock::Meta_VertexShader & metadata = includes_Meta_VertexShader.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
@@ -284,31 +266,31 @@ namespace Metacode
             (void)_count;
             switch( _id )
             {
-            case 5:
+            case 4:
                 {
                     includes_Meta_FragmentShader.reserve( _count );
                 }break;
-            case 2:
+            case 1:
                 {
                     includes_Meta_Include.reserve( _count );
                 }break;
-            case 7:
+            case 6:
                 {
                     includes_Meta_Material.reserve( _count );
                 }break;
-            case 6:
+            case 5:
                 {
                     includes_Meta_Program.reserve( _count );
                 }break;
-            case 3:
+            case 2:
                 {
                     includes_Meta_VertexAttribute.reserve( _count );
                 }break;
-            case 4:
+            case 3:
                 {
                     includes_Meta_VertexShader.reserve( _count );
                 }break;
-            case 8:
+            case 7:
                 {
                     includes_Meta_Resource.reserve( _count );
                 }break;
@@ -326,42 +308,42 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 5:
+            case 4:
                 {
                     includes_Meta_FragmentShader.emplace_back( Meta_DataBlock::Meta_FragmentShader() );
                     Meta_DataBlock::Meta_FragmentShader & metadata = includes_Meta_FragmentShader.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 2:
+            case 1:
                 {
                     includes_Meta_Include.emplace_back( Meta_DataBlock::Meta_Include() );
                     Meta_DataBlock::Meta_Include & metadata = includes_Meta_Include.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 7:
+            case 6:
                 {
                     includes_Meta_Material.emplace_back( Meta_DataBlock::Meta_Material() );
                     Meta_DataBlock::Meta_Material & metadata = includes_Meta_Material.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 6:
+            case 5:
                 {
                     includes_Meta_Program.emplace_back( Meta_DataBlock::Meta_Program() );
                     Meta_DataBlock::Meta_Program & metadata = includes_Meta_Program.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 3:
+            case 2:
                 {
                     includes_Meta_VertexAttribute.emplace_back( Meta_DataBlock::Meta_VertexAttribute() );
                     Meta_DataBlock::Meta_VertexAttribute & metadata = includes_Meta_VertexAttribute.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 4:
+            case 3:
                 {
                     includes_Meta_VertexShader.emplace_back( Meta_DataBlock::Meta_VertexShader() );
                     Meta_DataBlock::Meta_VertexShader & metadata = includes_Meta_VertexShader.back();
@@ -377,182 +359,182 @@ namespace Metacode
         {
             switch( _id )
             {
-            case 14:
+            case 13:
                 {
                     Meta_DataBlock::Meta_ResourceAstralax * metadata = new Meta_DataBlock::Meta_ResourceAstralax ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 31:
+            case 30:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dAnimation * metadata = new Meta_DataBlock::Meta_ResourceCal3dAnimation ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 32:
+            case 31:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dMesh * metadata = new Meta_DataBlock::Meta_ResourceCal3dMesh ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 30:
+            case 29:
                 {
                     Meta_DataBlock::Meta_ResourceCal3dSkeleton * metadata = new Meta_DataBlock::Meta_ResourceCal3dSkeleton ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 16:
+            case 15:
                 {
                     Meta_DataBlock::Meta_ResourceCursorICO * metadata = new Meta_DataBlock::Meta_ResourceCursorICO ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 15:
+            case 14:
                 {
                     Meta_DataBlock::Meta_ResourceCursorSystem * metadata = new Meta_DataBlock::Meta_ResourceCursorSystem ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 34:
+            case 33:
                 {
                     Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 17:
+            case 16:
                 {
                     Meta_DataBlock::Meta_ResourceFile * metadata = new Meta_DataBlock::Meta_ResourceFile ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 25:
+            case 24:
                 {
                     Meta_DataBlock::Meta_ResourceHIT * metadata = new Meta_DataBlock::Meta_ResourceHIT ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 9:
+            case 8:
                 {
                     Meta_DataBlock::Meta_ResourceImageData * metadata = new Meta_DataBlock::Meta_ResourceImageData ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 10:
+            case 9:
                 {
                     Meta_DataBlock::Meta_ResourceImageDefault * metadata = new Meta_DataBlock::Meta_ResourceImageDefault ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 24:
+            case 23:
                 {
                     Meta_DataBlock::Meta_ResourceImageSequence * metadata = new Meta_DataBlock::Meta_ResourceImageSequence ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 27:
+            case 26:
                 {
                     Meta_DataBlock::Meta_ResourceImageSolid * metadata = new Meta_DataBlock::Meta_ResourceImageSolid ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 12:
+            case 11:
                 {
                     Meta_DataBlock::Meta_ResourceImageSubstract * metadata = new Meta_DataBlock::Meta_ResourceImageSubstract ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 11:
+            case 10:
                 {
                     Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 28:
+            case 27:
                 {
                     Meta_DataBlock::Meta_ResourceInternalObject * metadata = new Meta_DataBlock::Meta_ResourceInternalObject ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 26:
+            case 25:
                 {
                     Meta_DataBlock::Meta_ResourceModel3D * metadata = new Meta_DataBlock::Meta_ResourceModel3D ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 22:
+            case 21:
                 {
                     Meta_DataBlock::Meta_ResourceMovie * metadata = new Meta_DataBlock::Meta_ResourceMovie ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 21:
+            case 20:
                 {
                     Meta_DataBlock::Meta_ResourceMovie2 * metadata = new Meta_DataBlock::Meta_ResourceMovie2 ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 19:
+            case 18:
                 {
                     Meta_DataBlock::Meta_ResourceMusic * metadata = new Meta_DataBlock::Meta_ResourceMusic ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 13:
+            case 12:
                 {
                     Meta_DataBlock::Meta_ResourceParticle * metadata = new Meta_DataBlock::Meta_ResourceParticle ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 29:
+            case 28:
                 {
                     Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 18:
+            case 17:
                 {
                     Meta_DataBlock::Meta_ResourceSound * metadata = new Meta_DataBlock::Meta_ResourceSound ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 33:
+            case 32:
                 {
                     Meta_DataBlock::Meta_ResourceSpine * metadata = new Meta_DataBlock::Meta_ResourceSpine ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 23:
+            case 22:
                 {
                     Meta_DataBlock::Meta_ResourceVideo * metadata = new Meta_DataBlock::Meta_ResourceVideo ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 20:
+            case 19:
                 {
                     Meta_DataBlock::Meta_ResourceWindow * metadata = new Meta_DataBlock::Meta_ResourceWindow ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -567,7 +549,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_FragmentShader::Meta_FragmentShader()
             : Metabuf::Metadata()
-            , m_File_Compile_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -579,15 +561,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -600,19 +578,13 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_FragmentShader::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_FragmentShader::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Compile );
-        
-                    this->m_File_Compile_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Compile );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_FragmentShader::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -670,15 +642,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Material::Meta_Material()
             : Metabuf::Metadata()
-            , m_Debug_successful(false)
-            , m_RenderPlatform_successful(false)
-            , m_AlphaBlend_Enable_successful(false)
-            , m_BlendFactor_Dest_successful(false)
-            , m_BlendFactor_Op_successful(false)
-            , m_BlendFactor_Source_successful(false)
-            , m_DepthBufferTest_Enable_successful(false)
-            , m_DepthBufferWrite_Enable_successful(false)
-            , m_Program_Name_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -690,15 +654,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -706,13 +666,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_TextureStages.reserve( includeCount );
+                includes_Meta_TextureStages.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata : includes_Meta_TextureStages )
                 {
-                    includes_Meta_TextureStages.emplace_back( Meta_DataBlock::Meta_Material::Meta_TextureStages() );
-                    Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -725,82 +682,59 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_Material::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_Material::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Debug) != 0 )
             {
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Debug );
-        
-                    this->m_Debug_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_RenderPlatform );
-        
-                    this->m_RenderPlatform_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AlphaBlend_Enable );
-        
-                    this->m_AlphaBlend_Enable_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_BlendFactor_Dest );
-        
-                    this->m_BlendFactor_Dest_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_BlendFactor_Op );
-        
-                    this->m_BlendFactor_Op_successful = true;
-                }break;
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_BlendFactor_Source );
-        
-                    this->m_BlendFactor_Source_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_DepthBufferTest_Enable );
-        
-                    this->m_DepthBufferTest_Enable_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_DepthBufferWrite_Enable );
-        
-                    this->m_DepthBufferWrite_Enable_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Program_Name );
-        
-                    this->m_Program_Name_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Debug );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_RenderPlatform );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_AlphaBlend_Enable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AlphaBlend_Enable );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Dest) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_BlendFactor_Dest );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Op) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_BlendFactor_Op );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Source) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_BlendFactor_Source );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_DepthBufferTest_Enable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_DepthBufferTest_Enable );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_DepthBufferWrite_Enable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_DepthBufferWrite_Enable );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Program_Name) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Program_Name );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_Material::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 10:
-                {
-                    includes_Meta_TextureStages.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_Material::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -812,7 +746,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 10:
+            case 1:
                 {
                     includes_Meta_TextureStages.emplace_back( Meta_DataBlock::Meta_Material::Meta_TextureStages() );
                     Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.back();
@@ -827,9 +761,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Material::Meta_TextureStages::Meta_TextureStages()
             : Metabuf::Metadata()
-            , m_AddressMode_Border_successful(false)
-            , m_AddressMode_U_successful(false)
-            , m_AddressMode_V_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -841,15 +773,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -860,31 +788,23 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Stage );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_AddressMode_Border) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AddressMode_Border );
-        
-                    this->m_AddressMode_Border_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AddressMode_U );
-        
-                    this->m_AddressMode_U_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AddressMode_V );
-        
-                    this->m_AddressMode_V_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AddressMode_Border );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_AddressMode_U) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AddressMode_U );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_AddressMode_V) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AddressMode_V );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_Material::Meta_TextureStages::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -905,7 +825,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Program::Meta_Program()
             : Metabuf::Metadata()
-            , m_RenderPlatform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -917,15 +837,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -940,19 +856,13 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_VertexShader_Name );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_Program::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_Program::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) != 0 )
             {
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_RenderPlatform );
-        
-                    this->m_RenderPlatform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_RenderPlatform );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_Program::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -989,13 +899,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Attribute.reserve( includeCount );
+                includes_Meta_Attribute.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & metadata : includes_Meta_Attribute )
                 {
-                    includes_Meta_Attribute.emplace_back( Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute() );
-                    Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & metadata = includes_Meta_Attribute.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -1014,15 +921,6 @@ namespace Metacode
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 4:
-                {
-                    includes_Meta_Attribute.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_VertexAttribute::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -1034,7 +932,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 4:
+            case 1:
                 {
                     includes_Meta_Attribute.emplace_back( Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute() );
                     Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & metadata = includes_Meta_Attribute.back();
@@ -1091,7 +989,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_VertexShader::Meta_VertexShader()
             : Metabuf::Metadata()
-            , m_File_Compile_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1103,15 +1001,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1124,19 +1018,13 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_VertexShader::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_VertexShader::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Compile );
-        
-                    this->m_File_Compile_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Compile );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_VertexShader::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1157,8 +1045,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_Resource::Meta_Resource()
             : Metabuf::Metadata()
-            , m_Precompile_successful(false)
-            , m_Unique_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1174,15 +1061,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1194,25 +1077,18 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Precompile) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Precompile );
-        
-                    this->m_Precompile_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Unique );
-        
-                    this->m_Unique_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Precompile );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Unique) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Unique );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_Resource::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1233,7 +1109,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceAstralax::Meta_ResourceAstralax()
             : Meta_Resource()
-            , m_File_Converter_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1245,15 +1120,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -1286,21 +1157,15 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceAstralax::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceAstralax::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
             {
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceAstralax::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1309,15 +1174,6 @@ namespace Metacode
             (void)_count;
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         
-            switch( _id )
-            {
-            case 8:
-                {
-                    includes_Meta_Atlas.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceAstralax::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -1331,7 +1187,7 @@ namespace Metacode
         
             switch( _id )
             {
-            case 8:
+            case 1:
                 {
                     includes_Meta_Atlas.emplace_back( Meta_DataBlock::Meta_ResourceAstralax::Meta_Atlas() );
                     Meta_DataBlock::Meta_ResourceAstralax::Meta_Atlas & metadata = includes_Meta_Atlas.back();
@@ -1395,15 +1251,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1448,15 +1300,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1501,15 +1349,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1554,15 +1398,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1607,15 +1447,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1660,15 +1496,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1706,15 +1538,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1748,8 +1576,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceHIT::Meta_ResourceHIT()
             : Meta_Resource()
-            , m_File_Codec_successful(false)
-            , m_File_Converter_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1761,15 +1587,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1782,27 +1604,20 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceHIT::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceHIT::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0 )
             {
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
-        
-                    this->m_File_Codec_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceHIT::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1826,12 +1641,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceImageData::Meta_ResourceImageData()
             : Meta_Resource()
-            , m_File_Alpha_successful(false)
-            , m_File_Codec_successful(false)
-            , m_File_NoExist_successful(false)
-            , m_File_Offset_successful(false)
-            , m_File_Premultiply_successful(false)
-            , m_File_Size_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1843,15 +1652,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1865,51 +1670,40 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceImageData::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceImageData::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) != 0 )
             {
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Alpha );
-        
-                    this->m_File_Alpha_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
-        
-                    this->m_File_Codec_successful = true;
-                }break;
-            case 12:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
-        
-                    this->m_File_NoExist_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Offset );
-        
-                    this->m_File_Offset_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Premultiply );
-        
-                    this->m_File_Premultiply_successful = true;
-                }break;
-            case 10:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Size );
-        
-                    this->m_File_Size_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Alpha );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Offset) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Offset );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Premultiply );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Size) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Size );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageData::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1933,13 +1727,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceImageDefault::Meta_ResourceImageDefault()
             : Meta_Resource()
-            , m_File_Alpha_successful(false)
-            , m_File_Codec_successful(false)
-            , m_File_Converter_successful(false)
-            , m_File_NoExist_successful(false)
-            , m_File_Offset_successful(false)
-            , m_File_Premultiply_successful(false)
-            , m_File_Size_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1951,15 +1738,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -1973,57 +1756,45 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceImageDefault::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceImageDefault::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) != 0 )
             {
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Alpha );
-        
-                    this->m_File_Alpha_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
-        
-                    this->m_File_Codec_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            case 13:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
-        
-                    this->m_File_NoExist_successful = true;
-                }break;
-            case 12:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Offset );
-        
-                    this->m_File_Offset_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Premultiply );
-        
-                    this->m_File_Premultiply_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Size );
-        
-                    this->m_File_Size_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Alpha );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoExist );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Offset) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Offset );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Premultiply );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Size) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Size );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageDefault::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2058,15 +1829,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -2097,15 +1864,6 @@ namespace Metacode
             (void)_count;
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         
-            switch( _id )
-            {
-            case 5:
-                {
-                    includes_Meta_Sequence.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageSequence::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -2119,7 +1877,7 @@ namespace Metacode
         
             switch( _id )
             {
-            case 5:
+            case 1:
                 {
                     includes_Meta_Sequence.emplace_back( Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence() );
                     Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence & metadata = includes_Meta_Sequence.back();
@@ -2183,15 +1941,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -2226,11 +1980,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceImageSubstract::Meta_ResourceImageSubstract()
             : Meta_Resource()
-            , m_Image_Alpha_successful(false)
-            , m_Image_Offset_successful(false)
-            , m_Image_Premultiply_successful(false)
-            , m_Image_Size_successful(false)
-            , m_Image_UVRotate_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2242,15 +1991,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -2265,45 +2010,35 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UV );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Alpha) != 0 )
             {
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Alpha );
-        
-                    this->m_Image_Alpha_successful = true;
-                }break;
-            case 12:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Offset );
-        
-                    this->m_Image_Offset_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Premultiply );
-        
-                    this->m_Image_Premultiply_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Size );
-        
-                    this->m_Image_Size_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVRotate );
-        
-                    this->m_Image_UVRotate_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Alpha );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Offset );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Premultiply );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Size) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Size );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_UVRotate) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVRotate );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageSubstract::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2327,11 +2062,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::Meta_ResourceImageSubstractRGBAndAlpha()
             : Meta_Resource()
-            , m_Image_Offset_successful(false)
-            , m_Image_Premultiply_successful(false)
-            , m_Image_Size_successful(false)
-            , m_Image_UVAlphaRotate_successful(false)
-            , m_Image_UVRGBRotate_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2343,15 +2073,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -2368,45 +2094,35 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVRGB );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) != 0 )
             {
-            case 14:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Offset );
-        
-                    this->m_Image_Offset_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Premultiply );
-        
-                    this->m_Image_Premultiply_successful = true;
-                }break;
-            case 13:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Size );
-        
-                    this->m_Image_Size_successful = true;
-                }break;
-            case 10:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVAlphaRotate );
-        
-                    this->m_Image_UVAlphaRotate_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVRGBRotate );
-        
-                    this->m_Image_UVRGBRotate_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Offset );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Premultiply );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_Size) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Size );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_UVAlphaRotate) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVAlphaRotate );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Image_UVRGBRotate) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Image_UVRGBRotate );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2441,15 +2157,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -2484,8 +2196,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceModel3D::Meta_ResourceModel3D()
             : Meta_Resource()
-            , m_File_Converter_successful(false)
-            , m_File_Dataflow_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2497,15 +2207,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -2519,27 +2225,20 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Image_Resource );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceModel3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceModel3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
             {
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Dataflow );
-        
-                    this->m_File_Dataflow_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Dataflow );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceModel3D::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2563,12 +2262,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie::Meta_ResourceMovie()
             : Meta_Resource()
-            , m_Anchor_Point_successful(false)
-            , m_Bounds_Box_successful(false)
-            , m_KeyFramesPackPath_Codec_successful(false)
-            , m_KeyFramesPackPath_Converter_successful(false)
-            , m_Loop_Segment_successful(false)
-            , m_Offset_Point_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2580,15 +2273,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -2624,51 +2313,40 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Width_Value );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMovie::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceMovie::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Anchor_Point) != 0 )
             {
-            case 13:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Anchor_Point );
-        
-                    this->m_Anchor_Point_successful = true;
-                }break;
-            case 15:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Bounds_Box );
-        
-                    this->m_Bounds_Box_successful = true;
-                }break;
-            case 10:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_KeyFramesPackPath_Codec );
-        
-                    this->m_KeyFramesPackPath_Codec_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_KeyFramesPackPath_Converter );
-        
-                    this->m_KeyFramesPackPath_Converter_successful = true;
-                }break;
-            case 12:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Loop_Segment );
-        
-                    this->m_Loop_Segment_successful = true;
-                }break;
-            case 14:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Offset_Point );
-        
-                    this->m_Offset_Point_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Anchor_Point );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Bounds_Box) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Bounds_Box );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Codec) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_KeyFramesPackPath_Codec );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_KeyFramesPackPath_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Loop_Segment) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Loop_Segment );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Offset_Point) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Offset_Point );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2679,15 +2357,15 @@ namespace Metacode
         
             switch( _id )
             {
-            case 18:
+            case 3:
                 {
                     includes_Meta_MovieCamera3D.reserve( _count );
                 }break;
-            case 16:
+            case 1:
                 {
                     includes_Meta_MovieLayer2D.reserve( _count );
                 }break;
-            case 17:
+            case 2:
                 {
                     includes_Meta_MovieLayer3D.reserve( _count );
                 }break;
@@ -2707,21 +2385,21 @@ namespace Metacode
         
             switch( _id )
             {
-            case 18:
+            case 3:
                 {
                     includes_Meta_MovieCamera3D.emplace_back( Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D() );
                     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 16:
+            case 1:
                 {
                     includes_Meta_MovieLayer2D.emplace_back( Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D() );
                     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 17:
+            case 2:
                 {
                     includes_Meta_MovieLayer3D.emplace_back( Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D() );
                     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.back();
@@ -2778,22 +2456,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
             : Metabuf::Metadata()
-            , m_AnchorPoint_successful(false)
-            , m_BlendingMode_successful(false)
-            , m_Loop_successful(false)
-            , m_Params_successful(false)
-            , m_Parent_successful(false)
-            , m_PlayCount_successful(false)
-            , m_Polygon_successful(false)
-            , m_Position_successful(false)
-            , m_Rotation_successful(false)
-            , m_Scale_successful(false)
-            , m_Shape_successful(false)
-            , m_StartInterval_successful(false)
-            , m_Stretch_successful(false)
-            , m_Switch_successful(false)
-            , m_TimeRemap_successful(false)
-            , m_Viewport_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2805,15 +2468,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -2829,109 +2488,88 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
             {
-            case 17:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
-        
-                    this->m_AnchorPoint_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_BlendingMode );
-        
-                    this->m_BlendingMode_successful = true;
-                }break;
-            case 16:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Loop );
-        
-                    this->m_Loop_successful = true;
-                }break;
-            case 22:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Params );
-        
-                    this->m_Params_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Parent );
-        
-                    this->m_Parent_successful = true;
-                }break;
-            case 13:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_PlayCount );
-        
-                    this->m_PlayCount_successful = true;
-                }break;
-            case 12:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Polygon );
-        
-                    this->m_Polygon_successful = true;
-                }break;
-            case 18:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
-        
-                    this->m_Position_successful = true;
-                }break;
-            case 20:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
-        
-                    this->m_Rotation_successful = true;
-                }break;
-            case 19:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
-        
-                    this->m_Scale_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Shape );
-        
-                    this->m_Shape_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_StartInterval );
-        
-                    this->m_StartInterval_successful = true;
-                }break;
-            case 14:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Stretch );
-        
-                    this->m_Stretch_successful = true;
-                }break;
-            case 15:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Switch );
-        
-                    this->m_Switch_successful = true;
-                }break;
-            case 10:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_TimeRemap );
-        
-                    this->m_TimeRemap_successful = true;
-                }break;
-            case 21:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Viewport );
-        
-                    this->m_Viewport_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_BlendingMode );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Loop) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Loop );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Params) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Params );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Parent) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Parent );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_PlayCount) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_PlayCount );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Polygon) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Polygon );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Position) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Rotation) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Scale) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Shape) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Shape );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_StartInterval) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_StartInterval );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Stretch) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Stretch );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Switch) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Switch );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_TimeRemap );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Viewport) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Viewport );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -2952,21 +2590,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
             : Metabuf::Metadata()
-            , m_AnchorPoint_successful(false)
-            , m_BlendingMode_successful(false)
-            , m_Loop_successful(false)
-            , m_Params_successful(false)
-            , m_Parent_successful(false)
-            , m_PlayCount_successful(false)
-            , m_Polygon_successful(false)
-            , m_Position_successful(false)
-            , m_Rotation_successful(false)
-            , m_Scale_successful(false)
-            , m_Shape_successful(false)
-            , m_StartInterval_successful(false)
-            , m_Stretch_successful(false)
-            , m_Switch_successful(false)
-            , m_TimeRemap_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2978,15 +2602,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -3002,103 +2622,83 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Type );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
             {
-            case 17:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
-        
-                    this->m_AnchorPoint_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_BlendingMode );
-        
-                    this->m_BlendingMode_successful = true;
-                }break;
-            case 16:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Loop );
-        
-                    this->m_Loop_successful = true;
-                }break;
-            case 21:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Params );
-        
-                    this->m_Params_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Parent );
-        
-                    this->m_Parent_successful = true;
-                }break;
-            case 13:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_PlayCount );
-        
-                    this->m_PlayCount_successful = true;
-                }break;
-            case 12:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Polygon );
-        
-                    this->m_Polygon_successful = true;
-                }break;
-            case 18:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
-        
-                    this->m_Position_successful = true;
-                }break;
-            case 20:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
-        
-                    this->m_Rotation_successful = true;
-                }break;
-            case 19:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
-        
-                    this->m_Scale_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Shape );
-        
-                    this->m_Shape_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_StartInterval );
-        
-                    this->m_StartInterval_successful = true;
-                }break;
-            case 14:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Stretch );
-        
-                    this->m_Stretch_successful = true;
-                }break;
-            case 15:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Switch );
-        
-                    this->m_Switch_successful = true;
-                }break;
-            case 10:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_TimeRemap );
-        
-                    this->m_TimeRemap_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_BlendingMode );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Loop) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Loop );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Params) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Params );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Parent) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Parent );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_PlayCount) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_PlayCount );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Polygon) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Polygon );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Position) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Rotation) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Scale) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Shape) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Shape );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_StartInterval) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_StartInterval );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Stretch) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Stretch );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Switch) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Switch );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_TimeRemap );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3119,7 +2719,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_ResourceMovie2()
             : Meta_Resource()
-            , m_File_Dataflow_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3131,15 +2730,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -3171,21 +2766,15 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMovie2::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceMovie2::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) != 0 )
             {
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Dataflow );
-        
-                    this->m_File_Dataflow_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Dataflow );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3194,15 +2783,6 @@ namespace Metacode
             (void)_count;
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         
-            switch( _id )
-            {
-            case 7:
-                {
-                    includes_Meta_Composition.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -3216,7 +2796,7 @@ namespace Metacode
         
             switch( _id )
             {
-            case 7:
+            case 1:
                 {
                     includes_Meta_Composition.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition() );
                     Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition & metadata = includes_Meta_Composition.back();
@@ -3231,8 +2811,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Composition()
             : Metabuf::Metadata()
-            , m_Bounds_successful(false)
-            , m_Master_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3244,15 +2823,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -3268,27 +2843,21 @@ namespace Metacode
         
                 switch( id )
                 {
-                case 6:
+                case 1:
                     {
-                        includes_Meta_Layer.reserve( includeCount );
+                        includes_Meta_Layer.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & metadata : includes_Meta_Layer )
                         {
-                            includes_Meta_Layer.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer() );
-                            Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & metadata = includes_Meta_Layer.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 7:
+                case 2:
                     {
-                        includes_Meta_SubComposition.reserve( includeCount );
+                        includes_Meta_SubComposition.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & metadata : includes_Meta_SubComposition )
                         {
-                            includes_Meta_SubComposition.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition() );
-                            Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & metadata = includes_Meta_SubComposition.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
@@ -3305,25 +2874,18 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Bounds) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Bounds );
-        
-                    this->m_Bounds_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Master );
-        
-                    this->m_Master_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Bounds );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Master) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Master );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3332,11 +2894,11 @@ namespace Metacode
             (void)_count;
             switch( _id )
             {
-            case 6:
+            case 1:
                 {
                     includes_Meta_Layer.reserve( _count );
                 }break;
-            case 7:
+            case 2:
                 {
                     includes_Meta_SubComposition.reserve( _count );
                 }break;
@@ -3354,14 +2916,14 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 6:
+            case 1:
                 {
                     includes_Meta_Layer.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer() );
                     Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & metadata = includes_Meta_Layer.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 7:
+            case 2:
                 {
                     includes_Meta_SubComposition.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition() );
                     Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & metadata = includes_Meta_SubComposition.back();
@@ -3457,10 +3019,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMusic::Meta_ResourceMusic()
             : Meta_Resource()
-            , m_DefaultVolume_Value_successful(false)
-            , m_File_Codec_successful(false)
-            , m_File_Converter_successful(false)
-            , m_File_External_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3472,15 +3030,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -3493,39 +3047,30 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMusic::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceMusic::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) != 0 )
             {
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_DefaultVolume_Value );
-        
-                    this->m_DefaultVolume_Value_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
-        
-                    this->m_File_Codec_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_External );
-        
-                    this->m_File_External_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_DefaultVolume_Value );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_External) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_External );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMusic::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3549,7 +3094,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceParticle::Meta_ResourceParticle()
             : Meta_Resource()
-            , m_File_Converter_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3561,15 +3105,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -3602,21 +3142,15 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceParticle::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceParticle::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
             {
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceParticle::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3625,15 +3159,6 @@ namespace Metacode
             (void)_count;
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         
-            switch( _id )
-            {
-            case 8:
-                {
-                    includes_Meta_Atlas.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceParticle::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -3647,7 +3172,7 @@ namespace Metacode
         
             switch( _id )
             {
-            case 8:
+            case 1:
                 {
                     includes_Meta_Atlas.emplace_back( Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas() );
                     Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & metadata = includes_Meta_Atlas.back();
@@ -3711,15 +3236,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -3753,10 +3274,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceSound::Meta_ResourceSound()
             : Meta_Resource()
-            , m_DefaultVolume_Value_successful(false)
-            , m_File_Codec_successful(false)
-            , m_File_Converter_successful(false)
-            , m_IsStreamable_Value_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3768,15 +3285,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -3789,39 +3302,30 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSound::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceSound::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) != 0 )
             {
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_DefaultVolume_Value );
-        
-                    this->m_DefaultVolume_Value_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
-        
-                    this->m_File_Codec_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_IsStreamable_Value );
-        
-                    this->m_IsStreamable_Value_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_DefaultVolume_Value );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_IsStreamable_Value) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_IsStreamable_Value );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceSound::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -3856,15 +3360,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeTypeCount;
@@ -3903,15 +3403,6 @@ namespace Metacode
             (void)_count;
             Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
         
-            switch( _id )
-            {
-            case 7:
-                {
-                    includes_Meta_Image.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceSpine::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -3925,7 +3416,7 @@ namespace Metacode
         
             switch( _id )
             {
-            case 7:
+            case 1:
                 {
                     includes_Meta_Image.emplace_back( Meta_DataBlock::Meta_ResourceSpine::Meta_Image() );
                     Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.back();
@@ -3978,12 +3469,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceVideo::Meta_ResourceVideo()
             : Meta_Resource()
-            , m_File_Alpha_successful(false)
-            , m_File_Codec_successful(false)
-            , m_File_Converter_successful(false)
-            , m_File_Duration_successful(false)
-            , m_File_FrameRate_successful(false)
-            , m_File_NoSeek_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3995,15 +3480,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -4016,51 +3497,40 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceVideo::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceVideo::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) != 0 )
             {
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Alpha );
-        
-                    this->m_File_Alpha_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
-        
-                    this->m_File_Codec_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-        
-                    this->m_File_Converter_successful = true;
-                }break;
-            case 11:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_Duration );
-        
-                    this->m_File_Duration_successful = true;
-                }break;
-            case 10:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_FrameRate );
-        
-                    this->m_File_FrameRate_successful = true;
-                }break;
-            case 9:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoSeek );
-        
-                    this->m_File_NoSeek_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Alpha );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Codec );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Duration) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Duration );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_FrameRate) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_FrameRate );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_NoSeek) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_NoSeek );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceVideo::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -4084,7 +3554,6 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceWindow::Meta_ResourceWindow()
             : Meta_Resource()
-            , m_WindowBackground_ResourceImageName_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4096,15 +3565,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -4132,21 +3597,15 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_WindowTop_ResourceImageName );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceWindow::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceWindow::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id, _userData );
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
         
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_WindowBackground_ResourceImageName) != 0 )
             {
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_WindowBackground_ResourceImageName );
-        
-                    this->m_WindowBackground_ResourceImageName_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_WindowBackground_ResourceImageName );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceWindow::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -4194,63 +3653,48 @@ namespace Metacode
         
                 switch( id )
                 {
-                case 5:
+                case 3:
                     {
-                        includes_Meta_ImageShape.reserve( includeCount );
+                        includes_Meta_ImageShape.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_KeyFramesPack::Meta_ImageShape & metadata : includes_Meta_ImageShape )
                         {
-                            includes_Meta_ImageShape.emplace_back( Meta_KeyFramesPack::Meta_ImageShape() );
-                            Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.back();
-        
-                            metadata.parse( _buff, _size, _read, _userData );
-                        }
-                    }break;
-                case 6:
-                    {
-                        includes_Meta_KeyFrames2D.reserve( includeCount );
-        
-                        for( uint32_t j = 0; j != includeCount; ++j )
-                        {
-                            includes_Meta_KeyFrames2D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames2D() );
-                            Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.back();
-        
-                            metadata.parse( _buff, _size, _read, _userData );
-                        }
-                    }break;
-                case 7:
-                    {
-                        includes_Meta_KeyFrames3D.reserve( includeCount );
-        
-                        for( uint32_t j = 0; j != includeCount; ++j )
-                        {
-                            includes_Meta_KeyFrames3D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames3D() );
-                            Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 4:
                     {
-                        includes_Meta_Polygon.reserve( includeCount );
+                        includes_Meta_KeyFrames2D.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_KeyFramesPack::Meta_KeyFrames2D & metadata : includes_Meta_KeyFrames2D )
                         {
-                            includes_Meta_Polygon.emplace_back( Meta_KeyFramesPack::Meta_Polygon() );
-                            Meta_KeyFramesPack::Meta_Polygon & metadata = includes_Meta_Polygon.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
-                case 3:
+                case 5:
                     {
-                        includes_Meta_TimeRemap.reserve( includeCount );
+                        includes_Meta_KeyFrames3D.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_KeyFramesPack::Meta_KeyFrames3D & metadata : includes_Meta_KeyFrames3D )
                         {
-                            includes_Meta_TimeRemap.emplace_back( Meta_KeyFramesPack::Meta_TimeRemap() );
-                            Meta_KeyFramesPack::Meta_TimeRemap & metadata = includes_Meta_TimeRemap.back();
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 2:
+                    {
+                        includes_Meta_Polygon.resize( includeCount );
         
+                        for( Meta_KeyFramesPack::Meta_Polygon & metadata : includes_Meta_Polygon )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
+                case 1:
+                    {
+                        includes_Meta_TimeRemap.resize( includeCount );
+        
+                        for( Meta_KeyFramesPack::Meta_TimeRemap & metadata : includes_Meta_TimeRemap )
+                        {
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
@@ -4272,23 +3716,23 @@ namespace Metacode
             (void)_count;
             switch( _id )
             {
-            case 5:
+            case 3:
                 {
                     includes_Meta_ImageShape.reserve( _count );
                 }break;
-            case 6:
+            case 4:
                 {
                     includes_Meta_KeyFrames2D.reserve( _count );
                 }break;
-            case 7:
+            case 5:
                 {
                     includes_Meta_KeyFrames3D.reserve( _count );
                 }break;
-            case 4:
+            case 2:
                 {
                     includes_Meta_Polygon.reserve( _count );
                 }break;
-            case 3:
+            case 1:
                 {
                     includes_Meta_TimeRemap.reserve( _count );
                 }break;
@@ -4306,35 +3750,35 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 5:
+            case 3:
                 {
                     includes_Meta_ImageShape.emplace_back( Meta_KeyFramesPack::Meta_ImageShape() );
                     Meta_KeyFramesPack::Meta_ImageShape & metadata = includes_Meta_ImageShape.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 6:
+            case 4:
                 {
                     includes_Meta_KeyFrames2D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames2D() );
                     Meta_KeyFramesPack::Meta_KeyFrames2D & metadata = includes_Meta_KeyFrames2D.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 7:
+            case 5:
                 {
                     includes_Meta_KeyFrames3D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames3D() );
                     Meta_KeyFramesPack::Meta_KeyFrames3D & metadata = includes_Meta_KeyFrames3D.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 4:
+            case 2:
                 {
                     includes_Meta_Polygon.emplace_back( Meta_KeyFramesPack::Meta_Polygon() );
                     Meta_KeyFramesPack::Meta_Polygon & metadata = includes_Meta_Polygon.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
-            case 3:
+            case 1:
                 {
                     includes_Meta_TimeRemap.emplace_back( Meta_KeyFramesPack::Meta_TimeRemap() );
                     Meta_KeyFramesPack::Meta_TimeRemap & metadata = includes_Meta_TimeRemap.back();
@@ -4349,11 +3793,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_ImageShape::Meta_ImageShape()
             : Metabuf::Metadata()
-            , m_Count_successful(false)
-            , m_ImageOffset_successful(false)
-            , m_ImageSize_successful(false)
-            , m_Immutable_successful(false)
-            , m_Subtract_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4365,15 +3805,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -4381,13 +3817,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Shape.reserve( includeCount );
+                includes_Meta_Shape.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata : includes_Meta_Shape )
                 {
-                    includes_Meta_Shape.emplace_back( Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape() );
-                    Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -4401,58 +3834,39 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
             {
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
-        
-                    this->m_Count_successful = true;
-                }break;
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_ImageOffset );
-        
-                    this->m_ImageOffset_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_ImageSize );
-        
-                    this->m_ImageSize_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Immutable );
-        
-                    this->m_Immutable_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Subtract );
-        
-                    this->m_Subtract_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_ImageOffset) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_ImageOffset );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_ImageSize) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_ImageSize );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Immutable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Immutable );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Subtract) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Subtract );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_ImageShape::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 8:
-                {
-                    includes_Meta_Shape.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_ImageShape::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -4464,7 +3878,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 8:
+            case 1:
                 {
                     includes_Meta_Shape.emplace_back( Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape() );
                     Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & metadata = includes_Meta_Shape.back();
@@ -4516,8 +3930,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrames2D()
             : Metabuf::Metadata()
-            , m_Count_successful(false)
-            , m_Immutable_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4529,15 +3942,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -4545,13 +3954,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_KeyFrame2D.reserve( includeCount );
+                includes_Meta_KeyFrame2D.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & metadata : includes_Meta_KeyFrame2D )
                 {
-                    includes_Meta_KeyFrame2D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D() );
-                    Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & metadata = includes_Meta_KeyFrame2D.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -4564,40 +3970,24 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
             {
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
-        
-                    this->m_Count_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Immutable );
-        
-                    this->m_Immutable_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Immutable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Immutable );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_KeyFrames2D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 4:
-                {
-                    includes_Meta_KeyFrame2D.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_KeyFrames2D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -4609,7 +3999,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 4:
+            case 1:
                 {
                     includes_Meta_KeyFrame2D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D() );
                     Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & metadata = includes_Meta_KeyFrame2D.back();
@@ -4624,13 +4014,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::Meta_KeyFrame2D()
             : Metabuf::Metadata()
-            , m_AnchorPoint_successful(false)
-            , m_Count_successful(false)
-            , m_Opacity_successful(false)
-            , m_Position_successful(false)
-            , m_Rotation_successful(false)
-            , m_Scale_successful(false)
-            , m_Volume_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4640,69 +4024,53 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
             {
-            case 1:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
-        
-                    this->m_AnchorPoint_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
-        
-                    this->m_Count_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Opacity );
-        
-                    this->m_Opacity_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
-        
-                    this->m_Position_successful = true;
-                }break;
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
-        
-                    this->m_Rotation_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
-        
-                    this->m_Scale_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Volume );
-        
-                    this->m_Volume_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Opacity) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Opacity );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Position) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Rotation) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Scale) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Volume) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Volume );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -4723,8 +4091,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrames3D()
             : Metabuf::Metadata()
-            , m_Count_successful(false)
-            , m_Immutable_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4736,15 +4103,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -4752,13 +4115,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_KeyFrame3D.reserve( includeCount );
+                includes_Meta_KeyFrame3D.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata : includes_Meta_KeyFrame3D )
                 {
-                    includes_Meta_KeyFrame3D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D() );
-                    Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata = includes_Meta_KeyFrame3D.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -4771,40 +4131,24 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_LayerIndex );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
             {
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
-        
-                    this->m_Count_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Immutable );
-        
-                    this->m_Immutable_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Immutable) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Immutable );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_KeyFrames3D::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 4:
-                {
-                    includes_Meta_KeyFrame3D.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_KeyFrames3D::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -4816,7 +4160,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 4:
+            case 1:
                 {
                     includes_Meta_KeyFrame3D.emplace_back( Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D() );
                     Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & metadata = includes_Meta_KeyFrame3D.back();
@@ -4831,14 +4175,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::Meta_KeyFrame3D()
             : Metabuf::Metadata()
-            , m_AnchorPoint_successful(false)
-            , m_Count_successful(false)
-            , m_Opacity_successful(false)
-            , m_Orientation_successful(false)
-            , m_Position_successful(false)
-            , m_Rotation_successful(false)
-            , m_Scale_successful(false)
-            , m_Volume_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4848,75 +4185,58 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0 )
             {
-            case 1:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
-        
-                    this->m_AnchorPoint_successful = true;
-                }break;
-            case 8:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
-        
-                    this->m_Count_successful = true;
-                }break;
-            case 6:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Opacity );
-        
-                    this->m_Opacity_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Orientation );
-        
-                    this->m_Orientation_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
-        
-                    this->m_Position_successful = true;
-                }break;
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
-        
-                    this->m_Rotation_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
-        
-                    this->m_Scale_successful = true;
-                }break;
-            case 7:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Volume );
-        
-                    this->m_Volume_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_AnchorPoint );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Count) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Count );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Opacity) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Opacity );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Orientation) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Orientation );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Position) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Position );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Rotation) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Rotation );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Scale) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Scale );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Volume) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Volume );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -5037,73 +4357,55 @@ namespace Metacode
                 {
                 case 5:
                     {
-                        includes_Meta_Datas.reserve( includeCount );
+                        includes_Meta_Datas.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_Pak::Meta_Datas & metadata : includes_Meta_Datas )
                         {
-                            includes_Meta_Datas.emplace_back( Meta_Pak::Meta_Datas() );
-                            Meta_Pak::Meta_Datas & metadata = includes_Meta_Datas.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 2:
                     {
-                        includes_Meta_Fonts.reserve( includeCount );
+                        includes_Meta_Fonts.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_Pak::Meta_Fonts & metadata : includes_Meta_Fonts )
                         {
-                            includes_Meta_Fonts.emplace_back( Meta_Pak::Meta_Fonts() );
-                            Meta_Pak::Meta_Fonts & metadata = includes_Meta_Fonts.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 6:
                     {
-                        includes_Meta_Materials.reserve( includeCount );
+                        includes_Meta_Materials.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_Pak::Meta_Materials & metadata : includes_Meta_Materials )
                         {
-                            includes_Meta_Materials.emplace_back( Meta_Pak::Meta_Materials() );
-                            Meta_Pak::Meta_Materials & metadata = includes_Meta_Materials.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 3:
                     {
-                        includes_Meta_Resources.reserve( includeCount );
+                        includes_Meta_Resources.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_Pak::Meta_Resources & metadata : includes_Meta_Resources )
                         {
-                            includes_Meta_Resources.emplace_back( Meta_Pak::Meta_Resources() );
-                            Meta_Pak::Meta_Resources & metadata = includes_Meta_Resources.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 1:
                     {
-                        includes_Meta_Scripts.reserve( includeCount );
+                        includes_Meta_Scripts.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_Pak::Meta_Scripts & metadata : includes_Meta_Scripts )
                         {
-                            includes_Meta_Scripts.emplace_back( Meta_Pak::Meta_Scripts() );
-                            Meta_Pak::Meta_Scripts & metadata = includes_Meta_Scripts.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
                 case 4:
                     {
-                        includes_Meta_Texts.reserve( includeCount );
+                        includes_Meta_Texts.resize( includeCount );
         
-                        for( uint32_t j = 0; j != includeCount; ++j )
+                        for( Meta_Pak::Meta_Texts & metadata : includes_Meta_Texts )
                         {
-                            includes_Meta_Texts.emplace_back( Meta_Pak::Meta_Texts() );
-                            Meta_Pak::Meta_Texts & metadata = includes_Meta_Texts.back();
-        
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
@@ -5207,7 +4509,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Datas::Meta_Datas()
             : Metabuf::Metadata()
-            , m_Platform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5217,15 +4519,11 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -5233,13 +4531,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Data.reserve( includeCount );
+                includes_Meta_Data.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_Pak::Meta_Datas::Meta_Data & metadata : includes_Meta_Data )
                 {
-                    includes_Meta_Data.emplace_back( Meta_Pak::Meta_Datas::Meta_Data() );
-                    Meta_Pak::Meta_Datas::Meta_Data & metadata = includes_Meta_Data.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -5247,34 +4542,19 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Datas::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Datas::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
             {
-            case 1:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
-        
-                    this->m_Platform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Datas::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 2:
-                {
-                    includes_Meta_Data.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Datas::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -5286,7 +4566,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 2:
+            case 1:
                 {
                     includes_Meta_Data.emplace_back( Meta_Pak::Meta_Datas::Meta_Data() );
                     Meta_Pak::Meta_Datas::Meta_Data & metadata = includes_Meta_Data.back();
@@ -5339,7 +4619,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Fonts::Meta_Fonts()
             : Metabuf::Metadata()
-            , m_Platform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5351,15 +4631,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -5370,19 +4646,13 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Fonts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Fonts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
             {
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
-        
-                    this->m_Platform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Fonts::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -5403,7 +4673,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Materials::Meta_Materials()
             : Metabuf::Metadata()
-            , m_Platform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5413,15 +4683,11 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -5429,13 +4695,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Material.reserve( includeCount );
+                includes_Meta_Material.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_Pak::Meta_Materials::Meta_Material & metadata : includes_Meta_Material )
                 {
-                    includes_Meta_Material.emplace_back( Meta_Pak::Meta_Materials::Meta_Material() );
-                    Meta_Pak::Meta_Materials::Meta_Material & metadata = includes_Meta_Material.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -5443,34 +4706,19 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Materials::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Materials::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
             {
-            case 1:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
-        
-                    this->m_Platform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Materials::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 2:
-                {
-                    includes_Meta_Material.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Materials::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -5482,7 +4730,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 2:
+            case 1:
                 {
                     includes_Meta_Material.emplace_back( Meta_Pak::Meta_Materials::Meta_Material() );
                     Meta_Pak::Meta_Materials::Meta_Material & metadata = includes_Meta_Material.back();
@@ -5534,9 +4782,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Resources::Meta_Resources()
             : Metabuf::Metadata()
-            , m_Demand_successful(false)
-            , m_Ignored_successful(false)
-            , m_Platform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5546,15 +4792,11 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -5562,13 +4804,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Resource.reserve( includeCount );
+                includes_Meta_Resource.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_Pak::Meta_Resources::Meta_Resource & metadata : includes_Meta_Resource )
                 {
-                    includes_Meta_Resource.emplace_back( Meta_Pak::Meta_Resources::Meta_Resource() );
-                    Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -5576,46 +4815,29 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Resources::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Resources::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Demand) != 0 )
             {
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Demand );
-        
-                    this->m_Demand_successful = true;
-                }break;
-            case 1:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Ignored );
-        
-                    this->m_Ignored_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
-        
-                    this->m_Platform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Demand );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Ignored) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Ignored );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Resources::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 4:
-                {
-                    includes_Meta_Resource.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Resources::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -5627,7 +4849,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 4:
+            case 1:
                 {
                     includes_Meta_Resource.emplace_back( Meta_Pak::Meta_Resources::Meta_Resource() );
                     Meta_Pak::Meta_Resources::Meta_Resource & metadata = includes_Meta_Resource.back();
@@ -5642,7 +4864,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Resources::Meta_Resource::Meta_Resource()
             : Metabuf::Metadata()
-            , m_Tags_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5654,15 +4876,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -5673,19 +4891,13 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Tags) != 0 )
             {
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Tags );
-        
-                    this->m_Tags_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Tags );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Resources::Meta_Resource::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -5706,10 +4918,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Scripts::Meta_Scripts()
             : Metabuf::Metadata()
-            , m_Finalizer_successful(false)
-            , m_Initializer_successful(false)
-            , m_Module_successful(false)
-            , m_Platform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5721,15 +4930,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -5740,37 +4945,28 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Scripts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Scripts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Finalizer) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Finalizer );
-        
-                    this->m_Finalizer_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Initializer );
-        
-                    this->m_Initializer_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Module );
-        
-                    this->m_Module_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
-        
-                    this->m_Platform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Finalizer );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Initializer) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Initializer );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Module) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Module );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Scripts::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -5791,7 +4987,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Pak::Meta_Texts::Meta_Texts()
             : Metabuf::Metadata()
-            , m_Platform_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -5801,15 +4997,11 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             uint32_t includeCount;
@@ -5817,13 +5009,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Text.reserve( includeCount );
+                includes_Meta_Text.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_Pak::Meta_Texts::Meta_Text & metadata : includes_Meta_Text )
                 {
-                    includes_Meta_Text.emplace_back( Meta_Pak::Meta_Texts::Meta_Text() );
-                    Meta_Pak::Meta_Texts::Meta_Text & metadata = includes_Meta_Text.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -5831,34 +5020,19 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Texts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Texts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
             {
-            case 1:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
-        
-                    this->m_Platform_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
             }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Texts::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 2:
-                {
-                    includes_Meta_Text.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Texts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -5870,7 +5044,7 @@ namespace Metacode
             (void)_userData;
             switch( _id )
             {
-            case 2:
+            case 1:
                 {
                     includes_Meta_Text.emplace_back( Meta_Pak::Meta_Texts::Meta_Text() );
                     Meta_Pak::Meta_Texts::Meta_Text & metadata = includes_Meta_Text.back();
@@ -5936,13 +5110,10 @@ namespace Metacode
         
             if( includeCount != 0 )
             {
-                includes_Meta_Text.reserve( includeCount );
+                includes_Meta_Text.resize( includeCount );
         
-                for( uint32_t j = 0; j != includeCount; ++j )
+                for( Meta_Texts::Meta_Text & metadata : includes_Meta_Text )
                 {
-                    includes_Meta_Text.emplace_back( Meta_Texts::Meta_Text() );
-                    Meta_Texts::Meta_Text & metadata = includes_Meta_Text.back();
-        
                     metadata.parse( _buff, _size, _read, _userData );
                 }
             }
@@ -5954,15 +5125,6 @@ namespace Metacode
         {
             (void)_id;
             (void)_count;
-            switch( _id )
-            {
-            case 1:
-                {
-                    includes_Meta_Text.reserve( _count );
-                }break;
-            default:
-                break;
-            }
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Texts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
@@ -5989,10 +5151,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_Texts::Meta_Text::Meta_Text()
             : Metabuf::Metadata()
-            , m_CharOffset_successful(false)
-            , m_Font_successful(false)
-            , m_LineOffset_successful(false)
-            , m_Value_successful(false)
+            , m_flagNoRequiredAttribute(0)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -6004,15 +5163,11 @@ namespace Metacode
             (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
-            uint32_t attributeCount;
-            Metabuf::readSize( _buff, _size, _read, attributeCount );
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
-            for( uint32_t i = 0; i != attributeCount; ++i )
+            if( m_flagNoRequiredAttribute != 0 )
             {
-                uint32_t id;
-                Metabuf::readSize( _buff, _size, _read, id );
-        
-                this->_parseArguments( _buff, _size, _read, id, _userData );
+                this->_parseArguments( _buff, _size, _read, _userData );
             }
         
             return true;
@@ -6023,37 +5178,28 @@ namespace Metacode
             Metabuf::read( _buff, _size, _read, _userData, this->m_Key );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Texts::Meta_Text::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Texts::Meta_Text::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
-            switch( _id )
+            if( (m_flagNoRequiredAttribute & EMETA_CharOffset) != 0 )
             {
-            case 4:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_CharOffset );
-        
-                    this->m_CharOffset_successful = true;
-                }break;
-            case 3:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Font );
-        
-                    this->m_Font_successful = true;
-                }break;
-            case 5:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_LineOffset );
-        
-                    this->m_LineOffset_successful = true;
-                }break;
-            case 2:
-                {
-                    Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
-        
-                    this->m_Value_successful = true;
-                }break;
-            default:
-                break;
+                Metabuf::read( _buff, _size, _read, _userData, this->m_CharOffset );
             }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Font) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Font );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_LineOffset) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_LineOffset );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Value) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Value );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Texts::Meta_Text::_preparationIncludes( uint32_t _id, uint32_t _count )

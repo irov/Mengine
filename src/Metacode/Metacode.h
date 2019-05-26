@@ -61,6 +61,14 @@ namespace Metacode
             public:
                 Meta_FragmentShader();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Compile = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 template<class C, class M>
                 void getm_Name( C _self, M _method ) const
@@ -86,13 +94,13 @@ namespace Metacode
                 
                 bool has_File_Compile() const
                 {
-                    return m_File_Compile_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Compile( C _self, M _method ) const
                 {
-                    if( m_File_Compile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Compile) == 0 )
                     {
                         return false;
                     }
@@ -104,7 +112,7 @@ namespace Metacode
                 
                 bool get_File_Compile( bool * _value ) const
                 {
-                    if( m_File_Compile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Compile) == 0 )
                     {
                         return false;
                     }
@@ -130,16 +138,14 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
                 Mengine::ConstString m_Name;
                 Mengine::ConstString m_RenderPlatform;
-                bool m_File_Compile_successful;
                 bool m_File_Compile;
                 Mengine::FilePath m_File_Path;
             };
@@ -172,7 +178,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::FilePath m_Path;
             };
             
@@ -182,15 +187,31 @@ namespace Metacode
             public:
                 Meta_Material();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Debug = (1 <<1),
+                    EMETA_RenderPlatform = (1 <<0),
+                    EMETA_AlphaBlend_Enable = (1 <<5),
+                    EMETA_BlendFactor_Dest = (1 <<3),
+                    EMETA_BlendFactor_Op = (1 <<4),
+                    EMETA_BlendFactor_Source = (1 <<2),
+                    EMETA_DepthBufferTest_Enable = (1 <<6),
+                    EMETA_DepthBufferWrite_Enable = (1 <<7),
+                    EMETA_Program_Name = (1 <<8),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Debug() const
                 {
-                    return m_Debug_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Debug) != 0;
                 }
                 
                 bool getd_Debug( bool _default ) const
                 {
-                    if( m_Debug_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Debug) == 0 )
                     {
                         return _default;
                     }
@@ -200,7 +221,7 @@ namespace Metacode
                 
                 bool get_Debug( bool * _value ) const
                 {
-                    if( m_Debug_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Debug) == 0 )
                     {
                         return false;
                     }
@@ -213,7 +234,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Debug( C _self, M _method ) const
                 {
-                    if( m_Debug_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Debug) == 0 )
                     {
                         return false;
                     }
@@ -225,7 +246,7 @@ namespace Metacode
                 
                 bool getd_Debug( bool * _value, const bool & _default ) const
                 {
-                    if( m_Debug_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Debug) == 0 )
                     {
                         *_value = _default;
                 
@@ -249,13 +270,13 @@ namespace Metacode
                 
                 bool has_RenderPlatform() const
                 {
-                    return m_RenderPlatform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_RenderPlatform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_RenderPlatform( C _self, M _method ) const
                 {
-                    if( m_RenderPlatform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                     {
                         return false;
                     }
@@ -267,7 +288,7 @@ namespace Metacode
                 
                 bool get_RenderPlatform( Mengine::ConstString * _value ) const
                 {
-                    if( m_RenderPlatform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                     {
                         return false;
                     }
@@ -279,7 +300,7 @@ namespace Metacode
                 
                 bool getd_RenderPlatform( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
-                    if( m_RenderPlatform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                     {
                         *_value = _default;
                 
@@ -292,13 +313,13 @@ namespace Metacode
                 }
                 bool has_AlphaBlend_Enable() const
                 {
-                    return m_AlphaBlend_Enable_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_AlphaBlend_Enable) != 0;
                 }
                 
                 template<class C, class M>
                 void getm_AlphaBlend_Enable( C _self, M _method ) const
                 {
-                    if( m_AlphaBlend_Enable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_AlphaBlend_Enable) == 0 )
                     {
                         (_self->*_method)( false );
                     }
@@ -310,7 +331,7 @@ namespace Metacode
                 
                 bool get_AlphaBlend_Enable() const
                 {
-                    if( m_AlphaBlend_Enable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_AlphaBlend_Enable) == 0 )
                     {
                         return false;
                     }
@@ -320,13 +341,13 @@ namespace Metacode
                 
                 bool has_BlendFactor_Dest() const
                 {
-                    return m_BlendFactor_Dest_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_BlendFactor_Dest) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_BlendFactor_Dest( C _self, M _method ) const
                 {
-                    if( m_BlendFactor_Dest_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Dest) == 0 )
                     {
                         return false;
                     }
@@ -338,7 +359,7 @@ namespace Metacode
                 
                 bool get_BlendFactor_Dest( Mengine::EBlendFactor * _value ) const
                 {
-                    if( m_BlendFactor_Dest_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Dest) == 0 )
                     {
                         return false;
                     }
@@ -350,13 +371,13 @@ namespace Metacode
                 
                 bool has_BlendFactor_Op() const
                 {
-                    return m_BlendFactor_Op_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_BlendFactor_Op) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_BlendFactor_Op( C _self, M _method ) const
                 {
-                    if( m_BlendFactor_Op_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Op) == 0 )
                     {
                         return false;
                     }
@@ -368,7 +389,7 @@ namespace Metacode
                 
                 bool get_BlendFactor_Op( Mengine::EBlendOp * _value ) const
                 {
-                    if( m_BlendFactor_Op_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Op) == 0 )
                     {
                         return false;
                     }
@@ -380,13 +401,13 @@ namespace Metacode
                 
                 bool has_BlendFactor_Source() const
                 {
-                    return m_BlendFactor_Source_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_BlendFactor_Source) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_BlendFactor_Source( C _self, M _method ) const
                 {
-                    if( m_BlendFactor_Source_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Source) == 0 )
                     {
                         return false;
                     }
@@ -398,7 +419,7 @@ namespace Metacode
                 
                 bool get_BlendFactor_Source( Mengine::EBlendFactor * _value ) const
                 {
-                    if( m_BlendFactor_Source_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_BlendFactor_Source) == 0 )
                     {
                         return false;
                     }
@@ -410,13 +431,13 @@ namespace Metacode
                 
                 bool has_DepthBufferTest_Enable() const
                 {
-                    return m_DepthBufferTest_Enable_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_DepthBufferTest_Enable) != 0;
                 }
                 
                 template<class C, class M>
                 void getm_DepthBufferTest_Enable( C _self, M _method ) const
                 {
-                    if( m_DepthBufferTest_Enable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DepthBufferTest_Enable) == 0 )
                     {
                         (_self->*_method)( false );
                     }
@@ -428,7 +449,7 @@ namespace Metacode
                 
                 bool get_DepthBufferTest_Enable() const
                 {
-                    if( m_DepthBufferTest_Enable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DepthBufferTest_Enable) == 0 )
                     {
                         return false;
                     }
@@ -438,13 +459,13 @@ namespace Metacode
                 
                 bool has_DepthBufferWrite_Enable() const
                 {
-                    return m_DepthBufferWrite_Enable_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_DepthBufferWrite_Enable) != 0;
                 }
                 
                 template<class C, class M>
                 void getm_DepthBufferWrite_Enable( C _self, M _method ) const
                 {
-                    if( m_DepthBufferWrite_Enable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DepthBufferWrite_Enable) == 0 )
                     {
                         (_self->*_method)( false );
                     }
@@ -456,7 +477,7 @@ namespace Metacode
                 
                 bool get_DepthBufferWrite_Enable() const
                 {
-                    if( m_DepthBufferWrite_Enable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DepthBufferWrite_Enable) == 0 )
                     {
                         return false;
                     }
@@ -466,13 +487,13 @@ namespace Metacode
                 
                 bool has_Program_Name() const
                 {
-                    return m_Program_Name_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Program_Name) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Program_Name( C _self, M _method ) const
                 {
-                    if( m_Program_Name_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Program_Name) == 0 )
                     {
                         return false;
                     }
@@ -484,7 +505,7 @@ namespace Metacode
                 
                 bool get_Program_Name( Mengine::ConstString * _value ) const
                 {
-                    if( m_Program_Name_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Program_Name) == 0 )
                     {
                         return false;
                     }
@@ -499,7 +520,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -510,6 +531,16 @@ namespace Metacode
                 public:
                     Meta_TextureStages();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_AddressMode_Border = (1 <<2),
+                        EMETA_AddressMode_U = (1 <<0),
+                        EMETA_AddressMode_V = (1 <<1),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     template<class C, class M>
                     void getm_Stage( C _self, M _method ) const
@@ -524,13 +555,13 @@ namespace Metacode
                     
                     bool has_AddressMode_Border() const
                     {
-                        return m_AddressMode_Border_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AddressMode_Border) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AddressMode_Border( C _self, M _method ) const
                     {
-                        if( m_AddressMode_Border_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AddressMode_Border) == 0 )
                         {
                             return false;
                         }
@@ -542,7 +573,7 @@ namespace Metacode
                     
                     bool get_AddressMode_Border( uint32_t * _value ) const
                     {
-                        if( m_AddressMode_Border_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AddressMode_Border) == 0 )
                         {
                             return false;
                         }
@@ -554,13 +585,13 @@ namespace Metacode
                     
                     bool has_AddressMode_U() const
                     {
-                        return m_AddressMode_U_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AddressMode_U) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AddressMode_U( C _self, M _method ) const
                     {
-                        if( m_AddressMode_U_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AddressMode_U) == 0 )
                         {
                             return false;
                         }
@@ -572,7 +603,7 @@ namespace Metacode
                     
                     bool get_AddressMode_U( Mengine::ETextureAddressMode * _value ) const
                     {
-                        if( m_AddressMode_U_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AddressMode_U) == 0 )
                         {
                             return false;
                         }
@@ -584,13 +615,13 @@ namespace Metacode
                     
                     bool has_AddressMode_V() const
                     {
-                        return m_AddressMode_V_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AddressMode_V) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AddressMode_V( C _self, M _method ) const
                     {
-                        if( m_AddressMode_V_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AddressMode_V) == 0 )
                         {
                             return false;
                         }
@@ -602,7 +633,7 @@ namespace Metacode
                     
                     bool get_AddressMode_V( Mengine::ETextureAddressMode * _value ) const
                     {
-                        if( m_AddressMode_V_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AddressMode_V) == 0 )
                         {
                             return false;
                         }
@@ -617,42 +648,28 @@ namespace Metacode
                 
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                 protected:
-                protected:
                     uint32_t m_Stage;
-                    bool m_AddressMode_Border_successful;
                     uint32_t m_AddressMode_Border;
-                    bool m_AddressMode_U_successful;
                     Mengine::ETextureAddressMode m_AddressMode_U;
-                    bool m_AddressMode_V_successful;
                     Mengine::ETextureAddressMode m_AddressMode_V;
                 };
                 
             protected:
-            protected:
-                bool m_Debug_successful;
                 bool m_Debug;
                 Mengine::ConstString m_Name;
-                bool m_RenderPlatform_successful;
                 Mengine::ConstString m_RenderPlatform;
-                bool m_AlphaBlend_Enable_successful;
                 bool m_AlphaBlend_Enable;
-                bool m_BlendFactor_Dest_successful;
                 Mengine::EBlendFactor m_BlendFactor_Dest;
-                bool m_BlendFactor_Op_successful;
                 Mengine::EBlendOp m_BlendFactor_Op;
-                bool m_BlendFactor_Source_successful;
                 Mengine::EBlendFactor m_BlendFactor_Source;
-                bool m_DepthBufferTest_Enable_successful;
                 bool m_DepthBufferTest_Enable;
-                bool m_DepthBufferWrite_Enable_successful;
                 bool m_DepthBufferWrite_Enable;
-                bool m_Program_Name_successful;
                 Mengine::ConstString m_Program_Name;
             public:
                 typedef Metabuf::Vector<Meta_TextureStages> VectorMeta_TextureStages;
@@ -672,6 +689,14 @@ namespace Metacode
             public:
                 Meta_Program();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_RenderPlatform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 template<class C, class M>
                 void getm_Name( C _self, M _method ) const
@@ -686,13 +711,13 @@ namespace Metacode
                 
                 bool has_RenderPlatform() const
                 {
-                    return m_RenderPlatform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_RenderPlatform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_RenderPlatform( C _self, M _method ) const
                 {
-                    if( m_RenderPlatform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                     {
                         return false;
                     }
@@ -704,7 +729,7 @@ namespace Metacode
                 
                 bool get_RenderPlatform( Mengine::ConstString * _value ) const
                 {
-                    if( m_RenderPlatform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                     {
                         return false;
                     }
@@ -716,7 +741,7 @@ namespace Metacode
                 
                 bool getd_RenderPlatform( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
-                    if( m_RenderPlatform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_RenderPlatform) == 0 )
                     {
                         *_value = _default;
                 
@@ -776,15 +801,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
                 Mengine::ConstString m_Name;
-                bool m_RenderPlatform_successful;
                 Mengine::ConstString m_RenderPlatform;
                 Mengine::ConstString m_FragmentShader_Name;
                 uint32_t m_Sampler_Count;
@@ -924,7 +947,6 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     bool m_Normalized;
                     uint32_t m_Offset;
                     uint32_t m_Size;
@@ -933,7 +955,6 @@ namespace Metacode
                     Mengine::ConstString m_Uniform;
                 };
                 
-            protected:
             protected:
                 Mengine::ConstString m_Name;
                 Mengine::ConstString m_RenderPlatform;
@@ -956,6 +977,14 @@ namespace Metacode
             public:
                 Meta_VertexShader();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Compile = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 template<class C, class M>
                 void getm_Name( C _self, M _method ) const
@@ -981,13 +1010,13 @@ namespace Metacode
                 
                 bool has_File_Compile() const
                 {
-                    return m_File_Compile_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Compile( C _self, M _method ) const
                 {
-                    if( m_File_Compile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Compile) == 0 )
                     {
                         return false;
                     }
@@ -999,7 +1028,7 @@ namespace Metacode
                 
                 bool get_File_Compile( bool * _value ) const
                 {
-                    if( m_File_Compile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Compile) == 0 )
                     {
                         return false;
                     }
@@ -1025,16 +1054,14 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
                 Mengine::ConstString m_Name;
                 Mengine::ConstString m_RenderPlatform;
-                bool m_File_Compile_successful;
                 bool m_File_Compile;
                 Mengine::FilePath m_File_Path;
             };
@@ -1046,6 +1073,15 @@ namespace Metacode
                 Meta_Resource();
                 virtual ~Meta_Resource();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Precompile = (1 <<1),
+                    EMETA_Unique = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 template<class C, class M>
                 void getm_Name( C _self, M _method ) const
@@ -1060,12 +1096,12 @@ namespace Metacode
                 
                 bool has_Precompile() const
                 {
-                    return m_Precompile_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Precompile) != 0;
                 }
                 
                 bool getd_Precompile( bool _default ) const
                 {
-                    if( m_Precompile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Precompile) == 0 )
                     {
                         return _default;
                     }
@@ -1075,7 +1111,7 @@ namespace Metacode
                 
                 bool get_Precompile( bool * _value ) const
                 {
-                    if( m_Precompile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Precompile) == 0 )
                     {
                         return false;
                     }
@@ -1088,7 +1124,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Precompile( C _self, M _method ) const
                 {
-                    if( m_Precompile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Precompile) == 0 )
                     {
                         return false;
                     }
@@ -1100,7 +1136,7 @@ namespace Metacode
                 
                 bool getd_Precompile( bool * _value, const bool & _default ) const
                 {
-                    if( m_Precompile_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Precompile) == 0 )
                     {
                         *_value = _default;
                 
@@ -1124,12 +1160,12 @@ namespace Metacode
                 
                 bool has_Unique() const
                 {
-                    return m_Unique_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Unique) != 0;
                 }
                 
                 bool getd_Unique( bool _default ) const
                 {
-                    if( m_Unique_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Unique) == 0 )
                     {
                         return _default;
                     }
@@ -1139,7 +1175,7 @@ namespace Metacode
                 
                 bool get_Unique( bool * _value ) const
                 {
-                    if( m_Unique_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Unique) == 0 )
                     {
                         return false;
                     }
@@ -1152,7 +1188,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Unique( C _self, M _method ) const
                 {
-                    if( m_Unique_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Unique) == 0 )
                     {
                         return false;
                     }
@@ -1164,7 +1200,7 @@ namespace Metacode
                 
                 bool getd_Unique( bool * _value, const bool & _default ) const
                 {
-                    if( m_Unique_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Unique) == 0 )
                     {
                         *_value = _default;
                 
@@ -1180,18 +1216,15 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
                 Mengine::ConstString m_Name;
-                bool m_Precompile_successful;
                 bool m_Precompile;
                 Mengine::ConstString m_Type;
-                bool m_Unique_successful;
                 bool m_Unique;
             };
             
@@ -1201,6 +1234,12 @@ namespace Metacode
             public:
                 Meta_ResourceAstralax();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Converter = (1 <<2),
+                };
+                
             public:
                 template<class C, class M>
                 void getm_AtlasCount_Value( C _self, M _method ) const
@@ -1215,13 +1254,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -1233,7 +1272,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -1259,7 +1298,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -1303,15 +1342,12 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     uint32_t m_Index;
                     Mengine::ConstString m_ResourceName;
                 };
                 
             protected:
-            protected:
                 uint32_t m_AtlasCount_Value;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
                 Mengine::FilePath m_File_Path;
             public:
@@ -1354,7 +1390,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1385,7 +1420,6 @@ namespace Metacode
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
-            protected:
             protected:
                 Mengine::FilePath m_File_Path;
             };
@@ -1418,7 +1452,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1449,7 +1482,6 @@ namespace Metacode
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
-            protected:
             protected:
                 Mengine::FilePath m_File_Path;
             };
@@ -1482,7 +1514,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1500,7 +1531,6 @@ namespace Metacode
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
-            protected:
             protected:
             };
             
@@ -1532,7 +1562,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::FilePath m_File_Path;
             };
             
@@ -1542,16 +1571,23 @@ namespace Metacode
             public:
                 Meta_ResourceHIT();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Codec = (1 <<2),
+                    EMETA_File_Converter = (1 <<3),
+                };
+                
             public:
                 bool has_File_Codec() const
                 {
-                    return m_File_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Codec( C _self, M _method ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -1563,7 +1599,7 @@ namespace Metacode
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -1575,13 +1611,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -1593,7 +1629,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -1619,16 +1655,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
                 Mengine::FilePath m_File_Path;
             };
@@ -1639,16 +1672,27 @@ namespace Metacode
             public:
                 Meta_ResourceImageData();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Alpha = (1 <<3),
+                    EMETA_File_Codec = (1 <<2),
+                    EMETA_File_NoExist = (1 <<7),
+                    EMETA_File_Offset = (1 <<6),
+                    EMETA_File_Premultiply = (1 <<4),
+                    EMETA_File_Size = (1 <<5),
+                };
+                
             public:
                 bool has_File_Alpha() const
                 {
-                    return m_File_Alpha_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Alpha) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Alpha( C _self, M _method ) const
                 {
-                    if( m_File_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -1660,7 +1704,7 @@ namespace Metacode
                 
                 bool get_File_Alpha( bool * _value ) const
                 {
-                    if( m_File_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -1672,13 +1716,13 @@ namespace Metacode
                 
                 bool has_File_Codec() const
                 {
-                    return m_File_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Codec( C _self, M _method ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -1690,7 +1734,7 @@ namespace Metacode
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -1713,13 +1757,13 @@ namespace Metacode
                 
                 bool has_File_NoExist() const
                 {
-                    return m_File_NoExist_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_NoExist( C _self, M _method ) const
                 {
-                    if( m_File_NoExist_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
                         return false;
                     }
@@ -1731,7 +1775,7 @@ namespace Metacode
                 
                 bool get_File_NoExist( bool * _value ) const
                 {
-                    if( m_File_NoExist_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
                         return false;
                     }
@@ -1743,13 +1787,13 @@ namespace Metacode
                 
                 bool has_File_Offset() const
                 {
-                    return m_File_Offset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Offset) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Offset( C _self, M _method ) const
                 {
-                    if( m_File_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Offset) == 0 )
                     {
                         return false;
                     }
@@ -1761,7 +1805,7 @@ namespace Metacode
                 
                 bool get_File_Offset( mt::vec2f * _value ) const
                 {
-                    if( m_File_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Offset) == 0 )
                     {
                         return false;
                     }
@@ -1784,13 +1828,13 @@ namespace Metacode
                 
                 bool has_File_Premultiply() const
                 {
-                    return m_File_Premultiply_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Premultiply( C _self, M _method ) const
                 {
-                    if( m_File_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -1802,7 +1846,7 @@ namespace Metacode
                 
                 bool get_File_Premultiply( bool * _value ) const
                 {
-                    if( m_File_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -1814,13 +1858,13 @@ namespace Metacode
                 
                 bool has_File_Size() const
                 {
-                    return m_File_Size_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Size) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Size( C _self, M _method ) const
                 {
-                    if( m_File_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Size) == 0 )
                     {
                         return false;
                     }
@@ -1832,7 +1876,7 @@ namespace Metacode
                 
                 bool get_File_Size( mt::vec2f * _value ) const
                 {
-                    if( m_File_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Size) == 0 )
                     {
                         return false;
                     }
@@ -1847,26 +1891,19 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_File_Alpha_successful;
                 bool m_File_Alpha;
-                bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
                 mt::vec2f m_File_MaxSize;
-                bool m_File_NoExist_successful;
                 bool m_File_NoExist;
-                bool m_File_Offset_successful;
                 mt::vec2f m_File_Offset;
                 Mengine::FilePath m_File_Path;
-                bool m_File_Premultiply_successful;
                 bool m_File_Premultiply;
-                bool m_File_Size_successful;
                 mt::vec2f m_File_Size;
             };
             
@@ -1876,16 +1913,28 @@ namespace Metacode
             public:
                 Meta_ResourceImageDefault();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Alpha = (1 <<4),
+                    EMETA_File_Codec = (1 <<2),
+                    EMETA_File_Converter = (1 <<3),
+                    EMETA_File_NoExist = (1 <<8),
+                    EMETA_File_Offset = (1 <<7),
+                    EMETA_File_Premultiply = (1 <<5),
+                    EMETA_File_Size = (1 <<6),
+                };
+                
             public:
                 bool has_File_Alpha() const
                 {
-                    return m_File_Alpha_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Alpha) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Alpha( C _self, M _method ) const
                 {
-                    if( m_File_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -1897,7 +1946,7 @@ namespace Metacode
                 
                 bool get_File_Alpha( bool * _value ) const
                 {
-                    if( m_File_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -1909,13 +1958,13 @@ namespace Metacode
                 
                 bool has_File_Codec() const
                 {
-                    return m_File_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Codec( C _self, M _method ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -1927,7 +1976,7 @@ namespace Metacode
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -1939,13 +1988,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -1957,7 +2006,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -1980,13 +2029,13 @@ namespace Metacode
                 
                 bool has_File_NoExist() const
                 {
-                    return m_File_NoExist_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoExist) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_NoExist( C _self, M _method ) const
                 {
-                    if( m_File_NoExist_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
                         return false;
                     }
@@ -1998,7 +2047,7 @@ namespace Metacode
                 
                 bool get_File_NoExist( bool * _value ) const
                 {
-                    if( m_File_NoExist_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoExist) == 0 )
                     {
                         return false;
                     }
@@ -2010,13 +2059,13 @@ namespace Metacode
                 
                 bool has_File_Offset() const
                 {
-                    return m_File_Offset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Offset) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Offset( C _self, M _method ) const
                 {
-                    if( m_File_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Offset) == 0 )
                     {
                         return false;
                     }
@@ -2028,7 +2077,7 @@ namespace Metacode
                 
                 bool get_File_Offset( mt::vec2f * _value ) const
                 {
-                    if( m_File_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Offset) == 0 )
                     {
                         return false;
                     }
@@ -2051,13 +2100,13 @@ namespace Metacode
                 
                 bool has_File_Premultiply() const
                 {
-                    return m_File_Premultiply_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Premultiply) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Premultiply( C _self, M _method ) const
                 {
-                    if( m_File_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -2069,7 +2118,7 @@ namespace Metacode
                 
                 bool get_File_Premultiply( bool * _value ) const
                 {
-                    if( m_File_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -2081,13 +2130,13 @@ namespace Metacode
                 
                 bool has_File_Size() const
                 {
-                    return m_File_Size_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Size) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Size( C _self, M _method ) const
                 {
-                    if( m_File_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Size) == 0 )
                     {
                         return false;
                     }
@@ -2099,7 +2148,7 @@ namespace Metacode
                 
                 bool get_File_Size( mt::vec2f * _value ) const
                 {
-                    if( m_File_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Size) == 0 )
                     {
                         return false;
                     }
@@ -2114,28 +2163,20 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_File_Alpha_successful;
                 bool m_File_Alpha;
-                bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
                 mt::vec2f m_File_MaxSize;
-                bool m_File_NoExist_successful;
                 bool m_File_NoExist;
-                bool m_File_Offset_successful;
                 mt::vec2f m_File_Offset;
                 Mengine::FilePath m_File_Path;
-                bool m_File_Premultiply_successful;
                 bool m_File_Premultiply;
-                bool m_File_Size_successful;
                 mt::vec2f m_File_Size;
             };
             
@@ -2192,12 +2233,10 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     float m_Delay;
                     Mengine::ConstString m_ResourceImageName;
                 };
                 
-            protected:
             protected:
             public:
                 typedef Metabuf::Vector<Meta_Sequence> VectorMeta_Sequence;
@@ -2250,7 +2289,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::Color m_Color_Value;
                 mt::vec2f m_Size_Value;
             };
@@ -2261,16 +2299,26 @@ namespace Metacode
             public:
                 Meta_ResourceImageSubstract();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Image_Alpha = (1 <<3),
+                    EMETA_Image_Offset = (1 <<6),
+                    EMETA_Image_Premultiply = (1 <<4),
+                    EMETA_Image_Size = (1 <<5),
+                    EMETA_Image_UVRotate = (1 <<2),
+                };
+                
             public:
                 bool has_Image_Alpha() const
                 {
-                    return m_Image_Alpha_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Alpha) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Alpha( C _self, M _method ) const
                 {
-                    if( m_Image_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -2282,7 +2330,7 @@ namespace Metacode
                 
                 bool get_Image_Alpha( bool * _value ) const
                 {
-                    if( m_Image_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -2316,13 +2364,13 @@ namespace Metacode
                 
                 bool has_Image_Offset() const
                 {
-                    return m_Image_Offset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Offset) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Offset( C _self, M _method ) const
                 {
-                    if( m_Image_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) == 0 )
                     {
                         return false;
                     }
@@ -2334,7 +2382,7 @@ namespace Metacode
                 
                 bool get_Image_Offset( mt::vec2f * _value ) const
                 {
-                    if( m_Image_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) == 0 )
                     {
                         return false;
                     }
@@ -2346,13 +2394,13 @@ namespace Metacode
                 
                 bool has_Image_Premultiply() const
                 {
-                    return m_Image_Premultiply_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Premultiply( C _self, M _method ) const
                 {
-                    if( m_Image_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -2364,7 +2412,7 @@ namespace Metacode
                 
                 bool get_Image_Premultiply( bool * _value ) const
                 {
-                    if( m_Image_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -2376,13 +2424,13 @@ namespace Metacode
                 
                 bool has_Image_Size() const
                 {
-                    return m_Image_Size_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Size) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Size( C _self, M _method ) const
                 {
-                    if( m_Image_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Size) == 0 )
                     {
                         return false;
                     }
@@ -2394,7 +2442,7 @@ namespace Metacode
                 
                 bool get_Image_Size( mt::vec2f * _value ) const
                 {
-                    if( m_Image_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Size) == 0 )
                     {
                         return false;
                     }
@@ -2417,13 +2465,13 @@ namespace Metacode
                 
                 bool has_Image_UVRotate() const
                 {
-                    return m_Image_UVRotate_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_UVRotate) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_UVRotate( C _self, M _method ) const
                 {
-                    if( m_Image_UVRotate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_UVRotate) == 0 )
                     {
                         return false;
                     }
@@ -2435,7 +2483,7 @@ namespace Metacode
                 
                 bool get_Image_UVRotate( bool * _value ) const
                 {
-                    if( m_Image_UVRotate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_UVRotate) == 0 )
                     {
                         return false;
                     }
@@ -2450,25 +2498,19 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_Image_Alpha_successful;
                 bool m_Image_Alpha;
                 mt::vec2f m_Image_MaxSize;
                 Mengine::ConstString m_Image_Name;
-                bool m_Image_Offset_successful;
                 mt::vec2f m_Image_Offset;
-                bool m_Image_Premultiply_successful;
                 bool m_Image_Premultiply;
-                bool m_Image_Size_successful;
                 mt::vec2f m_Image_Size;
                 mt::uv4f m_Image_UV;
-                bool m_Image_UVRotate_successful;
                 bool m_Image_UVRotate;
             };
             
@@ -2478,6 +2520,16 @@ namespace Metacode
             public:
                 Meta_ResourceImageSubstractRGBAndAlpha();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Image_Offset = (1 <<6),
+                    EMETA_Image_Premultiply = (1 <<4),
+                    EMETA_Image_Size = (1 <<5),
+                    EMETA_Image_UVAlphaRotate = (1 <<3),
+                    EMETA_Image_UVRGBRotate = (1 <<2),
+                };
+                
             public:
                 template<class C, class M>
                 void getm_Image_MaxSize( C _self, M _method ) const
@@ -2514,13 +2566,13 @@ namespace Metacode
                 
                 bool has_Image_Offset() const
                 {
-                    return m_Image_Offset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Offset) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Offset( C _self, M _method ) const
                 {
-                    if( m_Image_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) == 0 )
                     {
                         return false;
                     }
@@ -2532,7 +2584,7 @@ namespace Metacode
                 
                 bool get_Image_Offset( mt::vec2f * _value ) const
                 {
-                    if( m_Image_Offset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Offset) == 0 )
                     {
                         return false;
                     }
@@ -2544,13 +2596,13 @@ namespace Metacode
                 
                 bool has_Image_Premultiply() const
                 {
-                    return m_Image_Premultiply_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Premultiply( C _self, M _method ) const
                 {
-                    if( m_Image_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -2562,7 +2614,7 @@ namespace Metacode
                 
                 bool get_Image_Premultiply( bool * _value ) const
                 {
-                    if( m_Image_Premultiply_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Premultiply) == 0 )
                     {
                         return false;
                     }
@@ -2574,13 +2626,13 @@ namespace Metacode
                 
                 bool has_Image_Size() const
                 {
-                    return m_Image_Size_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_Size) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_Size( C _self, M _method ) const
                 {
-                    if( m_Image_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Size) == 0 )
                     {
                         return false;
                     }
@@ -2592,7 +2644,7 @@ namespace Metacode
                 
                 bool get_Image_Size( mt::vec2f * _value ) const
                 {
-                    if( m_Image_Size_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_Size) == 0 )
                     {
                         return false;
                     }
@@ -2615,13 +2667,13 @@ namespace Metacode
                 
                 bool has_Image_UVAlphaRotate() const
                 {
-                    return m_Image_UVAlphaRotate_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_UVAlphaRotate) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_UVAlphaRotate( C _self, M _method ) const
                 {
-                    if( m_Image_UVAlphaRotate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_UVAlphaRotate) == 0 )
                     {
                         return false;
                     }
@@ -2633,7 +2685,7 @@ namespace Metacode
                 
                 bool get_Image_UVAlphaRotate( bool * _value ) const
                 {
-                    if( m_Image_UVAlphaRotate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_UVAlphaRotate) == 0 )
                     {
                         return false;
                     }
@@ -2656,13 +2708,13 @@ namespace Metacode
                 
                 bool has_Image_UVRGBRotate() const
                 {
-                    return m_Image_UVRGBRotate_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Image_UVRGBRotate) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Image_UVRGBRotate( C _self, M _method ) const
                 {
-                    if( m_Image_UVRGBRotate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_UVRGBRotate) == 0 )
                     {
                         return false;
                     }
@@ -2674,7 +2726,7 @@ namespace Metacode
                 
                 bool get_Image_UVRGBRotate( bool * _value ) const
                 {
-                    if( m_Image_UVRGBRotate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Image_UVRGBRotate) == 0 )
                     {
                         return false;
                     }
@@ -2689,27 +2741,21 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
                 mt::vec2f m_Image_MaxSize;
                 Mengine::ConstString m_Image_NameAlpha;
                 Mengine::ConstString m_Image_NameRGB;
-                bool m_Image_Offset_successful;
                 mt::vec2f m_Image_Offset;
-                bool m_Image_Premultiply_successful;
                 bool m_Image_Premultiply;
-                bool m_Image_Size_successful;
                 mt::vec2f m_Image_Size;
                 mt::uv4f m_Image_UVAlpha;
-                bool m_Image_UVAlphaRotate_successful;
                 bool m_Image_UVAlphaRotate;
                 mt::uv4f m_Image_UVRGB;
-                bool m_Image_UVRGBRotate_successful;
                 bool m_Image_UVRGBRotate;
             };
             
@@ -2752,7 +2798,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::ConstString m_Internal_Group;
                 Mengine::ConstString m_Internal_Name;
             };
@@ -2763,16 +2808,23 @@ namespace Metacode
             public:
                 Meta_ResourceModel3D();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Converter = (1 <<3),
+                    EMETA_File_Dataflow = (1 <<2),
+                };
+                
             public:
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -2784,7 +2836,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -2796,13 +2848,13 @@ namespace Metacode
                 
                 bool has_File_Dataflow() const
                 {
-                    return m_File_Dataflow_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Dataflow) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Dataflow( C _self, M _method ) const
                 {
-                    if( m_File_Dataflow_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
                         return false;
                     }
@@ -2814,7 +2866,7 @@ namespace Metacode
                 
                 bool get_File_Dataflow( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Dataflow_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
                         return false;
                     }
@@ -2851,16 +2903,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
-                bool m_File_Dataflow_successful;
                 Mengine::ConstString m_File_Dataflow;
                 Mengine::FilePath m_File_Path;
                 Mengine::ConstString m_Image_Resource;
@@ -2872,16 +2921,27 @@ namespace Metacode
             public:
                 Meta_ResourceMovie();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Anchor_Point = (1 <<5),
+                    EMETA_Bounds_Box = (1 <<7),
+                    EMETA_KeyFramesPackPath_Codec = (1 <<2),
+                    EMETA_KeyFramesPackPath_Converter = (1 <<3),
+                    EMETA_Loop_Segment = (1 <<4),
+                    EMETA_Offset_Point = (1 <<6),
+                };
+                
             public:
                 bool has_Anchor_Point() const
                 {
-                    return m_Anchor_Point_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Anchor_Point) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Anchor_Point( C _self, M _method ) const
                 {
-                    if( m_Anchor_Point_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Anchor_Point) == 0 )
                     {
                         return false;
                     }
@@ -2893,7 +2953,7 @@ namespace Metacode
                 
                 bool get_Anchor_Point( mt::vec3f * _value ) const
                 {
-                    if( m_Anchor_Point_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Anchor_Point) == 0 )
                     {
                         return false;
                     }
@@ -2905,13 +2965,13 @@ namespace Metacode
                 
                 bool has_Bounds_Box() const
                 {
-                    return m_Bounds_Box_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Bounds_Box) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Bounds_Box( C _self, M _method ) const
                 {
-                    if( m_Bounds_Box_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Bounds_Box) == 0 )
                     {
                         return false;
                     }
@@ -2923,7 +2983,7 @@ namespace Metacode
                 
                 bool get_Bounds_Box( mt::box2f * _value ) const
                 {
-                    if( m_Bounds_Box_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Bounds_Box) == 0 )
                     {
                         return false;
                     }
@@ -2968,13 +3028,13 @@ namespace Metacode
                 
                 bool has_KeyFramesPackPath_Codec() const
                 {
-                    return m_KeyFramesPackPath_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_KeyFramesPackPath_Codec( C _self, M _method ) const
                 {
-                    if( m_KeyFramesPackPath_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Codec) == 0 )
                     {
                         return false;
                     }
@@ -2986,7 +3046,7 @@ namespace Metacode
                 
                 bool get_KeyFramesPackPath_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_KeyFramesPackPath_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Codec) == 0 )
                     {
                         return false;
                     }
@@ -2998,13 +3058,13 @@ namespace Metacode
                 
                 bool has_KeyFramesPackPath_Converter() const
                 {
-                    return m_KeyFramesPackPath_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_KeyFramesPackPath_Converter( C _self, M _method ) const
                 {
-                    if( m_KeyFramesPackPath_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Converter) == 0 )
                     {
                         return false;
                     }
@@ -3016,7 +3076,7 @@ namespace Metacode
                 
                 bool get_KeyFramesPackPath_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_KeyFramesPackPath_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_KeyFramesPackPath_Converter) == 0 )
                     {
                         return false;
                     }
@@ -3039,13 +3099,13 @@ namespace Metacode
                 
                 bool has_Loop_Segment() const
                 {
-                    return m_Loop_Segment_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Loop_Segment) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Loop_Segment( C _self, M _method ) const
                 {
-                    if( m_Loop_Segment_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Loop_Segment) == 0 )
                     {
                         return false;
                     }
@@ -3057,7 +3117,7 @@ namespace Metacode
                 
                 bool get_Loop_Segment( mt::vec2f * _value ) const
                 {
-                    if( m_Loop_Segment_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Loop_Segment) == 0 )
                     {
                         return false;
                     }
@@ -3069,13 +3129,13 @@ namespace Metacode
                 
                 bool has_Offset_Point() const
                 {
-                    return m_Offset_Point_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Offset_Point) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Offset_Point( C _self, M _method ) const
                 {
-                    if( m_Offset_Point_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Offset_Point) == 0 )
                     {
                         return false;
                     }
@@ -3087,7 +3147,7 @@ namespace Metacode
                 
                 bool get_Offset_Point( mt::vec3f * _value ) const
                 {
-                    if( m_Offset_Point_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Offset_Point) == 0 )
                     {
                         return false;
                     }
@@ -3113,7 +3173,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -3201,7 +3261,6 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     float m_CameraAspect;
                     float m_CameraFOV;
                     mt::vec3f m_CameraInterest;
@@ -3216,16 +3275,39 @@ namespace Metacode
                 public:
                     Meta_MovieLayer2D();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_AnchorPoint = (1 <<10),
+                        EMETA_BlendingMode = (1 <<2),
+                        EMETA_Loop = (1 <<9),
+                        EMETA_Params = (1 <<15),
+                        EMETA_Parent = (1 <<0),
+                        EMETA_PlayCount = (1 <<6),
+                        EMETA_Polygon = (1 <<5),
+                        EMETA_Position = (1 <<11),
+                        EMETA_Rotation = (1 <<13),
+                        EMETA_Scale = (1 <<12),
+                        EMETA_Shape = (1 <<4),
+                        EMETA_StartInterval = (1 <<1),
+                        EMETA_Stretch = (1 <<7),
+                        EMETA_Switch = (1 <<8),
+                        EMETA_TimeRemap = (1 <<3),
+                        EMETA_Viewport = (1 <<14),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     bool has_AnchorPoint() const
                     {
-                        return m_AnchorPoint_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AnchorPoint( C _self, M _method ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -3237,7 +3319,7 @@ namespace Metacode
                     
                     bool get_AnchorPoint( mt::vec3f * _value ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -3249,7 +3331,7 @@ namespace Metacode
                     
                     bool getd_AnchorPoint( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             *_value = _default;
                     
@@ -3262,13 +3344,13 @@ namespace Metacode
                     }
                     bool has_BlendingMode() const
                     {
-                        return m_BlendingMode_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_BlendingMode) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_BlendingMode( C _self, M _method ) const
                     {
-                        if( m_BlendingMode_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
                             return false;
                         }
@@ -3280,7 +3362,7 @@ namespace Metacode
                     
                     bool get_BlendingMode( Mengine::ConstString * _value ) const
                     {
-                        if( m_BlendingMode_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
                             return false;
                         }
@@ -3292,7 +3374,7 @@ namespace Metacode
                     
                     bool getd_BlendingMode( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                     {
-                        if( m_BlendingMode_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
                             *_value = _default;
                     
@@ -3327,12 +3409,12 @@ namespace Metacode
                     
                     bool has_Loop() const
                     {
-                        return m_Loop_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Loop) != 0;
                     }
                     
                     bool getd_Loop( bool _default ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             return _default;
                         }
@@ -3342,7 +3424,7 @@ namespace Metacode
                     
                     bool get_Loop( bool * _value ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             return false;
                         }
@@ -3355,7 +3437,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Loop( C _self, M _method ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             return false;
                         }
@@ -3367,7 +3449,7 @@ namespace Metacode
                     
                     bool getd_Loop( bool * _value, const bool & _default ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             *_value = _default;
                     
@@ -3402,12 +3484,12 @@ namespace Metacode
                     
                     bool has_Params() const
                     {
-                        return m_Params_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Params) != 0;
                     }
                     
                     uint32_t getd_Params( uint32_t _default ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             return _default;
                         }
@@ -3417,7 +3499,7 @@ namespace Metacode
                     
                     bool get_Params( uint32_t * _value ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             return false;
                         }
@@ -3430,7 +3512,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Params( C _self, M _method ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             return false;
                         }
@@ -3442,7 +3524,7 @@ namespace Metacode
                     
                     bool getd_Params( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             *_value = _default;
                     
@@ -3455,12 +3537,12 @@ namespace Metacode
                     }
                     bool has_Parent() const
                     {
-                        return m_Parent_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Parent) != 0;
                     }
                     
                     uint32_t getd_Parent( uint32_t _default ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             return _default;
                         }
@@ -3470,7 +3552,7 @@ namespace Metacode
                     
                     bool get_Parent( uint32_t * _value ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             return false;
                         }
@@ -3483,7 +3565,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Parent( C _self, M _method ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             return false;
                         }
@@ -3495,7 +3577,7 @@ namespace Metacode
                     
                     bool getd_Parent( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             *_value = _default;
                     
@@ -3508,12 +3590,12 @@ namespace Metacode
                     }
                     bool has_PlayCount() const
                     {
-                        return m_PlayCount_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_PlayCount) != 0;
                     }
                     
                     uint32_t getd_PlayCount( uint32_t _default ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             return _default;
                         }
@@ -3523,7 +3605,7 @@ namespace Metacode
                     
                     bool get_PlayCount( uint32_t * _value ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             return false;
                         }
@@ -3536,7 +3618,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_PlayCount( C _self, M _method ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             return false;
                         }
@@ -3548,7 +3630,7 @@ namespace Metacode
                     
                     bool getd_PlayCount( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             *_value = _default;
                     
@@ -3561,12 +3643,12 @@ namespace Metacode
                     }
                     bool has_Polygon() const
                     {
-                        return m_Polygon_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Polygon) != 0;
                     }
                     
                     bool getd_Polygon( bool _default ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             return _default;
                         }
@@ -3576,7 +3658,7 @@ namespace Metacode
                     
                     bool get_Polygon( bool * _value ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             return false;
                         }
@@ -3589,7 +3671,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Polygon( C _self, M _method ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             return false;
                         }
@@ -3601,7 +3683,7 @@ namespace Metacode
                     
                     bool getd_Polygon( bool * _value, const bool & _default ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             *_value = _default;
                     
@@ -3614,13 +3696,13 @@ namespace Metacode
                     }
                     bool has_Position() const
                     {
-                        return m_Position_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Position) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Position( C _self, M _method ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -3632,7 +3714,7 @@ namespace Metacode
                     
                     bool get_Position( mt::vec3f * _value ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -3644,7 +3726,7 @@ namespace Metacode
                     
                     bool getd_Position( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             *_value = _default;
                     
@@ -3657,13 +3739,13 @@ namespace Metacode
                     }
                     bool has_Rotation() const
                     {
-                        return m_Rotation_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Rotation) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Rotation( C _self, M _method ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -3675,7 +3757,7 @@ namespace Metacode
                     
                     bool get_Rotation( mt::vec3f * _value ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -3687,7 +3769,7 @@ namespace Metacode
                     
                     bool getd_Rotation( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             *_value = _default;
                     
@@ -3700,13 +3782,13 @@ namespace Metacode
                     }
                     bool has_Scale() const
                     {
-                        return m_Scale_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Scale) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Scale( C _self, M _method ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -3718,7 +3800,7 @@ namespace Metacode
                     
                     bool get_Scale( mt::vec3f * _value ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -3730,7 +3812,7 @@ namespace Metacode
                     
                     bool getd_Scale( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             *_value = _default;
                     
@@ -3743,12 +3825,12 @@ namespace Metacode
                     }
                     bool has_Shape() const
                     {
-                        return m_Shape_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Shape) != 0;
                     }
                     
                     bool getd_Shape( bool _default ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             return _default;
                         }
@@ -3758,7 +3840,7 @@ namespace Metacode
                     
                     bool get_Shape( bool * _value ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             return false;
                         }
@@ -3771,7 +3853,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Shape( C _self, M _method ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             return false;
                         }
@@ -3783,7 +3865,7 @@ namespace Metacode
                     
                     bool getd_Shape( bool * _value, const bool & _default ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             *_value = _default;
                     
@@ -3807,12 +3889,12 @@ namespace Metacode
                     
                     bool has_StartInterval() const
                     {
-                        return m_StartInterval_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_StartInterval) != 0;
                     }
                     
                     float getd_StartInterval( float _default ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             return _default;
                         }
@@ -3822,7 +3904,7 @@ namespace Metacode
                     
                     bool get_StartInterval( float * _value ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             return false;
                         }
@@ -3835,7 +3917,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_StartInterval( C _self, M _method ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             return false;
                         }
@@ -3847,7 +3929,7 @@ namespace Metacode
                     
                     bool getd_StartInterval( float * _value, const float & _default ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             *_value = _default;
                     
@@ -3860,12 +3942,12 @@ namespace Metacode
                     }
                     bool has_Stretch() const
                     {
-                        return m_Stretch_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Stretch) != 0;
                     }
                     
                     float getd_Stretch( float _default ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             return _default;
                         }
@@ -3875,7 +3957,7 @@ namespace Metacode
                     
                     bool get_Stretch( float * _value ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             return false;
                         }
@@ -3888,7 +3970,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Stretch( C _self, M _method ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             return false;
                         }
@@ -3900,7 +3982,7 @@ namespace Metacode
                     
                     bool getd_Stretch( float * _value, const float & _default ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             *_value = _default;
                     
@@ -3913,12 +3995,12 @@ namespace Metacode
                     }
                     bool has_Switch() const
                     {
-                        return m_Switch_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Switch) != 0;
                     }
                     
                     bool getd_Switch( bool _default ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             return _default;
                         }
@@ -3928,7 +4010,7 @@ namespace Metacode
                     
                     bool get_Switch( bool * _value ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             return false;
                         }
@@ -3941,7 +4023,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Switch( C _self, M _method ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             return false;
                         }
@@ -3953,7 +4035,7 @@ namespace Metacode
                     
                     bool getd_Switch( bool * _value, const bool & _default ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             *_value = _default;
                     
@@ -3966,12 +4048,12 @@ namespace Metacode
                     }
                     bool has_TimeRemap() const
                     {
-                        return m_TimeRemap_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_TimeRemap) != 0;
                     }
                     
                     bool getd_TimeRemap( bool _default ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             return _default;
                         }
@@ -3981,7 +4063,7 @@ namespace Metacode
                     
                     bool get_TimeRemap( bool * _value ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             return false;
                         }
@@ -3994,7 +4076,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_TimeRemap( C _self, M _method ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             return false;
                         }
@@ -4006,7 +4088,7 @@ namespace Metacode
                     
                     bool getd_TimeRemap( bool * _value, const bool & _default ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             *_value = _default;
                     
@@ -4030,13 +4112,13 @@ namespace Metacode
                     
                     bool has_Viewport() const
                     {
-                        return m_Viewport_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Viewport) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Viewport( C _self, M _method ) const
                     {
-                        if( m_Viewport_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Viewport) == 0 )
                         {
                             return false;
                         }
@@ -4048,7 +4130,7 @@ namespace Metacode
                     
                     bool get_Viewport( Mengine::Viewport * _value ) const
                     {
-                        if( m_Viewport_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Viewport) == 0 )
                         {
                             return false;
                         }
@@ -4060,7 +4142,7 @@ namespace Metacode
                     
                     bool getd_Viewport( Mengine::Viewport * _value, const Mengine::Viewport & _default ) const
                     {
-                        if( m_Viewport_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Viewport) == 0 )
                         {
                             *_value = _default;
                     
@@ -4076,50 +4158,33 @@ namespace Metacode
                 
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                 protected:
-                protected:
-                    bool m_AnchorPoint_successful;
                     mt::vec3f m_AnchorPoint;
-                    bool m_BlendingMode_successful;
                     Mengine::ConstString m_BlendingMode;
                     float m_In;
                     uint32_t m_Index;
-                    bool m_Loop_successful;
                     bool m_Loop;
                     Mengine::ConstString m_Name;
                     float m_Out;
-                    bool m_Params_successful;
                     uint32_t m_Params;
-                    bool m_Parent_successful;
                     uint32_t m_Parent;
-                    bool m_PlayCount_successful;
                     uint32_t m_PlayCount;
-                    bool m_Polygon_successful;
                     bool m_Polygon;
-                    bool m_Position_successful;
                     mt::vec3f m_Position;
-                    bool m_Rotation_successful;
                     mt::vec3f m_Rotation;
-                    bool m_Scale_successful;
                     mt::vec3f m_Scale;
-                    bool m_Shape_successful;
                     bool m_Shape;
                     Mengine::ConstString m_Source;
-                    bool m_StartInterval_successful;
                     float m_StartInterval;
-                    bool m_Stretch_successful;
                     float m_Stretch;
-                    bool m_Switch_successful;
                     bool m_Switch;
-                    bool m_TimeRemap_successful;
                     bool m_TimeRemap;
                     Mengine::ConstString m_Type;
-                    bool m_Viewport_successful;
                     Mengine::Viewport m_Viewport;
                 };
                 
@@ -4129,16 +4194,38 @@ namespace Metacode
                 public:
                     Meta_MovieLayer3D();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_AnchorPoint = (1 <<10),
+                        EMETA_BlendingMode = (1 <<2),
+                        EMETA_Loop = (1 <<9),
+                        EMETA_Params = (1 <<14),
+                        EMETA_Parent = (1 <<0),
+                        EMETA_PlayCount = (1 <<6),
+                        EMETA_Polygon = (1 <<5),
+                        EMETA_Position = (1 <<11),
+                        EMETA_Rotation = (1 <<13),
+                        EMETA_Scale = (1 <<12),
+                        EMETA_Shape = (1 <<4),
+                        EMETA_StartInterval = (1 <<1),
+                        EMETA_Stretch = (1 <<7),
+                        EMETA_Switch = (1 <<8),
+                        EMETA_TimeRemap = (1 <<3),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     bool has_AnchorPoint() const
                     {
-                        return m_AnchorPoint_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AnchorPoint( C _self, M _method ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -4150,7 +4237,7 @@ namespace Metacode
                     
                     bool get_AnchorPoint( mt::vec3f * _value ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -4162,7 +4249,7 @@ namespace Metacode
                     
                     bool getd_AnchorPoint( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             *_value = _default;
                     
@@ -4175,13 +4262,13 @@ namespace Metacode
                     }
                     bool has_BlendingMode() const
                     {
-                        return m_BlendingMode_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_BlendingMode) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_BlendingMode( C _self, M _method ) const
                     {
-                        if( m_BlendingMode_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
                             return false;
                         }
@@ -4193,7 +4280,7 @@ namespace Metacode
                     
                     bool get_BlendingMode( Mengine::ConstString * _value ) const
                     {
-                        if( m_BlendingMode_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
                             return false;
                         }
@@ -4205,7 +4292,7 @@ namespace Metacode
                     
                     bool getd_BlendingMode( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                     {
-                        if( m_BlendingMode_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_BlendingMode) == 0 )
                         {
                             *_value = _default;
                     
@@ -4240,12 +4327,12 @@ namespace Metacode
                     
                     bool has_Loop() const
                     {
-                        return m_Loop_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Loop) != 0;
                     }
                     
                     bool getd_Loop( bool _default ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             return _default;
                         }
@@ -4255,7 +4342,7 @@ namespace Metacode
                     
                     bool get_Loop( bool * _value ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             return false;
                         }
@@ -4268,7 +4355,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Loop( C _self, M _method ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             return false;
                         }
@@ -4280,7 +4367,7 @@ namespace Metacode
                     
                     bool getd_Loop( bool * _value, const bool & _default ) const
                     {
-                        if( m_Loop_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Loop) == 0 )
                         {
                             *_value = _default;
                     
@@ -4315,12 +4402,12 @@ namespace Metacode
                     
                     bool has_Params() const
                     {
-                        return m_Params_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Params) != 0;
                     }
                     
                     uint32_t getd_Params( uint32_t _default ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             return _default;
                         }
@@ -4330,7 +4417,7 @@ namespace Metacode
                     
                     bool get_Params( uint32_t * _value ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             return false;
                         }
@@ -4343,7 +4430,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Params( C _self, M _method ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             return false;
                         }
@@ -4355,7 +4442,7 @@ namespace Metacode
                     
                     bool getd_Params( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_Params_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Params) == 0 )
                         {
                             *_value = _default;
                     
@@ -4368,12 +4455,12 @@ namespace Metacode
                     }
                     bool has_Parent() const
                     {
-                        return m_Parent_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Parent) != 0;
                     }
                     
                     uint32_t getd_Parent( uint32_t _default ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             return _default;
                         }
@@ -4383,7 +4470,7 @@ namespace Metacode
                     
                     bool get_Parent( uint32_t * _value ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             return false;
                         }
@@ -4396,7 +4483,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Parent( C _self, M _method ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             return false;
                         }
@@ -4408,7 +4495,7 @@ namespace Metacode
                     
                     bool getd_Parent( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_Parent_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Parent) == 0 )
                         {
                             *_value = _default;
                     
@@ -4421,12 +4508,12 @@ namespace Metacode
                     }
                     bool has_PlayCount() const
                     {
-                        return m_PlayCount_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_PlayCount) != 0;
                     }
                     
                     uint32_t getd_PlayCount( uint32_t _default ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             return _default;
                         }
@@ -4436,7 +4523,7 @@ namespace Metacode
                     
                     bool get_PlayCount( uint32_t * _value ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             return false;
                         }
@@ -4449,7 +4536,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_PlayCount( C _self, M _method ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             return false;
                         }
@@ -4461,7 +4548,7 @@ namespace Metacode
                     
                     bool getd_PlayCount( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_PlayCount_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_PlayCount) == 0 )
                         {
                             *_value = _default;
                     
@@ -4474,12 +4561,12 @@ namespace Metacode
                     }
                     bool has_Polygon() const
                     {
-                        return m_Polygon_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Polygon) != 0;
                     }
                     
                     bool getd_Polygon( bool _default ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             return _default;
                         }
@@ -4489,7 +4576,7 @@ namespace Metacode
                     
                     bool get_Polygon( bool * _value ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             return false;
                         }
@@ -4502,7 +4589,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Polygon( C _self, M _method ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             return false;
                         }
@@ -4514,7 +4601,7 @@ namespace Metacode
                     
                     bool getd_Polygon( bool * _value, const bool & _default ) const
                     {
-                        if( m_Polygon_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Polygon) == 0 )
                         {
                             *_value = _default;
                     
@@ -4527,13 +4614,13 @@ namespace Metacode
                     }
                     bool has_Position() const
                     {
-                        return m_Position_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Position) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Position( C _self, M _method ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -4545,7 +4632,7 @@ namespace Metacode
                     
                     bool get_Position( mt::vec3f * _value ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -4557,7 +4644,7 @@ namespace Metacode
                     
                     bool getd_Position( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             *_value = _default;
                     
@@ -4570,13 +4657,13 @@ namespace Metacode
                     }
                     bool has_Rotation() const
                     {
-                        return m_Rotation_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Rotation) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Rotation( C _self, M _method ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -4588,7 +4675,7 @@ namespace Metacode
                     
                     bool get_Rotation( mt::vec3f * _value ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -4600,7 +4687,7 @@ namespace Metacode
                     
                     bool getd_Rotation( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             *_value = _default;
                     
@@ -4613,13 +4700,13 @@ namespace Metacode
                     }
                     bool has_Scale() const
                     {
-                        return m_Scale_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Scale) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Scale( C _self, M _method ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -4631,7 +4718,7 @@ namespace Metacode
                     
                     bool get_Scale( mt::vec3f * _value ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -4643,7 +4730,7 @@ namespace Metacode
                     
                     bool getd_Scale( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             *_value = _default;
                     
@@ -4656,12 +4743,12 @@ namespace Metacode
                     }
                     bool has_Shape() const
                     {
-                        return m_Shape_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Shape) != 0;
                     }
                     
                     bool getd_Shape( bool _default ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             return _default;
                         }
@@ -4671,7 +4758,7 @@ namespace Metacode
                     
                     bool get_Shape( bool * _value ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             return false;
                         }
@@ -4684,7 +4771,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Shape( C _self, M _method ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             return false;
                         }
@@ -4696,7 +4783,7 @@ namespace Metacode
                     
                     bool getd_Shape( bool * _value, const bool & _default ) const
                     {
-                        if( m_Shape_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Shape) == 0 )
                         {
                             *_value = _default;
                     
@@ -4720,12 +4807,12 @@ namespace Metacode
                     
                     bool has_StartInterval() const
                     {
-                        return m_StartInterval_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_StartInterval) != 0;
                     }
                     
                     float getd_StartInterval( float _default ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             return _default;
                         }
@@ -4735,7 +4822,7 @@ namespace Metacode
                     
                     bool get_StartInterval( float * _value ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             return false;
                         }
@@ -4748,7 +4835,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_StartInterval( C _self, M _method ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             return false;
                         }
@@ -4760,7 +4847,7 @@ namespace Metacode
                     
                     bool getd_StartInterval( float * _value, const float & _default ) const
                     {
-                        if( m_StartInterval_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_StartInterval) == 0 )
                         {
                             *_value = _default;
                     
@@ -4773,12 +4860,12 @@ namespace Metacode
                     }
                     bool has_Stretch() const
                     {
-                        return m_Stretch_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Stretch) != 0;
                     }
                     
                     float getd_Stretch( float _default ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             return _default;
                         }
@@ -4788,7 +4875,7 @@ namespace Metacode
                     
                     bool get_Stretch( float * _value ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             return false;
                         }
@@ -4801,7 +4888,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Stretch( C _self, M _method ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             return false;
                         }
@@ -4813,7 +4900,7 @@ namespace Metacode
                     
                     bool getd_Stretch( float * _value, const float & _default ) const
                     {
-                        if( m_Stretch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Stretch) == 0 )
                         {
                             *_value = _default;
                     
@@ -4826,12 +4913,12 @@ namespace Metacode
                     }
                     bool has_Switch() const
                     {
-                        return m_Switch_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Switch) != 0;
                     }
                     
                     bool getd_Switch( bool _default ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             return _default;
                         }
@@ -4841,7 +4928,7 @@ namespace Metacode
                     
                     bool get_Switch( bool * _value ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             return false;
                         }
@@ -4854,7 +4941,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Switch( C _self, M _method ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             return false;
                         }
@@ -4866,7 +4953,7 @@ namespace Metacode
                     
                     bool getd_Switch( bool * _value, const bool & _default ) const
                     {
-                        if( m_Switch_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Switch) == 0 )
                         {
                             *_value = _default;
                     
@@ -4879,12 +4966,12 @@ namespace Metacode
                     }
                     bool has_TimeRemap() const
                     {
-                        return m_TimeRemap_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_TimeRemap) != 0;
                     }
                     
                     bool getd_TimeRemap( bool _default ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             return _default;
                         }
@@ -4894,7 +4981,7 @@ namespace Metacode
                     
                     bool get_TimeRemap( bool * _value ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             return false;
                         }
@@ -4907,7 +4994,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_TimeRemap( C _self, M _method ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             return false;
                         }
@@ -4919,7 +5006,7 @@ namespace Metacode
                     
                     bool getd_TimeRemap( bool * _value, const bool & _default ) const
                     {
-                        if( m_TimeRemap_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_TimeRemap) == 0 )
                         {
                             *_value = _default;
                     
@@ -4946,68 +5033,45 @@ namespace Metacode
                 
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                 protected:
-                protected:
-                    bool m_AnchorPoint_successful;
                     mt::vec3f m_AnchorPoint;
-                    bool m_BlendingMode_successful;
                     Mengine::ConstString m_BlendingMode;
                     float m_In;
                     uint32_t m_Index;
-                    bool m_Loop_successful;
                     bool m_Loop;
                     Mengine::ConstString m_Name;
                     float m_Out;
-                    bool m_Params_successful;
                     uint32_t m_Params;
-                    bool m_Parent_successful;
                     uint32_t m_Parent;
-                    bool m_PlayCount_successful;
                     uint32_t m_PlayCount;
-                    bool m_Polygon_successful;
                     bool m_Polygon;
-                    bool m_Position_successful;
                     mt::vec3f m_Position;
-                    bool m_Rotation_successful;
                     mt::vec3f m_Rotation;
-                    bool m_Scale_successful;
                     mt::vec3f m_Scale;
-                    bool m_Shape_successful;
                     bool m_Shape;
                     Mengine::ConstString m_Source;
-                    bool m_StartInterval_successful;
                     float m_StartInterval;
-                    bool m_Stretch_successful;
                     float m_Stretch;
-                    bool m_Switch_successful;
                     bool m_Switch;
-                    bool m_TimeRemap_successful;
                     bool m_TimeRemap;
                     Mengine::ConstString m_Type;
                 };
                 
             protected:
-            protected:
-                bool m_Anchor_Point_successful;
                 mt::vec3f m_Anchor_Point;
-                bool m_Bounds_Box_successful;
                 mt::box2f m_Bounds_Box;
                 float m_Duration_Value;
                 float m_FrameDuration_Value;
                 float m_Height_Value;
-                bool m_KeyFramesPackPath_Codec_successful;
                 Mengine::ConstString m_KeyFramesPackPath_Codec;
-                bool m_KeyFramesPackPath_Converter_successful;
                 Mengine::ConstString m_KeyFramesPackPath_Converter;
                 Mengine::FilePath m_KeyFramesPackPath_Path;
-                bool m_Loop_Segment_successful;
                 mt::vec2f m_Loop_Segment;
-                bool m_Offset_Point_successful;
                 mt::vec3f m_Offset_Point;
                 float m_Width_Value;
             public:
@@ -5048,16 +5112,22 @@ namespace Metacode
             public:
                 Meta_ResourceMovie2();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Dataflow = (1 <<2),
+                };
+                
             public:
                 bool has_File_Dataflow() const
                 {
-                    return m_File_Dataflow_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Dataflow) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Dataflow( C _self, M _method ) const
                 {
-                    if( m_File_Dataflow_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
                         return false;
                     }
@@ -5069,7 +5139,7 @@ namespace Metacode
                 
                 bool get_File_Dataflow( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Dataflow_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Dataflow) == 0 )
                     {
                         return false;
                     }
@@ -5095,7 +5165,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -5106,16 +5176,25 @@ namespace Metacode
                 public:
                     Meta_Composition();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_Bounds = (1 <<0),
+                        EMETA_Master = (1 <<1),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     bool has_Bounds() const
                     {
-                        return m_Bounds_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Bounds) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Bounds( C _self, M _method ) const
                     {
-                        if( m_Bounds_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Bounds) == 0 )
                         {
                             return false;
                         }
@@ -5127,7 +5206,7 @@ namespace Metacode
                     
                     bool get_Bounds( mt::box2f * _value ) const
                     {
-                        if( m_Bounds_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Bounds) == 0 )
                         {
                             return false;
                         }
@@ -5139,7 +5218,7 @@ namespace Metacode
                     
                     bool getd_Bounds( mt::box2f * _value, const mt::box2f & _default ) const
                     {
-                        if( m_Bounds_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Bounds) == 0 )
                         {
                             *_value = _default;
                     
@@ -5174,12 +5253,12 @@ namespace Metacode
                     
                     bool has_Master() const
                     {
-                        return m_Master_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Master) != 0;
                     }
                     
                     bool getd_Master( bool _default ) const
                     {
-                        if( m_Master_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Master) == 0 )
                         {
                             return _default;
                         }
@@ -5189,7 +5268,7 @@ namespace Metacode
                     
                     bool get_Master( bool * _value ) const
                     {
-                        if( m_Master_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Master) == 0 )
                         {
                             return false;
                         }
@@ -5202,7 +5281,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Master( C _self, M _method ) const
                     {
-                        if( m_Master_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Master) == 0 )
                         {
                             return false;
                         }
@@ -5214,7 +5293,7 @@ namespace Metacode
                     
                     bool getd_Master( bool * _value, const bool & _default ) const
                     {
-                        if( m_Master_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Master) == 0 )
                         {
                             *_value = _default;
                     
@@ -5241,7 +5320,7 @@ namespace Metacode
                 
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
@@ -5318,7 +5397,6 @@ namespace Metacode
                     
                     public:
                     protected:
-                    protected:
                         Mengine::Color m_Color;
                         uint32_t m_Index;
                         mt::mat4f m_Matrix;
@@ -5387,7 +5465,6 @@ namespace Metacode
                     
                     public:
                     protected:
-                    protected:
                         float m_Duration;
                         float m_FrameDuration;
                         uint32_t m_Index;
@@ -5395,12 +5472,9 @@ namespace Metacode
                     };
                     
                 protected:
-                protected:
-                    bool m_Bounds_successful;
                     mt::box2f m_Bounds;
                     float m_Duration;
                     float m_FrameDuration;
-                    bool m_Master_successful;
                     bool m_Master;
                     Mengine::ConstString m_Name;
                 public:
@@ -5426,8 +5500,6 @@ namespace Metacode
                 };
                 
             protected:
-            protected:
-                bool m_File_Dataflow_successful;
                 Mengine::ConstString m_File_Dataflow;
                 Mengine::FilePath m_File_Path;
             public:
@@ -5448,16 +5520,25 @@ namespace Metacode
             public:
                 Meta_ResourceMusic();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_DefaultVolume_Value = (1 <<5),
+                    EMETA_File_Codec = (1 <<2),
+                    EMETA_File_Converter = (1 <<3),
+                    EMETA_File_External = (1 <<4),
+                };
+                
             public:
                 bool has_DefaultVolume_Value() const
                 {
-                    return m_DefaultVolume_Value_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_DefaultVolume_Value( C _self, M _method ) const
                 {
-                    if( m_DefaultVolume_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) == 0 )
                     {
                         return false;
                     }
@@ -5469,7 +5550,7 @@ namespace Metacode
                 
                 bool get_DefaultVolume_Value( float * _value ) const
                 {
-                    if( m_DefaultVolume_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) == 0 )
                     {
                         return false;
                     }
@@ -5481,13 +5562,13 @@ namespace Metacode
                 
                 bool has_File_Codec() const
                 {
-                    return m_File_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Codec( C _self, M _method ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -5499,7 +5580,7 @@ namespace Metacode
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -5511,13 +5592,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -5529,7 +5610,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -5541,13 +5622,13 @@ namespace Metacode
                 
                 bool has_File_External() const
                 {
-                    return m_File_External_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_External) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_External( C _self, M _method ) const
                 {
-                    if( m_File_External_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_External) == 0 )
                     {
                         return false;
                     }
@@ -5559,7 +5640,7 @@ namespace Metacode
                 
                 bool get_File_External( bool * _value ) const
                 {
-                    if( m_File_External_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_External) == 0 )
                     {
                         return false;
                     }
@@ -5585,20 +5666,15 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_DefaultVolume_Value_successful;
                 float m_DefaultVolume_Value;
-                bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
-                bool m_File_External_successful;
                 bool m_File_External;
                 Mengine::FilePath m_File_Path;
             };
@@ -5609,6 +5685,12 @@ namespace Metacode
             public:
                 Meta_ResourceParticle();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Converter = (1 <<2),
+                };
+                
             public:
                 template<class C, class M>
                 void getm_AtlasCount_Value( C _self, M _method ) const
@@ -5623,13 +5705,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -5641,7 +5723,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -5667,7 +5749,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -5711,15 +5793,12 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     uint32_t m_Index;
                     Mengine::ConstString m_ResourceName;
                 };
                 
             protected:
-            protected:
                 uint32_t m_AtlasCount_Value;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
                 Mengine::FilePath m_File_Path;
             public:
@@ -5762,7 +5841,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 Mengine::Polygon m_Polygon_Value;
             };
             
@@ -5772,16 +5850,25 @@ namespace Metacode
             public:
                 Meta_ResourceSound();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_DefaultVolume_Value = (1 <<4),
+                    EMETA_File_Codec = (1 <<2),
+                    EMETA_File_Converter = (1 <<3),
+                    EMETA_IsStreamable_Value = (1 <<5),
+                };
+                
             public:
                 bool has_DefaultVolume_Value() const
                 {
-                    return m_DefaultVolume_Value_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_DefaultVolume_Value( C _self, M _method ) const
                 {
-                    if( m_DefaultVolume_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) == 0 )
                     {
                         return false;
                     }
@@ -5793,7 +5880,7 @@ namespace Metacode
                 
                 bool get_DefaultVolume_Value( float * _value ) const
                 {
-                    if( m_DefaultVolume_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_DefaultVolume_Value) == 0 )
                     {
                         return false;
                     }
@@ -5805,13 +5892,13 @@ namespace Metacode
                 
                 bool has_File_Codec() const
                 {
-                    return m_File_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Codec( C _self, M _method ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -5823,7 +5910,7 @@ namespace Metacode
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -5835,13 +5922,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -5853,7 +5940,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -5876,13 +5963,13 @@ namespace Metacode
                 
                 bool has_IsStreamable_Value() const
                 {
-                    return m_IsStreamable_Value_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_IsStreamable_Value) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_IsStreamable_Value( C _self, M _method ) const
                 {
-                    if( m_IsStreamable_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_IsStreamable_Value) == 0 )
                     {
                         return false;
                     }
@@ -5894,7 +5981,7 @@ namespace Metacode
                 
                 bool get_IsStreamable_Value( bool * _value ) const
                 {
-                    if( m_IsStreamable_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_IsStreamable_Value) == 0 )
                     {
                         return false;
                     }
@@ -5909,21 +5996,16 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_DefaultVolume_Value_successful;
                 float m_DefaultVolume_Value;
-                bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
                 Mengine::FilePath m_File_Path;
-                bool m_IsStreamable_Value_successful;
                 bool m_IsStreamable_Value;
             };
             
@@ -6004,12 +6086,10 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     Mengine::ConstString m_Name;
                     Mengine::ConstString m_Resource;
                 };
                 
-            protected:
             protected:
                 Mengine::FilePath m_Atlas_Path;
                 Mengine::FilePath m_Skeleton_Path;
@@ -6031,16 +6111,27 @@ namespace Metacode
             public:
                 Meta_ResourceVideo();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Alpha = (1 <<2),
+                    EMETA_File_Codec = (1 <<3),
+                    EMETA_File_Converter = (1 <<4),
+                    EMETA_File_Duration = (1 <<7),
+                    EMETA_File_FrameRate = (1 <<6),
+                    EMETA_File_NoSeek = (1 <<5),
+                };
+                
             public:
                 bool has_File_Alpha() const
                 {
-                    return m_File_Alpha_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Alpha) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Alpha( C _self, M _method ) const
                 {
-                    if( m_File_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -6052,7 +6143,7 @@ namespace Metacode
                 
                 bool get_File_Alpha( bool * _value ) const
                 {
-                    if( m_File_Alpha_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Alpha) == 0 )
                     {
                         return false;
                     }
@@ -6064,13 +6155,13 @@ namespace Metacode
                 
                 bool has_File_Codec() const
                 {
-                    return m_File_Codec_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Codec) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Codec( C _self, M _method ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -6082,7 +6173,7 @@ namespace Metacode
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Codec_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Codec) == 0 )
                     {
                         return false;
                     }
@@ -6094,13 +6185,13 @@ namespace Metacode
                 
                 bool has_File_Converter() const
                 {
-                    return m_File_Converter_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Converter( C _self, M _method ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -6112,7 +6203,7 @@ namespace Metacode
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    if( m_File_Converter_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
                     {
                         return false;
                     }
@@ -6124,13 +6215,13 @@ namespace Metacode
                 
                 bool has_File_Duration() const
                 {
-                    return m_File_Duration_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Duration) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_Duration( C _self, M _method ) const
                 {
-                    if( m_File_Duration_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Duration) == 0 )
                     {
                         return false;
                     }
@@ -6142,7 +6233,7 @@ namespace Metacode
                 
                 bool get_File_Duration( float * _value ) const
                 {
-                    if( m_File_Duration_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Duration) == 0 )
                     {
                         return false;
                     }
@@ -6154,13 +6245,13 @@ namespace Metacode
                 
                 bool has_File_FrameRate() const
                 {
-                    return m_File_FrameRate_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_FrameRate) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_FrameRate( C _self, M _method ) const
                 {
-                    if( m_File_FrameRate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_FrameRate) == 0 )
                     {
                         return false;
                     }
@@ -6172,7 +6263,7 @@ namespace Metacode
                 
                 bool get_File_FrameRate( float * _value ) const
                 {
-                    if( m_File_FrameRate_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_FrameRate) == 0 )
                     {
                         return false;
                     }
@@ -6184,13 +6275,13 @@ namespace Metacode
                 
                 bool has_File_NoSeek() const
                 {
-                    return m_File_NoSeek_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_File_NoSeek) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_File_NoSeek( C _self, M _method ) const
                 {
-                    if( m_File_NoSeek_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoSeek) == 0 )
                     {
                         return false;
                     }
@@ -6202,7 +6293,7 @@ namespace Metacode
                 
                 bool get_File_NoSeek( bool * _value ) const
                 {
-                    if( m_File_NoSeek_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_File_NoSeek) == 0 )
                     {
                         return false;
                     }
@@ -6228,24 +6319,17 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_File_Alpha_successful;
                 bool m_File_Alpha;
-                bool m_File_Codec_successful;
                 Mengine::ConstString m_File_Codec;
-                bool m_File_Converter_successful;
                 Mengine::ConstString m_File_Converter;
-                bool m_File_Duration_successful;
                 float m_File_Duration;
-                bool m_File_FrameRate_successful;
                 float m_File_FrameRate;
-                bool m_File_NoSeek_successful;
                 bool m_File_NoSeek;
                 Mengine::FilePath m_File_Path;
             };
@@ -6256,16 +6340,22 @@ namespace Metacode
             public:
                 Meta_ResourceWindow();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_WindowBackground_ResourceImageName = (1 <<2),
+                };
+                
             public:
                 bool has_WindowBackground_ResourceImageName() const
                 {
-                    return m_WindowBackground_ResourceImageName_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_WindowBackground_ResourceImageName) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_WindowBackground_ResourceImageName( C _self, M _method ) const
                 {
-                    if( m_WindowBackground_ResourceImageName_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_WindowBackground_ResourceImageName) == 0 )
                     {
                         return false;
                     }
@@ -6277,7 +6367,7 @@ namespace Metacode
                 
                 bool get_WindowBackground_ResourceImageName( Mengine::ConstString * _value ) const
                 {
-                    if( m_WindowBackground_ResourceImageName_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_WindowBackground_ResourceImageName) == 0 )
                     {
                         return false;
                     }
@@ -6468,14 +6558,12 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_WindowBackground_ResourceImageName_successful;
                 Mengine::ConstString m_WindowBackground_ResourceImageName;
                 mt::vec2f m_WindowBottom_Offset;
                 Mengine::ConstString m_WindowBottom_ResourceImageName;
@@ -6495,7 +6583,6 @@ namespace Metacode
                 Mengine::ConstString m_WindowTop_ResourceImageName;
             };
             
-        protected:
         protected:
             Mengine::ConstString m_Name;
         public:
@@ -6614,15 +6701,27 @@ namespace Metacode
             public:
                 Meta_ImageShape();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Count = (1 <<4),
+                    EMETA_ImageOffset = (1 <<1),
+                    EMETA_ImageSize = (1 <<0),
+                    EMETA_Immutable = (1 <<2),
+                    EMETA_Subtract = (1 <<3),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Count() const
                 {
-                    return m_Count_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Count) != 0;
                 }
                 
                 uint32_t getd_Count( uint32_t _default ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return _default;
                     }
@@ -6632,7 +6731,7 @@ namespace Metacode
                 
                 bool get_Count( uint32_t * _value ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return false;
                     }
@@ -6645,7 +6744,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Count( C _self, M _method ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return false;
                     }
@@ -6657,7 +6756,7 @@ namespace Metacode
                 
                 bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         *_value = _default;
                 
@@ -6681,13 +6780,13 @@ namespace Metacode
                 
                 bool has_ImageOffset() const
                 {
-                    return m_ImageOffset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_ImageOffset) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_ImageOffset( C _self, M _method ) const
                 {
-                    if( m_ImageOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_ImageOffset) == 0 )
                     {
                         return false;
                     }
@@ -6699,7 +6798,7 @@ namespace Metacode
                 
                 bool get_ImageOffset( mt::vec2f * _value ) const
                 {
-                    if( m_ImageOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_ImageOffset) == 0 )
                     {
                         return false;
                     }
@@ -6711,7 +6810,7 @@ namespace Metacode
                 
                 bool getd_ImageOffset( mt::vec2f * _value, const mt::vec2f & _default ) const
                 {
-                    if( m_ImageOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_ImageOffset) == 0 )
                     {
                         *_value = _default;
                 
@@ -6724,13 +6823,13 @@ namespace Metacode
                 }
                 bool has_ImageSize() const
                 {
-                    return m_ImageSize_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_ImageSize) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_ImageSize( C _self, M _method ) const
                 {
-                    if( m_ImageSize_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_ImageSize) == 0 )
                     {
                         return false;
                     }
@@ -6742,7 +6841,7 @@ namespace Metacode
                 
                 bool get_ImageSize( mt::vec2f * _value ) const
                 {
-                    if( m_ImageSize_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_ImageSize) == 0 )
                     {
                         return false;
                     }
@@ -6754,7 +6853,7 @@ namespace Metacode
                 
                 bool getd_ImageSize( mt::vec2f * _value, const mt::vec2f & _default ) const
                 {
-                    if( m_ImageSize_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_ImageSize) == 0 )
                     {
                         *_value = _default;
                 
@@ -6767,12 +6866,12 @@ namespace Metacode
                 }
                 bool has_Immutable() const
                 {
-                    return m_Immutable_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Immutable) != 0;
                 }
                 
                 bool getd_Immutable( bool _default ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return _default;
                     }
@@ -6782,7 +6881,7 @@ namespace Metacode
                 
                 bool get_Immutable( bool * _value ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return false;
                     }
@@ -6795,7 +6894,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Immutable( C _self, M _method ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return false;
                     }
@@ -6807,7 +6906,7 @@ namespace Metacode
                 
                 bool getd_Immutable( bool * _value, const bool & _default ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         *_value = _default;
                 
@@ -6831,12 +6930,12 @@ namespace Metacode
                 
                 bool has_Subtract() const
                 {
-                    return m_Subtract_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Subtract) != 0;
                 }
                 
                 bool getd_Subtract( bool _default ) const
                 {
-                    if( m_Subtract_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Subtract) == 0 )
                     {
                         return _default;
                     }
@@ -6846,7 +6945,7 @@ namespace Metacode
                 
                 bool get_Subtract( bool * _value ) const
                 {
-                    if( m_Subtract_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Subtract) == 0 )
                     {
                         return false;
                     }
@@ -6859,7 +6958,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Subtract( C _self, M _method ) const
                 {
-                    if( m_Subtract_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Subtract) == 0 )
                     {
                         return false;
                     }
@@ -6871,7 +6970,7 @@ namespace Metacode
                 
                 bool getd_Subtract( bool * _value, const bool & _default ) const
                 {
-                    if( m_Subtract_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Subtract) == 0 )
                     {
                         *_value = _default;
                 
@@ -6887,7 +6986,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -6920,23 +7019,16 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     Mengine::Polygon m_Polygon;
                 };
                 
             protected:
-            protected:
-                bool m_Count_successful;
                 uint32_t m_Count;
                 mt::vec2f m_ImageMaxSize;
-                bool m_ImageOffset_successful;
                 mt::vec2f m_ImageOffset;
-                bool m_ImageSize_successful;
                 mt::vec2f m_ImageSize;
-                bool m_Immutable_successful;
                 bool m_Immutable;
                 uint32_t m_LayerIndex;
-                bool m_Subtract_successful;
                 bool m_Subtract;
             public:
                 typedef Metabuf::Vector<Meta_Shape> VectorMeta_Shape;
@@ -6956,15 +7048,24 @@ namespace Metacode
             public:
                 Meta_KeyFrames2D();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Count = (1 <<1),
+                    EMETA_Immutable = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Count() const
                 {
-                    return m_Count_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Count) != 0;
                 }
                 
                 uint32_t getd_Count( uint32_t _default ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return _default;
                     }
@@ -6974,7 +7075,7 @@ namespace Metacode
                 
                 bool get_Count( uint32_t * _value ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return false;
                     }
@@ -6987,7 +7088,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Count( C _self, M _method ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return false;
                     }
@@ -6999,7 +7100,7 @@ namespace Metacode
                 
                 bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         *_value = _default;
                 
@@ -7012,12 +7113,12 @@ namespace Metacode
                 }
                 bool has_Immutable() const
                 {
-                    return m_Immutable_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Immutable) != 0;
                 }
                 
                 bool getd_Immutable( bool _default ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return _default;
                     }
@@ -7027,7 +7128,7 @@ namespace Metacode
                 
                 bool get_Immutable( bool * _value ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return false;
                     }
@@ -7040,7 +7141,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Immutable( C _self, M _method ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return false;
                     }
@@ -7052,7 +7153,7 @@ namespace Metacode
                 
                 bool getd_Immutable( bool * _value, const bool & _default ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         *_value = _default;
                 
@@ -7079,7 +7180,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -7090,16 +7191,30 @@ namespace Metacode
                 public:
                     Meta_KeyFrame2D();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_AnchorPoint = (1 <<0),
+                        EMETA_Count = (1 <<6),
+                        EMETA_Opacity = (1 <<4),
+                        EMETA_Position = (1 <<1),
+                        EMETA_Rotation = (1 <<3),
+                        EMETA_Scale = (1 <<2),
+                        EMETA_Volume = (1 <<5),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     bool has_AnchorPoint() const
                     {
-                        return m_AnchorPoint_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AnchorPoint( C _self, M _method ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -7111,7 +7226,7 @@ namespace Metacode
                     
                     bool get_AnchorPoint( mt::vec2f * _value ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -7123,7 +7238,7 @@ namespace Metacode
                     
                     bool getd_AnchorPoint( mt::vec2f * _value, const mt::vec2f & _default ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             *_value = _default;
                     
@@ -7136,12 +7251,12 @@ namespace Metacode
                     }
                     bool has_Count() const
                     {
-                        return m_Count_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Count) != 0;
                     }
                     
                     uint32_t getd_Count( uint32_t _default ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             return _default;
                         }
@@ -7151,7 +7266,7 @@ namespace Metacode
                     
                     bool get_Count( uint32_t * _value ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             return false;
                         }
@@ -7164,7 +7279,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Count( C _self, M _method ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             return false;
                         }
@@ -7176,7 +7291,7 @@ namespace Metacode
                     
                     bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             *_value = _default;
                     
@@ -7189,12 +7304,12 @@ namespace Metacode
                     }
                     bool has_Opacity() const
                     {
-                        return m_Opacity_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Opacity) != 0;
                     }
                     
                     float getd_Opacity( float _default ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             return _default;
                         }
@@ -7204,7 +7319,7 @@ namespace Metacode
                     
                     bool get_Opacity( float * _value ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             return false;
                         }
@@ -7217,7 +7332,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Opacity( C _self, M _method ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             return false;
                         }
@@ -7229,7 +7344,7 @@ namespace Metacode
                     
                     bool getd_Opacity( float * _value, const float & _default ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             *_value = _default;
                     
@@ -7242,13 +7357,13 @@ namespace Metacode
                     }
                     bool has_Position() const
                     {
-                        return m_Position_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Position) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Position( C _self, M _method ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -7260,7 +7375,7 @@ namespace Metacode
                     
                     bool get_Position( mt::vec2f * _value ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -7272,7 +7387,7 @@ namespace Metacode
                     
                     bool getd_Position( mt::vec2f * _value, const mt::vec2f & _default ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             *_value = _default;
                     
@@ -7285,12 +7400,12 @@ namespace Metacode
                     }
                     bool has_Rotation() const
                     {
-                        return m_Rotation_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Rotation) != 0;
                     }
                     
                     float getd_Rotation( float _default ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return _default;
                         }
@@ -7300,7 +7415,7 @@ namespace Metacode
                     
                     bool get_Rotation( float * _value ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -7313,7 +7428,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Rotation( C _self, M _method ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -7325,7 +7440,7 @@ namespace Metacode
                     
                     bool getd_Rotation( float * _value, const float & _default ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             *_value = _default;
                     
@@ -7338,13 +7453,13 @@ namespace Metacode
                     }
                     bool has_Scale() const
                     {
-                        return m_Scale_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Scale) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Scale( C _self, M _method ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -7356,7 +7471,7 @@ namespace Metacode
                     
                     bool get_Scale( mt::vec2f * _value ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -7368,7 +7483,7 @@ namespace Metacode
                     
                     bool getd_Scale( mt::vec2f * _value, const mt::vec2f & _default ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             *_value = _default;
                     
@@ -7381,12 +7496,12 @@ namespace Metacode
                     }
                     bool has_Volume() const
                     {
-                        return m_Volume_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Volume) != 0;
                     }
                     
                     float getd_Volume( float _default ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             return _default;
                         }
@@ -7396,7 +7511,7 @@ namespace Metacode
                     
                     bool get_Volume( float * _value ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             return false;
                         }
@@ -7409,7 +7524,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Volume( C _self, M _method ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             return false;
                         }
@@ -7421,7 +7536,7 @@ namespace Metacode
                     
                     bool getd_Volume( float * _value, const float & _default ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             *_value = _default;
                     
@@ -7436,34 +7551,23 @@ namespace Metacode
                     bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 
                 protected:
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                 protected:
-                protected:
-                    bool m_AnchorPoint_successful;
                     mt::vec2f m_AnchorPoint;
-                    bool m_Count_successful;
                     uint32_t m_Count;
-                    bool m_Opacity_successful;
                     float m_Opacity;
-                    bool m_Position_successful;
                     mt::vec2f m_Position;
-                    bool m_Rotation_successful;
                     float m_Rotation;
-                    bool m_Scale_successful;
                     mt::vec2f m_Scale;
-                    bool m_Volume_successful;
                     float m_Volume;
                 };
                 
             protected:
-            protected:
-                bool m_Count_successful;
                 uint32_t m_Count;
-                bool m_Immutable_successful;
                 bool m_Immutable;
                 uint32_t m_LayerIndex;
             public:
@@ -7484,15 +7588,24 @@ namespace Metacode
             public:
                 Meta_KeyFrames3D();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Count = (1 <<1),
+                    EMETA_Immutable = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Count() const
                 {
-                    return m_Count_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Count) != 0;
                 }
                 
                 uint32_t getd_Count( uint32_t _default ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return _default;
                     }
@@ -7502,7 +7615,7 @@ namespace Metacode
                 
                 bool get_Count( uint32_t * _value ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return false;
                     }
@@ -7515,7 +7628,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Count( C _self, M _method ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         return false;
                     }
@@ -7527,7 +7640,7 @@ namespace Metacode
                 
                 bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
                 {
-                    if( m_Count_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                     {
                         *_value = _default;
                 
@@ -7540,12 +7653,12 @@ namespace Metacode
                 }
                 bool has_Immutable() const
                 {
-                    return m_Immutable_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Immutable) != 0;
                 }
                 
                 bool getd_Immutable( bool _default ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return _default;
                     }
@@ -7555,7 +7668,7 @@ namespace Metacode
                 
                 bool get_Immutable( bool * _value ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return false;
                     }
@@ -7568,7 +7681,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Immutable( C _self, M _method ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         return false;
                     }
@@ -7580,7 +7693,7 @@ namespace Metacode
                 
                 bool getd_Immutable( bool * _value, const bool & _default ) const
                 {
-                    if( m_Immutable_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Immutable) == 0 )
                     {
                         *_value = _default;
                 
@@ -7607,7 +7720,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -7618,16 +7731,31 @@ namespace Metacode
                 public:
                     Meta_KeyFrame3D();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_AnchorPoint = (1 <<0),
+                        EMETA_Count = (1 <<7),
+                        EMETA_Opacity = (1 <<5),
+                        EMETA_Orientation = (1 <<4),
+                        EMETA_Position = (1 <<1),
+                        EMETA_Rotation = (1 <<3),
+                        EMETA_Scale = (1 <<2),
+                        EMETA_Volume = (1 <<6),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     bool has_AnchorPoint() const
                     {
-                        return m_AnchorPoint_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_AnchorPoint) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_AnchorPoint( C _self, M _method ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -7639,7 +7767,7 @@ namespace Metacode
                     
                     bool get_AnchorPoint( mt::vec3f * _value ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             return false;
                         }
@@ -7651,7 +7779,7 @@ namespace Metacode
                     
                     bool getd_AnchorPoint( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_AnchorPoint_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_AnchorPoint) == 0 )
                         {
                             *_value = _default;
                     
@@ -7664,12 +7792,12 @@ namespace Metacode
                     }
                     bool has_Count() const
                     {
-                        return m_Count_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Count) != 0;
                     }
                     
                     uint32_t getd_Count( uint32_t _default ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             return _default;
                         }
@@ -7679,7 +7807,7 @@ namespace Metacode
                     
                     bool get_Count( uint32_t * _value ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             return false;
                         }
@@ -7692,7 +7820,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Count( C _self, M _method ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             return false;
                         }
@@ -7704,7 +7832,7 @@ namespace Metacode
                     
                     bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
                     {
-                        if( m_Count_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Count) == 0 )
                         {
                             *_value = _default;
                     
@@ -7717,12 +7845,12 @@ namespace Metacode
                     }
                     bool has_Opacity() const
                     {
-                        return m_Opacity_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Opacity) != 0;
                     }
                     
                     float getd_Opacity( float _default ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             return _default;
                         }
@@ -7732,7 +7860,7 @@ namespace Metacode
                     
                     bool get_Opacity( float * _value ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             return false;
                         }
@@ -7745,7 +7873,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Opacity( C _self, M _method ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             return false;
                         }
@@ -7757,7 +7885,7 @@ namespace Metacode
                     
                     bool getd_Opacity( float * _value, const float & _default ) const
                     {
-                        if( m_Opacity_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Opacity) == 0 )
                         {
                             *_value = _default;
                     
@@ -7770,13 +7898,13 @@ namespace Metacode
                     }
                     bool has_Orientation() const
                     {
-                        return m_Orientation_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Orientation) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Orientation( C _self, M _method ) const
                     {
-                        if( m_Orientation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Orientation) == 0 )
                         {
                             return false;
                         }
@@ -7788,7 +7916,7 @@ namespace Metacode
                     
                     bool get_Orientation( mt::vec3f * _value ) const
                     {
-                        if( m_Orientation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Orientation) == 0 )
                         {
                             return false;
                         }
@@ -7800,7 +7928,7 @@ namespace Metacode
                     
                     bool getd_Orientation( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Orientation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Orientation) == 0 )
                         {
                             *_value = _default;
                     
@@ -7813,13 +7941,13 @@ namespace Metacode
                     }
                     bool has_Position() const
                     {
-                        return m_Position_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Position) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Position( C _self, M _method ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -7831,7 +7959,7 @@ namespace Metacode
                     
                     bool get_Position( mt::vec3f * _value ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             return false;
                         }
@@ -7843,7 +7971,7 @@ namespace Metacode
                     
                     bool getd_Position( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Position_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Position) == 0 )
                         {
                             *_value = _default;
                     
@@ -7856,13 +7984,13 @@ namespace Metacode
                     }
                     bool has_Rotation() const
                     {
-                        return m_Rotation_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Rotation) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Rotation( C _self, M _method ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -7874,7 +8002,7 @@ namespace Metacode
                     
                     bool get_Rotation( mt::vec3f * _value ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             return false;
                         }
@@ -7886,7 +8014,7 @@ namespace Metacode
                     
                     bool getd_Rotation( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Rotation_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Rotation) == 0 )
                         {
                             *_value = _default;
                     
@@ -7899,13 +8027,13 @@ namespace Metacode
                     }
                     bool has_Scale() const
                     {
-                        return m_Scale_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Scale) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Scale( C _self, M _method ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -7917,7 +8045,7 @@ namespace Metacode
                     
                     bool get_Scale( mt::vec3f * _value ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             return false;
                         }
@@ -7929,7 +8057,7 @@ namespace Metacode
                     
                     bool getd_Scale( mt::vec3f * _value, const mt::vec3f & _default ) const
                     {
-                        if( m_Scale_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Scale) == 0 )
                         {
                             *_value = _default;
                     
@@ -7942,12 +8070,12 @@ namespace Metacode
                     }
                     bool has_Volume() const
                     {
-                        return m_Volume_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Volume) != 0;
                     }
                     
                     float getd_Volume( float _default ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             return _default;
                         }
@@ -7957,7 +8085,7 @@ namespace Metacode
                     
                     bool get_Volume( float * _value ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             return false;
                         }
@@ -7970,7 +8098,7 @@ namespace Metacode
                     template<class C, class M>
                     bool getm_Volume( C _self, M _method ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             return false;
                         }
@@ -7982,7 +8110,7 @@ namespace Metacode
                     
                     bool getd_Volume( float * _value, const float & _default ) const
                     {
-                        if( m_Volume_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Volume) == 0 )
                         {
                             *_value = _default;
                     
@@ -7997,36 +8125,24 @@ namespace Metacode
                     bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 
                 protected:
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                 protected:
-                protected:
-                    bool m_AnchorPoint_successful;
                     mt::vec3f m_AnchorPoint;
-                    bool m_Count_successful;
                     uint32_t m_Count;
-                    bool m_Opacity_successful;
                     float m_Opacity;
-                    bool m_Orientation_successful;
                     mt::vec3f m_Orientation;
-                    bool m_Position_successful;
                     mt::vec3f m_Position;
-                    bool m_Rotation_successful;
                     mt::vec3f m_Rotation;
-                    bool m_Scale_successful;
                     mt::vec3f m_Scale;
-                    bool m_Volume_successful;
                     float m_Volume;
                 };
                 
             protected:
-            protected:
-                bool m_Count_successful;
                 uint32_t m_Count;
-                bool m_Immutable_successful;
                 bool m_Immutable;
                 uint32_t m_LayerIndex;
             public:
@@ -8080,7 +8196,6 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 uint32_t m_LayerIndex;
                 Mengine::Polygon m_Value;
             };
@@ -8124,12 +8239,10 @@ namespace Metacode
             
             public:
             protected:
-            protected:
                 uint32_t m_LayerIndex;
                 Mengine::Floats m_Time;
             };
             
-        protected:
         protected:
             uint32_t m_MaxIndex;
             uint32_t m_Version;
@@ -8205,16 +8318,24 @@ namespace Metacode
             public:
                 Meta_Datas();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Platform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Platform() const
                 {
-                    return m_Platform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Platform( C _self, M _method ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8226,7 +8347,7 @@ namespace Metacode
                 
                 bool get_Platform( Mengine::Tags * _value ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8238,7 +8359,7 @@ namespace Metacode
                 
                 bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         *_value = _default;
                 
@@ -8253,7 +8374,7 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -8297,14 +8418,11 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     Mengine::ConstString m_Name;
                     Mengine::FilePath m_Path;
                 };
                 
             protected:
-            protected:
-                bool m_Platform_successful;
                 Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Data> VectorMeta_Data;
@@ -8324,6 +8442,14 @@ namespace Metacode
             public:
                 Meta_Fonts();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Platform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 template<class C, class M>
                 void getm_Path( C _self, M _method ) const
@@ -8338,13 +8464,13 @@ namespace Metacode
                 
                 bool has_Platform() const
                 {
-                    return m_Platform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Platform( C _self, M _method ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8356,7 +8482,7 @@ namespace Metacode
                 
                 bool get_Platform( Mengine::Tags * _value ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8368,7 +8494,7 @@ namespace Metacode
                 
                 bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         *_value = _default;
                 
@@ -8384,15 +8510,13 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
                 Mengine::FilePath m_Path;
-                bool m_Platform_successful;
                 Mengine::Tags m_Platform;
             };
             
@@ -8402,16 +8526,24 @@ namespace Metacode
             public:
                 Meta_Materials();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Platform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Platform() const
                 {
-                    return m_Platform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Platform( C _self, M _method ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8423,7 +8555,7 @@ namespace Metacode
                 
                 bool get_Platform( Mengine::Tags * _value ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8435,7 +8567,7 @@ namespace Metacode
                 
                 bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         *_value = _default;
                 
@@ -8450,7 +8582,7 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -8483,13 +8615,10 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     Mengine::FilePath m_Path;
                 };
                 
             protected:
-            protected:
-                bool m_Platform_successful;
                 Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Material> VectorMeta_Material;
@@ -8509,15 +8638,25 @@ namespace Metacode
             public:
                 Meta_Resources();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Demand = (1 <<1),
+                    EMETA_Ignored = (1 <<0),
+                    EMETA_Platform = (1 <<2),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Demand() const
                 {
-                    return m_Demand_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Demand) != 0;
                 }
                 
                 bool getd_Demand( bool _default ) const
                 {
-                    if( m_Demand_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Demand) == 0 )
                     {
                         return _default;
                     }
@@ -8527,7 +8666,7 @@ namespace Metacode
                 
                 bool get_Demand( bool * _value ) const
                 {
-                    if( m_Demand_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Demand) == 0 )
                     {
                         return false;
                     }
@@ -8540,7 +8679,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Demand( C _self, M _method ) const
                 {
-                    if( m_Demand_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Demand) == 0 )
                     {
                         return false;
                     }
@@ -8552,7 +8691,7 @@ namespace Metacode
                 
                 bool getd_Demand( bool * _value, const bool & _default ) const
                 {
-                    if( m_Demand_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Demand) == 0 )
                     {
                         *_value = _default;
                 
@@ -8565,12 +8704,12 @@ namespace Metacode
                 }
                 bool has_Ignored() const
                 {
-                    return m_Ignored_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Ignored) != 0;
                 }
                 
                 bool getd_Ignored( bool _default ) const
                 {
-                    if( m_Ignored_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Ignored) == 0 )
                     {
                         return _default;
                     }
@@ -8580,7 +8719,7 @@ namespace Metacode
                 
                 bool get_Ignored( bool * _value ) const
                 {
-                    if( m_Ignored_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Ignored) == 0 )
                     {
                         return false;
                     }
@@ -8593,7 +8732,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_Ignored( C _self, M _method ) const
                 {
-                    if( m_Ignored_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Ignored) == 0 )
                     {
                         return false;
                     }
@@ -8605,7 +8744,7 @@ namespace Metacode
                 
                 bool getd_Ignored( bool * _value, const bool & _default ) const
                 {
-                    if( m_Ignored_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Ignored) == 0 )
                     {
                         *_value = _default;
                 
@@ -8618,13 +8757,13 @@ namespace Metacode
                 }
                 bool has_Platform() const
                 {
-                    return m_Platform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Platform( C _self, M _method ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8636,7 +8775,7 @@ namespace Metacode
                 
                 bool get_Platform( Mengine::Tags * _value ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8648,7 +8787,7 @@ namespace Metacode
                 
                 bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         *_value = _default;
                 
@@ -8663,7 +8802,7 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -8674,6 +8813,14 @@ namespace Metacode
                 public:
                     Meta_Resource();
                 
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_Tags = (1 <<0),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
                 public:
                     template<class C, class M>
                     void getm_Path( C _self, M _method ) const
@@ -8688,13 +8835,13 @@ namespace Metacode
                     
                     bool has_Tags() const
                     {
-                        return m_Tags_successful;
+                        return (m_flagNoRequiredAttribute & EMETA_Tags) != 0;
                     }
                     
                     template<class C, class M>
                     bool getm_Tags( C _self, M _method ) const
                     {
-                        if( m_Tags_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Tags) == 0 )
                         {
                             return false;
                         }
@@ -8706,7 +8853,7 @@ namespace Metacode
                     
                     bool get_Tags( Mengine::Tags * _value ) const
                     {
-                        if( m_Tags_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Tags) == 0 )
                         {
                             return false;
                         }
@@ -8718,7 +8865,7 @@ namespace Metacode
                     
                     bool getd_Tags( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                     {
-                        if( m_Tags_successful == false )
+                        if( (m_flagNoRequiredAttribute & EMETA_Tags) == 0 )
                         {
                             *_value = _default;
                     
@@ -8734,25 +8881,19 @@ namespace Metacode
                 
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                     void _preparationIncludes( uint32_t _id, uint32_t _count );
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
                 
                 public:
                 protected:
-                protected:
                     Mengine::FilePath m_Path;
-                    bool m_Tags_successful;
                     Mengine::Tags m_Tags;
                 };
                 
             protected:
-            protected:
-                bool m_Demand_successful;
                 bool m_Demand;
-                bool m_Ignored_successful;
                 bool m_Ignored;
-                bool m_Platform_successful;
                 Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Resource> VectorMeta_Resource;
@@ -8772,16 +8913,27 @@ namespace Metacode
             public:
                 Meta_Scripts();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Finalizer = (1 <<2),
+                    EMETA_Initializer = (1 <<1),
+                    EMETA_Module = (1 <<0),
+                    EMETA_Platform = (1 <<3),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Finalizer() const
                 {
-                    return m_Finalizer_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Finalizer) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Finalizer( C _self, M _method ) const
                 {
-                    if( m_Finalizer_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
                     {
                         return false;
                     }
@@ -8793,7 +8945,7 @@ namespace Metacode
                 
                 bool get_Finalizer( Mengine::ConstString * _value ) const
                 {
-                    if( m_Finalizer_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
                     {
                         return false;
                     }
@@ -8805,7 +8957,7 @@ namespace Metacode
                 
                 bool getd_Finalizer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
-                    if( m_Finalizer_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
                     {
                         *_value = _default;
                 
@@ -8818,13 +8970,13 @@ namespace Metacode
                 }
                 bool has_Initializer() const
                 {
-                    return m_Initializer_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Initializer) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Initializer( C _self, M _method ) const
                 {
-                    if( m_Initializer_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
                     {
                         return false;
                     }
@@ -8836,7 +8988,7 @@ namespace Metacode
                 
                 bool get_Initializer( Mengine::ConstString * _value ) const
                 {
-                    if( m_Initializer_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
                     {
                         return false;
                     }
@@ -8848,7 +9000,7 @@ namespace Metacode
                 
                 bool getd_Initializer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
-                    if( m_Initializer_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
                     {
                         *_value = _default;
                 
@@ -8861,13 +9013,13 @@ namespace Metacode
                 }
                 bool has_Module() const
                 {
-                    return m_Module_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Module) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Module( C _self, M _method ) const
                 {
-                    if( m_Module_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
                     {
                         return false;
                     }
@@ -8879,7 +9031,7 @@ namespace Metacode
                 
                 bool get_Module( Mengine::ConstString * _value ) const
                 {
-                    if( m_Module_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
                     {
                         return false;
                     }
@@ -8891,7 +9043,7 @@ namespace Metacode
                 
                 bool getd_Module( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
-                    if( m_Module_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
                     {
                         *_value = _default;
                 
@@ -8915,13 +9067,13 @@ namespace Metacode
                 
                 bool has_Platform() const
                 {
-                    return m_Platform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Platform( C _self, M _method ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8933,7 +9085,7 @@ namespace Metacode
                 
                 bool get_Platform( Mengine::Tags * _value ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -8945,7 +9097,7 @@ namespace Metacode
                 
                 bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         *_value = _default;
                 
@@ -8961,21 +9113,16 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_Finalizer_successful;
                 Mengine::ConstString m_Finalizer;
-                bool m_Initializer_successful;
                 Mengine::ConstString m_Initializer;
-                bool m_Module_successful;
                 Mengine::ConstString m_Module;
                 Mengine::FilePath m_Path;
-                bool m_Platform_successful;
                 Mengine::Tags m_Platform;
             };
             
@@ -8985,16 +9132,24 @@ namespace Metacode
             public:
                 Meta_Texts();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Platform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_Platform() const
                 {
-                    return m_Platform_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Platform( C _self, M _method ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -9006,7 +9161,7 @@ namespace Metacode
                 
                 bool get_Platform( Mengine::Tags * _value ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         return false;
                     }
@@ -9018,7 +9173,7 @@ namespace Metacode
                 
                 bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
                 {
-                    if( m_Platform_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
                     {
                         *_value = _default;
                 
@@ -9033,7 +9188,7 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -9066,13 +9221,10 @@ namespace Metacode
                 
                 public:
                 protected:
-                protected:
                     Mengine::FilePath m_Path;
                 };
                 
             protected:
-            protected:
-                bool m_Platform_successful;
                 Mengine::Tags m_Platform;
             public:
                 typedef Metabuf::Vector<Meta_Text> VectorMeta_Text;
@@ -9086,7 +9238,6 @@ namespace Metacode
                 VectorMeta_Text includes_Meta_Text;
             };
             
-        protected:
         protected:
         public:
             typedef Metabuf::Vector<Meta_Datas> VectorMeta_Datas;
@@ -9170,15 +9321,26 @@ namespace Metacode
             public:
                 Meta_Text();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_CharOffset = (1 <<2),
+                    EMETA_Font = (1 <<1),
+                    EMETA_LineOffset = (1 <<3),
+                    EMETA_Value = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
             public:
                 bool has_CharOffset() const
                 {
-                    return m_CharOffset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_CharOffset) != 0;
                 }
                 
                 float getd_CharOffset( float _default ) const
                 {
-                    if( m_CharOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_CharOffset) == 0 )
                     {
                         return _default;
                     }
@@ -9188,7 +9350,7 @@ namespace Metacode
                 
                 bool get_CharOffset( float * _value ) const
                 {
-                    if( m_CharOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_CharOffset) == 0 )
                     {
                         return false;
                     }
@@ -9201,7 +9363,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_CharOffset( C _self, M _method ) const
                 {
-                    if( m_CharOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_CharOffset) == 0 )
                     {
                         return false;
                     }
@@ -9213,7 +9375,7 @@ namespace Metacode
                 
                 bool getd_CharOffset( float * _value, const float & _default ) const
                 {
-                    if( m_CharOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_CharOffset) == 0 )
                     {
                         *_value = _default;
                 
@@ -9226,13 +9388,13 @@ namespace Metacode
                 }
                 bool has_Font() const
                 {
-                    return m_Font_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Font) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Font( C _self, M _method ) const
                 {
-                    if( m_Font_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Font) == 0 )
                     {
                         return false;
                     }
@@ -9244,7 +9406,7 @@ namespace Metacode
                 
                 bool get_Font( Mengine::ConstString * _value ) const
                 {
-                    if( m_Font_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Font) == 0 )
                     {
                         return false;
                     }
@@ -9256,7 +9418,7 @@ namespace Metacode
                 
                 bool getd_Font( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
                 {
-                    if( m_Font_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Font) == 0 )
                     {
                         *_value = _default;
                 
@@ -9280,12 +9442,12 @@ namespace Metacode
                 
                 bool has_LineOffset() const
                 {
-                    return m_LineOffset_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_LineOffset) != 0;
                 }
                 
                 float getd_LineOffset( float _default ) const
                 {
-                    if( m_LineOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_LineOffset) == 0 )
                     {
                         return _default;
                     }
@@ -9295,7 +9457,7 @@ namespace Metacode
                 
                 bool get_LineOffset( float * _value ) const
                 {
-                    if( m_LineOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_LineOffset) == 0 )
                     {
                         return false;
                     }
@@ -9308,7 +9470,7 @@ namespace Metacode
                 template<class C, class M>
                 bool getm_LineOffset( C _self, M _method ) const
                 {
-                    if( m_LineOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_LineOffset) == 0 )
                     {
                         return false;
                     }
@@ -9320,7 +9482,7 @@ namespace Metacode
                 
                 bool getd_LineOffset( float * _value, const float & _default ) const
                 {
-                    if( m_LineOffset_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_LineOffset) == 0 )
                     {
                         *_value = _default;
                 
@@ -9333,13 +9495,13 @@ namespace Metacode
                 }
                 bool has_Value() const
                 {
-                    return m_Value_successful;
+                    return (m_flagNoRequiredAttribute & EMETA_Value) != 0;
                 }
                 
                 template<class C, class M>
                 bool getm_Value( C _self, M _method ) const
                 {
-                    if( m_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Value) == 0 )
                     {
                         return false;
                     }
@@ -9351,7 +9513,7 @@ namespace Metacode
                 
                 bool get_Value( Mengine::WString * _value ) const
                 {
-                    if( m_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Value) == 0 )
                     {
                         return false;
                     }
@@ -9363,7 +9525,7 @@ namespace Metacode
                 
                 bool getd_Value( Mengine::WString * _value, const Mengine::WString & _default ) const
                 {
-                    if( m_Value_successful == false )
+                    if( (m_flagNoRequiredAttribute & EMETA_Value) == 0 )
                     {
                         *_value = _default;
                 
@@ -9379,25 +9541,19 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-            protected:
-                bool m_CharOffset_successful;
                 float m_CharOffset;
-                bool m_Font_successful;
                 Mengine::ConstString m_Font;
                 Mengine::ConstString m_Key;
-                bool m_LineOffset_successful;
                 float m_LineOffset;
-                bool m_Value_successful;
                 Mengine::WString m_Value;
             };
             
-        protected:
         protected:
         public:
             typedef Metabuf::Vector<Meta_Text> VectorMeta_Text;

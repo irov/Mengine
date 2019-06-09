@@ -11,18 +11,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct TTFAtlas
-    {
-        uint32_t width;
-        uint32_t height;
-        uint32_t channel;
-
-        typedef Vector<uint32_t> VectorFreeIndices;
-        VectorFreeIndices indices;
-
-        RenderTextureInterfacePtr texture;
-    };
-    //////////////////////////////////////////////////////////////////////////
     class TTFAtlasService
         : public ServiceBase<TTFAtlasServiceInterface>
     {
@@ -37,10 +25,19 @@ namespace Mengine
     public:
         RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
 
-    protected:
-        TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel );
-
     public:
+        struct TTFAtlas
+        {
+            uint32_t width;
+            uint32_t height;
+            uint32_t channel;
+
+            typedef Vector<uint32_t> VectorFreeIndices;
+            VectorFreeIndices indices;
+
+            RenderTextureInterfacePtr texture;
+        };
+
         typedef Vector<TTFAtlas> VectorAtlases;
         typedef Pair<uint32_t, uint32_t> AtlasKey;
         typedef Map<AtlasKey, VectorAtlases> MapAtlasess;
@@ -49,5 +46,8 @@ namespace Mengine
         uint32_t m_minAtlasPow;
         uint32_t m_maxAtlasPow;
         uint32_t m_maxAtlasWidth;
+
+    protected:
+        TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel );
     };
 }

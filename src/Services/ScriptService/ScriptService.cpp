@@ -297,9 +297,8 @@ namespace Mengine
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
 #ifdef MENGINE_DEBUG
-        My_observer_bind_call * bind_call = new My_observer_bind_call( this );
+        pybind::observer_bind_call * bind_call = new My_observer_bind_call( this );
         m_kernel->set_observer_bind_call( bind_call );
-        m_pybind_bind_call = bind_call;
 #endif
 
         DataflowPYPtr dataflowPY = Helper::makeFactorableUnique<DataflowPY>();
@@ -372,6 +371,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
         delete observer_bind_call;
+        m_kernel->set_observer_bind_call( nullptr );
 
         m_debugCallFunctions.clear();
 #endif
@@ -404,8 +404,6 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
         m_factoryScriptModule = nullptr;
-
-        delete static_cast<My_observer_bind_call *>(m_pybind_bind_call);
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::_stopService()

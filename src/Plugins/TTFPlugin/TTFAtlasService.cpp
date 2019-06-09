@@ -99,7 +99,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel )
+    TTFAtlasService::TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel )
     {
         uint32_t hw_width = Helper::getTexturePOW2( _width );
         uint32_t hw_height = Helper::getTexturePOW2( _height );

@@ -109,8 +109,6 @@ namespace Mengine
         bool m_initializeModules;
 
 #ifdef MENGINE_DEBUG
-        pybind::observer_bind_call * m_pybind_bind_call;
-
         struct DebugCallDesc
         {
             ConstString className;

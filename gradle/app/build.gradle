@@ -24,10 +24,14 @@ android {
     defaultConfig {
         if (findProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
+            print 'ANDROID_APP_ID = '
         } else if (System.getenv('MENGINE_ANDROID_APP_ID')) {
             applicationId System.getenv('MENGINE_ANDROID_APP_ID')
+            print 'MENGINE_ANDROID_APP_ID = '
         } else {
-            applicationId "org.Mengine.Build.MonkeyJob"
+            applicationId "org.Mengine.EvilMonkey"
+            print 'HARDCODE ANDROID_APP_ID = '
+            println applicationId
         }
         
         print 'ANDROID_APP_ID = '

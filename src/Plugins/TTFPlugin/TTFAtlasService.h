@@ -5,6 +5,7 @@
 #include "Kernel/ServiceBase.h"
 
 #include "Config/Vector.h"
+#include "Config/Pair.h"
 #include "Config/Map.h"
 
 namespace Mengine
@@ -41,7 +42,7 @@ namespace Mengine
 
     public:
         typedef Vector<TTFAtlas> VectorAtlases;
-        typedef std::pair<uint32_t, uint32_t> AtlasKey;
+        typedef Pair<uint32_t, uint32_t> AtlasKey;
         typedef Map<AtlasKey, VectorAtlases> MapAtlasess;
         MapAtlasess m_atlasess[3];
 

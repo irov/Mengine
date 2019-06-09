@@ -21,6 +21,7 @@
 #include "pybind/pybind.hpp"
 
 #include "Config/Map.h"
+#include "Config/Vector.h"
 
 #include <cstdarg>
 
@@ -74,12 +75,14 @@ namespace Mengine
     public:
         bool stringize( PyObject * _object, ConstString & _str ) override;
 
+#ifdef MENGINE_DEBUG
     public:
-        const ThreadMutexInterfacePtr & getMutex() const;
+        void addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter );
+        void removeLogFunction( const ConstString & _className, const ConstString & _functionName );
+        void debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds );
+#endif
 
     protected:
-        ThreadMutexInterfacePtr m_mutex;
-
         pybind::kernel_interface * m_kernel;
 
         ScriptModuleFinderPtr m_moduleFinder;
@@ -104,5 +107,21 @@ namespace Mengine
         FactoryPtr m_factoryScriptModule;
 
         bool m_initializeModules;
+
+#ifdef MENGINE_DEBUG
+        pybind::observer_bind_call * m_pybind_bind_call;
+
+        struct DebugCallDesc
+        {
+            ConstString className;
+            ConstString functionName;
+
+            pybind::object filter;
+            pybind::args args;
+        };
+
+        typedef Vector<DebugCallDesc> VectorDebugCallFunctions;
+        VectorDebugCallFunctions m_debugCallFunctions;
+#endif
     };
 }

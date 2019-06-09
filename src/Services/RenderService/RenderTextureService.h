@@ -9,6 +9,7 @@
 
 #include "Kernel/Factory.h"
 
+#include "Config/Pair.h"
 #include "Config/Map.h"
 
 namespace Mengine
@@ -58,7 +59,7 @@ namespace Mengine
         void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
 
     protected:
-        typedef std::pair<ConstString, FilePath> MapRenderTextureKey;
+        typedef Pair<ConstString, FilePath> MapRenderTextureKey;
         typedef Map<MapRenderTextureKey, RenderTextureInterface *> MapRenderTextureEntry;
         MapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 

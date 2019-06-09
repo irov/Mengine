@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Scheduler::event( float _delay, const ScheduleEventInterfacePtr & _event )
     {
-        MENGINE_ASSERTION( _event != nullptr, "event '%s' delay '%f' event is nullptr"
+        MENGINE_ASSERTION( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
             , this->getName().c_str()
             , _delay
         );
@@ -145,7 +145,7 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, desc ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::remove not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule '%d'"
                 , _id
             );
 
@@ -165,7 +165,7 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, desc ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::remove not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule '%d'"
                 , _id
             );
 
@@ -174,7 +174,7 @@ namespace Mengine
 
         if( this->removeSchedule_( *desc ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::remove not alredy remove or complete '%d'"
+            LOGGER_ERROR( "not alredy remove or complete '%d'"
                 , _id
             );
 
@@ -186,27 +186,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::removeAll()
     {
-        for( ListSchedules::iterator
-            it = m_schedules.begin(),
-            it_end = m_schedules.end();
-            it != it_end;
-            ++it )
+        for( ScheduleEventDesc & event : m_schedules )
         {
-            ScheduleEventDesc & event = *it;
-
             this->removeSchedule_( event );
         }
 
         ListSchedules schedulesAdd = m_schedulesAdd;
 
-        for( ListSchedules::iterator
-            it = schedulesAdd.begin(),
-            it_end = schedulesAdd.end();
-            it != it_end;
-            ++it )
+        for( ScheduleEventDesc & event : schedulesAdd )
         {
-            ScheduleEventDesc & event = *it;
-
             this->removeSchedule_( event );
         }
     }
@@ -265,14 +253,8 @@ namespace Mengine
         ListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), []( const ScheduleEventDesc & _event ) { return _event.dead; } );
         m_schedules.erase( it_erase, m_schedules.end() );
 
-        for( ListSchedules::iterator
-            it = m_schedules.begin(),
-            it_end = m_schedules.end();
-            it != it_end;
-            ++it )
+        for( ScheduleEventDesc & desc : m_schedules )
         {
-            ScheduleEventDesc & desc = *it;
-
             if( desc.dead == true )
             {
                 continue;
@@ -383,7 +365,7 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::freeze not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule '%d'"
                 , _id
             );
 
@@ -401,7 +383,7 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::isFreeze not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule '%d'"
                 , _id
             );
 
@@ -427,7 +409,7 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::time not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule '%d'"
                 , _id
             );
 
@@ -445,7 +427,7 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR( "ScheduleManager::time not found shedule '%d'"
+            LOGGER_ERROR( "not found shedule '%d'"
                 , _id
             );
 

@@ -15,6 +15,7 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -584,6 +585,30 @@ namespace Mengine
             }
 
             return bb;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_hasOption( const ConstString & _option )
+        {
+            bool exist = OPTIONS_SERVICE()
+                ->hasOption( _option.c_str() );
+
+            return exist;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const Char * s_getOptionValue( const ConstString & _option )
+        {
+            const Char * value = OPTIONS_SERVICE()
+                ->getOptionValue( _option.c_str() );
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_getOptionUInt32( const ConstString & _option )
+        {
+            uint32_t value = OPTIONS_SERVICE()
+                ->getOptionUInt32( _option.c_str() );
+
+            return value;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setCursorPosition( const mt::vec2f & _pos )
@@ -3676,6 +3701,11 @@ namespace Mengine
         pybind::def_functor( _kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );
 
         pybind::def_functor( _kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );
+
+        pybind::def_functor( _kernel, "hasOption", helperScriptMethod, &HelperScriptMethod::s_hasOption );
+        pybind::def_functor( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValue );
+        pybind::def_functor( _kernel, "getOptionUInt32", helperScriptMethod, &HelperScriptMethod::s_getOptionUInt32 );
+        
 
         m_implement = helperScriptMethod;
 

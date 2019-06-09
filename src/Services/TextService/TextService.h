@@ -14,6 +14,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Pool.h"
 
+#include "Config/Pair.h"
 #include "Config/Map.h"
 #include "Config/Typedef.h"
 
@@ -93,7 +94,7 @@ namespace Mengine
         typedef Map<ConstString, TextFontInterfacePtr> MapTextFont;
         MapTextFont m_fonts;
 
-        typedef std::pair<ConstString, ConstString> PairAliasKey;
+        typedef Pair<ConstString, ConstString> PairAliasKey;
 
         typedef Map<PairAliasKey, ConstString> MapTextAliases;
         MapTextAliases m_aliases;

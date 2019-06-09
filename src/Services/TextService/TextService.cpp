@@ -822,6 +822,8 @@ namespace Mengine
         PairAliasKey key = std::make_pair( _environment, _alias );
 
         m_aliases[key] = _key;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
     void TextService::removeTextAlias( const ConstString & _environment, const ConstString& _alias )
@@ -867,7 +869,7 @@ namespace Mengine
 
         m_aliasesArguments[key] = _arguments;
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _environment, _alias );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
     void TextService::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )

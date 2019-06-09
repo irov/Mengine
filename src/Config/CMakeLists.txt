@@ -14,6 +14,7 @@ src
     Vector.h
     Deque.h
     Map.h
+    Pair.h
     UnorderedMap.h
     List.h
     Tuple.h

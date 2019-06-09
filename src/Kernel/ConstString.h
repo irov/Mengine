@@ -59,14 +59,7 @@ namespace Mengine
 
         inline bool empty() const
         {
-            if( m_holder == nullptr )
-            {
-                return true;
-            }
-
-            const bool holder_empty = m_holder->empty();
-
-            return holder_empty;
+            return m_holder == none().m_holder;
         }
 
         inline hash_type hash() const

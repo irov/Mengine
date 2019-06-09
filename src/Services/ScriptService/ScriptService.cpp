@@ -80,9 +80,10 @@ namespace Mengine
             : public pybind::observer_bind_call
         {
         public:
-            My_observer_bind_call()
+            My_observer_bind_call( ScriptService * _scriptService )
+                : m_scriptService( _scriptService )
 #ifdef MENGINE_WINDOWS_DEBUG
-                : m_prev_handler( nullptr )
+                , m_prev_handler( nullptr )
                 , m_prev_mode( 0 )
                 , m_prev_handler_count( 0 )
 #endif
@@ -107,6 +108,9 @@ namespace Mengine
                     ->getCountMessage( LM_ERROR );
 
                 m_counts.emplace_back( count );
+
+                m_scriptService
+                    ->debugCallFunction( _className, _functionName, _args, _kwds );
 
 #ifdef MENGINE_WINDOWS_DEBUG
                 if( m_prev_handler_count++ == 0 )
@@ -190,6 +194,8 @@ namespace Mengine
             }
 
         protected:
+            ScriptService * m_scriptService;
+
             typedef Vector<uint32_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
 
@@ -226,11 +232,6 @@ namespace Mengine
     bool ScriptService::_initializeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );
-
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
-
-        m_mutex = mutex;
 
 #if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         int crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
@@ -296,7 +297,9 @@ namespace Mengine
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
 #ifdef MENGINE_DEBUG
-        m_kernel->set_observer_bind_call( new My_observer_bind_call() );
+        My_observer_bind_call * bind_call = new My_observer_bind_call( this );
+        m_kernel->set_observer_bind_call( bind_call );
+        m_pybind_bind_call = bind_call;
 #endif
 
         DataflowPYPtr dataflowPY = Helper::makeFactorableUnique<DataflowPY>();
@@ -356,6 +359,11 @@ namespace Mengine
 
         m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
 
+#ifdef MENGINE_DEBUG
+        pybind::def_functor( m_kernel, "addLogFunction", this, &ScriptService::addLogFunction );
+        pybind::def_functor( m_kernel, "removeLogFunction", this, &ScriptService::addLogFunction );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -364,6 +372,8 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
         delete observer_bind_call;
+
+        m_debugCallFunctions.clear();
 #endif
 
         m_kernel->remove_module_finder();
@@ -391,11 +401,11 @@ namespace Mengine
 
         m_bootstrapperModules.clear();
 
-        m_mutex = nullptr;
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
         m_factoryScriptModule = nullptr;
+
+        delete static_cast<My_observer_bind_call *>(m_pybind_bind_call);
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::_stopService()
@@ -767,8 +777,78 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ThreadMutexInterfacePtr & ScriptService::getMutex() const
+#ifdef MENGINE_DEBUG
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter )
     {
-        return m_mutex;
+        DebugCallDesc desc;
+        desc.className = _className;
+        desc.functionName = _functionName;
+        desc.filter = _filter;
+
+        m_debugCallFunctions.emplace_back( desc );
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::removeLogFunction( const ConstString & _className, const ConstString & _functionName )
+    {
+        VectorDebugCallFunctions::iterator it_found = std::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
+        {
+            if( _desc.className != _className )
+            {
+                return false;
+            }
+
+            if( _desc.functionName != _functionName )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        m_debugCallFunctions.erase( it_found );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+    {
+        for( const DebugCallDesc & _desc : m_debugCallFunctions )
+        {
+            if( _desc.className != _className )
+            {
+                continue;
+            }
+
+            if( _desc.functionName != _functionName )
+            {
+                continue;
+            }
+
+            if( _desc.filter.is_callable() == true )
+            {
+                PyObject * ret_filter = m_kernel->ask_native( _desc.filter.ptr(), _args );
+
+                pybind::object scope_ret_filter( m_kernel, ret_filter, pybind::borrowed );
+
+                if( m_kernel->bool_check( ret_filter ) != true || m_kernel->is_true( ret_filter ) != true )
+                {
+                    continue;
+                }
+            }
+
+            if( _desc.className.empty() == true )
+            { 
+                LOGGER_STATISTIC( "Debug call '%s' args '%s' kwds '%s':"
+                    , _functionName
+                    , m_kernel->object_repr( _args )
+                    , m_kernel->object_repr( _kwds )
+                );
+
+                static Char traceback[4096];
+                m_kernel->get_traceback( traceback, 4096 );
+                LOGGER_STATISTIC( traceback );
+            }            
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+#endif
 }

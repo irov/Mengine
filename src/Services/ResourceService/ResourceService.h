@@ -10,6 +10,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Vector.h"
+#include "Config/Pair.h"
 #include "Config/Map.h"
 
 namespace Mengine
@@ -60,7 +61,7 @@ namespace Mengine
         typedef Hashtable<ConstString, ResourcePtr> HashtableResources;
         HashtableResources m_resources;
 
-        typedef std::pair<ConstString, ConstString> ResourceCacheKey;
+        typedef Pair<ConstString, ConstString> ResourceCacheKey;
         typedef Vector<ResourcePtr> VectorResources;
         typedef Map<ResourceCacheKey, VectorResources> MapResourceCache;
         MapResourceCache m_resourcesCache;

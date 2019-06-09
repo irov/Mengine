@@ -7,6 +7,7 @@
 
 #include "Kernel/Factory.h"
 
+#include "Config/Pair.h"
 #include "Config/Map.h"
 
 namespace Mengine
@@ -72,7 +73,7 @@ namespace Mengine
         FactoryPtr m_factoryThreadTaskPrefetchDataflow;
         FactoryPtr m_factoryThreadTaskPrefetchStream;
 
-        typedef std::pair<ConstString, FilePath> KeyPrefetchReceiver;
+        typedef Pair<ConstString, FilePath> KeyPrefetchReceiver;
         typedef Map<KeyPrefetchReceiver, PrefetchReceiver> MapPrefetchReceiver;
         MapPrefetchReceiver m_prefetchReceiver;
     };

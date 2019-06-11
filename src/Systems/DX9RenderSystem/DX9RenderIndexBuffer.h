@@ -4,7 +4,7 @@
 
 #include "DX9RenderResourceHandler.h"
 
-#include <d3d9.h>
+#include "d3d9.h"
 
 namespace Mengine
 {

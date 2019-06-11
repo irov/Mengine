@@ -121,6 +121,10 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     public:
+        bool makeDateTime( Char * _out, size_t _capacity ) const override;
+        bool makeDateTimeW( WChar * _out, size_t _capacity ) const override;
+
+    public:
         bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
 

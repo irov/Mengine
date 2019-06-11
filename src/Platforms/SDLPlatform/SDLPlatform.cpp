@@ -31,6 +31,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include "Config/Stringstream.h"
+
 #if defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_IOS)
 #	include "TargetConditionals.h"
 #endif
@@ -41,7 +43,6 @@
 #include <ctime>
 #include <algorithm>
 
-#include <sstream>
 #include <iomanip>
 
 #include <sys/stat.h>
@@ -1174,6 +1175,57 @@ namespace Mengine
 #else
         return 0U;
 #endif		
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::makeDateTime( Char * _out, size_t _capacity ) const
+    {
+        std::time_t ctTime;
+        std::time( &ctTime );
+        std::tm* sTime = std::localtime( &ctTime );
+
+        Stringstream ss;
+        ss << 1900 + sTime->tm_year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (sTime->tm_mon + 1)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_mday
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_min
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_sec;
+
+        String str_date = ss.str();
+
+        if( str_date.size() >= _capacity )
+        {
+            return false;
+        }
+
+        strcpy( _out, str_date.c_str() );
+
+        return true;
+    }
+    bool SDLPlatform::makeDateTimeW( WChar * _out, size_t _capacity ) const
+    {
+        std::time_t ctTime;
+        std::time( &ctTime );
+        std::tm* sTime = std::localtime( &ctTime );
+
+        WStringstream ss;
+        ss << 1900 + sTime->tm_year
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << (sTime->tm_mon + 1)
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_mday
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_hour
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_min
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_sec;
+
+        WString str_date = ss.str();
+
+        if( str_date.size() >= _capacity )
+        {
+            return false;
+        }
+
+        wcscpy( _out, str_date.c_str() );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )

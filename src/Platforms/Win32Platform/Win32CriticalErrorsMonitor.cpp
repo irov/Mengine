@@ -1,14 +1,13 @@
 #include "Win32CriticalErrorsMonitor.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-
-#include "Kernel/Date.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
 
-#include "stdex/stack.h"
-
 #include "Environment/Windows/WindowsIncluder.h"
+
+#include "stdex/stack.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -112,22 +111,11 @@ namespace Mengine
         return EXCEPTION_EXECUTE_HANDLER;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32CriticalErrorsMonitor::run( const Char * _userPath )
+    void Win32CriticalErrorsMonitor::run( const Char * _dumpPath )
     {
-        String dumpPath;
-        dumpPath += _userPath;
-        dumpPath += "Dump";
-        dumpPath += "_";
-
-        String date;
-        Helper::makeDateTime( date );
-
-        dumpPath += date;
-        dumpPath += ".dmp";
-
         g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
 
-        Helper::utf8ToUnicode( dumpPath, g_crashDumpExceptionHandlerData->dumpPath );
+        Helper::utf8ToUnicode( _dumpPath, g_crashDumpExceptionHandlerData->dumpPath );
 
         ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
         ::SetUnhandledExceptionFilter( &s_exceptionHandler );

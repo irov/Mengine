@@ -5,14 +5,13 @@
 #include "DX9RenderResourceHandler.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Factory.h"
 
 #include "Config/Vector.h"
 
 #include "stdex/intrusive_list.h"
 
-#include <d3d9.h>
+#include "d3d9.h"
 
 namespace Mengine
 {

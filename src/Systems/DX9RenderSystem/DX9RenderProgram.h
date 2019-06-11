@@ -6,7 +6,7 @@
 #include "DX9RenderFragmentShader.h"
 #include "DX9RenderVertexAttribute.h"
 
-#include <d3d9.h>
+#include "d3d9.h"
 
 namespace Mengine
 {

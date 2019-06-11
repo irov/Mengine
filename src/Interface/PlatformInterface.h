@@ -106,6 +106,10 @@ namespace Mengine
         virtual uint64_t getFileTime( const Char * _path ) const = 0;
 
     public:
+        virtual bool makeDateTime( Char * _out, size_t _capacity ) const = 0;
+        virtual bool makeDateTimeW( WChar * _out, size_t _capacity ) const = 0;
+
+    public:
         virtual bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;
         virtual bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;
 

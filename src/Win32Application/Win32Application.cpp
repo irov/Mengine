@@ -34,7 +34,6 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/StringArguments.h"
-#include "Kernel/Date.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -447,8 +446,9 @@ namespace Mengine
             return true;
         }
 
-        WString date;
-        Helper::makeDateTimeW( date );
+        WChar date[1024] = { 0 };
+        PLATFORM_SERVICE()
+            ->makeDateTimeW( date, 1024 );
 
         WString unicode_logFilename;
         unicode_logFilename += L"Game";

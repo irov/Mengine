@@ -44,7 +44,6 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
-#include "Kernel/Date.h"
 #include "Kernel/Document.h"
 
 #include "SDLMessageBoxLogger.h"

@@ -314,9 +314,6 @@ Core
 	FontBase.h
 	FontBase.cpp
     
-    Date.h
-    Date.cpp
-    
     Exception.h
     Visitor.h
     

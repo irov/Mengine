@@ -6,7 +6,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
-#include "Kernel/Date.h"
 #include "Kernel/Document.h"
 
 namespace Mengine
@@ -29,8 +28,10 @@ namespace Mengine
 
         utf8_logFilename += "_";
 
-        String date;
-        Helper::makeDateTime( date );
+        Char date[1024] = { 0 };
+        PLATFORM_SERVICE()
+            ->makeDateTime( date, 1024 );
+        
         utf8_logFilename += date;
 
         utf8_logFilename += ".log";

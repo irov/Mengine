@@ -334,9 +334,9 @@ namespace Mengine
         , int32_t _FSAAQuality
         , uint32_t _MultiSampleCount )
     {
-        MENGINE_DEBUG( _bits );
-        MENGINE_DEBUG( _FSAAType );
-        MENGINE_DEBUG( _FSAAQuality );
+        MENGINE_UNUSED( _bits );
+        MENGINE_UNUSED( _FSAAType );
+        MENGINE_UNUSED( _FSAAQuality );
 
         m_windowResolution = _resolution;
 

@@ -14,7 +14,6 @@
 #include "Win32CriticalErrorsMonitor.h"
 
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/Date.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
@@ -22,6 +21,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
+
+#include "Config/Stringstream.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -35,12 +36,12 @@
 
 #include <cstdio>
 #include <clocale>
-
-#include <errno.h>
-
 #include <ctime>
+#include <iomanip>
 #include <algorithm>
 #include <functional>
+
+#include <errno.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
@@ -95,7 +96,18 @@ namespace Mengine
                 Char userPath[MENGINE_MAX_PATH] = { 0 };
                 this->getUserPath( userPath );
 
-                Win32CriticalErrorsMonitor::run( userPath );
+                String dumpPath;
+                dumpPath += userPath;
+                dumpPath += "Dump";
+                dumpPath += "_";
+
+                Char date[1024] = { 0 };
+                this->makeDateTime( date, 1024 );
+
+                dumpPath += date;
+                dumpPath += ".dmp";
+
+                Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
             }
         }
 #endif
@@ -300,8 +312,9 @@ namespace Mengine
         processDumpPath += "Process";
         processDumpPath += "_";
 
-        String date;
-        Helper::makeDateTime( date );
+        Char date[1024] = { 0 };
+        PLATFORM_SERVICE()
+            ->makeDateTime( date, 1024 );
 
         processDumpPath += date;
         processDumpPath += ".dmp";
@@ -1948,6 +1961,58 @@ namespace Mengine
         MENGINE_UNUSED( _path );
 
         return 0U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::makeDateTime( Char * _out, size_t _capacity ) const
+    {
+        std::time_t ctTime;
+        std::time( &ctTime );
+        std::tm* sTime = std::localtime( &ctTime );
+
+        Stringstream ss;
+        ss << 1900 + sTime->tm_year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (sTime->tm_mon + 1)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_mday
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_min
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_sec;
+
+        String str_date = ss.str();
+
+        if( str_date.size() >= _capacity )
+        {
+            return false;
+        }
+
+        strcpy( _out, str_date.c_str() );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::makeDateTimeW( WChar * _out, size_t _capacity ) const
+    {
+        std::time_t ctTime;
+        std::time( &ctTime );
+        std::tm* sTime = std::localtime( &ctTime );
+
+        WStringstream ss;
+        ss << 1900 + sTime->tm_year
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << (sTime->tm_mon + 1)
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_mday
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_hour
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_min
+            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_sec;
+
+        WString str_date = ss.str();
+
+        if( str_date.size() >= _capacity )
+        {
+            return false;
+        }
+
+        wcscpy( _out, str_date.c_str() );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )

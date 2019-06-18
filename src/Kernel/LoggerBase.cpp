@@ -55,4 +55,4 @@ namespace Mengine
     void LoggerBase::flush()
     {
     }
-}	// namespace Mengine
+}

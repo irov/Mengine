@@ -40,7 +40,7 @@ namespace Mengine
 
     public:
         virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
-        virtual TextFontInterfacePtr getFont( const ConstString & _name ) const = 0;
+        virtual const TextFontInterfacePtr & getFont( const ConstString & _name ) const = 0;
 
     public:
         virtual void setTextAlias( const ConstString & _environment, const ConstString& _alias, const ConstString& _key ) = 0;

@@ -151,8 +151,8 @@ namespace Mengine
         m_renderObjects.clear();
         m_renderBatches.clear();
         m_renderPasses.clear();
-        m_debugVertices.clear();
-        m_debugIndices.clear();
+        m_debugRenderVertices.clear();
+        m_debugRenderIndices.clear();
 
         m_cacheRenderBatches.clear();
 
@@ -490,6 +490,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::endScene()
     {
+
+#ifndef MENGINE_MASTER_RELEASE
+        for( const DebugRenderObject & dro : m_debugRenderObjects )
+        {
+            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true );
+        }
+
+        m_debugRenderObjects.clear();
+#endif
+
         this->flushRender_();
 
         m_renderSystem->endScene();
@@ -651,7 +661,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::renderObject_( RenderObject * _renderObject )
     {
-        if( _renderObject->dipIndiciesNum == 0 )
+        if( _renderObject->dipIndiciesCount == 0 )
         {
             IntrusivePtrBase::intrusive_ptr_release( _renderObject->material );
 
@@ -679,9 +689,9 @@ namespace Mengine
             primitiveType,
             _renderObject->baseVertexIndex,
             _renderObject->minIndex,
-            _renderObject->dipVerticesNum,
+            _renderObject->dipVerticesCount,
             _renderObject->startIndex,
-            _renderObject->dipIndiciesNum
+            _renderObject->dipIndiciesCount
         );
 
         IntrusivePtrBase::intrusive_ptr_release( _renderObject->material );
@@ -731,8 +741,8 @@ namespace Mengine
             batch->ibPos = 0U;
         }
 
-        m_debugVertices.clear();
-        m_debugIndices.clear();
+        m_debugRenderVertices.clear();
+        m_debugRenderIndices.clear();
 
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
@@ -1173,9 +1183,6 @@ namespace Mengine
         , const RenderVertexAttributeInterfacePtr & _vertexAttribute
         , const RenderProgramVariableInterfacePtr & _programVariable )
     {
-        //_batch->vertexCount += _vertexCount;
-        //_batch->indexCount += _indexCount;
-
         if( this->testRenderPass_( _context, _vertexBuffer, _indexBuffer, _vertexAttribute, _programVariable ) == true )
         {
             RenderPass * pass = m_poolRenderPass.createT();
@@ -1281,8 +1288,8 @@ namespace Mengine
         ro.minIndex = 0;
         ro.startIndex = 0;
 
-        ro.dipVerticesNum = _vertexCount;
-        ro.dipIndiciesNum = _indexCount;
+        ro.dipVerticesCount = _vertexCount;
+        ro.dipIndiciesCount = _indexCount;
 
         ro.baseVertexIndex = 0;
 
@@ -1449,8 +1456,8 @@ namespace Mengine
         ro.startIndex = 0;
         ro.baseVertexIndex = 0;
 
-        ro.dipVerticesNum = 0;
-        ro.dipIndiciesNum = 0;
+        ro.dipVerticesCount = 0;
+        ro.dipIndiciesCount = 0;
         ro.flags = RENDER_OBJECT_FLAG_NONE;
 
         if( _debug == true )
@@ -1459,17 +1466,49 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::addRenderQuad( const RenderContext * _context
+    void RenderService::addDebugRenderObject( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug )
+        , const RenderIndex * _indices, uint32_t _indexCount )
     {
-        uint32_t indicesNum = (_vertexCount / 4) * 6;
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr" );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr" );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr" );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr" );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr" );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr" );
 
-        if( indicesNum >= m_indicesQuad.size() )
+        if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
+        {
+            LOGGER_ERROR( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
+                , _vertexCount
+                , MENGINE_RENDER_VERTEX_MAX_BATCH
+            );
+
+            return;
+        }
+
+        DebugRenderObject dro;
+        dro.context = *_context;
+        dro.material = _material;
+        dro.vertices = _vertices;
+        dro.vertexCount = _vertexCount;
+        dro.indices = _indices;
+        dro.indexCount = _indexCount;
+
+        m_debugRenderObjects.push_back( dro );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::addDebugRenderQuad( const RenderContext * _context
+        , const RenderMaterialInterfacePtr & _material
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount )
+    {
+        uint32_t indicesCount = (_vertexCount / 4) * 6;
+
+        if( indicesCount >= m_indicesQuad.size() )
         {
             LOGGER_ERROR( "count %d > max count %d"
-                , indicesNum
+                , indicesCount
                 , m_indicesQuad.size()
             );
 
@@ -1478,7 +1517,29 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addDebugRenderObject( _context, _material, _vertices, _vertexCount, indices, indicesCount );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::addRenderQuad( const RenderContext * _context
+        , const RenderMaterialInterfacePtr & _material
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount
+        , const mt::box2f * _bb, bool _debug )
+    {
+        uint32_t indicesCount = (_vertexCount / 4) * 6;
+
+        if( indicesCount >= m_indicesQuad.size() )
+        {
+            LOGGER_ERROR( "count %d > max count %d"
+                , indicesCount
+                , m_indicesQuad.size()
+            );
+
+            return;
+        }
+
+        RenderIndex * indices = m_indicesQuad.buff();
+
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::addRenderLine( const RenderContext * _context
@@ -1486,12 +1547,12 @@ namespace Mengine
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
     {
-        uint32_t indicesNum = _vertexCount;
+        uint32_t indicesCount = _vertexCount;
 
-        if( indicesNum >= m_indicesLine.size() )
+        if( indicesCount >= m_indicesLine.size() )
         {
             LOGGER_ERROR( "count %d > max count %d"
-                , indicesNum
+                , indicesCount
                 , m_indicesLine.size()
             );
 
@@ -1500,13 +1561,13 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesLine.buff();
 
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( uint32_t _count )
     {
-        m_debugVertices.emplace_back( VectorRenderVertex2D() );
-        VectorRenderVertex2D & vertices_array = m_debugVertices.back();
+        m_debugRenderVertices.emplace_back( VectorRenderVertex2D() );
+        VectorRenderVertex2D & vertices_array = m_debugRenderVertices.back();
         vertices_array.resize( _count );
 
         return vertices_array;
@@ -1514,8 +1575,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     VectorRenderIndex & RenderService::getDebugRenderIndex( uint32_t _count )
     {
-        m_debugIndices.emplace_back( VectorRenderIndex() );
-        VectorRenderIndex & indices_array = m_debugIndices.back();
+        m_debugRenderIndices.emplace_back( VectorRenderIndex() );
+        VectorRenderIndex & indices_array = m_debugRenderIndices.back();
         indices_array.resize( _count );
 
         return indices_array;
@@ -1663,13 +1724,13 @@ namespace Mengine
             vbPos += ro_bath_begin->vertexCount;
             ibPos += ro_bath_begin->indexCount;
 
-            _ro->dipVerticesNum += ro_bath_begin->vertexCount;
-            _ro->dipIndiciesNum += ro_bath_begin->indexCount;
+            _ro->dipVerticesCount += ro_bath_begin->vertexCount;
+            _ro->dipIndiciesCount += ro_bath_begin->indexCount;
 
             IntrusivePtrBase::intrusive_ptr_release( ro_bath_begin->material );
 
-            ro_bath_begin->dipVerticesNum = 0;
-            ro_bath_begin->dipIndiciesNum = 0;
+            ro_bath_begin->dipVerticesCount = 0;
+            ro_bath_begin->dipIndiciesCount = 0;
             ro_bath_begin->vertexCount = 0;
             ro_bath_begin->indexCount = 0;
 
@@ -1747,13 +1808,13 @@ namespace Mengine
                 break;
             }
 
-            _ro->dipVerticesNum += ro_bath->vertexCount;
-            _ro->dipIndiciesNum += ro_bath->indexCount;
+            _ro->dipVerticesCount += ro_bath->vertexCount;
+            _ro->dipIndiciesCount += ro_bath->indexCount;
 
             IntrusivePtrBase::intrusive_ptr_release( ro_bath->material );
 
-            ro_bath->dipVerticesNum = 0;
-            ro_bath->dipIndiciesNum = 0;
+            ro_bath->dipVerticesCount = 0;
+            ro_bath->dipIndiciesCount = 0;
 
             vbPos += ro_bath->vertexCount;
             ibPos += ro_bath->indexCount;
@@ -1793,8 +1854,8 @@ namespace Mengine
                 break;
             }
 
-            ro->dipVerticesNum = ro->vertexCount;
-            ro->dipIndiciesNum = ro->indexCount;
+            ro->dipVerticesCount = ro->vertexCount;
+            ro->dipIndiciesCount = ro->indexCount;
 
             vbPos += ro->vertexCount;
             ibPos += ro->indexCount;
@@ -1962,11 +2023,11 @@ namespace Mengine
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const Viewport & _viewport )
+    void RenderService::calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexCount, const Viewport & _viewport )
     {
-        uint32_t triangleNum2 = (_vertexNum / 4);
+        uint32_t triangleCount2 = (_vertexCount / 4);
 
-        for( uint32_t i = 0; i != triangleNum2; ++i )
+        for( uint32_t i = 0; i != triangleCount2; ++i )
         {
             const RenderVertex2D & v0 = _vertex[i * 4 + 0];
             const RenderVertex2D & v1 = _vertex[i * 4 + 1];
@@ -2002,14 +2063,14 @@ namespace Mengine
             m_debugInfo.fillrate += tric2_area;
         }
 
-        m_debugInfo.triangle += triangleNum2 * 2;
+        m_debugInfo.triangle += triangleCount2 * 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum, const RenderIndex * _indices, uint32_t _indicesNum, const Viewport & _viewport )
+    void RenderService::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _vertexCount, const RenderIndex * _indices, uint32_t _indicesCount, const Viewport & _viewport )
     {
-        MENGINE_UNUSED( _vertexNum );
+        MENGINE_UNUSED( _vertexCount );
 
-        for( uint32_t i = 0; i != (_indicesNum / 3); ++i )
+        for( uint32_t i = 0; i != (_indicesCount / 3); ++i )
         {
             RenderIndex i0 = _indices[i + 0];
             RenderIndex i1 = _indices[i + 1];

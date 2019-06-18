@@ -270,7 +270,7 @@ namespace Mengine
                 }break;
             }
 
-            result.push_back( (char32_t)code );
+            result.push_back( (Char32)code );
         }
 
         return result;

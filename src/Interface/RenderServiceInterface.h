@@ -85,6 +85,16 @@ namespace Mengine
             , const mt::box2f * _bb, bool _debug ) = 0;
 
     public:
+        virtual void addDebugRenderObject( const RenderContext * _context
+            , const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
+            , const RenderIndex * _indices, uint32_t _indexCount ) = 0;
+
+        virtual void addDebugRenderQuad( const RenderContext * _context
+            , const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount ) = 0;
+
+    public:
         virtual VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) = 0;
         virtual VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) = 0;
 

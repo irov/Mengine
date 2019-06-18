@@ -68,7 +68,7 @@ namespace boost
                 }
             };
 
-        } // namespace traits
+        }
     }
 }
 

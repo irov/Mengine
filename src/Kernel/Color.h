@@ -284,4 +284,4 @@ namespace Mengine
 
         return c;
     }
-} // namespace
+}

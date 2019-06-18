@@ -2,11 +2,12 @@
 
 #include "Kernel/Node.h"
 
+#include <algorithm>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Motor::Motor()
-        : m_node( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -14,26 +15,31 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Motor::setNode( Node * _node )
+    void Motor::setNode( const NodePtr & _node )
     {
         m_node = _node;
     }
     //////////////////////////////////////////////////////////////////////////
-    Node * Motor::getNode() const
+    const NodePtr & Motor::getNode() const
     {
         return m_node;
     }
     //////////////////////////////////////////////////////////////////////////
     void Motor::addVelocity( const ConstString & _name, const mt::vec3f & _velocity )
     {
-        VelocityDesc & desc = m_velocities[_name];
-
+        VelocityDesc desc;
+        desc.name = _name;
         desc.velocity = _velocity;
+
+        m_velocities.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Motor::hasVelocity( const ConstString & _name ) const
     {
-        MapVelocity::const_iterator it_found = m_velocities.find( _name );
+        VectorVelocities::const_iterator it_found = std::find_if( m_velocities.begin(), m_velocities.end(), [&_name]( const VelocityDesc & _desc )
+        {
+            return _desc.name == _name;
+        } );
 
         if( it_found == m_velocities.end() )
         {
@@ -45,14 +51,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     mt::vec3f Motor::getVelocity( const ConstString & _name ) const
     {
-        MapVelocity::const_iterator it_found = m_velocities.find( _name );
+        VectorVelocities::const_iterator it_found = std::find_if( m_velocities.begin(), m_velocities.end(), [&_name]( const VelocityDesc & _desc )
+        {
+            return _desc.name == _name;
+        } );
 
         if( it_found == m_velocities.end() )
         {
             return mt::vec3f( 0.f, 0.f, 0.f );
         }
 
-        const VelocityDesc & desc = it_found->second;
+        const VelocityDesc & desc = *it_found;
 
         return desc.velocity;
     }
@@ -66,14 +75,8 @@ namespace Mengine
 
         mt::vec3f velocity( 0.f, 0.f, 0.f );
 
-        for( MapVelocity::const_iterator
-            it = m_velocities.begin(),
-            it_end = m_velocities.end();
-            it != it_end;
-            ++it )
+        for( const VelocityDesc & desc : m_velocities )
         {
-            const VelocityDesc & desc = it->second;
-
             velocity += desc.velocity * _context->time;
         }
 

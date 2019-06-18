@@ -62,8 +62,8 @@ namespace Mengine
         uint32_t minIndex;
         uint32_t startIndex;
 
-        uint32_t dipVerticesNum;
-        uint32_t dipIndiciesNum;
+        uint32_t dipVerticesCount;
+        uint32_t dipIndiciesCount;
 
         uint32_t baseVertexIndex;
 
@@ -162,6 +162,16 @@ namespace Mengine
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) override;
+
+    public:
+        void addDebugRenderObject( const RenderContext * _context
+            , const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
+            , const RenderIndex * _indices, uint32_t _indexCount ) override;
+
+        void addDebugRenderQuad( const RenderContext * _context
+            , const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount ) override;
 
     protected:
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
@@ -336,11 +346,24 @@ namespace Mengine
         typedef Vector<RenderPass *> VectorRenderPass;
         VectorRenderPass m_renderPasses;
 
+        struct DebugRenderObject
+        {
+            RenderContext context;
+            RenderMaterialInterfacePtr material;
+            const RenderVertex2D * vertices;
+            uint32_t vertexCount;
+            const RenderIndex * indices;
+            uint32_t indexCount;
+        };
+
+        typedef Vector<DebugRenderObject> VectorDebugRenderObjects;
+        VectorDebugRenderObjects m_debugRenderObjects;
+
         typedef List<VectorRenderVertex2D> ListDebugVertices;
-        ListDebugVertices m_debugVertices;
+        ListDebugVertices m_debugRenderVertices;
 
         typedef List<VectorRenderIndex> ListDebugIndices;
-        ListDebugIndices m_debugIndices;
+        ListDebugIndices m_debugRenderIndices;
 
         VectorRenderBatch m_cacheRenderBatches;
 

@@ -100,7 +100,7 @@ namespace Mengine
 
         m_textEntry = nullptr;
 
-        VectorTextLineLayout layouts;
+        VectorTextLinesLayout layouts;
         m_layouts.swap( layouts );
 
         VectorRenderVertex2D vertexDataText;
@@ -135,7 +135,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextField::VectorTextLineLayout & TextField::getTextLayots() const
+    const TextField::VectorTextLinesLayout & TextField::getTextLayots() const
     {
         if( this->isInvalidateTextLines() == true )
         {
@@ -157,7 +157,7 @@ namespace Mengine
         _vertexData.clear();
         m_chunks.clear();
 
-        const VectorTextLineLayout & layouts = this->getTextLayots();
+        const VectorTextLinesLayout & layouts = this->getTextLayots();
 
         if( layouts.empty() == true )
         {
@@ -258,7 +258,7 @@ namespace Mengine
         mt::vec2f base_offset( 0.f, 0.f );
         base_offset.y = linesOffset;
 
-        Chunk chunk;
+        TextRenderChunk chunk;
         chunk.vertex_begin = 0;
         chunk.vertex_count = 0;
         chunk.material = nullptr;
@@ -267,12 +267,12 @@ namespace Mengine
 
         uint32_t textLineAlignOffsetIterator = 0U;
 
-        for( const VectorTextLine2 & lines2 : layouts )
+        for( const VectorTextLines2 & lines2 : layouts )
         {
             float alignOffsetX = m_textLineAlignOffsets[textLineAlignOffsetIterator++];
             offset.x = alignOffsetX * m_autoScaleFactor;
 
-            for( const VectorTextLine & lines : lines2 )
+            for( const VectorTextLines & lines : lines2 )
             {
                 mt::vec2f offset2;
 
@@ -374,7 +374,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        for( const Chunk & chunk : m_chunks )
+        for( const TextRenderChunk & chunk : m_chunks )
         {
             const VectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
@@ -577,7 +577,7 @@ namespace Mengine
         _viewport.end = mt::vec2f( 0.f, linesOffset );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesWrap_( VectorTextLines & _textLines ) const
+    void TextField::updateTextLinesWrap_( VectorTextLineChunks2 & _textLines ) const
     {
         if( m_wrap == false )
         {
@@ -594,13 +594,13 @@ namespace Mengine
         space_delims.emplace_back( space_delim );
         space_delims.emplace_back( U"\r" );
 
-        VectorTextLines new_textLines;
-        for( const VectorTextChunks & textChunks : _textLines )
+        VectorTextLineChunks2 new_textLines;
+        for( const VectorTextLineChunks & textChunks : _textLines )
         {
             float length = 0.f;
 
-            VectorTextChunks new_textChunks;
-            for( const TextChunk & textChunk : textChunks )
+            VectorTextLineChunks new_textChunks;
+            for( const TextLineChunk & textChunk : textChunks )
             {
                 const U32String & text = textChunk.value;
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
@@ -610,7 +610,7 @@ namespace Mengine
                 VectorU32String words;
                 Helper::u32split2( words, text, false, space_delims );
 
-                TextChunk new_textChunk;
+                TextLineChunk new_textChunk;
                 new_textChunk.fontId = textChunk.fontId;
 
                 for( const U32String & word : words )
@@ -684,7 +684,7 @@ namespace Mengine
         _textLines.swap( new_textLines );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesMaxCount_( VectorTextLines & _textLines ) const
+    void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 & _textLines ) const
     {
         if( m_maxCharCount == ~0U )
         {
@@ -692,21 +692,21 @@ namespace Mengine
         }
 
         uint32_t charIterator = 0;
-        for( VectorTextLines::iterator
+        for( VectorTextLineChunks2::iterator
             it_lines = _textLines.begin(),
             it_lines_end = _textLines.end();
             it_lines != it_lines_end;
             ++it_lines )
         {
-            VectorTextChunks & chars = *it_lines;
+            VectorTextLineChunks & chars = *it_lines;
 
-            for( VectorTextChunks::iterator
+            for( VectorTextLineChunks::iterator
                 it_chars = chars.begin(),
                 it_chars_end = chars.end();
                 it_chars != it_chars_end;
                 ++it_chars )
             {
-                TextChunk & chunk = *it_chars;
+                TextLineChunk & chunk = *it_chars;
 
                 uint32_t value_size = (uint32_t)chunk.value.size();
 
@@ -719,12 +719,12 @@ namespace Mengine
 
                 chunk.value = chunk.value.substr( 0, m_maxCharCount - charIterator );
 
-                VectorTextChunks::iterator it_chars_erase = it_chars;
+                VectorTextLineChunks::iterator it_chars_erase = it_chars;
                 std::advance( it_chars_erase, 1 );
 
                 chars.erase( it_chars_erase, chars.end() );
 
-                VectorTextLines::iterator it_lines_erase = it_lines;
+                VectorTextLineChunks2::iterator it_lines_erase = it_lines;
                 std::advance( it_lines_erase, 1 );
 
                 _textLines.erase( it_lines_erase, _textLines.end() );
@@ -734,18 +734,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
     {
         float fontHeight = _font->getFontAscent();
 
         float charOffset = this->calcCharOffset();
         float lineOffset = this->calcLineOffset();
 
-        VectorTextLineLayout layouts;
-        for( const VectorTextChunks & textChunks : _textLines )
+        VectorTextLinesLayout layouts;
+        for( const VectorTextLineChunks & textChunks : _textLines )
         {
-            VectorTextLine2 textLine2;
-            for( const TextChunk & textChunk : textChunks )
+            VectorTextLines2 textLine2;
+            for( const TextLineChunk & textChunk : textChunks )
             {
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
 
@@ -753,7 +753,7 @@ namespace Mengine
 
                 uint32_t layoutCount = chunkFont->getLayoutCount();
 
-                VectorTextLine textLine;
+                VectorTextLines textLine;
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
                     TextLine tl( layoutIndex, charOffset );
@@ -781,12 +781,12 @@ namespace Mengine
         m_textLineAlignOffsets.clear();
 
         float maxlen = 0.f;
-        for( const VectorTextLine2 & lines2 : layouts )
+        for( const VectorTextLines2 & lines2 : layouts )
         {
             float line_length = 0.f;
             uint32_t line_chars = 0;
 
-            for( const VectorTextLine & lines : lines2 )
+            for( const VectorTextLines & lines : lines2 )
             {
                 const TextLine & line = lines[0];
 
@@ -809,7 +809,7 @@ namespace Mengine
         mt::vec2f size;
         size.x = maxlen;
 
-        VectorTextLineLayout::size_type lineCount = layouts.size();
+        VectorTextLinesLayout::size_type lineCount = layouts.size();
 
         if( lineCount > 0 )
         {
@@ -871,7 +871,7 @@ namespace Mengine
 
         m_cacheFonts.emplace_back( baseCacheFont );
 
-        VectorTextChunks textChars;
+        VectorTextLineChunks textChars;
         Helper::test( textChars, cacheText, m_cacheFonts, 0 );
 
         for( const CacheFont & cache : m_cacheFonts )
@@ -884,7 +884,7 @@ namespace Mengine
             }
         }
 
-        for( const TextChunk & tc : textChars )
+        for( const TextLineChunk & tc : textChars )
         {
             const CacheFont & cache = m_cacheFonts[tc.fontId];
 
@@ -902,7 +902,7 @@ namespace Mengine
         line_delims.emplace_back( U"\n\r" );
         line_delims.emplace_back( U"\n\r\t" );
 
-        VectorTextLines textLines;
+        VectorTextLineChunks2 textLines;
         Helper::split( textLines, textChars, line_delims );
 
         MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
@@ -945,10 +945,10 @@ namespace Mengine
 
         float charOffset = this->calcCharOffset();
 
-        for( const VectorTextChunks & textChunks : textLines )
+        for( const VectorTextLineChunks & textChunks : textLines )
         {
-            VectorTextLine2 textLine2;
-            for( const TextChunk & textChunk : textChunks )
+            VectorTextLines2 textLine2;
+            for( const TextLineChunk & textChunk : textChunks )
             {
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
 
@@ -956,7 +956,7 @@ namespace Mengine
 
                 uint32_t layoutCount = chunkFont->getLayoutCount();
 
-                VectorTextLine textLine;
+                VectorTextLines textLine;
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
                     TextLine tl( layoutIndex, charOffset );
@@ -1014,10 +1014,10 @@ namespace Mengine
             return;
         }
 
-        m_font = TEXT_SERVICE()
+        const TextFontInterfacePtr & font = TEXT_SERVICE()
             ->getFont( fontName );
 
-        if( m_font == nullptr )
+        if( font == nullptr )
         {
             LOGGER_ERROR( "font '%s' can't found font '%s'"
                 , this->getName().c_str()
@@ -1026,6 +1026,8 @@ namespace Mengine
 
             return;
         }
+
+        m_font = font;
 
         if( m_font->compileFont() == false )
         {
@@ -1379,10 +1381,10 @@ namespace Mengine
         *_boundingBoxCurrent = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    float TextField::getHorizontAlignOffset_( const VectorTextLine2 & _lines ) const
+    float TextField::getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const
     {
         float length = 0.f;
-        for( const VectorTextLine & line : _lines )
+        for( const VectorTextLines & line : _lines )
         {
             length += line[0].getLength();
         }

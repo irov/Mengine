@@ -724,7 +724,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::directFontCompile( const ConstString & _name )
     {
-        TextFontInterfacePtr font = this->getFont( _name );
+        const TextFontInterfacePtr & font = this->getFont( _name );
 
         if( font == nullptr )
         {
@@ -738,7 +738,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::directFontRelease( const ConstString & _name )
     {
-        TextFontInterfacePtr font = this->getFont( _name );
+        const TextFontInterfacePtr & font = this->getFont( _name );
 
         if( font == nullptr )
         {
@@ -803,13 +803,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    TextFontInterfacePtr TextService::getFont( const ConstString & _name ) const
+    const TextFontInterfacePtr & TextService::getFont( const ConstString & _name ) const
     {
         MapTextFont::const_iterator it_found = m_fonts.find( _name );
 
         if( it_found == m_fonts.end() )
         {
-            return nullptr;
+            return TextFontInterfacePtr::none();
         }
 
         const TextFontInterfacePtr & font = it_found->second;

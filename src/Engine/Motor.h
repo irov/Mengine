@@ -6,14 +6,14 @@
 #include "Kernel/Updatable.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Node.h"
+
 #include "math/vec3.h"
 
-#include "Config/Map.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
-    class Node;
-
     class Motor
         : public Factorable
         , public Updatable
@@ -27,8 +27,8 @@ namespace Mengine
         ~Motor() override;
 
     public:
-        void setNode( Node * _node );
-        Node * getNode() const;
+        void setNode( const NodePtr & _node );
+        const NodePtr & getNode() const;
 
     public:
         void addVelocity( const ConstString & _name, const mt::vec3f & _velocity );
@@ -39,14 +39,15 @@ namespace Mengine
         void _update( const UpdateContext * _context ) override;
 
     protected:
-        Node * m_node;
+        NodePtr m_node;
 
         struct VelocityDesc
         {
+            ConstString name;
             mt::vec3f velocity;
         };
 
-        typedef Map<ConstString, VelocityDesc> MapVelocity;
-        MapVelocity m_velocities;
+        typedef Vector<VelocityDesc> VectorVelocities;
+        VectorVelocities m_velocities;
     };
 }

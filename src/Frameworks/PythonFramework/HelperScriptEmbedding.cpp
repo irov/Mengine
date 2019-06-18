@@ -31,6 +31,7 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/Color.h"
+#include "Kernel/Document.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/UID.h"
 
@@ -609,6 +610,28 @@ namespace Mengine
                 ->getOptionUInt32( _option.c_str() );
 
             return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_crashEngine()
+        {
+            *((uint32_t*)nullptr) = 0xDEADC0DE;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_freezeEngine()
+        {
+            uint32_t index = 0;
+            for( ;;)
+            {
+                ++index;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_memleakEngine( uint32_t _size, uint32_t _count )
+        {
+            for( uint32_t i = 0; i != _count; ++i )
+            {
+                Helper::allocateMemory( _size, MENGINE_DOCUMENT_FUNCTION );
+            }
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setCursorPosition( const mt::vec2f & _pos )
@@ -3705,6 +3728,10 @@ namespace Mengine
         pybind::def_functor( _kernel, "hasOption", helperScriptMethod, &HelperScriptMethod::s_hasOption );
         pybind::def_functor( _kernel, "getOptionValue", helperScriptMethod, &HelperScriptMethod::s_getOptionValue );
         pybind::def_functor( _kernel, "getOptionUInt32", helperScriptMethod, &HelperScriptMethod::s_getOptionUInt32 );
+
+        pybind::def_functor( _kernel, "crashEngine", helperScriptMethod, &HelperScriptMethod::s_crashEngine );
+        pybind::def_functor( _kernel, "freezeEngine", helperScriptMethod, &HelperScriptMethod::s_freezeEngine );
+        pybind::def_functor( _kernel, "memleakEngine", helperScriptMethod, &HelperScriptMethod::s_memleakEngine );
         
 
         m_implement = helperScriptMethod;

@@ -2,7 +2,9 @@
 
 #include "Interface/TextEntryInterface.h"
 
+#include "TextRenderChunk.h"
 #include "TextChar.h"
+#include "TextLine.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
@@ -20,8 +22,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class TextLine;
     //////////////////////////////////////////////////////////////////////////
     class TextField
         : public Node
@@ -164,9 +164,9 @@ namespace Mengine
         inline bool isInvalidateTextLines() const;
 
         bool updateTextLines_() const;
-        void updateTextLinesWrap_( VectorTextLines & _textLines ) const;
-        void updateTextLinesMaxCount_( VectorTextLines & _textLines ) const;
-        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
+        void updateTextLinesWrap_( VectorTextLineChunks2 & _textLines ) const;
+        void updateTextLinesMaxCount_( VectorTextLineChunks2 & _textLines ) const;
+        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
 
     public:
         inline const TextEntryInterfacePtr & getTextEntry() const;
@@ -233,23 +233,15 @@ namespace Mengine
 
         bool m_debugMode;
 
-        typedef Vector<TextLine> VectorTextLine;
-        typedef Vector<VectorTextLine> VectorTextLine2;
-        typedef Vector<VectorTextLine2> VectorTextLineLayout;
-        mutable VectorTextLineLayout m_layouts;
+        typedef Vector<TextLine> VectorTextLines;
+        typedef Vector<VectorTextLines> VectorTextLines2;
+        typedef Vector<VectorTextLines2> VectorTextLinesLayout;
+        mutable VectorTextLinesLayout m_layouts;
 
         typedef Vector<float> VectorTextLineAlignOffset;
         mutable VectorTextLineAlignOffset m_textLineAlignOffsets;
 
-        struct Chunk
-        {
-            uint32_t vertex_begin;
-            uint32_t vertex_count;
-
-            RenderMaterialInterfacePtr material;
-        };
-
-        typedef Vector<Chunk> VectorChunks;
+        typedef Vector<TextRenderChunk> VectorChunks;
         mutable VectorChunks m_chunks;
 
         mutable VectorCacheFonts m_cacheFonts;
@@ -264,8 +256,8 @@ namespace Mengine
         mutable bool m_invalidateTextEntry;
 
     protected:
-        const VectorTextLineLayout & getTextLayots() const;
-        float getHorizontAlignOffset_( const VectorTextLine2 & _lines ) const;
+        const VectorTextLinesLayout & getTextLayots() const;
+        float getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextField> TextFieldPtr;

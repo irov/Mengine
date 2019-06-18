@@ -8,9 +8,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct TextChunk
+    struct TextLineChunk
     {
-        TextChunk()
+        TextLineChunk()
             :fontId( 555 ) {};
 
         U32String value;
@@ -22,14 +22,14 @@ namespace Mengine
         TextFontInterfacePtr font;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<TextChunk> VectorTextChunks;
-    typedef Vector<VectorTextChunks> VectorTextLines;
+    typedef Vector<TextLineChunk> VectorTextLineChunks;
+    typedef Vector<VectorTextLineChunks> VectorTextLineChunks2;
     typedef Vector<CacheFont> VectorCacheFonts;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        bool test( VectorTextChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font );
-        void substr( VectorTextChunks & _out, const VectorTextChunks & _str, VectorTextChunks::size_type _offset, VectorTextChunks::size_type _size );
-        void split( VectorTextLines & _lines, const VectorTextChunks & _chunks, const VectorU32String & _delims );
+        bool test( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font );
+        void substr( VectorTextLineChunks & _out, const VectorTextLineChunks & _str, VectorTextLineChunks::size_type _offset, VectorTextLineChunks::size_type _size );
+        void split( VectorTextLineChunks2 & _lines, const VectorTextLineChunks & _chunks, const VectorU32String & _delims );
     }
 };

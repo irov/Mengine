@@ -141,6 +141,9 @@ Object\\\\TextField
 	TextLine.h
     TextChar.cpp
     TextChar.h
+    TextRenderChunk.h
+    TextDebug.cpp
+    TextDebug.h
 )
 
 ADD_FILTER(

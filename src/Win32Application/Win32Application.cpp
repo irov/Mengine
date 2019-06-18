@@ -36,26 +36,22 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/IniUtil.h"
+
+#include "Environment/Windows/WindowsIncluder.h"
+
+#include "MessageBoxLogger.h"
 
 #include <cstdio>
 #include <clocale>
 #include <memory>
-
 #include <errno.h>
-
-#include "MessageBoxLogger.h"
-
-#include "Kernel/FileLogger.h"
-#include "Kernel/IniUtil.h"
-
-#include "resource.h"
-
 #include <ctime>
 #include <algorithm>
 #include <functional>
 
-#include "Environment/Windows/WindowsIncluder.h"
-
+#include "resource.h"
 
 #ifndef MENGINE_SETLOCALE
 #define MENGINE_SETLOCALE "C"

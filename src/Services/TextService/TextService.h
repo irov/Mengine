@@ -45,7 +45,7 @@ namespace Mengine
 
     public:
         bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
-        TextFontInterfacePtr getFont( const ConstString & _name ) const override;
+        const TextFontInterfacePtr & getFont( const ConstString & _name ) const override;
 
     public:
         void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString& _key ) override;

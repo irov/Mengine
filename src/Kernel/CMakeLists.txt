@@ -473,6 +473,9 @@ Core
     
     Ravingcode.h
     Ravingcode.cpp
+    
+    SecureValue.h
+    SecureValue.cpp
 )
 
 ADD_FILTER(

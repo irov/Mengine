@@ -75,17 +75,4 @@ namespace Mengine
     {
         return m_softspace;
     }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * XlsScriptLogger::embedding( pybind::kernel_interface * _kernel, PyObject * _module )
-    {
-        pybind::interface_<XlsScriptLogger>( _kernel, "XlsScriptLogger", true, _module )
-            .def_native_kernel( "write", &XlsScriptLogger::py_write )
-            .def_native_kernel( "flush", &XlsScriptLogger::py_flush )
-            .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
-            ;
-
-        PyObject * embedded = pybind::ptr( _kernel, this );
-
-        return embedded;
-    }
 }

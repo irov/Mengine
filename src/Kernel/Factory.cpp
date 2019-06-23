@@ -24,6 +24,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Factory::~Factory()
     {
+#ifdef MENGINE_DEBUG
+        FACTORY_SERVICE()
+            ->unregisterFactory( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * Factory::getName() const
@@ -78,14 +82,6 @@ namespace Mengine
     uint32_t Factory::getCountObject() const
     {
         return m_count;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Factory::_destroy()
-    {
-#ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->unregisterFactory( this );
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroy()

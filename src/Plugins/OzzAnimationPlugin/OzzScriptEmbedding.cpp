@@ -136,11 +136,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "ResourceOzzAnimation", nullptr );
-        _kernel->remove_from_module( "ResourceOzzMesh", nullptr );
-        _kernel->remove_from_module( "ResourceOzzSkeleton", nullptr );
-        _kernel->remove_from_module( "SamplerOzzAnimationInterface", nullptr );
-        _kernel->remove_from_module( "NodeOzzAnimation", nullptr );
+        _kernel->remove_scope<ResourceOzzAnimation>();
+        _kernel->remove_scope<ResourceOzzMesh>();
+        _kernel->remove_scope<ResourceOzzSkeleton>();
+        _kernel->remove_scope<SamplerOzzAnimationInterface>();
+        _kernel->remove_scope<NodeOzzAnimation>();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ) );

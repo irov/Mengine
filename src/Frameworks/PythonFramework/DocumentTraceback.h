@@ -2,7 +2,7 @@
 
 #include "Kernel/Document.h"
 
-#include "Interface/ScriptServiceInterface.h"
+#include "Interface/ScriptProviderServiceInterface.h"
 
 namespace Mengine
 {
@@ -11,7 +11,7 @@ namespace Mengine
     { \
         static Char buffer[4096]; \
         static Char traceback[4096]; \
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()->getKernel(); \
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()->getKernel(); \
         kernel->get_traceback(traceback, 4096); \
         snprintf(buffer, 4096, "%s\nfile %s:%d\ncall: %s", traceback, __FILE__, __LINE__, __FUNCTION__); \
         return buffer;}()

@@ -1,6 +1,6 @@
 #include "ThreadTaskPacket.h"
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -21,7 +21,7 @@ namespace Mengine
     {
         m_tasks.reserve( _packetSize );
 
-        ThreadMutexInterfacePtr mutex = THREAD_SYSTEM()
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );

@@ -103,8 +103,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "ResourceAstralax", nullptr );
-        _kernel->remove_from_module( "AstralaxEmitter", nullptr );
+        _kernel->remove_scope<ResourceAstralax>();
+        _kernel->remove_scope<AstralaxEmitter>();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );

@@ -1,18 +1,19 @@
 #include "XlsExportPlugin.h"
 
-#include "Kernel/Logger.h"
-
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "pybind\pybind.hpp"
+#include "Kernel/Logger.h"
 
+#include "pybind/pybind.hpp"
+
+//////////////////////////////////////////////////////////////////////////
 FILE _iob[] = { *stdin, *stdout, *stderr };
 extern "C" FILE * __cdecl __iob_func( void ) { return _iob; }
-
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( XlsExport, Mengine::XlsExportPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -67,14 +68,20 @@ namespace Mengine
 
         PyObject * module_builtins = kernel->get_builtins();
 
+        pybind::interface_<XlsScriptLogger>( kernel, "XlsScriptLogger", true, module_builtins )
+            .def_native_kernel( "write", &XlsScriptLogger::py_write )
+            .def_native_kernel( "flush", &XlsScriptLogger::py_flush )
+            .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
+            ;
+
         m_warninglogger = new XlsScriptLogger( LM_WARNING );
 
-        PyObject * pyWarningLogger = m_warninglogger->embedding( kernel, module_builtins );
+        PyObject * pyWarningLogger = pybind::ptr( kernel, m_warninglogger );
         kernel->setStdOutHandle( pyWarningLogger );
 
         m_errorLogger = new XlsScriptLogger( LM_ERROR );
 
-        PyObject * pyErrorLogger = m_errorLogger->embedding( kernel, module_builtins );
+        PyObject * pyErrorLogger = pybind::ptr( kernel, m_warninglogger );
         kernel->setStdErrorHandle( pyErrorLogger );
 
         pybind::list py_syspath( kernel );
@@ -117,6 +124,11 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        kernel->setStdOutHandle( nullptr );
+        kernel->setStdErrorHandle( nullptr );
+
+        kernel->remove_scope<XlsScriptLogger>();
+
         kernel->destroy();
 
         delete m_warninglogger;
@@ -137,8 +149,7 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        const ConstString & projectCodename = APPLICATION_SERVICE()
-            ->getProjectCodename();
+        ConstString projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
 
         if( projectCodename.empty() == true )
         {

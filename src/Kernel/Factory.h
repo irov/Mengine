@@ -38,7 +38,6 @@ namespace Mengine
         virtual void _destroyObject( Factorable * _object ) = 0;
 
     protected:
-        void _destroy() override;
         void destroy() override;
 
     protected:

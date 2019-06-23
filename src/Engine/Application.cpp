@@ -34,14 +34,35 @@
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
-
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
-
 #include "Kernel/TagsHelper.h"
-
 #include "Kernel/Entity.h"
 #include "Kernel/Arrow.h"
+#include "Kernel/Interender.h"
+#include "Kernel/Isometric.h"
+#include "Kernel/Parallax.h"
+#include "Kernel/MatrixProxy.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderScissor.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Kernel/BasePrototypeGenerator.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ScriptWrapperInterface.h"
+#include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/SurfacePrototypeGenerator.h"
+#include "Kernel/ImageDecoderMemory.h"
+#include "Kernel/ImageDecoderArchive.h"
+#include "Kernel/DecoderFactory.h"
+#include "Kernel/String.h"
+#include "Kernel/IniUtil.h"
+
+#include "Config/Config.h"
+#include "Config/Stringstream.h"
+#include "Config/List.h"
 
 // All Node type
 #include "HotSpot.h"
@@ -58,21 +79,6 @@
 #include "TextField.h"
 #include "Meshget.h"
 #include "Layer2D.h"
-
-#include "Kernel/Interender.h"
-#include "Kernel/Isometric.h"
-#include "Kernel/Parallax.h"
-#include "Kernel/MatrixProxy.h"
-#include "Kernel/RenderViewport.h"
-#include "Kernel/RenderScissor.h"
-#include "Kernel/RenderCameraOrthogonal.h"
-#include "Kernel/RenderCameraProjection.h"
-#include "Kernel/RenderCameraOrthogonalTarget.h"
-
-#include "Kernel/BasePrototypeGenerator.h"
-
-#include "Kernel/AssertionMemoryPanic.h"
-
 #include "Window.h"
 #include "Landscape2D.h"
 
@@ -85,7 +91,6 @@
 #include "SurfaceImageSequence.h"
 #include "SurfaceTrackMatte.h"
 #include "SurfaceSolidColor.h"
-
 
 // All Resource type
 #include "ResourceImageSequence.h"
@@ -104,22 +109,6 @@
 #include "ResourceShape.h"
 #include "ResourceCursorICO.h"
 #include "ResourceCursorSystem.h"
-
-#include "Kernel/NodePrototypeGenerator.h"
-#include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/SurfacePrototypeGenerator.h"
-
-#include "Kernel/ImageDecoderMemory.h"
-#include "Kernel/ImageDecoderArchive.h"
-
-#include "Kernel/DecoderFactory.h"
-
-#include "Config/Config.h"
-#include "Config/Stringstream.h"
-#include "Config/List.h"
-
-#include "Kernel/String.h"
-#include "Kernel/IniUtil.h"
 
 #include "stdex/allocator.h"
 #include "stdex/allocator_report.h"
@@ -290,6 +279,10 @@ namespace Mengine
         {
             this->setVideoEnable( false );
         }
+
+        bool nopause = HAS_OPTION( "nopause" );
+
+        this->setNopause( nopause );
 
         return true;
     }
@@ -555,11 +548,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::createRenderWindow()
     {
-        //if( this->isValidWindowMode() == false )
-        //{
-        //    m_fullscreen = true;
-        //}
-
         bool fullscreen = this->getFullscreenMode();
 
         bool vsync = this->getVSync();
@@ -594,7 +582,7 @@ namespace Mengine
 
         if( m_createRenderWindow == false )
         {
-            LOGGER_ERROR( "Application::createRenderWindow failed to create render window"
+            LOGGER_ERROR( "failed to create render window"
             );
 
             return false;
@@ -2093,7 +2081,7 @@ namespace Mengine
 
         if( cursorResource == nullptr )
         {
-            LOGGER_ERROR( "Application::setCursorIcon: can't find resource cursor %s"
+            LOGGER_ERROR( "can't find resource cursor %s"
                 , _resourceName.c_str()
             );
 

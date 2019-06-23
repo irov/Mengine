@@ -563,7 +563,7 @@ namespace Mengine
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHATESTENABLE, FALSE) );
 
-        LOGGER_WARNING( "DX9RenderSystem initalized successfully!" );
+        LOGGER_WARNING( "initalized successfully!" );
 
         for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
@@ -763,6 +763,8 @@ namespace Mengine
         DX9RenderTargetTexturePtr dx9RenderTarget = stdex::intrusive_static_cast<DX9RenderTargetTexturePtr>(_renderTarget);
 
         DX9RenderImageTargetPtr dx9TextureImageTarget = m_factoryDX9ImageTarget->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dx9TextureImageTarget, nullptr );
 
         dx9TextureImageTarget->initialize( dx9RenderTarget );
 
@@ -1228,20 +1230,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::release_()
     {
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
-
-        if( this->releaseResources_() == false )
-        {
-            LOGGER_ERROR( "invalid release resource"
-            );
-
-            return;
-        }
-
         if( m_pD3DDevice != nullptr )
         {
+            if( this->releaseResources_() == false )
+            {
+                LOGGER_ERROR( "invalid release resource"
+                );
+
+                return;
+            }
+        
             ULONG ref = m_pD3DDevice->Release();
             MENGINE_UNUSED( ref );
+
+            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%d]", ref );
 
             m_pD3DDevice = nullptr;
         }
@@ -1251,6 +1253,8 @@ namespace Mengine
             ULONG ref = m_pD3D->Release();
             MENGINE_UNUSED( ref );
 
+            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%d]", ref );
+
             m_pD3D = nullptr;
         }
     }
@@ -1258,6 +1262,8 @@ namespace Mengine
     RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc )
     {
         DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
 
         if( buffer->initialize( m_pD3DDevice, _vertexSize, _bufferType ) == false )
         {
@@ -1293,6 +1299,8 @@ namespace Mengine
     RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc )
     {
         DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
 
         if( buffer->initialize( m_pD3DDevice, _indexSize, _bufferType ) == false )
         {
@@ -1754,7 +1762,7 @@ namespace Mengine
 
         DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( logcreateimage == true )

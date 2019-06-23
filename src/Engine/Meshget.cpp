@@ -64,7 +64,7 @@ namespace Mengine
         return m_surface;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meshget::setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices )
+    bool Meshget::setVertices( const VectorPositions & _positions, const VectorUVs & _uv, const VectorColors & _colors, const VectorRenderIndex & _indices )
     {
         uint32_t positions_count = _positions.size();
         uint32_t uvs_count = _uv.size();
@@ -75,25 +75,11 @@ namespace Mengine
             return false;
         }
 
-        m_positions.resize( positions_count );
-        m_uvs.resize( uvs_count );
-        m_colors.resize( colors_count );
-
-        for( uint32_t i = 0; i != positions_count; ++i )
-        {
-            m_positions[i] = _positions[i];
-            m_uvs[i] = _uv[i];
-            m_colors[i] = _colors[i];
-        }
-
-        uint32_t indices_count = _indices.size();
-
-        m_indices.resize( indices_count );
-
-        for( uint32_t i = 0; i != indices_count; ++i )
-        {
-            m_indices[i] = _indices[i];
-        }
+        m_positions = _positions;
+        m_uvs = _uv;
+        m_colors = _colors;
+        
+        m_indices = _indices;
 
         m_verticesWM.resize( positions_count );
 
@@ -143,9 +129,9 @@ namespace Mengine
 
         mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-        VectorPosition::size_type vertexCount = m_positions.size();
+        VectorPositions::size_type vertexCount = m_positions.size();
 
-        for( VectorPosition::size_type i = 1; i != vertexCount; ++i )
+        for( VectorPositions::size_type i = 1; i != vertexCount; ++i )
         {
             const mt::vec3f & v = m_positions[i];
 
@@ -189,9 +175,9 @@ namespace Mengine
         const Color & textureColor = m_surface->getColor();
         color *= textureColor;
 
-        VectorPosition::size_type vertexCount = m_positions.size();
+        VectorPositions::size_type vertexCount = m_positions.size();
 
-        for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
+        for( VectorPositions::size_type i = 0; i != vertexCount; ++i )
         {
             const mt::vec4f & c = m_colors[i];
 
@@ -210,9 +196,9 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        VectorPosition::size_type vertexCount = m_positions.size();
+        VectorPositions::size_type vertexCount = m_positions.size();
 
-        for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
+        for( VectorPositions::size_type i = 0; i != vertexCount; ++i )
         {
             const mt::vec3f & pos = m_positions[i];
             const mt::vec2f & uv = m_uvs[i];

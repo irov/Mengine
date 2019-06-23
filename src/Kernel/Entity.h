@@ -40,7 +40,6 @@ namespace Mengine
         virtual void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) = 0;
-
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityEventReceiver> EntityEventReceiverPtr;

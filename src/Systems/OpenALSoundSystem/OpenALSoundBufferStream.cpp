@@ -292,7 +292,7 @@ namespace Mengine
             return true;
         }
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
         float newVolume;
         OPENAL_CALL( alGetSourcef, (m_sourceId, AL_GAIN, &newVolume) );
 #endif

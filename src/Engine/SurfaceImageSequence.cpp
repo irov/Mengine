@@ -97,8 +97,6 @@ namespace Mengine
                         m_currentFrame = this->getFrame_( adaptFrameTiming, newFrameTiming );
                         m_frameTime = newFrameTiming;
                     }
-
-                    //lastFrame = m_currentFrame;
                 }
 
                 frameDelay = m_resourceImageSequence->getSequenceDelay( m_currentFrame );
@@ -274,9 +272,9 @@ namespace Mengine
 
         if( _time >= duration )
         {
-            _time -= floorf( _time / duration ) * duration;
+            _time -= ::floorf( _time / duration ) * duration;
 
-            if( fabsf( _time ) < 0.0001f )
+            if( ::fabsf( _time ) < 0.0001f )
             {
                 _deltaTime = 0.f;
 
@@ -534,7 +532,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Animation._setTiming: '%s' not activate"
+            LOGGER_ERROR( "'%s' not activate"
                 , m_name.c_str()
             );
 
@@ -561,7 +559,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Animation._getTiming: '%s' not activate"
+            LOGGER_ERROR( "'%s' not activate"
                 , m_name.c_str()
             );
 

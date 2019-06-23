@@ -156,6 +156,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define SERVICE_WAIT( Type, Lambda )\
     SERVICE_PROVIDER_GET()->waitService(Type::getStaticServiceID(), Lambda)
+    //////////////////////////////////////////////////////////////////////////
+#define SERVICE_LEAVE( Type, Lambda )\
+    SERVICE_PROVIDER_GET()->leaveService(Type::getStaticServiceID(), Lambda)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_AVAILABLE( Type )\
     [](){ static bool available = SERVICE_GET(Type)->isAvailableService(); return available;}()

@@ -18,6 +18,10 @@
 #define MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT 512
 #endif
 
+#ifndef MENGINE_SERVICE_PROVIDER_LEAVE_COUNT
+#define MENGINE_SERVICE_PROVIDER_LEAVE_COUNT 512
+#endif
+
 namespace Mengine
 {
     class ServiceProvider
@@ -41,7 +45,8 @@ namespace Mengine
 
     public:
         void dependencyService( const Char * _name, const Char * _dependency ) override;
-        void waitService( const Char * _name, const LambdaWaitService & _lambda ) override;
+        bool waitService( const Char * _name, const LambdaWaitService & _lambda ) override;
+        bool leaveService( const Char * _name, const LambdaLeaveService & _lambda ) override;
 
     protected:
         void stopServices() override;
@@ -52,7 +57,7 @@ namespace Mengine
     protected:
         ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator );
         void removeDependency_( const Char * _name );
-        void checkWaits_( const Char * _name );
+        bool checkWaits_( const Char * _name );
 
     protected:
         struct ServiceDesc
@@ -74,6 +79,16 @@ namespace Mengine
         DependencyDesc m_dependencies[MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT];
 
         uint32_t m_dependenciesCount;
+
+        struct LeaveDesc
+        {
+            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
+            LambdaLeaveService lambda;
+        };
+
+        LeaveDesc m_leaving[MENGINE_SERVICE_PROVIDER_LEAVE_COUNT];
+
+        uint32_t m_leaveCount;
 
         struct WaitDesc
         {

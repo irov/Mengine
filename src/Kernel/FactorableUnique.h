@@ -29,7 +29,7 @@ namespace Mengine
             delete this;
         }
     };
-
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         template<class Base, class ... Args>

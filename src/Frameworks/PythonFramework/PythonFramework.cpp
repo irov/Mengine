@@ -2,6 +2,7 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/ScriptProviderServiceInterface.h"
 
 #include "ConstsScriptEmbedding.h"
 #include "EngineScriptEmbedding.h"

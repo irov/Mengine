@@ -4,6 +4,8 @@
 
 #include "Interface/RenderServiceInterface.h"
 
+#include "Kernel/Color.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

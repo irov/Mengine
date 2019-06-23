@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadMutexInterface.h"
@@ -38,9 +39,6 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
         void _stopService() override;
-
-    protected:
-        pybind::kernel_interface * getKernel() override;
 
     public:
         PyObject * initModule( const Char * _name );
@@ -81,6 +79,17 @@ namespace Mengine
         void removeLogFunction( const ConstString & _className, const ConstString & _functionName );
         void debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds );
 #endif
+
+    protected:
+        template<class T>
+        void addGlobalModuleT( const Char * _name, const T & _value )
+        {
+            pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+                ->getKernel();
+
+            PyObject * py_value = pybind::ptr( kernel, _value );
+            this->addGlobalModule( _name, py_value );
+        }
 
     protected:
         pybind::kernel_interface * m_kernel;

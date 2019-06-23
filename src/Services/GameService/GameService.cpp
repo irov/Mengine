@@ -403,8 +403,11 @@ namespace Mengine
         EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 
-        SCRIPT_SERVICE()
-            ->finalizeModules();
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            SCRIPT_SERVICE()
+                ->finalizeModules();
+        }
 
         EVENTABLE_METHOD( EVENT_GAME_FINALIZE )
             ->onGameFinalize();

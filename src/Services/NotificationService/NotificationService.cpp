@@ -31,9 +31,11 @@ namespace Mengine
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-            MENGINE_ASSERTION_MEMORY_PANIC_VOID( mutex );
+            MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
 
             m_mutex = mutex;
+
+            return true;
         } );
 
         return true;

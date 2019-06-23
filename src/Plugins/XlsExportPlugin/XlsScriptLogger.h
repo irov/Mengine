@@ -26,9 +26,6 @@ namespace Mengine
         void setSoftspace( int32_t _softspace );
         int32_t getSoftspace() const;
 
-    public:
-        virtual PyObject * embedding( pybind::kernel_interface * _kernel, PyObject * _module );
-
     protected:
         EMessageLevel m_level;
 

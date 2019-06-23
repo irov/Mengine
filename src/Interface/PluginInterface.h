@@ -3,7 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Mixin.h"
-#include "Kernel/FactorableUnique.h"
+#include "Kernel/FactorablePlugin.h"
 
 #include "Config/Char.h"
 #include "Config/Export.h"
@@ -49,7 +49,7 @@ namespace Mengine
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
 	extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic ){\
 	if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();}\
-	Mengine::PluginInterface * plugin = new Mengine::FactorableUnique<Type>();\
+	Mengine::PluginInterface * plugin = new Mengine::FactorablePlugin<Type>();\
 	if( plugin == nullptr ){ return false; }\
 	plugin->setDynamicLoad( _dynamic );\
 	*_plugin = plugin;\

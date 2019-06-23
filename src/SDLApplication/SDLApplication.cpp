@@ -34,6 +34,8 @@
 #include "Interface/FrameworkInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/EasingServiceInterface.h"
+#include "Interface/PickerServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include <cstdio>
 #include <clocale>
@@ -91,7 +93,6 @@ SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( FileService );
 
 SERVICE_EXTERN( NotificationService );
-SERVICE_EXTERN( ScriptService );
 
 SERVICE_EXTERN( SoundSystem );
 SERVICE_EXTERN( SilentSoundSystem );
@@ -131,7 +132,6 @@ SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( ChronometerService );
 SERVICE_EXTERN( PickerService );
-SERVICE_EXTERN( Framework );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -170,7 +170,14 @@ PLUGIN_EXPORT( Spine );
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
+#ifdef MENGINE_PLUGIN_MOVIE_STATIC
 PLUGIN_EXPORT( Movie );
+#endif
+
+#ifdef MENGINE_PLUGIN_MOVIE1_STATIC
+PLUGIN_EXPORT( Movie1 );
+#endif
+
 //PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( OggVorbis );
 //PLUGIN_EXPORT( PathFinder );
@@ -208,9 +215,23 @@ PLUGIN_EXPORT( AndroidNativeAdMob );
 PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
+#ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
+PLUGIN_EXPORT( PythonFramework );
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
+    {
+        _mutex->lock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
+    {
+        _mutex->unlock();
+    }
     //////////////////////////////////////////////////////////////////////////
     SDLApplication::SDLApplication()
         : m_serviceProvider( nullptr )
@@ -485,6 +506,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize( const int argc, char** argv )
     {
+        stdex_allocator_initialize();
+
         setlocale( LC_ALL, "C" );
 
         ServiceProviderInterface * serviceProvider;
@@ -559,7 +582,15 @@ namespace Mengine
         }
 
         SERVICE_CREATE( ThreadSystem );
-        SERVICE_CREATE( ThreadService );        
+        SERVICE_CREATE( ThreadService );
+
+        m_mutexAllocatorPool = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
+            , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
+            , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
+        );
 
         if( this->initializeRenderEngine_() == false )
         {
@@ -571,7 +602,6 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_CREATE( ScriptService );
         SERVICE_CREATE( ModuleService );
         SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );
@@ -584,7 +614,6 @@ namespace Mengine
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
-        SERVICE_CREATE( Framework );
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );
@@ -603,13 +632,15 @@ namespace Mengine
         SERVICE_CREATE( TimelineService );
         SERVICE_CREATE( EasingService );
 
-        SERVICE_CREATE( Application );
-
 #define MENGINE_ADD_PLUGIN( Name, Info )\
         do{LOGGER_INFO( Info );\
         if(	PLUGIN_CREATE(Name) == false ){\
         LOGGER_ERROR( "Invalid %s", Info );}else{\
         LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
+
+#ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
+        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin PythonFramework..." );
+#endif
 
 #ifdef MENGINE_PLUGIN_DEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
@@ -655,7 +686,14 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif
 
+#ifdef MENGINE_PLUGIN_MOVIE_STATIC
         MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_MOVIE1_STATIC
+        MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1..." );
+#endif
+
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
         //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
 
@@ -744,6 +782,8 @@ namespace Mengine
                 }
             }
         }
+
+        SERVICE_CREATE( Application );
 
         VectorString modules;
         CONFIG_VALUES( "Modules", "Name", modules );
@@ -907,7 +947,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::SceneServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
-        SERVICE_FINALIZE( Mengine::FrameworkInterface );
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
@@ -927,7 +966,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );
 
-        SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
         SERVICE_FINALIZE( Mengine::RenderServiceInterface );
@@ -978,8 +1016,15 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
+        SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
         SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
 
+        stdex_allocator_finalize_threadsafe();
+
+        m_mutexAllocatorPool = nullptr;
+
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
+
+        stdex_allocator_finalize();
     }
 }

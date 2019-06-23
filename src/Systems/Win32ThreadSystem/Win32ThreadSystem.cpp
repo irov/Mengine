@@ -40,6 +40,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadSystem::_finalizeService()
     {
+        m_mutexConditionVariable = nullptr;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadMutex );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadConditionVariable );
@@ -61,7 +63,7 @@ namespace Mengine
 
         if( identity->initialize( _name, _priority, mutex, _doc ) == false )
         {
-            LOGGER_ERROR( "invalid initialize"
+            LOGGER_ERROR( "invalid identity initialize"
             );
 
             return nullptr;

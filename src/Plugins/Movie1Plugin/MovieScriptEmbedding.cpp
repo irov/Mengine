@@ -1510,12 +1510,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "Movie", nullptr );
-        _kernel->remove_from_module( "MovieSlot", nullptr );
-        _kernel->remove_from_module( "MovieInternalObject", nullptr );
-        _kernel->remove_from_module( "MovieMesh2D", nullptr );
-        _kernel->remove_from_module( "ResourceMovie", nullptr );
-        _kernel->remove_from_module( "ResourceInternalObject", nullptr );
+        _kernel->remove_scope<Movie>();
+        _kernel->remove_scope<MovieSlot>();
+        _kernel->remove_scope<MovieInternalObject>();
+        _kernel->remove_scope<MovieMesh2D>();
+        _kernel->remove_scope<ResourceMovie>();
+        _kernel->remove_scope<ResourceInternalObject>();
 
         _kernel->remove_from_module( "intersectsMoviesHotspot", nullptr );
         _kernel->remove_from_module( "intersectMoviesHotspotVsPolygon", nullptr );

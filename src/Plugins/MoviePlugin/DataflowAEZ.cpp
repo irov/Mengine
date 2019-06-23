@@ -265,6 +265,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
+        if( strcmp( _doc, "Movies2/StartMenu/StartMenu.aez" ) == 0 )
+        {
+            int i = 0;
+            (void)i;
+        }
+
         Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );
 
         void * memory_buffer = _memory->getBuffer();

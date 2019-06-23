@@ -11,6 +11,8 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ScriptEmbeddingInterface.h"
+#include "Interface/ScriptProviderServiceInterface.h"
 
 #include "DataflowPY.h"
 #include "DataflowPYZ.h"
@@ -35,10 +37,6 @@
 
 #include <stdlib.h>
 
-#ifdef MENGINE_WINDOWS_DEBUG
-#   include <crtdbg.h>
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
 //////////////////////////////////////////////////////////////////////////
@@ -60,7 +58,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( pReserved );
 
-            pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
                 ->getKernel();
 
             Char traceback[4096];
@@ -231,33 +229,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ScriptService::_initializeService()
     {
-        bool developmentMode = HAS_OPTION( "dev" );
-
-#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
-        int crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
-        int crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
-        int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
-#endif
-
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, developmentMode, false, true );
-
-        if( kernel == nullptr )
+        if( SERVICE_EXIST( ScriptProviderServiceInterface ) == false )
         {
-            LOGGER_ERROR( "invalid initialize pybind"
-            );
-
             return false;
         }
+
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()
+            ->getKernel();
 
         m_kernel = kernel;
 
         pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
-
-#if defined(MENGINE_PLATFORM_WINDOWS) && defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
-        _CrtSetReportMode( _CRT_WARN, crt_warn );
-        _CrtSetReportMode( _CRT_ERROR, crt_error );
-        _CrtSetReportMode( _CRT_ASSERT, crt_assert );
-#endif
 
         m_moduleMenge = this->initModule( "Menge" );
 
@@ -363,6 +347,32 @@ namespace Mengine
         pybind::def_functor( m_kernel, "removeLogFunction", this, &ScriptService::addLogFunction );
 #endif
 
+        this->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
+
+#if defined(MENGINE_DEBUG)
+        this->addGlobalModuleT( "_DEBUG", true );
+#else
+        this->addGlobalModuleT( "_DEBUG", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_WINDOWS)
+        this->addGlobalModuleT( "_WIN32", true );
+#else
+        this->addGlobalModuleT( "_WIN32", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_ANDROID)
+        this->addGlobalModuleT( "_ANDROID", true );
+#else
+        this->addGlobalModuleT( "_ANDROID", false );
+#endif
+
+#if defined(MENGINE_MASTER_RELEASE)
+        this->addGlobalModuleT( "_MASTER_RELEASE", true );
+#else
+        this->addGlobalModuleT( "_MASTER_RELEASE", false );
+#endif
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -375,6 +385,9 @@ namespace Mengine
 
         m_debugCallFunctions.clear();
 #endif
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         m_kernel->remove_module_finder();
 
@@ -396,8 +409,8 @@ namespace Mengine
         m_kernel->setStdOutHandle( nullptr );
         m_kernel->setStdErrorHandle( nullptr );
 
-        m_kernel->destroy();
-        m_kernel = nullptr;
+        m_kernel->remove_scope<ScriptLogger>();
+        m_kernel->remove_scope<ScriptModuleFinder>();
 
         m_bootstrapperModules.clear();
 
@@ -409,11 +422,6 @@ namespace Mengine
     void ScriptService::_stopService()
     {
         //m_kernel->collect();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    pybind::kernel_interface * ScriptService::getKernel()
-    {
-        return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )

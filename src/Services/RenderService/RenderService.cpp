@@ -1488,6 +1488,7 @@ namespace Mengine
             return;
         }
 
+#ifndef MENGINE_MASTER_RELEASE
         DebugRenderObject dro;
         dro.context = *_context;
         dro.material = _material;
@@ -1497,6 +1498,14 @@ namespace Mengine
         dro.indexCount = _indexCount;
 
         m_debugRenderObjects.push_back( dro );
+#else
+        MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _material );
+        MENGINE_UNUSED( _vertices );
+        MENGINE_UNUSED( _vertexCount );
+        MENGINE_UNUSED( _indices );
+        MENGINE_UNUSED( _indexCount );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::addDebugRenderQuad( const RenderContext * _context

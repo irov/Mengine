@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/Assertion.h"
+
 #include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -13,6 +15,7 @@ namespace Mengine
     ServiceProvider::ServiceProvider()
         : m_servicesCount( 0 )
         , m_dependenciesCount( 0 )
+        , m_leaveCount( 0 )
         , m_waitsCount( 0 )
     {
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
@@ -123,7 +126,15 @@ namespace Mengine
 
             ++m_servicesCount;
 
-            this->checkWaits_( name );
+            if( this->checkWaits_( name ) == false )
+            {
+                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid initialize service '%s' doc '%s' (waits)"
+                    , name
+                    , _doc
+                    );
+
+                return false;
+            }
 
             return true;
         }
@@ -138,6 +149,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::finalizeService( const Char * _name )
     {
+        for( uint32_t index = 0; index != m_leaveCount; ++index )
+        {
+            LeaveDesc & desc = m_leaving[index];
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
+
+            desc.lambda();
+
+            desc.lambda = nullptr;
+            desc.name[0] = '\0';
+        }
+
         for( uint32_t index = 0; index != m_dependenciesCount; ++index )
         {
             const DependencyDesc & desc = m_dependencies[index];
@@ -215,14 +241,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
+        MENGINE_ASSERTION( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT );
+
         DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
 
         strcpy( desc.name, _name );
         strcpy( desc.dependency, _dependency );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
+    bool ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
     {
+        MENGINE_ASSERTION( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
+
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
@@ -237,15 +267,32 @@ namespace Mengine
                 break;
             }
 
-            _lambda();
+            if( _lambda() == false )
+            {
+                return false;
+            }
 
-            return;
+            return true;
         }
 
         WaitDesc & desc = m_waits[m_waitsCount++];
 
         strcpy( desc.name, _name );
         desc.lambda = _lambda;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::leaveService( const Char * _name, const LambdaLeaveService & _lambda )
+    {
+        MENGINE_ASSERTION( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
+
+        LeaveDesc & desc = m_leaving[m_leaveCount++];
+
+        strcpy( desc.name, _name );
+        desc.lambda = _lambda;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::removeDependency_( const Char * _name )
@@ -275,7 +322,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::checkWaits_( const Char * _name )
+    bool ServiceProvider::checkWaits_( const Char * _name )
     {
         for( uint32_t index = 0; index != m_waitsCount; )
         {
@@ -288,13 +335,18 @@ namespace Mengine
                 continue;
             }
 
-            desc.lambda();
+            if( desc.lambda() == false )
+            {
+                return false;
+            }
 
             WaitDesc & last_desc = m_waits[--m_waitsCount];
 
             strcpy( desc.name, last_desc.name );
             desc.lambda = last_desc.lambda;
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::existService( const Char * _name ) const
@@ -377,6 +429,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::stopServices()
     {
+        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_MAX_WAIT; ++index )
+        {
+            WaitDesc & desc = m_waits[index];
+                        
+            desc.lambda = nullptr;
+            desc.name[0] = '\0';
+        }
+
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];

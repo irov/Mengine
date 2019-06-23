@@ -205,8 +205,8 @@ namespace Mengine
     {
         pybind::unregistration_stl_vector_type_cast<ConstString, VectorConstString>(_kernel);
 
-        _kernel->remove_from_module( "ConstString", nullptr );
-        _kernel->remove_from_module( "FilePath", nullptr );
+        _kernel->remove_scope<ConstString>();
+        _kernel->remove_scope<FilePath>();
     }
 }
 

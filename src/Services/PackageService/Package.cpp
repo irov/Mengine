@@ -371,8 +371,11 @@ namespace Mengine
             return false;
         }
 
-        SCRIPT_SERVICE()
-            ->addModulePath( m_fileGroup, m_scriptsPackages );
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            SCRIPT_SERVICE()
+                ->addModulePath( m_fileGroup, m_scriptsPackages );
+        }
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
@@ -494,8 +497,11 @@ namespace Mengine
 
         m_enable = false;
 
-        SCRIPT_SERVICE()
-            ->removeModulePath( m_fileGroup, m_scriptsPackages );
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            SCRIPT_SERVICE()
+                ->removeModulePath( m_fileGroup, m_scriptsPackages );
+        }
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();

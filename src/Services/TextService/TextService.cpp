@@ -51,6 +51,8 @@ namespace Mengine
     {
         m_texts.clear();
         m_fonts.clear();
+        m_aliases.clear();
+        m_aliasesArguments.clear();
         m_packs.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );

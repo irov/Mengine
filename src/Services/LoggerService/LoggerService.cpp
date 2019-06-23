@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Document.h"
 
@@ -105,8 +106,19 @@ namespace Mengine
 
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
         {
-            m_threadMutex = THREAD_SERVICE()
+            ThreadMutexInterfacePtr threadMutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( threadMutex, false );
+
+            m_threadMutex = threadMutex;
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( Mengine::ThreadServiceInterface, [this]()
+        {
+            m_threadMutex = nullptr;
         } );
 
         return true;
@@ -124,8 +136,6 @@ namespace Mengine
 #ifdef MENGINE_LOGGER_HISTORY
         m_history.clear();
 #endif
-
-        m_threadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( EMessageLevel _level )

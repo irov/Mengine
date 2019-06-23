@@ -30,6 +30,7 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/EasingServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -79,7 +80,6 @@ SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( SoundSystem );
 SERVICE_EXTERN( SilentSoundSystem );
-SERVICE_EXTERN( ScriptService );
 SERVICE_EXTERN( ModuleService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
@@ -112,7 +112,6 @@ SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
-SERVICE_EXTERN( Framework );
 
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -174,10 +173,13 @@ PLUGIN_EXPORT( cURL );
 PLUGIN_EXPORT( Spine );
 #endif
 
+#ifdef MENGINE_PLUGIN_MOVIE_STATIC
 PLUGIN_EXPORT( Movie );
+#endif
+
+#ifdef MENGINE_PLUGIN_MOVIE1_STATIC
 PLUGIN_EXPORT( Movie1 );
-//PLUGIN_EXPORT( Box2D );
-//PLUGIN_EXPORT( PathFinder );
+#endif
 
 #ifdef MENGINE_PLUGIN_TTF_STATIC
 PLUGIN_EXPORT( TTF );
@@ -195,8 +197,22 @@ PLUGIN_EXPORT( NodeDebugger );
 PLUGIN_EXPORT( OzzAnimation );
 #endif
 
+#ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
+PLUGIN_EXPORT( PythonFramework );
+#endif
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
+    {
+        _mutex->lock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
+    {
+        _mutex->unlock();
+    }
     //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
         : m_serviceProvider( nullptr )
@@ -514,6 +530,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
+        stdex_allocator_initialize();
+
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
         
         ServiceProviderInterface * serviceProvider;
@@ -586,6 +604,14 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
 
+        m_mutexAllocatorPool = THREAD_SERVICE()
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
+            , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
+            , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
+        );
+
         SERVICE_CREATE( PrototypeService );
 
         SERVICE_CREATE( RenderSystem );
@@ -600,7 +626,6 @@ namespace Mengine
 
         SERVICE_CREATE( SoundService );
 
-        SERVICE_CREATE( ScriptService );
         SERVICE_CREATE( ModuleService );
         SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );
@@ -617,8 +642,6 @@ namespace Mengine
 
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
-
-        SERVICE_CREATE( Framework );
 
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
@@ -638,8 +661,6 @@ namespace Mengine
         SERVICE_CREATE( TimelineService );
         SERVICE_CREATE( EnumeratorService );
 
-        SERVICE_CREATE( Application );
-
         LOGGER_MESSAGE( "initialize Plugins..." );
 
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
@@ -647,6 +668,10 @@ namespace Mengine
 		if(	PLUGIN_CREATE(Name) == false ){\
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_MESSAGE( "Successful %s", Info );}}
+
+#ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
+        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin PythonFramework..." );
+#endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
@@ -708,8 +733,14 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_SPINE_STATIC
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_MOVIE_STATIC
         MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_MOVIE1_STATIC
         MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1..." );
+#endif
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
         //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
         //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
@@ -744,10 +775,6 @@ namespace Mengine
             }
         }
 
-        bool nopause = HAS_OPTION( "nopause" );
-        APPLICATION_SERVICE()
-            ->setNopause( nopause );
-
 #ifdef MENGINE_MASTER_RELEASE
         bool devplugins = false;
         bool devmodules = false;
@@ -780,6 +807,8 @@ namespace Mengine
                 }
             }
         }
+
+        SERVICE_CREATE( Application );
 
         LOGGER_MESSAGE( "Modules Run..." );
 
@@ -960,8 +989,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
-        SERVICE_FINALIZE( Mengine::FrameworkInterface );
-        SERVICE_FINALIZE( Mengine::ScriptServiceInterface );        
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
@@ -1030,12 +1057,16 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
-        SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
         SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
+        SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
+
+        stdex_allocator_finalize_threadsafe();
+
+        m_mutexAllocatorPool = nullptr;
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
 
-        //::timeEndPeriod( 1 );
+        stdex_allocator_finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::update()

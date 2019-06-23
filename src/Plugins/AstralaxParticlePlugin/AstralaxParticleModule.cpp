@@ -43,7 +43,12 @@ namespace Mengine
     {
         LOGGER_INFO( "Initializing Particle System ..." );
 
-        ADD_SCRIPT_EMBEDDING( AstralaxScriptEmbedding );
+        SERVICE_WAIT( ScriptServiceInterface, []()
+        {
+            ADD_SCRIPT_EMBEDDING( AstralaxScriptEmbedding );
+
+            return true;
+        } );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>() ) == false )
@@ -94,6 +99,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_finalizeModule()
     {
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            REMOVE_SCRIPT_EMBEDDING( AstralaxScriptEmbedding );
+        }
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
@@ -119,9 +129,7 @@ namespace Mengine
         }
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
-
-        REMOVE_SCRIPT_EMBEDDING( AstralaxScriptEmbedding );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );        
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_destroy()

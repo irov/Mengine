@@ -11,6 +11,7 @@
 #include "OzzScriptEmbedding.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/Document.h"
@@ -31,7 +32,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OzzAnimationPlugin::_initializePlugin()
     {
-        ADD_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+        SERVICE_WAIT( ScriptServiceInterface, []()
+        {
+            ADD_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+
+            return true;
+        } );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( "Resource"_c, "ResourceOzzSkeleton"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzSkeleton, 16>>() ) == false )
@@ -68,7 +74,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzAnimationPlugin::_finalizePlugin()
     {
-        REMOVE_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            REMOVE_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+        }
 
         PROTOTYPE_SERVICE()
             ->removePrototype( "Resource"_c, "ResourceOzzSkeleton"_c );

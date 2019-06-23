@@ -38,7 +38,7 @@
 #   define MENGINE_PLATFORM_MOBILE
 #endif
 
-#ifndef NDEBUG
+#ifdef MENGINE_DEBUG
 #   if defined(MENGINE_PLATFORM_WINDOWS)
 #       define MENGINE_WINDOWS_DEBUG
 #   endif

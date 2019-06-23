@@ -41,7 +41,6 @@ if(MENGINE_TOOLCHAIN_MSVC)
 endif()
 
 INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/libmath/include
     )

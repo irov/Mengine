@@ -66,8 +66,6 @@ namespace Mengine
         bool isMainThread() const override;
 
     protected:
-        ThreadMutexInterfacePtr m_mutexAllocatorPool;
-
         uint32_t m_threadCount;
 
         struct ThreadTaskDesc

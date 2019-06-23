@@ -14,10 +14,8 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     UNREFERENCED_PARAMETER( hPrevInstance );
     UNREFERENCED_PARAMETER( lpCmdLine );
     UNREFERENCED_PARAMETER( nShowCmd );
-
-    stdex_allocator_initialize();
-
-#ifdef MENGINE_DEBUG
+        
+#ifndef MENGINE_DEBUG
     try
 #endif
     {
@@ -36,16 +34,14 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
         app.finalize();
     }
-#ifdef MENGINE_DEBUG
+#ifndef MENGINE_DEBUG
     catch( const std::exception & se )
     {
         const char * se_what = se.what();
 
         MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
     }
-#endif
-
-    stdex_allocator_finalize();
+#endif    
 
     return 0;
 }

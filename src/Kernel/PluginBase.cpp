@@ -1,11 +1,23 @@
 #include "PluginBase.h"
 
-#include "Kernel/Logger.h"
-
 #include "Interface/ModuleServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
+
+#include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
+    {
+        _mutex->lock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
+    {
+        _mutex->unlock();
+    }
     //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
         : m_dynamicLoad( false )
@@ -57,6 +69,18 @@ namespace Mengine
             return true;
         }
 
+        if( m_dynamicLoad == true 
+            && SERVICE_EXIST( ThreadServiceInterface ) == true )
+        {
+            m_mutexAllocatorPool = THREAD_SERVICE()
+                ->createMutex( MENGINE_DOCUMENT( "Plugin '%s'", this->getPluginName() ) );
+
+            stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
+                , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
+                , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
+            );
+        }
+
         bool successful = this->_initializePlugin();
 
         if( successful == false )
@@ -84,14 +108,6 @@ namespace Mengine
 
         m_initializePlugin = false;
 
-        for( const String & serviceName : m_dependencyServices )
-        {
-            SERVICE_PROVIDER_GET()
-                ->finalizeService( serviceName.c_str() );
-        }
-
-        m_dependencyServices.clear();
-
         this->_finalizePlugin();
 
         for( const ConstString & moduleFactory : m_moduleFactories )
@@ -100,7 +116,7 @@ namespace Mengine
                 ->unregisterModule( moduleFactory );
         }
 
-        m_moduleFactories.clear();
+        m_moduleFactories.clear();        
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::isInitializePlugin() const
@@ -124,10 +140,13 @@ namespace Mengine
 
         bool dynamicLoad = m_dynamicLoad;
 
+        ThreadMutexInterfacePtr mutexAllocatorPool = std::move( m_mutexAllocatorPool );
+
         delete this;
 
         if( dynamicLoad == true )
         {
+            stdex_allocator_finalize_threadsafe();
             stdex_allocator_finalize();
         }
     }
@@ -142,19 +161,6 @@ namespace Mengine
     void PluginBase::_finalizePlugin()
     {
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::addDependencyService( const Char * _name )
-    {
-        if( SERVICE_PROVIDER_GET()
-            ->existService( _name ) == false )
-        {
-            return false;
-        }
-
-        m_dependencyServices.emplace_back( _name );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory )

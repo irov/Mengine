@@ -54,6 +54,8 @@ namespace Mengine
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
+        ThreadMutexInterfacePtr m_mutexAllocatorPool;
+
         LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_loggerStdio;
         LoggerInterfacePtr m_fileLog;

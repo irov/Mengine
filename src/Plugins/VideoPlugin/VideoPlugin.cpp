@@ -16,6 +16,7 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
+#include "Kernel/ScriptWrapperInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Video, Mengine::VideoPlugin );
@@ -40,7 +41,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initializePlugin()
     {
-        ADD_SCRIPT_EMBEDDING( VideoScriptEmbedding );
+        SERVICE_WAIT( ScriptServiceInterface, []()
+        {
+            ADD_SCRIPT_EMBEDDING( VideoScriptEmbedding );
+
+            return true;
+        } );
+        
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceVideo, 128>>() ) == false )
@@ -57,11 +64,15 @@ namespace Mengine
         SERVICE_WAIT( ResourceValidateServiceInterface, []()
         {
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<ResourceVideoValidator>() );
+
+            return true;
         } );
 
         SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<LoaderResourceVideo>() );
+
+            return true;
         } );               
 
         return true;
@@ -69,7 +80,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VideoPlugin::_finalizePlugin()
     {
-        REMOVE_SCRIPT_EMBEDDING( VideoScriptEmbedding );
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            REMOVE_SCRIPT_EMBEDDING( VideoScriptEmbedding );
+        }
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
@@ -77,14 +91,14 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
-        SERVICE_WAIT( ResourceValidateServiceInterface, []()
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        } );
+        };
 
-        SERVICE_WAIT( LoaderServiceInterface, []()
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        } );
+        }
     }
 }

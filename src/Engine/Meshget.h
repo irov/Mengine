@@ -24,6 +24,10 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef Vector<mt::vec3f> VectorPositions;
+    typedef Vector<mt::vec2f> VectorUVs;
+    typedef Vector<mt::vec4f> VectorColors;
+    //////////////////////////////////////////////////////////////////////////
     enum MeshgetEventFlag
     {
         EVENT_MESHGET_UPDATE = 0
@@ -58,7 +62,7 @@ namespace Mengine
         const SurfacePtr & getSurface() const;
 
     public:
-        bool setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices );
+        bool setVertices( const VectorPositions & _positions, const VectorUVs & _uv, const VectorColors & _colors, const VectorRenderIndex & _indices );
 
     protected:
         bool _compile() override;
@@ -89,12 +93,9 @@ namespace Mengine
     protected:
         SurfacePtr m_surface;
 
-        typedef Vector<mt::vec3f> VectorPosition;
-        typedef Vector<mt::vec2f> VectorUV;
-        typedef Vector<mt::vec4f> VectorColor;
-        VectorPosition m_positions;
-        VectorUV m_uvs;
-        VectorColor m_colors;
+        VectorPositions m_positions;
+        VectorUVs m_uvs;
+        VectorColors m_colors;
 
         VectorRenderIndex m_indices;
 

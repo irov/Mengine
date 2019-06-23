@@ -87,8 +87,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VideoScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
-        _kernel->remove_from_module( "ResourceVideo", nullptr );
-        _kernel->remove_from_module( "SurfaceVideo", nullptr );
+        _kernel->remove_scope<ResourceVideo>();
+        _kernel->remove_scope<SurfaceVideo>();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );

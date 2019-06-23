@@ -13,7 +13,6 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 )
 
 INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/pybind/include 
     ${THIRDPARTY_DIR}/libmath/include
     ) 
 

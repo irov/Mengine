@@ -512,6 +512,7 @@ Factory
     Factorable.cpp
     FactorablePointer.h
     FactorableUnique.h
+    FactorablePlugin.h
 	Factory.h
 	Factory.cpp
     FactoryWithListener.h

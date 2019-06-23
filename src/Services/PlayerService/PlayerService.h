@@ -5,6 +5,7 @@
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
+#include "Interface/RenderTargetInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"

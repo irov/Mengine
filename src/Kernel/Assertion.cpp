@@ -5,7 +5,7 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#ifdef _WINDOWS
+#ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
@@ -75,7 +75,7 @@ namespace Mengine
                 return;
             }
 
-#ifdef _WINDOWS
+#ifdef MENGINE_PLATFORM_WINDOWS
             DebugBreak();
 #endif
         }

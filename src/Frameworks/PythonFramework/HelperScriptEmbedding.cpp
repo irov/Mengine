@@ -16,6 +16,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"

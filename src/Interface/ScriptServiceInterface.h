@@ -1,26 +1,34 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ScriptModuleInterface.h"
-#include "Interface/ScriptCodeDataInterface.h"
-#include "Interface/ScriptEmbeddingInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
 
-#include "Config/Typedef.h"
-
-#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 
+#include "Config/Typedef.h"
 #include "Config/Vector.h"
 
-#include "pybind/kernel.hpp"
-#include "pybind/base.hpp"
+extern "C"
+{
+    struct _object;
+    typedef _object PyObject;
+}
+
+namespace pybind
+{
+    class kernel_interface;
+}
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class ScriptModuleInterface> ScriptModuleInterfacePtr;
+    typedef IntrusivePtr<class ScriptCodeDataInterface, class DataInterface> ScriptCodeDataInterfacePtr;
+    typedef IntrusivePtr<class ScriptEmbeddingInterface> ScriptEmbeddingInterfacePtr;
+    typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     struct ScriptModulePack
     {
@@ -38,9 +46,6 @@ namespace Mengine
         : public ServiceInterface
     {
         SERVICE_DECLARE( "ScriptService" )
-
-    public:
-        virtual pybind::kernel_interface * getKernel() = 0;
 
     public:
         virtual bool bootstrapModules() = 0;
@@ -63,16 +68,6 @@ namespace Mengine
         virtual bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
         virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
         virtual void ejectingScriptEmbeddings() = 0;
-
-    public:
-        template<class T>
-        void addGlobalModuleT( const Char * _name, const T & _value )
-        {
-            pybind::kernel_interface * kernel = this->getKernel();
-
-            PyObject * py_value = pybind::ptr( kernel, _value );
-            this->addGlobalModule( _name, py_value );
-        }
 
     public:
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;

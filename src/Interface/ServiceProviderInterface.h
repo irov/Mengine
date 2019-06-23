@@ -38,8 +38,11 @@ namespace Mengine
         virtual void dependencyService( const Char * _name, const Char * _dependency ) = 0;
 
     public:
-        typedef Lambda<void()> LambdaWaitService;
-        virtual void waitService( const Char * _name, const LambdaWaitService & _lambda ) = 0;
+        typedef Lambda<bool()> LambdaWaitService;
+        virtual bool waitService( const Char * _name, const LambdaWaitService & _lambda ) = 0;
+
+        typedef Lambda<void()> LambdaLeaveService;
+        virtual bool leaveService( const Char * _name, const LambdaLeaveService & _lambda ) = 0;
 
     public:
         virtual void stopServices() = 0;

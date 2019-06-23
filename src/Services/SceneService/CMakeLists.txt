@@ -7,7 +7,6 @@ src
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 
 ADD_MENGINE_LIBRARY()
 

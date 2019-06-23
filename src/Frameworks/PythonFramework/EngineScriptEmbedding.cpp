@@ -24,6 +24,7 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -2124,13 +2125,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class AffectorFollower
             : public Affector
-            , public pybind::bindable
         {
         public:
             virtual void follow( const pybind::object & _target ) = 0;
 
         protected:
-            PyObject * _embedded( pybind::kernel_interface * _kernel ) override
+            PyObject * getEmbed( pybind::kernel_interface * _kernel )
             {
                 PyObject * py_obj = _kernel->scope_create_holder_t( this );
 

@@ -26,14 +26,22 @@ namespace Mengine
     {
         SERVICE_CREATE( cURLService );
 
-        ADD_SCRIPT_EMBEDDING( cURLScriptEmbedding );
+        SERVICE_WAIT( Mengine::ScriptServiceInterface, []()
+        {
+            ADD_SCRIPT_EMBEDDING( cURLScriptEmbedding );
+
+            return true;
+        } );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLPlugin::_finalizePlugin()
     {
-        REMOVE_SCRIPT_EMBEDDING( cURLScriptEmbedding );
+        if( SERVICE_EXIST( Mengine::ScriptServiceInterface ) == true )
+        {
+            REMOVE_SCRIPT_EMBEDDING( cURLScriptEmbedding );
+        }        
 
         SERVICE_FINALIZE( Mengine::cURLServiceInterface );
     }

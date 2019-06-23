@@ -4,6 +4,8 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
+#include "Kernel/FactorableUnique.h"
+
 #include "Win32ConsoleLogger.h"
 
 //////////////////////////////////////////////////////////////////////////

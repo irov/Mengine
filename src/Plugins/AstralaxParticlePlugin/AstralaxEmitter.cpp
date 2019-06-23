@@ -6,6 +6,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"

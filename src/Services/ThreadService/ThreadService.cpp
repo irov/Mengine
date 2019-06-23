@@ -2,6 +2,7 @@
 
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ThreadTaskPacket.h"
@@ -31,16 +32,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadService::~ThreadService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->lock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_availableService() const
@@ -73,14 +64,6 @@ namespace Mengine
         m_factoryThreadJob = new FactoryPool<ThreadJob, 16>();
 
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
-
-        m_mutexAllocatorPool = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
-
-        stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-            , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
-            , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
-        );
 
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
@@ -127,9 +110,6 @@ namespace Mengine
 
         m_threads.clear();
 
-        stdex_allocator_finalize_threadsafe();
-
-        m_mutexAllocatorPool = nullptr;
         m_mutexMainCode = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );

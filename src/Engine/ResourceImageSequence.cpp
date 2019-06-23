@@ -24,7 +24,7 @@ namespace Mengine
     {
         if( m_sequence.empty() )
         {
-            LOGGER_ERROR( "ResourceImageSequence::_compile: '%s' sequence count is empty"
+            LOGGER_ERROR( "'%s' sequence count is empty"
                 , this->getName().c_str()
             );
 
@@ -38,7 +38,7 @@ namespace Mengine
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "ResourceImageSequence::_compile: '%s' Image resource not found resource '%s'"
+                LOGGER_ERROR( "'%s' Image resource not found resource '%s'"
                     , this->getName().c_str()
                     , sequence.resourceName.c_str()
                 );
@@ -75,7 +75,7 @@ namespace Mengine
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( "ResourceImageSequence::getSequenceDelay: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "'%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
@@ -99,7 +99,7 @@ namespace Mengine
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( "ResourceImageSequence::getSequenceResourceName: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "'%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
@@ -123,7 +123,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( sequenceCount == 0 )
         {
-            LOGGER_ERROR( "ResourceImageSequence::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
+            LOGGER_ERROR( "'%s' invalid get last frame on empty sequences"
                 , this->getName().c_str()
             );
 
@@ -162,7 +162,7 @@ namespace Mengine
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR( "ResourceImageSequence::getSequenceResource: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "'%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount

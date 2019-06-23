@@ -5,6 +5,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/ScriptWrapperInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -26,7 +27,7 @@ namespace Mengine
                     return _kernel->ret_none();
                 }
 
-                pybind::bindable * bindable = static_cast<pybind::bindable *>(_self);
+                Scriptable * bindable = static_cast<Scriptable *>(_self);
 
                 PyObject * py_obj = bindable->getEmbed( _kernel );
 

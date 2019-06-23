@@ -41,10 +41,12 @@ namespace Mengine
     {
         SERVICE_CREATE( ResourcePrefetcherService );
 
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( ResourcePrefetcherScriptEmbedding );
-        }
+
+            return true;
+        } );
 
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), Helper::makeFactorableUnique<DefaultResourcePrefetcher>() );
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), Helper::makeFactorableUnique<DataflowResourcePrefetcher>() );

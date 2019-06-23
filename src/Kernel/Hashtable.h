@@ -148,8 +148,8 @@ namespace Mengine
                     continue;
                 }
 
-                record->key = key_type();
                 record->element = nullptr;
+                record->key = key_type();                
             }
 
             m_size = 0;

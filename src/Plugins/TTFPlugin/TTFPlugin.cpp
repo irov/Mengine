@@ -54,14 +54,12 @@ namespace Mengine
     {
         SERVICE_CREATE( TTFAtlasService );
 
-        this->addDependencyService( "TextService" );
-
         FT_Library ftlibrary;
         FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
 
         if( ft_err != 0 )
         {
-            LOGGER_ERROR( "TTFPlugin::_initialize invalid init FreeType '%d'"
+            LOGGER_ERROR( "invalid init FreeType '%d'"
                 , ft_err
             );
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PluginInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -44,19 +45,17 @@ namespace Mengine
         virtual bool _systemPlugin() const;
 
     protected:
-        bool addDependencyService( const Char * _name );
         bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory );
 
     protected:
+        typedef Vector<ConstString> VectorModuleFactory;
+        VectorModuleFactory m_moduleFactories;
+
+        ThreadMutexInterfacePtr m_mutexAllocatorPool;
+
         bool m_dynamicLoad;
         bool m_initializePlugin;
         bool m_availablePlugin;
         bool m_systemPlugin;
-
-        typedef Vector<String> VectorDependencyServices;
-        VectorDependencyServices m_dependencyServices;
-
-        typedef Vector<ConstString> VectorModuleFactory;
-        VectorModuleFactory m_moduleFactories;
     };
 }

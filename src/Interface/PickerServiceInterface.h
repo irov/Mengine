@@ -3,14 +3,14 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/PickerTrapInterface.h"
 
-#include "Kernel/Scene.h"
-
 #include "Config/Vector.h"
 
 #include "math/vec2.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<PickerTrapInterfacePtr> VectorPickerTraps;
     //////////////////////////////////////////////////////////////////////////

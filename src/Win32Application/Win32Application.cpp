@@ -443,8 +443,11 @@ namespace Mengine
 
         LocalFree( szArglist );
 
-        OPTIONS_SERVICE()
-            ->setArguments( arguments );
+        if( OPTIONS_SERVICE()
+            ->setArguments( arguments ) == false )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -1057,6 +1060,7 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
+        SERVICE_FINALIZE( Mengine::OptionsServiceInterface );
         SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
         SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
 

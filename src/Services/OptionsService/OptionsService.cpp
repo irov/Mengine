@@ -1,7 +1,8 @@
 #include "OptionsService.h"
 
-#include <string.h>
+#include "Kernel/Logger.h"
 
+#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
@@ -17,7 +18,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void OptionsService::setArguments( const ArgumentsInterfacePtr & _arguments )
+    bool OptionsService::_initializeService()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OptionsService::_finalizeService()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::setArguments( const ArgumentsInterfacePtr & _arguments )
     {
         uint32_t argument_count = _arguments->getArgumentCount();
 
@@ -40,6 +50,11 @@ namespace Mengine
 
             if( option_value_str == nullptr )
             {
+                if( strlen( option_key_str ) >= MENGINE_OPTIONS_KEY_SIZE )
+                {
+                    return false;
+                }
+
                 strcpy( op.key, option_key_str );
 
                 op.value[0] = '\0';
@@ -48,23 +63,26 @@ namespace Mengine
             {
                 size_t key_size = option_value_str - option_key_str;
 
+                if( key_size >= MENGINE_OPTIONS_KEY_SIZE )
+                {
+                    return false;
+                }
+
                 strncpy( op.key, option_key_str, key_size );
                 op.key[key_size] = '\0';
+
+                if( strlen( option_value_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )
+                {
+                    return false;
+                }
 
                 strcpy( op.value, option_value_str + 1 );
             }
 
             m_options.push_back( op );
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OptionsService::_initializeService()
-    {
+
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OptionsService::_finalizeService()
-    {
     }
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::hasOption( const Char * _key ) const
@@ -109,11 +127,20 @@ namespace Mengine
             uint32_t value_uint32;
             if( ::sscanf( op.value, "%u", &value_uint32 ) != 1 )
             { 
+                LOGGER_ERROR( "option '%s' not sscanf value '%s'"
+                    , _key
+                    , op.value
+                );
+
                 return 0;
             }
 
             return value_uint32;
         }
+
+        LOGGER_ERROR( "option '%s' not found"
+            , _key
+        );
 
         return 0;
     }

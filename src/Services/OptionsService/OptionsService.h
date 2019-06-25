@@ -11,7 +11,7 @@
 #endif
 
 #ifndef MENGINE_OPTIONS_VALUE_SIZE
-#define MENGINE_OPTIONS_VALUE_SIZE 32
+#define MENGINE_OPTIONS_VALUE_SIZE 64
 #endif
 
 namespace Mengine
@@ -28,7 +28,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setArguments( const ArgumentsInterfacePtr & _arguments ) override;
+        bool setArguments( const ArgumentsInterfacePtr & _arguments ) override;
 
     public:
         bool hasOption( const Char * _key ) const override;

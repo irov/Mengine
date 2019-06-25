@@ -14,7 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "OptionsService" )
 
     public:
-        virtual void setArguments( const ArgumentsInterfacePtr & _arguments ) = 0;
+        virtual bool setArguments( const ArgumentsInterfacePtr & _arguments ) = 0;
 
     public:
         virtual bool hasOption( const Char * _key ) const = 0;

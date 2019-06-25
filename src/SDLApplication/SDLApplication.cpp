@@ -532,8 +532,11 @@ namespace Mengine
             arguments->addArgument( arg );
         }
 
-        OPTIONS_SERVICE()
-            ->setArguments( arguments );
+        if( OPTIONS_SERVICE()
+            ->setArguments( arguments ) == false )
+        {
+            return false;
+        }
 
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );

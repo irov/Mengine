@@ -35,7 +35,7 @@ namespace Mengine
         WChar fullPath[MENGINE_MAX_PATH];
         if( Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
             );
@@ -52,7 +52,7 @@ namespace Mengine
 
         if( m_hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "Win32OutputStream::open %ls invalid open"
+            LOGGER_ERROR( "invalid open '%ls'"
                 , fullPath
             );
 
@@ -69,7 +69,7 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "Win32OutputStream::write invalid %d"
+            LOGGER_ERROR( "write invalid %d"
                 , _size
             );
 

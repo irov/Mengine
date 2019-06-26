@@ -40,6 +40,12 @@ namespace Mengine
 
         if( m_stream == nullptr )
         {
+            LOGGER_ERROR( "get asset url '%s' invalid open file '%s:%s'"
+                , m_url.c_str()
+                , m_fileGroup->getName().c_str()
+                , m_filePath.c_str()
+            );
+
             return false;
         }
 
@@ -78,8 +84,11 @@ namespace Mengine
     {
         curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 
-        curl_easy_setopt( _curl, CURLOPT_USERNAME, m_login.c_str() );
-        curl_easy_setopt( _curl, CURLOPT_PASSWORD, m_password.c_str() );
+        if( m_login.empty() == false || m_password.empty() == false )
+        {
+            curl_easy_setopt( _curl, CURLOPT_USERNAME, m_login.c_str() );
+            curl_easy_setopt( _curl, CURLOPT_PASSWORD, m_password.c_str() );
+        }
 
         /* send all data to this function  */
         curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &WriteMemoryCallback );
@@ -93,7 +102,7 @@ namespace Mengine
 
         /* some servers don't like requests that are made without a user-agent
         field, so we provide one */
-        //curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+        //curl_easy_setopt( _curl, CURLOPT_USERAGENT, "libcurl-agent/1.0" );
 
         curl_easy_setopt( _curl, CURLOPT_NOPROGRESS, 0L );
 

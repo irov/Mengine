@@ -519,7 +519,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/pybind)
     set(PYBIND_SANDBOX OFF CACHE BOOL "PYBIND_SANDBOX" FORCE)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/pybind )
-add_dependencies(pybind python)
+add_dependencies(pybind_python Python)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()
 
@@ -552,7 +552,7 @@ if(MENGINE_TOOLCHAIN_MSVC)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/opensslconf.h ${THIRDPARTY_DIR}/openssl/include/openssl/opensslconf.h COPYONLY)
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/pybind3 )
-	add_dependencies(pybind3 python3 python3_decimal)
+	add_dependencies(pybind3 Python3 Python3_decimal)
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
     endif()
 	

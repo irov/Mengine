@@ -198,7 +198,6 @@ namespace Mengine
                 AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
-
                 affector->setEasing( _easing );
                 affector->setCallback( _cb );
 

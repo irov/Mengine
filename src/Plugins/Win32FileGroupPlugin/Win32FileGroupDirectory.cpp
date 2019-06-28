@@ -8,6 +8,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -181,6 +182,8 @@ namespace Mengine
 
         Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( inputStream, nullptr );
+
         return inputStream;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -214,6 +217,8 @@ namespace Mengine
     OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const Char * _doc )
     {
         Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( outputStream, nullptr );
 
         return outputStream;
     }

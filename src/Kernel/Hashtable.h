@@ -155,11 +155,11 @@ namespace Mengine
             m_size = 0;
         }
 
-    protected:
+    public:
         class const_iterator
         {
         public:
-            inline explicit const_iterator( value_type * _carriage, value_type * _end )
+            inline const_iterator( value_type * _carriage, value_type * _end )
                 : m_carriage( _carriage )
                 , m_end( _end )
             {
@@ -182,9 +182,9 @@ namespace Mengine
             }
 
         public:
-            inline const value_type & operator -> () const
+            inline const value_type * operator -> () const
             {
-                return *m_carriage;
+                return m_carriage;
             }
 
             inline const value_type & operator * () const

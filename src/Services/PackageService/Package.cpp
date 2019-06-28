@@ -30,7 +30,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::setup( const ConstString & _name
+    void Package::initialize( const ConstString & _name
         , const ConstString & _type
         , const ConstString & _locale
         , const Tags & _platform

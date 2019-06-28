@@ -13,7 +13,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -136,6 +136,8 @@ namespace Mengine
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
+
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
@@ -166,6 +168,8 @@ namespace Mengine
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
+
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
@@ -195,6 +199,8 @@ namespace Mengine
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
@@ -236,6 +242,8 @@ namespace Mengine
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
         task->setRequestId( task_id );
         task->setTimeout( _timeout );

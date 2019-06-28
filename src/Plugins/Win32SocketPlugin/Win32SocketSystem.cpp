@@ -2,6 +2,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Win32Socket.h"
 
@@ -47,6 +48,8 @@ namespace Mengine
     SocketInterfacePtr Win32SocketSystem::createSocket( const Char * _doc )
     {
         Win32SocketPtr socket = m_factoryWin32Socket->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( socket, nullptr );
 
         return socket;
     }

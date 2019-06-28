@@ -19,7 +19,7 @@ namespace Mengine
 
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextEntry::initialize( const ConstString & _key
+    bool TextEntry::initialize( const ConstString & _key
         , const String & _text
         , const ConstString & _fontName
         , const Color & _colorFont
@@ -48,6 +48,8 @@ namespace Mengine
         m_charScale = _charScale;
 
         m_params = _params;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextEntry::getKey() const

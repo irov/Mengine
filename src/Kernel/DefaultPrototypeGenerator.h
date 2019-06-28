@@ -34,7 +34,7 @@ namespace Mengine
 
             if( object == nullptr )
             {
-                LOGGER_ERROR( "DefaultPrototypeGenerator::generate can't generate %s %s doc '%s'"
+                LOGGER_ERROR( "can't generate %s %s doc '%s'"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
 					, _doc

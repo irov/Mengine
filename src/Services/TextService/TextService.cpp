@@ -672,12 +672,10 @@ namespace Mengine
         , uint32_t _params
         , bool _isOverride )
     {
-        MapTextEntry::iterator it_found = m_texts.find( _key );
+        const TextEntryPtr & textEntry_has = m_texts.find( _key );
 
-        if( it_found != m_texts.end() )
+        if( textEntry_has != nullptr )
         {
-            const TextEntryPtr & textEntry_has = it_found->second;
-
             if( _isOverride == false )
             {
                 const String & text = textEntry_has->getValue();
@@ -703,23 +701,22 @@ namespace Mengine
 
         TextEntryPtr textEntry = m_factoryTextEntry->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
+        if( textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+        {
+            return false;
+        }
 
-        m_texts.emplace( _key, textEntry );
+        m_texts.insert( _key, textEntry );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::removeTextEntry( const ConstString& _key )
     {
-        MapTextEntry::iterator it_found = m_texts.find( _key );
-
-        if( it_found == m_texts.end() )
+        if( m_texts.remove( _key ) == nullptr )
         {
             return false;
         }
-
-        m_texts.erase( it_found );
 
         return true;
     }
@@ -754,9 +751,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString& _key ) const
     {
-        MapTextEntry::const_iterator it_found = m_texts.find( _key );
+        const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 
-        if( it_found == m_texts.end() )
+        if( textEntry == nullptr )
         {
             LOGGER_ERROR( "can't find string associated with key - '%s'"
                 , _key.c_str()
@@ -765,21 +762,17 @@ namespace Mengine
             return TextEntryInterfacePtr::none();
         }
 
-        const TextEntryInterfacePtr & textEntry = it_found->second;
-
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
     {
-        MapTextEntry::const_iterator it_found = m_texts.find( _key );
+        const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 
-        if( it_found == m_texts.end() )
+        if( textEntry == nullptr )
         {
             return false;
         }
-
-        const TextEntryPtr & textEntry = it_found->second;
 
         if( _entry != nullptr )
         {
@@ -933,13 +926,13 @@ namespace Mengine
             }
         }
 
-        for( MapTextEntry::const_iterator
+        for( HashtableTextEntry::const_iterator
             it = m_texts.begin(),
             it_end = m_texts.end();
             it != it_end;
             ++it )
         {
-            const TextEntryPtr & text = it->second;
+            const TextEntryInterfacePtr & text = it->element;
 
             const ConstString & textKey = text->getKey();
             const ConstString & fontName = text->getFontName();

@@ -18,7 +18,7 @@ namespace Mengine
         ~TextEntry() override;
 
     public:
-        void initialize( const ConstString & _key
+        bool initialize( const ConstString & _key
             , const String & _text
             , const ConstString & _font
             , const Color & _colorFont

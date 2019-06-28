@@ -60,10 +60,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLScriptEmbedding::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
+    HttpRequestID cURLScriptEmbedding::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _fileGroupName, const FilePath & _filepath, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getFileGroup( _category );
+            ->getFileGroup( _fileGroupName );
 
         if( fileGroup == nullptr )
         {

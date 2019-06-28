@@ -72,7 +72,7 @@ namespace Mengine
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 
-        int32_t readBytes = ::LZ4_decompress_fast( src_buffer, dst_buffer, (int32_t)_bufferSize );
+        int32_t readBytes = ::LZ4_decompress_safe( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferSize );
 
         if( readBytes < 0 )
         {

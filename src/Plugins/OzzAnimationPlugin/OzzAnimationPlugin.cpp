@@ -11,8 +11,6 @@
 #include "OzzScriptEmbedding.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/ScriptWrapperInterface.h"
-#include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/Document.h"
 

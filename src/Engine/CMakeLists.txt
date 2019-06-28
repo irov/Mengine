@@ -159,12 +159,6 @@ Resource\\\\File
 )
 
 ADD_FILTER(
-Resource\\\\ImageData
-	ResourceImageData.cpp
-	ResourceImageData.h
-)
-
-ADD_FILTER(
 Resource\\\\ImageSequence
 	ResourceImageSequence.cpp
 	ResourceImageSequence.h
@@ -187,6 +181,8 @@ Resource\\\\Cursor
 
 ADD_FILTER(
 Resource\\\\Image
+	ResourceImageData.cpp
+	ResourceImageData.h
 	ResourceImageSolid.h
     ResourceImageSolid.cpp
 	ResourceImageDefault.cpp

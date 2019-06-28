@@ -17,7 +17,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call build_depends.bat "%CD%\..\CMake\Depends_WIN32" build_msvc%VERSION%\%CONFIGURATION% "Visual Studio %VERSION% %YEAR%" %CONFIGURATION% /verbosity:minimal
+@call build_depends.bat "SOLUTION_NAME=build_msvc%VERSION%" "CONFIGURATION=%CONFIGURATION%" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_WIN32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "VERBOSITY=minimal" "ARCHITECTURE=Win32"
 @popd
 
 :end

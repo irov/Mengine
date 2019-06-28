@@ -37,10 +37,10 @@ namespace Mengine
             return false;
         }
 
-        m_resourceImage = RESOURCE_SERVICE()
+        const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
             ->getResource( m_resourceImageName );
 
-        if( m_resourceImage == nullptr )
+        if( resourceImage == nullptr )
         {
             LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
@@ -52,6 +52,7 @@ namespace Mengine
             return false;
         }
 
+        m_resourceImage = resourceImage;
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
 

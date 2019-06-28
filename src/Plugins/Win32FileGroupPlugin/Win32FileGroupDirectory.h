@@ -18,7 +18,7 @@ namespace Mengine
         ~Win32FileGroupDirectory() override;
 
     public:
-        bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath ) override;
+        bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath ) override;
         void finalize() override;
 
     public:
@@ -55,7 +55,7 @@ namespace Mengine
 
     protected:
         ConstString m_name;
-        FileGroupInterfacePtr m_category;
+        FileGroupInterfacePtr m_fileGroup;
 
         FilePath m_relationPath;
         FilePath m_folderPath;

@@ -7,6 +7,7 @@
 
 #include "Kernel/Scene.h"
 #include "Kernel/Document.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );
@@ -41,6 +42,13 @@ namespace Mengine
     {
         if( m_commands.empty() == false )
         {
+            return false;
+        }
+
+        if( _scene == nullptr )
+        {
+            LOGGER_ERROR( "scene == nullptr" );
+
             return false;
         }
 

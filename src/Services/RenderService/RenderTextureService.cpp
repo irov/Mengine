@@ -360,12 +360,6 @@ namespace Mengine
             }
         }
 
-        //RenderTextureInterfacePtr atlas_texture;
-        //if( this->findInAtlas( _pakName, _fileName, &atlas_texture ) == true )
-        //{
-        //	return atlas_texture;
-        //}
-
         DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( imageProvider == nullptr )
@@ -559,10 +553,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc )
     {
-        RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
-
         uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
+        RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
         texture->initialize( id, _image, _width, _height );
 
         return texture;

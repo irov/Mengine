@@ -41,7 +41,7 @@ namespace Mengine
             return 0U;
         }
 
-        if( _min <= _max )
+        if( _min >= _max )
         {
             return _max - 1;
         }
@@ -60,7 +60,7 @@ namespace Mengine
             return 0.f;
         }
 
-        std::uniform_real_distribution<float> uid( 0.f, _max - m_epsilon );
+        std::uniform_real_distribution<float> uid( 0.f, _max );
 
         float rand_value = uid( m_engineRandomize );
 
@@ -74,12 +74,12 @@ namespace Mengine
             return 0.f;
         }
 
-        if( _min <= _max )
+        if( _min >= _max )
         {
-            return _max - m_epsilon;
+            return _max;
         }
 
-        std::uniform_real_distribution<float> uid( _min, _max - m_epsilon );
+        std::uniform_real_distribution<float> uid( _min, _max );
 
         float rand_value = uid( m_engineRandomize );
 

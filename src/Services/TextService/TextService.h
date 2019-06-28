@@ -9,6 +9,7 @@
 #include "TextEntry.h"
 
 #include "Kernel/Factory.h"
+#include "Kernel/Hashtable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHolderLocalString.h"
 #include "Kernel/FilePath.h"
@@ -88,8 +89,8 @@ namespace Mengine
         bool directFontRelease( const ConstString & _name ) override;
 
     protected:
-        typedef Map<ConstString, TextEntryInterfacePtr> MapTextEntry;
-        MapTextEntry m_texts;
+        typedef Hashtable<ConstString, TextEntryInterfacePtr> HashtableTextEntry;
+        HashtableTextEntry m_texts;
 
         typedef Map<ConstString, TextFontInterfacePtr> MapTextFont;
         MapTextFont m_fonts;

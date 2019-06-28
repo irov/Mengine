@@ -1756,12 +1756,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat, const Char * _doc )
     {
-        MENGINE_UNUSED( _doc );
-
-        m_textureCount++;
-
-        DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( MENGINE_DOCUMENT_FUNCTION );
-
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 
@@ -1776,6 +1770,10 @@ namespace Mengine
             );
         }
 #endif
+
+        m_textureCount++;
+
+        DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( _doc );
 
         dx9RenderImage->initialize( m_pD3DDevice, _pD3DTexture, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 

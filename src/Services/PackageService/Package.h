@@ -19,7 +19,7 @@ namespace Mengine
         ~Package() override;
 
     public:
-        void setup( const ConstString & _name
+        void initialize( const ConstString & _name
             , const ConstString & _type
             , const ConstString & _locale
             , const Tags & _platform

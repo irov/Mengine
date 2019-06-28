@@ -297,21 +297,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonScheduleEvent;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+        uint32_t s_timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduler();
 
             DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_pipe->initialize( _delay );
 
             PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_timing->initialize( _timing, _args );
 
             PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_event->initialize( _event, _args );
 
             uint32_t id = tm->timing( py_pipe, py_timing, py_event );
@@ -319,7 +316,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool timingRemove( uint32_t _id )
+        bool s_timingRemove( uint32_t _id )
         {
             const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduler();
@@ -329,7 +326,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        SchedulerInterfacePtr createScheduler( const ConstString & _name )
+        SchedulerInterfacePtr s_createScheduler( const ConstString & _name )
         {
             SchedulerInterfacePtr sm = PLAYER_SERVICE()
                 ->createSchedulerManager( _name );
@@ -337,7 +334,7 @@ namespace Mengine
             return sm;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool destroyScheduler( const SchedulerInterfacePtr & _sm )
+        bool s_destroyScheduler( const SchedulerInterfacePtr & _sm )
         {
             if( _sm == nullptr )
             {
@@ -353,13 +350,36 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
+        uint32_t s_pipe( const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
+        {
+            PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
+            py_pipe->initialize( _pipe, _args );
+
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
+            py_timing->initialize( _timing, _args );
+
+            PythonScheduleEventPtr py_event;
+            
+            if( _event.is_none() == false )
+            {
+                py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_event->initialize( _event, _args );
+            }
+
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
+                ->getScheduler();
+
+            uint32_t id = sm->timing( py_pipe, py_timing, py_event );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduler();
 
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
             sl->initialize( _script, _args );
 
             uint32_t id = sm->event( _timing, sl );
@@ -472,7 +492,6 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( sm, 0 );
 
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
             sl->initialize( _cb, _args );
 
             uint32_t id = sm->event( _timing, sl );
@@ -672,24 +691,28 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool createCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
         {
-            if( _cb.is_callable() == false )
+            PythonSceneChangeCallbackPtr py_cb = nullptr;
+
+            if( _cb.is_none() == false )
             {
-                LOGGER_ERROR( "prototype '%s' name '%s' cb '%s' not callable"
-                    , _prototype.c_str()
+                if( _cb.is_callable() == false )
+                {
+                    LOGGER_ERROR( "prototype '%s' name '%s' cb '%s' not callable"
+                        , _prototype.c_str()
+                        , _name.c_str()
+                        , _cb.repr()
+                    );
+
+                    return false;
+                }
+
+                LOGGER_INFO( "set current scene '%s'"
                     , _name.c_str()
-                    , _cb.repr()
                 );
 
-                return false;
+                py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_cb->initialize( _cb, _args );
             }
-
-            LOGGER_INFO( "set current scene '%s'"
-                , _name.c_str()
-            );
-
-            PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-
-            py_cb->initialize( _cb, _args );
 
             ScenePtr currentScene = SCENE_SERVICE()
                 ->getCurrentScene();
@@ -743,7 +766,6 @@ namespace Mengine
             );
 
             PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_cb->initialize( _cb, _args );
 
             ScenePtr currentScene = SCENE_SERVICE()
@@ -997,13 +1019,13 @@ namespace Mengine
             return shape;
         }
         //////////////////////////////////////////////////////////////////////////
-        void quitApplication()
+        void s_quitApplication()
         {
             APPLICATION_SERVICE()
                 ->quit();
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourcePtr createResource( const ConstString& _type )
+        ResourcePtr s_createResource( const ConstString& _type )
         {
             ResourcePtr resource = RESOURCE_SERVICE()
                 ->generateResource( _type, MENGINE_DOCUMENT_PYBIND );
@@ -1015,7 +1037,7 @@ namespace Mengine
             return resource;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool directResourceCompile( const ConstString & _nameResource )
+        bool s_directResourceCompile( const ConstString & _nameResource )
         {
             ResourcePtr resource;
             if( RESOURCE_SERVICE()
@@ -1041,7 +1063,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool directResourceRelease( const ConstString & _nameResource )
+        bool s_directResourceRelease( const ConstString & _nameResource )
         {
             ResourcePtr resource;
             if( RESOURCE_SERVICE()
@@ -1067,7 +1089,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool directFontCompile( const ConstString & _fontName )
+        bool s_directFontCompile( const ConstString & _fontName )
         {
             bool successful = TEXT_SERVICE()
                 ->directFontCompile( _fontName );
@@ -1075,7 +1097,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool directFontRelease( const ConstString & _fontName )
+        bool s_directFontRelease( const ConstString & _fontName )
         {
             bool successful = TEXT_SERVICE()
                 ->directFontRelease( _fontName );
@@ -1147,7 +1169,7 @@ namespace Mengine
                 ->getFixedDisplayResolution();
         }
         //////////////////////////////////////////////////////////////////////////
-        void renderOneFrame()
+        void s_renderOneFrame()
         {
             RENDER_SERVICE()
                 ->beginScene();
@@ -1265,7 +1287,7 @@ namespace Mengine
             return resource;
         }
         //////////////////////////////////////////////////////////////////////////
-        void minimizeWindow()
+        void s_minimizeWindow()
         {
             APPLICATION_SERVICE()
                 ->minimizeWindow();
@@ -1816,7 +1838,7 @@ namespace Mengine
             }
 
         public:
-            void setup( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
+            void initialize( const ArrowPtr & _arrow, const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
             {
                 m_arrow = _arrow;
                 m_renderCamera = _camera;
@@ -1877,8 +1899,7 @@ namespace Mengine
             }
 
             PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject( MENGINE_DOCUMENT_PYBIND );
-
-            provider->setup( arrow, camera, viewport, _cb, _args );
+            provider->initialize( arrow, camera, viewport, _cb, _args );
 
             uint32_t id = INPUT_SERVICE()
                 ->addMousePositionProvider( provider );
@@ -2582,25 +2603,25 @@ namespace Mengine
             return renderCamera;
         }
         //////////////////////////////////////////////////////////////////////////
-        void showKeyboard()
+        void s_showKeyboard()
         {
             APPLICATION_SERVICE()
                 ->showKeyboard();
         }
         //////////////////////////////////////////////////////////////////////////
-        void hideKeyboard()
+        void s_hideKeyboard()
         {
             APPLICATION_SERVICE()
                 ->hideKeyboard();
         }
         //////////////////////////////////////////////////////////////////////////
-        bool hasResource( const ConstString & _name )
+        bool s_hasResource( const ConstString & _name )
         {
             return RESOURCE_SERVICE()
                 ->hasResource( _name, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
+        bool s_removeCurrentScene( bool _immediately, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _cb.is_callable() == false )
             {
@@ -3464,13 +3485,14 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
 
-        pybind::def_functor_args( _kernel, "timing", nodeScriptMethod, &EngineScriptMethod::timing );
-        pybind::def_functor( _kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::timingRemove );
+        pybind::def_functor_args( _kernel, "timing", nodeScriptMethod, &EngineScriptMethod::s_timing );
+        pybind::def_functor( _kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::s_timingRemove );
 
-        pybind::def_functor( _kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::createScheduler );
-        pybind::def_functor( _kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::destroyScheduler );
+        pybind::def_functor( _kernel, "createScheduler", nodeScriptMethod, &EngineScriptMethod::s_createScheduler );
+        pybind::def_functor( _kernel, "destroyScheduler", nodeScriptMethod, &EngineScriptMethod::s_destroyScheduler );
 
         pybind::def_functor_args( _kernel, "schedule", nodeScriptMethod, &EngineScriptMethod::s_schedule );
+        pybind::def_functor_args( _kernel, "pipe", nodeScriptMethod, &EngineScriptMethod::s_pipe );
         pybind::def_functor( _kernel, "scheduleRemove", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemove );
         pybind::def_functor( _kernel, "scheduleRemoveAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleRemoveAll );
         pybind::def_functor( _kernel, "scheduleFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleFreeze );
@@ -3500,15 +3522,15 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "setArrowLayer", nodeScriptMethod, &EngineScriptMethod::s_setArrowLayer );
 
-        pybind::def_functor( _kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::createResource );
-        pybind::def_functor( _kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::directResourceCompile );
-        pybind::def_functor( _kernel, "directResourceRelease", nodeScriptMethod, &EngineScriptMethod::directResourceRelease );
+        pybind::def_functor( _kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::s_createResource );
+        pybind::def_functor( _kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::s_directResourceCompile );
+        pybind::def_functor( _kernel, "directResourceRelease", nodeScriptMethod, &EngineScriptMethod::s_directResourceRelease );
         pybind::def_functor( _kernel, "getResourceReference", nodeScriptMethod, &EngineScriptMethod::s_getResourceReference );
 
-        pybind::def_functor( _kernel, "directFontCompile", nodeScriptMethod, &EngineScriptMethod::directFontCompile );
-        pybind::def_functor( _kernel, "directFontRelease", nodeScriptMethod, &EngineScriptMethod::directFontRelease );
+        pybind::def_functor( _kernel, "directFontCompile", nodeScriptMethod, &EngineScriptMethod::s_directFontCompile );
+        pybind::def_functor( _kernel, "directFontRelease", nodeScriptMethod, &EngineScriptMethod::s_directFontRelease );
 
-        pybind::def_functor( _kernel, "quitApplication", nodeScriptMethod, &EngineScriptMethod::quitApplication );
+        pybind::def_functor( _kernel, "quitApplication", nodeScriptMethod, &EngineScriptMethod::s_quitApplication );
         pybind::def_functor( _kernel, "setFullscreenMode", nodeScriptMethod, &EngineScriptMethod::s_setFullscreenMode );
         pybind::def_functor( _kernel, "getFullscreenMode", nodeScriptMethod, &EngineScriptMethod::s_getFullscreenMode );
         pybind::def_functor( _kernel, "setFixedContentResolution", nodeScriptMethod, &EngineScriptMethod::s_setFixedContentResolution );
@@ -3517,11 +3539,11 @@ namespace Mengine
         pybind::def_functor( _kernel, "getFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedDisplayResolution );
 
 
-        pybind::def_functor( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::renderOneFrame );
+        pybind::def_functor( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::s_renderOneFrame );
         pybind::def_functor( _kernel, "writeImageToFile", nodeScriptMethod, &EngineScriptMethod::s_writeImageToFile );
         pybind::def_functor( _kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
         pybind::def_functor( _kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
-        pybind::def_functor( _kernel, "minimizeWindow", nodeScriptMethod, &EngineScriptMethod::minimizeWindow );
+        pybind::def_functor( _kernel, "minimizeWindow", nodeScriptMethod, &EngineScriptMethod::s_minimizeWindow );
 
         pybind::def_functor( _kernel, "getCurrentResolution", nodeScriptMethod, &EngineScriptMethod::s_getCurrentResolution );
         pybind::def_functor( _kernel, "getContentResolution", nodeScriptMethod, &EngineScriptMethod::s_getContentResolution );
@@ -3552,12 +3574,12 @@ namespace Mengine
         pybind::def_functor( _kernel, "polygon_wm", nodeScriptMethod, &EngineScriptMethod::s_polygon_wm );
         pybind::def_functor( _kernel, "polygon_anchor", nodeScriptMethod, &EngineScriptMethod::s_polygon_anchor );
 
-        pybind::def_functor( _kernel, "showKeyboard", nodeScriptMethod, &EngineScriptMethod::showKeyboard );
-        pybind::def_functor( _kernel, "hideKeyboard", nodeScriptMethod, &EngineScriptMethod::hideKeyboard );
+        pybind::def_functor( _kernel, "showKeyboard", nodeScriptMethod, &EngineScriptMethod::s_showKeyboard );
+        pybind::def_functor( _kernel, "hideKeyboard", nodeScriptMethod, &EngineScriptMethod::s_hideKeyboard );
 
-        pybind::def_functor( _kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::hasResource );
+        pybind::def_functor( _kernel, "hasResource", nodeScriptMethod, &EngineScriptMethod::s_hasResource );
 
-        pybind::def_functor_args( _kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::removeCurrentScene );
+        pybind::def_functor_args( _kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::s_removeCurrentScene );
 
         pybind::def_functor_args( _kernel, "addMouseMoveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseMoveHandler );
         pybind::def_functor_args( _kernel, "addMouseButtonHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandler );

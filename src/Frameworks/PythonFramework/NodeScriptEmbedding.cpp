@@ -501,15 +501,12 @@ namespace Mengine
         uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
             DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
-
             pipe->initialize( _delay );
 
             PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_timing->initialize( _timing, _args );
 
             PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_event->initialize( _event, _args );
 
             uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event );
@@ -522,16 +519,18 @@ namespace Mengine
         uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
             PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_pipe->initialize( _pipe, _args );
 
             PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject( MENGINE_DOCUMENT_PYBIND );
-
             py_timing->initialize( _timing, _args );
 
-            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
-
-            py_event->initialize( _event, _args );
+            PythonScheduleEventPtr py_event;
+            
+            if( _event.is_none() == false )
+            {
+                py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_event->initialize( _event, _args );
+            }
 
             uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event );
 

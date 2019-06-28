@@ -238,7 +238,7 @@ namespace Mengine
 
         PackagePtr package = m_factoryPackage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        package->setup( _desc.name
+        package->initialize( _desc.name
             , _desc.type
             , _desc.locale
             , _desc.platform

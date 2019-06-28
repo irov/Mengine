@@ -25,7 +25,7 @@ namespace Mengine
         ConverterInterfacePtr createConverter( const ConstString & _type, const Char * _doc ) override;
 
     public:
-        bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out, const Char * _doc ) override;
+        bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath * _out, const Char * _doc ) override;
 
     protected:
         typedef Map<ConstString, ConverterFactoryInterfacePtr> MapConverterSystem;

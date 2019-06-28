@@ -18,6 +18,10 @@ src
     VideoConverterFFMPEGToOGV.h
     VideoConverterFFMPEGToOGVA.cpp
     VideoConverterFFMPEGToOGVA.h
+    ShaderConverterTextToPSO.cpp
+    ShaderConverterTextToPSO.h
+    ShaderConverterTextToVSO.cpp
+    ShaderConverterTextToVSO.h
 	ParticleConverterPTCToPTZ.cpp
 	ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp

@@ -3,6 +3,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 
@@ -259,14 +260,17 @@ namespace Mengine
 
             const FilePath & filePath = meta_FragmentShader.get_File_Path();
 
+            ConstString fileConverter;
+            meta_FragmentShader.get_File_Converter( &fileConverter );
+
             bool isCompile = false;
             meta_FragmentShader.get_File_Compile( &isCompile );
 
-            RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, isCompile );
+            RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, fileConverter, isCompile );
 
             if( shader == nullptr )
             {
-                LOGGER_ERROR( "material %s:%s invalid load fragment shader %s compile %d"
+                LOGGER_ERROR( "material '%s:%s' invalid load fragment shader '%s' compile %d"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , filePath.c_str()
@@ -300,14 +304,17 @@ namespace Mengine
 
             const FilePath & filePath = meta_VertexShader.get_File_Path();
 
+            ConstString fileConverter;
+            meta_VertexShader.get_File_Converter( &fileConverter );
+
             bool isCompile = false;
             meta_VertexShader.get_File_Compile( &isCompile );
 
-            RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _fileGroup, filePath, isCompile );
+            RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _fileGroup, filePath, fileConverter, isCompile );
 
             if( shader == nullptr )
             {
-                LOGGER_ERROR( "material %s:%s invalid load vertex shader '%s' compile %d"
+                LOGGER_ERROR( "material '%s:%s' invalid load vertex shader '%s' compile %d"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , filePath.c_str()
@@ -390,7 +397,7 @@ namespace Mengine
 
             if( vertexShader == nullptr )
             {
-                LOGGER_ERROR( "material %s:%s program '%s' not found vertex shader '%s'"
+                LOGGER_ERROR( "material '%s:%s' program '%s' not found vertex shader '%s'"
                     , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , name.c_str()
@@ -1087,9 +1094,16 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile )
+    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converter, bool _compile )
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, "RenderMaterialService::createVertexShader_", __FILE__, __LINE__ );
+        FilePath outFilePath;
+        if( CONVERTER_SERVICE()
+            ->convert( _converter, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            return nullptr;
+        }
+
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, "RenderMaterialService::createVertexShader_", __FILE__, __LINE__ );
 
         if( memory == nullptr )
         {
@@ -1102,9 +1116,16 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile )
+    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converter, bool _compile )
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, "RenderMaterialService::createFragmentShader_", __FILE__, __LINE__ );
+        FilePath outFilePath;
+        if( CONVERTER_SERVICE()
+            ->convert( _converter, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+        {
+            return nullptr;
+        }
+
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, "RenderMaterialService::createFragmentShader_", __FILE__, __LINE__ );
 
         if( memory == nullptr )
         {

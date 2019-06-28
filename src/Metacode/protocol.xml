@@ -1,4 +1,4 @@
-<Protocol Version = "135">
+<Protocol Version = "136">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -107,6 +107,7 @@
           <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
 
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Compile" Type="bool"/>
         </Node>
 
@@ -115,6 +116,7 @@
           <Attribute Name="RenderPlatform" Type="Mengine::ConstString" Required="1"/>
 
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
           <Member Node="File" Name="Compile" Type="bool"/>
         </Node>
 

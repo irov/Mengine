@@ -191,15 +191,6 @@ namespace Mengine
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onCompile", EVENT_ENTITY_COMPILE );
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onRelease", EVENT_ENTITY_RELEASE );
 
-        //this->registerEventMethod( EVENT_ENTITY_DESTROY, "onDestroy", py_type );
-
-        //this->registerEventMethod( EVENT_ENTITY_PREPARATION, "onPreparation", py_type );
-        //this->registerEventMethod( EVENT_ENTITY_ACTIVATE, "onActivate", py_type );
-        //this->registerEventMethod( EVENT_ENTITY_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
-        //this->registerEventMethod( EVENT_ENTITY_DEACTIVATE, "onDeactivate", py_type );
-        //this->registerEventMethod( EVENT_ENTITY_COMPILE, "onCompile", py_type );
-        //this->registerEventMethod( EVENT_ENTITY_RELEASE, "onRelease", py_type );
-
         m_type = py_type;
 
         return m_type;

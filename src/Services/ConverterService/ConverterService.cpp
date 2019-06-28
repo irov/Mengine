@@ -99,8 +99,13 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out, const Char * _doc )
+    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath * _out, const Char * _doc )
     {
+        if( _converter.empty() == true )
+        {
+            *_out = _in;
+        }
+
         ConverterInterfacePtr converter = this->createConverter( _converter, _doc );
 
         if( converter == nullptr )
@@ -195,7 +200,7 @@ namespace Mengine
 
             if( fileTimeInput <= fileTimeOutput )
             {
-                _out = options.outputFileName;
+                *_out = options.outputFileName;
 
                 if( converter->validateVersion( newFile ) == true )
                 {
@@ -230,7 +235,7 @@ namespace Mengine
             return false;
         }
 
-        _out = options.outputFileName;
+        *_out = options.outputFileName;
 
         return true;
     }

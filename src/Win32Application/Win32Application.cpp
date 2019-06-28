@@ -545,9 +545,7 @@ namespace Mengine
         m_serviceProvider = serviceProvider;
 
         SERVICE_CREATE( FactoryService );
-
         SERVICE_CREATE( UnicodeSystem );
-
         SERVICE_CREATE( OptionsService );
 
         if( this->initializeOptionsService_() == false )

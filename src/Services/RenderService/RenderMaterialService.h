@@ -97,8 +97,8 @@ namespace Mengine
 
     protected:
         RenderVertexAttributeInterfacePtr createVertexAttribute_( const ConstString & _name, uint32_t elementSize );
-        RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile );
-        RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile );
+        RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converter, bool _compile );
+        RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converter, bool _compile );
 
     protected:
         uint32_t m_materialEnumerator;

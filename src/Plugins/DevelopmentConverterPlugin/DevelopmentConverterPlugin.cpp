@@ -11,6 +11,8 @@
 #include "VideoConverterFFMPEGToWEBM.h"
 #include "VideoConverterFFMPEGToOGV.h"
 #include "VideoConverterFFMPEGToOGVA.h"
+#include "ShaderConverterTextToVSO.h"
+#include "ShaderConverterTextToPSO.h"
 #include "MovieKeyConverterXMLToAEK.h"
 
 #include "Kernel/Logger.h"
@@ -43,6 +45,8 @@ namespace Mengine
         Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf" );
         Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf" );
         Helper::registerConverter<ImageConverterPNGToACF>( "png2acf" );
+        Helper::registerConverter<ShaderConverterTextToVSO>( "text2vso" );
+        Helper::registerConverter<ShaderConverterTextToPSO>( "text2pso" );
 
         return true;
     }
@@ -60,5 +64,7 @@ namespace Mengine
         Helper::unregisterConverter( "pvr2htf" );
         Helper::unregisterConverter( "dds2htf" );
         Helper::unregisterConverter( "png2acf" );
+        Helper::unregisterConverter( "text2vso" );
+        Helper::unregisterConverter( "text2pso" );
     }
 }

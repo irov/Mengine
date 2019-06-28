@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 135;
+        return 136;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 1830252627; 
+        return 1755424820; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -585,6 +585,11 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Compile );
             }
         
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_FragmentShader::_preparationIncludes( uint32_t _id, uint32_t _count )
@@ -1023,6 +1028,11 @@ namespace Metacode
             if( (m_flagNoRequiredAttribute & EMETA_File_Compile) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_File_Compile );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
             }
         
         }

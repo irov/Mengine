@@ -670,7 +670,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
-        bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
+        bool createCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _cb.is_callable() == false )
             {
@@ -719,6 +719,49 @@ namespace Mengine
                 {
                     scene = nullptr;
 
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool setCurrentScene( const ScenePtr & _scene, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
+        {
+            if( _cb.is_callable() == false )
+            {
+                LOGGER_ERROR( "scene name '%s' cb '%s' not callable"
+                    , _name.c_str()
+                    , _cb.repr()
+                );
+
+                return false;
+            }
+
+            LOGGER_INFO( "set current scene '%s'"
+                , _name.c_str()
+            );
+
+            PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+
+            py_cb->initialize( _cb, _args );
+
+            ScenePtr currentScene = SCENE_SERVICE()
+                ->getCurrentScene();
+
+            if( currentScene != nullptr && currentScene->getName() == _scene->getName() )
+            {
+                if( SCENE_SERVICE()
+                    ->restartCurrentScene( _immediately, py_cb ) == false )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if( SCENE_SERVICE()
+                    ->setCurrentScene( _scene, _immediately, _destroyOld, py_cb ) == false )
+                {
                     return false;
                 }
             }
@@ -3400,6 +3443,7 @@ namespace Mengine
     {
         EngineScriptMethod * nodeScriptMethod = new FactorableUnique<EngineScriptMethod>();
 
+        pybind::def_functor_args( _kernel, "createCurrentScene", nodeScriptMethod, &EngineScriptMethod::createCurrentScene );
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
         pybind::def_functor( _kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
 

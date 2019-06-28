@@ -70,7 +70,7 @@ namespace Mengine
 
         FilePath newFilePath;
         if( CONVERTER_SERVICE()
-            ->convert( converterType, fileGroup, filePath, newFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->convert( converterType, fileGroup, filePath, &newFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "resource '%s' group '%s' can't convert '%s':'%s'"
                 , _resource->getName().c_str()

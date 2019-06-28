@@ -64,7 +64,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Compile = (1 <<0),
+                    EMETA_File_Compile = (1 <<1),
+                    EMETA_File_Converter = (1 <<0),
                 };
                 
                 uint32_t m_flagNoRequiredAttribute;
@@ -122,6 +123,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_Converter() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Converter( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
+                }
+                
+                bool get_File_Converter( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -147,6 +178,7 @@ namespace Metacode
                 Mengine::ConstString m_Name;
                 Mengine::ConstString m_RenderPlatform;
                 bool m_File_Compile;
+                Mengine::ConstString m_File_Converter;
                 Mengine::FilePath m_File_Path;
             };
             
@@ -980,7 +1012,8 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Compile = (1 <<0),
+                    EMETA_File_Compile = (1 <<1),
+                    EMETA_File_Converter = (1 <<0),
                 };
                 
                 uint32_t m_flagNoRequiredAttribute;
@@ -1038,6 +1071,36 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_File_Converter() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Converter( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
+                }
+                
+                bool get_File_Converter( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -1063,6 +1126,7 @@ namespace Metacode
                 Mengine::ConstString m_Name;
                 Mengine::ConstString m_RenderPlatform;
                 bool m_File_Compile;
+                Mengine::ConstString m_File_Converter;
                 Mengine::FilePath m_File_Path;
             };
             

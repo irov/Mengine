@@ -610,25 +610,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath )
+    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIniPath )
     {
         if( SERVICE_EXIST( Mengine::GameServiceInterface ) == false )
         {
             return false;
         }
 
-        LOGGER_INFO( "Application load resource packs... %s:%s"
-            , _category->getName().c_str()
-            , _resourceIniPath.c_str()
-        );
-
-        if( PACKAGE_SERVICE()
-            ->loadPackages( _category, _resourceIniPath, MENGINE_DOCUMENT_FUNCTION ) == false )
+        if( _resourceIniPath.empty() == false )
         {
-            LOGGER_CRITICAL( "Application invalid load resource packs"
-            );
+            if( PACKAGE_SERVICE()
+                ->loadPackages( _fileGroup, _resourceIniPath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_CRITICAL( "Application invalid load resource packs"
+                );
 
-            return false;
+                return false;
+            }
         }
 
         if( HAS_OPTION( "locale" ) == true )

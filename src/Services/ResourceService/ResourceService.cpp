@@ -149,14 +149,14 @@ namespace Mengine
                     continue;
                 }
 
-                const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
+                const FileGroupInterfacePtr & resource_fileGroup = has_resource->getFileGroup();
 
                 LOGGER_ERROR( "path '%s' already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
                     , _fileGroup->getName().c_str()
-                    , resource_category->getName().c_str()
+                    , resource_fileGroup->getName().c_str()
                     , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
                     , has_resource->getName().c_str()
@@ -305,14 +305,14 @@ namespace Mengine
             ResourcePtr has_resource = nullptr;
             if( this->hasResource( name, &has_resource ) == false )
             {
-                const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
+                const FileGroupInterfacePtr & resource_fileGroup = has_resource->getFileGroup();
 
                 LOGGER_ERROR( "path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _path.c_str()
                     , name.c_str()
                     , groupName.c_str()
                     , _pak->getName().c_str()
-                    , resource_category->getName().c_str()
+                    , resource_fileGroup->getName().c_str()
                     , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
                     , has_resource->getName().c_str()
@@ -404,10 +404,10 @@ namespace Mengine
 
         if( prev_resource != nullptr )
         {
-            const FileGroupInterfacePtr & insert_category = prev_resource->getFileGroup();
+            const FileGroupInterfacePtr & insert_fileGroup = prev_resource->getFileGroup();
             const ConstString & insert_group = prev_resource->getGroupName();
 
-            ResourceCacheKey remove_cache_key = std::make_pair( insert_category->getName(), insert_group );
+            ResourceCacheKey remove_cache_key = std::make_pair( insert_fileGroup->getName(), insert_group );
 
             MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 

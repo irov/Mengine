@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY(AmplifierPlugin)
 ADD_SUBDIRECTORY(ZipPlugin)
 ADD_SUBDIRECTORY(LZ4Plugin)
 ADD_SUBDIRECTORY(OggVorbisPlugin)
+ADD_SUBDIRECTORY(TexturepackerPlugin)
 
 #ADD_SUBDIRECTORY( PathFinderPlugin )
 

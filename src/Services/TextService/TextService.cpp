@@ -920,14 +920,7 @@ namespace Mengine
 
         bool successful = true;
 
-        if( m_defaultFontName.empty() == true )
-        {
-            LOGGER_ERROR( "not setup default font name!"
-            );
-
-            successful = false;
-        }
-        else
+        if( m_defaultFontName.empty() == false )
         {
             TextFontInterfacePtr font;
             if( this->existFont( m_defaultFontName, font ) == false )

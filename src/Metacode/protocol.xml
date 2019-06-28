@@ -1,4 +1,4 @@
-<Protocol Version = "135">
+<Protocol Version = "136">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -236,6 +236,13 @@
             <Attribute Name="Index" Type="uint32_t" Required="1"/>
             <Attribute Name="ResourceName" Type="Mengine::ConstString" Required="1"/>
           </Node>
+        </Node>
+        
+        <Node Name="ResourceTexturepacker" Inheritance = "Resource">
+            <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+            <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+            
+            <Member Node="Image" Name="Name" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
         <Node Name="ResourceCursorSystem" Inheritance = "Resource">

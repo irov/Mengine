@@ -75,7 +75,7 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup, const Char * _doc )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, const Char * _doc )
     {
         LOGGER_INFO( "group '%s' path '%s' type '%s'"
             , _name.c_str()
@@ -123,9 +123,9 @@ namespace Mengine
             m_defaultFileGroup = fileGroup;
         }
 
-        if( _fileGroup != nullptr )
+        if( _outFileGroup != nullptr )
         {
-            *_fileGroup = fileGroup;
+            *_outFileGroup = fileGroup;
         }
 
         m_fileGroups.emplace( _name, fileGroup );

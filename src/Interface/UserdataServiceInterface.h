@@ -20,7 +20,7 @@ namespace Mengine
         SERVICE_DECLARE( "UserdataService" );
 
     public:
-        virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & path ) = 0;
+        virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & path ) = 0;
         virtual bool removeUserdata( const ConstString & _name ) = 0;
         virtual bool hasUserdata( const ConstString & _name ) const = 0;
 

@@ -29,7 +29,7 @@ namespace Mengine
 
         virtual const mt::uv4f & getUV() const = 0;
 
-        virtual void setCategory( const FileGroupInterfacePtr & _category ) = 0;
+        virtual void setCategory( const FileGroupInterfacePtr & _fileGroup ) = 0;
         virtual const FileGroupInterfacePtr & getCategory() const = 0;
 
         virtual void setFileName( const FilePath & _fileName ) = 0;

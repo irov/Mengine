@@ -3,6 +3,8 @@
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 
+#include "Kernel/ScriptWrapperInterface.h"
+
 extern "C"
 {
     struct _object;
@@ -16,8 +18,6 @@ namespace pybind
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class Scriptable
         : public Mixin

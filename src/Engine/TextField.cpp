@@ -982,17 +982,11 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    void TextField::updateFont_() const
+    bool TextField::updateFont_() const
     {
         m_invalidateFont = false;
 
         ConstString fontName = this->calcFontName();
-
-        if( fontName.empty() == true )
-        {
-            fontName = TEXT_SERVICE()
-                ->getDefaultFontName();
-        }
 
         if( m_font != nullptr )
         {
@@ -1000,7 +994,7 @@ namespace Mengine
 
             if( fontName == currentFontName )
             {
-                return;
+                return true;
             }
             else
             {
@@ -1011,7 +1005,7 @@ namespace Mengine
 
         if( fontName.empty() == true )
         {
-            return;
+            return false;
         }
 
         const TextFontInterfacePtr & font = TEXT_SERVICE()
@@ -1024,20 +1018,22 @@ namespace Mengine
                 , fontName.c_str()
             );
 
-            return;
+            return false;
         }
 
-        m_font = font;
-
-        if( m_font->compileFont() == false )
+        if( font->compileFont() == false )
         {
             LOGGER_ERROR( "font '%s' invalid compile font '%s'"
                 , this->getName().c_str()
                 , fontName.c_str()
             );
 
-            return;
+            return false;
         }
+
+        m_font = font;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextEntry_() const
@@ -1075,14 +1071,6 @@ namespace Mengine
 
                 return fontName;
             }
-        }
-
-        if( m_fontName.empty() == true )
-        {
-            const ConstString & fontName = TEXT_SERVICE()
-                ->getDefaultFontName();
-
-            return fontName;
         }
 
         return m_fontName;

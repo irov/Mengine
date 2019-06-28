@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ResourceImageDefault.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Config/Typedef.h"
 

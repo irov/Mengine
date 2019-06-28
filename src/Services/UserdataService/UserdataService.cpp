@@ -41,13 +41,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path )
+    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         MapDatas::const_iterator it_found = m_datas.find( _name );
 
         if( it_found != m_datas.end() )
         {
-            LOGGER_ERROR( "UserdataService::addData data %s already exist"
+            LOGGER_ERROR( "data '%s' already exist"
                 , _name.c_str()
             );
 
@@ -55,7 +55,7 @@ namespace Mengine
         }
 
         UserdataDesc desc;
-        desc.category = _category;
+        desc.category = _fileGroup;
         desc.path = _path;
 
         m_datas.emplace( _name, desc );
@@ -102,7 +102,7 @@ namespace Mengine
 
         if( it_found == m_datas.end() )
         {
-            LOGGER_ERROR( "UserdataService::loadData: data %s not found"
+            LOGGER_ERROR( "data '%s' not found"
                 , _name.c_str()
             );
 
@@ -116,7 +116,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "data %s invalid open file %s"
+            LOGGER_ERROR( "data '%s' invalid open file '%s'"
                 , _name.c_str()
                 , desc.path.c_str()
             );
@@ -128,7 +128,7 @@ namespace Mengine
 
         if( binaryBuffer == nullptr )
         {
-            LOGGER_ERROR( "data %s invalid load stream archive %s"
+            LOGGER_ERROR( "data '%s' invalid load stream archive '%s'"
                 , _name.c_str()
                 , desc.path.c_str()
             );

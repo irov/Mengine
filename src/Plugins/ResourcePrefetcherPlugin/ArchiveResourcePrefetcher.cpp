@@ -3,6 +3,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/Content.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -29,7 +30,7 @@ namespace Mengine
     {
         Content * content = _resource->getContent();
 
-        MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
+        MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
             , _resource->getType().c_str()
         );
 
@@ -52,7 +53,7 @@ namespace Mengine
     {
         Content * content = _resource->getContent();
 
-        MENGINE_ASSERTION_FATAL( content != nullptr, "resource '%s' is not contentable"
+        MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
             , _resource->getType().c_str()
         );
 

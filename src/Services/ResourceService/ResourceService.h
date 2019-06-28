@@ -34,7 +34,7 @@ namespace Mengine
     public:
         PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const override;
 
-        PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr & _category, const ConstString & _group, const ConstString & _name, const ConstString & _type, const Char * _doc ) override;
+        PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) override;
         bool removeResource( const ResourcePtr & _resource ) override;
 
     public:

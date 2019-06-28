@@ -35,7 +35,7 @@ namespace Mengine
         , const ConstString & _locale
         , const Tags & _platform
         , const FilePath & _descriptionPath
-        , const FileGroupInterfacePtr & _category
+        , const FileGroupInterfacePtr & _mountFileGroup
         , const FilePath & _path
         , bool _preload )
     {
@@ -44,7 +44,7 @@ namespace Mengine
         m_locale = _locale;
         m_platform = _platform;
         m_descriptionPath = _descriptionPath;
-        m_category = _category;
+        m_mountFileGroup = _mountFileGroup;
         m_path = _path;
         m_preload = _preload;
     }
@@ -123,8 +123,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::mountFileGroup_( const Char * _doc )
     {
+        FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_category, m_path, m_type, &m_fileGroup, _doc ) == false )
+            ->mountFileGroup( m_name, m_mountFileGroup, m_path, m_type, &fileGroup, _doc ) == false )
         {
             LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
                 , m_name.c_str()
@@ -133,6 +134,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_fileGroup = fileGroup;
 
         return true;
     }

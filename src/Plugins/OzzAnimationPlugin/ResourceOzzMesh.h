@@ -18,6 +18,7 @@ namespace Mengine
         , public Content
         , public UnknownResourceOzzMeshInterface
     {
+        DECLARE_VISITABLE(Resource);
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();
 

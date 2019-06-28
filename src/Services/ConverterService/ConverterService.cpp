@@ -99,7 +99,7 @@ namespace Mengine
         return converter;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out, const Char * _doc )
+    bool ConverterService::convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath & _out, const Char * _doc )
     {
         ConverterInterfacePtr converter = this->createConverter( _converter, _doc );
 
@@ -113,7 +113,7 @@ namespace Mengine
         }
 
         ConverterOptions options;
-        options.fileGroup = _category;
+        options.fileGroup = _fileGroup;
         options.inputFileName = _in;
 
         PathString cache_path;

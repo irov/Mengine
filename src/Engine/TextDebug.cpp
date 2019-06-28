@@ -135,6 +135,11 @@ namespace Mengine
             {
                 fontName = TEXT_SERVICE()
                     ->getDefaultFontName();
+
+                if( fontName.empty() == true )
+                {
+                    return;
+                }
             }
 
             const TextFontInterfacePtr & font = TEXT_SERVICE()

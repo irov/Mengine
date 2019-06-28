@@ -71,22 +71,6 @@ namespace Mengine
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeString( const WString & _value )
-        {
-            String buffer_value( _value.begin(), _value.end() );
-            ConstString cstr = stringizeString( buffer_value );
-
-            return cstr;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeString( const U32String & _value )
-        {
-            String buffer_value( _value.begin(), _value.end() );
-            ConstString cstr = stringizeString( buffer_value );
-
-            return cstr;
-        }
-        //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeStringLocal( const Char * _value, ConstString::size_type _size )
         {
             ConstString cstr;

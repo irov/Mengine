@@ -33,7 +33,7 @@ namespace Mengine
         virtual PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const = 0;
 
     public:
-        virtual PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr & _category, const ConstString & _group, const ConstString & _name, const ConstString & _type, const Char * _doc ) = 0;
+        virtual PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) = 0;
 
     public:
         virtual bool removeResource( const ResourcePtr & _resource ) = 0;

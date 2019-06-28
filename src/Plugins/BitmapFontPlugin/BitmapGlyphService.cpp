@@ -35,7 +35,7 @@ namespace Mengine
         m_factoryTextGlyph = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    BitmapGlyphPtr BitmapGlyphService::getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path )
+    BitmapGlyphPtr BitmapGlyphService::getGlyph( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         MapBitmapGlyph::iterator it_found = m_glyphs.find( _path );
 
@@ -48,7 +48,7 @@ namespace Mengine
 
         BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( glyph->initialize( _category, _path ) == false )
+        if( glyph->initialize( _fileGroup, _path ) == false )
         {
             return nullptr;
         }

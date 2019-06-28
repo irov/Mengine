@@ -65,10 +65,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path )
+    bool FileGroupZip::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         m_name = _name;
-        m_category = _category;
+        m_fileGroup = _fileGroup;
         m_path = _path;
 
         if( this->loadHeader_() == false )
@@ -100,7 +100,7 @@ namespace Mengine
     bool FileGroupZip::loadHeader_()
     {
         InputStreamInterfacePtr zipFile = FILE_SERVICE()
-            ->openInputFile( m_category, m_path, false, MENGINE_DOCUMENT_FUNCTION );
+            ->openInputFile( m_fileGroup, m_path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( zipFile == nullptr )
         {
@@ -225,7 +225,7 @@ namespace Mengine
         m_files.clear();
         m_indexes.clear();
 
-        m_category = nullptr;
+        m_fileGroup = nullptr;
         m_zipFile = nullptr;
 
         m_mutex = nullptr;
@@ -238,7 +238,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & FileGroupZip::getCategory() const
     {
-        return m_category;
+        return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::isPacked() const
@@ -426,7 +426,7 @@ namespace Mengine
 
         if( _streaming == true )
         {
-            InputStreamInterfacePtr stream = m_category->createInputFile( _fileName, true, _doc );
+            InputStreamInterfacePtr stream = m_fileGroup->createInputFile( _fileName, true, _doc );
 
             return stream;
         }
@@ -492,7 +492,7 @@ namespace Mengine
                 return false;
             }
 
-            if( m_category->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
+            if( m_fileGroup->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
             {
                 LOGGER_ERROR( "pak '%s' file '%s' invalid open range %d:%d"
                     , m_path.c_str()

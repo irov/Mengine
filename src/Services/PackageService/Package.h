@@ -24,7 +24,7 @@ namespace Mengine
             , const ConstString & _locale
             , const Tags & _platform
             , const FilePath & _descriptionPath
-            , const FileGroupInterfacePtr & _category
+            , const FileGroupInterfacePtr & _mountFileGroup
             , const FilePath & _path
             , bool _preload
         );
@@ -98,12 +98,12 @@ namespace Mengine
         ConstString m_type;
         ConstString m_locale;
 
-        FileGroupInterfacePtr m_fileGroup;
+        FileGroupInterfacePtr m_mountFileGroup;
 
         Tags m_platform;
         FilePath m_descriptionPath;
 
-        FileGroupInterfacePtr m_category;
+        FileGroupInterfacePtr m_fileGroup;
         FilePath m_path;
 
         VectorScriptModulePack m_scriptsPackages;

@@ -245,6 +245,15 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
+        if( fileGroup->existFile( applicationPath ) == false )
+        {
+            LOGGER_INFO( "not exist application config '%s'"
+                , applicationPath.c_str()
+            );
+
+            return true;
+        }
+
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -267,38 +276,24 @@ namespace Mengine
             return false;
         }
 
-        const Char * publicConfigPath;
-        if( IniUtil::getIniValue( ini, "Config", "Public", &publicConfigPath ) == false )
+        FilePath publicConfigPath;
+        if( IniUtil::getIniValue( ini, "Config", "Public", publicConfigPath ) == true ||
+            IniUtil::getIniValue( ini, "Game", "Path", publicConfigPath ) == true )
         {
-            if( IniUtil::getIniValue( ini, "Game", "Path", &publicConfigPath ) == false )
-            {
-                LOGGER_ERROR( "Not found public config path '%s'"
-                    , applicationPath.c_str()
-                );
-
-                return false;
-            }
+            m_publicConfigPath = publicConfigPath;
         }
 
-        m_publicConfigPath = Helper::stringizeFilePath( publicConfigPath );
-
-        const Char * privateConfigPath;
-        if( IniUtil::getIniValue( ini, "Config", "Private", &privateConfigPath ) == true )
+        FilePath privateConfigPath;
+        if( IniUtil::getIniValue( ini, "Config", "Private", privateConfigPath ) == true )
         {
-            m_privateConfigPath = Helper::stringizeFilePath( privateConfigPath );
-        }        
-
-        const Char * resourcePath;
-        if( IniUtil::getIniValue( ini, "Resource", "Path", &resourcePath ) == false )
-        {
-            LOGGER_ERROR( "Not found resource path '%s'"
-                , applicationPath.c_str()
-            );
-
-            return false;
+            m_privateConfigPath = privateConfigPath;
         }
 
-        m_resourceConfigPath = Helper::stringizeFilePath( resourcePath );
+        FilePath resourcePath;
+        if( IniUtil::getIniValue( ini, "Resource", "Path", resourcePath ) == true )
+        {
+            m_resourceConfigPath = resourcePath;
+        }
 
         return true;
     }

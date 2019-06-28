@@ -70,7 +70,15 @@ namespace Mengine
                 TextLineChunk c;
                 c.value = _in.substr( new_begin, new_end - new_begin );
 
-                ConstString c_FontName = Helper::stringizeString( name );
+				Char buffer_name[256] = {0};
+
+				Char* buffer_name_iterator = buffer_name;
+				for (U32String::value_type v : name)
+				{
+					*buffer_name_iterator++ = (Char)v;
+				}
+
+                ConstString c_FontName = Helper::stringizeString(buffer_name);
 
                 const TextFontInterfacePtr & font = TEXT_SERVICE()
                     ->getFont( c_FontName );

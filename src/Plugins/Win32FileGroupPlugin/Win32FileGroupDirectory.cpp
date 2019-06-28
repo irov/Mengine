@@ -26,10 +26,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath )
+    bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath )
     {
         m_name = _name;
-        m_category = _category;
+        m_fileGroup = _fileGroup;
         m_folderPath = _folderPath;
 
         FilePath baseDirectoryPath;
@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & Win32FileGroupDirectory::getCategory() const
     {
-        return m_category;
+        return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::isPacked() const

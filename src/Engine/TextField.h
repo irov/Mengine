@@ -174,7 +174,7 @@ namespace Mengine
 
     protected:
         inline void invalidateFont() const;
-        void updateFont_() const;
+        bool updateFont_() const;
         void updateTextEntry_() const;
 
     public:
@@ -281,7 +281,10 @@ namespace Mengine
     {
         if( m_invalidateFont == true )
         {
-            this->updateFont_();
+            if( this->updateFont_() == false )
+            {
+                return TextFontInterfacePtr::none();
+            }
         }
 
         return m_font;

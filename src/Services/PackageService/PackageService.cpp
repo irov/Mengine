@@ -53,7 +53,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIniPath, const Char * _doc )
     {
-        LOGGER_MESSAGE( "Packages load..." );
+        LOGGER_INFO( "Packages load... %s:%s"
+            , _fileGroup->getName().c_str()
+            , _resourceIniPath.c_str()
+        );
 
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, _fileGroup, _resourceIniPath ) == false )

@@ -1,6 +1,10 @@
 #pragma once
 
-#include "pybind/types.hpp"
+extern "C"
+{
+    struct _object;
+    typedef _object PyObject;
+}
 
 namespace Mengine
 {

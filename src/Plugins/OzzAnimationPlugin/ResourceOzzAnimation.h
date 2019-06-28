@@ -14,6 +14,7 @@ namespace Mengine
         , public Content
         , public UnknownResourceOzzAnimationInterface
     {
+        DECLARE_VISITABLE(Resource);
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();
 

@@ -30,7 +30,7 @@ namespace Mengine
         uint32_t getId() const override;
 
     public:
-        void setCategory( const FileGroupInterfacePtr & _category ) override;
+        void setCategory( const FileGroupInterfacePtr & _fileGroup ) override;
         const FileGroupInterfacePtr & getCategory() const override;
 
         void setFileName( const FilePath & _fileName ) override;
@@ -53,7 +53,7 @@ namespace Mengine
 
         RenderImageInterfacePtr m_image;
 
-        FileGroupInterfacePtr m_category;
+        FileGroupInterfacePtr m_fileGroup;
         FilePath m_fileName;
 
         uint32_t m_width;
@@ -72,7 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     inline const FileGroupInterfacePtr & RenderTexture::getCategory() const
     {
-        return m_category;
+        return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const FilePath & RenderTexture::getFileName() const

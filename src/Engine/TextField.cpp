@@ -461,7 +461,7 @@ namespace Mengine
         {
             TextFontInterfacePtr font;
             if( TEXT_SERVICE()
-                ->existFont( _fontName, font ) == false )
+                ->existFont( _fontName, &font ) == false )
             {
                 LOGGER_ERROR( "TextField::setFontName %s not found font %s"
                     , m_name.c_str()

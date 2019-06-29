@@ -45,7 +45,7 @@ namespace Mengine
         const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const override;
 
     public:
-        bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
+        bool existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const override;
         const TextFontInterfacePtr & getFont( const ConstString & _name ) const override;
 
     public:
@@ -92,8 +92,8 @@ namespace Mengine
         typedef Hashtable<ConstString, TextEntryInterfacePtr> HashtableTextEntry;
         HashtableTextEntry m_texts;
 
-        typedef Map<ConstString, TextFontInterfacePtr> MapTextFont;
-        MapTextFont m_fonts;
+        typedef Hashtable<ConstString, TextFontInterfacePtr> HashtableTextFont;
+        HashtableTextFont m_fonts;
 
         typedef Pair<ConstString, ConstString> PairAliasKey;
 

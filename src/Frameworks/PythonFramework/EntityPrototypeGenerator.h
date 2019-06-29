@@ -19,10 +19,6 @@ namespace Mengine
         ~EntityPrototypeGenerator() override;
 
     public:
-        void setKernel( pybind::kernel_interface * _kernel );
-        pybind::kernel_interface * getKernel() const;
-
-    public:
         void setGenerator( const pybind::object & _generator );
         const pybind::object & getGenerator() const;
 
@@ -40,8 +36,6 @@ namespace Mengine
         FactorablePointer generate( const Char * _doc ) override;
 
     protected:
-        pybind::kernel_interface * m_kernel;
-
         EventablePtr m_eventable;
 
         pybind::object m_generator;

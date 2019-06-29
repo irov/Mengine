@@ -10,9 +10,9 @@
 
 #include "Kernel/ServiceBase.h"
 
-#include "ScriptLogger.h"
-#include "ScriptModule.h"
-#include "ScriptModuleFinder.h"
+#include "PythonScriptLogger.h"
+#include "PythonScriptModule.h"
+#include "PythonScriptModuleFinder.h"
 
 #include "Kernel/Entity.h"
 #include "Kernel/Factory.h"
@@ -28,12 +28,12 @@
 
 namespace Mengine
 {
-    class ScriptService
+    class PythonScriptService
         : public ServiceBase<ScriptServiceInterface>
     {
     public:
-        ScriptService();
-        ~ScriptService() override;
+        PythonScriptService();
+        ~PythonScriptService() override;
 
     public:
         bool _initializeService() override;
@@ -58,6 +58,9 @@ namespace Mengine
         bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) override;
         void removeScriptEmbedding( const ConstString & _name ) override;
         void ejectingScriptEmbeddings() override;
+
+    public:
+        EventablePtr eventableEntity( const pybind::object & _type ) override;
 
     public:
         bool bootstrapModules() override;

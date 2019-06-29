@@ -2,7 +2,7 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
-#include "ScriptCodeData.h"
+#include "PythonScriptCodeData.h"
 
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
@@ -45,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowPYZ::initialize()
     {
-        m_factoryScriptCodeData = new FactoryPool<ScriptCodeData, 128>();
+        m_factoryScriptCodeData = new FactoryPool<PythonScriptCodeData, 128>();
 
         return true;
     }
@@ -94,7 +94,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
+        PythonScriptCodeData * data = stdex::intrusive_get<PythonScriptCodeData *>( _data );
 
         const uint8_t * source_buffer = _memory->getBuffer();
         size_t source_size = _memory->getSize();

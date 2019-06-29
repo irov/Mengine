@@ -11,10 +11,9 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/String.h"
 #include "Kernel/IniUtil.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -582,7 +581,7 @@ namespace Mengine
                 , _path.c_str()
             );
 
-            m_fonts.emplace( fontName, font );
+            m_fonts.insert( fontName, font );
         }
 
 
@@ -593,9 +592,9 @@ namespace Mengine
         {
             bool valid_successful = true;
 
-            for( const MapTextFont::value_type & value : m_fonts )
+            for( const HashtableTextFont::value_type & value : m_fonts )
             {
-                const TextFontInterfacePtr & font = value.second;
+                const TextFontInterfacePtr & font = value.element;
 
                 if( font->isValid() == false )
                 {
@@ -713,7 +712,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::removeTextEntry( const ConstString& _key )
     {
-        if( m_texts.remove( _key ) == nullptr )
+        if( m_texts.erase( _key ) == nullptr )
         {
             return false;
         }
@@ -782,32 +781,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const
+    bool TextService::existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const
     {
-        MapTextFont::const_iterator it_found = m_fonts.find( _name );
+        const TextFontInterfacePtr & font = m_fonts.find( _name );
 
-        if( it_found == m_fonts.end() )
+        if( font == nullptr )
         {
             return false;
         }
 
-        const TextFontInterfacePtr & font = it_found->second;
-
-        _font = font;
+        *_font = font;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const TextFontInterfacePtr & TextService::getFont( const ConstString & _name ) const
     {
-        MapTextFont::const_iterator it_found = m_fonts.find( _name );
+        const TextFontInterfacePtr & font = m_fonts.find( _name );
 
-        if( it_found == m_fonts.end() )
-        {
-            return TextFontInterfacePtr::none();
-        }
-
-        const TextFontInterfacePtr & font = it_found->second;
+        MENGINE_ASSERTION_MEMORY_PANIC( font, TextFontInterfacePtr::none(), "not found '%s'"
+            , _name.c_str()
+        );
 
         return font;
     }
@@ -894,9 +888,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextService::foreachFonts( const LambdaTextFont & _lambda )
     {
-        for( const MapTextFont::value_type & value : m_fonts )
+        for( const HashtableTextFont::value_type & value : m_fonts )
         {
-            const TextFontInterfacePtr & font = value.second;
+            const TextFontInterfacePtr & font = value.element;
 
             _lambda( font );
         }
@@ -916,7 +910,7 @@ namespace Mengine
         if( m_defaultFontName.empty() == false )
         {
             TextFontInterfacePtr font;
-            if( this->existFont( m_defaultFontName, font ) == false )
+            if( this->existFont( m_defaultFontName, &font ) == false )
             {
                 LOGGER_ERROR( "not found default font %s"
                     , m_defaultFontName.c_str()
@@ -940,7 +934,7 @@ namespace Mengine
             if( fontName.empty() == false )
             {
                 TextFontInterfacePtr font;
-                if( this->existFont( fontName, font ) == false )
+                if( this->existFont( fontName, &font ) == false )
                 {
                     LOGGER_ERROR( "not found font %s for text %s"
                         , fontName.c_str()

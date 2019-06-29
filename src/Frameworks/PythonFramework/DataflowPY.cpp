@@ -2,7 +2,7 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
-#include "ScriptCodeData.h"
+#include "PythonScriptCodeData.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FactoryPool.h"
@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowPY::initialize()
     {
-        m_factoryScriptCodeData = new FactoryPool<ScriptCodeData, 128>();
+        m_factoryScriptCodeData = new FactoryPool<PythonScriptCodeData, 128>();
 
         return true;
     }
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
     {
-        ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
+        PythonScriptCodeData * data = stdex::intrusive_get<PythonScriptCodeData *>( _data );
 
         Char * source_buffer = _memory->getBuffer();
 

@@ -4,6 +4,8 @@ ADD_FILTER(
 Application
 	Application.cpp
 	Application.h
+    ScenePrototypeGenerator.cpp
+    ScenePrototypeGenerator.h
 )
 
 SOURCE_GROUP( Engine )

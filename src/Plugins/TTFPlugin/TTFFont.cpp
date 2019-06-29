@@ -14,7 +14,6 @@
 #include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
-#include "Kernel/MemoryAllocator.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"

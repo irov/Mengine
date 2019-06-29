@@ -5,10 +5,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Node.h"
-
 #include "Kernel/ConstString.h"
-#include "Kernel/MemoryAllocator.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -29,7 +26,7 @@ namespace Mengine
                 LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
-					, _doc
+                    , _doc
                 );
 
                 return nullptr;

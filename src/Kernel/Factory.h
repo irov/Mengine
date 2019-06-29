@@ -55,7 +55,7 @@ namespace Mengine
         template<class T, class ... Args>
         FactoryPtr makeFactory( Args && ... _args )
         {
-            return FactoryPtr( new T( std::forward<Args>( _args )... ) );
+            return FactoryPtr( new T( std::forward<Args>( _args ) ... ) );
         }
     }
 }

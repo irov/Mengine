@@ -751,22 +751,27 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool setCurrentScene( const ScenePtr & _scene, const ConstString & _name, bool _immediately, bool _destroyOld, const pybind::object & _cb, const pybind::args & _args )
         {
-            if( _cb.is_callable() == false )
+            PythonSceneChangeCallbackPtr py_cb = nullptr;
+
+            if( _cb.is_none() == false )
             {
-                LOGGER_ERROR( "scene name '%s' cb '%s' not callable"
+                if( _cb.is_callable() == false )
+                {
+                    LOGGER_ERROR( "scene name '%s' cb '%s' not callable"
+                        , _name.c_str()
+                        , _cb.repr()
+                    );
+
+                    return false;
+                }
+
+                LOGGER_INFO( "set current scene '%s'"
                     , _name.c_str()
-                    , _cb.repr()
                 );
 
-                return false;
+                py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
+                py_cb->initialize( _cb, _args );
             }
-
-            LOGGER_INFO( "set current scene '%s'"
-                , _name.c_str()
-            );
-
-            PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback->createObject( MENGINE_DOCUMENT_PYBIND );
-            py_cb->initialize( _cb, _args );
 
             ScenePtr currentScene = SCENE_SERVICE()
                 ->getCurrentScene();
@@ -799,14 +804,51 @@ namespace Mengine
             return scene;
         }
         //////////////////////////////////////////////////////////////////////////
-        ScenePtr s_createScene( const ConstString & _prototype, const ConstString & _name )
+        ScenePtr s_createScene( const ConstString & _name, const pybind::object & _type )
         {
             ScenePtr scene = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_PYBIND );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr );
 
             scene->setName( _name );
+
+            if( _type.is_none() == false )
+            {
+                EventablePtr eventable = SCRIPT_SERVICE()
+                    ->eventableEntity( _type );
+
+                if( eventable == nullptr )
+                {
+                    LOGGER_ERROR( "scene '%s' invalid eventable '%s'"
+                        , _name.c_str()
+                        , _type.repr()
+                    );
+
+                    return nullptr;
+                }
+
+                scene->setBehaviorEventable( eventable );
+
+                pybind::object py_scene = _type.call();
+
+                if( py_scene.is_invalid() == true )
+                {
+                    LOGGER_ERROR( "scene '%s' invalid create type '%s'"
+                        , _name.c_str()
+                        , _type.repr()
+                    );
+
+                    return nullptr;
+                }
+
+                PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>();
+                behavior->setScriptObject( py_scene );
+
+                scene->setBehavior( behavior );                
+            }
+
+            scene->onCreate();
 
             return scene;
         }

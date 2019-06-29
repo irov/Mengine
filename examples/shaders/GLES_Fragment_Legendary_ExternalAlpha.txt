@@ -1,0 +1,41 @@
+uniform sampler2D inSampler0;
+uniform sampler2D inSampler1;
+
+uniform highp vec4 uvsl;
+
+uniform mediump vec4 u_color0;
+uniform mediump vec4 u_color1;
+uniform mediump float u_scale0x;
+uniform mediump float u_scale0y;
+uniform mediump float u_scale1x;
+uniform mediump float u_scale1y;
+uniform mediump float u_timefactor;
+uniform mediump float u_timescale;
+uniform mediump float u_timeamplitude;
+
+varying highp vec2 v_UV0;
+varying highp vec2 v_UV1;
+varying mediump vec4 v_Col;
+
+mediump float sRGB(mediump float t){ return mix(1.055*pow(t, 1./2.4) - 0.055, 12.92*t, step(t, 0.0031308)); }
+mediump vec3 sRGB(in mediump vec3 c) { return vec3 (sRGB(c.x), sRGB(c.y), sRGB(c.z)); }
+
+void main()
+{    
+    mediump vec4 c = texture2D(inSampler0, v_UV0.xy);
+    mediump float a = texture2D(inSampler1, v_UV1.xy).w;
+    
+    mediump float ux = (v_UV0.x + uvsl.x) * uvsl.z;
+    mediump float uy = (v_UV0.y + uvsl.y) * uvsl.w;
+    
+    mediump float tx = (ux - 0.5 ) * cos(u_timefactor * u_timeamplitude) * u_timescale;
+    mediump float ty = (uy - 0.5 ) * sin(u_timefactor * u_timeamplitude) * u_timescale;
+    mediump vec3 col1 = u_color0.xyz + vec3(u_scale0x * tx, u_scale0y * ty, 0.0);
+    mediump vec3 col2 = u_color1.xyz + vec3(u_scale1x * ty, u_scale1y * tx, 0.0);
+    
+    mediump vec3 col = mix(col2, col1, ux * uy);
+    
+    col = sRGB(col);
+    
+	gl_FragColor = v_Col * c * vec4(col, a);
+}

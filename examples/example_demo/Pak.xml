@@ -1,0 +1,3 @@
+<Pak> 
+    <Scripts Path = "/" Initializer = "onInitialize" Finalizer = "onFinalize"/>
+</Pak>	

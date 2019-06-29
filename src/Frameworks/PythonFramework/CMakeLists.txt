@@ -86,9 +86,45 @@ Generator
 )
 
 ADD_FILTER(
+EventReceiver
+    PythonEntityEventReceiver.h
+    PythonEntityEventReceiver.cpp
+)
+
+ADD_FILTER(
+EntityEventation
+    PythonEntityEventation.h
+    PythonEntityEventation.cpp
+)
+
+ADD_FILTER(
 ScriptProviderService
     PythonScriptProviderService.h
     PythonScriptProviderService.cpp
+)
+
+ADD_FILTER(
+ScriptService
+	PythonScriptService.cpp
+	PythonScriptService.h
+	PythonScriptLogger.h
+	PythonScriptLogger.cpp
+    PythonScriptModule.h
+    PythonScriptModule.cpp
+    PythonScriptModuleFinder.h
+    PythonScriptModuleFinder.cpp
+    PythonScriptModuleLoader.h
+    PythonScriptModuleLoader.cpp
+    
+    PythonScriptCodeData.h
+    PythonScriptCodeData.cpp
+    DataflowPY.h
+    DataflowPY.cpp
+    DataflowPYZ.h
+    DataflowPYZ.cpp
+
+    ConstStringHolderPythonString.h
+    ConstStringHolderPythonString.cpp
 )
 
 INCLUDE_DIRECTORIES(
@@ -104,7 +140,6 @@ ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_PYTHONFRAMEWORK)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Engine)
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ScriptService)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

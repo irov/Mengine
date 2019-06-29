@@ -43,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherService::removeResourcePrefetcher( const ConstString & _type )
     {
-        m_prefetchers.remove( _type );
+        m_prefetchers.erase( _type );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::prefetchResource( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )

@@ -78,7 +78,7 @@ namespace Mengine
             return prev;
         }
 
-        element_type_ptr remove( const key_type & _key )
+        element_type_ptr erase( const key_type & _key )
         {
             if( m_size == 0 )
             {

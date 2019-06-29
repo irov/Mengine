@@ -431,7 +431,7 @@ namespace Mengine
 
         const ConstString & name = _resource->getName();
 
-        if( m_resources.remove( name ) == nullptr )
+        if( m_resources.erase( name ) == nullptr )
         {
             return false;
         }

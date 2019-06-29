@@ -5,6 +5,7 @@
 #include "Interface/PrefetcherObserverInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/Eventable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 
@@ -20,6 +21,7 @@ extern "C"
 namespace pybind
 {
     class kernel_interface;
+    class object;
 }
 
 namespace Mengine
@@ -68,6 +70,9 @@ namespace Mengine
         virtual bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
         virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
         virtual void ejectingScriptEmbeddings() = 0;
+
+    public:
+        virtual EventablePtr eventableEntity( const pybind::object & _type ) = 0;
 
     public:
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;

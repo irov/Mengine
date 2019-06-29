@@ -76,7 +76,7 @@ namespace Mengine
         key.category = _category;
         key.prototype = _prototype;
 
-        PrototypeGeneratorInterfacePtr generator = m_generators.remove( key );
+        PrototypeGeneratorInterfacePtr generator = m_generators.erase( key );
 
         if( generator == nullptr )
         {

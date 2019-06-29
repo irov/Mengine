@@ -252,7 +252,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::removeNodeDebugRender( const ConstString & _type )
     {
-        m_nodeDebugRenders.remove( _type );
+        m_nodeDebugRenders.erase( _type );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::updateDebugInfo( const UpdateContext * _context )

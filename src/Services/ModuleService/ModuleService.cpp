@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::unregisterModule( const ConstString & _moduleName )
     {
-        m_moduleFactory.remove( _moduleName );
+        m_moduleFactory.erase( _moduleName );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::runModule( const ConstString & _moduleName, const Char * _doc )

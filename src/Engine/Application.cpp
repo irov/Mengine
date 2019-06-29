@@ -110,6 +110,8 @@
 #include "ResourceCursorICO.h"
 #include "ResourceCursorSystem.h"
 
+#include "ScenePrototypeGenerator.h"
+
 #include "stdex/allocator.h"
 #include "stdex/allocator_report.h"
 
@@ -433,42 +435,11 @@ namespace Mengine
 #	undef SURFACE_FACTORY
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        class SceneCategoryGenerator
-            : public BasePrototypeGenerator
-        {
-        public:
-            SceneCategoryGenerator()
-            {
-            }
-
-            ~SceneCategoryGenerator() override
-            {
-            }
-
-        protected:
-            FactorablePointer generate( const Char * _doc ) override
-            {
-                ScenePtr scene = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr, "can't create '%s' '%s' doc '%s'"
-                    , m_category.c_str()
-                    , m_prototype.c_str()
-                    , _doc
-                    );
-
-                return scene;
-            }
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
         LOGGER_INFO( "Register Scene Manager..." );
 
-        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<SceneCategoryGenerator>();
+        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>();
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), generator ) == false )

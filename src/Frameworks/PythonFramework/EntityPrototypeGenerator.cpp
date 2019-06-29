@@ -1,10 +1,12 @@
 #include "EntityPrototypeGenerator.h"
-#include "PythonEntityBehavior.h"
-
-#include "Environment/Python/PythonEventReceiver.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
+
+#include "Environment/Python/PythonEventReceiver.h"
+
+#include "PythonEntityBehavior.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -16,93 +18,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        //////////////////////////////////////////////////////////////////////////
-        namespace Detail
-        {
-            template<class ... Args>
-            void callBehavior( const pybind::object & _cb, const EntityBehaviorInterfacePtr & _behavior, Args ... _args )
-            {
-                PythonEntityBehavior * py_behavior = _behavior.getT<PythonEntityBehavior *>();
-
-                py_behavior->call( _cb, _args ... );
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonEntityEventReceiver
-            : public PythonEventReceiver
-            , public EntityEventReceiver
-            , public Factorable
-        {
-        public:
-            void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-
-            void onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-
-            void onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-
-            void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-
-            void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-
-            void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-
-            void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node ) override
-            {
-                Detail::callBehavior( m_cb, _behavior, _node );
-            }
-
-            void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) override
-            {
-                Detail::callBehavior( m_cb, _behavior );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        class PythonEntityEventation
-            : public Factorable
-            , public Eventable
-            , public BaseEventation
-        {
-            DECLARE_EVENTABLE( EntityEventReceiver );
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
     EntityPrototypeGenerator::EntityPrototypeGenerator()
-        : m_kernel( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     EntityPrototypeGenerator::~EntityPrototypeGenerator()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void EntityPrototypeGenerator::setKernel( pybind::kernel_interface * _kernel )
-    {
-        m_kernel = _kernel;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    pybind::kernel_interface * EntityPrototypeGenerator::getKernel() const
-    {
-        return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
     void EntityPrototypeGenerator::setGenerator( const pybind::object & _generator )
@@ -154,9 +75,12 @@ namespace Mengine
 
         pybind::object py_type = m_generator.call( m_prototype );
 
-        if( py_type.is_invalid() == true || py_type.is_none() == true )
+        EventablePtr eventable = SCRIPT_SERVICE()
+            ->eventableEntity( py_type );
+
+        if( eventable == nullptr )
         {
-            LOGGER_ERROR( "type '%s' prototype '%s' invalid type create"
+            LOGGER_ERROR( "type '%s' prototype '%s' invalid eventable entity"
                 , m_category.c_str()
                 , m_prototype.c_str()
             );
@@ -164,32 +88,7 @@ namespace Mengine
             return pybind::object::get_invalid();
         }
 
-        if( py_type.is_type_class() == true )
-        {
-            PyObject * py_type_ptr = py_type.ptr();
-            pybind::kernel_interface * py_kernel = py_type.kernel();
-
-            if( py_kernel->type_initialize( py_type_ptr ) == false )
-            {
-                LOGGER_ERROR( "type '%s' prototype '%s' invalid type initialize"
-                    , m_category.c_str()
-                    , m_prototype.c_str()
-                );
-
-                return pybind::object::get_invalid();
-            }
-        }
-
-        m_eventable = Helper::makeFactorableUnique<PythonEntityEventation>();
-
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onCreate", EVENT_ENTITY_CREATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onDestroy", EVENT_ENTITY_DESTROY );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onPreparation", EVENT_ENTITY_PREPARATION );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onActivate", EVENT_ENTITY_ACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onCompile", EVENT_ENTITY_COMPILE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, py_type, m_eventable, "onRelease", EVENT_ENTITY_RELEASE );
+        m_eventable = eventable;
 
         m_type = py_type;
 

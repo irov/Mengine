@@ -35,11 +35,11 @@ namespace Mengine
             , bool _isOverride ) = 0;
 
     public:
-        virtual bool existText( const ConstString& _key, TextEntryInterfacePtr* _entry ) const = 0;
+        virtual bool existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const = 0;
         virtual const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const = 0;
 
     public:
-        virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
+        virtual bool existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const = 0;
         virtual const TextFontInterfacePtr & getFont( const ConstString & _name ) const = 0;
 
     public:

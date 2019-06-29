@@ -1,40 +1,40 @@
-#include "ScriptCodeData.h"
+#include "PythonScriptCodeData.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ScriptCodeData::ScriptCodeData()
+    PythonScriptCodeData::PythonScriptCodeData()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptCodeData::~ScriptCodeData()
+    PythonScriptCodeData::~PythonScriptCodeData()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptCodeData::acquire()
+    bool PythonScriptCodeData::acquire()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptCodeData::release()
+    void PythonScriptCodeData::release()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer ScriptCodeData::allocateMemory( size_t _size ) const
+    Pointer PythonScriptCodeData::allocateMemory( size_t _size ) const
     {
         MENGINE_UNUSED( _size );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptCodeData::setScriptCode( const pybind::object & _moduleCode )
+    void PythonScriptCodeData::setScriptCode( const pybind::object & _moduleCode )
     {
         m_moduleCode = _moduleCode;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::object & ScriptCodeData::getScriptCode() const
+    const pybind::object & PythonScriptCodeData::getScriptCode() const
     {
         return m_moduleCode;
     }

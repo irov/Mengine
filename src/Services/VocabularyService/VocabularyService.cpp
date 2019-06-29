@@ -66,7 +66,7 @@ namespace Mengine
         key.category = _category;
         key.type = _type;
 
-        MixinPtr mixin = m_mixins.remove( key );
+        MixinPtr mixin = m_mixins.erase( key );
 
         LOGGER_INFO( "remove vocabulary '%s:%s'"
             , _category.c_str()

@@ -7,13 +7,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ScriptCodeData
+    class PythonScriptCodeData
         : public ScriptCodeDataInterface
         , public Factorable
     {
     public:
-        ScriptCodeData();
-        ~ScriptCodeData() override;
+        PythonScriptCodeData();
+        ~PythonScriptCodeData() override;
 
     public:
         bool acquire() override;
@@ -30,6 +30,6 @@ namespace Mengine
         pybind::object m_moduleCode;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScriptCodeData> ScriptCodeDataPtr;
+    typedef IntrusivePtr<PythonScriptCodeData> ScriptCodeDataPtr;
     //////////////////////////////////////////////////////////////////////////
 }

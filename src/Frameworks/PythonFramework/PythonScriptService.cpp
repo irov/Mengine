@@ -1,6 +1,4 @@
-#include "ScriptService.h"
-
-#include "ScriptModuleLoader.h"
+#include "PythonScriptService.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -13,6 +11,12 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ScriptEmbeddingInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
+
+#include "Environment/Python/PythonEventReceiver.h"
+
+#include "PythonScriptModuleLoader.h"
+#include "PythonEntityEventReceiver.h"
+#include "PythonEntityEventation.h"
 
 #include "DataflowPY.h"
 #include "DataflowPYZ.h"
@@ -38,7 +42,7 @@
 #include <stdlib.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
+SERVICE_FACTORY( ScriptService, Mengine::PythonScriptService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -78,7 +82,7 @@ namespace Mengine
             : public pybind::observer_bind_call
         {
         public:
-            My_observer_bind_call( ScriptService * _scriptService )
+            My_observer_bind_call( PythonScriptService * _scriptService )
                 : m_scriptService( _scriptService )
 #ifdef MENGINE_WINDOWS_DEBUG
                 , m_prev_handler( nullptr )
@@ -145,7 +149,7 @@ namespace Mengine
                     return;
                 }
 
-                if( strcmp( _className, "ScriptLogger" ) == 0 )
+                if( strcmp( _className, "PythonScriptLogger" ) == 0 )
                 {
                     return;
                 }
@@ -192,7 +196,7 @@ namespace Mengine
             }
 
         protected:
-            ScriptService * m_scriptService;
+            PythonScriptService * m_scriptService;
 
             typedef Vector<uint32_t> VectorStackMsgCount;
             VectorStackMsgCount m_counts;
@@ -207,14 +211,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #endif
     //////////////////////////////////////////////////////////////////////////
-    ScriptService::ScriptService()
+    PythonScriptService::PythonScriptService()
         : m_kernel( nullptr )
         , m_moduleMenge( nullptr )
         , m_initializeModules( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptService::~ScriptService()
+    PythonScriptService::~PythonScriptService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -227,7 +231,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::_initializeService()
+    bool PythonScriptService::_initializeService()
     {
         if( SERVICE_EXIST( ScriptProviderServiceInterface ) == false )
         {
@@ -261,19 +265,19 @@ namespace Mengine
 
         kernel->set_currentmodule( m_moduleMenge );
 
-        pybind::interface_<ScriptLogger>( m_kernel, "ScriptLogger", true )
-            .def_native_kernel( "write", &ScriptLogger::py_write )
-            .def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
+        pybind::interface_<PythonScriptLogger>( m_kernel, "PythonScriptLogger", true )
+            .def_native_kernel( "write", &PythonScriptLogger::py_write )
+            .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
 
-        m_loggerWarning = Helper::makeFactorableUnique<ScriptLogger>();
+        m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>();
 
         m_loggerWarning->setMessageLevel( LM_WARNING );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
-        m_loggerError = Helper::makeFactorableUnique<ScriptLogger>();
+        m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>();
 
         m_loggerError->setMessageLevel( LM_ERROR );
 
@@ -316,12 +320,12 @@ namespace Mengine
 
         VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ );
 
-        pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
-            .def_kernel( "find_module", &ScriptModuleFinder::find_module )
-            .def_kernel( "load_module", &ScriptModuleFinder::load_module )
+        pybind::interface_<PythonScriptModuleFinder>( m_kernel, "PythonScriptModuleFinder", true )
+            .def_kernel( "find_module", &PythonScriptModuleFinder::find_module )
+            .def_kernel( "load_module", &PythonScriptModuleFinder::load_module )
             ;
 
-        m_moduleFinder = Helper::makeFactorableUnique<ScriptModuleFinder>();
+        m_moduleFinder = Helper::makeFactorableUnique<PythonScriptModuleFinder>();
 
         m_moduleFinder->setDataflowPY( dataflowPY );
         m_moduleFinder->setDataflowPYZ( dataflowPYZ );
@@ -340,11 +344,11 @@ namespace Mengine
 
         kernel->set_module_finder( py_moduleFinder.ptr() );
 
-        m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
+        m_factoryScriptModule = new FactoryPool<PythonScriptModule, 8>();
 
 #ifdef MENGINE_DEBUG
-        pybind::def_functor( m_kernel, "addLogFunction", this, &ScriptService::addLogFunction );
-        pybind::def_functor( m_kernel, "removeLogFunction", this, &ScriptService::addLogFunction );
+        pybind::def_functor( m_kernel, "addLogFunction", this, &PythonScriptService::addLogFunction );
+        pybind::def_functor( m_kernel, "removeLogFunction", this, &PythonScriptService::addLogFunction );
 #endif
 
         this->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
@@ -376,7 +380,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::_finalizeService()
+    void PythonScriptService::_finalizeService()
     {
 #ifdef MENGINE_DEBUG
         My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
@@ -409,8 +413,8 @@ namespace Mengine
         m_kernel->setStdOutHandle( nullptr );
         m_kernel->setStdErrorHandle( nullptr );
 
-        m_kernel->remove_scope<ScriptLogger>();
-        m_kernel->remove_scope<ScriptModuleFinder>();
+        m_kernel->remove_scope<PythonScriptLogger>();
+        m_kernel->remove_scope<PythonScriptModuleFinder>();
 
         m_bootstrapperModules.clear();
 
@@ -419,12 +423,12 @@ namespace Mengine
         m_factoryScriptModule = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::_stopService()
+    void PythonScriptService::_stopService()
     {
         //m_kernel->collect();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )
+    void PythonScriptService::addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )
     {
         if( _modules.empty() == true )
         {
@@ -451,7 +455,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )
+    void PythonScriptService::removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )
     {
         m_moduleFinder->removeModulePath( _fileGroup );
 
@@ -477,7 +481,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
+    bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
         if( _embedding->embedding( m_kernel ) == false )
         {
@@ -489,9 +493,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::removeScriptEmbedding( const ConstString & _name )
+    void PythonScriptService::removeScriptEmbedding( const ConstString & _name )
     {
-        const ScriptEmbeddingInterfacePtr & embedding = m_embeddings.remove( _name );
+        const ScriptEmbeddingInterfacePtr & embedding = m_embeddings.erase( _name );
 
         if( embedding == nullptr )
         {
@@ -501,7 +505,7 @@ namespace Mengine
         embedding->ejecting( m_kernel );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::ejectingScriptEmbeddings()
+    void PythonScriptService::ejectingScriptEmbeddings()
     {
         for( const HashtableEmbeddings::value_type & value : m_embeddings )
         {
@@ -513,7 +517,44 @@ namespace Mengine
         m_embeddings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::bootstrapModules()
+    EventablePtr PythonScriptService::eventableEntity( const pybind::object & _type )
+    {
+        if( _type.is_invalid() == true || _type.is_none() == true )
+        {
+            LOGGER_ERROR( "type invalid"
+            );
+
+            return nullptr;
+        }
+
+        if( _type.is_type_class() == true )
+        {
+            PyObject * py_type_ptr = _type.ptr();
+
+            if( m_kernel->type_initialize( py_type_ptr ) == false )
+            {
+                LOGGER_ERROR( "type invalid initialize"
+                );
+
+                return nullptr;
+            }
+        }
+
+        EventablePtr eventable = Helper::makeFactorableUnique<PythonEntityEventation>();
+
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCreate", EVENT_ENTITY_CREATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDestroy", EVENT_ENTITY_DESTROY );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onPreparation", EVENT_ENTITY_PREPARATION );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onActivate", EVENT_ENTITY_ACTIVATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCompile", EVENT_ENTITY_COMPILE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onRelease", EVENT_ENTITY_RELEASE );
+
+        return eventable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonScriptService::bootstrapModules()
     {
         for( const ScriptModulePack & pak : m_bootstrapperModules )
         {
@@ -537,7 +578,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::initializeModules()
+    bool PythonScriptService::initializeModules()
     {
         if( m_initializeModules == true )
         {
@@ -557,7 +598,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::initializeModule_( const ScriptModulePack & _pack )
+    bool PythonScriptService::initializeModule_( const ScriptModulePack & _pack )
     {
         if( _pack.module.empty() == true )
         {
@@ -592,7 +633,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::finalizeModules()
+    bool PythonScriptService::finalizeModules()
     {
         if( m_initializeModules == false )
         {
@@ -637,7 +678,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
+    void PythonScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
     {
         DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
         DataflowInterfacePtr dataflowPYZ = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
@@ -671,7 +712,7 @@ namespace Mengine
         _cb->onPrefetchComplete( true );
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptService::initModule( const Char * _name )
+    PyObject * PythonScriptService::initModule( const Char * _name )
     {
         LOGGER_INFO( "init module '%s'"
             , _name
@@ -682,7 +723,7 @@ namespace Mengine
         return module;
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptModuleInterfacePtr ScriptService::importModule( const ConstString & _name )
+    ScriptModuleInterfacePtr PythonScriptService::importModule( const ConstString & _name )
     {
         PyObject * py_module = nullptr;
         bool exist = false;
@@ -732,12 +773,12 @@ namespace Mengine
         return module;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::setCurrentModule( PyObject * _module )
+    void PythonScriptService::setCurrentModule( PyObject * _module )
     {
         m_kernel->set_currentmodule( _module );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::addGlobalModule( const Char * _name, PyObject * _module )
+    void PythonScriptService::addGlobalModule( const Char * _name, PyObject * _module )
     {
         PyObject * builtins = m_kernel->get_builtins();
 
@@ -746,7 +787,7 @@ namespace Mengine
         pybind::dict_set_t( m_kernel, dir_bltin, _name, _module );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::removeGlobalModule( const Char * _name )
+    void PythonScriptService::removeGlobalModule( const Char * _name )
     {
         PyObject * builtins = m_kernel->get_builtins();
 
@@ -755,7 +796,7 @@ namespace Mengine
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::stringize( PyObject * _object, ConstString & _cstr )
+    bool PythonScriptService::stringize( PyObject * _object, ConstString & _cstr )
     {
         if( m_kernel->string_check( _object ) == false )
         {
@@ -785,7 +826,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter )
+    void PythonScriptService::addLogFunction( const ConstString & _className, const ConstString & _functionName, const pybind::object & _filter )
     {
         DebugCallDesc desc;
         desc.className = _className;
@@ -795,7 +836,7 @@ namespace Mengine
         m_debugCallFunctions.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::removeLogFunction( const ConstString & _className, const ConstString & _functionName )
+    void PythonScriptService::removeLogFunction( const ConstString & _className, const ConstString & _functionName )
     {
         VectorDebugCallFunctions::iterator it_found = std::find_if( m_debugCallFunctions.begin(), m_debugCallFunctions.end(), [&_className, &_functionName]( const DebugCallDesc & _desc )
         {
@@ -815,7 +856,7 @@ namespace Mengine
         m_debugCallFunctions.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+    void PythonScriptService::debugCallFunction( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
     {
         for( const DebugCallDesc & _desc : m_debugCallFunctions )
         {

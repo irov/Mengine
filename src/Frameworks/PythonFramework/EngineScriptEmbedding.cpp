@@ -1542,7 +1542,7 @@ namespace Mengine
         {
             TextFontInterfacePtr font;
             bool has = TEXT_SERVICE()
-                ->existFont( _fontName, font );
+                ->existFont( _fontName, &font );
 
             return has;
         }
@@ -1551,7 +1551,7 @@ namespace Mengine
         {
             TextFontInterfacePtr font;
             if( TEXT_SERVICE()
-                ->existFont( _fontName, font ) == false )
+                ->existFont( _fontName, &font ) == false )
             {
                 return false;
             }

@@ -1,0 +1,31 @@
+uniform float4 uvbb;
+
+sampler2D tex0;
+sampler2D tex1;
+sampler2D tex2;
+
+struct v2p {
+    float4 position  : POSITION;
+    float4 color : COLOR0;
+    float2 uv0 : TEXCOORD0;
+    float2 uv1 : TEXCOORD1; 
+};
+
+struct p2f {
+    float4 color : COLOR0;
+};
+  
+void main(in v2p IN, out p2f OUT)
+{
+    float2 uv1_clamp;
+    uv1_clamp.x = clamp(IN.uv1.x, uvbb.x, uvbb.z);
+    uv1_clamp.y = clamp(IN.uv1.y, uvbb.y, uvbb.w);
+
+    float4 color0 = tex2D(tex0, IN.uv0);
+    float4 alpha0 = tex2D(tex1, IN.uv0);
+    float4 color1 = tex2D(tex2, uv1_clamp);
+    
+    OUT.color = IN.color * color0;
+    OUT.color.a *= alpha0.a;
+    OUT.color.a *= color1.a;
+}

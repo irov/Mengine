@@ -1,0 +1,22 @@
+sampler2D tex0;
+sampler2D tex1;
+
+struct v2p {
+    float4 position  : POSITION;
+    float4 color : COLOR0;
+    float2 tex0 : TEXCOORD0;
+    float2 tex1 : TEXCOORD1;
+};
+
+struct p2f {
+    float4 color : COLOR0;
+};
+  
+void main(in v2p IN, out p2f OUT)
+{
+    float4 color0 = tex2D(tex0, IN.tex0);
+    float4 color1 = tex2D(tex1, IN.tex1);
+    float4 color = IN.color;
+    color.w = IN.color.w * color0.w * color1.w;
+    OUT.color = color;
+}

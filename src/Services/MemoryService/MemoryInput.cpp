@@ -1,12 +1,8 @@
 #include "MemoryInput.h"
 
-#include "Memory.h"
-
 #include "Kernel/MemoryAllocator.h"
 
 #include "stdex/memorycopy.h"
-
-//#include <memory.h>
 
 namespace Mengine
 {

@@ -120,9 +120,9 @@ namespace Mengine
 
     public:
         template<uint32_t ID, class ... Args>
-        inline bool notify( const Args & ... _args )
+        inline bool notify( Args && ... _args )
         {
-            bool successful = this->notify_tuple<ID>( std::make_tuple( _args... ) );
+            bool successful = this->notify_tuple<ID>( std::make_tuple( std::forward<Args>( _args ) ... ) );
 
             return successful;
         }

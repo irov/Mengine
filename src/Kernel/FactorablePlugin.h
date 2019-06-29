@@ -8,12 +8,12 @@ namespace Mengine
     template<class Base>
     class FactorablePlugin
         : public Base
-        , public MemoryAllocator<Base>
+        , public MemoryAllocator<FactorablePlugin<Base>>
     {
     public:
         template<class ... Args>
-        FactorablePlugin( Args ... args )
-            : Base( args ... )
+        FactorablePlugin( Args && ... _args )
+            : Base( std::forward<Args>( _args ) ... )
         {
         }
 
@@ -24,10 +24,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class Base, class ... Args>
-        IntrusivePtr<Base> makeFactorablePlugin( Args && ... _args )
+        template<class Type, class ... Args>
+        IntrusivePtr<Type> makeFactorablePlugin( Args && ... _args )
         {
-            Base * factorable = new FactorablePlugin<Base>( std::forward<Args>( _args ) ... );
+            Type * factorable = new FactorablePlugin<Type>( std::forward<Args>( _args ) ... );
 
             return IntrusivePtr<Base>( factorable );
         }

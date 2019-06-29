@@ -21,9 +21,9 @@ namespace Mengine
 
     public:
         template<class ... Args>
-        void call( const pybind::object & _cb, Args ... _args )
+        void call( const pybind::object & _cb, Args && ... _args )
         {
-            _cb.call( m_obj, _args ... );
+            _cb.call( m_obj, std::forward<Args>( _args ) ... );
         }
 
     protected:

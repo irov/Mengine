@@ -8,12 +8,12 @@ namespace Mengine
     template<class Base>
     class FactorableUnique
         : public Base
-        , public MemoryAllocator<Base>
+        , public MemoryAllocator<FactorableUnique<Base>>
     {
     public:
         template<class ... Args>
-        FactorableUnique( Args ... args )
-            : Base( args ... )
+        FactorableUnique( Args && ... _args )
+            : Base( std::forward<Args>( _args ) ... )
         {
         }
 
@@ -32,12 +32,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class Base, class ... Args>
-        IntrusivePtr<Base> makeFactorableUnique( Args && ... _args )
+        template<class Type, class ... Args>
+        IntrusivePtr<Type> makeFactorableUnique( Args && ... _args )
         {
-            Base * factorable = new FactorableUnique<Base>( std::forward<Args>( _args ) ... );
+            Type * factorable = new FactorableUnique<Type>( std::forward<Args>( _args ) ... );
 
-            return IntrusivePtr<Base>( factorable );
+            return IntrusivePtr<Type>( factorable );
         }
     }
 }

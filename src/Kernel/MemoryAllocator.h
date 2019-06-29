@@ -39,13 +39,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class T>
-        T * allocateT()
+        template<class T, class ... Args>
+        T * allocateT( Args && ... _args )
         {
             size_t memory_size = sizeof( T );
             void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
 
-            new (memory_buffer)T();
+            new (memory_buffer)T( std::forward<Args>( _args ) ... );
 
             return reinterpret_cast<T *>(memory_buffer);
         }

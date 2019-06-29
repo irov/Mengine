@@ -12,10 +12,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/PolygonHelper.h"
-
 #include "Kernel/Stream.h"
-#include "Kernel/MemoryAllocator.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 

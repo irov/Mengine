@@ -54,7 +54,7 @@ namespace Mengine
         //    return false;
         //}
 
-        String buffer = "ffmpeg -loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + full_output + "\"";
+        String buffer = "-loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + full_output + "\"";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
@@ -63,7 +63,7 @@ namespace Mengine
         );
 
         if( PLATFORM_SERVICE()
-            ->cmd( buffer.c_str() ) == false )
+            ->cmd( "ffmpeg", buffer.c_str() ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()

@@ -66,4 +66,15 @@ namespace Mengine
             return fp;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Literals
+    {
+        //////////////////////////////////////////////////////////////////////////
+        FilePath operator "" _fp( const Char * _value, size_t _size )
+        {
+            FilePath cstr = Helper::stringizeFilePathSize( _value, (FilePath::size_type)_size );
+
+            return cstr;
+        }
+    }
 }

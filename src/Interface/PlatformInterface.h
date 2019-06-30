@@ -120,7 +120,7 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual bool cmd( const Char * _command ) = 0;
+        virtual bool cmd( const Char * _process, const Char * _command ) = 0;
 
     public:
         virtual void abort() = 0;

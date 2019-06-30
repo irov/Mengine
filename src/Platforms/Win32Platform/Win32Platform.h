@@ -121,7 +121,7 @@ namespace Mengine
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool cmd( const Char * _command ) override;
+        bool cmd( const Char * _process, const Char * _command ) override;
         void abort() override;
 
     protected:

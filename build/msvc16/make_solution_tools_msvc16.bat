@@ -17,7 +17,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call make_solution.bat "SOURCE_DIRECTORY=%CD%\..\CMake\Win32" "SOLUTION_NAME=solution_msvc%VERSION%" "GENERATOR=Visual Studio %VERSION% %YEAR%" "ARCHITECTURE=Win32" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=build_msvc%VERSION%\%CONFIGURATION%"
+@call make_solution.bat "SOURCE_DIRECTORY=%CD%\..\CMake\Tools_Win32" "SOLUTION_NAME=solution_tools_msvc%VERSION%" "GENERATOR=Visual Studio %VERSION% %YEAR%" "ARCHITECTURE=Win32" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=build_msvc%VERSION%\%CONFIGURATION%"
 @popd
 
 :end

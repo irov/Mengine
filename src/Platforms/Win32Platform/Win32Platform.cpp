@@ -2202,22 +2202,25 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::cmd( const Char * _command )
+    bool Win32Platform::cmd( const Char * _process, const Char * _command )
     {
+        WChar unicode_process[256];
+        Helper::utf8ToUnicode( _process, unicode_process, 4096 );
+
         WChar unicode_command[4096];
         Helper::utf8ToUnicode( _command, unicode_command, 4096 );
 
-        int32_t err = ::_wsystem( unicode_command );
 
-        if( err != 0 )
+        STARTUPINFO info = {sizeof( info )};
+        PROCESS_INFORMATION processInfo;
+        if( ::CreateProcess( unicode_process, unicode_command, NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo ) == FALSE )
         {
-            LOGGER_ERROR( "command:\n%s\nerror: %d"
-                , _command
-                , errno
-            );
-
             return false;
         }
+        
+        WaitForSingleObject( processInfo.hProcess, INFINITE );
+        CloseHandle( processInfo.hProcess );
+        CloseHandle( processInfo.hThread );
 
         return true;
     }

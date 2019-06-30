@@ -41,6 +41,8 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
 
+#include "Config/Vector.h"
+
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
 
@@ -872,8 +874,8 @@ bool run()
     pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>());
     pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>());
 
-    pybind::registration_stl_vector_type_cast<Mengine::String, stdex::vector<Mengine::String>>(kernel);
-    pybind::registration_stl_vector_type_cast<Mengine::WString, stdex::vector<Mengine::WString>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::String, Mengine::Vector<Mengine::String>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::WString, Mengine::Vector<Mengine::WString>>(kernel);
 
     pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module )
         .def_native_kernel( "write", &Mengine::PythonLogger::py_write )

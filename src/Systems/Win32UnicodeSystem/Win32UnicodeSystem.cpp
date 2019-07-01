@@ -100,11 +100,12 @@ namespace Mengine
 
             Char wstr_err[1024];
             PLATFORM_SERVICE()
-                ->getErrorMessage( err, wstr_err );
+                ->getErrorMessage( err, wstr_err, 1024 );
 
-            LOGGER_ERROR( "utf8 '%s' MultiByteToWideChar '%ls'"
+            LOGGER_ERROR( "invalid convert utf8 '%s' to unicode error: %s [%d]"
                 , _utf8
                 , wstr_err
+                , err
             );
 
             return false;

@@ -456,9 +456,12 @@ namespace Mengine
             return true;
         }
 
-        WChar date[1024] = { 0 };
+        Char date[1024] = {0};
         PLATFORM_SERVICE()
-            ->makeDateTimeW( date, 1024 );
+            ->makeDateTime( date, 1024 );
+
+        WString unicode_date;
+        Helper::utf8ToUnicode( date, unicode_date );
 
         WString unicode_logFilename;
         unicode_logFilename += L"Game";
@@ -470,7 +473,7 @@ namespace Mengine
         if( developmentMode == true && roamingMode == false || noroamingMode == false )
         {
             unicode_logFilename += L"_";
-            unicode_logFilename += date;
+            unicode_logFilename += unicode_date;
         }
 
         unicode_logFilename += L".log";

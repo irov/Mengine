@@ -42,7 +42,7 @@ namespace Mengine
 
         if( input_stream == nullptr )
         {
-            LOGGER_ERROR( "spreadingPngAlpha invalid PNG file '%s' not found"
+            LOGGER_ERROR( "invalid PNG file '%s' not found"
                 , inputFileName.c_str()
             );
 
@@ -56,7 +56,7 @@ namespace Mengine
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "spreadingPngAlpha not found decoder for file '%s'"
+            LOGGER_ERROR( "not found decoder for file '%s'"
                 , inputFileName.c_str()
             );
 
@@ -65,7 +65,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
-            LOGGER_ERROR( "spreadingPngAlpha not initialize decoder for file '%s'"
+            LOGGER_ERROR( "not initialize decoder for file '%s'"
                 , inputFileName.c_str()
             );
 
@@ -104,7 +104,7 @@ namespace Mengine
 
         if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
         {
-            LOGGER_ERROR( "spreadingPngAlpha invalid decode file '%s'"
+            LOGGER_ERROR( "invalid decode file '%s'"
                 , inputFileName.c_str()
             );
 
@@ -177,7 +177,7 @@ namespace Mengine
 
         if( output_stream == nullptr )
         {
-            LOGGER_ERROR( "spreadingPngAlpha invalid create PNG file '%s'"
+            LOGGER_ERROR( "invalid create PNG file '%s'"
                 , outputFileName.c_str()
             );
 
@@ -198,7 +198,7 @@ namespace Mengine
 
         if( imageEncoder->initialize( output_stream ) == false )
         {
-            LOGGER_ERROR( "spreadingPngAlpha not found encoder for file '%s'"
+            LOGGER_ERROR( "not found encoder for file '%s'"
                 , outputFileName.c_str()
             );
 
@@ -224,7 +224,7 @@ namespace Mengine
 
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR( "spreadingPngAlpha not found encoder for file '%s'"
+            LOGGER_ERROR( "not found encoder for file '%s'"
                 , outputFileName.c_str()
             );
 

@@ -107,7 +107,6 @@ namespace Mengine
 
     public:
         bool makeDateTime( Char * _out, size_t _capacity ) const override;
-        bool makeDateTimeW( WChar * _out, size_t _capacity ) const override;
 
     public:
         bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
@@ -117,11 +116,12 @@ namespace Mengine
         bool createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size );
 
     protected:
-        bool getErrorMessage( uint32_t _messageId, Char * _out ) const override;
+        bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const override;
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool cmd( const Char * _process, const Char * _command ) override;
+        bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) override;
+        bool createProcess( const Char * _process, const Char * _command ) override;
         void abort() override;
 
     protected:
@@ -132,7 +132,6 @@ namespace Mengine
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-        bool wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam );
         bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result );
 
     protected:

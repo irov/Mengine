@@ -28,7 +28,22 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToVSO::convert()
     {
-        FilePath fxcPath = CONFIG_VALUE( "ShaderConverter", "FXC_PATH", "fxc.exe"_fp );
+        FilePath fxcPath = CONFIG_VALUE( "Engine", "FxcPath", "REGISTER"_fp );
+
+        if( fxcPath == "REGISTER"_fp )
+        {
+            Char WindowsKitsInstallationFolder[256];
+            PLATFORM_SERVICE()
+                ->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 256 );
+
+            PLATFORM_SERVICE()
+                ->findFiles( "", WindowsKitsInstallationFolder, "x64\\fxc.exe", [&fxcPath]( const FilePath& _fp )
+            {
+                fxcPath = _fp;
+
+                return false;
+            } );
+        }
 
         const ConstString & pakPath = m_options.fileGroup->getFolderPath();
 
@@ -39,10 +54,11 @@ namespace Mengine
         full_output += m_options.outputFileName.c_str();
 
         Char buffer[2048];
-        sprintf( buffer, "/T vs_1_1 /O3 /Fo \"%s\" \"%s\""
+        sprintf( buffer, " /nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""
             , full_output.c_str()
             , full_input.c_str()
         );
+
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
             , full_output.c_str()
@@ -50,7 +66,7 @@ namespace Mengine
         );
 
         if( PLATFORM_SERVICE()
-            ->cmd( fxcPath.c_str(), buffer ) == false )
+            ->createProcess( fxcPath.c_str(), buffer ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer

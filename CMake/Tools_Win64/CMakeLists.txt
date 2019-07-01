@@ -1,5 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
+OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
+
 PROJECT(Tools_WIN64)
 
 INCLUDE(../macro_template.cmake)

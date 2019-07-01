@@ -80,7 +80,7 @@ namespace Mengine
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
                 , options.inputFileName.c_str()
                 , options.outputFileName.c_str()

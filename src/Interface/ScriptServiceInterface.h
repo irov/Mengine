@@ -6,6 +6,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 

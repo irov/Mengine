@@ -29,11 +29,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TexturepackerScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<ResourceTexturepacker, pybind::bases<Resource, Content> >( _kernel, "ResourceImageTexturepacker", false )
+        pybind::interface_<ResourceTexturepacker, pybind::bases<Resource> >( _kernel, "ResourceTexturepacker", false )
             .def( "getFrame", &ResourceTexturepacker::getFrame )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceImageTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceTexturepacker> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceTexturepacker> >( _kernel ) );
 
         return true;
     }
@@ -42,6 +42,6 @@ namespace Mengine
     {
         _kernel->remove_scope<ResourceTexturepacker>();
 
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceImageTexturepacker" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
     }
 }

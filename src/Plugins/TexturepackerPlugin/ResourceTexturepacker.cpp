@@ -1,8 +1,9 @@
 #include "ResourceTexturepacker.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+
+#include "Plugins/JSONPlugin/JSONInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
@@ -14,59 +15,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void* my_jpp_malloc(size_t _size)
-    {
-        return Helper::allocateMemory(_size, "ResourceImageTexturepacker");
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void my_jpp_free( void * _ptr )
-    {
-        Helper::freeMemory(_ptr, "ResourceImageTexturepacker");
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void my_jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, void * _ud )
-    {
-        MENGINE_UNUSED( _ud );
-
-        LOGGER_ERROR( "jpp error: %s\nline: %d\n column: %d\nposition: %d\nsource: %s\n"
-            , _text
-            , _line
-            , _column
-            , _position
-            , _source
-        );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    struct my_json_load_data
-    {
-        const uint8_t * buffer;
-        size_t carriage;
-        size_t capacity;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static size_t my_jpp_load_callback( void* _buffer, size_t _buflen, void* _data )
-    {
-        my_json_load_data* jd = static_cast<my_json_load_data *>(_data);
-        
-        if( _buflen > jd->capacity - jd->carriage )
-        {
-            _buflen = jd->capacity - jd->carriage;
-        }
-
-        if( _buflen > 0 )
-        {
-            const uint8_t * jd_buffer = jd->buffer + jd->carriage;
-            ::memcpy( _buffer, jd_buffer, _buflen );
-            jd->carriage += _buflen;
-            
-            return _buflen;
-        }
-        else 
-        {
-            return 0;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     ResourceTexturepacker::ResourceTexturepacker()
     {
     }
@@ -75,7 +23,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::setResourceImageName(const ConstString& _resourceImageName)
+    void ResourceTexturepacker::setResourceJSONName( const ConstString& _resourceJSONName )
+    {
+        m_resourceJSONName = _resourceJSONName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString& ResourceTexturepacker::getResourceJSONName() const
+    {
+        return m_resourceJSONName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceTexturepacker::setResourceImageName( const ConstString& _resourceImageName )
     {
         m_resourceImageName = _resourceImageName;
     }
@@ -85,9 +43,9 @@ namespace Mengine
         return m_resourceImageName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr& ResourceTexturepacker::getFrame(const ConstString& _name) const
+    const ResourceImagePtr& ResourceTexturepacker::getFrame( const ConstString& _name ) const
     {
-        const ResourceImagePtr& image = m_frames.find(_name);
+        const ResourceImagePtr& image = m_frames.find( _name );
 
         return image;
     }
@@ -111,45 +69,37 @@ namespace Mengine
 
         m_resourceImage = resourceImage;
 
+        const ResourcePtr& resourceJSON = RESOURCE_SERVICE()
+            ->getResource( m_resourceJSONName );
+
+        if( resourceJSON == nullptr )
+        {
+            LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
+                , this->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
+                , this->getGroupName().c_str()
+                , m_resourceJSONName.c_str()
+            );
+
+            return false;
+        }
+
+        m_resourceJSON = resourceJSON;
+
         bool atlasHasAlpha = m_resourceImage->hasAlpha();
         bool atlasIsPremultiply = m_resourceImage->isPremultiply();
         bool atlasIsPow2 = m_resourceImage->isPow2();
         const RenderTextureInterfacePtr& atlasTexture = m_resourceImage->getTexture();
         const RenderTextureInterfacePtr& atlasTextureAlpha = m_resourceImage->getTextureAlpha();
 
+        UnknownResourceJSONInterface * resourceJsonInterface = m_resourceJSON->getUnknown();
 
-        const FileGroupInterfacePtr& fileGroup = this->getFileGroup();
-        const FilePath& filePath = this->getFilePath();
-
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile(fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION);
-
-        if (stream == nullptr)
-        {
-            return false;
-        }
-
-        MemoryInterfacePtr memory = Helper::createMemoryStream(stream, MENGINE_DOCUMENT_FUNCTION, __FILE__, __LINE__);
-
-        if (memory == nullptr)
-        {
-            return false;
-        }
-
-        const void* memory_buffer = memory->getBuffer();
-        size_t memory_size = memory->getSize();
-
-        my_json_load_data jd;
-        jd.buffer = static_cast<const uint8_t *>(memory_buffer);
-        jd.carriage = 0;
-        jd.capacity = memory_size;
-
-        jpp::object root = jpp::load( &my_jpp_load_callback, &my_jpp_malloc, &my_jpp_free, &my_jpp_error, &jd );
+        const jpp::object & root = resourceJsonInterface->getJSON();
 
         if( root == jpp::detail::invalid )
         {
-            LOGGER_ERROR("invalid load json '%s'"
-                , filePath.c_str()
+            LOGGER_ERROR( "invalid json '%s'"
+                , m_resourceJSONName.c_str()
             );
 
             return false;
@@ -177,7 +127,6 @@ namespace Mengine
             int32_t frame_h = frame["h"];
 
             bool rotated = value["rotated"];
-            
             bool trimmed = value["trimmed"];
 
             if( trimmed == true )
@@ -223,13 +172,23 @@ namespace Mengine
             image->setPow2( atlasIsPow2 );
 
             m_frames.insert( c_name, image );
-        }        
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceTexturepacker::_release()
     {
-        //Empty
+        if( m_resourceJSON != nullptr )
+        {
+            m_resourceJSON->decrementReference();
+            m_resourceJSON = nullptr;
+        }
+
+        if( m_resourceImage != nullptr )
+        {
+            m_resourceImage->decrementReference();
+            m_resourceImage = nullptr;
+        }
     }
 }

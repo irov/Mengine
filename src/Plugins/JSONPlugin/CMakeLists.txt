@@ -1,30 +1,29 @@
-set( MY_LIB_NAME TexturepackerPlugin )
+set( MY_LIB_NAME JSONPlugin )
 
 ADD_FILTER(
 src
-    TexturepackerInterface.h
+    JSONInterface.h
     
-	TexturepackerPlugin.h
-	TexturepackerPlugin.cpp
-    TexturepackerPlugin.def
+	JSONPlugin.h
+	JSONPlugin.cpp
+    JSONPlugin.def
     
-    ResourceTexturepacker.cpp
-    ResourceTexturepacker.h
+    ResourceJSON.cpp
+    ResourceJSON.h
 	
-	LoaderResourceTexturepacker.cpp
-	LoaderResourceTexturepacker.h
+	LoaderResourceJSON.cpp
+	LoaderResourceJSON.h
 
-    TexturepackerScriptEmbedding.cpp
-    TexturepackerScriptEmbedding.h
+    JSONScriptEmbedding.cpp
+    JSONScriptEmbedding.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jansson/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_TEXTUREPACKER)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_JSON)
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins
@@ -41,7 +40,6 @@ ENDIF()
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}jansson${MENGINE_JSON_DEBUG_SUFFIX}${MENGINE_LIB_SUFFIX})

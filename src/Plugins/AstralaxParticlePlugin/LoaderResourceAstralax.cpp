@@ -35,14 +35,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::VectorMeta_Atlas & includes_atlas = metadata->get_Includes_Atlas();
 
-        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::VectorMeta_Atlas::const_iterator
-            it = includes_atlas.begin(),
-            it_end = includes_atlas.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas& atlas : includes_atlas )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & atlas = *it;
-
             uint32_t index = atlas.get_Index();
             const ConstString & resourceImageName = atlas.get_ResourceName();
 

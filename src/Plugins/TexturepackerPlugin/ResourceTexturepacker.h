@@ -3,8 +3,6 @@
 #include "TexturepackerInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
-
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Hashtable.h"
 
@@ -15,16 +13,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceTexturepacker
         : public Resource
-        , public Content
         , public UnknownResourceTexturepackerInterface
     {
         DECLARE_VISITABLE(Resource);
         DECLARE_UNKNOWABLE();
-        DECLARE_CONTENTABLE();
 
     public:
         ResourceTexturepacker();
         ~ResourceTexturepacker() override;
+
+    public:
+        void setResourceJSONName( const ConstString& _resourceJSONName );
+        const ConstString& getResourceJSONName() const;
 
     public:
         void setResourceImageName(const ConstString& _resourceImageName);
@@ -38,6 +38,9 @@ namespace Mengine
         void _release() override;
 
     protected:
+        ConstString m_resourceJSONName;
+        ResourcePtr m_resourceJSON;
+
         ConstString m_resourceImageName;
         ResourceImagePtr m_resourceImage;
 

@@ -2866,6 +2866,75 @@ namespace Metacode
                 Mengine::ConstString m_Internal_Name;
             };
             
+            class Meta_ResourceJSON
+                : public Meta_Resource
+            { 
+            public:
+                Meta_ResourceJSON();
+            
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Converter = (1 <<2),
+                };
+                
+            public:
+                bool has_File_Converter() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Converter( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
+                }
+                
+                bool get_File_Converter( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void getm_File_Path( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_File_Path );
+                }
+                
+                const Mengine::FilePath & get_File_Path() const
+                {
+                    return this->m_File_Path;
+                }
+                
+            public:
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            
+            protected:
+                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _preparationIncludes( uint32_t _id, uint32_t _count );
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+            
+            public:
+            protected:
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
+            };
+            
             class Meta_ResourceModel3D
                 : public Meta_Resource
             { 
@@ -6175,54 +6244,7 @@ namespace Metacode
             public:
                 Meta_ResourceTexturepacker();
             
-            protected:
-                enum NoRequiredAttribute
-                {
-                    EMETA_File_Converter = (1 <<2),
-                };
-                
             public:
-                bool has_File_Converter() const
-                {
-                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
-                }
-                
-                template<class C, class M>
-                bool getm_File_Converter( C _self, M _method ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    (_self->*_method)( this->m_File_Converter );
-                
-                    return true;
-                }
-                
-                bool get_File_Converter( Mengine::ConstString * _value ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    *_value = this->m_File_Converter;
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void getm_File_Path( C _self, M _method ) const
-                {
-                    (_self->*_method)( this->m_File_Path );
-                }
-                
-                const Mengine::FilePath & get_File_Path() const
-                {
-                    return this->m_File_Path;
-                }
-                
                 template<class C, class M>
                 void getm_Image_Name( C _self, M _method ) const
                 {
@@ -6234,20 +6256,29 @@ namespace Metacode
                     return this->m_Image_Name;
                 }
                 
+                template<class C, class M>
+                void getm_JSON_Name( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_JSON_Name );
+                }
+                
+                const Mengine::ConstString & get_JSON_Name() const
+                {
+                    return this->m_JSON_Name;
+                }
+                
             public:
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
-                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-                Mengine::ConstString m_File_Converter;
-                Mengine::FilePath m_File_Path;
                 Mengine::ConstString m_Image_Name;
+                Mengine::ConstString m_JSON_Name;
             };
             
             class Meta_ResourceVideo

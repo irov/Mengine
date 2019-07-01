@@ -26,14 +26,8 @@ namespace Mengine
 
         float duration = 0.f;
 
-        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence::VectorMeta_Sequence::const_iterator
-            it = includes_sequence.begin(),
-            it_end = includes_sequence.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence& meta_sequence : includes_sequence )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence & meta_sequence = *it;
-
             const ConstString & resourceName = meta_sequence.get_ResourceImageName();
             float delay = meta_sequence.get_Delay();
 

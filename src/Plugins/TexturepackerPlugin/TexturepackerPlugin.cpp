@@ -32,7 +32,7 @@ namespace Mengine
 		});
 
 		if (PROTOTYPE_SERVICE()
-			->addPrototype("Resource"_c, "ResourceImageTexturepacker"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceTexturepacker, 64>>()) == false)
+			->addPrototype("Resource"_c, "ResourceTexturepacker"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceTexturepacker, 64>>()) == false)
 		{
 			return false;
 		}
@@ -48,7 +48,7 @@ namespace Mengine
         }
 
         PROTOTYPE_SERVICE()
-            ->removePrototype("Resource"_c, "ResourceImageTexturepacker"_c);
+            ->removePrototype("Resource"_c, "ResourceTexturepacker"_c);
 
     }
 }

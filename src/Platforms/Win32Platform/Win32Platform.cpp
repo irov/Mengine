@@ -1845,14 +1845,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda )
+    static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
     {
         {
             WChar sPath[MENGINE_MAX_PATH];
-            wsprintf( sPath, L"%s%s%s", _dir, _path, _mask );
+            wcscpy( sPath, _dir );
+            wcscat( sPath, _path );
+            wcscat( sPath, _mask );
 
             WIN32_FIND_DATA fdFile;
-            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+            HANDLE hFind = FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
 
             if( hFind != INVALID_HANDLE_VALUE )
             {
@@ -1868,9 +1870,15 @@ namespace Mengine
                     {
                         continue;
                     }
+                    
+                    WChar sPath2[MENGINE_MAX_PATH];
+                    wcscpy( sPath2, sPath );
+                    wcscat( sPath2, L"\0" );
+
+                    PathRemoveFileSpec( sPath2 );
 
                     WChar unicode_filepath[MENGINE_MAX_PATH];
-                    wsprintf( unicode_filepath, L"%s%s", _path, fdFile.cFileName );
+                    PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
                     Char utf8_filepath[MENGINE_MAX_PATH];
                     if( Helper::unicodeToUtf8( unicode_filepath, utf8_filepath, MENGINE_MAX_PATH ) == false )
@@ -1882,7 +1890,14 @@ namespace Mengine
 
                     FilePath fp = Helper::stringizeFilePath( utf8_filepath );
 
-                    _lambda( fp );
+                    if( _lambda( fp ) == false )
+                    {
+                        FindClose( hFind );
+
+                        *_stop = true;
+
+                        return true;
+                    }
 
                 } while( FindNextFile( hFind, &fdFile ) != FALSE );
             }
@@ -1892,7 +1907,9 @@ namespace Mengine
 
         {
             WChar sPath[MENGINE_MAX_PATH];
-            wsprintf( sPath, L"%s%s*.*", _dir, _path );
+            wcscpy( sPath, _dir );
+            wcscat( sPath, _path );
+            wcscat( sPath, L"*.*" );
 
             WIN32_FIND_DATA fdFile;
             HANDLE hFind = FindFirstFile( sPath, &fdFile );
@@ -1915,15 +1932,42 @@ namespace Mengine
                     continue;
                 }
 
-                WChar nextPath[2048];
-                wsprintf( nextPath, L"%s%s/", _path, fdFile.cFileName );
+                //WChar nextPath[2048];
+                //wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
+                WChar currentPath[MENGINE_MAX_PATH];
+                wcscpy( currentPath, sPath );
+                wcscat( currentPath, L"\0" );
 
-                s_listDirectoryContents( _dir, _mask, nextPath, _lambda );
+                PathRemoveFileSpec( currentPath );
+
+                WChar nextPath[MENGINE_MAX_PATH];
+                PathCombine( nextPath, currentPath, fdFile.cFileName );
+
+                wcscat( nextPath, L"\\" );
+
+                bool stop;
+                if( s_listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
+                {
+                    FindClose( hFind );
+
+                    return false;
+                }
+
+                if( stop == true )
+                {
+                    FindClose( hFind );
+                 
+                    *_stop = true;
+
+                    return true;
+                }
 
             } while( FindNextFile( hFind, &fdFile ) != FALSE );
 
             FindClose( hFind );
         }
+
+        *_stop = false;
 
         return true;
     }
@@ -1948,10 +1992,13 @@ namespace Mengine
             return false;
         }
 
-        if( s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda ) == false )
+        bool stop;
+        if( s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda, &stop ) == false )
         {
             return false;
         }
+
+        MENGINE_UNUSED( stop );
 
         return true;
     }
@@ -1985,32 +2032,6 @@ namespace Mengine
         }
 
         strcpy( _out, str_date.c_str() );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::makeDateTimeW( WChar * _out, size_t _capacity ) const
-    {
-        std::time_t ctTime;
-        std::time( &ctTime );
-        std::tm* sTime = std::localtime( &ctTime );
-
-        WStringstream ss;
-        ss << 1900 + sTime->tm_year
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << (sTime->tm_mon + 1)
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_mday
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_hour
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_min
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_sec;
-
-        WString str_date = ss.str();
-
-        if( str_date.size() >= _capacity )
-        {
-            return false;
-        }
-
-        wcscpy( _out, str_date.c_str() );
 
         return true;
     }
@@ -2165,9 +2186,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getErrorMessage( uint32_t _messageId, Char * _out ) const
+    bool Win32Platform::getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const
     {
         LPTSTR errorText = NULL;
+
         if( ::FormatMessage(
             // use system message tables to retrieve error text
             FORMAT_MESSAGE_FROM_SYSTEM
@@ -2178,7 +2200,7 @@ namespace Mengine
             | FORMAT_MESSAGE_IGNORE_INSERTS,
             NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
             _messageId,
-            MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+            MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US ),
             (LPTSTR)&errorText,  // output 
             0, // minimum size for output buffer
             NULL ) == 0 )
@@ -2189,7 +2211,7 @@ namespace Mengine
         }
         else
         {
-            Helper::unicodeToUtf8( errorText, _out, 2048 );
+            Helper::unicodeToUtf8( errorText, _out, _capacity );
 
             ::LocalFree( errorText );
         }
@@ -2202,19 +2224,89 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::cmd( const Char * _process, const Char * _command )
+    bool Win32Platform::getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size )
     {
-        WChar unicode_process[256];
-        Helper::utf8ToUnicode( _process, unicode_process, 4096 );
+        WChar unicode_path[MAX_PATH] = {'\0'};
+        Helper::utf8ToUnicode( _path, unicode_path, MAX_PATH );
 
-        WChar unicode_command[4096];
+        WChar unicode_key[MAX_PATH] = {'\0'};
+        Helper::utf8ToUnicode( _key, unicode_key, MAX_PATH );
+
+        HKEY hKey;
+        LONG lRes = RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
+
+        if( lRes == ERROR_FILE_NOT_FOUND )
+        {
+#ifdef _MSC_VER
+            lRes = RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
+#endif
+        }
+
+        if( lRes != ERROR_SUCCESS )
+        {
+            LOGGER_ERROR( "RegOpenKeyEx HKEY_LOCAL_MACHINE '%s' get Error [%d]"
+                , _path
+                , lRes
+            );
+
+            return false;
+        }
+
+        WChar unicode_value[1024] = {L'\0'};
+
+        DWORD dwBufferSize = 1024;
+        LONG nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
+
+        RegCloseKey( hKey );
+
+        if( nError != ERROR_SUCCESS )
+        {
+            LOGGER_ERROR( "RegQueryValueEx HKEY_LOCAL_MACHINE '%s' get Error [%d]"
+                , _path
+                , nError
+            );
+
+            return false;
+        }
+
+        Helper::unicodeToUtf8( unicode_value, _value, _size );        
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createProcess( const Char * _process, const Char * _command )
+    {
+        if( _command == nullptr && _command[0] != '\0' && _command[0] != ' ' )
+        {
+            LOGGER_ERROR( "process '%s' invalid command line '%s'"
+                , _process
+                , _command
+            );
+
+            return false;
+        }
+
+        WChar unicode_process[MAX_PATH] = {'\0'};
+        Helper::utf8ToUnicode( _process, unicode_process, MAX_PATH );
+
+        WChar unicode_command[4096] = {'\0'};
         Helper::utf8ToUnicode( _command, unicode_command, 4096 );
 
-
-        STARTUPINFO info = {sizeof( info )};
-        PROCESS_INFORMATION processInfo;
-        if( ::CreateProcess( unicode_process, unicode_command, NULL, NULL, TRUE, 0, NULL, NULL, &info, &processInfo ) == FALSE )
+        STARTUPINFO info = {0};
+        PROCESS_INFORMATION processInfo = {0};
+        if( ::CreateProcess( unicode_process, unicode_command, NULL, NULL, FALSE, 0, NULL, NULL, &info, &processInfo ) == FALSE )
         {
+            DWORD le = GetLastError();
+
+            Char message[1024] = {'\0'};
+            this->getErrorMessage( le, message, 1024 );
+
+            LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
+                , _process
+                , message
+                , le
+            );
+
             return false;
         }
         

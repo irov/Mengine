@@ -56,6 +56,8 @@ namespace Mengine
                 return false;
             }
 
+            ::FindClose( hFind );
+
             const WChar * filename = PathFindFileName( _path );
 
             if( wcscmp( filename, wfd.cFileName ) != 0 )
@@ -66,12 +68,8 @@ namespace Mengine
                     , wfd.cFileName
                 );
 
-                ::FindClose( hFind );
-
                 return false;
             }
-
-            ::FindClose( hFind );
 
             return true;
         }

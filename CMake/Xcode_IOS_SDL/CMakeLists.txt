@@ -1,14 +1,15 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
+OPTION(MENGINE_BUILD_ONLY_EXECUTABLE_MODULE "Mengine build only executable module" OFF)
+OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" ON)
+OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
+
 PROJECT(Mengine_Xcode_IOS_SDL)
 
 INCLUDE(../macro_template.cmake)
 INCLUDE(../xcode_ios_template.cmake)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
-OPTION(MENGINE_BUILD_ONLY_EXECUTABLE_MODULE "Mengine build only executable module" OFF)
-OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" ON)
 
 SET_MENGINE_ENVIRONMENT(PYTHON IOS OPENGL X64 SDL XCODE)
 

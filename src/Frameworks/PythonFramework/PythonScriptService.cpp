@@ -693,8 +693,12 @@ namespace Mengine
                 if( PREFETCHER_SERVICE()
                     ->prefetchData( fileGroup, _filePath, dataflowPY, _cb ) == false )
                 {
-                    return;
+                    LOGGER_ERROR( "invalid prefetch data '%s'"
+                        , _filePath.c_str() 
+                    );
                 }
+
+                return true;
             } );
 #endif
 
@@ -703,8 +707,12 @@ namespace Mengine
                 if( PREFETCHER_SERVICE()
                     ->prefetchData( fileGroup, _filePath, dataflowPYZ, _cb ) == false )
                 {
-                    return;
+                    LOGGER_ERROR( "invalid prefetch data '%s'"
+                        , _filePath.c_str()
+                    );
                 }
+
+                return true;
             } );
         }
 

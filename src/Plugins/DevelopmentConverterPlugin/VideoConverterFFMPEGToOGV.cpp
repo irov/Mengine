@@ -43,7 +43,7 @@ namespace Mengine
         );
 
         if( PLATFORM_SERVICE()
-            ->cmd( "ffmpeg", buffer.c_str() ) == false )
+            ->createProcess( "ffmpeg", buffer.c_str() ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()

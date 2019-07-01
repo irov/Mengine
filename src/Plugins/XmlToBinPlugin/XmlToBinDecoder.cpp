@@ -115,7 +115,7 @@ namespace Mengine
             return false;
         }
 
-        m_fileGroup = fileGroup;
+        m_fileGroupDev = fileGroup;
 
         return true;
     }
@@ -143,7 +143,7 @@ namespace Mengine
         );
 
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
+            ->openInputFile( m_fileGroupDev, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( protocol_stream == nullptr )
         {
@@ -226,7 +226,7 @@ namespace Mengine
         memory_protocol = nullptr;
 
         InputStreamInterfacePtr xml_stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
+            ->openInputFile( m_fileGroupDev, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( xml_stream == nullptr )
         {
@@ -379,7 +379,7 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
+            ->openOutputFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
 
         if( bin_stream == nullptr )
         {

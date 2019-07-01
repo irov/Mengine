@@ -120,19 +120,9 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity )
+        inline bool utf8ToUnicode( const Char* _utf8, WString& _unicode )
         {
-            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
-
-            size_t unicodeSize;
-            bool successful = unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        inline bool utf8ToUnicodeSize( const Char * _utf8, WString & _unicode )
-        {
-            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+            UnicodeSystemInterface* unicodeService = UNICODE_SYSTEM();
 
             size_t unicodeSize;
             if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNICODE_UNKNOWN_SIZE, nullptr, 0, &unicodeSize ) == false )
@@ -157,6 +147,16 @@ namespace Mengine
             }
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity )
+        {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
+            size_t unicodeSize;
+            bool successful = unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
+
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WString & _unicode )

@@ -107,20 +107,22 @@ namespace Mengine
 
     public:
         virtual bool makeDateTime( Char * _out, size_t _capacity ) const = 0;
-        virtual bool makeDateTimeW( WChar * _out, size_t _capacity ) const = 0;
 
     public:
         virtual bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;
         virtual bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;
 
     public:
-        virtual bool getErrorMessage( uint32_t _messageId, Char * _out ) const = 0;
+        virtual bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual bool cmd( const Char * _process, const Char * _command ) = 0;
+        virtual bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) = 0;
+
+    public:
+        virtual bool createProcess( const Char * _process, const Char * _command ) = 0;
 
     public:
         virtual void abort() = 0;

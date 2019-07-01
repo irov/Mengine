@@ -90,14 +90,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer2D & includes_layer2d = metadata->get_Includes_MovieLayer2D();
 
-        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer2D::const_iterator
-            it = includes_layer2d.begin(),
-            it_end = includes_layer2d.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d : includes_layer2d )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
-
             MovieLayer ml;
 
             ml.state = 0;

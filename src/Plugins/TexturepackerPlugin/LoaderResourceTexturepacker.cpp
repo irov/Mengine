@@ -26,9 +26,7 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker* metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker*>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceTexturepacker::setFilePath );
-        metadata->getm_File_Converter( resource, &ResourceTexturepacker::setConverterType );
-        
+        metadata->getm_JSON_Name( resource, &ResourceTexturepacker::setResourceJSONName );
         metadata->getm_Image_Name( resource, &ResourceTexturepacker::setResourceImageName );
 
         return true;

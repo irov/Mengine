@@ -4,6 +4,8 @@ ADD_FILTER(
 src
 	WebPPlugin.h
 	WebPPlugin.cpp
+    WebPPlugin.def
+    
     ImageDecoderWebP.h
     ImageDecoderWebP.cpp
 )

@@ -1,4 +1,4 @@
-<Protocol Version = "137">
+<Protocol Version = "138">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -239,12 +239,15 @@
             <Attribute Name="ResourceName" Type="Mengine::ConstString" Required="1"/>
           </Node>
         </Node>
-        
+
+        <Node Name="ResourceJSON" Inheritance = "Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+        </Node>
+
         <Node Name="ResourceTexturepacker" Inheritance = "Resource">
-            <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
-            <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
-            
-            <Member Node="Image" Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="JSON" Name="Name" Type="Mengine::ConstString" Required="1"/>
+          <Member Node="Image" Name="Name" Type="Mengine::ConstString" Required="1"/>
         </Node>
 
         <Node Name="ResourceCursorSystem" Inheritance = "Resource">

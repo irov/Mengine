@@ -153,10 +153,12 @@ namespace Mengine
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<ResourceMovieValidator>() );
         }
 
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<LoaderResourceMovie>() );
-        }
+
+            return true;
+        } );
 
         return true;
     }

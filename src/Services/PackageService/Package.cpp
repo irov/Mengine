@@ -187,14 +187,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts & includes_scripts = pak.get_Includes_Scripts();
 
-        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts::const_iterator
-            it = includes_scripts.begin(),
-            it_end = includes_scripts.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts : includes_scripts )
         {
-            const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts = *it;
-
             const FilePath & Path = meta_scripts.get_Path();
 
             ConstString Module;
@@ -213,14 +207,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
 
-        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts::const_iterator
-            it = includes_fonts.begin(),
-            it_end = includes_fonts.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts : includes_fonts )
         {
-            const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts = *it;
-
             const FilePath & Path = meta_fonts.get_Path();
 
             Tags Platform;
@@ -231,14 +219,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources & includes_resources = pak.get_Includes_Resources();
 
-        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources::const_iterator
-            it = includes_resources.begin(),
-            it_end = includes_resources.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Resources & meta_resources : includes_resources )
         {
-            const Metacode::Meta_Data::Meta_Pak::Meta_Resources & meta_resources = *it;
-
             bool ignored = false;
             meta_resources.get_Ignored( &ignored );
 
@@ -250,14 +232,8 @@ namespace Mengine
 
             const Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource & includes_resource = meta_resources.get_Includes_Resource();
 
-            for( Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource::const_iterator
-                it_include = includes_resource.begin(),
-                it_include_end = includes_resource.end();
-                it_include != it_include_end;
-                ++it_include )
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource : includes_resource )
             {
-                const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
-
                 const FilePath & Path = meta_resource.get_Path();
 
                 Tags tags;
@@ -269,27 +245,15 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts & includes_tests = pak.get_Includes_Texts();
 
-        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts::const_iterator
-            it = includes_tests.begin(),
-            it_end = includes_tests.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Texts & meta_texts : includes_tests )
         {
-            const Metacode::Meta_Data::Meta_Pak::Meta_Texts & meta_texts = *it;
-
             Tags platform;
             meta_texts.get_Platform( &platform );
 
             const Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text & includes_text = meta_texts.get_Includes_Text();
 
-            for( Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text::const_iterator
-                it_include = includes_text.begin(),
-                it_include_end = includes_text.end();
-                it_include != it_include_end;
-                ++it_include )
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Texts::Meta_Text & meta_text : includes_text )
             {
-                const Metacode::Meta_Data::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
-
                 const FilePath & Path = meta_text.get_Path();
                 this->addTextPath_( Path, platform );
             }
@@ -297,27 +261,15 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas & includes_datas = pak.get_Includes_Datas();
 
-        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas::const_iterator
-            it = includes_datas.begin(),
-            it_end = includes_datas.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Datas & meta_datas : includes_datas )
         {
-            const Metacode::Meta_Data::Meta_Pak::Meta_Datas & meta_datas = *it;
-
             Tags platform;
             meta_datas.get_Platform( &platform );
 
             const Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data & includes_data = meta_datas.get_Includes_Data();
 
-            for( Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data::const_iterator
-                it_include = includes_data.begin(),
-                it_include_end = includes_data.end();
-                it_include != it_include_end;
-                ++it_include )
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Datas::Meta_Data & meta_data : includes_data )
             {
-                const Metacode::Meta_Data::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
-
                 const ConstString & name = meta_data.get_Name();
                 const FilePath & path = meta_data.get_Path();
 
@@ -327,27 +279,15 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials & includes_materials = pak.get_Includes_Materials();
 
-        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials::const_iterator
-            it = includes_materials.begin(),
-            it_end = includes_materials.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Materials & meta_materials : includes_materials )
         {
-            const Metacode::Meta_Data::Meta_Pak::Meta_Materials & meta_materials = *it;
-
             Tags platform;
             meta_materials.get_Platform( &platform );
 
             const Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material & includes_material = meta_materials.get_Includes_Material();
 
-            for( Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material::const_iterator
-                it_include = includes_material.begin(),
-                it_include_end = includes_material.end();
-                it_include != it_include_end;
-                ++it_include )
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Materials::Meta_Material & meta_material : includes_material )
             {
-                const Metacode::Meta_Data::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
-
                 const FilePath & path = meta_material.get_Path();
 
                 this->addMaterial_( path, platform );

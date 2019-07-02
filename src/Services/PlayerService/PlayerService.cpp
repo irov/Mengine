@@ -190,7 +190,7 @@ namespace Mengine
 
         SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( scheduleManager->initialize( "LocalScheduleManager"_c ) == false )
+        if( scheduleManager->initialize( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) ) == false )
         {
             return false;
         }
@@ -199,7 +199,7 @@ namespace Mengine
 
         SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( scheduleManagerGlobal->initialize( "GlobalScheduleManager"_c ) == false )
+        if( scheduleManagerGlobal->initialize( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) ) == false )
         {
             return false;
         }

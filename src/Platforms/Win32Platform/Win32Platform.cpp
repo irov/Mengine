@@ -1849,19 +1849,19 @@ namespace Mengine
     {
         {
             WChar sPath[MENGINE_MAX_PATH];
-            wcscpy( sPath, _dir );
-            wcscat( sPath, _path );
-            wcscat( sPath, _mask );
+            ::wcscpy( sPath, _dir );
+            ::wcscat( sPath, _path );
+            ::wcscat( sPath, _mask );
 
             WIN32_FIND_DATA fdFile;
-            HANDLE hFind = FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
+            HANDLE hFind = ::FindFirstFileEx( sPath, FindExInfoStandard, &fdFile, FindExSearchNameMatch, NULL, 0 );
 
             if( hFind != INVALID_HANDLE_VALUE )
             {
                 do
                 {
-                    if( wcscmp( fdFile.cFileName, L"." ) == 0
-                        || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                    if( ::wcscmp( fdFile.cFileName, L"." ) == 0
+                        || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
@@ -1872,18 +1872,26 @@ namespace Mengine
                     }
                     
                     WChar sPath2[MENGINE_MAX_PATH];
-                    wcscpy( sPath2, sPath );
-                    wcscat( sPath2, L"\0" );
+                    ::wcscpy( sPath2, sPath );
+                    ::wcscat( sPath2, L"\0" );
+                    Helper::pathCorrectForwardslashW( sPath2 );
 
-                    PathRemoveFileSpec( sPath2 );
+                    ::PathRemoveFileSpec( sPath2 );
 
                     WChar unicode_filepath[MENGINE_MAX_PATH];
-                    PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
+                    ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
+                    WChar unicode_out[MENGINE_MAX_PATH];
+                    ::PathRelativePathTo( unicode_out,
+                        _dir,
+                        FILE_ATTRIBUTE_DIRECTORY,
+                        unicode_filepath,
+                        FILE_ATTRIBUTE_NORMAL );
+                    
                     Char utf8_filepath[MENGINE_MAX_PATH];
-                    if( Helper::unicodeToUtf8( unicode_filepath, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                    if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
                     {
-                        FindClose( hFind );
+                        ::FindClose( hFind );
 
                         return false;
                     }
@@ -1892,27 +1900,27 @@ namespace Mengine
 
                     if( _lambda( fp ) == false )
                     {
-                        FindClose( hFind );
+                        ::FindClose( hFind );
 
                         *_stop = true;
 
                         return true;
                     }
 
-                } while( FindNextFile( hFind, &fdFile ) != FALSE );
+                } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
             }
 
-            FindClose( hFind );
+            ::FindClose( hFind );
         }
 
         {
             WChar sPath[MENGINE_MAX_PATH];
-            wcscpy( sPath, _dir );
-            wcscat( sPath, _path );
-            wcscat( sPath, L"*.*" );
+            ::wcscpy( sPath, _dir );
+            ::wcscat( sPath, _path );
+            ::wcscat( sPath, L"*.*" );
 
             WIN32_FIND_DATA fdFile;
-            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+            HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
@@ -1921,8 +1929,8 @@ namespace Mengine
 
             do
             {
-                if( wcscmp( fdFile.cFileName, L"." ) == 0
-                    || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                if( ::wcscmp( fdFile.cFileName, L"." ) == 0
+                    || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
                 {
                     continue;
                 }
@@ -1935,36 +1943,36 @@ namespace Mengine
                 //WChar nextPath[2048];
                 //wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
                 WChar currentPath[MENGINE_MAX_PATH];
-                wcscpy( currentPath, sPath );
-                wcscat( currentPath, L"\0" );
+                ::wcscpy( currentPath, sPath );
+                ::wcscat( currentPath, L"\0" );
 
-                PathRemoveFileSpec( currentPath );
+                ::PathRemoveFileSpec( currentPath );
 
                 WChar nextPath[MENGINE_MAX_PATH];
-                PathCombine( nextPath, currentPath, fdFile.cFileName );
+                ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
-                wcscat( nextPath, L"\\" );
+                ::wcscat( nextPath, L"\\" );
 
                 bool stop;
                 if( s_listDirectoryContents( _dir, _mask, nextPath, _lambda, &stop ) == false )
                 {
-                    FindClose( hFind );
+                    ::FindClose( hFind );
 
                     return false;
                 }
 
                 if( stop == true )
                 {
-                    FindClose( hFind );
+                    ::FindClose( hFind );
                  
                     *_stop = true;
 
                     return true;
                 }
 
-            } while( FindNextFile( hFind, &fdFile ) != FALSE );
+            } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
 
-            FindClose( hFind );
+            ::FindClose( hFind );
         }
 
         *_stop = false;
@@ -1992,8 +2000,11 @@ namespace Mengine
             return false;
         }
 
+        WChar unicode_fullbase[MENGINE_MAX_PATH];
+        ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
+
         bool stop;
-        if( s_listDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda, &stop ) == false )
+        if( s_listDirectoryContents( unicode_fullbase, unicode_mask, unicode_path, _lambda, &stop ) == false )
         {
             return false;
         }

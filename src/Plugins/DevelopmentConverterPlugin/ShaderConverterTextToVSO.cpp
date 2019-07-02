@@ -21,7 +21,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToVSO::_initialize()
     {
-        m_convertExt = ".pso";
+        m_convertExt = ".vso";
 
         return true;
     }

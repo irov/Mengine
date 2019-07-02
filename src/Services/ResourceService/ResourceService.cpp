@@ -12,6 +12,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/AssertionMainThreadGuard.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
@@ -103,14 +104,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
 
-        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include::const_iterator
-            it = includes_include.begin(),
-            it_end = includes_include.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include : includes_include )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include = *it;
-
             const FilePath & path = meta_include.get_Path();
 
             if( this->loadResources( _locale, _fileGroup, path, _tags, _ignored ) == false )
@@ -127,14 +122,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
 
-        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource::const_iterator
-            it = includes_resource.begin(),
-            it_end = includes_resource.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource : includes_resource )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource = *it;
-
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
@@ -267,14 +256,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
 
-        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include::const_iterator
-            it = includes_include.begin(),
-            it_end = includes_include.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include : includes_include )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include = *it;
-
             const FilePath & path = meta_include.get_Path();
 
             if( this->unloadResources( _locale, _pak, path ) == false )
@@ -291,14 +274,8 @@ namespace Mengine
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
 
-        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource::const_iterator
-            it = includes_resource.begin(),
-            it_end = includes_resource.end();
-            it != it_end;
-            ++it )
+        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource : includes_resource )
         {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource = *it;
-
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
@@ -340,21 +317,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PointerResourceReference ResourceService::generateResource( const ConstString & _type, const Char * _doc ) const
     {
+        LOGGER_INFO( "generate resource '%s'"
+            , _type.c_str()
+        );
+
         ResourcePtr resource = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
 
-        if( resource == nullptr )
-        {
-            LOGGER_ERROR( "not registered resource type '%s'"
-                , _type.c_str()
-            );
-
-            return nullptr;
-        }
-
-        LOGGER_INFO( "type '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not registered resource type '%s'"
             , _type.c_str()
-        );
+        );           
 
         if( resource->initialize() == false )
         {
@@ -368,19 +340,14 @@ namespace Mengine
     {
         ResourcePtr resource = this->generateResource( _type, _doc );
 
-        if( resource == nullptr )
-        {
-            LOGGER_ERROR( "invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s' doc '%s'"
-                , _locale.c_str()
-                , _fileGroup->getName().c_str()
-                , _groupName.c_str()
-                , _name.c_str()
-                , _type.c_str()
-                , _doc
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s' doc '%s'"
+            , _locale.c_str()
+            , _fileGroup->getName().c_str()
+            , _groupName.c_str()
+            , _name.c_str()
+            , _type.c_str()
+            , _doc
+        );
 
         resource->setLocale( _locale );
         resource->setFileGroup( _fileGroup );

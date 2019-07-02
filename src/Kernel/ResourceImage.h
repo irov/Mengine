@@ -42,7 +42,10 @@ namespace Mengine
         inline void setUVAlpha( const mt::uv4f & _uv );
         inline const mt::uv4f & getUVAlpha() const;
 
+        inline void setUVTextureImage( const mt::uv4f & _uv );
         inline const mt::uv4f & getUVTextureImage() const;
+        
+        inline void setUVTextureAlpha( const mt::uv4f & _uv );
         inline const mt::uv4f & getUVTextureAlpha() const;
 
         inline void setUVImageRotate( bool _rotate );
@@ -152,9 +155,19 @@ namespace Mengine
         return m_uvAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
+    inline void ResourceImage::setUVTextureImage( const mt::uv4f & _uv )
+    {
+        m_uvTextureImage = _uv;
+    }
+    //////////////////////////////////////////////////////////////////////////
     inline const mt::uv4f & ResourceImage::getUVTextureImage() const
     {
         return m_uvTextureImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline void ResourceImage::setUVTextureAlpha( const mt::uv4f & _uv )
+    {
+        m_uvTextureAlpha = _uv;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const mt::uv4f & ResourceImage::getUVTextureAlpha() const

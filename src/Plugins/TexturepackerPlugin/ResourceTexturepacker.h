@@ -33,6 +33,10 @@ namespace Mengine
     public:
         const ResourceImagePtr & getFrame( const ConstString & _name ) const override;
 
+    public:
+        uint32_t getFramesCount() const override;
+        const ResourceImagePtr & getFrameByIndex( uint32_t _index ) const override;
+
     protected:
         bool _compile() override;
         void _release() override;

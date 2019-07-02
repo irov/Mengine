@@ -50,6 +50,31 @@ namespace Mengine
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t ResourceTexturepacker::getFramesCount() const
+    {
+        uint32_t size = (uint32_t)m_frames.size();
+
+        return size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceTexturepacker::getFrameByIndex( uint32_t _index ) const
+    {
+        MENGINE_ASSERTION( _index < m_frames.size() );
+
+        uint32_t enumerator = 0;
+        for( const HashtableTexturepackerFrames::value_type & frame : m_frames )
+        { 
+            if( enumerator != _index )
+            {
+                continue;
+            }
+
+            return frame.element;
+        }
+
+        return ResourceImagePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
         const ResourceImagePtr& resourceImage = RESOURCE_SERVICE()
@@ -112,8 +137,11 @@ namespace Mengine
         uint32_t atlas_width = root_meta_size["w"];
         uint32_t atlas_height = root_meta_size["h"];
 
-        float atlas_width_1inv = 1.f / (float)atlas_width;
-        float atlas_height_1inv = 1.f / (float)atlas_height;
+        uint32_t atlas_width_pow2 = Helper::getTexturePOW2( atlas_width );
+        uint32_t atlas_height_pow2 = Helper::getTexturePOW2( atlas_height );
+
+        float atlas_width_1inv = 1.f / (float)atlas_width_pow2;
+        float atlas_height_1inv = 1.f / (float)atlas_height_pow2;
 
         jpp::object root_frames = root["frames"];
 
@@ -143,8 +171,8 @@ namespace Mengine
 
             jpp::object sourceSize = value["sourceSize"];
 
-            int32_t sourceSize_x = sourceSize["x"];
-            int32_t sourceSize_y = sourceSize["y"];
+            int32_t sourceSize_w = sourceSize["w"];
+            int32_t sourceSize_h = sourceSize["h"];
 
             ConstString c_name = Helper::stringizeString( name );
 
@@ -154,15 +182,23 @@ namespace Mengine
             image->setTexture( atlasTexture );
             image->setTextureAlpha( atlasTextureAlpha );
 
-            mt::vec2f size( (float)sourceSize_x, (float)sourceSize_y );
+            mt::vec2f size( (float)sourceSize_w, (float)sourceSize_h );
             image->setMaxSize( size );
             image->setSize( size );
 
-            mt::vec4f uv_mask( (float)frame_x, (float)frame_y, (float)frame_x + frame_w, (float)frame_y + frame_h );
-            uv_mask *= mt::vec2f( atlas_width_1inv, atlas_height_1inv );
-            mt::uv4f uv( uv_mask );
+            mt::vec4f uv_mask( (float)frame_x, (float)frame_y, (float)(frame_x + frame_w), (float)(frame_y + frame_h) );
+            uv_mask.x *= atlas_width_1inv;
+            uv_mask.y *= atlas_height_1inv;
+            uv_mask.z *= atlas_width_1inv;
+            uv_mask.w *= atlas_height_1inv;
+
+            mt::uv4f uv;
+            mt::uv4_from_mask( uv, uv_mask );
+
             image->setUVImage( uv );
             image->setUVAlpha( uv );
+            image->setUVTextureImage( uv );
+            image->setUVTextureAlpha( uv );
 
             image->setUVImageRotate( rotated );
             image->setUVAlphaRotate( rotated );

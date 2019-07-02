@@ -51,7 +51,7 @@ namespace Mengine
 
                 if( serviceProvider == nullptr )
                 {
-                    MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid get provider"
+                    MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid get provider"
                         , serviceName
                         );
 

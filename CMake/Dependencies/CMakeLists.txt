@@ -571,7 +571,12 @@ if(MENGINE_TOOLCHAIN_MSVC)
     message("================glad================")
     OPTION(MENGINE_DEPENDENCE_GLAD "glad" ON)
     if(MENGINE_DEPENDENCE_GLAD)
-        ADD_SUBDIRECTORY( glad )
+	set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
+	set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/glad)
+        set(GLAD_INSTALL OFF CACHE BOOL "GLAD_INSTALL" FORCE)
+
+	ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/glad )
+	set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
     endif()
 	
     message("================glfw3================")

@@ -10,7 +10,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_version()
     {
-        return 8;
+        return 9;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
@@ -93,6 +93,58 @@ namespace Metacode
         }
 
         return Metabuf::HEADER_SUCCESSFUL;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t getInternalStringsCount()
+    {
+        return 28;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const char * getInternalString( uint32_t _index, uint32_t & _stringSize, int64_t & _stringHash )
+    {
+        struct internal_t
+        {
+            uint32_t size;
+            const char * str;
+            uint64_t hash;
+        };
+
+        const internal_t internals[] = {
+            {17, "ResourceImageData", 3605914952971727146UL},
+            {20, "ResourceImageDefault", 3470757930260756242UL},
+            {33, "ResourceImageSubstractRGBAndAlpha", 1723658646726069585UL},
+            {22, "ResourceImageSubstract", 16659728524181123102UL},
+            {16, "ResourceParticle", 16164975587347302130UL},
+            {16, "ResourceAstralax", 15806205534695974182UL},
+            {12, "ResourceJSON", 7298292741407897678UL},
+            {21, "ResourceTexturepacker", 12701421212601506810UL},
+            {20, "ResourceCursorSystem", 4148560451948967337UL},
+            {17, "ResourceCursorICO", 1207208513755767748UL},
+            {12, "ResourceFile", 13744762813760447274UL},
+            {13, "ResourceSound", 843945519076406244UL},
+            {13, "ResourceMusic", 7025043015214611656UL},
+            {14, "ResourceWindow", 2358163663307596582UL},
+            {14, "ResourceMovie2", 4673878932342189948UL},
+            {13, "ResourceMovie", 13025064015180611533UL},
+            {13, "ResourceVideo", 16146105055103617384UL},
+            {21, "ResourceImageSequence", 8213436962902335585UL},
+            {11, "ResourceHIT", 8571701938869837048UL},
+            {15, "ResourceModel3D", 10779914626559864605UL},
+            {18, "ResourceImageSolid", 3375355703810878466UL},
+            {22, "ResourceInternalObject", 4413538717023814496UL},
+            {13, "ResourceShape", 3843798518083404622UL},
+            {21, "ResourceCal3dSkeleton", 13093878591051467045UL},
+            {22, "ResourceCal3dAnimation", 13846719098122425571UL},
+            {17, "ResourceCal3dMesh", 14426262410430258751UL},
+            {13, "ResourceSpine", 11843862518149404524UL},
+            {16, "ResourceExternal", 9701561299099324449UL},
+        };
+
+        const internal_t & internal = internals[_index];
+        _stringSize = internal.size;
+        _stringHash = internal.hash;
+
+        return internal.str;
     }
     //////////////////////////////////////////////////////////////////////////
     bool readStrings( const void * _buff, size_t _size, size_t & _read, uint32_t & _stringCount )

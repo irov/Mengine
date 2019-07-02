@@ -256,24 +256,39 @@ namespace Mengine
 
         size_t read_size = 0;
 
+        uint32_t internalStringsCount = Metacode::getInternalStringsCount();
+
         uint32_t stringCount;
         if( Metacode::readStrings( binary_memory, bin_size, read_size, stringCount ) == false )
         {
             return false;
         }
 
-        m_metacache.strings.resize( stringCount );
+        m_metacache.strings.resize( internalStringsCount + stringCount );
 
-        for( ConstString & buffer : m_metacache.strings )
+        uint32_t index = 0;
+
+        for( ConstString & cstr : m_metacache.strings )
         {
             uint32_t stringSize;
             int64_t stringHash;
-            const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
+            const char * stringBuffer = nullptr;
 
-            MENGINE_ASSERTION_MEMORY_PANIC( str, false, "invlid read string (error)" );
+            if( index < internalStringsCount )
+            {
+                stringBuffer = Metacode::getInternalString( index, stringSize, stringHash );
+            }
+            else
+            {
+                stringBuffer = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
+            }
+
+            MENGINE_ASSERTION_MEMORY_PANIC( stringBuffer, false, "invlid read string (error)" );
 
             STRINGIZE_SERVICE()
-                ->stringize( str, stringSize, stringHash, buffer );
+                ->stringize( stringBuffer, stringSize, stringHash, cstr );
+
+            ++index;
         }
 
         if( _metadata->parse( binary_memory, bin_size, read_size, (void *)&m_metacache ) == false )

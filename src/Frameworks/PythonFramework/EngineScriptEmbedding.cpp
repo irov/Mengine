@@ -1147,19 +1147,26 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
+        ResourcePtr s_getResource( const ConstString & _name )
+        {
+            const ResourcePtr & resource = RESOURCE_SERVICE()
+                ->getResource( _name );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource %s"
+                , _name.c_str()
+            );
+
+            return resource;
+        }
+        //////////////////////////////////////////////////////////////////////////
         ResourcePtr s_getResourceReference( const ConstString & _name )
         {
             const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResourceReference( _name );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.getResourceReference: not exist resource %s"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource %s"
+                , _name.c_str()
+            );
 
             return resource;
         }
@@ -3567,6 +3574,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "createResource", nodeScriptMethod, &EngineScriptMethod::s_createResource );
         pybind::def_functor( _kernel, "directResourceCompile", nodeScriptMethod, &EngineScriptMethod::s_directResourceCompile );
         pybind::def_functor( _kernel, "directResourceRelease", nodeScriptMethod, &EngineScriptMethod::s_directResourceRelease );
+        pybind::def_functor( _kernel, "getResource", nodeScriptMethod, &EngineScriptMethod::s_getResource );
         pybind::def_functor( _kernel, "getResourceReference", nodeScriptMethod, &EngineScriptMethod::s_getResourceReference );
 
         pybind::def_functor( _kernel, "directFontCompile", nodeScriptMethod, &EngineScriptMethod::s_directFontCompile );

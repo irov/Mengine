@@ -28,9 +28,9 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ShaderConverterTextToPSO::convert()
     {
-        FilePath fxcPath = CONFIG_VALUE( "Engine", "FxcPath", "REGISTER"_fp );
+        FilePath fxcPath = CONFIG_VALUE( "Engine", "FxcPath", STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) );
 
-        if( fxcPath == "REGISTER"_fp )
+        if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
             Char WindowsKitsInstallationFolder[256];
             PLATFORM_SERVICE()

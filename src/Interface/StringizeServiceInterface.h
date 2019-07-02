@@ -108,14 +108,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Literals
-    {
-        //////////////////////////////////////////////////////////////////////////
-        inline ConstString operator "" _c( const Char * _value, size_t _size )
-        {
-            ConstString cstr = Helper::stringizeStringSize( _value, (ConstString::size_type)_size );
-
-            return cstr;
-        }
+    {        
         //////////////////////////////////////////////////////////////////////////
         constexpr ConstString::hash_type operator "" _hash( const Char * _value, size_t _size )
         {

@@ -11,7 +11,7 @@ namespace Mengine
         PLUGIN_DECLARE( "Texturepacker" )
 
     public:
-		TexturepackerPlugin();
+        TexturepackerPlugin();
         ~TexturepackerPlugin() override;
 
     protected:

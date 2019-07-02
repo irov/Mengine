@@ -75,6 +75,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    const jpp::object & ResourceJSON::getJSON() const
+    {
+        return m_json;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceJSON::_compile()
     {
         const FileGroupInterfacePtr& fileGroup = this->getFileGroup();

@@ -3,9 +3,11 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "JSONScriptEmbedding.h"
 #include "ResourceJSON.h"
+#include "LoaderResourceJSON.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 
@@ -33,10 +35,18 @@ namespace Mengine
         } );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( "Resource"_c, "ResourceJSON"_c, Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceJSON, 64>>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceJSON, 64>>() ) == false )
         {
             return false;
         }
+
+        SERVICE_WAIT( LoaderServiceInterface, []()
+        {
+            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<LoaderResourceJSON>() );
+
+            return true;
+        } );
+
 
         return true;
     }
@@ -48,7 +58,12 @@ namespace Mengine
             REMOVE_SCRIPT_EMBEDDING( JSONScriptEmbedding );
         }
 
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+        }
+
         PROTOTYPE_SERVICE()
-            ->removePrototype( "Resource"_c, "ResourceJSON"_c );
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
     }
 }

@@ -201,6 +201,14 @@ PLUGIN_EXPORT( OzzAnimation );
 PLUGIN_EXPORT( PythonFramework );
 #endif
 
+#ifdef MENGINE_PLUGIN_JSON_STATIC
+PLUGIN_EXPORT( JSON );
+#endif
+
+#ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
+PLUGIN_EXPORT( Texturepacker );
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -702,6 +710,14 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_OZZ_ANIMATION_STATIC
         MENGINE_ADD_PLUGIN( OzzAnimation, "initialize Plugin OzzAnimation..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_JSON_STATIC
+        MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
+        MENGINE_ADD_PLUGIN( Texturepacker, "initialize Plugin Texturepacker..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC

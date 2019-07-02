@@ -29,7 +29,7 @@ namespace Mengine
         {
             Type * factorable = new FactorablePlugin<Type>( std::forward<Args>( _args ) ... );
 
-            return IntrusivePtr<Base>( factorable );
+            return IntrusivePtr<Type>( factorable );
         }
     }
 }

@@ -9,12 +9,15 @@ set "CONFIGURATION=%1"
 
 @echo Starting build dependencies SDL %CONFIGURATION% configuration...
 
-@pushd ..
-@call vcvarsall_msvc15.bat
+set "VERSION=15"
+set "YEAR=2017"
+
+@pushd %~dp0..
+@call vcvarsall_msvc%VERSION%.bat
 @popd
 
-@pushd ..
-@call build_depends.bat "%CD%\..\CMake\Depends_WIN32_SDL" build_msvc15_sdl\%CONFIGURATION% "Visual Studio 15 2017" %CONFIGURATION%
+@pushd %~dp0..
+@call build_depends.bat "SOLUTION_NAME=build_msvc%VERSION%_sdl" "CONFIGURATION=%CONFIGURATION%" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_WIN32_SDL" "GENERATOR=Visual Studio %VERSION% %YEAR%" "VERBOSITY=minimal"
 @popd
 
 :end

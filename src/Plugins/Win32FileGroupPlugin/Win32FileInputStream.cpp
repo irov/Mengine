@@ -135,14 +135,14 @@ namespace Mengine
             return false;
         }
 
-        m_hFile = Helper::Win32CreateFile(
+        HANDLE hFile = Helper::Win32CreateFile(
             _fullPath, // file to open
             GENERIC_READ, // open for reading
             FILE_SHARE_READ, // share for reading, exclusive for mapping
             OPEN_EXISTING // existing file only
         );
 
-        if( m_hFile == INVALID_HANDLE_VALUE )
+        if( hFile == INVALID_HANDLE_VALUE )
         {
             LOGGER_ERROR( "file '%ls' invalid open"
                 , _fullPath
@@ -150,6 +150,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_hFile = hFile;
 
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )

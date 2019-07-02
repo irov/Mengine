@@ -58,6 +58,7 @@ PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( MetabufLoader );
+PLUGIN_EXPORT( DevelopmentConverter );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
@@ -206,8 +207,10 @@ namespace Mengine
         SERVICE_CREATE( LoaderService );
         PLUGIN_CREATE( MetabufLoader );
 
-        PLUGIN_SERVICE()
-            ->loadPlugin( "DevelopmentConverterPlugin.dll" );
+        PLUGIN_CREATE( DevelopmentConverter );
+
+        //PLUGIN_SERVICE()
+        //    ->loadPlugin( "DevelopmentConverterPlugin.dll" );
 
         PLUGIN_SERVICE()
             ->loadPlugin( "XmlToBinPlugin.dll" );

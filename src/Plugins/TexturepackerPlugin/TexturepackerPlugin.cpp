@@ -2,9 +2,11 @@
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "ResourceTexturepacker.h"
 #include "TexturepackerScriptEmbedding.h"
+#include "LoaderResourceTexturepacker.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 
@@ -37,6 +39,13 @@ namespace Mengine
             return false;
         }
 
+        SERVICE_WAIT( LoaderServiceInterface, []()
+        {
+            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<LoaderResourceTexturepacker>() );
+
+            return true;
+        } );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,6 +54,11 @@ namespace Mengine
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( TexturepackerScriptEmbedding );
+        }
+
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ) );
         }
 
         PROTOTYPE_SERVICE()

@@ -9,12 +9,15 @@ set "CONFIGURATION=%1"
 
 @echo Starting make solution SDL %CONFIGURATION% configuration...
 
-@pushd ..
-@call vcvarsall_msvc15.bat
+set "VERSION=15"
+set "YEAR=2017"
+
+@pushd %~dp0..
+@call vcvarsall_msvc%VERSION%.bat
 @popd
 
-@pushd ..
-@call make_solution.bat "%CD%\..\CMake\Win32_SDL" solution_msvc15_sdl\%CONFIGURATION% "Visual Studio 15 2017" %CONFIGURATION% build_msvc15_sdl\%CONFIGURATION%
+@pushd %~dp0..
+@call make_solution.bat "SOURCE_DIRECTORY=%CD%\..\CMake\Win32_SDL" "SOLUTION_NAME=solution_msvc%VERSION%_sdl" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=build_msvc%VERSION%_sdl\%CONFIGURATION%"
 @popd
 
 :end

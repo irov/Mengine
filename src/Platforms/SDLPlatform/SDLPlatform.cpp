@@ -1202,31 +1202,6 @@ namespace Mengine
 
         return true;
     }
-    bool SDLPlatform::makeDateTimeW( WChar * _out, size_t _capacity ) const
-    {
-        std::time_t ctTime;
-        std::time( &ctTime );
-        std::tm* sTime = std::localtime( &ctTime );
-
-        WStringstream ss;
-        ss << 1900 + sTime->tm_year
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << (sTime->tm_mon + 1)
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_mday
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_hour
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_min
-            << L"_" << std::setw( 2 ) << std::setfill( L'0' ) << sTime->tm_sec;
-
-        WString str_date = ss.str();
-
-        if( str_date.size() >= _capacity )
-        {
-            return false;
-        }
-
-        wcscpy( _out, str_date.c_str() );
-
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )
     {
@@ -1248,10 +1223,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::getErrorMessage( uint32_t _messageId, Char * _out ) const
+    bool SDLPlatform::getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const
     {
         MENGINE_UNUSED( _messageId );
         MENGINE_UNUSED( _out );
+        MENGINE_UNUSED( _capacity );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
@@ -1265,9 +1241,22 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::cmd( const Char * _command )
+    bool SDLPlatform::createProcess( const Char * _process, const Char * _command )
     {
+        MENGINE_UNUSED( _process );
         MENGINE_UNUSED( _command );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size )
+    {
+        MENGINE_UNUSED( _path );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+        MENGINE_UNUSED( _size );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

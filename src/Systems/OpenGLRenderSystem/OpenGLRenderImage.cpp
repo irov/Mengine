@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -202,7 +203,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Pointer OpenGLRenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-        (void)_readOnly;
+        MENGINE_UNUSED( _readOnly );
 
         if( m_lockMemory != nullptr )
         {
@@ -220,34 +221,24 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "invalid create memory (l %d w %d h %d c %d f %d)"
-                , _level
-                , miplevel_width
-                , miplevel_height
-                , m_hwChannels
-                , m_hwPixelFormat
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr, "invalid create memory (l %d w %d h %d c %d f %d)"
+            , _level
+            , miplevel_width
+            , miplevel_height
+            , m_hwChannels
+            , m_hwPixelFormat
+        );
 
-            return nullptr;
-        }
+        void * buffer = memory->newBuffer( size, MENGINE_DOCUMENT_FUNCTION );
 
-        void * buffer = memory->newBuffer( size, "OpenGLRenderImage", __FILE__, __LINE__ );
-
-        if( buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory %d (l %d w %d h %d c %d f %d)"
-                , size
-                , _level
-                , miplevel_width
-                , miplevel_height
-                , m_hwChannels
-                , m_hwPixelFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid new memory %d (l %d w %d h %d c %d f %d)"
+            , size
+            , _level
+            , miplevel_width
+            , miplevel_height
+            , m_hwChannels
+            , m_hwPixelFormat
+        );
 
         m_lockMemory = memory;
         m_lockRect = _rect;

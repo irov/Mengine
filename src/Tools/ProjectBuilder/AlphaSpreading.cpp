@@ -95,7 +95,7 @@ namespace Mengine
             return false;
         }
 
-        unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize, "spreadingPngAlpha", __FILE__, __LINE__ );
+        unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
 
         if( textureBuffer == nullptr )
         {

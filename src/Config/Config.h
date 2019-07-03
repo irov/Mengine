@@ -12,6 +12,12 @@
 #define MENGINE_DEBUG
 #endif
 
+#ifdef MENGINE_DEBUG
+#define MENGINE_DEBUG_ATTRIBUTE(X, Y) (X)
+#else
+#define MENGINE_DEBUG_ATTRIBUTE(X, Y) (Y)
+#endif
+
 #if defined(WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #elif defined(__APPLE__)

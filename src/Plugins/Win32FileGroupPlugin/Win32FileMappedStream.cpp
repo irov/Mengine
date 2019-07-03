@@ -6,6 +6,8 @@
 #include "Win32FileHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -25,7 +27,7 @@ namespace Mengine
             {
                 DWORD uError = GetLastError();
 
-                LOGGER_ERROR( "Win32MappedFileInputStream invalid UnmapViewOfFile %p error %d"
+                LOGGER_ERROR( "invalid UnmapViewOfFile %p error %d"
                     , m_memory
                     , uError
                 );
@@ -52,7 +54,7 @@ namespace Mengine
         WChar concatenatePath[MENGINE_MAX_PATH];
         if( Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
             );
@@ -121,6 +123,8 @@ namespace Mengine
         MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxyInput( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -128,7 +132,7 @@ namespace Mengine
     {
         MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface *>( _stream );
 
-        void * memory_buffer = memory->setBuffer( m_memory, _offset, _size );
+        void * memory_buffer = memory->setBuffer( m_memory, _offset, _size, MENGINE_DOCUMENT_FUNCTION );
 
         if( _memory != nullptr )
         {

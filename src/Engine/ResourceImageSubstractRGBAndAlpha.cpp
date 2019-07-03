@@ -4,6 +4,7 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -40,7 +41,7 @@ namespace Mengine
     {
         if( m_resourceImageRGBName.empty() == true )
         {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup rgb resource"
+            LOGGER_ERROR( "'%s' not setup rgb resource"
                 , this->getName().c_str()
             );
 
@@ -49,7 +50,7 @@ namespace Mengine
 
         if( m_resourceImageAlphaName.empty() == true )
         {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup alpha resource"
+            LOGGER_ERROR( "'%s' not setup alpha resource"
                 , this->getName().c_str()
             );
 
@@ -59,32 +60,22 @@ namespace Mengine
         m_resourceImageRGB = RESOURCE_SERVICE()
             ->getResource( m_resourceImageRGBName );
 
-        if( m_resourceImageRGB == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get rgb resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageRGBName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, false, "'%s' category '%s' group '%s' invalid get rgb resource '%s'"
+            , this->getName().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getGroupName().c_str()
+            , m_resourceImageRGBName.c_str()
+        );
 
         m_resourceImageAlpha = RESOURCE_SERVICE()
             ->getResource( m_resourceImageAlphaName );
 
-        if( m_resourceImageAlpha == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get alpha resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageRGBName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, false, "'%s' category '%s' group '%s' invalid get alpha resource '%s'"
+            , this->getName().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getGroupName().c_str()
+            , m_resourceImageRGBName.c_str()
+        );
 
         m_texture = m_resourceImageRGB->getTexture();
         m_textureAlpha = m_resourceImageAlpha->getTexture();

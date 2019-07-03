@@ -2048,14 +2048,9 @@ namespace Mengine
         const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
             ->getResource( _resourceName );
 
-        if( cursorResource == nullptr )
-        {
-            LOGGER_ERROR( "can't find resource cursor %s"
-                , _resourceName.c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( cursorResource, "can't find resource cursor %s"
+            , _resourceName.c_str()
+        );
 
         m_cursorResource = cursorResource;
 

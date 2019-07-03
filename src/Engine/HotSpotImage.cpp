@@ -6,6 +6,7 @@
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/String.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/Config.h"
 
@@ -50,7 +51,7 @@ namespace Mengine
     {
         if( m_resourceTestPick == nullptr )
         {
-            LOGGER_ERROR( "HotSpot::getWidth %s not compiled"
+            LOGGER_ERROR( "'%s' not compiled"
                 , this->getName().c_str()
             );
 
@@ -66,7 +67,7 @@ namespace Mengine
     {
         if( m_resourceTestPick == nullptr )
         {
-            LOGGER_ERROR( "HotSpot::getHeight %s not compiled"
+            LOGGER_ERROR( "'%s' not compiled"
                 , this->getName().c_str()
             );
 
@@ -85,15 +86,10 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceTestPick == nullptr )
-        {
-            LOGGER_ERROR( "HotSpotImage::_compile: '%s' resource is null"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTestPick, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
+          
         if( m_resourceTestPick.compile() == false )
         {
             LOGGER_ERROR( "HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"

@@ -666,7 +666,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_fileGroup, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_fileGroup, m_ttfPath, false, MENGINE_DOCUMENT_FUNCTION );
 
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();

@@ -93,7 +93,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FUNCTION, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory == nullptr )
         {

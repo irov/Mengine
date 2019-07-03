@@ -5,7 +5,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Stream.h"
-
+#include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -54,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t PickDecoderHIT::_decode( void * _buffer, size_t _bufferSize )
     {
-        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "PickDecoderHIT", __FILE__, __LINE__ ) == false )
+        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "invalid load magic header"
             );

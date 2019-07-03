@@ -3,8 +3,8 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"
-
 #include "Kernel/ResourceImage.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -40,15 +40,10 @@ namespace Mengine
             const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
                 ->getResource( m_elements[i].resourceImageName );
 
-            if( resourceImage == nullptr )
-            {
-                LOGGER_ERROR( "window '%s' not found resource '%s'"
-                    , m_name.c_str()
-                    , element.resourceImageName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "window '%s' not found resource '%s'"
+                , m_name.c_str()
+                , element.resourceImageName.c_str()
+            );
 
             element.resourceImage = resourceImage;
         }

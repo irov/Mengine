@@ -17,6 +17,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -80,14 +81,9 @@ namespace Mengine
             EntityPtr entity = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-            if( entity == nullptr )
-            {
-                LOGGER_ERROR( "can't create entity '%s'"
-                    , _prototype.c_str()
-                );
-
-                return pybind::object::get_invalid();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( entity, pybind::object::get_invalid(), "can't create entity '%s'"
+                , _prototype.c_str()
+            );
 
             const PythonEntityBehaviorPtr & behavior = entity->getBehavior();
             const pybind::object & py_entity = behavior->getScriptObject();
@@ -102,14 +98,9 @@ namespace Mengine
             const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
                 ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
 
-            if( generator == nullptr )
-            {
-                LOGGER_ERROR( "importEntity: can't import 'Entity' '%s'"
-                    , _prototype.c_str()
-                );
-
-                return pybind::make_none_t( _kernel );
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( generator, pybind::make_none_t( _kernel ), "importEntity: can't import 'Entity' '%s'"
+                , _prototype.c_str()
+            );
 
             EntityPrototypeGeneratorPtr entityGenerator =
                 stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);

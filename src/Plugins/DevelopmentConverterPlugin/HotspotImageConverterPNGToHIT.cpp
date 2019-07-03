@@ -8,7 +8,7 @@
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -52,7 +52,7 @@ namespace Mengine
 
         uint32_t bufferSize = dataInfo->mipmapsize;
 
-        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, "HotspotImageConverterPNGToHIT", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory == nullptr )
         {
@@ -76,26 +76,16 @@ namespace Mengine
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
             ->openInputFile( m_options.fileGroup, m_options.inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( input_stream == nullptr )
-        {
-            LOGGER_ERROR( "Image file '%s' was not found"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( input_stream, false, "Image file '%s' was not found"
+            , m_options.inputFileName.c_str()
+        );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( imageDecoder == nullptr )
-        {
-            LOGGER_ERROR( "Image decoder for file '%s' was not found"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, false, "Image decoder for file '%s' was not found"
+            , m_options.inputFileName.c_str()
+        );
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
@@ -125,22 +115,17 @@ namespace Mengine
 
         uint32_t bufferSize = width * height + mimmap_size;
 
-        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, "HotspotImageConverterPNGToHIT", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "create memory cache buffer '%d'"
-                , bufferSize
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "create memory cache buffer '%d'"
+            , bufferSize
+        );
 
         uint8_t * buffer = memory->getBuffer();
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {
-            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_ Invalid decode %s"
+            LOGGER_ERROR( "invalid decode '%s'"
                 , m_options.inputFileName.c_str()
             );
 
@@ -154,27 +139,17 @@ namespace Mengine
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
             ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
-        if( output_stream == nullptr )
-        {
-            LOGGER_ERROR( "HIT file '%s' not create (open file %s)"
-                , m_options.outputFileName.c_str()
-                , m_options.fileGroup->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file %s)"
+            , m_options.outputFileName.c_str()
+            , m_options.fileGroup->getName().c_str()
+        );
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( encoder == nullptr )
-        {
-            LOGGER_ERROR( "HIT file '%s' not create (createEncoder hitPick)"
-                , m_options.outputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "HIT file '%s' not create (createEncoder hitPick)"
+            , m_options.outputFileName.c_str()
+        );
 
         if( encoder->initialize( output_stream ) == false )
         {

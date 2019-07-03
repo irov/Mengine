@@ -3,6 +3,7 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/Logger.h"
 
@@ -33,7 +34,7 @@ namespace Mengine
             {
                 featuresBufferSize += 4096;
 
-                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, "ImageDecoderWEBP", __FILE__, __LINE__ );
+                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FUNCTION );
 
                 if( buffer == nullptr )
                 {
@@ -113,7 +114,7 @@ namespace Mengine
         size_t streamSize;
         if( m_stream->memory( &streamMemory, &streamSize ) == false )
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, "ImageDecoderWEBP", __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer == nullptr )
             {

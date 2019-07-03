@@ -7,6 +7,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -47,10 +48,7 @@ namespace Mengine
         {
             SoundBufferInterfacePtr soundBuffer = this->createSoundBuffer();
 
-            if( soundBuffer == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, false );
 
             m_soundBufferNoStreamableCache = soundBuffer;
         }
@@ -76,16 +74,11 @@ namespace Mengine
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
             ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable );
 
-        if( soundBuffer == nullptr )
-        {
-            LOGGER_ERROR( "sound '%s' group '%s' can't load sound '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, nullptr, "sound '%s' group '%s' can't load sound '%s'"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         return soundBuffer;
     }

@@ -49,7 +49,7 @@ namespace Mengine
         key.category = _category;
         key.type = _type;
 
-        m_mixins.insert( key, _factorable );
+        m_mixins.emplace( key, _factorable );
 
         LOGGER_INFO( "add vocabulary '%s:%s'"
             , _category.c_str()

@@ -11,6 +11,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -206,12 +207,9 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2 Validate", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
         void * memory_buffer = memory->getBuffer();
 
@@ -222,17 +220,11 @@ namespace Mengine
 
         aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, (ae_voidptr_t)_resource.get() );
 
-        if( movieData == AE_NULLPTR )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( movieData, false );
 
         aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
 
-        if( movieStream == AE_NULLPTR )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( movieStream, false );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;

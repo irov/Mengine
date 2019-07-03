@@ -22,7 +22,6 @@ namespace Mengine
 
     protected:
         bool _compile() override;
-        void _release() override;
 
     public:
         void correctUVTexture();

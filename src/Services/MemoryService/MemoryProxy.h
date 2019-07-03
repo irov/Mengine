@@ -17,7 +17,7 @@ namespace Mengine
         ~MemoryProxy() override;
 
     public:
-        void setBuffer( void * _ptr, size_t _size, const Char * _file, uint32_t _line ) override;
+        void setBuffer( void * _ptr, size_t _size, const Char * _doc ) override;
 
     public:
         Pointer getBuffer() const override;
@@ -29,8 +29,7 @@ namespace Mengine
         size_t m_size;
 
 #ifdef MENGINE_DEBUG
-        const Char * m_file;
-        uint32_t m_line;
+        const Char * m_doc;
 #endif
 
         STDEX_THREAD_GUARD_INIT;

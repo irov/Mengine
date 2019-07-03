@@ -6,8 +6,8 @@
 #include "ResourceShape.h"
 
 #include "Kernel/Logger.h"
-
 #include "Kernel/String.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -27,18 +27,13 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceShape == nullptr )
-        {
-            LOGGER_ERROR( "HotSpotShape::_compile: '%s' resource is null"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceShape, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceShape.compile() == false )
         {
-            LOGGER_ERROR( "HotSpotShape::_compile: '%s' resource '%s' not compile"
+            LOGGER_ERROR( "'%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceShape->getName().c_str()
             );

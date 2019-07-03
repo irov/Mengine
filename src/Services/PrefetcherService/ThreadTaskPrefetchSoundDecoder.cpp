@@ -5,7 +5,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -85,29 +85,19 @@ namespace Mengine
         MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
-        if( memoryInput == nullptr )
-        {
-            LOGGER_ERROR( "file '%s:%s' invalid create memory input"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-                , stream_size
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryInput, false, "file '%s:%s' invalid create memory input"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+            , stream_size
+        );
 
-            return false;
-        }
+        void * memory = memoryInput->newBuffer( stream_size, MENGINE_DOCUMENT_FUNCTION );
 
-        void * memory = memoryInput->newBuffer( stream_size );
-
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "file '%s:%s' invalid alloc memory '%d'"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-                , stream_size
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "file '%s:%s' invalid alloc memory '%d'"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+            , stream_size
+        );
 
         if( m_stream->read( memory, stream_size ) != stream_size )
         {

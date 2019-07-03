@@ -3,7 +3,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
-
+#include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -26,7 +26,7 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        m_buffer = Helper::createMemoryFile( fileGroup, m_filePath, false, "ResourceCursorICO", __FILE__, __LINE__ );
+        m_buffer = Helper::createMemoryFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         return true;
     }

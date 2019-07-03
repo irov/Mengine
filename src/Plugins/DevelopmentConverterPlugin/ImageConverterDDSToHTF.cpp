@@ -9,7 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
@@ -87,17 +87,12 @@ namespace Mengine
 
         uint32_t data_full_size = dataInfo->getFullSize();
 
-        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, "ImageConverterDDSToHTF", __FILE__, __LINE__ );
+        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( data_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid cache memory %d for '%s'"
-                , data_full_size
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false, "invalid cache memory %d for '%s'"
+            , data_full_size
+            , m_options.inputFileName.c_str()
+        );
 
         void * data_memory = data_buffer->getBuffer();
 
@@ -145,22 +140,19 @@ namespace Mengine
         OutputStreamInterfacePtr stream_output = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream_output == nullptr )
-        {
-            LOGGER_ERROR( "invalid open output '%s' for '%s'"
-                , full_output.c_str()
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "invalid open output '%s' for '%s'"
+            , full_output.c_str()
+            , m_options.inputFileName.c_str()
+        );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "invalid create encoder 'htfImage'" );
+
         if( encoder->initialize( stream_output ) == false )
         {
-            LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid initialize encoder"
+            LOGGER_ERROR( "'%s' invalid initialize encoder"
                 , m_options.inputFileName.c_str()
             );
 
@@ -173,7 +165,7 @@ namespace Mengine
 
         if( encoder->setOptions( &encoder_options ) == false )
         {
-            LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid optionize encoder"
+            LOGGER_ERROR( "'%s' invalid optionize encoder"
                 , m_options.inputFileName.c_str()
             );
 

@@ -6,6 +6,7 @@
 
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -83,7 +84,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DataflowPYZ::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        MemoryInterfacePtr memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, _doc, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
@@ -116,13 +117,8 @@ namespace Mengine
 
         PyObject * py_code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
 
-        if( py_code == nullptr )
-        {
-            LOGGER_ERROR( "module invalid marshal get object"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "module invalid marshal get object"
+        );
 
 #ifdef MENGINE_DEBUG
         if( m_kernel->code_check( py_code ) == false )

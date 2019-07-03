@@ -10,6 +10,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -78,15 +79,10 @@ namespace Mengine
         EventablePtr eventable = SCRIPT_SERVICE()
             ->eventableEntity( py_type );
 
-        if( eventable == nullptr )
-        {
-            LOGGER_ERROR( "type '%s' prototype '%s' invalid eventable entity"
-                , m_category.c_str()
-                , m_prototype.c_str()
-            );
-
-            return pybind::object::get_invalid();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( eventable, pybind::object::get_invalid(), "type '%s' prototype '%s' invalid eventable entity"
+            , m_category.c_str()
+            , m_prototype.c_str()
+        );
 
         m_eventable = eventable;
 
@@ -120,16 +116,11 @@ namespace Mengine
         EntityPtr entity = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category, _doc );
 
-        if( entity == nullptr )
-        {
-            LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
-                , m_category.c_str()
-                , m_prototype.c_str()
-                , _doc
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( entity, nullptr, "can't generate '%s' '%s' doc '%s'"
+            , m_category.c_str()
+            , m_prototype.c_str()
+            , _doc
+        );
 
         entity->setPrototype( m_prototype );
 

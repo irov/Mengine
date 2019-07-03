@@ -3,6 +3,7 @@
 #include "SurfaceSound.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -32,18 +33,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundEmitter::_compile()
     {
-        if( m_surfaceSound == nullptr )
-        {
-            LOGGER_ERROR( "SoundEmitter::_compile: '%s' can`t setup sound surface"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_surfaceSound, false, "'%s' can`t setup sound surface"
+            , this->getName().c_str()
+        );
 
         if( m_surfaceSound->compile() == false )
         {
-            LOGGER_ERROR( "SoundEmitter::_compile: '%s' can`t compile sound surface '%s'"
+            LOGGER_ERROR( "'%s' can`t compile sound surface '%s'"
                 , this->getName().c_str()
                 , m_surfaceSound->getName().c_str()
             );

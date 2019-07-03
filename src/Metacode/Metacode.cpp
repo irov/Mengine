@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 138;
+        return 139;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 4145602597; 
+        return 2942256626; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -97,7 +97,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t getInternalStringsCount()
     {
-        return 28;
+        return 30;
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getInternalString( uint32_t _index, uint32_t & _stringSize, int64_t & _stringHash )
@@ -136,7 +136,9 @@ namespace Metacode
             {21, "ResourceCal3dSkeleton", 13093878591051467045UL},
             {22, "ResourceCal3dAnimation", 13846719098122425571UL},
             {17, "ResourceCal3dMesh", 14426262410430258751UL},
-            {13, "ResourceSpine", 11843862518149404524UL},
+            {18, "ResourceSpineAtlas", 15866872663799921644UL},
+            {31, "ResourceSpineAtlasTexturepacker", 6554204108359989850UL},
+            {21, "ResourceSpineSkeleton", 8493456877221120145UL},
             {16, "ResourceExternal", 9701561299099324449UL},
         };
 
@@ -453,7 +455,7 @@ namespace Metacode
         
                     includes_Meta_Resource.push_back(metadata);
                 }break;
-            case 35:
+            case 37:
                 {
                     Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                     metadata->parse( _buff, _size, _read, _userData );
@@ -581,7 +583,21 @@ namespace Metacode
                 }break;
             case 34:
                 {
-                    Meta_DataBlock::Meta_ResourceSpine * metadata = new Meta_DataBlock::Meta_ResourceSpine ();
+                    Meta_DataBlock::Meta_ResourceSpineAtlas * metadata = new Meta_DataBlock::Meta_ResourceSpineAtlas ();
+                    metadata->parse( _buff, _size, _read, _userData );
+        
+                    includes_Meta_Resource.push_back(metadata);
+                }break;
+            case 35:
+                {
+                    Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata = new Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker ();
+                    metadata->parse( _buff, _size, _read, _userData );
+        
+                    includes_Meta_Resource.push_back(metadata);
+                }break;
+            case 36:
+                {
+                    Meta_DataBlock::Meta_ResourceSpineSkeleton * metadata = new Meta_DataBlock::Meta_ResourceSpineSkeleton ();
                     metadata->parse( _buff, _size, _read, _userData );
         
                     includes_Meta_Resource.push_back(metadata);
@@ -3483,12 +3499,12 @@ namespace Metacode
         }
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
-        Meta_DataBlock::Meta_ResourceSpine::Meta_ResourceSpine()
+        Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_ResourceSpineAtlas()
             : Meta_Resource()
         {
         }
         //////////////////////////////////////////////////////////////////////////
-        bool Meta_DataBlock::Meta_ResourceSpine::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        bool Meta_DataBlock::Meta_ResourceSpineAtlas::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             (void)_buff;
             (void)_size;
@@ -3525,15 +3541,25 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpine::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
         
-            Metabuf::read( _buff, _size, _read, _userData, this->m_Atlas_Path );
-            Metabuf::read( _buff, _size, _read, _userData, this->m_Skeleton_Path );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpine::_preparationIncludes( uint32_t _id, uint32_t _count )
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
@@ -3541,7 +3567,7 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpine::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             (void)_buff;
             (void)_size;
@@ -3554,8 +3580,8 @@ namespace Metacode
             {
             case 1:
                 {
-                    includes_Meta_Image.emplace_back( Meta_DataBlock::Meta_ResourceSpine::Meta_Image() );
-                    Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.back();
+                    includes_Meta_Image.emplace_back( Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image() );
+                    Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image & metadata = includes_Meta_Image.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
@@ -3565,12 +3591,12 @@ namespace Metacode
         }
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar
-        Meta_DataBlock::Meta_ResourceSpine::Meta_Image::Meta_Image()
+        Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::Meta_Image()
             : Metabuf::Metadata()
         {
         }
         //////////////////////////////////////////////////////////////////////////
-        bool Meta_DataBlock::Meta_ResourceSpine::Meta_Image::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        bool Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             (void)_buff;
             (void)_size;
@@ -3581,25 +3607,155 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
             Metabuf::read( _buff, _size, _read, _userData, this->m_Resource );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_preparationIncludes( uint32_t _id, uint32_t _count )
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_DataBlock::Meta_ResourceSpineAtlas::Meta_Image::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             (void)_buff;
             (void)_size;
             (void)_read;
             (void)_id;
             (void)_userData;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::Meta_ResourceSpineAtlasTexturepacker()
+            : Meta_Resource()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_userData;
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
+        
+            Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Texturepacker_Name );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            (void)_id;
+            (void)_count;
+            Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_id;
+            (void)_userData;
+            Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _id, _userData );
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_DataBlock::Meta_ResourceSpineSkeleton::Meta_ResourceSpineSkeleton()
+            : Meta_Resource()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_DataBlock::Meta_ResourceSpineSkeleton::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_userData;
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineSkeleton::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
+        
+            Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineSkeleton::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
+        
+            if( (m_flagNoRequiredAttribute & EMETA_Atlas_Name) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Atlas_Name );
+            }
+        
+            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineSkeleton::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            (void)_id;
+            (void)_count;
+            Meta_DataBlock::Meta_Resource::_preparationIncludes( _id, _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceSpineSkeleton::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_id;
+            (void)_userData;
+            Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _id, _userData );
+        
         }
         //////////////////////////////////////////////////////////////////////////
         //cppcheck-suppress uninitMemberVar

@@ -581,7 +581,7 @@ namespace Mengine
                 , _path.c_str()
             );
 
-            m_fonts.insert( fontName, font );
+            m_fonts.emplace( fontName, font );
         }
 
 
@@ -705,7 +705,7 @@ namespace Mengine
             return false;
         }
 
-        m_texts.insert( _key, textEntry );
+        m_texts.emplace( _key, textEntry );
 
         return true;
     }

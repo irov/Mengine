@@ -13,7 +13,7 @@ namespace Mengine
         , public Content
         , public UnknownResourceJSONInterface
     {
-        DECLARE_VISITABLE(Resource);
+        DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();
 

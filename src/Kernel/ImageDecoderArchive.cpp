@@ -1,7 +1,7 @@
 #include "ImageDecoderArchive.h"
 
 #include "Kernel/MemoryHelper.h"
-
+#include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -77,7 +77,7 @@ namespace Mengine
         void * stream_memory;
         if( m_stream->memory( &stream_memory, &stream_size ) == false )
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, "ImageDecoderArchive", __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer == nullptr )
             {
@@ -113,7 +113,7 @@ namespace Mengine
         }
         else
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, "ImageDecoderArchive", __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer == nullptr )
             {

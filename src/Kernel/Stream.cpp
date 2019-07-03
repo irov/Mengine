@@ -65,7 +65,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -79,7 +79,7 @@ namespace Mengine
             uint32_t binary_size = load_binary_size;
             uint32_t compress_size = load_compress_size;
 
-            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _doc, _file, _line );
+            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
             if( compress_buffer == nullptr )
             {
@@ -131,7 +131,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            void * binaryMemory = binaryBuffer->newBuffer( binary_size, _doc, __FILE__, __LINE__ );
+            void * binaryMemory = binaryBuffer->newBuffer( binary_size, _doc );
 
             if( binaryMemory == nullptr )
             {
@@ -165,7 +165,7 @@ namespace Mengine
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
+        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const Char * _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -189,7 +189,7 @@ namespace Mengine
                 return false;
             }
 
-            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, compress_size, _doc, _file, _line );
+            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, compress_size, _doc );
 
             if( compress_buffer == nullptr )
             {
@@ -340,14 +340,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc )
         {
             if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
             {
                 return nullptr;
             }
 
-            MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveBuffer( _stream, _archivator, _doc, _file, _line );
+            MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveBuffer( _stream, _archivator, _doc );
 
             return binaryBuffer;
         }
@@ -367,7 +367,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -381,7 +381,7 @@ namespace Mengine
             size_t binary_size = load_binary_size;
             size_t compress_size = load_compress_size;
 
-            MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc, _file, _line );
+            MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
             if( compress_memory == nullptr )
             {
@@ -433,7 +433,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc, _file, _line );
+            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc );
 
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )
@@ -457,19 +457,19 @@ namespace Mengine
             return binary_memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc )
         {
             if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
             {
                 return nullptr;
             }
 
-            MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _stream, _archivator, _doc, _file, _line );
+            MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _stream, _archivator, _doc );
 
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -483,7 +483,7 @@ namespace Mengine
             size_t binary_size = load_binary_size;
             size_t compress_size = load_compress_size;
 
-            MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc, _file, _line );
+            MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
             if( compress_memory == nullptr )
             {
@@ -535,7 +535,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc, _file, _line );
+            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc );
 
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )

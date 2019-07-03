@@ -9,7 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
@@ -43,26 +43,16 @@ namespace Mengine
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
             ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream_intput == nullptr )
-        {
-            LOGGER_ERROR( "invalid open input file '%s'"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
+            , m_options.inputFileName.c_str()
+        );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "invalid create decoder '%s'"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder '%s'"
+            , m_options.inputFileName.c_str()
+        );
 
         if( decoder->prepareData( stream_intput ) == false )
         {
@@ -90,12 +80,9 @@ namespace Mengine
 
         size_t data_size = dataInfo->getSize();
 
-        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, "ImageConverterPNGToACF", __FILE__, __LINE__ );
+        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( data_buffer == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false );
 
         void * data_memory = data_buffer->getBuffer();
 

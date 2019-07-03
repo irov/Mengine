@@ -1,4 +1,4 @@
-#	include "PluginSpine.h"
+#	include "SpinePlugin.h"
 
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
@@ -15,7 +15,7 @@
 #	include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Spine, Mengine::PluginSpine );
+PLUGIN_FACTORY( Spine, Mengine::SpinePlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -53,11 +53,15 @@ namespace Mengine
         return pybind::ret_none();
     }
 	//////////////////////////////////////////////////////////////////////////
-	PluginSpine::PluginSpine()
+	SpinePlugin::SpinePlugin()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    SpinePlugin::~SpinePlugin()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginSpine::_initialize()
+	bool SpinePlugin::_initialize()
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -96,7 +100,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginSpine::_finalize()
+	void SpinePlugin::_finalize()
 	{
 	}
 }

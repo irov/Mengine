@@ -32,17 +32,30 @@ namespace Mengine
 
         if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
-            Char WindowsKitsInstallationFolder[256];
-            PLATFORM_SERVICE()
-                ->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 256 );
+            Char WindowsKitsInstallationFolder[256] = {0};
+            if( PLATFORM_SERVICE()
+                ->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 256 ) == false )
+            {
+                LOGGER_ERROR( "not found REGISTER Windows Kits installed roots"
+                );
 
+                return false;
+            }
+
+            bool successful = false;
             PLATFORM_SERVICE()
-                ->findFiles( "", WindowsKitsInstallationFolder, "x64\\fxc.exe", [&fxcPath]( const FilePath& _fp )
+                ->findFiles( "", WindowsKitsInstallationFolder, "x64\\fxc.exe", [&fxcPath, &successful]( const FilePath & _fp )
             { 
                 fxcPath = _fp;
+                successful = true;
 
                 return false;
             } );
+
+            if( successful == false )
+            {
+                return false;
+            }
         }
 
         const ConstString & pakPath = m_options.fileGroup->getFolderPath();

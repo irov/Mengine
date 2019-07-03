@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
     {
-        MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, "ArchiveService", __FILE__, __LINE__ );
+        MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FUNCTION );
 
         if( compress_buffer == nullptr )
         {
@@ -52,7 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
     {
-        MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, "ArchiveService", __FILE__, __LINE__ );
+        MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, MENGINE_DOCUMENT_FUNCTION );
 
         if( uncompress_buffer == nullptr )
         {
@@ -77,7 +77,7 @@ namespace Mengine
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
-        void * buffer = memory->newBuffer( compressSize2 );
+        void * buffer = memory->newBuffer( compressSize2, MENGINE_DOCUMENT_FUNCTION );
 
         if( buffer == nullptr )
         {
@@ -97,7 +97,7 @@ namespace Mengine
             return nullptr;
         }
 
-        void * new_memory = memory->newBuffer( compressSize );
+        void * new_memory = memory->newBuffer( compressSize, MENGINE_DOCUMENT_FUNCTION );
 
         if( new_memory == nullptr )
         {

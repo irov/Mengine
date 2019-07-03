@@ -5,8 +5,8 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -36,15 +36,10 @@ namespace Mengine
             const ResourceImagePtr & resource = RESOURCE_SERVICE()
                 ->getResource( sequence.resourceName );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "'%s' Image resource not found resource '%s'"
-                    , this->getName().c_str()
-                    , sequence.resourceName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "'%s' Image resource not found resource '%s'"
+                , this->getName().c_str()
+                , sequence.resourceName.c_str()
+            );
 
             sequence.resource = resource;
         }

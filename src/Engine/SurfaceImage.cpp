@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -35,14 +36,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImage::_compile()
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource is null"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceImage.compile() == false )
         {
@@ -91,14 +87,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getSize() const
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' not setup resource"
-                , this->getName().c_str()
-            );
-
-            return mt::vec2f::identity();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::vec2f::identity(), "'%s' not setup resource"
+            , this->getName().c_str()
+        );
 
         const mt::vec2f & size = m_resourceImage->getSize();
 
@@ -107,14 +98,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceImage::getOffset() const
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' not setup resource"
-                , this->getName().c_str()
-            );
-
-            return mt::vec2f::identity();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::vec2f::identity(), "'%s' not setup resource"
+            , this->getName().c_str()
+        );
 
         const mt::vec2f & offset = m_resourceImage->getOffset();
 
@@ -151,14 +137,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::uv4f & SurfaceImage::getUV( uint32_t _index ) const
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' not setup texture"
-                , this->getName().c_str()
-            );
-
-            return mt::uv4f::identity();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, mt::uv4f::identity(), "'%s' not setup texture"
+            , this->getName().c_str()
+        );
 
         switch( _index )
         {
@@ -184,14 +165,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' not setup texture"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_resourceImage, "'%s' not setup texture"
+            , this->getName().c_str()
+        );
 
         switch( _index )
         {
@@ -211,14 +187,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImage::getColor() const
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "surface image '%s' not setup texture"
-                , this->getName().c_str()
-            );
-
-            return Color::identity();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, Color::identity(), "surface image '%s' not setup texture"
+            , this->getName().c_str()
+        );
 
         const Color & color = m_resourceImage->getColor();
 
@@ -229,15 +200,10 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource '%s' m_material is NULL"
-                , this->getName().c_str()
-                , m_resourceImage->getName().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' resource '%s' m_material is NULL"
+            , this->getName().c_str()
+            , m_resourceImage->getName().c_str()
+        );
 
         return material;
     }

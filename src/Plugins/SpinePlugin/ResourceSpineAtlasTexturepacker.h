@@ -17,7 +17,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceSpine
-		: public ResourceReference
+		: public Resource
 	{
 		DECLARE_VISITABLE( ResourceReference );
 

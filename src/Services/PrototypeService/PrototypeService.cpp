@@ -59,7 +59,7 @@ namespace Mengine
         key.category = _category;
         key.prototype = _prototype;
 
-        m_generators.insert( key, _generator );
+        m_generators.emplace( key, _generator );
 
         LOGGER_INFO( "add '%s:%s'"
             , _category.c_str()

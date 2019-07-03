@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/box2.h"
 #include "math/utils.h"
@@ -112,7 +113,7 @@ namespace Mengine
                 {
                     if( el.image->incrementReference() == false )
                     {
-                        LOGGER_ERROR( "Landscape2D::_render '%s' image resource %s not compile"
+                        LOGGER_ERROR( "'%s' image resource %s not compile"
                             , m_name.c_str()
                             , el.image->getName().c_str()
                         );
@@ -122,14 +123,9 @@ namespace Mengine
 
                     RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false, MENGINE_DOCUMENT_FUNCTION );
 
-                    if( material == nullptr )
-                    {
-                        LOGGER_ERROR( "Landscape2D::_render '%s' invalid get material"
-                            , m_name.c_str()
-                        );
-
-                        return;
-                    }
+                    MENGINE_ASSERTION_MEMORY_PANIC_VOID( material, "'%s' invalid get material"
+                        , m_name.c_str()
+                    );
 
                     el.material = material;
                 }
@@ -169,16 +165,11 @@ namespace Mengine
 
         for( const ResourceImagePtr & image : m_images )
         {
-            if( image == nullptr )
-            {
-                LOGGER_ERROR( "Landscape2D::setBackParts %s invalid setup image for %d:%d"
-                    , this->getName().c_str()
-                    , i
-                    , j
-                );
-
-                continue;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( image, "'%s' invalid setup image for %d:%d"
+                , this->getName().c_str()
+                , i
+                , j
+            );
 
             Landscape2DElement el;
 

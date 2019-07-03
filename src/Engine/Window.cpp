@@ -3,9 +3,9 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Kernel/Materialable.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <math.h>
 
@@ -70,18 +70,13 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceWindow == nullptr )
-        {
-            LOGGER_ERROR( "Window::_compile '%s' resource is null"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceWindow, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceWindow.compile() == false )
         {
-            LOGGER_ERROR( "Window::_compile '%s' resource '%s' invalid compile"
+            LOGGER_ERROR( "'%s' resource '%s' invalid compile"
                 , this->getName().c_str()
                 , m_resourceWindow->getName().c_str()
             );
@@ -167,8 +162,12 @@ namespace Mengine
                 textureCount = 0;
             }
 
-            edge.material = RENDERMATERIAL_SERVICE()
+            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
                 ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures, MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( material, false );
+
+            edge.material = material;
         }
 
         this->invalidateVertices();
@@ -466,7 +465,7 @@ namespace Mengine
     {
         if( this->hasBackground() == false )
         {
-            LOGGER_ERROR( "Window::setClientSizeClip: '%s' background not exist"
+            LOGGER_ERROR( "'%s' background not exist"
                 , this->getName().c_str()
             );
 
@@ -506,7 +505,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Window::getWindowSize: '%s' not compiled"
+            LOGGER_ERROR( "'%s' not compiled"
                 , this->getName().c_str()
             );
 
@@ -550,7 +549,7 @@ namespace Mengine
 
         if( this->hasBackground() == false )
         {
-            LOGGER_ERROR( "Window::setClientSizeInTiles: '%s' background not exist"
+            LOGGER_ERROR( "'%s' background not exist"
                 , this->getName().c_str()
             );
 

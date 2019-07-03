@@ -23,7 +23,7 @@ namespace Mengine
         void setMemoryManager( MemoryService * _memoryManager );
 
     public:
-        Pointer cacheBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line ) override;
+        Pointer cacheBuffer( size_t _size, const Char * _doc ) override;
 
     public:
         Pointer getBuffer() const override;
@@ -56,6 +56,10 @@ namespace Mengine
 
         uint8_t * m_pos;
         uint8_t * m_end;
+
+#ifdef MENGINE_DEBUG
+        const Char * m_doc;
+#endif
 
         STDEX_THREAD_GUARD_INIT;
     };

@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DataflowPY::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        MemoryInterfacePtr memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
@@ -85,13 +85,7 @@ namespace Mengine
 
         PyObject * py_code = m_kernel->code_compile_file( source_buffer, _doc );
 
-        if( py_code == nullptr )
-        {
-            LOGGER_ERROR( "invalid marshal get object"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "invalid marshal get object" );
 
         if( m_kernel->code_check( py_code ) == false )
         {

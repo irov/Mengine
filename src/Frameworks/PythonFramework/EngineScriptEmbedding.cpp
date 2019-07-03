@@ -336,13 +336,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_destroyScheduler( const SchedulerInterfacePtr & _sm )
         {
-            if( _sm == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.destroyScheduler destroy scheduler is NULL"
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _sm, false, "destroy scheduler is NULL" );
 
             bool successful = PLAYER_SERVICE()
                 ->destroySchedulerManager( _sm );
@@ -466,7 +460,9 @@ namespace Mengine
                 return false;
             }
 
-            return sm->isFreeze( _id );
+            bool result = sm->isFreeze( _id );
+
+            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         float s_scheduleTime( uint32_t _id )
@@ -730,10 +726,7 @@ namespace Mengine
                 ScenePtr scene = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype, MENGINE_DOCUMENT_PYBIND );
 
-                if( scene == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( scene, false );
 
                 scene->setName( _name );
 
@@ -818,15 +811,10 @@ namespace Mengine
                 EventablePtr eventable = SCRIPT_SERVICE()
                     ->eventableEntity( _type );
 
-                if( eventable == nullptr )
-                {
-                    LOGGER_ERROR( "scene '%s' invalid eventable '%s'"
-                        , _name.c_str()
-                        , _type.repr()
-                    );
-
-                    return nullptr;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( eventable, nullptr, "scene '%s' invalid eventable '%s'"
+                    , _name.c_str()
+                    , _type.repr()
+                );
 
                 scene->setBehaviorEventable( eventable );
 
@@ -989,13 +977,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_destroyNode( const NodePtr & _node )
         {
-            if( _node == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.destroyNode invalid take None object"
-                );
-
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( _node, "invalid take None object" );
 
             _node->removeFromParent();
             _node->release();
@@ -1033,14 +1015,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ShapeQuadFixedPtr s_createSprite( const ConstString & _name, const ResourcePtr & _resource )
         {
-            if( _resource == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.createSprite: '%s' resource is NULL"
-                    , _name.c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _resource, nullptr, "'%s' resource is NULL"
+                , _name.c_str()
+            );
 
             SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_PYBIND );
@@ -1240,14 +1217,9 @@ namespace Mengine
             const ResourceImagePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resource );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "Error: Image resource not getting '%s'"
-                    , _resource.c_str()
-                );
-
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( resource, "image resource not getting '%s'"
+                , _resource.c_str()
+            );
 
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -1543,12 +1515,11 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _fileGroupName );
 
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _path, false, "Python::parseXml", __FILE__, __LINE__ );
+            MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
-            if( binary_buffer == nullptr )
-            {
-                return false;
-            }
+            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
 
             char * memory = binary_buffer->getBuffer();
 
@@ -1816,7 +1787,7 @@ namespace Mengine
 
             size_t size = stream->size();
 
-            void * memory_buffer = _blob->newBuffer( size, "Python::copyFile", __FILE__, __LINE__ );
+            void * memory_buffer = _blob->newBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
             if( stream->read( memory_buffer, size ) != size )
             {
@@ -1832,6 +1803,8 @@ namespace Mengine
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
             if( this->s_copyFile_( _resourceFileName, memory ) == false )
             {
@@ -1855,6 +1828,8 @@ namespace Mengine
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
             if( this->s_copyFile_( _resourceFileName, memory ) == false )
             {
@@ -2393,14 +2368,9 @@ namespace Mengine
         {
             RenderInterface * render = _node->getRender();
 
-            if( render == nullptr )
-            {
-                LOGGER_ERROR( "node '%s' is not renderable"
-                    , _node->getName().c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( render, nullptr, "node '%s' is not renderable"
+                , _node->getName().c_str()
+            );
 
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node
                 , [render]( float _alpha ) { render->setLocalAlpha( _alpha ); }
@@ -2439,13 +2409,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_removeNodeFollower( const AffectorFollowerPtr & _affector )
         {
-            if( _affector == nullptr )
-            {
-                LOGGER_ERROR( "removeNodeFollower take NULL affector"
-                );
-
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( _affector, "take NULL affector" );
 
             _affector->stop();
         }
@@ -3101,14 +3065,9 @@ namespace Mengine
 
             PyGlobalBaseHandlerPtr py_handler = stdex::intrusive_dynamic_cast<PyGlobalBaseHandlerPtr>(handler);
 
-            if( py_handler == nullptr )
-            {
-                LOGGER_ERROR( "s_removeKeyHandler %d handler invalid"
-                    , _id
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( py_handler, false, "%d handler invalid"
+                , _id
+            );
 
             py_handler->finalize();
 
@@ -3480,14 +3439,9 @@ namespace Mengine
             const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResourceReference( _resourceName );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "s_validResource resource '%s' not found"
-                    , _resourceName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "resource '%s' not found"
+                , _resourceName.c_str()
+            );
 
             if( SERVICE_EXIST( ResourceValidateServiceInterface ) == false )
             {

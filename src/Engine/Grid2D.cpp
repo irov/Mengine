@@ -6,6 +6,7 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/box2.h"
 #include "math/clamp.h"
@@ -221,14 +222,9 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            LOGGER_ERROR( "Grid2D::updateMaterial_ %s m_material is NULL"
-                , this->getName().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' m_material is NULL"
+            , this->getName().c_str()
+        );
 
         return material;
     }

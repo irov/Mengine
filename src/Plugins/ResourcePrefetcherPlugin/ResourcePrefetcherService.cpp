@@ -38,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherService::addResourcePrefetcher( const ConstString & _type, const ResourcePrefetcherInterfacePtr & _prefetcher )
     {
-        m_prefetchers.insert( _type, _prefetcher );
+        m_prefetchers.emplace( _type, _prefetcher );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherService::removeResourcePrefetcher( const ConstString & _type )

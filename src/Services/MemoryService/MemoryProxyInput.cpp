@@ -12,6 +12,9 @@ namespace Mengine
         , m_size( 0 )
         , m_pos( nullptr )
         , m_end( nullptr )
+#ifdef MENGINE_DEBUG
+        , m_doc( nullptr )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -19,13 +22,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryProxyInput::setBuffer( void * _memory, size_t _offset, size_t _size )
+    Pointer MemoryProxyInput::setBuffer( void * _memory, size_t _offset, size_t _size, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         m_data = static_cast<uint8_t*>(_memory) + _offset;
         m_size = _size;
 
         m_pos = m_data;
         m_end = m_data + m_size;
+
+#ifdef MENGINE_DEBUG
+        m_doc = _doc;
+#endif
 
         return m_data;
     }

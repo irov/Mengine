@@ -488,7 +488,7 @@ namespace Mengine
             return false;
         }
 
-        m_embeddings.insert( _name, _embedding );
+        m_embeddings.emplace( _name, _embedding );
 
         return true;
     }

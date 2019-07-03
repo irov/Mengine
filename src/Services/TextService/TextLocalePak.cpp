@@ -43,7 +43,7 @@ namespace Mengine
         m_memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1, "TextLocalePack", __FILE__, __LINE__ );
+        Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FUNCTION );
 
         xml_text->read( memory_buffer, xml_buffer_size );
         memory_buffer[xml_buffer_size] = '\0';

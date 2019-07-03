@@ -9,6 +9,7 @@
 #include "Kernel/RenderViewport.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -96,14 +97,9 @@ namespace Mengine
             m_renderCamera = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
-            if( m_renderCamera == nullptr )
-            {
-                LOGGER_ERROR( "name '%s' invalid create Camera2D"
-                    , this->getName().c_str()
-                );
-
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_renderCamera, "name '%s' invalid create Camera2D"
+                , this->getName().c_str()
+            );
 
             this->addChild( m_renderCamera );
         }
@@ -113,14 +109,9 @@ namespace Mengine
             m_renderViewport = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
 
-            if( m_renderViewport == nullptr )
-            {
-                LOGGER_ERROR( "name '%s' invalid create RenderViewport"
-                    , this->getName().c_str()
-                );
-
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_renderViewport, "name '%s' invalid create RenderViewport"
+                , this->getName().c_str()
+            );
 
             this->addChild( m_renderViewport );
         }
@@ -160,12 +151,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
     {
-        if( _resourceImageMask == nullptr )
-        {
-            LOGGER_ERROR( "image mask is null" );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _resourceImageMask, false, "image mask is null" );
 
         m_resourceImageMask = _resourceImageMask;
 
@@ -230,15 +216,10 @@ namespace Mengine
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
             ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FUNCTION );
 
-        if( renderTarget == nullptr )
-        {
-            LOGGER_ERROR( "invalid create render target texture [%f, %f]"
-                , m_size.x
-                , m_size.y
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTarget, false, "invalid create render target texture [%f, %f]"
+            , m_size.x
+            , m_size.y
+        );
 
         RenderInterface * render = this->getRender();
         render->setRenderTarget( renderTarget );
@@ -246,22 +227,21 @@ namespace Mengine
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
             ->createRenderTargetImage( renderTarget, MENGINE_DOCUMENT_FUNCTION );
 
-        if( renderTargetImage == nullptr )
-        {
-            LOGGER_ERROR( "invalid create render target image"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetImage, false, "invalid create render target image" );
 
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
             ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y, MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( renderTargetTexture, false, "invalid create render texture [%f, %f]"
+            , m_size.x
+            , m_size.y
+        );
+
         if( m_resourceImageMask.compile() == false )
         {
-            LOGGER_ERROR( "invalid create render texture [%f, %f]"
-                , m_size.x
-                , m_size.y
+            LOGGER_ERROR( "'%s' invalid compile resource image mask '%s'"
+                , this->getName().c_str()
+                , m_resourceImageMask->getName().c_str()
             );
 
             return false;
@@ -276,12 +256,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, 2, texures, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            LOGGER_ERROR( "invalid get material" );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, false, "invalid get material" );
 
         m_materialImageMask = material;
 

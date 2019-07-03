@@ -247,7 +247,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _nodeDebugRender )
     {
-        m_nodeDebugRenders.insert( _type, _nodeDebugRender );
+        m_nodeDebugRenders.emplace( _type, _nodeDebugRender );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::removeNodeDebugRender( const ConstString & _type )

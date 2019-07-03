@@ -142,14 +142,14 @@ namespace Mengine
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
+        m_memory->setBuffer( lock_memory, _count * m_vertexSize, MENGINE_DOCUMENT_FUNCTION );
 
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::unlock()
     {
-        m_memory->setBuffer( nullptr, 0, __FILE__, __LINE__ );
+        m_memory->setBuffer( nullptr, 0, MENGINE_DOCUMENT_FUNCTION );
 
         IF_DXCALL( m_pVB, Unlock, () )
         {

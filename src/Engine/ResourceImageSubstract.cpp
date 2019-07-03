@@ -4,6 +4,7 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -40,17 +41,12 @@ namespace Mengine
         const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
             ->getResource( m_resourceImageName );
 
-        if( resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+            , this->getName().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getGroupName().c_str()
+            , m_resourceImageName.c_str()
+        );
 
         m_resourceImage = resourceImage;
         m_texture = m_resourceImage->getTexture();

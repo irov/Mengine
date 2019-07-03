@@ -33,7 +33,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        CacheBufferID lockBuffer( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line );
+        CacheBufferID lockBuffer( size_t _size, void ** _memory, const Char * _doc );
         void unlockBuffer( CacheBufferID _bufferId );
 
     public:
@@ -48,18 +48,19 @@ namespace Mengine
         MemoryInputInterfacePtr createMemoryInput( const Char * _doc ) override;
 
     protected:
-        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line );
+        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc );
 
     protected:
         struct CacheBufferMemory
         {
             CacheBufferID id;
-            void * memory;
-            const Char * doc;
+            void * memory;            
             size_t size;
-            const Char * file;
-            uint32_t line;
             bool lock;
+
+#ifdef MENGINE_DEBUG
+            const Char * doc;
+#endif
         };
 
         typedef Vector<CacheBufferMemory> VectorCacheBufferMemory;

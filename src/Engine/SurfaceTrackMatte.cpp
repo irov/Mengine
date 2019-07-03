@@ -7,6 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -25,10 +26,9 @@ namespace Mengine
         m_programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, 1, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_programVariable == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_programVariable, false, "'%s' invalid create program variable"
+            , this->getName().c_str()
+        );
 
         return true;
     }
@@ -139,38 +139,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::_compile()
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource is null"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceImage.compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );
 
             return false;
         }
 
-        if( m_resourceTrackMatteImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource is null"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTrackMatteImage, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceTrackMatteImage.compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceTrackMatteImage->getName().c_str()
             );
 

@@ -8,6 +8,7 @@
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "TextLine.h"
 
@@ -391,7 +392,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "TextField::getCharCount '%s' not compile"
+            LOGGER_ERROR( "'%s' not compile"
                 , m_name.c_str()
             );
 
@@ -463,7 +464,7 @@ namespace Mengine
             if( TEXT_SERVICE()
                 ->existFont( _fontName, &font ) == false )
             {
-                LOGGER_ERROR( "TextField::setFontName %s not found font %s"
+                LOGGER_ERROR( "'%s' not found font '%s'"
                     , m_name.c_str()
                     , _fontName.c_str()
                 );
@@ -759,7 +760,7 @@ namespace Mengine
                     TextLine tl( layoutIndex, charOffset );
                     if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
                     {
-                        LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
+                        LOGGER_ERROR( "'%s' textID '%s' invalid setup line"
                             , this->getName().c_str()
                             , m_textId.c_str()
                         );
@@ -1011,15 +1012,10 @@ namespace Mengine
         const TextFontInterfacePtr & font = TEXT_SERVICE()
             ->getFont( fontName );
 
-        if( font == nullptr )
-        {
-            LOGGER_ERROR( "font '%s' can't found font '%s'"
-                , this->getName().c_str()
-                , fontName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( font, false, "font '%s' can't found font '%s'"
+            , this->getName().c_str()
+            , fontName.c_str()
+        );
 
         if( font->compileFont() == false )
         {
@@ -1046,15 +1042,10 @@ namespace Mengine
         m_textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
 
-        if( m_textEntry == nullptr )
-        {
-            LOGGER_ERROR( "TextField::updateTextEntry_ '%s' can't find text ID '%s'"
-                , this->getName().c_str()
-                , m_textId.c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_textEntry, "'%s' can't find text ID '%s'"
+            , this->getName().c_str()
+            , m_textId.c_str()
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextField::calcFontName() const
@@ -1491,15 +1482,10 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();
 
-        if( textEntry == nullptr )
-        {
-            LOGGER_ERROR( "TextField::getTextExpectedArgument '%s:%s' not compile"
-                , this->getName().c_str()
-                , m_textId.c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, 0, "'%s:%s' not compile"
+            , this->getName().c_str()
+            , m_textId.c_str()
+        );
 
         const String & textValue = textEntry->getValue();
 
@@ -1511,7 +1497,7 @@ namespace Mengine
         }
         catch( const std::exception & _ex )
         {
-            LOGGER_ERROR( "TextField::getTextExpectedArgument '%s:%s' except error '%s'"
+            LOGGER_ERROR( "'%s:%s' except error '%s'"
                 , this->getName().c_str()
                 , this->getTextID().c_str()
                 , _ex.what()
@@ -1525,15 +1511,10 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();
 
-        if( textEntry == nullptr )
-        {
-            LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
-                , this->getName().c_str()
-                , m_textId.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, false, "'%s:%s' invalid get text entry can't setup text ID"
+            , this->getName().c_str()
+            , m_textId.c_str()
+        );
 
         const TextFontInterfacePtr & font = this->getFont();
 

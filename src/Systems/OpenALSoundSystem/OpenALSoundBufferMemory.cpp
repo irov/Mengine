@@ -1,11 +1,12 @@
 #include "OpenALSoundBufferMemory.h"
+
+#include "Interface/SoundCodecInterface.h"
+
 #include "OpenALSoundSystem.h"
 #include "OpenALSoundError.h"
 
 #include "Kernel/MemoryHelper.h"
-
-#include "Interface/SoundCodecInterface.h"
-
+#include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -52,7 +53,7 @@ namespace Mengine
         m_length = dataInfo->length;
         size_t size = dataInfo->size;
 
-        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, "OpenALSoundBufferMemory", __FILE__, __LINE__ );
+        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
 
         if( binary_buffer == nullptr )
         {

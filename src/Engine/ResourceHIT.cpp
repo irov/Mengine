@@ -10,6 +10,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <math.h>
 
@@ -36,29 +37,19 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' - hit file '%s' not found"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' - hit file '%s' not found"
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( m_codecType, MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' - hit file '%s' invalid create decoder '%s'"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-                , this->getCodecType().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "name '%s' - hit file '%s' invalid create decoder '%s'"
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+            , this->getCodecType().c_str()
+        );
 
         if( decoder->prepareData( stream ) == false )
         {
@@ -80,29 +71,19 @@ namespace Mengine
         MemoryBufferInterfacePtr mipmap = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        if( mipmap == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' - hit file '%s' invalid create memory"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( mipmap, false, "name '%s' - hit file '%s' invalid create memory"
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         size_t mipmapsize = (size_t)dataInfo->mipmapsize;
-        void * buffer = mipmap->newBuffer( mipmapsize, "ResourceHIT", __FILE__, __LINE__ );
+        void * buffer = mipmap->newBuffer( mipmapsize, MENGINE_DOCUMENT_FUNCTION );
 
-        if( buffer == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' - hit file '%s' invalid new memory '%u'"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-                , mipmapsize
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "name '%s' - hit file '%s' invalid new memory '%u'"
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+            , mipmapsize
+        );
 
         size_t test_mipmapsize = decoder->decode( buffer, mipmapsize );
 
@@ -223,17 +204,12 @@ namespace Mengine
 
         uint8_t * alphaBuffer = this->getHitBuffer_( level );
 
-        if( alphaBuffer == nullptr )
-        {
-            LOGGER_ERROR( "ResourceHIT::testRadius %s hit file %s invalid get level buffer %d:%d"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-                , level
-                , m_mipmaplevel
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( alphaBuffer, false, "'%s' hit file '%s' invalid get level buffer %d:%d"
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+            , level
+            , m_mipmaplevel
+        );
 
         i >>= level;
         j >>= level;
@@ -276,7 +252,7 @@ namespace Mengine
 
         if( bufferOffset >= m_mipmapsize )
         {
-            LOGGER_ERROR( "ResourceHIT::getHitBuffer_ %s hit file %s invalid get level buffer %d:%d"
+            LOGGER_ERROR( "'%s' hit file '%s' invalid get level buffer %d:%d"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , _level

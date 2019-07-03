@@ -8,6 +8,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <math.h>
 
@@ -28,14 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_compile()
     {
-        if( m_resourceSound == nullptr )
-        {
-            LOGGER_ERROR( "sound '%s' resource  is null"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSound, false, "sound '%s' resource  is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceSound.compile() == false )
         {
@@ -49,15 +45,10 @@ namespace Mengine
 
         m_soundBuffer = m_resourceSound->createSoundBuffer();
 
-        if( m_soundBuffer == nullptr )
-        {
-            LOGGER_ERROR( "sound '%s' resource '%s' sound buffer not create"
-                , this->getName().c_str()
-                , m_resourceSound->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_soundBuffer, false, "sound '%s' resource '%s' sound buffer not create"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+        );
 
         bool streamable = m_resourceSound->isStreamable();
 
@@ -65,17 +56,12 @@ namespace Mengine
             ->createSoundIdentity( m_isHeadMode, m_soundBuffer, m_sourceCategory, streamable
                 , MENGINE_DOCUMENT( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
-        if( m_soundEmitter == nullptr )
-        {
-            LOGGER_ERROR( "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
-                , this->getName().c_str()
-                , m_resourceSound->getName().c_str()
-                , m_sourceCategory
-                , streamable
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_soundEmitter, false, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
+            , this->getName().c_str()
+            , m_resourceSound->getName().c_str()
+            , m_sourceCategory
+            , streamable
+        );
 
         m_soundEmitter->setSoundListener( SoundListenerInterfacePtr( this ) );
 

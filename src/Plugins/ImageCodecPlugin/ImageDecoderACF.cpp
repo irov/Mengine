@@ -6,10 +6,12 @@
 
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/Document.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
 
-#include "Kernel/Logger.h"
+
 
 namespace Mengine
 {
@@ -87,7 +89,7 @@ namespace Mengine
 
         if( m_options.pitch * m_dataInfo.height == dataSize )
         {
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "ImageDecoderACF", __FILE__, __LINE__ ) == false )
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "invalid load"
                 );
@@ -97,7 +99,7 @@ namespace Mengine
         }
         else
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, "ImageDecoderACF", __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer == nullptr )
             {
@@ -106,7 +108,7 @@ namespace Mengine
 
             void * memory = buffer->getBuffer();
 
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, "ImageDecoderACF", __FILE__, __LINE__ ) == false )
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "invalid load"
                 );

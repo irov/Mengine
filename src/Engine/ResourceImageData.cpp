@@ -9,6 +9,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -33,35 +34,25 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "Image file '%s:%s' was not found"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "image file '%s:%s' was not found"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         const ConstString & codecType = this->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
-        if( imageDecoder == nullptr )
-        {
-            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' was not found"
-                , this->getCodecType().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, false, "image decoder '%s' for file '%s:%s' was not found"
+            , this->getCodecType().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' was not found"
+            LOGGER_ERROR( "image decoder '%s' for file '%s:%s' was not found"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
@@ -87,7 +78,7 @@ namespace Mengine
 
         if( imageDecoder->setOptions( &options ) == false )
         {
-            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' invalid optionize"
+            LOGGER_ERROR( "image decoder '%s' for file '%s:%s' invalid optionize"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
@@ -98,7 +89,7 @@ namespace Mengine
 
         if( imageDecoder->decode( m_buffer, memorySize ) == 0 )
         {
-            LOGGER_ERROR( "Image decoder '%s' for file '%s:%s' invalid decode"
+            LOGGER_ERROR( "image decoder '%s' for file '%s:%s' invalid decode"
                 , this->getCodecType().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()

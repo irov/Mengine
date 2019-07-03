@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), _doc, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 

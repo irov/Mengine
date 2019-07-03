@@ -9,6 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <math.h>
 
@@ -115,14 +116,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_compile()
     {
-        if( m_resourceImageSequence == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource is null"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageSequence, false, "'%s' resource is null"
+            , m_name.c_str()
+        );
 
         if( m_resourceImageSequence.compile() == false )
         {
@@ -136,16 +132,11 @@ namespace Mengine
 
         uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
-        if( m_currentFrame >= sequenceCount )
-        {
-            LOGGER_ERROR( "'%s' m_frame(%d) >= sequenceCount(%d)"
-                , m_name.c_str()
-                , m_currentFrame
-                , sequenceCount
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_RETURN( m_currentFrame >= sequenceCount, false, "'%s' m_frame(%d) >= sequenceCount(%d)"
+            , m_name.c_str()
+            , m_currentFrame
+            , sequenceCount
+        );
 
         m_materials.resize( sequenceCount );
 
@@ -165,15 +156,10 @@ namespace Mengine
 
             RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
 
-            if( material == nullptr )
-            {
-                LOGGER_ERROR( "'%s' resource '%s' m_material is NULL"
-                    , this->getName().c_str()
-                    , resourceImage->getName().c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( material, false, "'%s' resource '%s' m_material is NULL"
+                , this->getName().c_str()
+                , resourceImage->getName().c_str()
+            );
 
             m_materials[frameId] = material;
         }

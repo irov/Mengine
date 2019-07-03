@@ -1,4 +1,4 @@
-<Protocol Version = "138">
+<Protocol Version = "139">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -251,15 +251,15 @@
         </Node>
 
         <Node Name="ResourceCursorSystem" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>          
         </Node>
 
         <Node Name="ResourceCursorICO" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>          
         </Node>
         
         <Node Name="ResourceFile" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>                    
         </Node>
         
         <Node Name="ResourceSound" Inheritance = "Resource">
@@ -456,16 +456,30 @@
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
           
-        <Node Name="ResourceSpine" Inheritance = "Resource">
-          <Member Node="Skeleton" Name="Path" Type="Mengine::FilePath" Required="1"/>
-          <Member Node="Atlas" Name="Path" Type="Mengine::FilePath" Required="1"/>
-          
+        <Node Name="ResourceSpineAtlas" Inheritance = "Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+
           <Node Name="Image">
             <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Resource" Type="Mengine::ConstString" Required="1"/>
           </Node>
-        </Node>      
-        
+        </Node>
+
+        <Node Name="ResourceSpineAtlasTexturepacker" Inheritance = "Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+
+          <Member Node="Texturepacker" Name="Name" Type="Mengine::ConstString"/>
+        </Node>
+
+        <Node Name="ResourceSpineSkeleton" Inheritance = "Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+
+          <Member Node="Atlas" Name="Name" Type="Mengine::ConstString"/>
+        </Node>
+
         <Node Name="ResourceExternal" Inheritance = "Resource" NoWrite = "1"/>
       </Node>
 

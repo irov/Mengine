@@ -167,7 +167,7 @@ namespace Mengine
             return 0;
         }
 
-        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_protocol_buffer == nullptr )
         {
@@ -259,7 +259,7 @@ namespace Mengine
             return 0;
         }
 
-        void * memory_xml_buffer = memory_xml->newBuffer( xml_size, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+        void * memory_xml_buffer = memory_xml->newBuffer( xml_size, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_xml == nullptr )
         {
@@ -308,7 +308,7 @@ namespace Mengine
             return 0;
         }
 
-        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_header_buffer == nullptr )
         {
@@ -344,7 +344,7 @@ namespace Mengine
             return 0;
         }
 
-        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_bin_buffer == nullptr )
         {

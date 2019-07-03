@@ -7,8 +7,7 @@ namespace Mengine
         : m_ptr( nullptr )
         , m_size( 0 )
 #ifdef MENGINE_DEBUG
-        , m_file( nullptr )
-        , m_line( 0 )
+        , m_doc( nullptr )
 #endif
     {
     }
@@ -17,17 +16,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryProxy::setBuffer( void * _ptr, size_t _size, const Char * _file, uint32_t _line )
+    void MemoryProxy::setBuffer( void * _ptr, size_t _size, const Char * _doc )
     {
-        MENGINE_UNUSED( _file );
-        MENGINE_UNUSED( _line );
+        MENGINE_UNUSED( _doc );
 
         m_ptr = _ptr;
         m_size = _size;
 
 #ifdef MENGINE_DEBUG
-        m_file = _file;
-        m_line = _line;
+        m_doc = _doc;
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

@@ -1,16 +1,17 @@
 #	pragma once
 
-#	include "Core/PluginBase.h"
+#	include "Kernel/PluginBase.h"
 
 namespace Mengine
 {
-	class PluginSpine
+	class SpinePlugin
 		: public PluginBase
 	{
 		PLUGIN_DECLARE( "Spine" )
 
 	public:
-		PluginSpine();
+		SpinePlugin();
+        ~SpinePlugin() override;
 
 	protected:
 		bool _initialize() override;

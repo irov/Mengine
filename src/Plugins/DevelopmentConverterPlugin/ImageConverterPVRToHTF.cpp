@@ -9,7 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
@@ -43,26 +43,16 @@ namespace Mengine
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
             ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream_intput == nullptr )
-        {
-            LOGGER_ERROR( "invalid open input file '%s'"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
+            , m_options.inputFileName.c_str()
+        );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "invalid create decoder for '%s'"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder for '%s'"
+            , m_options.inputFileName.c_str()
+        );
 
         if( decoder->prepareData( stream_intput ) == false )
         {
@@ -77,17 +67,12 @@ namespace Mengine
 
         uint32_t data_full_size = dataInfo->getFullSize();
 
-        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, "ImageConverterPVRToHTF", __FILE__, __LINE__ );
+        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( data_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid cache memory %d for '%s'"
-                , data_full_size
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false, "invalid cache memory %d for '%s'"
+            , data_full_size
+            , m_options.inputFileName.c_str()
+        );
 
         void * data_memory = data_buffer->getBuffer();
 
@@ -135,18 +120,15 @@ namespace Mengine
         OutputStreamInterfacePtr stream_output = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream_output == nullptr )
-        {
-            LOGGER_ERROR( "invalid open output '%s' for file '%s'"
-                , full_output.c_str()
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "invalid open output '%s' for file '%s'"
+            , full_output.c_str()
+            , m_options.inputFileName.c_str()
+        );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "invalid create encoder 'htfImage'" );
 
         if( encoder->initialize( stream_output ) == false )
         {
@@ -182,7 +164,7 @@ namespace Mengine
 
         if( encode_byte == 0 )
         {
-            LOGGER_ERROR( "ImageConverterPVRToHTF::convert: %s invalid encode"
+            LOGGER_ERROR( "'%s' invalid encode"
                 , m_options.inputFileName.c_str()
             );
 

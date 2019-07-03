@@ -155,14 +155,14 @@ namespace Mengine
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_indexSize, __FILE__, __LINE__ );
+        m_memory->setBuffer( lock_memory, _count * m_indexSize, MENGINE_DOCUMENT_FUNCTION );
 
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::unlock()
     {
-        m_memory->setBuffer( nullptr, 0, __FILE__, __LINE__ );
+        m_memory->setBuffer( nullptr, 0, MENGINE_DOCUMENT_FUNCTION );
 
         IF_DXCALL( m_pIB, Unlock, () )
         {

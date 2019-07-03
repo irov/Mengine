@@ -49,7 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr FEDataflow::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
-        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 

@@ -10,7 +10,6 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
 #include "Kernel/MemoryHelper.h"
@@ -511,7 +510,7 @@ namespace Mengine
 
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            void * buffer = memory->newBuffer( fi.file_size );
+            void * buffer = memory->newBuffer( fi.file_size, MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer == nullptr )
             {
@@ -531,7 +530,7 @@ namespace Mengine
         }
         else
         {
-            void * buffer = memory->newBuffer( fi.unz_size );
+            void * buffer = memory->newBuffer( fi.unz_size, MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer == nullptr )
             {
@@ -544,7 +543,7 @@ namespace Mengine
                 return false;
             }
 
-            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, "FileGroupZip", __FILE__, __LINE__ );
+            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FUNCTION );
 
             if( compress_buffer == nullptr )
             {

@@ -6144,33 +6144,58 @@ namespace Metacode
                 bool m_IsStreamable_Value;
             };
             
-            class Meta_ResourceSpine
+            class Meta_ResourceSpineAtlas
                 : public Meta_Resource
             { 
             public:
-                Meta_ResourceSpine();
+                Meta_ResourceSpineAtlas();
             
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Converter = (1 <<2),
+                };
+                
             public:
-                template<class C, class M>
-                void getm_Atlas_Path( C _self, M _method ) const
+                bool has_File_Converter() const
                 {
-                    (_self->*_method)( this->m_Atlas_Path );
-                }
-                
-                const Mengine::FilePath & get_Atlas_Path() const
-                {
-                    return this->m_Atlas_Path;
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
                 }
                 
                 template<class C, class M>
-                void getm_Skeleton_Path( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
-                    (_self->*_method)( this->m_Skeleton_Path );
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
-                const Mengine::FilePath & get_Skeleton_Path() const
+                bool get_File_Converter( Mengine::ConstString * _value ) const
                 {
-                    return this->m_Skeleton_Path;
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void getm_File_Path( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_File_Path );
+                }
+                
+                const Mengine::FilePath & get_File_Path() const
+                {
+                    return this->m_File_Path;
                 }
                 
             public:
@@ -6178,6 +6203,7 @@ namespace Metacode
             
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
@@ -6226,8 +6252,8 @@ namespace Metacode
                 };
                 
             protected:
-                Mengine::FilePath m_Atlas_Path;
-                Mengine::FilePath m_Skeleton_Path;
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Image> VectorMeta_Image;
             
@@ -6238,6 +6264,208 @@ namespace Metacode
             
             protected:
                 VectorMeta_Image includes_Meta_Image;
+            };
+            
+            class Meta_ResourceSpineAtlasTexturepacker
+                : public Meta_Resource
+            { 
+            public:
+                Meta_ResourceSpineAtlasTexturepacker();
+            
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_File_Converter = (1 <<2),
+                    EMETA_Texturepacker_Name = (1 <<3),
+                };
+                
+            public:
+                bool has_File_Converter() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Converter( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
+                }
+                
+                bool get_File_Converter( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void getm_File_Path( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_File_Path );
+                }
+                
+                const Mengine::FilePath & get_File_Path() const
+                {
+                    return this->m_File_Path;
+                }
+                
+                bool has_Texturepacker_Name() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_Texturepacker_Name( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_Texturepacker_Name );
+                
+                    return true;
+                }
+                
+                bool get_Texturepacker_Name( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Texturepacker_Name;
+                
+                    return true;
+                }
+                
+            public:
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            
+            protected:
+                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _preparationIncludes( uint32_t _id, uint32_t _count );
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+            
+            public:
+            protected:
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
+                Mengine::ConstString m_Texturepacker_Name;
+            };
+            
+            class Meta_ResourceSpineSkeleton
+                : public Meta_Resource
+            { 
+            public:
+                Meta_ResourceSpineSkeleton();
+            
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Atlas_Name = (1 <<3),
+                    EMETA_File_Converter = (1 <<2),
+                };
+                
+            public:
+                bool has_Atlas_Name() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_Atlas_Name) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_Atlas_Name( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Atlas_Name) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_Atlas_Name );
+                
+                    return true;
+                }
+                
+                bool get_Atlas_Name( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Atlas_Name) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Atlas_Name;
+                
+                    return true;
+                }
+                
+                bool has_File_Converter() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Converter( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
+                }
+                
+                bool get_File_Converter( Mengine::ConstString * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void getm_File_Path( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_File_Path );
+                }
+                
+                const Mengine::FilePath & get_File_Path() const
+                {
+                    return this->m_File_Path;
+                }
+                
+            public:
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            
+            protected:
+                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _preparationIncludes( uint32_t _id, uint32_t _count );
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+            
+            public:
+            protected:
+                Mengine::ConstString m_Atlas_Name;
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
             };
             
             class Meta_ResourceTexturepacker

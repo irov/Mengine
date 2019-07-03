@@ -1103,7 +1103,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, "RenderMaterialService::createVertexShader_", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory == nullptr )
         {
@@ -1125,7 +1125,7 @@ namespace Mengine
             return nullptr;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, "RenderMaterialService::createFragmentShader_", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory == nullptr )
         {
@@ -1140,56 +1140,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderVertexShaderInterfacePtr & RenderMaterialService::getVertexShader( const ConstString & _name ) const
     {
-        MapRenderVertexShaders::const_iterator it_found = m_vertexShaders.find( _name );
+        const RenderVertexShaderInterfacePtr & shader = m_vertexShaders.find( _name );
 
-        if( it_found == m_vertexShaders.end() )
-        {
-            return RenderVertexShaderInterfacePtr::none();
-        }
-
-        const RenderVertexShaderInterfacePtr & shader = it_found->second;
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, RenderVertexShaderInterfacePtr::none(), "not found vertex shader '%s'"
+            , _name.c_str()
+        );
 
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderFragmentShaderInterfacePtr & RenderMaterialService::getFragmentShader( const ConstString & _name ) const
     {
-        MapRenderFragmentShaders::const_iterator it_found = m_fragmentShaders.find( _name );
+        const RenderFragmentShaderInterfacePtr & shader = m_fragmentShaders.find( _name );
 
-        if( it_found == m_fragmentShaders.end() )
-        {
-            return RenderFragmentShaderInterfacePtr::none();
-        }
-
-        const RenderFragmentShaderInterfacePtr & shader = it_found->second;
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, RenderFragmentShaderInterfacePtr::none(), "not found fragment shader '%s'"
+            , _name.c_str()
+        );
 
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderVertexAttributeInterfacePtr & RenderMaterialService::getVertexAttribute( const ConstString & _name ) const
     {
-        MapRenderVertexAttributes::const_iterator it_found = m_vertexAttributes.find( _name );
+        const RenderVertexAttributeInterfacePtr & vertexAttribute = m_vertexAttributes.find( _name );
 
-        if( it_found == m_vertexAttributes.end() )
-        {
-            return RenderVertexAttributeInterfacePtr::none();
-        }
-
-        const RenderVertexAttributeInterfacePtr & vertexAttribute = it_found->second;
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, RenderVertexAttributeInterfacePtr::none(), "not found vertex attribute '%s'"
+            , _name.c_str()
+        );
 
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderProgramInterfacePtr & RenderMaterialService::getProgram( const ConstString & _name ) const
     {
-        MapRenderPrograms::const_iterator it_found = m_programs.find( _name );
+        const RenderProgramInterfacePtr & program = m_programs.find( _name );
 
-        if( it_found == m_programs.end() )
-        {
-            return RenderProgramInterfacePtr::none();
-        }
-
-        const RenderProgramInterfacePtr & program = it_found->second;
+        MENGINE_ASSERTION_MEMORY_PANIC( program, RenderProgramInterfacePtr::none(), "not found program '%s'"
+            , _name.c_str()
+        );
 
         return program;
     }

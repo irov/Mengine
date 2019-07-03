@@ -41,7 +41,7 @@ namespace Mengine
         }
 
     public:
-        void insert( const key_type & _key, const element_type_ptr & _element )
+        void emplace( const key_type & _key, const element_type_ptr & _element )
         {
             uint32_t test_size = m_size * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;

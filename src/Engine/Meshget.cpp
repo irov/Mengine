@@ -3,6 +3,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -19,18 +20,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Meshget::_compile()
     {
-        if( m_surface == nullptr )
-        {
-            LOGGER_ERROR( "Meshget::_compile '%s' can`t setup surface"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_surface, false, "'%s' can`t setup surface"
+            , this->getName().c_str()
+        );
 
         if( m_surface->compile() == false )
         {
-            LOGGER_ERROR( "Meshget::_compile '%s' can`t compile surface '%s'"
+            LOGGER_ERROR( "'%s' can`t compile surface '%s'"
                 , this->getName().c_str()
                 , m_surface->getName().c_str()
             );

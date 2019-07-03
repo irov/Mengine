@@ -38,7 +38,7 @@ namespace Mengine
     {
         if( m_picker == nullptr )
         {
-            LOGGER_ERROR( "%s not activate picker"
+            LOGGER_ERROR( "'%s' not activate picker"
                 , this->getName().c_str()
             );
 

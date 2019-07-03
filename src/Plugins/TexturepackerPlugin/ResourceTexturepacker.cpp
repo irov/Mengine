@@ -207,7 +207,7 @@ namespace Mengine
             image->setPremultiply( atlasIsPremultiply );
             image->setPow2( atlasIsPow2 );
 
-            m_frames.insert( c_name, image );
+            m_frames.emplace( c_name, image );
         }
 
         return true;

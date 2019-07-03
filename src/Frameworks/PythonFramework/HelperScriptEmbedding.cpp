@@ -24,6 +24,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TagsHelper.h"
 
 #include "math/vec2.h"
@@ -186,28 +187,26 @@ namespace Mengine
             size_t size;
             pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, "Python::writeGameData", __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
 
             void * memory_buffer = buffer->getBuffer();
             size_t memory_size = buffer->getSize();
 
             if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
             {
-                LOGGER_ERROR( "s_writeGameData: data %s invalid pickle"
+                LOGGER_ERROR( "data '%s' invalid pickle"
                     , _name.c_str()
                 );
 
                 return false;
             }
 
-            if( USERDATA_SERVICE()->writeUserdata( _name, memory_buffer, memory_size ) == false )
+            if( USERDATA_SERVICE()
+                ->writeUserdata( _name, memory_buffer, memory_size ) == false )
             {
-                LOGGER_ERROR( "s_writeGameData: data %s invalid write"
+                LOGGER_ERROR( "data '%s' invalid write"
                     , _name.c_str()
                 );
 
@@ -222,28 +221,18 @@ namespace Mengine
             MemoryInterfacePtr binaryBuffer = USERDATA_SERVICE()
                 ->loadUserdata( _name );
 
-            if( binaryBuffer == nullptr )
-            {
-                LOGGER_ERROR( "s_readGameData: data %s invalid load"
-                    , _name.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "data '%s' invalid load"
+                , _name.c_str()
+            );
 
             void * binaryBuffer_memory = binaryBuffer->getBuffer();
             size_t binaryBuffer_size = binaryBuffer->getSize();
 
             PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
-            if( py_data == nullptr )
-            {
-                LOGGER_ERROR( "s_readGameData: data %s invalid unpickle"
-                    , _name.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "data '%s' invalid unpickle"
+                , _name.c_str()
+            );
 
             return py_data;
         }
@@ -510,14 +499,10 @@ namespace Mengine
                 {
                     const Char * value = py_obj.str();
 
-                    if( value == nullptr )
-                    {
-                        LOGGER_ERROR( "textfield_setTextFormatArgs %s not suport arg %s"
-                            , py_obj.repr()
-                        );
-
-                        return false;
-                    }
+                    MENGINE_ASSERTION_MEMORY_PANIC( value, false, "textfield_setTextFormatArgs '%s' not suport arg '%s'"
+                        , py_obj.repr()
+                        , _args.repr()
+                    );
 
                     arguments.emplace_back( String( value ) );
                 }
@@ -1407,14 +1392,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "addAccountSetting: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( _kernel->unicode_check( _defaultValue ) == false )
             {
@@ -1446,14 +1426,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "addAccountSetting: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             bool result = account->hasSetting( _setting );
 
@@ -1465,14 +1440,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -1507,14 +1477,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "changeAccountSettingBool: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -1538,14 +1503,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "changeAccountSettingBool: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -1570,14 +1530,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "changeAccountSettingBool: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -1602,14 +1557,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "changeAccountSettingBool: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -1634,14 +1584,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "changeAccountSettingBool: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -1666,14 +1611,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "changeAccountSettingStrings: account not found '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "account not found '%s'"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -2091,14 +2031,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSetting account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             const AccountUID & value = account->getUID();
 
@@ -2731,45 +2666,35 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "writeAccountPickleFile: invalid account '%s'"
-                    , _accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid account '%s'"
+                , _accountID.c_str()
+            );
 
             FilePath filepath = Helper::stringizeFilePathSize( utf8_fileName.c_str(), utf8_fileName.size() );
 
             size_t size;
             if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
             {
-                LOGGER_ERROR( "writeAccountPickleFile: account '%s' invalid get pickle size"
+                LOGGER_ERROR( "'%s' invalid get pickle size"
                     , _accountID.c_str()
                 );
 
                 return false;
             }
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, "Python::writeAccountPickleFile", __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                LOGGER_ERROR( "writeAccountPickleFile: account '%s' invalid get memory for '%d' size"
-                    , _accountID.c_str()
-                    , size
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "'%s' invalid get memory for '%d' size"
+                , _accountID.c_str()
+                , size
+            );
 
             void * memory_buffer = buffer->getBuffer();
             size_t memory_size = buffer->getSize();
 
             if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
             {
-                LOGGER_ERROR( "writeAccountPickleFile: account '%s' invalid pickle"
+                LOGGER_ERROR( "account '%s' invalid pickle"
                     , _accountID.c_str()
                 );
 
@@ -2794,7 +2719,7 @@ namespace Mengine
             String utf8_fileName;
             if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR( "loadAccountPickleFile: invalid convert filename %s to utf8"
+                LOGGER_ERROR( "invalid convert filename %s to utf8"
                     , _fileName.c_str()
                 );
 
@@ -2804,43 +2729,28 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "loadAccountPickleFile: invalid get account '%s'"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "invalid get account '%s'"
+                , _accountID.c_str()
+            );
 
             FilePath filename = Helper::stringizeFilePathSize( utf8_fileName.c_str(), utf8_fileName.size() );
 
             MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filename );
 
-            if( binaryBuffer == nullptr )
-            {
-                LOGGER_ERROR( "loadAccountPickleFile: account %s invalid load file %s"
-                    , _accountID.c_str()
-                    , _fileName.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "account '%s' invalid load file '%s'"
+                , _accountID.c_str()
+                , _fileName.c_str()
+            );
 
             void * binaryBuffer_memory = binaryBuffer->getBuffer();
             size_t binaryBuffer_size = binaryBuffer->getSize();
 
             PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
-            if( py_data == nullptr )
-            {
-                LOGGER_ERROR( "loadAccountPickleFile: account %s invalid unpickle file %s"
-                    , _accountID.c_str()
-                    , _fileName.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "account '%s' invalid unpickle file '%s'"
+                , _accountID.c_str()
+                , _fileName.c_str()
+            );
 
             return py_data;
         }
@@ -2877,7 +2787,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "hasAccountPickleFile: invalid get account %s"
+                LOGGER_ERROR( "invalid get account '%s'"
                     , _accountID.c_str()
                 );
 
@@ -2887,7 +2797,7 @@ namespace Mengine
             String utf8_fileName;
             if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR( "hasAccountPickleFile: invalid convert filename %s to utf8"
+                LOGGER_ERROR( "invalid convert filename '%s' to utf8"
                     , _fileName.c_str()
                 );
 
@@ -2912,7 +2822,7 @@ namespace Mengine
         {
             if( _node == nullptr )
             {
-                LOGGER_ERROR( "Menge.getNodeScreenPosition node is null" );
+                LOGGER_ERROR( "node is null" );
 
                 return mt::vec2f( 0.f, 0.f );
             }
@@ -2947,7 +2857,7 @@ namespace Mengine
             if( TEXT_SERVICE()
                 ->existText( _key, &entry ) == false )
             {
-                pybind::throw_exception( "Mengine.getTextByKey invalid get key %s"
+                pybind::throw_exception( "invalid get key '%s'"
                     , _key.c_str()
                 );
             }
@@ -2957,7 +2867,7 @@ namespace Mengine
             WString unicode;
             if( Helper::utf8ToUnicode( text, unicode ) == false )
             {
-                pybind::throw_exception( "Mengine.getTextByKey invalid text key '%s' convert '%s' to unicode"
+                pybind::throw_exception( "invalid text key '%s' convert '%s' to unicode"
                     , _key.c_str()
                     , text.c_str()
                 );
@@ -2972,7 +2882,7 @@ namespace Mengine
             if( TEXT_SERVICE()
                 ->existText( _key, &entry ) == false )
             {
-                pybind::throw_exception( "Mengine.getTextCharCountByKey invalid get key %s"
+                pybind::throw_exception( "invalid get key '%s'"
                     , _key.c_str()
                 );
             }

@@ -71,19 +71,19 @@ namespace Mengine
         m_factoryMemoryInput = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    CacheBufferID MemoryService::lockBuffer( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line )
+    CacheBufferID MemoryService::lockBuffer( size_t _size, void ** _memory, const Char * _doc )
     {
         m_memoryCacheMutex->lock();
 
         CacheBufferID buffer_id =
-            this->lockBufferNoMutex_( _size, _memory, _doc, _file, _line );
+            this->lockBufferNoMutex_( _size, _memory, _doc );
 
         m_memoryCacheMutex->unlock();
 
         return buffer_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line )
+    CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc )
     {
         size_t minSize = 0U;
         size_t maxSize = ~0U;
@@ -123,9 +123,11 @@ namespace Mengine
         {
             CacheBufferMemory & buffer = m_buffers[maxIndex];
 
-            buffer.file = _file;
-            buffer.line = _line;
             buffer.lock = true;
+
+#ifdef MENGINE_DEBUG
+            buffer.doc = _doc;
+#endif
 
             *_memory = buffer.memory;
 
@@ -149,12 +151,13 @@ namespace Mengine
                 return INVALID_CACHE_BUFFER_ID;
             }
 
-            buffer.memory = memory;
-            buffer.doc = _doc;
+            buffer.memory = memory;            
             buffer.size = _size;
-            buffer.file = _file;
-            buffer.line = _line;
             buffer.lock = true;
+
+#ifdef MENGINE_DEBUG
+            buffer.doc = _doc;
+#endif
 
             *_memory = buffer.memory;
 
@@ -177,11 +180,12 @@ namespace Mengine
         CacheBufferMemory buffer;
         buffer.id = new_id;
         buffer.memory = memory;
-        buffer.doc = _doc;
         buffer.size = _size;
-        buffer.file = _file;
-        buffer.line = _line;
         buffer.lock = true;
+
+#ifdef MENGINE_DEBUG
+        buffer.doc = _doc;
+#endif
 
         m_buffers.emplace_back( buffer );
 

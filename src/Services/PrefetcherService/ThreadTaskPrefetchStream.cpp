@@ -88,7 +88,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, "ThreadTaskPrefetchStream", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FUNCTION );
 
         if( memory == nullptr )
         {

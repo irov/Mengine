@@ -9,6 +9,7 @@
 #include "Environment/Python/PythonEventReceiver.h"
 
 #include "Kernel/ScriptWrapperInterface.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -285,14 +286,9 @@ namespace Mengine
         ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
             ->importModule( personality );
 
-        if( module == nullptr )
-        {
-            LOGGER_ERROR( "invalid import module '%s'"
-                , personality.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+            , personality.c_str()
+        );
 
         Detail::registerGameEventMethods( _kernel, module );
 

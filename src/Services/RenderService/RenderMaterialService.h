@@ -2,11 +2,11 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#include "Kernel/ServiceBase.h"
-
 #include "RenderMaterial.h"
 
+#include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
+#include "Kernel/Hashtable.h"
 
 #include "Config/Map.h"
 
@@ -126,17 +126,17 @@ namespace Mengine
         RenderMaterialInterfacePtr m_debugLineMaterial;
         RenderMaterialInterfacePtr m_debugTriangleMaterial;
 
-        typedef Map<ConstString, RenderVertexShaderInterfacePtr> MapRenderVertexShaders;
-        MapRenderVertexShaders m_vertexShaders;
+        typedef Hashtable<ConstString, RenderVertexShaderInterfacePtr> HashtableRenderVertexShaders;
+        HashtableRenderVertexShaders m_vertexShaders;
 
-        typedef Map<ConstString, RenderFragmentShaderInterfacePtr> MapRenderFragmentShaders;
-        MapRenderFragmentShaders m_fragmentShaders;
+        typedef Hashtable<ConstString, RenderFragmentShaderInterfacePtr> HashtableRenderFragmentShaders;
+        HashtableRenderFragmentShaders m_fragmentShaders;
 
-        typedef Map<ConstString, RenderVertexAttributeInterfacePtr> MapRenderVertexAttributes;
-        MapRenderVertexAttributes m_vertexAttributes;
+        typedef Hashtable<ConstString, RenderVertexAttributeInterfacePtr> HashtableRenderVertexAttributes;
+        HashtableRenderVertexAttributes m_vertexAttributes;
 
-        typedef Map<ConstString, RenderProgramInterfacePtr> MapRenderPrograms;
-        MapRenderPrograms m_programs;
+        typedef Hashtable<ConstString, RenderProgramInterfacePtr> HashtableRenderPrograms;
+        HashtableRenderPrograms m_programs;
 
         const RenderMaterialStage * m_defaultStages[EM_MATERIAL_COUNT];
         ConstString m_defaultStageNames[EM_MATERIAL_COUNT];

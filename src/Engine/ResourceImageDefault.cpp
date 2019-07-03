@@ -11,6 +11,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -32,16 +33,11 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        if( fileGroup == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' group '%s' file path '%s' invalid setup category"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false, "name '%s' group '%s' file path '%s' invalid setup category"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         const FilePath & filePath = this->getFilePath();
         const ConstString & codecType = this->getCodecType();
@@ -49,28 +45,18 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->loadTexture( fileGroup, filePath, codecType, MENGINE_DOCUMENT_FUNCTION );
 
-        if( texture == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' category '%s' group '%s' can't load image file '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "name '%s' category '%s' group '%s' can't load image file '%s'"
+            , this->getName().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getGroupName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         m_texture = texture;
 
         this->prepareImageFrame_();
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageDefault::_release()
-    {
-        ResourceImage::_release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )

@@ -1,0 +1,3 @@
+LIBRARY		"SpinePlugin"
+EXPORTS 	
+	dllCreatePlugin 	@1

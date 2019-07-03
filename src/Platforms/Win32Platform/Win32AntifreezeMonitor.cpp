@@ -38,13 +38,13 @@ namespace Mengine
 
         g_antifreezeData.th = std::thread( []()
         {
-            uint32_t seconds = g_antifreezeData.seconds;
+            std::chrono::seconds pause_time( g_antifreezeData.seconds );
 
             for( ; g_antifreezeData.run;)
             {
-                uint64_t oldref = g_antifreezeData.refalive;
+                uint32_t oldref = g_antifreezeData.refalive;
 
-                std::this_thread::sleep_for( std::chrono::seconds( seconds ) );
+                std::this_thread::sleep_for( pause_time );
 
                 if( oldref == g_antifreezeData.refalive && oldref != 0 )
                 {

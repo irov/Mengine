@@ -12,6 +12,9 @@ namespace Mengine
         , m_size( 0 )
         , m_pos( nullptr )
         , m_end( nullptr )
+#ifdef MENGINE_DEBUG
+        , m_doc( nullptr )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,8 +24,10 @@ namespace Mengine
         m_data = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryInput::newBuffer( size_t _size )
+    Pointer MemoryInput::newBuffer( size_t _size, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         uint8_t * memory = Helper::reallocateArrayT<uint8_t>( m_data, _size );
 
         if( memory == nullptr )
@@ -39,6 +44,10 @@ namespace Mengine
         m_size = _size;
         m_pos = m_data;
         m_end = m_data + m_size;
+
+#ifdef MENGINE_DEBUG
+        m_doc = m_doc;
+#endif
 
         return m_data;
     }

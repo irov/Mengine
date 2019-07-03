@@ -35,7 +35,7 @@ namespace Mengine
     {
     public:
         SDLPlatform();
-        ~SDLPlatform();
+        ~SDLPlatform() override;
 
     public:
         bool _initializeService() override;

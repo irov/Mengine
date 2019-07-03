@@ -7,6 +7,7 @@
 
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -91,7 +92,9 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryCacheBuffer( _doc );
 
-        memory->newBuffer( bufferSize, "OpenGLRenderVertexBuffer", __FILE__, __LINE__ );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        memory->newBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
 
         m_lockMemory = memory;
         

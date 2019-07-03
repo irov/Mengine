@@ -18,13 +18,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory, m_doc );
+        Helper::freeMemory( m_memory, MENGINE_DEBUG_ATTRIBUTE( m_doc, "" ) );
+
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _doc )
     {
-        void * buffer = this->newBuffer( _size, _doc );
+        MENGINE_UNUSED( _doc );
+
+        void * buffer = this->newBuffer( _size, MENGINE_DEBUG_ATTRIBUTE( _doc, "" ) );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }

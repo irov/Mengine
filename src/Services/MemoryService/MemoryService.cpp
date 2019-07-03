@@ -5,7 +5,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -30,6 +30,8 @@ namespace Mengine
         m_memoryCacheMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( m_memoryCacheMutex, false );
+
         m_factoryMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
         m_factoryMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
         m_factoryMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
@@ -39,6 +41,8 @@ namespace Mengine
 
         ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex, false );
 
         m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
         m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
@@ -137,19 +141,15 @@ namespace Mengine
         {
             CacheBufferMemory & buffer = m_buffers[minIndex];
 
-            Helper::freeMemory( buffer.memory, buffer.doc );
+            Helper::freeMemory( buffer.memory, MENGINE_DEBUG_ATTRIBUTE( buffer.doc, "" ) );
+
             void * memory = Helper::allocateMemory( _size, _doc );
 
-            if( memory == nullptr )
-            {
-                LOGGER_ERROR( "invalid realloc %p memory %d to %d"
-                    , buffer.memory
-                    , buffer.size
-                    , _size
-                );
-
-                return INVALID_CACHE_BUFFER_ID;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid realloc %p memory %d to %d"
+                , buffer.memory
+                , buffer.size
+                , _size
+            );
 
             buffer.memory = memory;            
             buffer.size = _size;
@@ -224,7 +224,7 @@ namespace Mengine
                 return false;
             }
 
-            Helper::freeMemory( _buffer.memory, _buffer.doc );
+            Helper::freeMemory( _buffer.memory, MENGINE_DEBUG_ATTRIBUTE( _buffer.doc, "" ) );
 
             return true;
         } ), m_buffers.end() );
@@ -236,6 +236,8 @@ namespace Mengine
     {
         MemoryCacheBufferPtr memoryBuffer = m_factoryMemoryCacheBuffer->createObject( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryBuffer, nullptr );
+
         memoryBuffer->setMemoryManager( this );
 
         return memoryBuffer;
@@ -244,6 +246,8 @@ namespace Mengine
     MemoryCacheInputInterfacePtr MemoryService::createMemoryCacheInput( const Char * _doc )
     {
         MemoryCacheInputPtr memoryCache = m_factoryMemoryCacheInput->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryCache, nullptr );
 
         memoryCache->setMemoryManager( this );
 
@@ -254,12 +258,16 @@ namespace Mengine
     {
         MemoryProxyInputPtr memoryProxy = m_factoryMemoryProxyInput->createObject( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( memoryProxy, nullptr );
+
         return memoryProxy;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryInputInterfacePtr MemoryService::createMemoryInput( const Char * _doc )
     {
         MemoryInputPtr memory = m_factoryMemoryInput->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
         return memory;
     }
@@ -268,12 +276,16 @@ namespace Mengine
     {
         MemoryPtr memory = m_factoryMemoryBuffer->createObject( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryProxyInterfacePtr MemoryService::createMemoryProxy( const Char * _doc )
     {
         MemoryProxyPtr memory = m_factoryMemoryProxy->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
         return memory;
     }

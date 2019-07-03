@@ -974,7 +974,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::finalize()
     {
-        SERVICE_FINALIZE( Mengine::ModuleServiceInterface );
+        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
+        SERVICE_FINALIZE( Mengine::ModuleServiceInterface );        
 
         if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
         {
@@ -994,8 +995,7 @@ namespace Mengine
             THREAD_SERVICE()
                 ->stopTasks();
         }
-
-        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
+        
         SERVICE_FINALIZE( Mengine::SceneServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );

@@ -1848,7 +1848,7 @@ namespace Mengine
     static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
     {
         {
-            WChar sPath[MENGINE_MAX_PATH];
+            WChar sPath[MENGINE_MAX_PATH] = {0};
             ::wcscpy( sPath, _dir );
             ::wcscat( sPath, _path );
             ::wcscat( sPath, _mask );
@@ -1871,22 +1871,29 @@ namespace Mengine
                         continue;
                     }
                     
-                    WChar sPath2[MENGINE_MAX_PATH];
+                    WChar sPath2[MENGINE_MAX_PATH] = {0};
                     ::wcscpy( sPath2, sPath );
                     ::wcscat( sPath2, L"\0" );
                     Helper::pathCorrectForwardslashW( sPath2 );
 
                     ::PathRemoveFileSpec( sPath2 );
 
-                    WChar unicode_filepath[MENGINE_MAX_PATH];
+                    WChar unicode_filepath[MENGINE_MAX_PATH] = {0};
                     ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
-                    WChar unicode_out[MENGINE_MAX_PATH];
-                    ::PathRelativePathTo( unicode_out,
-                        _dir,
-                        FILE_ATTRIBUTE_DIRECTORY,
-                        unicode_filepath,
-                        FILE_ATTRIBUTE_NORMAL );
+                    WChar unicode_out[MENGINE_MAX_PATH] = {0};
+                    if( wcslen( _dir ) != 0 )
+                    {
+                        ::PathRelativePathTo( unicode_out,
+                            _dir,
+                            FILE_ATTRIBUTE_DIRECTORY,
+                            unicode_filepath,
+                            FILE_ATTRIBUTE_NORMAL );
+                    }
+                    else
+                    {
+                        wcscpy( unicode_out, unicode_filepath );
+                    }
                     
                     Char utf8_filepath[MENGINE_MAX_PATH];
                     if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
@@ -1914,7 +1921,7 @@ namespace Mengine
         }
 
         {
-            WChar sPath[MENGINE_MAX_PATH];
+            WChar sPath[MENGINE_MAX_PATH] = {0};
             ::wcscpy( sPath, _dir );
             ::wcscat( sPath, _path );
             ::wcscat( sPath, L"*.*" );
@@ -1942,13 +1949,13 @@ namespace Mengine
 
                 //WChar nextPath[2048];
                 //wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
-                WChar currentPath[MENGINE_MAX_PATH];
+                WChar currentPath[MENGINE_MAX_PATH] = {0};
                 ::wcscpy( currentPath, sPath );
                 ::wcscat( currentPath, L"\0" );
 
                 ::PathRemoveFileSpec( currentPath );
 
-                WChar nextPath[MENGINE_MAX_PATH];
+                WChar nextPath[MENGINE_MAX_PATH] = {0};
                 ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
                 ::wcscat( nextPath, L"\\" );
@@ -2000,7 +2007,7 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_fullbase[MENGINE_MAX_PATH];
+        WChar unicode_fullbase[MENGINE_MAX_PATH] = {0};
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         bool stop;

@@ -21,7 +21,7 @@ namespace Mengine
 		std::thread th;
     };
     //////////////////////////////////////////////////////////////////////////
-    AntifreezeData * g_antifreezeData = nullptr;
+    AntifreezeData g_antifreezeData;
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::run()
     {
@@ -32,26 +32,27 @@ namespace Mengine
             return;
         }
 
-        g_antifreezeData = new AntifreezeData;
+        g_antifreezeData.seconds = seconds;
+        g_antifreezeData.refalive = 0;
+        g_antifreezeData.run = true;
 
-        g_antifreezeData->seconds = seconds;
-        g_antifreezeData->refalive = 0;
-        g_antifreezeData->run = true;
-
-        g_antifreezeData->th = std::thread( []()
+        g_antifreezeData.th = std::thread( []()
         {
-            for( ; g_antifreezeData->run;)
-            {
-                uint64_t oldref = g_antifreezeData->refalive;
-                std::this_thread::sleep_for( std::chrono::seconds( g_antifreezeData->seconds ) );
+            uint32_t seconds = g_antifreezeData.seconds;
 
-                if( oldref == g_antifreezeData->refalive && oldref != 0 )
+            for( ; g_antifreezeData.run;)
+            {
+                uint64_t oldref = g_antifreezeData.refalive;
+
+                std::this_thread::sleep_for( std::chrono::seconds( seconds ) );
+
+                if( oldref == g_antifreezeData.refalive && oldref != 0 )
                 {
                     PLATFORM_SERVICE()
                         ->createProcessDump();
 
 					LOGGER_ERROR( "Antifreeze monitor detect freeze process for %u seconds, and create dump!"
-						, g_antifreezeData->seconds.load()
+						, g_antifreezeData.seconds.load()
 					);
 
                     break;
@@ -61,22 +62,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::stop()
-    {
-        if( g_antifreezeData != nullptr )
+    {        
+        if( g_antifreezeData.th.joinable() == true )
         {
-            g_antifreezeData->run = false;
-            g_antifreezeData->th.join();
-
-            delete g_antifreezeData;
-            g_antifreezeData = nullptr;
+            g_antifreezeData.run = false;
+            g_antifreezeData.th.detach();
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
     {
-        if( g_antifreezeData != nullptr )
-        {
-            g_antifreezeData->refalive++;
-        }
+        g_antifreezeData.refalive++;        
     }
 }

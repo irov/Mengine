@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
 		SDLStdioLogger();
-        ~SDLStdioLogger();
+        ~SDLStdioLogger() override;
 
     public:
         void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override;

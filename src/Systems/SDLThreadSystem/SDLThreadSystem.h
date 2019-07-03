@@ -14,7 +14,7 @@ namespace Mengine
     {
     public:
         SDLThreadSystem();
-        ~SDLThreadSystem();
+        ~SDLThreadSystem() override;
 
     public:
         bool _initializeService() override;

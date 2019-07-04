@@ -14,7 +14,7 @@ namespace Mengine
         BasePrototypeGenerator();
         ~BasePrototypeGenerator() override;
 
-    protected:
+    public:
         void setCategory( const ConstString & _category ) override;
         inline const ConstString & getCategory() const override;
 

@@ -8,6 +8,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );
@@ -45,12 +46,7 @@ namespace Mengine
             return false;
         }
 
-        if( _scene == nullptr )
-        {
-            LOGGER_ERROR( "scene == nullptr" );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _scene, false, "scene == nullptr" );
 
         SceneCommandDesc desc;
         desc.type = ESCT_SET;
@@ -254,10 +250,7 @@ namespace Mengine
         ScenePtr scene = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( scene == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( scene, false );
 
         m_globalScene = scene;
 

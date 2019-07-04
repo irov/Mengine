@@ -92,10 +92,7 @@ namespace Mengine
         FT_Byte * memory_byte = _memory->getBuffer();
         size_t memory_size = _memory->getSize();
 
-        if( memory_byte == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_byte, false );
 
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 

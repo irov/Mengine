@@ -1,6 +1,7 @@
 #include "SamplerOzzAnimation.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "ozz/base/memory/allocator.h"
 #include "ozz/base/maths/soa_transform.h"
@@ -74,15 +75,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_compile()
     {
-        if( m_resourceOzzAnimation == nullptr )
-        {
-            return false;
-        }
-
-        if( m_resourceOzzSkeleton == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzAnimation, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceOzzSkeleton, false );
 
         if( m_resourceOzzAnimation->compile() == false )
         {

@@ -15,6 +15,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/memorycopy.h"
 
@@ -200,15 +201,10 @@ namespace Mengine
 
         DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FUNCTION );
 
-        if( data == nullptr )
-        {
-            LOGGER_ERROR( "resource movie '%s' group '%s' invalid compile data"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( data, false, "resource movie '%s' group '%s' invalid compile data"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+        );
 
         if( data->acquire() == false )
         {

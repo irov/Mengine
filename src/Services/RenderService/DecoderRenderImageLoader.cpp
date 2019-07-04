@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -26,16 +27,11 @@ namespace Mengine
         {
             decoder = this->createImageDecoder_( _fileGroup, _fileName, _codecName );
 
-            if( decoder == nullptr )
-            {
-                LOGGER_ERROR( "invalid create decoder '%s':'%s' codec '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
-                    , _codecName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder '%s':'%s' codec '%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
+                , _codecName.c_str()
+            );
         }
         else
         {
@@ -99,18 +95,13 @@ namespace Mengine
         size_t pitch = 0;
         void * textureBuffer = _image->lock( &pitch, 0, rect, false );
 
-        if( textureBuffer == nullptr )
-        {
-            LOGGER_ERROR( "Invalid lock mipmap %d rect %d:%d-%d:%d"
-                , 0
-                , rect.left
-                , rect.top
-                , rect.right
-                , rect.bottom
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textureBuffer, false, "Invalid lock mipmap %d rect %d:%d-%d:%d"
+            , 0
+            , rect.left
+            , rect.top
+            , rect.right
+            , rect.bottom
+        );
 
         ImageCodecOptions options;
         options.pitch = pitch;
@@ -163,30 +154,20 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "invalid open stream '%s:%s' codec '%s'"
-                , _fileGroup->getName().c_str()
-                , _fileName.c_str()
-                , _codecName.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid open stream '%s:%s' codec '%s'"
+            , _fileGroup->getName().c_str()
+            , _fileName.c_str()
+            , _codecName.c_str()
+        );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( _codecName, MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "invalid create decoder '%s:%s' codec '%s'"
-                , _fileGroup->getName().c_str()
-                , _fileName.c_str()
-                , _codecName.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, nullptr, "invalid create decoder '%s:%s' codec '%s'"
+            , _fileGroup->getName().c_str()
+            , _fileName.c_str()
+            , _codecName.c_str()
+        );
 
         if( decoder->prepareData( stream ) == false )
         {

@@ -3,6 +3,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -79,10 +80,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
 
             const void * cache_buffer = buffer->getBuffer();
             size_t cache_size = buffer->getSize();
@@ -115,10 +113,7 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
 
             void * cache_buffer = buffer->getBuffer();
 

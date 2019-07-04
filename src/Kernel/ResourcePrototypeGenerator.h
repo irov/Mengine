@@ -3,7 +3,7 @@
 #include "ScriptablePrototypeGenerator.h"
 
 #include "Kernel/Resource.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -19,16 +19,11 @@ namespace Mengine
 
             ResourcePtr resource = factory->createObject( _doc );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
-                    , this->getCategory().c_str()
-                    , this->getPrototype().c_str()
-					, _doc
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "can't generate '%s' '%s' doc '%s'"
+                , this->getCategory().c_str()
+                , this->getPrototype().c_str()
+                , _doc
+            );
 
             const ConstString & prototype = this->getPrototype();
             resource->setType( prototype );

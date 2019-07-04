@@ -20,13 +20,20 @@
 #include "Engine/HotSpotImage.h"
 #include "Engine/HotSpotShape.h"
 #include "Engine/SoundEmitter.h"
+#include "Engine/SurfaceImage.h"
+#include "Engine/SurfaceImageSequence.h"
+#include "Engine/SurfaceSound.h"
 
 #include "Kernel/Layer.h"
 #include "Kernel/Scene.h"
-
+#include "Kernel/NodeHelper.h"
+#include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
+#include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"
@@ -34,15 +41,6 @@
 #include "MovieNodeExtra.h"
 #include "MovieEvent.h"
 #include "MovieMesh2D.h"
-
-#include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceImageSequence.h"
-#include "Engine/SurfaceSound.h"
-
-#include "Kernel/NodeHelper.h"
-
-#include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 
 #include "math/angle.h"
 
@@ -428,10 +426,7 @@ namespace Mengine
             RenderScissorPtr scissor = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderScissor" ), MENGINE_DOCUMENT_FUNCTION );
 
-            if( scissor == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( scissor, false );
 
             scissor->setName( _layer.name );
             scissor->setViewport( _layer.viewport );
@@ -1182,10 +1177,7 @@ namespace Mengine
         MovieSlotPtr layer_slot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_slot == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_slot, false );
 
         layer_slot->setMovieName( m_name );
 
@@ -1202,10 +1194,7 @@ namespace Mengine
         MovieSceneEffectPtr sceneeffect_slot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( sceneeffect_slot == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( sceneeffect_slot, false );
 
         if( this->addMovieNode_( _layer, sceneeffect_slot, nullptr, nullptr, nullptr ) == false )
         {
@@ -1220,10 +1209,7 @@ namespace Mengine
         NodePtr layer_slot = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_slot == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_slot, false );
 
         if( this->addMovieNode_( _layer, layer_slot, nullptr, nullptr, nullptr ) == false )
         {
@@ -1238,18 +1224,12 @@ namespace Mengine
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceImage == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false );
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surface == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
 
         surface->setResourceImage( resourceImage );
 
@@ -1261,10 +1241,7 @@ namespace Mengine
         ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_sprite == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite, false );
 
         layer_sprite->setSurface( surface );
 
@@ -1281,18 +1258,12 @@ namespace Mengine
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceImage == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false );
 
         MovieMesh2DPtr layer_mesh = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_mesh == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_mesh, false );
 
         layer_mesh->setResourceImage( resourceImage );
 
@@ -1314,24 +1285,16 @@ namespace Mengine
         const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
             ->getResource( _layer.source );
 
-        if( resource == nullptr )
-        {
-            LOGGER_ERROR( "%s resource %s can't compile sprite '%s' imageSolid resource = NULL"
-                , this->getName().c_str()
-                , this->getResourceMovieName().c_str()
-                , _layer.name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "%s resource %s can't compile sprite '%s' imageSolid resource = NULL"
+            , this->getName().c_str()
+            , this->getResourceMovieName().c_str()
+            , _layer.name.c_str()
+        );
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surface == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
 
         surface->setResourceImage( resource );
 
@@ -1343,10 +1306,7 @@ namespace Mengine
         ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_sprite == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite, false );
 
         layer_sprite->setSurface( surface );
 
@@ -1363,18 +1323,12 @@ namespace Mengine
         ResourceImageSolidPtr resourceImage = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceImage == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false );
 
         MovieMesh2DPtr layer_mesh = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_mesh == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_mesh, false );
 
         layer_mesh->setResourceImage( resourceImage );
 
@@ -1396,18 +1350,12 @@ namespace Mengine
         ResourceHITPtr resourceHIT = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceHIT == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, false );
 
         HotSpotImagePtr layer_hotspotimage = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_hotspotimage == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotimage, false );
 
         layer_hotspotimage->setResourceTestPick( resourceHIT );
 
@@ -1424,18 +1372,12 @@ namespace Mengine
         HotSpotShapePtr layer_hotspotshape = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotShape" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_hotspotshape == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_hotspotshape, false );
 
         ResourceShapePtr resourceShape = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceShape == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceShape, false );
 
         layer_hotspotshape->setResourceShape( resourceShape );
 
@@ -1452,18 +1394,12 @@ namespace Mengine
         ResourceImageSequencePtr resourceImageSequence = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceImageSequence == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImageSequence, false );
 
         SurfaceImageSequencePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImageSequence" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surface == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
 
         surface->setName( _layer.name );
         surface->setResourceImageSequence( resourceImageSequence );
@@ -1481,10 +1417,7 @@ namespace Mengine
         ShapeQuadFixedPtr layer_animation = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_animation == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_animation, false );
 
         layer_animation->setName( _layer.name );
         layer_animation->setSurface( surface );
@@ -1502,18 +1435,12 @@ namespace Mengine
         MoviePtr layer_movie = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_movie == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_movie, false );
 
         ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceMovie == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, false );
 
         layer_movie->setResourceMovie( resourceMovie );
 
@@ -1538,18 +1465,12 @@ namespace Mengine
         MoviePtr layer_movie = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_movie == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_movie, false );
 
         ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceMovie == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, false );
 
         layer_movie->setResourceMovie( resourceMovie );
 
@@ -1574,18 +1495,12 @@ namespace Mengine
         MovieInternalObjectPtr movie_internal = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( movie_internal == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( movie_internal, false );
 
         const ResourceInternalObjectPtr & resourceInternalObject = RESOURCE_SERVICE()
             ->getResource( _layer.source );
 
-        if( resourceInternalObject == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceInternalObject, false );
 
         movie_internal->setMovie( this );
         movie_internal->setResourceInternalObject( resourceInternalObject );
@@ -1603,18 +1518,12 @@ namespace Mengine
         const ResourcePtr & resourceVideo = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceVideo == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceVideo, false );
 
         SurfacePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surface == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
 
         UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
@@ -1637,10 +1546,7 @@ namespace Mengine
         ShapeQuadFixedPtr layer_video = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_video == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_video, false );
 
         layer_video->setSurface( surface );
 
@@ -1657,26 +1563,17 @@ namespace Mengine
         SoundEmitterPtr layer_sound = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_sound == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_sound, false );
 
         ResourceSoundPtr resourceSound = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceSound == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceSound, false );
 
         SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surfaceSound == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound, false );
 
         surfaceSound->setResourceSound( resourceSound );
 
@@ -1701,26 +1598,17 @@ namespace Mengine
         SoundEmitterPtr layer_sound = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_sound == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_sound, false );
 
         ResourceSoundPtr resourceSound = RESOURCE_SERVICE()
             ->getResourceReference( _layer.name );
 
-        if( resourceSound == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceSound, false );
 
         SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surfaceSound == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound, false );
 
         surfaceSound->setResourceSound( resourceSound );
         surfaceSound->setIntervalStart( _layer.startInterval );
@@ -1744,10 +1632,7 @@ namespace Mengine
         TextFieldPtr layer_text = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_text == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_text, false );
 
         layer_text->setTextID( _layer.name ); //Name = TextID
 
@@ -1779,10 +1664,7 @@ namespace Mengine
         TextFieldPtr layer_text = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_text == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_text, false );
 
         layer_text->setTextID( _layer.name ); //Name = TextID
         layer_text->setHorizontalCenterAlign();
@@ -1805,25 +1687,17 @@ namespace Mengine
         ResourceImagePtr resourceImage = RESOURCE_SERVICE()
             ->getResourceReference( _layer.name );
 
-        if( resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' invalid get resource for image '%s'"
-                , this->getName().c_str()
-                , this->getResourceMovieName().c_str()
-                , _layer.name.c_str()
-                , _layer.name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "movie '%s' resource '%s' layer '%s' invalid get resource for image '%s'"
+            , this->getName().c_str()
+            , this->getResourceMovieName().c_str()
+            , _layer.name.c_str()
+            , _layer.name.c_str()
+        );
 
         SurfaceImagePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( surface == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
 
         surface->setResourceImage( resourceImage );
 
@@ -1835,16 +1709,11 @@ namespace Mengine
         ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_sprite == nullptr )
-        {
-            LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' invalid create 'Sprite'"
-                , this->getName().c_str()
-                , this->getResourceMovieName().c_str()
-                , _layer.name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_sprite, false, "movie '%s' resource '%s' layer '%s' invalid create 'Sprite'"
+            , this->getName().c_str()
+            , this->getResourceMovieName().c_str()
+            , _layer.name.c_str()
+        );
 
         layer_sprite->setSurface( surface );
 
@@ -1931,10 +1800,7 @@ namespace Mengine
         NodePtr layer_particles = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( layer_particles == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_particles, false );
 
         UnknownParticleEmitterInterface * unknownParticleEmitter2 = layer_particles->getUnknown();
 
@@ -1943,10 +1809,7 @@ namespace Mengine
         const ResourcePtr & resourceParticle = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceParticle == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceParticle, false );
 
         unknownParticleEmitter2->setResourceParticle( resourceParticle );
 
@@ -1980,14 +1843,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::_compile()
     {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR( "movie '%s' can't setup resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMovie, false, "movie '%s' can't setup resource"
+            , this->getName().c_str()
+        );
 
         if( m_resourceMovie.compile() == false )
         {
@@ -2159,16 +2017,11 @@ namespace Mengine
             {
                 const NodePtr & node_parent = this->getLayerParent_( layer );
 
-                if( node_parent == nullptr )
-                {
-                    LOGGER_ERROR( "movie '%s' resource '%s' invalid parent node %d"
-                        , this->getName().c_str()
-                        , this->getResourceMovieName().c_str()
-                        , layer.parent
-                    );
-
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node_parent, false, "movie '%s' resource '%s' invalid parent node %d"
+                    , this->getName().c_str()
+                    , this->getResourceMovieName().c_str()
+                    , layer.parent
+                );
 
                 node->setRelationTransformation( node_parent.get() );
             }

@@ -15,6 +15,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/Vector.h"
 
@@ -54,19 +55,13 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 
         m_dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
-        if( m_dataflow == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_dataflow, false );
 
         return true;
     }
@@ -794,16 +789,11 @@ namespace Mengine
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
             ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
-        if( output_stream == nullptr )
-        {
-            LOGGER_ERROR( "invalid open file %s:%s"
-                , m_options.fileGroup->getName().c_str()
-                , m_options.outputFileName.c_str()
-            );
-
-            return false;
-        }
-
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file %s:%s"
+            , m_options.fileGroup->getName().c_str()
+            , m_options.outputFileName.c_str()
+        );
+        
         const void * buffer_memory = &_buffer[0];
         size_t buffer_size = _buffer.size();
 

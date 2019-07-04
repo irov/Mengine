@@ -9,20 +9,20 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#include "Kernel/FactoryPool.h"
+#include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionResourceType.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Frameworks/PythonFramework/DocumentTraceback.h"
 
 #include "Config/Lambda.h"
 
 #include "Engine/ResourceSound.h"
-#include "Kernel/FactoryPool.h"
-
-#include "Kernel/Logger.h"
-#include "Kernel/Document.h"
 
 #include "pybind/pybind.hpp"
 
@@ -168,10 +168,7 @@ namespace Mengine
             const ResourceSoundPtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
-            if( resource == nullptr )
-            {
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
             SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer();
 
@@ -239,14 +236,9 @@ namespace Mengine
         {
             SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
-            if( sourceEmitter == nullptr )
-            {
-                LOGGER_ERROR( "soundPlay: can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+                , _resourceName.c_str()
+            );
 
             if( SOUND_SERVICE()
                 ->playEmitter( sourceEmitter ) == false )
@@ -265,19 +257,14 @@ namespace Mengine
         {
             SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
 
-            if( sourceEmitter == nullptr )
-            {
-                LOGGER_ERROR( "voicePlay: can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+                , _resourceName.c_str()
+            );
 
             if( SOUND_SERVICE()
                 ->playEmitter( sourceEmitter ) == false )
             {
-                LOGGER_ERROR( "voicePlay: invalid play '%s'"
+                LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
                 );
 
@@ -307,14 +294,9 @@ namespace Mengine
         {
             SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
-            if( sourceEmitter == nullptr )
-            {
-                LOGGER_ERROR( "can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+                , _resourceName.c_str()
+            );
 
             if( SOUND_SERVICE()
                 ->setPosMs( sourceEmitter, _position ) == false )
@@ -446,14 +428,9 @@ namespace Mengine
         {
             SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
-            if( sourceEmitter == nullptr )
-            {
-                LOGGER_ERROR( "can't get resource '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+                , _resourceName.c_str()
+            );
 
             if( SOUND_SERVICE()
                 ->playEmitter( sourceEmitter ) == false )
@@ -467,12 +444,18 @@ namespace Mengine
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
+                , _easingType.c_str()
+            );
+
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
                     , easing
                     , nullptr, [this, sourceEmitter]( float _value ) { this->___soundFade( sourceEmitter, _value ); }
                     , 0.f, 1.f, _time
                 );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
                 ->getGlobalAffectorable();

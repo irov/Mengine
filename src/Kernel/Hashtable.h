@@ -108,6 +108,20 @@ namespace Mengine
             return element;
         }
 
+        bool exist( const key_type & _key ) const
+        {
+            if( m_size == 0 )
+            {
+                return false;
+            }
+
+            hash_type hash = hashgen_type()(_key);
+
+            bool result = Hashtable::exist_( m_buffer, m_capacity, hash, _key );
+
+            return result;
+        }
+
     public:
         void reserve( uint32_t _capacity )
         {
@@ -419,6 +433,34 @@ namespace Mengine
                     }
 
                     return record->element;
+                }
+
+                mask = (mask << 2) + mask + (size_type)probe + 1;
+            }
+        }
+
+        static bool exist_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
+        {
+            size_type hash_mask = _capacity - 1;
+            size_type mask = (size_type)_hash;
+
+            for( hash_type probe = _hash; ; probe >>= 5 )
+            {
+                value_type * record = _buffer + (mask & hash_mask);
+
+                if( record->element == nullptr )
+                {
+                    return false;
+                }
+
+                if( record->hash == _hash && record->key == _key )
+                {
+                    if( record->element.get() == reinterpret_cast<const element_type *>(~0) )
+                    {
+                        return false;
+                    }
+
+                    return true;
                 }
 
                 mask = (mask << 2) + mask + (size_type)probe + 1;

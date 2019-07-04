@@ -11,10 +11,9 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/IniUtil.h"
 #include "Kernel/String.h"
 #include "Kernel/UID.h"
@@ -48,19 +47,13 @@ namespace Mengine
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        if( fileGroup == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
         m_fileGroup = fileGroup;
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 
@@ -101,15 +94,12 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createAccount_( accountID );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( account, nullptr );
+
         AccountUID uid;
         Helper::makeUID( 20, uid.data );
 
         account->setUID( uid );
-
-        if( account == nullptr )
-        {
-            return nullptr;
-        }
 
         return account;
     }
@@ -125,39 +115,33 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createGlobalAccount_( accountID );
 
-        if( account == nullptr )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( account, nullptr );
 
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountService::createAccount_( const ConstString& _accountID )
     {
-        MapAccounts::iterator it_find = m_accounts.find( _accountID );
+#ifdef MENGINE_DEBUG
+        MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
 
         if( it_find != m_accounts.end() )
         {
-            LOGGER_ERROR( "Account with ID '%s' already exist. Account not created"
+            LOGGER_ERROR( "account with ID '%s' already exist. Account not created"
                 , _accountID.c_str()
             );
 
             return nullptr;
         }
+#endif
 
         this->unselectCurrentAccount_();
 
         AccountInterfacePtr newAccount = this->newAccount_( _accountID );
 
-        if( newAccount == nullptr )
-        {
-            LOGGER_ERROR( "Account with ID '%s' invalid create. Account not created"
-                , _accountID.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, nullptr, "account with ID '%s' invalid create. Account not created"
+            , _accountID.c_str()
+        );
 
         AccountUID uid;
         Helper::makeUID( 20, uid.data );
@@ -198,14 +182,9 @@ namespace Mengine
 
         AccountInterfacePtr newAccount = this->newAccount_( _accountID );
 
-        if( newAccount == nullptr )
-        {
-            LOGGER_ERROR( "Account with ID '%s' invalid create. Account not created"
-                , _accountID.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( newAccount, nullptr, "Account with ID '%s' invalid create. Account not created"
+            , _accountID.c_str()
+        );
 
         AccountUID uid;
         Helper::makeUID( 20, uid.data );
@@ -576,14 +555,9 @@ namespace Mengine
         {
             AccountInterfacePtr account = this->newAccount_( accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "invalid create account %s"
-                    , accountID.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid create account %s"
+                , accountID.c_str()
+            );
 
             m_accounts.emplace( accountID, account );
 
@@ -686,14 +660,9 @@ namespace Mengine
         OutputStreamInterfacePtr file = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
 
-        if( file == nullptr )
-        {
-            LOGGER_ERROR( "can't open file for writing. Accounts '%s' settings not saved"
-                , accountsPath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Accounts '%s' settings not saved"
+            , accountsPath.c_str()
+        );
 
         IniUtil::writeIniSection( file, "[SETTINGS]" );
 

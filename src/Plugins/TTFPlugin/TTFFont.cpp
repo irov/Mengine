@@ -17,6 +17,7 @@
 #include "Kernel/IniUtil.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "utf8.h"
 
@@ -136,10 +137,7 @@ namespace Mengine
 
             FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
-            if( data == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( data, false );
 
             m_dataFE = data;
 
@@ -147,10 +145,7 @@ namespace Mengine
 
             fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
 
-            if( ttfFEEffect == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( ttfFEEffect, false );
 
             m_ttfFEEffect = ttfFEEffect;
 
@@ -185,10 +180,7 @@ namespace Mengine
 
         TTFDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FUNCTION );
 
-        if( data == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( data, false );
 
         m_dataTTF = data;
 
@@ -247,6 +239,8 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
+
             if( PREFETCHER_SERVICE()
                 ->prefetchData( m_fileGroup, m_ttfFEPath, dataflow, _observer ) == false )
             {
@@ -256,6 +250,8 @@ namespace Mengine
 
         {
             DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
 
             if( PREFETCHER_SERVICE()
                 ->prefetchData( m_fileGroup, m_ttfPath, dataflow, _observer ) == false )
@@ -591,10 +587,7 @@ namespace Mengine
 
                         fe_image_free( &bgra_image );
 
-                        if( texture == nullptr )
-                        {
-                            return false;
-                        }
+                        MENGINE_ASSERTION_MEMORY_PANIC( texture, false );
 
                         TTFGlyphQuad & quad = ttf_glyph.quads[layoutIndex];
 
@@ -615,10 +608,7 @@ namespace Mengine
 
                         fe_image_free( &bgra_image );
 
-                        if( texture == nullptr )
-                        {
-                            return false;
-                        }
+                        MENGINE_ASSERTION_MEMORY_PANIC( texture, false );
 
                         TTFGlyphQuad & quad = ttf_glyph.quads[layoutIndex];
 
@@ -644,10 +634,7 @@ namespace Mengine
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
                 ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, uv );
 
-            if( texture == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( texture, false );
 
             TTFGlyphQuad & quad = ttf_glyph.quads[0];
 

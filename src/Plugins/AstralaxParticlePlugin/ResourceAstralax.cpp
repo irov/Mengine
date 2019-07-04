@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -44,15 +45,10 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralax::compile '%s'", this->getName().c_str() ) );
 
-        if( container == nullptr )
-        {
-            LOGGER_ERROR( "resource %s can't create container file '%s'"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( container, false, "resource %s can't create container file '%s'"
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         uint32_t iterator = 0U;
         for( const ResourceImagePtr & resourceImage : m_resourceImages )

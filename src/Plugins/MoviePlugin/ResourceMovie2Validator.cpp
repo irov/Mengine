@@ -162,7 +162,7 @@ namespace Mengine
             {
                 if( ae_test_movie_layer_data_opacity_transparent( _layerData ) == AE_TRUE )
                 {
-                    LOGGER_ERROR( "Mengine_movie_layer_data_visitor '%s' composition '%s' text layer '%s' opacity transparent"
+                    LOGGER_ERROR( "'%s' composition '%s' text layer '%s' opacity transparent"
                         , resourceMovie2->getName().c_str()
                         , compositionDataName
                         , layerDataName

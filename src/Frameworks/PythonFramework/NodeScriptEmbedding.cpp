@@ -11,6 +11,12 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
+#include "Interface/SchedulerInterface.h"
+#include "Interface/TextFontInterface.h"
+#include "Interface/AccountInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -18,16 +24,6 @@
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "Interface/ScriptServiceInterface.h"
-#include "Interface/SchedulerInterface.h"
-
-#include "Interface/TextFontInterface.h"
-#include "Interface/AccountInterface.h"
-
-#include "Interface/UnicodeSystemInterface.h"
-
-#include "Interface/ResourceServiceInterface.h"
 
 #include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"
@@ -381,14 +377,9 @@ namespace Mengine
         {
             const SurfacePtr & surface = _shape->getSurface();
 
-            if( surface == nullptr )
-            {
-                LOGGER_ERROR( "s_getSurfaceSize shape %s not setup surface"
-                    , _shape->getName().c_str()
-                );
-
-                return mt::vec2f::identity();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
+                , _shape->getName().c_str()
+            );
 
             const mt::vec2f & size = surface->getSize();
 
@@ -399,17 +390,11 @@ namespace Mengine
         {
             const SurfacePtr & surface = _shape->getSurface();
 
-            if( surface == nullptr )
-            {
-                LOGGER_ERROR( "s_getLocalImageCenter shape %s not setup surface"
-                    , _shape->getName().c_str()
-                );
-
-                return mt::vec2f::identity();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( surface, mt::vec2f::identity(), "shape '%s' not setup surface"
+                , _shape->getName().c_str()
+            );
 
             const mt::vec2f & offset = surface->getOffset();
-
             const mt::vec2f & size = surface->getSize();
 
             mt::vec2f center = offset + size * 0.5f;
@@ -460,10 +445,7 @@ namespace Mengine
                 , _shape->getPercentVisibility(), _percent, _time
             );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             _shape->stopAffectors( ETA_VISIBILITY );
 
@@ -601,10 +583,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
@@ -637,10 +616,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
@@ -685,10 +661,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
@@ -738,10 +711,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
@@ -775,10 +745,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
 
@@ -962,10 +929,7 @@ namespace Mengine
                 , _node->getLocalPosition(), _dir, _speed
             );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1090,10 +1054,7 @@ namespace Mengine
                 , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
             );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1135,10 +1096,7 @@ namespace Mengine
                     , _node->getLocalPosition(), _point, _time
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1185,10 +1143,7 @@ namespace Mengine
                 , _node->getLocalPosition(), _point, linearSpeed, _time
             );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1238,10 +1193,7 @@ namespace Mengine
                 , _time
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1263,10 +1215,7 @@ namespace Mengine
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
-            if( _follow == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _follow, 0, "invalid create follower" );
 
             if( _node->isActivate() == false )
             {
@@ -1299,10 +1248,7 @@ namespace Mengine
                 , _time
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1352,10 +1298,7 @@ namespace Mengine
                 , _time
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1406,10 +1349,7 @@ namespace Mengine
                 , _time
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1601,10 +1541,7 @@ namespace Mengine
                     , NodePtr( _node ), _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_moveStop( _node );
 
@@ -1638,15 +1575,8 @@ namespace Mengine
         public:
             bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
             {
-                if( _node == nullptr )
-                {
-                    return false;
-                }
-
-                if( _target == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
 
                 m_node = _node;
                 m_target = _target;
@@ -1880,15 +1810,8 @@ namespace Mengine
         public:
             bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
             {
-                if( _node == nullptr )
-                {
-                    return false;
-                }
-
-                if( _target == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( _node, false, "invalid create followTo" );
+                MENGINE_ASSERTION_MEMORY_PANIC( _target, false, "invalid create followTo" );
 
                 m_node = _node;
                 m_target = _target;
@@ -2088,10 +2011,7 @@ namespace Mengine
                 , correct_angle_from, correct_angle_to, _time
             );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_angleStop( _node );
 
@@ -2143,10 +2063,7 @@ namespace Mengine
                     , correct_angle_from, correct_angle_to, angularSpeed, _time
                 );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_angleStop( _node );
 
@@ -2188,10 +2105,7 @@ namespace Mengine
                 , _node->getLocalScale(), _scale, _time
             );
 
-            if( affector == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
 
             s_Node_scaleStop( _node );
 
@@ -2214,16 +2128,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            if( _node == nullptr )
-            {
-                LOGGER_ERROR( "Node.colorTo _node is None" );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
 
             if( _node->isActivate() == false )
             {
-                LOGGER_ERROR( "Node.colorTo node '%s' is not activate"
+                LOGGER_ERROR( "node '%s' is not activate"
                     , _node->getName().c_str()
                 );
 
@@ -2232,7 +2141,7 @@ namespace Mengine
 
             if( _node->isAfterActive() == false )
             {
-                LOGGER_ERROR( "Node.colorTo node '%s' is not after activate"
+                LOGGER_ERROR( "node '%s' is not after activate"
                     , _node->getName().c_str()
                 );
 
@@ -2241,16 +2150,16 @@ namespace Mengine
 
             RenderInterface * render = _node->getRender();
 
-            if( render == nullptr )
-            {
-                LOGGER_ERROR( "Node.colorTo node '%s' is not renderable"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' is not renderable"
+                , _node->getName().c_str()
+            );
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' not found easing '%s'"
+                , _node->getName().c_str()
+                , _easingType.c_str()
+            );
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -2262,20 +2171,15 @@ namespace Mengine
                     , render->getLocalColor(), _color, _time
                 );
 
-            if( affector == nullptr )
-            {
-                LOGGER_ERROR( "Node.colorTo node '%s' invalid create affector"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
+                , _node->getName().c_str()
+            );
 
             s_Node_colorStop( _node );
 
             if( _node->isActivate() == false )
             {
-                LOGGER_ERROR( "Node.colorTo node '%s' after color stop is inactivate"
+                LOGGER_ERROR( "node '%s' after color stop is inactivate"
                     , _node->getName().c_str()
                 );
 
@@ -2286,7 +2190,7 @@ namespace Mengine
 
             if( id == 0 )
             {
-                LOGGER_ERROR( "Node.colorTo node '%s' invalid add affector"
+                LOGGER_ERROR( "node '%s' invalid add affector"
                     , _node->getName().c_str()
                 );
 
@@ -2298,12 +2202,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            if( _node == nullptr )
-            {
-                LOGGER_ERROR( "Node.alphaTo _node is None" );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _node, 0, "_node is None" );
 
             if( _node->isActivate() == false )
             {
@@ -2325,17 +2224,18 @@ namespace Mengine
 
             RenderInterface * render = _node->getRender();
 
-            if( render == nullptr )
-            {
-                LOGGER_ERROR( "Node.alphaTo node '%s' type '%s' is not renderable"
-                    , _node->getName().c_str()
-                    , _node->getType().c_str()
-                );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( render, 0, "node '%s' type '%s' is not renderable"
+                , _node->getName().c_str()
+                , _node->getType().c_str()
+            );
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( easing, 0, "node '%s' type '%s' not found easing '%s'"
+                , _node->getName().c_str()
+                , _node->getType().c_str()
+                , _easingType.c_str()
+            );
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
@@ -2347,14 +2247,9 @@ namespace Mengine
                     , render->getLocalAlpha(), _alpha, _time
                 );
 
-            if( affector == nullptr )
-            {
-                LOGGER_ERROR( "Node.alphaTo node '%s' invalid create affector"
-                    , _node->getName().c_str()
-                );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
+                , _node->getName().c_str()
+            );
 
             s_Node_colorStop( _node );
 

@@ -43,6 +43,8 @@
 
 #include "Engine/ResourceImageSequence.h"
 
+#include "DocumentTraceback.h"
+
 #include <ctime>
 #include <iomanip>
 
@@ -2047,14 +2049,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSetting account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, value ) == false )
@@ -2072,14 +2069,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSettingBool account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, value ) == false )
@@ -2101,7 +2093,7 @@ namespace Mengine
                 return _kernel->ret_false();
             }
 
-            LOGGER_ERROR( "getAccountSettingBool account '%s' setting '%s' value '%s' is not bool [True|False]"
+            LOGGER_ERROR( "account '%s' setting '%s' value '%s' is not bool [True|False]"
                 , _accountID.c_str()
                 , _setting.c_str()
                 , value
@@ -2115,14 +2107,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, setting_value ) == false )
@@ -2157,14 +2144,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, setting_value ) == false )
@@ -2199,14 +2181,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSettingUInt account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, setting_value ) == false )
@@ -2241,14 +2218,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSettingUInt account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, setting_value ) == false )
@@ -2286,14 +2258,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSettingFloat account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
             if( account->getSetting( _setting, setting_value ) == false )
@@ -2328,14 +2295,9 @@ namespace Mengine
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
-            if( account == nullptr )
-            {
-                LOGGER_ERROR( "getAccountSettingFloatDefault account '%s' is none"
-                    , _accountID.c_str()
-                );
-
-                return _default;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _default, "account '%s' is none"
+                , _accountID.c_str()
+            );
 
             if( account->hasSetting( _setting ) == false )
             {
@@ -2373,7 +2335,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2390,7 +2352,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2409,7 +2371,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2426,7 +2388,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2443,7 +2405,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2460,7 +2422,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2477,7 +2439,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2494,7 +2456,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "getGlobalSetting account is none"
+                LOGGER_ERROR( "account is none"
                 );
 
                 return _kernel->ret_none();
@@ -2511,10 +2473,7 @@ namespace Mengine
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->createAccount();
 
-            if( account == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), MENGINE_DOCUMENT_PYBIND );
 
             const ConstString & accountId = account->getID();
 
@@ -2528,10 +2487,7 @@ namespace Mengine
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->createGlobalAccount();
 
-            if( account == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), MENGINE_DOCUMENT_PYBIND );
 
             const ConstString & accountId = account->getID();
 
@@ -2539,67 +2495,67 @@ namespace Mengine
 
             return py_value;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_selectAccount( const ConstString& _accountID )
         {
             ACCOUNT_SERVICE()
                 ->selectAccount( _accountID );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasCurrentAccount()
         {
             return ACCOUNT_SERVICE()
                 ->hasCurrentAccount();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_setDefaultAccount( const ConstString & _accountID )
         {
             ACCOUNT_SERVICE()
                 ->setDefaultAccount( _accountID );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_setGlobalAccount( const ConstString & _accountID )
         {
             ACCOUNT_SERVICE()
                 ->setGlobalAccount( _accountID );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasGlobalAccount()
         {
             return ACCOUNT_SERVICE()
                 ->hasGlobalAccount();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         const ConstString & s_getGlobalAccountName()
         {
             return ACCOUNT_SERVICE()
                 ->getGlobalAccountID();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         const ConstString & s_getDefaultAccount()
         {
             return ACCOUNT_SERVICE()
                 ->getDefaultAccountID();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasDefaultAccount()
         {
             return ACCOUNT_SERVICE()
                 ->hasDefaultAccount();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_isCurrentDefaultAccount()
         {
             return ACCOUNT_SERVICE()
                 ->isCurrentDefaultAccount();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_selectDefaultAccount()
         {
             return ACCOUNT_SERVICE()
                 ->selectDefaultAccount();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_saveAccount()
         {
             //AccountInterface * currentAccount = ACCOUNT_SERVICE()
@@ -2615,31 +2571,31 @@ namespace Mengine
 
             //currentAccount->save();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_saveAccounts()
         {
             ACCOUNT_SERVICE()
                 ->saveAccounts();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_saveAccountsInfo()
         {
             //ACCOUNT_SERVICE()
             //	->saveAccountsInfo();
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_deleteAccount( const ConstString& _accountName )
         {
             ACCOUNT_SERVICE()
                 ->deleteAccount( _accountName );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         const ConstString & s_getCurrentAccountName()
         {
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "Error getCurrentAccountName: currentAccount is none"
+                LOGGER_ERROR( "currentAccount is none"
                 );
 
                 return ConstString::none();
@@ -2650,13 +2606,13 @@ namespace Mengine
 
             return name;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
         {
             String utf8_fileName;
             if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR( "s_writeAccountBinaryFile: invalid file '%s' convert to utf8"
+                LOGGER_ERROR( "invalid file '%s' convert to utf8"
                     , _fileName.c_str()
                 );
 
@@ -2703,7 +2659,7 @@ namespace Mengine
 
             if( account->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
             {
-                LOGGER_ERROR( "writeAccountPickleFile: account '%s' invalid write file '%s'"
+                LOGGER_ERROR( "account '%s' invalid write file '%s'"
                     , _accountID.c_str()
                     , _fileName.c_str()
                 );
@@ -2713,7 +2669,7 @@ namespace Mengine
 
             return true;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _fileName, PyObject * _pickleTypes )
         {
             String utf8_fileName;
@@ -2754,7 +2710,7 @@ namespace Mengine
 
             return py_data;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         const FileGroupInterfacePtr & s_getDefaultFileGroup()
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -2762,7 +2718,7 @@ namespace Mengine
 
             return fileGroup;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasFileGroup( const ConstString & _fileGroup )
         {
             bool exist = FILE_SERVICE()
@@ -2770,7 +2726,7 @@ namespace Mengine
 
             return exist;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         const FileGroupInterfacePtr & s_getFileGroup( const ConstString & _fileGroup )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -2778,7 +2734,7 @@ namespace Mengine
 
             return fileGroup;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasAccountPickleFile( const ConstString & _accountID, const WString & _fileName )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
@@ -2810,22 +2766,16 @@ namespace Mengine
 
             return exist;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_setParticlesEnabled( bool _enable )
         {
             APPLICATION_SERVICE()
                 ->setParticleEnable( _enable );
         }
-
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getNodeScreenPosition( Node * _node )
         {
-            if( _node == nullptr )
-            {
-                LOGGER_ERROR( "node is null" );
-
-                return mt::vec2f( 0.f, 0.f );
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _node, mt::vec2f( 0.f, 0.f ), "node is null" );
 
             RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node );
 
@@ -2842,7 +2792,7 @@ namespace Mengine
 
             return screen;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_hasTextByKey( const ConstString& _key )
         {
             bool value = TEXT_SERVICE()
@@ -2850,7 +2800,7 @@ namespace Mengine
 
             return value;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         WString s_getTextByKey( const ConstString& _key )
         {
             TextEntryInterfacePtr entry;
@@ -2875,7 +2825,7 @@ namespace Mengine
 
             return unicode;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_getTextCharCountByKey( const ConstString& _key )
         {
             TextEntryInterfacePtr entry;
@@ -2893,13 +2843,13 @@ namespace Mengine
 
             return count;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_setVSync( bool _vSync )
         {
             APPLICATION_SERVICE()
                 ->setVSync( _vSync );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_getVSync()
         {
             bool vsync = APPLICATION_SERVICE()
@@ -2907,13 +2857,13 @@ namespace Mengine
 
             return vsync;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         void s_setCursorMode( bool _mode )
         {
             APPLICATION_SERVICE()
                 ->setCursorMode( _mode );
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_getCursorMode()
         {
             bool cursorMode = APPLICATION_SERVICE()
@@ -2921,7 +2871,7 @@ namespace Mengine
 
             return cursorMode;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         bool s_setCursorIcon( const ConstString & _resourceName )
         {
             APPLICATION_SERVICE()

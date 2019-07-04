@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -41,26 +42,16 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_stream == nullptr )
-        {
-            LOGGER_ERROR( "can't create input file '%s'"
-                , this->getFileGroup()->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
+            , this->getFileGroup()->getName().c_str()
+        );
 
         m_data = m_dataflow->create( MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_data == nullptr )
-        {
-            LOGGER_ERROR( "dataflow '%s':'%s' invalid create data"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_data, false, "dataflow '%s':'%s' invalid create data"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         return true;
     }
@@ -79,15 +70,10 @@ namespace Mengine
 
         MemoryInterfacePtr memory = m_dataflow->load( m_stream, m_filePath.c_str() );
 
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "invalide load file '%s':'%s'"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalide load file '%s':'%s'"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         if( m_dataflow->isThreadFlow() == true )
         {

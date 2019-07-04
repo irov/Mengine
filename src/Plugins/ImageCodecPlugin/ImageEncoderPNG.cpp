@@ -1,6 +1,7 @@
 #include "ImageEncoderPNG.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/allocator.h"
 
@@ -74,29 +75,27 @@ namespace Mengine
     {
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-        m_png_ptr = png_create_write_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+        png_structp png_ptr = png_create_write_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
-        if( m_png_ptr == nullptr )
-        {
-            LOGGER_ERROR( "PNG encoder error: Can't create write structure"
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, false, "PNG encoder error: Can't create write structure" );
 
-            return false;
-        }
+        m_png_ptr = png_ptr;
 
         // init the IO
         png_set_write_fn( m_png_ptr, m_stream.get(), s_writeProc, s_flushProc );
 
         // allocate/initialize the image information data.
-        m_info_ptr = png_create_info_struct( m_png_ptr );
+        png_infop info_ptr = png_create_info_struct( m_png_ptr );
 
-        if( m_info_ptr == nullptr )
+        if( info_ptr == nullptr )
         {
             LOGGER_ERROR( "PNG encoder error: Can't create info structure"
             );
 
             return false;
         }
+
+        m_info_ptr = info_ptr;
 
         return true;
     }

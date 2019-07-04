@@ -12,6 +12,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ScriptWrapperInterface.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
@@ -25,10 +26,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node );

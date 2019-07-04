@@ -7,7 +7,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Scriptable.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -43,10 +43,7 @@ namespace Mengine
 
                 ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
 
-                if( scriptWrapper == nullptr )
-                {
-                    return nullptr;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( scriptWrapper, nullptr );
 
                 m_scriptWrapper = scriptWrapper;
             }
@@ -63,16 +60,11 @@ namespace Mengine
 
             TypePtr scriptable = factory->createObject( _doc );
 
-            if( scriptable == nullptr )
-            {
-                LOGGER_ERROR( "can't generate '%s:%s' doc '%s'"
-                    , this->getCategory().c_str()
-                    , this->getPrototype().c_str()
-					, _doc
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( scriptable, nullptr, "can't generate '%s:%s' doc '%s'"
+                , this->getCategory().c_str()
+                , this->getPrototype().c_str()
+                , _doc
+            );
 
             this->setupScriptable( scriptable );
 

@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/xml_sax_parser.h"
 
@@ -25,27 +26,26 @@ namespace Mengine
         m_fileGroup = _fileGroup;
         m_path = _path;
 
-        InputStreamInterfacePtr xml_text = FILE_SERVICE()
+        InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( xml_text == nullptr )
-        {
-            LOGGER_ERROR( "invalid open file %s:%s"
-                , _fileGroup->getName().c_str()
-                , _path.c_str()
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file %s:%s"
+            , _fileGroup->getName().c_str()
+            , _path.c_str()
+        );
 
-            return false;
-        }
-
-        size_t xml_buffer_size = xml_text->size();
+        size_t xml_buffer_size = stream->size();
 
         m_memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( m_memory, false );
+
         Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FUNCTION );
 
-        xml_text->read( memory_buffer, xml_buffer_size );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, false );
+
+        stream->read( memory_buffer, xml_buffer_size );
         memory_buffer[xml_buffer_size] = '\0';
 
         return true;

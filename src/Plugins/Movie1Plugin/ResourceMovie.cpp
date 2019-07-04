@@ -18,6 +18,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/mat4.h"
 
@@ -223,18 +224,15 @@ namespace Mengine
 
         DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
+
         DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FUNCTION );
 
-        if( data == nullptr )
-        {
-            LOGGER_ERROR( "resource movie '%s' group '%s' can` t get frame pack '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( data, false, "resource movie '%s' group '%s' can` t get frame pack '%s'"
+            , this->getName().c_str()
+            , this->getGroupName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         m_keyFramePack = data;
 

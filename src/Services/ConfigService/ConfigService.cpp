@@ -4,7 +4,7 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Exception.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -47,14 +47,9 @@ namespace Mengine
             InputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _publicConfigPath, false, MENGINE_DOCUMENT_FUNCTION );
 
-            if( stream == nullptr )
-            {
-                LOGGER_ERROR( "invalid open public config '%s'"
-                    , _publicConfigPath.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open public config '%s'"
+                , _publicConfigPath.c_str()
+            );
 
             if( IniUtil::loadIni( m_publicINI, stream ) == false )
             {
@@ -71,14 +66,9 @@ namespace Mengine
             InputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _privateConfigPath, false, MENGINE_DOCUMENT_FUNCTION );
 
-            if( stream == nullptr )
-            {
-                LOGGER_ERROR( "invalid open private config '%s'"
-                    , _privateConfigPath.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open private config '%s'"
+                , _privateConfigPath.c_str()
+            );
 
             if( IniUtil::loadIni( m_publicINI, stream ) == false )
             {

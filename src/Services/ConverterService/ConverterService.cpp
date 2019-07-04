@@ -4,6 +4,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterService );
@@ -67,25 +68,15 @@ namespace Mengine
 
         const ConverterFactoryInterfacePtr & factory = it_find->second;
 
-        if( factory == nullptr )
-        {
-            LOGGER_INFO( "invalid factory %s is nullptr"
-                , _type.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "invalid factory %s is nullptr"
+            , _type.c_str()
+        );
 
         ConverterInterfacePtr converter = factory->createConverter( _doc );
 
-        if( converter == nullptr )
-        {
-            LOGGER_INFO( "invalid create converter '%s'"
-                , _type.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( converter, nullptr, "invalid create converter '%s'"
+            , _type.c_str()
+        );
 
         if( converter->initialize() == false )
         {
@@ -108,14 +99,9 @@ namespace Mengine
 
         ConverterInterfacePtr converter = this->createConverter( _converter, _doc );
 
-        if( converter == nullptr )
-        {
-            LOGGER_ERROR( "can't create converter '%s'"
-                , _converter.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( converter, false, "can't create converter '%s'"
+            , _converter.c_str()
+        );
 
         ConverterOptions options;
         options.fileGroup = _fileGroup;
@@ -165,16 +151,11 @@ namespace Mengine
             InputStreamInterfacePtr oldFile = FILE_SERVICE()
                 ->openInputFile( options.fileGroup, options.inputFileName, false, _doc );
 
-            if( oldFile == nullptr )
-            {
-                LOGGER_ERROR( "converter '%s' can't open input file '%s:%s' (time)"
-                    , _converter.c_str()
-                    , options.fileGroup->getName().c_str()
-                    , options.inputFileName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( oldFile, false, "converter '%s' can't open input file '%s:%s' (time)"
+                , _converter.c_str()
+                , options.fileGroup->getName().c_str()
+                , options.inputFileName.c_str()
+            );
 
             uint64_t fileTimeInput;
             oldFile->time( fileTimeInput );
@@ -184,16 +165,11 @@ namespace Mengine
             InputStreamInterfacePtr newFile = FILE_SERVICE()
                 ->openInputFile( options.fileGroup, options.outputFileName, false, _doc );
 
-            if( newFile == nullptr )
-            {
-                LOGGER_ERROR( "converter '%s' can't open output file '%s:%s' (time)"
-                    , _converter.c_str()
-                    , options.fileGroup->getName().c_str()
-                    , options.outputFileName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( newFile, false, "converter '%s' can't open output file '%s:%s' (time)"
+                , _converter.c_str()
+                , options.fileGroup->getName().c_str()
+                , options.outputFileName.c_str()
+            );
 
             uint64_t fileTimeOutput;
             newFile->time( fileTimeOutput );

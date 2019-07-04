@@ -18,16 +18,11 @@ namespace Mengine
 
             SurfacePtr surface = factory->createObject( _doc );
 
-            if( surface == nullptr )
-            {
-                LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
-                    , this->getCategory().c_str()
-                    , this->getPrototype().c_str()
-					, _doc
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr, "can't generate '%s' '%s' doc '%s'"
+                , this->getCategory().c_str()
+                , this->getPrototype().c_str()
+                , _doc
+            );
 
             const ConstString & prototype = this->getPrototype();
             surface->setType( prototype );

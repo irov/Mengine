@@ -8,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "jpp/jpp.hpp"
 
@@ -88,17 +89,11 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 
         MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
         const void* memory_buffer = memory->getBuffer();
         size_t memory_size = memory->getSize();

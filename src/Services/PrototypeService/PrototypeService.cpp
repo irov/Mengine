@@ -3,6 +3,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrototypeService, Mengine::PrototypeService );
@@ -32,6 +33,10 @@ namespace Mengine
         for( const HashtablePrototypes::value_type & value : m_generators )
         {
             const PrototypeGeneratorInterfacePtr & generator = value.element;
+
+            LOGGER_ERROR( "Forgot remove generator '%s'"
+                , value.key.prototype.c_str()
+            );
 
             generator->finalize();
         }
@@ -78,10 +83,9 @@ namespace Mengine
 
         PrototypeGeneratorInterfacePtr generator = m_generators.erase( key );
 
-        if( generator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, false, "not found prototype '%s'"
+            , _prototype.c_str()
+        );
 
         generator->finalize();
 
@@ -97,15 +101,10 @@ namespace Mengine
 
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
 
-        if( generator == nullptr )
-        {
-            LOGGER_ERROR( "prototype not found '%s:%s'"
-                , _category.c_str()
-                , _prototype.c_str()
-            );
-
-            return PrototypeGeneratorInterfacePtr::none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, PrototypeGeneratorInterfacePtr::none(), "prototype not found '%s:%s'"
+            , _category.c_str()
+            , _prototype.c_str()
+        );
 
         return generator;
     }
@@ -119,16 +118,11 @@ namespace Mengine
 
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
 
-        if( generator == nullptr )
-        {
-            LOGGER_ERROR( "prototype not found '%s:%s' doc '%s'"
-                , _category.c_str()
-                , _prototype.c_str()
-                , _doc
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( generator, nullptr, "prototype not found '%s:%s' doc '%s'"
+            , _category.c_str()
+            , _prototype.c_str()
+            , _doc
+        );
 
         FactorablePtr prototype = generator->generate( _doc );
 

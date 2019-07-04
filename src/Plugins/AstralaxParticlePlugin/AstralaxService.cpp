@@ -7,6 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Viewport.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/box2.h"
 
@@ -40,10 +41,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 
@@ -68,15 +66,10 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SYSTEM()
             ->createEmitterContainerFromMemory( _fileGroup, _fileName, m_archivator, _doc );
 
-        if( container == nullptr )
-        {
-            LOGGER_ERROR( "can't create emitter container '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _fileName.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "can't create emitter container '%s:%s'"
+            , _fileGroup->getName().c_str()
+            , _fileName.c_str()
+        );
 
         return container;
     }

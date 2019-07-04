@@ -39,6 +39,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -265,19 +266,14 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "Invalid open application settings %s"
-                , applicationPath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open application settings %s"
+            , applicationPath.c_str()
+        );
 
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, stream ) == false )
         {
-            LOGGER_ERROR( "Invalid load application settings %s"
+            LOGGER_ERROR( "invalid load application settings %s"
                 , applicationPath.c_str()
             );
 
@@ -1002,9 +998,8 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PickerServiceInterface );
         SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
-        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
-        SERVICE_FINALIZE( Mengine::ApplicationInterface );
+        SERVICE_FINALIZE( Mengine::ApplicationInterface );        
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
@@ -1023,6 +1018,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );
                 
+        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
         SERVICE_FINALIZE( Mengine::RenderServiceInterface );

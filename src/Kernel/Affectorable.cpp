@@ -2,6 +2,8 @@
 
 #include "Interface/EnumeratorServiceInterface.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -17,10 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AFFECTOR_ID Affectorable::addAffector( const AffectorPtr & _affector )
     {
-        if( _affector == nullptr )
-        {
-            return INVALID_AFFECTOR_ID;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _affector, INVALID_AFFECTOR_ID, "affector is nullptr" );
 
         AFFECTOR_ID id = GENERATE_UNIQUE_IDENTITY();
 

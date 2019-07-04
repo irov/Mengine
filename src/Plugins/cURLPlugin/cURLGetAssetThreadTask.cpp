@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -35,19 +36,16 @@ namespace Mengine
             return false;
         }
 
-        m_stream = FILE_SERVICE()
+        OutputStreamInterfacePtr stream = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_stream == nullptr )
-        {
-            LOGGER_ERROR( "get asset url '%s' invalid open file '%s:%s'"
-                , m_url.c_str()
-                , m_fileGroup->getName().c_str()
-                , m_filePath.c_str()
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "get asset url '%s' invalid open file '%s:%s'"
+            , m_url.c_str()
+            , m_fileGroup->getName().c_str()
+            , m_filePath.c_str()
+        );
 
-            return false;
-        }
+        m_stream = stream;
 
         return true;
     }

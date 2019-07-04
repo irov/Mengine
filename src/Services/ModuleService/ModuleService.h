@@ -40,8 +40,8 @@ namespace Mengine
         void messageAll( const ConstString & _messageName, const MapWParams & _params ) override;
 
     protected:
-        const ModuleInterfacePtr & findModule( const ConstString & _moduleName ) const;
-        ModuleInterfacePtr popModule( const ConstString & _moduleName );
+        const ModuleInterfacePtr & findModule_( const ConstString & _moduleName ) const;
+        ModuleInterfacePtr popModule_( const ConstString & _moduleName );
 
     protected:
         typedef Hashtable<ConstString, ModuleFactoryInterfacePtr> HashtableModuleFactory;

@@ -1,5 +1,7 @@
 #include "FactoryPrototypeGenerator.h"
+
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -16,10 +18,7 @@ namespace Mengine
     {
         FactoryPtr factory = this->_initializeFactory();
 
-        if( factory == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
 
         m_factory = factory;
 

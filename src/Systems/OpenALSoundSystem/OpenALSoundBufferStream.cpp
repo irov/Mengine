@@ -8,6 +8,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -33,10 +34,7 @@ namespace Mengine
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-        if( mutexUpdating == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating, false );
 
         m_mutexUpdating = mutexUpdating;
 

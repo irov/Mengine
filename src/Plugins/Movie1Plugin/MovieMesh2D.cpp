@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/box2.h"
 #include "math/utils.h"
@@ -40,19 +41,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieMesh2D::compileResource_()
     {
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "Mesh::compileResource_ '%s' image resource null"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' image resource null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceImage.compile() == false )
         {
-            LOGGER_ERROR( "Mesh::compileResource_ '%s' image resource %s not compile"
-                , m_name.c_str()
+            LOGGER_ERROR( "'%s' image resource %s not compile"
+                , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );
 
@@ -88,14 +84,9 @@ namespace Mengine
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            LOGGER_ERROR( "Mesh::updateMaterial_ %s m_material is NULL"
-                , this->getName().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' m_material is NULL"
+            , this->getName().c_str()
+        );
 
         return material;
     }

@@ -154,37 +154,26 @@ namespace Mengine
                 return false;
             }
 
-            ResourcePtr resource =
-                this->createResource( _locale, _fileGroup, groupName, name, type, MENGINE_DOCUMENT_FUNCTION );
+            ResourcePtr resource = this->createResource( _locale, _fileGroup, groupName, name, type, MENGINE_DOCUMENT_FUNCTION );
 
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
-                    , _filePath.c_str()
-                    , _fileGroup->getName().c_str()
-                    , groupName.c_str()
-                    , name.c_str()
-                    , type.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
+                , _filePath.c_str()
+                , _fileGroup->getName().c_str()
+                , groupName.c_str()
+                , name.c_str()
+                , type.c_str()
+            );
 
             resource->setTags( _tags );
 
             LoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
-            if( loader == nullptr )
-            {
-                LOGGER_ERROR( "file '%s' resource '%s:%s' invalid create loader '%s'"
-                    , _filePath.c_str()
-                    , _fileGroup->getName().c_str()
-                    , groupName.c_str()
-                    , type.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( loader, false, "file '%s' resource '%s:%s' invalid create loader '%s'"
+                , _filePath.c_str()
+                , _fileGroup->getName().c_str()
+                , groupName.c_str()
+                , type.c_str()
+            );
 
             if( loader->load( resource, meta_resource ) == false )
             {
@@ -391,10 +380,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::removeResource( const ResourcePtr & _resource )
     {
-        if( _resource == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _resource, false );
 
         const ConstString & name = _resource->getName();
 
@@ -467,14 +453,9 @@ namespace Mengine
 
         const ResourcePtr & resource = m_resources.find( _name );
 
-        if( resource == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' does not exist"
-                , _name.c_str()
-            );
-
-            return ResourcePtr::none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
+            , _name.c_str()
+        );
 
         if( resource->incrementReference() == false )
         {
@@ -495,14 +476,9 @@ namespace Mengine
 
         const ResourcePtr & resource = m_resources.find( _name );
 
-        if( resource == nullptr )
-        {
-            LOGGER_WARNING( "resource '%s' does not exist"
-                , _name.c_str()
-            );
-
-            return ResourcePtr::none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
+            , _name.c_str()
+        );
 
         return resource;
     }
@@ -511,14 +487,9 @@ namespace Mengine
     {
         const ResourcePtr & resource = m_resources.find( _name );
 
-        if( resource == nullptr )
-        {
-            LOGGER_WARNING( "resource '%s' does not exist"
-                , _name.c_str()
-            );
-
-            return ConstString::none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ConstString::none(), "resource '%s' does not exist"
+            , _name.c_str()
+        );
 
         const ConstString & type = resource->getType();
 

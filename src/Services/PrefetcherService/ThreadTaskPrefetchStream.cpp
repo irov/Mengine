@@ -6,6 +6,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -64,14 +65,9 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_stream == nullptr )
-        {
-            LOGGER_ERROR( "can't create input file '%s'"
-                , this->getFileGroup()->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
+            , this->getFileGroup()->getName().c_str()
+        );
 
         return true;
     }
@@ -90,15 +86,10 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( m_stream, m_archivator, m_magicNumber, m_magicVersion, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "invalide stream archive magic memory '%s':'%s'"
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalide stream archive magic memory '%s':'%s'"
+            , this->getFileGroup()->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         m_memory = memory;
 

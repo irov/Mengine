@@ -7,7 +7,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/PixelFormat.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -403,24 +403,16 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "invalid open file %s:%s"
-                , _pak->getName().c_str()
-                , _path.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
+            , _pak->getName().c_str()
+            , _path.c_str()
+        );
 
         size_t xml_buffer_size = stream->size();
 
         MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FUNCTION );
 
-        if( buffer == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
 
         char * memory = buffer->getBuffer();
 

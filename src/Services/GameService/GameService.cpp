@@ -23,9 +23,9 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );
@@ -324,20 +324,14 @@ namespace Mengine
             ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FUNCTION );
 
-            if( defaultArrow == nullptr )
-            {
-                LOGGER_WARNING( "failed create defaultArrow 'Default'"
-                );
-            }
-            else
-            {
-                ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
+            MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, false, "failed create defaultArrow 'Default'" );
 
-                defaultArrow->setName( defaultArrowName );
+            ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
 
-                PLAYER_SERVICE()
-                    ->setArrow( defaultArrow );
-            }
+            defaultArrow->setName( defaultArrowName );
+
+            PLAYER_SERVICE()
+                ->setArrow( defaultArrow );
         }
 
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( EVENT_GAME_INITIALIZE, true )

@@ -1,6 +1,7 @@
 #include "SoundDecoderOGGVorbis.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <math.h>
 
@@ -106,13 +107,7 @@ namespace Mengine
 
         vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
 
-        if( vorbisInfo == nullptr )
-        {
-            LOGGER_ERROR( "invalid ov_info"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, false, "invalid ov_info" );
 
         if( vorbisInfo->channels != 2 )
         {

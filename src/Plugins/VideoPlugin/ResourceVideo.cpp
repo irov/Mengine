@@ -10,6 +10,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -73,32 +74,22 @@ namespace Mengine
         InputStreamInterfacePtr videoStream = FILE_SERVICE()
             ->openInputFile( fileGroup, filePath, true, _doc );
 
-        if( videoStream == nullptr )
-        {
-            LOGGER_ERROR( "group '%s' name '%s' can't open video file '%s'"
-                , this->getGroupName().c_str()
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( videoStream, nullptr, "group '%s' name '%s' can't open video file '%s'"
+            , this->getGroupName().c_str()
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         const ConstString & codecType = this->getCodecType();
 
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
             ->createDecoderT<VideoDecoderInterfacePtr>( codecType, _doc );
 
-        if( videoDecoder == nullptr )
-        {
-            LOGGER_ERROR( "group '%s' name '%s' can't create video decoder for file '%s'"
-                , this->getGroupName().c_str()
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, nullptr, "group '%s' name '%s' can't create video decoder for file '%s'"
+            , this->getGroupName().c_str()
+            , this->getName().c_str()
+            , this->getFilePath().c_str()
+        );
 
         VideoCodecOptions videoCodecOptions;
 

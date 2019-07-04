@@ -6,8 +6,8 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/Stream.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UserdataService, Mengine::UserdataService );
@@ -27,10 +27,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 
@@ -114,27 +111,17 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( desc.category, desc.path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "data '%s' invalid open file '%s'"
-                , _name.c_str()
-                , desc.path.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "data '%s' invalid open file '%s'"
+            , _name.c_str()
+            , desc.path.c_str()
+        );
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( binaryBuffer == nullptr )
-        {
-            LOGGER_ERROR( "data '%s' invalid load stream archive '%s'"
-                , _name.c_str()
-                , desc.path.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "data '%s' invalid load stream archive '%s'"
+            , _name.c_str()
+            , desc.path.c_str()
+        );
 
         return binaryBuffer;
     }
@@ -167,15 +154,10 @@ namespace Mengine
         OutputStreamInterfacePtr stream = FILE_SERVICE()
             ->openOutputFile( desc.category, desc.path, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "data '%s' invalid open file '%s'"
-                , _name.c_str()
-                , desc.path.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "data '%s' invalid open file '%s'"
+            , _name.c_str()
+            , desc.path.c_str()
+        );
 
         const void * data_memory = _data;
         size_t data_size = _size;

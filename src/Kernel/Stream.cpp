@@ -5,7 +5,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/CRC32.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -81,28 +81,18 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            if( compress_buffer == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%d' (compress)"
-                    , compress_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, nullptr, "invalid get memory '%d' (compress)"
+                , compress_size
+            );
 
             void * compress_memory = compress_buffer->getBuffer();
 
             size_t read_data = _stream->read( compress_memory, compress_size );
 
-            if( read_data != (size_t)compress_size )
-            {
-                LOGGER_ERROR( "invalid read data '%d' need '%d'"
-                    , read_data
-                    , compress_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_RETURN( read_data == (size_t)compress_size, nullptr, "invalid read data '%d' need '%d'"
+                , read_data
+                , compress_size
+            );
 
             if( crc32 != 0 )
             {
@@ -122,25 +112,15 @@ namespace Mengine
             MemoryBufferInterfacePtr binaryBuffer = MEMORY_SERVICE()
 				->createMemoryCacheBuffer( _doc );
 
-            if( binaryBuffer == nullptr )
-            {
-                LOGGER_ERROR( "invalid create memory cache"
-                    , binary_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "invalid create memory cache"
+                , binary_size
+            );
 
             void * binaryMemory = binaryBuffer->newBuffer( binary_size, _doc );
 
-            if( binaryMemory == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%d' (binary)"
-                    , binary_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( binaryMemory, nullptr, "invalid get memory '%d' (binary)"
+                , binary_size
+            );
 
             size_t uncompressSize = 0;
             if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
@@ -191,14 +171,9 @@ namespace Mengine
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, compress_size, _doc );
 
-            if( compress_buffer == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%u' (compress)"
-                    , compress_size
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "invalid get memory '%u' (compress)"
+                , compress_size
+            );
 
             void * compress_memory = compress_buffer->getBuffer();
 
@@ -281,24 +256,12 @@ namespace Mengine
             MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
                 ->compressBuffer( _archivator, _data, _size, _compress );
 
-            if( compress_memory == nullptr )
-            {
-                LOGGER_ERROR( "invalid compress"
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, false, "invalid compress" );
 
             const void * compressBuffer = compress_memory->getBuffer();
             size_t compressSize = compress_memory->getSize();
 
-            if( compressBuffer == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory"
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compressBuffer, false, "invalid get memory" );
 
             uint32_t value_crc32 = _crc32 == true ? Helper::make_crc32( compressBuffer, compressSize ) : 0;
 
@@ -383,14 +346,9 @@ namespace Mengine
 
             MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            if( compress_memory == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%d' (compress)"
-                    , compress_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%d' (compress)"
+                , compress_size
+            );
 
             void * compress_buffer = compress_memory->getBuffer();
 
@@ -424,14 +382,9 @@ namespace Mengine
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
 				->createMemoryBuffer( _doc );
 
-            if( binary_memory == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%d' (binary)"
-                    , binary_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%d' (binary)"
+                , binary_size
+            );
 
             void * binary_buffer = binary_memory->newBuffer( binary_size, _doc );
 
@@ -485,14 +438,9 @@ namespace Mengine
 
             MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc );
 
-            if( compress_memory == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%d' (compress)"
-                    , compress_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, nullptr, "invalid get memory '%d' (compress)"
+                , compress_size
+            );
 
             void * compress_buffer = compress_memory->getBuffer();
 
@@ -526,14 +474,9 @@ namespace Mengine
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
 				->createMemoryCacheBuffer( _doc );
 
-            if( binary_memory == nullptr )
-            {
-                LOGGER_ERROR( "invalid get memory '%d' (binary)"
-                    , binary_size
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%d' (binary)"
+                , binary_size
+            );
 
             void * binary_buffer = binary_memory->newBuffer( binary_size, _doc );
 

@@ -172,12 +172,11 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         DataflowAEZPtr dataflowAEZ = Helper::makeFactorableUnique<DataflowAEZ>();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ, false );
 
         dataflowAEZ->setMovieInstance( m_movieInstance );
         dataflowAEZ->setArchivator( archivator );

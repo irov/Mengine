@@ -1,8 +1,9 @@
 #include "TTFAtlasService.h"
 
 #include "Interface/RenderSystemInterface.h"
-
 #include "Interface/ConfigServiceInterface.h"
+
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/memorycopy.h"
 
@@ -51,10 +52,7 @@ namespace Mengine
 
         TTFAtlas * atlas = this->getAtlas_( _width, _height, _channel );
 
-        if( atlas == nullptr )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas, nullptr );
 
         uint32_t index = atlas->indices.back();
         atlas->indices.pop_back();
@@ -69,10 +67,7 @@ namespace Mengine
 
         const RenderImageInterfacePtr & texture_image = texture->getImage();
 
-        if( texture_image == nullptr )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( texture_image, nullptr );
 
         size_t texture_pitch;
         uint8_t * texture_memory = texture_image->lock( &texture_pitch, 0, rect, false );

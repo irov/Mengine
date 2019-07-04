@@ -102,9 +102,9 @@ namespace Mengine
 
         m_aliasEnvironment = _aliasEnvironment;
 
-        for( MapTexts::value_type & value : m_texts )
+        for( const HashtableTexts::value_type & value : m_texts )
         {
-            const TextFieldPtr & text = value.second;
+            const TextFieldPtr & text = value.element;
 
             text->setTextAliasEnvironment( m_aliasEnvironment );
         }
@@ -142,9 +142,9 @@ namespace Mengine
             }
         }
 
-        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            const NodePtr & particle = value.second;
+            const NodePtr & particle = value.element;
 
             AnimationInterface * animation = particle->getAnimation();
 
@@ -187,9 +187,9 @@ namespace Mengine
             }
         }
 
-        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            const NodePtr & particle = value.second;
+            const NodePtr & particle = value.element;
 
             AnimationInterface * animation = particle->getAnimation();
 
@@ -377,10 +377,7 @@ namespace Mengine
                         , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( node == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
                 node->setName( layer.name );
                 node->setExternalRender( true );
@@ -395,10 +392,7 @@ namespace Mengine
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
-                if( matrixProxy == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
 
                 matrixProxy->setName( layer.name );
 
@@ -416,10 +410,7 @@ namespace Mengine
                 Movie2SlotPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FUNCTION );
 
-                if( node == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
                 node->setName( layer.name );
 
@@ -434,10 +425,7 @@ namespace Mengine
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
 
-                if( matrixProxy == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
 
                 matrixProxy->setName( layer.name );
 
@@ -454,13 +442,10 @@ namespace Mengine
             {
                 HotSpotPolygonPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( node == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
                 node->setName( layer.name );
 
@@ -468,13 +453,10 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( matrixProxy == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
 
                 matrixProxy->setName( layer.name );
 
@@ -491,13 +473,10 @@ namespace Mengine
             {
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( node == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
                 node->setName( layer.name );
 
@@ -508,7 +487,7 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( matrixProxy == nullptr )
@@ -532,45 +511,32 @@ namespace Mengine
                 ResourceImagePtr resourceImage = RESOURCE_SERVICE()
                     ->getResourceReference( layer.name );
 
-                if( resourceImage == nullptr )
-                {
-                    LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
-                        , this->getName().c_str()
-                        , this->getResourceMovie2()->getName().c_str()
-                        , this->getCompositionName().c_str()
-                        , layer.name.c_str()
-                        , layer.name.c_str()
-                    );
-
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                    , layer.name.c_str()
+                );
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( surface == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
 
                 surface->setResourceImage( resourceImage );
 
                 ShapeQuadFixedPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type, MENGINE_DOCUMENT_FUNCTION );
 
-                if( node == nullptr )
-                {
-                    LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
-                        , this->getName().c_str()
-                        , this->getResourceMovie2()->getName().c_str()
-                        , this->getCompositionName().c_str()
-                        , layer.name.c_str()
-                    );
-
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                );
 
                 node->setName( layer.name );
                 node->setExternalRender( true );
@@ -581,13 +547,10 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "Movie2::createCompositionLayers_ name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
-                if( matrixProxy == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
 
                 matrixProxy->setName( layer.name );
 
@@ -619,6 +582,8 @@ namespace Mengine
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FUNCTION );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( node, false );
+
             node->setMovie( this );
 
             node->setName( subcomposition.name );
@@ -644,9 +609,9 @@ namespace Mengine
 
         m_slots.clear();
 
-        for( const MapSockets::value_type & value : m_sockets )
+        for( const HashtableSockets::value_type & value : m_sockets )
         {
-            const HotSpotPolygonPtr & hotspot = value.second;
+            const HotSpotPolygonPtr & hotspot = value.element;
             EventationInterface * eventation = hotspot->getEventation();
             eventation->removeEvents();
             hotspot->removeFromParent();
@@ -662,15 +627,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' invalid setup '%s' not compile"
-                , this->getName().c_str()
-                , _eventName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_composition, false, "name '%s' invalid setup '%s' not compile"
+            , this->getName().c_str()
+            , _eventName.c_str()
+        );
 
         float a, b;
         ae_bool_t ok = ae_get_movie_composition_node_in_out_time( m_composition, _eventName.c_str(), AE_MOVIE_LAYER_TYPE_EVENT, &a, &b );
@@ -713,26 +673,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const
     {
-        MapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
-
-        if( it_found == m_subCompositions.end() )
-        {
-            return false;
-        }
-
-        return true;
+        bool result = m_subCompositions.exist( _name );
+                
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     const Movie2SubCompositionPtr & Movie2::getSubComposition( const ConstString & _name ) const
     {
-        MapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
-
-        if( it_found == m_subCompositions.end() )
-        {
-            return Movie2SubCompositionPtr::none();
-        }
-
-        const Movie2SubCompositionPtr & subComposition = it_found->second;
+        const Movie2SubCompositionPtr & subComposition = m_subCompositions.find( _name );
 
         return subComposition;
     }
@@ -1117,17 +1065,12 @@ namespace Mengine
             {
                 const ShapeQuadFixedPtr & node = movie2->getSprite_( node_index );
 
-                if( node == nullptr )
-                {
-                    LOGGER_ERROR( "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
-                        , movie2->getName().c_str()
-                        , movie2->getResourceMovie2()->getName().c_str()
-                        , movie2->getCompositionName().c_str()
-                        , layer_name
-                    );
-
-                    return AE_FALSE;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                    , movie2->getName().c_str()
+                    , movie2->getResourceMovie2()->getName().c_str()
+                    , movie2->getCompositionName().c_str()
+                    , layer_name
+                );
 
                 const SurfacePtr & surface = node->getSurface();
 
@@ -1143,10 +1086,7 @@ namespace Mengine
             {
                 const TextFieldPtr & node = movie2->getText_( node_index );
 
-                if( node == nullptr )
-                {
-                    return AE_FALSE;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
 
                 Detail::updateMatrixProxy( node.get(), AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
@@ -1202,10 +1142,7 @@ namespace Mengine
             {
                 const Movie2SlotPtr & node = movie2->getSlot_( node_index );
 
-                if( node == nullptr )
-                {
-                    return AE_FALSE;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
 
                 *_nd = node.get();
 
@@ -1215,10 +1152,7 @@ namespace Mengine
             {
                 const HotSpotPolygonPtr & node = movie2->getSocket_( node_index );
 
-                if( node == nullptr )
-                {
-                    return AE_FALSE;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
 
                 const ae_polygon_t * polygon;
                 if( ae_get_movie_layer_data_socket_polygon( _callbackData->layer, 0, &polygon ) == AE_FALSE )
@@ -1246,10 +1180,7 @@ namespace Mengine
             {
                 const NodePtr & node = movie2->getParticle_( node_index );
 
-                if( node == nullptr )
-                {
-                    return AE_FALSE;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( node, AE_FALSE );
 
                 UnknownParticleEmitterInterface * unknownParticleEmitter2 = node->getUnknown();
 
@@ -1398,10 +1329,7 @@ namespace Mengine
                     SurfacePtr surface = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FUNCTION );
 
-                    if( surface == nullptr )
-                    {
-                        return AE_FALSE;
-                    }
+                    MENGINE_ASSERTION_MEMORY_PANIC( surface, AE_FALSE );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surface->setName( c_name );
@@ -1432,10 +1360,7 @@ namespace Mengine
                     SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FUNCTION );
 
-                    if( surfaceSound == nullptr )
-                    {
-                        return AE_FALSE;
-                    }
+                    MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound, AE_FALSE );
 
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceSound->setName( c_name );
@@ -2002,10 +1927,7 @@ namespace Mengine
 
         const Movie2SubCompositionPtr & subcomposition = m2->getSubComposition( c_name );
 
-        if( subcomposition == nullptr )
-        {
-            return AE_FALSE;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( subcomposition, AE_FALSE );
 
         *_scd = subcomposition.get();
 
@@ -2099,14 +2021,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_compile()
     {
-        if( m_resourceMovie2 == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' can't setup resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceMovie2, false, "name '%s' can't setup resource"
+            , this->getName().c_str()
+        );
 
         if( m_resourceMovie2.compile() == false )
         {
@@ -2120,16 +2037,11 @@ namespace Mengine
 
         const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
-        if( compositionData == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' resource %s not found composition '%s'"
-                , m_name.c_str()
-                , m_resourceMovie2->getName().c_str()
-                , m_compositionName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( compositionData, false, "name '%s' resource %s not found composition '%s'"
+            , m_name.c_str()
+            , m_resourceMovie2->getName().c_str()
+            , m_compositionName.c_str()
+        );
 
         const Movie2DataInterfacePtr & data = m_resourceMovie2->getData();
 
@@ -2167,16 +2079,11 @@ namespace Mengine
 
         const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
-        if( composition == nullptr )
-        {
-            LOGGER_ERROR( "name '%s' resource '%s' invalid create composition '%s'"
-                , m_name.c_str()
-                , m_resourceMovie2->getName().c_str()
-                , m_compositionName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( composition, false, "name '%s' resource '%s' invalid create composition '%s'"
+            , m_name.c_str()
+            , m_resourceMovie2->getName().c_str()
+            , m_compositionName.c_str()
+        );
 
         m_composition = composition;
 
@@ -2200,9 +2107,9 @@ namespace Mengine
         float animationSpeedFactor = this->getAnimationSpeedFactor();
         this->updateAnimationSpeedFactor_( animationSpeedFactor );
 
-        for( MapSubCompositions::value_type & value : m_subCompositions )
+        for( const HashtableSubCompositions::value_type & value : m_subCompositions )
         {
-            const Movie2SubCompositionPtr & subComposition = value.second;
+            const Movie2SubCompositionPtr & subComposition = value.element;
 
             if( subComposition->initialize( m_composition ) == false )
             {
@@ -2235,9 +2142,9 @@ namespace Mengine
 
         m_cameras.clear();
 
-        for( MapSubCompositions::value_type & value : m_subCompositions )
+        for( const HashtableSubCompositions::value_type & value : m_subCompositions )
         {
-            const Movie2SubCompositionPtr & subComposition = value.second;
+            const Movie2SubCompositionPtr & subComposition = value.element;
 
             subComposition->finalize();
         }
@@ -3073,23 +2980,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ShapeQuadFixedPtr & Movie2::getSprite_( uint32_t _index ) const
     {
-        MapSprites::const_iterator it_found = m_sprites.find( _index );
-
-        if( it_found == m_sprites.end() )
-        {
-            return ShapeQuadFixedPtr::none();
-        }
-
-        const ShapeQuadFixedPtr & sprite = it_found->second;
+        const ShapeQuadFixedPtr & sprite = m_sprites.find( _index );
 
         return sprite;
     }
     //////////////////////////////////////////////////////////////////////////
     const ShapeQuadFixedPtr & Movie2::findSprite( const ConstString & _name ) const
     {
-        for( const MapSprites::value_type & value : m_sprites )
+        for( const HashtableSprites::value_type & value : m_sprites )
         {
-            const ShapeQuadFixedPtr & sprite = value.second;
+            const ShapeQuadFixedPtr & sprite = value.element;
 
             if( sprite->getName() != _name )
             {
@@ -3104,9 +3004,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSprite( const ConstString & _name ) const
     {
-        for( const MapSprites::value_type & value : m_sprites )
+        for( const HashtableSprites::value_type & value : m_sprites )
         {
-            const ShapeQuadFixedPtr & sprite = value.second;
+            const ShapeQuadFixedPtr & sprite = value.element;
 
             if( sprite->getName() != _name )
             {
@@ -3126,23 +3026,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::getParticle_( uint32_t _index ) const
     {
-        MapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _index );
-
-        if( it_found == m_particleEmitters.end() )
-        {
-            return NodePtr::none();
-        }
-
-        const NodePtr & particleEmitter = it_found->second;
-
+        const NodePtr & particleEmitter = m_particleEmitters.find( _index );
+                
         return particleEmitter;
     }
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::findParticle( const ConstString & _name ) const
     {
-        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            const NodePtr & particle = value.second;
+            const NodePtr & particle = value.element;
 
             if( particle->getName() != _name )
             {
@@ -3157,9 +3050,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasParticle( const ConstString & _name ) const
     {
-        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            const NodePtr & particle = value.second;
+            const NodePtr & particle = value.element;
 
             if( particle->getName() != _name )
             {
@@ -3179,23 +3072,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::getSlot_( uint32_t _index ) const
     {
-        MapSlots::const_iterator it_found = m_slots.find( _index );
-
-        if( it_found == m_slots.end() )
-        {
-            return Movie2SlotPtr::none();
-        }
-
-        const Movie2SlotPtr & slot = it_found->second;
+        const Movie2SlotPtr & slot = m_slots.find( _index );
 
         return slot;
     }
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::findSlot( const ConstString & _name ) const
     {
-        for( const MapSlots::value_type & value : m_slots )
+        for( const HashtableSlots::value_type & value : m_slots )
         {
-            const Movie2SlotPtr & slot = value.second;
+            const Movie2SlotPtr & slot = value.element;
 
             if( slot->getName() != _name )
             {
@@ -3210,9 +3096,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSlot( const ConstString & _name ) const
     {
-        for( const MapSlots::value_type & value : m_slots )
+        for( const HashtableSlots::value_type & value : m_slots )
         {
-            const Movie2SlotPtr & slot = value.second;
+            const Movie2SlotPtr & slot = value.element;
 
             if( slot->getName() != _name )
             {
@@ -3227,10 +3113,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor )
     {
-        for( const MapSlots::value_type & value : m_slots )
+        for( const HashtableSlots::value_type & value : m_slots )
         {
-            uint32_t index = value.first;
-            const Movie2SlotPtr & node = value.second;
+            uint32_t index = value.key;
+            const Movie2SlotPtr & node = value.element;
 
             _visitor->visitMovieLayer( this, index, node );
         }
@@ -3243,23 +3129,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::getSocket_( uint32_t _index ) const
     {
-        MapSockets::const_iterator it_found = m_sockets.find( _index );
-
-        if( it_found == m_sockets.end() )
-        {
-            return HotSpotPolygonPtr::none();
-        }
-
-        const HotSpotPolygonPtr & hotspot = it_found->second;
+        const HotSpotPolygonPtr & hotspot = m_sockets.find( _index );
 
         return hotspot;
     }
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::findSocket( const ConstString & _name ) const
     {
-        for( const MapSockets::value_type & value : m_sockets )
+        for( const HashtableSockets::value_type & value : m_sockets )
         {
-            const HotSpotPolygonPtr & socket = value.second;
+            const HotSpotPolygonPtr & socket = value.element;
 
             if( socket->getName() != _name )
             {
@@ -3274,9 +3153,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSocket( const ConstString & _name ) const
     {
-        for( const MapSockets::value_type & value : m_sockets )
+        for( const HashtableSockets::value_type & value : m_sockets )
         {
-            const HotSpotPolygonPtr & socket = value.second;
+            const HotSpotPolygonPtr & socket = value.element;
 
             if( socket->getName() != _name )
             {
@@ -3291,9 +3170,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor )
     {
-        for( const MapSockets::value_type & value : m_sockets )
+        for( const HashtableSockets::value_type & value : m_sockets )
         {
-            _visitor->visitMovieLayer( this, value.first, value.second );
+            uint32_t key = value.key;
+            const HotSpotPolygonPtr & hotspot = value.element;
+
+            _visitor->visitMovieLayer( this, key, hotspot );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3304,23 +3186,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::getText_( uint32_t _index ) const
     {
-        MapTexts::const_iterator it_found = m_texts.find( _index );
-
-        if( it_found == m_texts.end() )
-        {
-            return TextFieldPtr::none();
-        }
-
-        const TextFieldPtr & text = it_found->second;
+        const TextFieldPtr & text = m_texts.find( _index );
 
         return text;
     }
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::findText( const ConstString & _name ) const
     {
-        for( const MapTexts::value_type & value : m_texts )
+        for( const HashtableTexts::value_type & value : m_texts )
         {
-            const TextFieldPtr & text = value.second;
+            const TextFieldPtr & text = value.element;
 
             if( text->getName() != _name )
             {
@@ -3335,9 +3210,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasText( const ConstString & _name ) const
     {
-        for( const MapTexts::value_type & value : m_texts )
+        for( const HashtableTexts::value_type & value : m_texts )
         {
-            const TextFieldPtr & text = value.second;
+            const TextFieldPtr & text = value.element;
 
             if( text->getName() != _name )
             {
@@ -3352,10 +3227,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor )
     {
-        for( const MapTexts::value_type & value : m_texts )
+        for( const HashtableTexts::value_type & value : m_texts )
         {
-            uint32_t index = value.first;
-            const TextFieldPtr & node = value.second;
+            uint32_t index = value.key;
+            const TextFieldPtr & node = value.element;
 
             _visitor->visitMovieLayer( this, index, node );
         }

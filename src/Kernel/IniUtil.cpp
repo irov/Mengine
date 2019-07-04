@@ -11,6 +11,7 @@
 #include "Kernel/Ravingcode.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -34,15 +35,10 @@ namespace Mengine
             InputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-            if( stream == nullptr )
-            {
-                LOGGER_ERROR( "open ini file '%s:%s'"
-                    , _fileGroup->getName().c_str()
-                    , _path.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "open ini file '%s:%s'"
+                , _fileGroup->getName().c_str()
+                , _path.c_str()
+            );
 
             _ini.path = _path;
 

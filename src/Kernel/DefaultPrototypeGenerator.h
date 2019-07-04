@@ -2,10 +2,9 @@
 
 #include "FactoryPrototypeGenerator.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstString.h"
-
 #include "Kernel/FactoryPool.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -32,16 +31,11 @@ namespace Mengine
 
             TypePtr object = factory->createObject( _doc );
 
-            if( object == nullptr )
-            {
-                LOGGER_ERROR( "can't generate %s %s doc '%s'"
-                    , this->getCategory().c_str()
-                    , this->getPrototype().c_str()
-					, _doc
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( object, nullptr, "can't generate %s %s doc '%s'"
+                , this->getCategory().c_str()
+                , this->getPrototype().c_str()
+                , _doc
+            );
 
             return object;
         }

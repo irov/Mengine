@@ -40,10 +40,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 
@@ -99,10 +96,7 @@ namespace Mengine
         }
 
 
-        if( file_bin == nullptr )
-        {
-            return true;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, true );
 
         bool reimport = false;
         bool done = this->importBin_( file_bin, _metadata, _metaVersion, &reimport );
@@ -230,10 +224,7 @@ namespace Mengine
 
         MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( binary_buffer == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
 
         uint8_t * binary_memory = binary_buffer->getBuffer();
 
@@ -333,10 +324,7 @@ namespace Mengine
             InputStreamInterfacePtr file_bin = FILE_SERVICE()
                 ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-            if( file_bin == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
             _file = file_bin;
 
@@ -358,18 +346,12 @@ namespace Mengine
         InputStreamInterfacePtr file_bin = FILE_SERVICE()
             ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( file_bin == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
         InputStreamInterfacePtr file_xml = FILE_SERVICE()
             ->openInputFile( _pak, c_cache_path_xml, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( file_xml == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file_xml, false );
 
         uint64_t time_xml;
         file_xml->time( time_xml );
@@ -405,15 +387,10 @@ namespace Mengine
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "invalid create decoder xml2bin for %s:%s"
-                , _pak->getName().c_str()
-                , _pathXml.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder xml2bin for %s:%s"
+            , _pak->getName().c_str()
+            , _pathXml.c_str()
+        );
 
         if( decoder->prepareData( nullptr ) == false )
         {
@@ -462,10 +439,7 @@ namespace Mengine
         InputStreamInterfacePtr file_bin = FILE_SERVICE()
             ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( file_bin == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
         _file = file_bin;
 

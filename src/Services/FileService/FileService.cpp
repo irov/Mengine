@@ -9,7 +9,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/String.h"
 #include "Kernel/FilePath.h"
 
@@ -52,25 +52,15 @@ namespace Mengine
     {
         FactoryPtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
 
-        if( factory == nullptr )
-        {
-            LOGGER_ERROR( "not registry factory '%s'"
-                , _type.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not registry factory '%s'"
+            , _type.c_str()
+        );
 
         FileGroupInterfacePtr fileGroup = factory->createObject( _doc );
 
-        if( fileGroup == nullptr )
-        {
-            LOGGER_ERROR( "invalid create file group '%s'"
-                , _type.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, nullptr, "invalid create file group '%s'"
+            , _type.c_str()
+        );
 
         return fileGroup;
     }
@@ -97,16 +87,11 @@ namespace Mengine
 
         FileGroupInterfacePtr fileGroup = this->createFileGroup( _type, _doc );
 
-        if( fileGroup == nullptr )
-        {
-            LOGGER_ERROR( "can't create fileGroup '%s' type '%s' for object '%s'"
-                , _name.c_str()
-                , _type.c_str()
-                , _path.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false, "can't create fileGroup '%s' type '%s' for object '%s'"
+            , _name.c_str()
+            , _type.c_str()
+            , _path.c_str()
+        );
 
         if( fileGroup->initialize( _name, _category, _path ) == false )
         {
@@ -136,6 +121,7 @@ namespace Mengine
     bool FileService::unmountFileGroup( const ConstString & _name )
     {
         MapFileGroups::iterator it_find = m_fileGroups.find( _name );
+
         if( it_find == m_fileGroups.end() )
         {
             LOGGER_ERROR( "not mount '%s'"
@@ -203,15 +189,10 @@ namespace Mengine
     {
         InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming, _doc );
 
-        if( file == nullptr )
-        {
-            LOGGER_ERROR( "can't create input file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _fileName.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file, nullptr, "can't create input file '%s:%s'"
+            , _fileGroup->getName().c_str()
+            , _fileName.c_str()
+        );
 
         if( _fileGroup->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
         {
@@ -230,15 +211,10 @@ namespace Mengine
     {
         OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
-        if( file == nullptr )
-        {
-            LOGGER_ERROR( "can't create output file '%s:%s'"
-                , _fileGroup->getName().c_str()
-                , _fileName.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file, nullptr, "can't create output file '%s:%s'"
+            , _fileGroup->getName().c_str()
+            , _fileName.c_str()
+        );
 
         if( _fileGroup->openOutputFile( _fileName, file ) == false )
         {

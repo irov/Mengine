@@ -6,6 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <string.h>
 
@@ -40,17 +41,14 @@ namespace Mengine
     {
         DecoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
-        if( factory == nullptr )
-        {
-            LOGGER_ERROR( "not found codec '%s' doc '%s'"
-                , _type.c_str()
-                , _doc
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
+            , _type.c_str()
+            , _doc
+        );
 
         DecoderInterfacePtr decoder = factory->createDecoder( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, nullptr );
 
         if( decoder->initialize() == false )
         {
@@ -69,17 +67,14 @@ namespace Mengine
     {
         EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
-        if( factory == nullptr )
-        {
-            LOGGER_ERROR( "not found codec '%s' doc '%s'"
-                , _type.c_str()
-                , _doc
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
+            , _type.c_str()
+            , _doc
+        );
 
         EncoderInterfacePtr encoder = factory->createEncoder( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, nullptr );
 
         return encoder;
     }

@@ -5,8 +5,8 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Stream.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -23,10 +23,7 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 

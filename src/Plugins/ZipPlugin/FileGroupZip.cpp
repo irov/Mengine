@@ -14,6 +14,7 @@
 #include "Kernel/String.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "zlib.h"
 
@@ -82,10 +83,7 @@ namespace Mengine
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-        if( mutex == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
 
         m_mutex = mutex;
 
@@ -101,14 +99,9 @@ namespace Mengine
         InputStreamInterfacePtr zipFile = FILE_SERVICE()
             ->openInputFile( m_fileGroup, m_path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( zipFile == nullptr )
-        {
-            LOGGER_ERROR( "can't open input stream for path %s"
-                , m_path.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( zipFile, false, "can't open input stream for path %s"
+            , m_path.c_str()
+        );
 
         size_t zip_size = zipFile->size();
         zipFile->seek( zip_size - 22 );
@@ -438,15 +431,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
     {
-        if( _stream == nullptr )
-        {
-            LOGGER_ERROR( "pak '%s' file '%s' stream is NULL"
-                , m_path.c_str()
-                , _fileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "pak '%s' file '%s' stream is NULL"
+            , m_path.c_str()
+            , _fileName.c_str()
+        );
 
         MapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
@@ -512,16 +500,11 @@ namespace Mengine
         {
             void * buffer = memory->newBuffer( fi.file_size, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                LOGGER_ERROR( "pak '%s' file '%s' failed new memory %d"
-                    , m_path.c_str()
-                    , _fileName.c_str()
-                    , fi.unz_size
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "pak '%s' file '%s' failed new memory %d"
+                , m_path.c_str()
+                , _fileName.c_str()
+                , fi.unz_size
+            );
 
             m_mutex->lock();
             m_zipFile->seek( file_offset );
@@ -532,31 +515,23 @@ namespace Mengine
         {
             void * buffer = memory->newBuffer( fi.unz_size, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                LOGGER_ERROR( "pak '%s' file '%s' failed new memory %d"
-                    , m_path.c_str()
-                    , _fileName.c_str()
-                    , fi.unz_size
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "pak '%s' file '%s' failed new memory %d"
+                , m_path.c_str()
+                , _fileName.c_str()
+                , fi.unz_size
+            );
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FUNCTION );
 
-            if( compress_buffer == nullptr )
-            {
-                LOGGER_ERROR( "pak '%s' file '%s' failed cache memory %d"
-                    , m_path.c_str()
-                    , _fileName.c_str()
-                    , fi.file_size
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "pak '%s' file '%s' failed cache memory %d"
+                , m_path.c_str()
+                , _fileName.c_str()
+                , fi.file_size
+            );
 
             void * compress_memory = compress_buffer->getBuffer();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, false );
 
             m_mutex->lock();
             m_zipFile->seek( file_offset );

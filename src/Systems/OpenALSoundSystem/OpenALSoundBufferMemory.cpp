@@ -8,6 +8,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -53,20 +54,15 @@ namespace Mengine
         m_length = dataInfo->length;
         size_t size = dataInfo->size;
 
-        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( binary_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid sound %d memory %d"
-                , size
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, false, "invalid sound %d memory %d"
+            , size
+        );
 
-            return false;
-        }
+        void * binary_memory_buffer = binary_memory->getBuffer();
 
-        void * binary_memory = binary_buffer->getBuffer();
-
-        size_t decode_size = m_soundDecoder->decode( binary_memory, size );
+        size_t decode_size = m_soundDecoder->decode( binary_memory_buffer, size );
 
         if( decode_size == 0 )
         {
@@ -100,7 +96,7 @@ namespace Mengine
         }
 
         ALsizei al_decode_size = (ALsizei)decode_size;
-        IF_OPENAL_CALL( alBufferData, (m_alBufferId, m_format, binary_memory, al_decode_size, m_frequency) )
+        IF_OPENAL_CALL( alBufferData, (m_alBufferId, m_format, binary_memory_buffer, al_decode_size, m_frequency) )
         {
             return false;
         }

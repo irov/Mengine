@@ -38,10 +38,7 @@ namespace Mengine
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false );
 
         if( decoder->prepareData( _stream ) == false )
         {
@@ -54,10 +51,7 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
         uint8_t * buffer = memory->getBuffer();
 

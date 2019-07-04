@@ -70,10 +70,11 @@ namespace Mengine
 
         generator->setFTLibrary( ftlibrary );
 
-        PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" )
-                , generator
-            );
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ), generator ) == false )
+        {
+            return false;
+        }
 
         m_ftlibrary = ftlibrary;
 

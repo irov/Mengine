@@ -7,14 +7,12 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
-
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -40,26 +38,15 @@ namespace Mengine
             InputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
 
-            if( stream == nullptr )
-            {
-                LOGGER_ERROR( "can't open file %s:%s"
-                    , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't open file %s:%s"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
+            );
 
             memory = Helper::loadStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FUNCTION );
         }
 
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "invalid get data"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid get data" );
 
         const void * binary_memory = memory->getBuffer();
         size_t binary_size = memory->getSize();
@@ -121,16 +108,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
     {
-        if( _index >= m_resourceImages.size() )
-        {
-            LOGGER_ERROR( "invalid add resource image '%s' index '%d' atlas count '%d'"
-                , _resourceImage->getName().c_str()
-                , _index
-                , m_resourceImages.size()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION( _index < m_resourceImages.size(), "invalid add resource image '%s' index '%d' atlas count '%d'"
+            , _resourceImage->getName().c_str()
+            , _index
+            , m_resourceImages.size()
+        );
 
         m_resourceImages[_index] = _resourceImage;
 

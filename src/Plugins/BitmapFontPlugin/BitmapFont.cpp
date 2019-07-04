@@ -10,7 +10,7 @@
 #include "BitmapFontInterface.h"
 
 #include "Kernel/IniUtil.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -48,15 +48,10 @@ namespace Mengine
         BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE()
             ->getGlyph( _fileGroup, glyphPath );
 
-        if( glyph == nullptr )
-        {
-            LOGGER_ERROR( "invalid font %s don't load Glyph %s"
-                , m_name.c_str()
-                , glyphPath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, false, "invalid font '%s' don't load Glyph '%s'"
+            , m_name.c_str()
+            , glyphPath.c_str()
+        );
 
         m_glyph = glyph;
 
@@ -97,15 +92,10 @@ namespace Mengine
         m_textureFont = RENDERTEXTURE_SERVICE()
             ->loadTexture( m_fileGroup, m_pathFontImage, fontImageCodec, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_textureFont == nullptr )
-        {
-            LOGGER_ERROR( "font '%s' invalid loading font image '%s'"
-                , m_name.c_str()
-                , m_pathFontImage.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_textureFont, false, "font '%s' invalid loading font image '%s'"
+            , m_name.c_str()
+            , m_pathFontImage.c_str()
+        );
 
         return true;
     }

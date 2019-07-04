@@ -33,10 +33,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        if( fileGroup == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
         m_fileGroup = fileGroup;
 
@@ -53,26 +50,16 @@ namespace Mengine
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
             ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream_intput == nullptr )
-        {
-            LOGGER_ERROR( "invalid open input file '%s'"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
+            , m_options.inputFileName.c_str()
+        );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "invalid create decoder for '%s'"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder for '%s'"
+            , m_options.inputFileName.c_str()
+        );
 
         if( decoder->prepareData( stream_intput ) == false )
         {

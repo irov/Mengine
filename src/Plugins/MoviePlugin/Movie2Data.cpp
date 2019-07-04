@@ -7,6 +7,7 @@
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -84,14 +85,9 @@ namespace Mengine
         const ResourcePtr & resource = RESOURCE_SERVICE()
             ->getResourceReference( Helper::stringizeString( _resourceName ) );
 
-        if( resource == nullptr )
-        {
-            LOGGER_ERROR( "not found resource '%s'"
-                , _resourceName
-            );
-
-            return ResourcePtr::none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "not found resource '%s'"
+            , _resourceName
+        );
 
         m_resources.emplace_back( resource );
 

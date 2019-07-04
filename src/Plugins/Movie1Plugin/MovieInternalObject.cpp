@@ -3,6 +3,7 @@
 #include "Movie.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "pybind/pybind.hpp"
 
@@ -50,28 +51,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieInternalObject::_compile()
     {
-        if( m_movie == nullptr )
-        {
-            LOGGER_ERROR( "MovieInternalObject::_compile '%s' movie not setup"
-                , m_name.c_str()
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( m_movie, false, "'%s' movie not setup"
+            , this->getName().c_str()
+        );
 
-            return false;
-        }
-
-        if( m_resourceInternalObject == nullptr )
-        {
-            LOGGER_ERROR( "MovieInternalObject::_compile '%s' resource not setup"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceInternalObject, false, "'%s' resource not setup"
+            , this->getName().c_str()
+        );
 
         if( m_resourceInternalObject.compile() == false )
         {
-            LOGGER_ERROR( "MovieInternalObject::_compile '%s' resource '%s' not compile"
-                , m_name.c_str()
+            LOGGER_ERROR( "'%s' resource '%s' not compile"
+                , this->getName().c_str()
                 , m_resourceInternalObject->getName().c_str()
             );
 
@@ -87,7 +78,7 @@ namespace Mengine
         if( py_object.is_invalid() == true )
         {
             LOGGER_ERROR( "'%s' resource '%s' can't find internal object '%s:%s'"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceInternalObject->getName().c_str()
                 , internalGroup.c_str()
                 , internalName.c_str()
@@ -118,20 +109,12 @@ namespace Mengine
         NodePtr node = EVENTABLE_OTHER_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
             ->onMovieActivateInternal( m_internalObject );
 
-        if( node == nullptr )
-        {
-            const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
-            const ConstString & internalName = m_resourceInternalObject->getInternalName();
-
-            LOGGER_ERROR( "MovieInternalObject::_activate '%s' resource '%s' invalid get internal node '%s:%s'"
-                , m_name.c_str()
-                , m_resourceInternalObject->getName().c_str()
-                , internalGroup.c_str()
-                , internalName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( node, false, "'%s' resource '%s' invalid get internal node '%s:%s'"
+            , this->getName().c_str()
+            , m_resourceInternalObject->getName().c_str()
+            , m_resourceInternalObject->getInternalGroup().c_str()
+            , m_resourceInternalObject->getInternalName().c_str()
+        );
 
         this->addChild( node );
 

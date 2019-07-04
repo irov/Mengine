@@ -7,6 +7,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -44,10 +45,7 @@ namespace Mengine
         m_stream = FILE_SERVICE()
             ->openOutputFile( fileGroup, logFilename, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_stream == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false );
 
         return true;
     }

@@ -3,6 +3,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -19,10 +21,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        if( fileGroup == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
         m_fileGroup = fileGroup;
 

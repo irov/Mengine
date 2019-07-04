@@ -7,7 +7,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
@@ -246,15 +246,10 @@ namespace Mengine
         OutputStreamInterfacePtr file = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
 
-        if( file == nullptr )
-        {
-            LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
-                , m_id.c_str()
-                , m_settingsPath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Account '%s' settings not saved '%s'"
+            , m_id.c_str()
+            , m_settingsPath.c_str()
+        );
 
         IniUtil::writeIniSection( file, "[ACCOUNT]" );
 
@@ -317,15 +312,10 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( m_fileGroup, fullpath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "account '%s' invalid open file '%s'"
-                , m_id.c_str()
-                , fullpath.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
+            , m_id.c_str()
+            , fullpath.c_str()
+        );
 
         return stream;
     }
@@ -342,15 +332,10 @@ namespace Mengine
         OutputStreamInterfacePtr stream = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, fullpath, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "account '%s' invalid open file '%s'"
-                , m_id.c_str()
-                , _filepath.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
+            , m_id.c_str()
+            , _filepath.c_str()
+        );
 
         return stream;
     }
@@ -359,27 +344,17 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = this->openReadBinaryFile( _filepath );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "account '%s' invalid open file '%s'"
-                , m_id.c_str()
-                , _filepath.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
+            , m_id.c_str()
+            , _filepath.c_str()
+        );
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( binaryBuffer == nullptr )
-        {
-            LOGGER_ERROR( "account '%s' invalid load stream archive '%s'"
-                , m_id.c_str()
-                , _filepath.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "account '%s' invalid load stream archive '%s'"
+            , m_id.c_str()
+            , _filepath.c_str()
+        );
 
         return binaryBuffer;
     }
@@ -398,15 +373,10 @@ namespace Mengine
 
         OutputStreamInterfacePtr stream = this->openWriteBinaryFile( _filepath );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "account '%s' invalid open file '%s'"
-                , m_id.c_str()
-                , _filepath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "account '%s' invalid open file '%s'"
+            , m_id.c_str()
+            , _filepath.c_str()
+        );
 
         const void * data_memory = _data;
         size_t data_size = _size;

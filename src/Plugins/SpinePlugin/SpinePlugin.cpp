@@ -39,10 +39,7 @@ namespace Mengine
     {
         (void)_args;
 
-        if( _kwds == nullptr )
-        {
-            return pybind::ret_none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
         pybind::dict py_kwds( _kernel, _kwds );
         Helper::registerAnimatableEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine );

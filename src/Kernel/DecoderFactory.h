@@ -79,14 +79,9 @@ namespace Mengine
         {
             DecoderFactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
-            if( factory == nullptr )
-            {
-                LOGGER_ERROR( "invalid unregister decoder '%s'"
-                    , _type.c_str()
-                );
-
-                return;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( factory, "invalid unregister decoder '%s'"
+                , _type.c_str()
+            );
 
             factory->finalize();
         }

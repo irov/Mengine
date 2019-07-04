@@ -67,10 +67,7 @@ namespace Mengine
 
         fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );
 
-        if( bundle == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( bundle, false );
 
         data->setFEBundle( bundle );
 

@@ -8,6 +8,7 @@
 
 #include "Kernel/RenderUtils.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "ozz/base/maths/soa_transform.h"
 #include "ozz/base/containers/vector.h"
@@ -257,10 +258,7 @@ namespace Mengine
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, false );
 
         m_material = material;
 

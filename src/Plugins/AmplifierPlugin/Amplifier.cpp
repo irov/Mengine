@@ -9,6 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <cmath>
 
@@ -95,14 +96,9 @@ namespace Mengine
         ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
             ->getResourceReference( _resourceMusic );
 
-        if( resourceMusic == nullptr )
-        {
-            LOGGER_ERROR( "can't found resource '%s'"
-                , _resourceMusic.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceMusic, false, "can't found resource '%s'"
+            , _resourceMusic.c_str()
+        );
 
         const FileGroupInterfacePtr & fileGroup = resourceMusic->getFileGroup();
         const FilePath & filePath = resourceMusic->getFilePath();
@@ -126,27 +122,17 @@ namespace Mengine
                 ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true );
         }
 
-        if( buffer == nullptr )
-        {
-            LOGGER_ERROR( "can't load sample '%s'"
-                , filePath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "can't load sample '%s'"
+            , filePath.c_str()
+        );
 
         SoundIdentityInterfacePtr soundEmitter = SOUND_SERVICE()
             ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true
-                , MENGINE_DOCUMENT( "Amplifier::playMusic resource '%s'", _resourceMusic.c_str() ) );
+                , MENGINE_DOCUMENT( "resource '%s'", _resourceMusic.c_str() ) );
 
-        if( soundEmitter == nullptr )
-        {
-            LOGGER_ERROR( "can't create sound source '%s'"
-                , filePath.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( soundEmitter, false, "can't create sound source '%s'"
+            , filePath.c_str()
+        );
 
         if( _callback != nullptr )
         {

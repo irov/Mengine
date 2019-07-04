@@ -7,6 +7,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -43,16 +44,11 @@ namespace Mengine
             ResourceImagePtr resourceImage = RESOURCE_SERVICE()
                 ->getResourceReference( resourceImageName );
 
-            if( resourceImage == nullptr )
-            {
-                LOGGER_ERROR( "resource %s container %s can't get atlas image %s"
-                    , resource->getName().c_str()
-                    , resource->getFilePath().c_str()
-                    , resourceImageName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "resource %s container %s can't get atlas image %s"
+                , resource->getName().c_str()
+                , resource->getFilePath().c_str()
+                , resourceImageName.c_str()
+            );
 
             resourceImages[index] = resourceImage;
         }

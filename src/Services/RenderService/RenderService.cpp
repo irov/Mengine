@@ -11,6 +11,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/RenderUtils.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/convex8.h"
 
@@ -264,15 +265,10 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "NullTexture" );
 
-        if( texture == nullptr )
-        {
-            LOGGER_ERROR( "invalid create null texture %d:%d"
-                , null_width
-                , null_height
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
+            , null_width
+            , null_height
+        );
 
         const RenderImageInterfacePtr & image = texture->getImage();
 
@@ -285,15 +281,10 @@ namespace Mengine
         size_t pitch = 0;
         void * textureData = image->lock( &pitch, 0, rect, false );
 
-        if( textureData == nullptr )
-        {
-            LOGGER_ERROR( "invalid lock null texture %d:%d"
-                , null_width
-                , null_height
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textureData, false, "invalid lock null texture %d:%d"
+            , null_width
+            , null_height
+        );
 
         uint8_t * buffer_textureData = static_cast<uint8_t *>(textureData);
 
@@ -339,15 +330,10 @@ namespace Mengine
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "WhitePixelTexture" );
 
-        if( texture == nullptr )
-        {
-            LOGGER_ERROR( "invalid create null texture %d:%d"
-                , null_width
-                , null_height
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
+            , null_width
+            , null_height
+        );
 
         const RenderImageInterfacePtr & image = texture->getImage();
 
@@ -360,15 +346,10 @@ namespace Mengine
         size_t pitch = 0;
         void * textureData = image->lock( &pitch, 0, rect, false );
 
-        if( textureData == nullptr )
-        {
-            LOGGER_ERROR( "invalid lock null texture %d:%d"
-                , null_width
-                , null_height
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textureData, false, "invalid lock null texture %d:%d"
+            , null_width
+            , null_height
+        );
 
         uint8_t * buffer_textureData = static_cast<uint8_t *>(textureData);
 
@@ -1329,6 +1310,7 @@ namespace Mengine
             return;
         }
 
+#ifdef MENGINE_DEBUG
         if( m_debugStepRenderMode == true /*&& _debug == false*/ )
         {
             if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
@@ -1336,6 +1318,7 @@ namespace Mengine
                 return;
             }
         }
+#endif
 
         const RenderMaterialStage * materialStage = _material->getStage();
 
@@ -1350,6 +1333,7 @@ namespace Mengine
 
         RenderPass * rp = this->requestRenderPass_( _context, batch, batch->vertexBuffer, batch->indexBuffer, vertexAttribute, _programVariable );
 
+#ifdef MENGINE_DEBUG
         m_debugInfo.object += 1;
 
         if( m_debugFillrateCalcMode == true && _debug == false )
@@ -1370,9 +1354,11 @@ namespace Mengine
                 }break;
             }
         }
+#endif
 
         RenderMaterialInterfacePtr ro_material = _material;
 
+#ifdef MENGINE_DEBUG
         if( m_debugStepRenderMode == true && _debug == false )
         {
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
@@ -1403,6 +1389,7 @@ namespace Mengine
                 ro_material = new_material;
             }
         }
+#endif
 
         ++rp->countRenderObject;
 
@@ -1618,14 +1605,9 @@ namespace Mengine
 
             MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount, MENGINE_DOCUMENT_FUNCTION );
 
-            if( vertexMemory == nullptr )
-            {
-                LOGGER_ERROR( "failed to lock vertex buffer '%u'"
-                    , batch->vertexCount
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, false, "failed to lock vertex buffer '%u'"
+                , batch->vertexCount
+            );
 
             batch->vertexMemory = vertexMemory;
 
@@ -1642,14 +1624,9 @@ namespace Mengine
 
             MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount, MENGINE_DOCUMENT_FUNCTION );
 
-            if( indexMemory == nullptr )
-            {
-                LOGGER_ERROR( "failed to lock index buffer '%u'",
-                    batch->indexCount
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( indexMemory, false, "failed to lock index buffer '%u'",
+                batch->indexCount
+            );
 
             batch->indexMemory = indexMemory;
         }

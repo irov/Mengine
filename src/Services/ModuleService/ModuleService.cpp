@@ -1,6 +1,7 @@
 #include "ModuleService.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <algorithm>
 
@@ -47,17 +48,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::runModule( const ConstString & _moduleName, const Char * _doc )
     {
-        if( this->findModule( _moduleName ) != nullptr )
+        if( this->findModule_( _moduleName ) != nullptr )
         {
             return false;
         }
 
         const ModuleFactoryInterfacePtr & factory = m_moduleFactory.find( _moduleName );
 
-        if( factory == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
 
         ModuleInterfacePtr module = factory->createModule( _moduleName, _doc );
 
@@ -73,12 +71,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::stopModule( const ConstString & _moduleName )
     {
-        ModuleInterfacePtr module = this->popModule( _moduleName );
+        ModuleInterfacePtr module = this->popModule_( _moduleName );
 
-        if( module == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( module, false, "not found module '%s'"
+            , _moduleName.c_str()
+        );
 
         module->finalizeModule();
 
@@ -111,7 +108,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params )
     {
-        const ModuleInterfacePtr & module = this->findModule( _moduleName );
+        const ModuleInterfacePtr & module = this->findModule_( _moduleName );
 
         if( module == nullptr )
         {
@@ -129,7 +126,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////		
-    const ModuleInterfacePtr & ModuleService::findModule( const ConstString & _moduleName ) const
+    const ModuleInterfacePtr & ModuleService::findModule_( const ConstString & _moduleName ) const
     {
         VectorModules::const_iterator it_found =
             std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
@@ -147,7 +144,7 @@ namespace Mengine
         return module;
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleInterfacePtr ModuleService::popModule( const ConstString & _moduleName )
+    ModuleInterfacePtr ModuleService::popModule_( const ConstString & _moduleName )
     {
         VectorModules::iterator it_found =
             std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )

@@ -5,6 +5,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/allocator.h"
 
@@ -69,19 +70,15 @@ namespace Mengine
     {
         png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-        m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+        png_structp png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
-        if( m_png_ptr == nullptr )
-        {
-            LOGGER_ERROR( "Can't create read structure"
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( png_ptr, false );
 
-            return false;
-        }
+        m_png_ptr = png_ptr;
 
-        m_info_ptr = png_create_info_struct( m_png_ptr );
+        png_infop info_ptr = png_create_info_struct( m_png_ptr );
 
-        if( m_info_ptr == nullptr )
+        if( info_ptr == nullptr )
         {
             LOGGER_ERROR( "Can't create info structure"
             );
@@ -90,6 +87,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_info_ptr = info_ptr;
 
         return true;
     }
@@ -304,10 +303,7 @@ namespace Mengine
             {
                 MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
 
-                if( row_buffer == nullptr )
-                {
-                    return 0;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
 
                 png_byte * row_memory = row_buffer->getBuffer();
 
@@ -342,10 +338,7 @@ namespace Mengine
             {
                 MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
 
-                if( row_buffer == nullptr )
-                {
-                    return 0;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
 
                 png_byte * row_memory = row_buffer->getBuffer();
 
@@ -367,10 +360,7 @@ namespace Mengine
             {
                 MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
 
-                if( row_buffer == nullptr )
-                {
-                    return 0;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
 
                 png_byte * row_memory = row_buffer->getBuffer();
 
@@ -421,13 +411,7 @@ namespace Mengine
         //m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
         m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
-        if( m_png_ptr == nullptr )
-        {
-            LOGGER_ERROR( "Can't create read structure"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_png_ptr, false, "Can't create read structure" );
 
         m_info_ptr = png_create_info_struct( m_png_ptr );
 

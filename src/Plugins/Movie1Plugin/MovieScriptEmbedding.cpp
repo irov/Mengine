@@ -16,6 +16,8 @@
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/ScriptWrapperInterface.h"
+#include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotShape.h"
@@ -53,14 +55,9 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "'%s' invalid setup resource"
-                    , _movie->getName().c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, mt::vec3f( 0.f, 0.f, 0.f ), "'%s' invalid setup resource"
+                , _movie->getName().c_str()
+            );
 
             const mt::vec3f & ap = resourceMovie->getAnchorPoint();
 
@@ -424,14 +421,9 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie.getFrameDuration: '%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                return 0.f;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0.f, "'%s' not activate"
+                , _movie->getName().c_str()
+            );
 
             float frameDuration = resourceMovie->getFrameDuration();
 
@@ -442,14 +434,9 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie.getDuration: '%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                return 0.f;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0.f, "'%s' not activate"
+                , _movie->getName().c_str()
+            );
 
             float duration = resourceMovie->getDuration();
 
@@ -460,14 +447,9 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "'%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0, "'%s' not activate"
+                , _movie->getName().c_str()
+            );
 
             uint32_t count = resourceMovie->getFrameCount();
 
@@ -478,16 +460,9 @@ namespace Mengine
         {
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "'%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                static mt::vec2f zero( 0.f, 0.f );
-
-                return zero;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, mt::vec2f::identity(), "'%s' not activate"
+                , _movie->getName().c_str()
+            );
 
             const mt::vec2f & size = resourceMovie->getSize();
 
@@ -574,15 +549,10 @@ namespace Mengine
 
             const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-            if( framePack == nullptr )
-            {
-                LOGGER_ERROR( "sub_movie '%s' not found layer '%s' frame pack is null"
-                    , sub_movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return pybind::make_invalid_list_t();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( framePack, pybind::make_invalid_list_t(), "sub_movie '%s' not found layer '%s' frame pack is null"
+                , sub_movie->getName().c_str()
+                , _name.c_str()
+            );
 
             pybind::list py_path( _kernel, indexCount );
 
@@ -681,7 +651,7 @@ namespace Mengine
             {
                 if( resourceMovie->compile() == false )
                 {
-                    LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid compile"
+                    LOGGER_ERROR( "'%s' invalid compile"
                         , _movie->getName().c_str()
                     );
 
@@ -811,14 +781,9 @@ namespace Mengine
 
             const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "'%s' invalid setup resource"
-                    , _movie->getName().c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, mt::vec3f::identity(), "'%s' invalid setup resource"
+                , _movie->getName().c_str()
+            );
 
             const mt::vec3f & ap = resourceMovie->getAnchorPoint();
 
@@ -905,10 +870,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _args );
 
-            if( _kwds == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node );
@@ -995,21 +957,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
         {
-            if( _movie1 == nullptr )
-            {
-                LOGGER_ERROR( "movie1 is NULL"
-                );
-
-                return false;
-            }
-
-            if( _movie2 == nullptr )
-            {
-                LOGGER_ERROR( "movie2 is NULL"
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie1, false, "movie1 is NULL" );
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie2, false, "movie2 is NULL" );
 
             if( _movie1->compile() == false )
             {
@@ -1106,13 +1055,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, const Polygon & _polygon )
         {
-            if( _movie == nullptr )
-            {
-                LOGGER_ERROR( "movie is NULL"
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _movie, false, "movie is NULL" );
 
             if( _movie->compile() == false )
             {
@@ -1243,14 +1186,9 @@ namespace Mengine
             const ResourceMoviePtr & resourceMovie = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "invalid movie resource '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return 0.f;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceMovie, 0.f, "invalid movie resource '%s'"
+                , _resourceName.c_str()
+            );
 
             float duration = resourceMovie->getDuration();
 
@@ -1261,10 +1199,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_getNullObjectsFromResourceMovie( pybind::kernel_interface * _kernel, ResourceMovie * _resource )
         {
-            if( _resource == nullptr )
-            {
-                return _kernel->ret_none();
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( _resource, _kernel->ret_none() );
 
             pybind::dict dictResult( _kernel );
 
@@ -1315,10 +1250,7 @@ namespace Mengine
             const ResourceMoviePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
-            if( resource == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
 
             bool result = s_hasMovieElement2( resource, _slotName, _typeName );
 

@@ -166,14 +166,9 @@ namespace Mengine
 
         uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, _doc );
 
-        if( memory == nullptr )
-        {
-            LOGGER_ERROR( "invalid malloc memory %d"
-                , _size
-            );
-
-            return INVALID_CACHE_BUFFER_ID;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, INVALID_CACHE_BUFFER_ID, "invalid malloc memory %d"
+            , _size
+        );
 
         CacheBufferID new_id = GENERATE_UNIQUE_IDENTITY();
 

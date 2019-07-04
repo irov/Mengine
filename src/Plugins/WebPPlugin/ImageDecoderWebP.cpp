@@ -4,7 +4,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,21 +36,13 @@ namespace Mengine
 
                 MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FUNCTION );
 
-                if( buffer == nullptr )
-                {
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
 
                 uint8_t * featuresMemory = buffer->getBuffer();
 
-                if( featuresMemory == nullptr )
-                {
-                    LOGGER_ERROR( "ImageDecoderWEBP::_prepareData invalid get memory %d"
-                        , featuresBufferSize
-                    );
-
-                    return false;
-                }
+                MENGINE_ASSERTION_MEMORY_PANIC( featuresMemory, false, "invalid get memory %d"
+                    , featuresBufferSize
+                );
 
                 m_stream->read( featuresMemory, featuresBufferSize );
 
@@ -116,20 +108,11 @@ namespace Mengine
         {
             MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer == nullptr )
-            {
-                LOGGER_ERROR( "invalid create memory for stream"
-                );
-
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0, "invalid create memory for stream" );
 
             const uint8_t * buffer_memory = buffer->getBuffer();
 
-            if( buffer_memory == nullptr )
-            {
-                return 0;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer_memory, 0 );
 
             size_t buffer_size = buffer->getSize();
 

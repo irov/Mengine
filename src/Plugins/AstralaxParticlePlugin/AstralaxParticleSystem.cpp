@@ -3,10 +3,10 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/String.h"
 #include "Kernel/Logger.h"
@@ -98,14 +98,9 @@ namespace Mengine
     {
         AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
-        if( container == nullptr )
-        {
-            LOGGER_ERROR( "invalid create container doc '%s'"
-                , _doc
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "invalid create container doc '%s'"
+            , _doc
+        );
 
         if( container->initialize( _fileGroup, _fileName, _archivator ) == false )
         {
@@ -285,30 +280,17 @@ namespace Mengine
                 break;
             };
 
-            if( vertexAttribute == nullptr )
-            {
-                return false;
-            }
-
-            if( vertexShader == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, false );
+            MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, false );
 
             RenderFragmentShaderInterfacePtr fragmentShader = this->cacheFragmentShader_( &m );
 
-            if( fragmentShader == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, false );
 
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
                 ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures, MENGINE_DOCUMENT_FUNCTION );
 
-            if( program == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( program, false );
 
             rs.program = program;
 
@@ -363,15 +345,10 @@ namespace Mengine
     {
         VectorAtlasDesc::size_type atlases_size = m_atlases.size();
 
-        if( atlases_size <= (VectorAtlasDesc::size_type)_index )
-        {
-            LOGGER_ERROR( "index %d but size is %d"
-                , _index
-                , atlases_size
-            );
-
-            return ResourceImagePtr::none();
-        }
+        MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < atlases_size, ResourceImagePtr::none(), "index %d but size is %d"
+            , _index
+            , atlases_size
+        );
 
         const ResourceImagePtr & resourceImage = m_atlases[_index];
 
@@ -957,12 +934,7 @@ namespace Mengine
             }break;
         }
 
-        if( fragmentShader == nullptr )
-        {
-            LOGGER_ERROR( "not support this particle shader" );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, nullptr, "not support this particle shader" );
 
         MagicStatesCache key;
         key.textures = textures;

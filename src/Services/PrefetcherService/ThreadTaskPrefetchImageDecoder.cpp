@@ -44,26 +44,16 @@ namespace Mengine
 
         m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_stream == nullptr )
-        {
-            LOGGER_ERROR( "can't create input file '%s'"
-                , this->getFileGroup()->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
+            , this->getFileGroup()->getName().c_str()
+        );
 
         m_imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( m_imageCodec, MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_imageDecoder == nullptr )
-        {
-            LOGGER_ERROR( "invalide create codec %s"
-                , m_imageCodec.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_imageDecoder, false, "invalide create codec %s"
+            , m_imageCodec.c_str()
+        );
 
         return true;
     }

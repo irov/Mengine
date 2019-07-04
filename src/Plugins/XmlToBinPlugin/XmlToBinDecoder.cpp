@@ -9,6 +9,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Metacode/Metacode.h"
 
@@ -100,20 +101,14 @@ namespace Mengine
     {
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         m_archivator = archivator;
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
 
-        if( fileGroup == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
         m_fileGroupDev = fileGroup;
 
@@ -145,38 +140,22 @@ namespace Mengine
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE()
             ->openInputFile( m_fileGroupDev, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( protocol_stream == nullptr )
-        {
-            LOGGER_ERROR( "error open protocol %s"
-                , m_options.pathProtocol.c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, 0, "error open protocol %s"
+            , m_options.pathProtocol.c_str()
+        );
 
         size_t protocol_size = protocol_stream->size();
 
         MemoryBufferInterfacePtr memory_protocol = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_protocol == nullptr )
-        {
-            LOGGER_ERROR( "invalid create memory for protocol"
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol, 0, "invalid create memory for protocol" );
 
         void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_protocol_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory buffer '%u'"
-                , protocol_size
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol_buffer, 0, "invalid new memory buffer '%u'"
+            , protocol_size
+        );
 
         if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
@@ -228,14 +207,9 @@ namespace Mengine
         InputStreamInterfacePtr xml_stream = FILE_SERVICE()
             ->openInputFile( m_fileGroupDev, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( xml_stream == nullptr )
-        {
-            LOGGER_ERROR( "error open xml %s"
-                , m_options.pathXml.c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, 0, "error open xml %s"
+            , m_options.pathXml.c_str()
+        );
 
         size_t xml_size = xml_stream->size();
 
@@ -251,24 +225,13 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_xml == nullptr )
-        {
-            LOGGER_ERROR( "invalid create memory for xml"
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid create memory for xml" );
 
         void * memory_xml_buffer = memory_xml->newBuffer( xml_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_xml == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory buffer '%u'"
-                , xml_size
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid new memory buffer '%u'"
+            , xml_size
+        );
 
         if( xml_stream->read( memory_xml_buffer, xml_size ) != xml_size )
         {
@@ -279,10 +242,7 @@ namespace Mengine
 
         const Metabuf::XmlMeta * xml_meta = xml_protocol.getMeta( "Data" );
 
-        if( xml_meta == nullptr )
-        {
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( xml_meta, 0 );
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
@@ -300,24 +260,13 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_header == nullptr )
-        {
-            LOGGER_ERROR( "invalid create memory for bin"
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_header, 0, "invalid create memory for bin" );
 
         void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_header_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory buffer '%u'"
-                , Metacode::header_size
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_header_buffer, 0, "invalid new memory buffer '%u'"
+            , Metacode::header_size
+        );
 
         uint32_t xml_meta_version = xml_meta->getVersion();
 
@@ -336,24 +285,13 @@ namespace Mengine
         MemoryBufferInterfacePtr memory_bin = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_bin == nullptr )
-        {
-            LOGGER_ERROR( "invalid create memory for bin"
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_bin, 0, "invalid create memory for bin" );
 
         void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, MENGINE_DOCUMENT_FUNCTION );
 
-        if( memory_bin_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory buffer '%u'"
-                , xml_size * 2
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_bin_buffer, 0, "invalid new memory buffer '%u'"
+            , xml_size * 2
+        );
 
         size_t bin_size;
         if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, &bin_size ) == false )
@@ -369,26 +307,16 @@ namespace Mengine
         MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
             ->compressBuffer( m_archivator, memory_bin_buffer, bin_size, EAC_BEST );
 
-        if( compress_memory == nullptr )
-        {
-            LOGGER_ERROR( "error convert %s invalid compress buffer"
-                , m_options.pathXml.c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, 0, "error convert %s invalid compress buffer"
+            , m_options.pathXml.c_str()
+        );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE()
             ->openOutputFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
 
-        if( bin_stream == nullptr )
-        {
-            LOGGER_ERROR( "error create bin %s"
-                , m_options.pathBin.c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, 0, "error create bin %s"
+            , m_options.pathBin.c_str()
+        );
 
         bin_stream->write( memory_header_buffer, Metacode::header_size );
 
@@ -398,14 +326,9 @@ namespace Mengine
         const void * compress_buffer = compress_memory->getBuffer();
         size_t compress_size = compress_memory->getSize();
 
-        if( compress_buffer == nullptr )
-        {
-            LOGGER_ERROR( "error create bin '%s' invalid get memory"
-                , m_options.pathBin.c_str()
-            );
-
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, 0, "error create bin '%s' invalid get memory"
+            , m_options.pathBin.c_str()
+        );
 
         uint32_t write_compress_size = (uint32_t)compress_size;
         bin_stream->write( &write_compress_size, sizeof( write_compress_size ) );

@@ -3,7 +3,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -25,14 +25,9 @@ namespace Mengine
     {
         MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FUNCTION );
 
-        if( compress_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid compress buffer %d"
-                , _size
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "invalid compress buffer %d"
+            , _size
+        );
 
         const void * compress_memory = compress_buffer->getBuffer();
 
@@ -54,13 +49,7 @@ namespace Mengine
     {
         MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, MENGINE_DOCUMENT_FUNCTION );
 
-        if( uncompress_buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid cache buffer"
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( uncompress_buffer, nullptr, "invalid cache buffer" );
 
         const void * uncompress_memory = uncompress_buffer->getBuffer();
         size_t uncompress_size = uncompress_buffer->getSize();
@@ -77,19 +66,16 @@ namespace Mengine
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
-        void * buffer = memory->newBuffer( compressSize2, MENGINE_DOCUMENT_FUNCTION );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        if( buffer == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory size '%d'"
-                , compressSize2
-            );
+        void * memory_buffer = memory->newBuffer( compressSize2, MENGINE_DOCUMENT_FUNCTION );
 
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr, "invalid new memory size '%d'"
+            , compressSize2
+        );
 
         size_t compressSize;
-        if( _archivator->compress( buffer, compressSize2, _buffer, _size, compressSize, _compress ) == false )
+        if( _archivator->compress( memory_buffer, compressSize2, _buffer, _size, compressSize, _compress ) == false )
         {
             LOGGER_ERROR( "invalid compress"
             );
@@ -99,14 +85,9 @@ namespace Mengine
 
         void * new_memory = memory->newBuffer( compressSize, MENGINE_DOCUMENT_FUNCTION );
 
-        if( new_memory == nullptr )
-        {
-            LOGGER_ERROR( "invalid new memory '%d'"
-                , compressSize
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( new_memory, nullptr, "invalid new memory '%d'"
+            , compressSize
+        );
 
         return memory;
     }

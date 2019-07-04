@@ -98,27 +98,17 @@ namespace Mengine
         OutputStreamInterfacePtr stream_output = FILE_SERVICE()
             ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream_output == nullptr )
-        {
-            LOGGER_ERROR( "%s invalid open output '%s'"
-                , m_options.inputFileName.c_str()
-                , full_output.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "'%s' invalid open output '%s'"
+            , m_options.inputFileName.c_str()
+            , full_output.c_str()
+        );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FUNCTION );
 
-        if( encoder == nullptr )
-        {
-            LOGGER_ERROR( "%s invalid create encoder"
-                , m_options.inputFileName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "'%s' invalid create encoder"
+            , m_options.inputFileName.c_str()
+        );
 
         if( encoder->initialize( stream_output ) == false )
         {

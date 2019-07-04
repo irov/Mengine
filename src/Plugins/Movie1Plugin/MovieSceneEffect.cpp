@@ -1,6 +1,7 @@
 #include "MovieSceneEffect.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -44,20 +45,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieSceneEffect::setPropagateNode( Node * _propagate )
     {
-        if( _propagate == nullptr )
-        {
-            LOGGER_ERROR( "MovieSceneEffect::setPropagateNode '%s' invalid set propagate node 'nullptr'"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _propagate, false, "'%s' invalid set propagate node 'nullptr'"
+            , this->getName().c_str()
+        );
 
         m_propagate = _propagate;
 
         if( m_propagate->getRender() == nullptr )
         {
-            LOGGER_ERROR( "MovieSceneEffect::setPropagateNode '%s' propagate node '%s' type '%s' is not Renderable!"
+            LOGGER_ERROR( "'%s' propagate node '%s' type '%s' is not Renderable!"
                 , this->getName().c_str()
                 , m_propagate->getName().c_str()
                 , m_propagate->getType().c_str()

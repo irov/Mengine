@@ -1,8 +1,8 @@
 #include "Shape.h"
 
 #include "Kernel/Surface.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -35,14 +35,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Shape::_compile()
     {
-        if( m_surface == nullptr )
-        {
-            LOGGER_ERROR( "'%s' can`t setup surface"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_surface, false, "'%s' can`t setup surface"
+            , this->getName().c_str()
+        );
 
         if( m_surface->compile() == false )
         {

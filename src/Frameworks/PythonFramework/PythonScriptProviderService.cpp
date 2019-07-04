@@ -3,6 +3,7 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #ifdef MENGINE_WINDOWS_DEBUG
 #   include <crtdbg.h>
@@ -41,13 +42,7 @@ namespace Mengine
         _CrtSetReportMode( _CRT_ASSERT, crt_assert );
 #endif
 
-        if( kernel == nullptr )
-        {
-            LOGGER_ERROR( "invalid initialize pybind"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( kernel, false, "invalid initialize pybind" );
 
         m_kernel = kernel;
 

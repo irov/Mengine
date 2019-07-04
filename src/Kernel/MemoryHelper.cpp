@@ -112,10 +112,7 @@ namespace Mengine
         {
             MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _doc );
 
-            if( cache == nullptr )
-            {
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( cache, nullptr );
 
             void * memory = cache->getBuffer();
 

@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -72,10 +73,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
     {
-        if( _worker == nullptr )
-        {
-            return 0;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _worker, 0 );
 
         if( this->isCancel() == true )
         {

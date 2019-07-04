@@ -7,6 +7,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
@@ -32,35 +33,25 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
-                , _resource->getName().c_str()
-                , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "resource '%s' group '%s' invalid open file '%s:%s'"
+            , _resource->getName().c_str()
+            , _resource->getGroupName().c_str()
+            , _resource->getFileGroup()->getName().c_str()
+            , _resource->getFilePath().c_str()
+        );
 
         const ConstString & codecType = _resource->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
-                , _resource->getName().c_str()
-                , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
-                , _resource->getCodecType().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
+            , _resource->getName().c_str()
+            , _resource->getGroupName().c_str()
+            , _resource->getFileGroup()->getName().c_str()
+            , _resource->getFilePath().c_str()
+            , _resource->getCodecType().c_str()
+        );
 
         if( decoder->prepareData( stream ) == false )
         {

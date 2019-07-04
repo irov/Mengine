@@ -191,13 +191,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _streaming );
 
-        if( _stream == nullptr )
-        {
-            LOGGER_ERROR( "failed _stream == NULL"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == NULL" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
@@ -225,13 +219,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     bool Win32FileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
     {
-        if( _stream == nullptr )
-        {
-            LOGGER_ERROR( "failed _stream == NULL"
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == NULL" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 

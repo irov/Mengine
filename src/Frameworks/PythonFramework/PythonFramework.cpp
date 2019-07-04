@@ -44,9 +44,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::_finalizeService()
     {
-        SCRIPT_SERVICE()
-            ->ejectingScriptEmbeddings();
-
         REMOVE_SCRIPT_EMBEDDING( ConstsScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( MathScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( HelperScriptEmbedding );

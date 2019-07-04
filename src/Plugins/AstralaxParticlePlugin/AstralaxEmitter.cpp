@@ -14,6 +14,7 @@
 #include "Kernel/UnknownResourceImageDataInterface.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/RenderUtils.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "math/box2.h"
 #include "math/angle.h"
@@ -66,14 +67,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_compile()
     {
-        if( m_resourceParticle == nullptr )
-        {
-            LOGGER_ERROR( "emitter '%s' resource is null"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceParticle, false, "emitter '%s' resource is null"
+            , m_name.c_str()
+        );
 
         if( m_resourceParticle.compile() == false )
         {
@@ -87,15 +83,10 @@ namespace Mengine
 
         AstralaxEmitterInterfacePtr emitter = m_resourceParticle->createEmitter( MENGINE_DOCUMENT_FUNCTION );
 
-        if( emitter == nullptr )
-        {
-            LOGGER_ERROR( "emitter '%s' can't create emitter source '%s'"
-                , m_name.c_str()
-                , m_resourceParticle->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( emitter, false, "emitter '%s' can't create emitter source '%s'"
+            , m_name.c_str()
+            , m_resourceParticle->getName().c_str()
+        );
 
         if( m_emitterTranslateWithParticleSetup == true )
         {
@@ -621,27 +612,17 @@ namespace Mengine
         const ResourcePtr & resourceHIT = RESOURCE_SERVICE()
             ->getResource( m_emitterImageName );
 
-        if( resourceHIT == nullptr )
-        {
-            LOGGER_ERROR( "emitter '%s' can't compile emitter hit %s"
-                , this->getName().c_str()
-                , m_emitterImageName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, false, "emitter '%s' can't compile emitter hit %s"
+            , this->getName().c_str()
+            , m_emitterImageName.c_str()
+        );
 
         UnknownResourceImageDataInterface * unknownImageData = resourceHIT->getUnknown();
 
-        if( unknownImageData == nullptr )
-        {
-            LOGGER_ERROR( "emitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
-                , this->getName().c_str()
-                , m_emitterImageName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( unknownImageData, false, "emitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
+            , this->getName().c_str()
+            , m_emitterImageName.c_str()
+        );
 
         uint32_t alphaWidth = unknownImageData->getImageWidth();
         uint32_t alphaHeight = unknownImageData->getImageHeight();

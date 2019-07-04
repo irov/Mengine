@@ -2,6 +2,7 @@
 
 #include "Kernel/Updatable.h"
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <algorithm>
 
@@ -121,14 +122,9 @@ namespace Mengine
 
         LeafUpdatable * leaf = getLeafUpdatable( _mode, _deep );
 
-        if( leaf == nullptr )
-        {
-            LOGGER_ERROR( "UpdateService::createUpdatater unsupport mode '%d'"
-                , _mode
-            );
-
-            return INVALID_UPDATABLE_ID;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( leaf, INVALID_UPDATABLE_ID, "unsupport mode '%d'"
+            , _mode
+        );
 
         leaf->indeciesAdd.push_back( id );
 

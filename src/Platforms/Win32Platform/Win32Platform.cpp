@@ -1441,7 +1441,7 @@ namespace Mengine
         {
             if( _buffer->empty() == true )
             {
-                LOGGER_ERROR( "WinApplication::notifyCursorIconSetup %s buffer empty"
+                LOGGER_ERROR( "'%s' buffer empty"
                     , _path.c_str()
                 );
 
@@ -1462,23 +1462,18 @@ namespace Mengine
             OutputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openOutputFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
 
-            if( stream == nullptr )
-            {
-                LOGGER_ERROR( "name '%s' path '%s' can't open output stream '%s'"
-                    , _name.c_str()
-                    , _path.c_str()
-                    , c_icoFile.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' path '%s' can't open output stream '%s'"
+                , _name.c_str()
+                , _path.c_str()
+                , c_icoFile.c_str()
+            );
 
             void * memory = _buffer->getBuffer();
             size_t size = _buffer->getSize();
 
             if( stream->write( memory, size ) == false )
             {
-                LOGGER_ERROR( "name %s path %s can't write output stream '%s'"
+                LOGGER_ERROR( "name '%s' path '%s' can't write output stream '%s'"
                     , _name.c_str()
                     , _path.c_str()
                     , c_icoFile.c_str()
@@ -1493,7 +1488,7 @@ namespace Mengine
             WString unicode_icoFile;
             if( Helper::utf8ToUnicode( c_icoFile, unicode_icoFile ) == false )
             {
-                LOGGER_ERROR( "name %s path %s can't file name '%s' to unicode"
+                LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
                     , _name.c_str()
                     , _path.c_str()
                     , c_icoFile.c_str()
@@ -1510,7 +1505,7 @@ namespace Mengine
 
                 if( errCode != 0 )
                 {
-                    LOGGER_ERROR( "icon %s for file %ls errCode %d"
+                    LOGGER_ERROR( "icon '%s' for file '%ls' errCode %d"
                         , _name.c_str()
                         , unicode_icoFile.c_str()
                         , errCode

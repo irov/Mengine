@@ -12,6 +12,7 @@
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
 #include "Kernel/MatrixProxy.h"
+#include "Kernel/Hashtable.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
@@ -228,28 +229,28 @@ namespace Mengine
         typedef Map<ConstString, Camera> MapCameras;
         MapCameras m_cameras;
 
-        typedef Map<ConstString, Movie2SubCompositionPtr> MapSubCompositions;
-        MapSubCompositions m_subCompositions;
+        typedef Hashtable<ConstString, Movie2SubCompositionPtr> HashtableSubCompositions;
+        HashtableSubCompositions m_subCompositions;
 
         typedef Vector<SurfacePtr> VectorSurfaces;
         VectorSurfaces m_surfaces;
 
-        typedef Map<uint32_t, Movie2SlotPtr> MapSlots;
-        MapSlots m_slots;
+        typedef Hashtable<uint32_t, Movie2SlotPtr> HashtableSlots;
+        HashtableSlots m_slots;
 
-        typedef Map<uint32_t, HotSpotPolygonPtr> MapSockets;
-        MapSockets m_sockets;
+        typedef Hashtable<uint32_t, HotSpotPolygonPtr> HashtableSockets;
+        HashtableSockets m_sockets;
 
         ConstString m_aliasEnvironment;
 
-        typedef Map<uint32_t, TextFieldPtr> MapTexts;
-        MapTexts m_texts;
+        typedef Hashtable<uint32_t, TextFieldPtr> HashtableTexts;
+        HashtableTexts m_texts;
 
-        typedef Map<uint32_t, ShapeQuadFixedPtr> MapSprites;
-        MapSprites m_sprites;
+        typedef Hashtable<uint32_t, ShapeQuadFixedPtr> HashtableSprites;
+        HashtableSprites m_sprites;
 
-        typedef Map<uint32_t, NodePtr> MapParticleEmitter2s;
-        MapParticleEmitter2s m_particleEmitters;
+        typedef Hashtable<uint32_t, NodePtr> HashtableParticleEmitter2s;
+        HashtableParticleEmitter2s m_particleEmitters;
 
         typedef Vector<MatrixProxyPtr> VectorMatrixProxies;
         VectorMatrixProxies m_matrixProxies;

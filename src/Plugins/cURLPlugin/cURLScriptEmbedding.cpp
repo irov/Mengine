@@ -5,6 +5,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
@@ -72,6 +73,8 @@ namespace Mengine
 
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
+
         receiver->initialize( _cb, _args );
 
         uint32_t id = CURL_SERVICE()
@@ -83,6 +86,8 @@ namespace Mengine
     HttpRequestID cURLScriptEmbedding::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
 
         receiver->initialize( _cb, _args );
 
@@ -96,6 +101,8 @@ namespace Mengine
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
+
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
@@ -107,6 +114,8 @@ namespace Mengine
     HttpRequestID cURLScriptEmbedding::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
         Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
 
         receiver->initialize( _cb, _args );
 

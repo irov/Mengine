@@ -4,7 +4,7 @@
 #include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/RenderUtils.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -120,14 +120,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::_compile()
     {
-        if( m_resourceVideo == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource is null"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceVideo, false, "'%s' resource is null"
+            , this->getName().c_str()
+        );
 
         if( m_resourceVideo.compile() == false )
         {
@@ -165,15 +160,10 @@ namespace Mengine
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
             ->createDynamicTexture( dataInfo->width, dataInfo->height, channels, 1, dataInfo->format, "SurfaceVideo" );
 
-        if( dynamicTexture == nullptr )
-        {
-            LOGGER_ERROR( "'%s' resource '%s' can`t create dynamic texture"
-                , this->getName().c_str()
-                , m_resourceVideo->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicTexture, false, "'%s' resource '%s' can`t create dynamic texture"
+            , this->getName().c_str()
+            , m_resourceVideo->getName().c_str()
+        );
 
         m_textures[0] = dynamicTexture;
 
@@ -190,16 +180,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceVideo::createDecoder_()
     {
-        m_videoDecoder = m_resourceVideo->createVideoDecoder( MENGINE_DOCUMENT_FUNCTION );
+        VideoDecoderInterfacePtr videoDecoder = m_resourceVideo->createVideoDecoder( MENGINE_DOCUMENT_FUNCTION );
 
-        if( m_videoDecoder == nullptr )
-        {
-            LOGGER_ERROR( "'%s' can't create video decoder"
-                , this->getName().c_str()
-            );
+        MENGINE_ASSERTION_MEMORY_PANIC( videoDecoder, false, "'%s' can't create video decoder"
+            , this->getName().c_str()
+        );
 
-            return false;
-        }
+        m_videoDecoder = videoDecoder;
 
         return true;
     }
@@ -553,17 +540,12 @@ namespace Mengine
         size_t pitch = 0;
         void * lockRect = image->lock( &pitch, 0, rect, false );
 
-        if( lockRect == nullptr )
-        {
-            LOGGER_ERROR( "Video::fillVideoBuffer_ %s:%s invalid lock texture %d:%d"
-                , this->getName().c_str()
-                , m_resourceVideo->getName().c_str()
-                , rect.right
-                , rect.bottom
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( lockRect, false, "'%s:%s' invalid lock texture %d:%d"
+            , this->getName().c_str()
+            , m_resourceVideo->getName().c_str()
+            , rect.right
+            , rect.bottom
+        );
 
         m_videoDecoder->setPitch( pitch );
 
@@ -588,14 +570,9 @@ namespace Mengine
 
         RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            LOGGER_ERROR( "surface %s invalid make material"
-                , this->getName().c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "surface %s invalid make material"
+            , this->getName().c_str()
+        );
 
         return material;
     }

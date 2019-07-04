@@ -535,17 +535,12 @@ namespace Mengine
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FUNCTION );
 
-            if( font == nullptr )
-            {
-                LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' not found type '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _path.c_str()
-                    , fontName.c_str()
-                    , fontType.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid initialize '%s:%s' font '%s' not found type '%s'"
+                , _fileGroup->getName().c_str()
+                , _path.c_str()
+                , fontName.c_str()
+                , fontType.c_str()
+            );
 
             font->setName( fontName );
             font->setType( fontType );
@@ -752,14 +747,9 @@ namespace Mengine
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 
-        if( textEntry == nullptr )
-        {
-            LOGGER_ERROR( "can't find string associated with key - '%s'"
-                , _key.c_str()
-            );
-
-            return TextEntryInterfacePtr::none();
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, TextEntryInterfacePtr::none(), "can't find string associated with key - '%s'"
+            , _key.c_str()
+        );
 
         return textEntry;
     }

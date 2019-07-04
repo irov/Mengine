@@ -25,6 +25,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
@@ -306,10 +307,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "zip" ) );
 
-        if( archivator == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
 
         dataflowPYZ->setArchivator( archivator );
 
@@ -389,6 +387,15 @@ namespace Mengine
 
         m_debugCallFunctions.clear();
 #endif
+
+        for( const HashtableEmbeddings::value_type & value : m_embeddings )
+        {
+            const ScriptEmbeddingInterfacePtr & embedding = value.element;
+
+            embedding->ejecting( m_kernel );
+        }
+
+        m_embeddings.clear();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
@@ -497,24 +504,11 @@ namespace Mengine
     {
         const ScriptEmbeddingInterfacePtr & embedding = m_embeddings.erase( _name );
 
-        if( embedding == nullptr )
-        {
-            return;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( embedding, "invalid erase '%s'"
+            , _name.c_str() 
+        );
 
         embedding->ejecting( m_kernel );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptService::ejectingScriptEmbeddings()
-    {
-        for( const HashtableEmbeddings::value_type & value : m_embeddings )
-        {
-            const ScriptEmbeddingInterfacePtr & embedding = value.element;
-
-            embedding->ejecting( m_kernel );
-        }
-
-        m_embeddings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     EventablePtr PythonScriptService::eventableEntity( const pybind::object & _type )
@@ -565,14 +559,9 @@ namespace Mengine
 
             ScriptModuleInterfacePtr module = this->importModule( pak.module );
 
-            if( module == nullptr )
-            {
-                LOGGER_ERROR( "invalid import module '%s'"
-                    , pak.module.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+                , pak.module.c_str()
+            );
         }
 
         return true;
@@ -607,14 +596,9 @@ namespace Mengine
 
         ScriptModuleInterfacePtr module = this->importModule( _pack.module );
 
-        if( module == nullptr )
-        {
-            LOGGER_ERROR( "invalid import module '%s'"
-                , _pack.module.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+            , _pack.module.c_str()
+        );
 
         if( _pack.initializer.empty() == true )
         {
@@ -656,14 +640,9 @@ namespace Mengine
 
             ScriptModuleInterfacePtr module = this->importModule( pak.module );
 
-            if( module == nullptr )
-            {
-                LOGGER_ERROR( "invalid import module '%s'"
-                    , pak.module.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
+                , pak.module.c_str()
+            );
 
             if( module->onFinalize( pak.finalizer ) == false )
             {
@@ -758,14 +737,9 @@ namespace Mengine
             return nullptr;
         }
 
-        if( py_module == nullptr )
-        {
-            LOGGER_ERROR( "invalid import module '%s'(script)"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( py_module, nullptr, "invalid import module '%s'(script)"
+            , _name.c_str()
+        );
 
         ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FUNCTION );
 

@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "jpp/jpp.hpp"
 
@@ -80,34 +81,24 @@ namespace Mengine
         const ResourceImagePtr& resourceImage = RESOURCE_SERVICE()
             ->getResource( m_resourceImageName );
 
-        if( resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+            , this->getName().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getGroupName().c_str()
+            , m_resourceImageName.c_str()
+        );
 
         m_resourceImage = resourceImage;
 
         const ResourcePtr& resourceJSON = RESOURCE_SERVICE()
             ->getResource( m_resourceJSONName );
 
-        if( resourceJSON == nullptr )
-        {
-            LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceJSONName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+            , this->getName().c_str()
+            , this->getFileGroup()->getName().c_str()
+            , this->getGroupName().c_str()
+            , m_resourceJSONName.c_str()
+        );
 
         m_resourceJSON = resourceJSON;
 
@@ -178,6 +169,8 @@ namespace Mengine
 
             ResourceImagePtr image = RESOURCE_SERVICE()
                 ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImage" ), MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( image, false );
 
             image->setTexture( atlasTexture );
             image->setTextureAlpha( atlasTextureAlpha );

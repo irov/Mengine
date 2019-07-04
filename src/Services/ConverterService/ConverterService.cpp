@@ -95,6 +95,8 @@ namespace Mengine
         if( _converter.empty() == true )
         {
             *_out = _in;
+
+            return true;
         }
 
         ConverterInterfacePtr converter = this->createConverter( _converter, _doc );

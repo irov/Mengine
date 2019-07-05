@@ -52,6 +52,6 @@ namespace Mengine
         HashtableTexturepackerFrames m_frames;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<ResourceTexturepacker> ResourceImageTexturepackerPtr;
+    typedef IntrusiveResourcePtr<ResourceTexturepacker> ResourceTexturepackerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

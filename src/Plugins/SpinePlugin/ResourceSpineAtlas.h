@@ -48,8 +48,9 @@ namespace Mengine
 
 		spAtlas * m_atlas;        
 
-        friend const Mengine::ResourceImagePtr & _spAtlasPage_createTexture2( const Mengine::ResourceSpineAtlas *, const char * );
+        friend const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlas *, const char * );
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceSpineAtlas> ResourceSpineAtlasPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

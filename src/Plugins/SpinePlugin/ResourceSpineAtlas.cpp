@@ -96,17 +96,12 @@ namespace Mengine
             const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
                 ->getResource( desc.resourceImageName );
 
-            if( resourceImage == nullptr )
-            {
-                LOGGER_ERROR( "'%s' category '%s' group '%s' invalid get image resource '%s'"
-                    , this->getName().c_str()
-                    , this->getFileGroup()->getName().c_str()
-                    , this->getGroupName().c_str()
-                    , desc.resourceImageName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+                , this->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
+                , this->getGroupName().c_str()
+                , desc.resourceImageName.c_str()
+            );
 
             if( resourceImage->incrementReference() == false )
             {
@@ -130,10 +125,7 @@ namespace Mengine
 
         atlas_memory = nullptr;
 
-        if( atlas == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas, false );
 
         m_atlas = atlas;
 		
@@ -142,11 +134,12 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSpineAtlas::_release()
 	{
-        for( const ImageDesc & desc : m_images )
+        for( ImageDesc & desc : m_images )
         {
             const ResourceImagePtr & resourceImage = desc.resourceImage;
 
             resourceImage->decrementReference();
+            desc.resourceImage = nullptr;
         }
 
 		if( m_atlas != nullptr )

@@ -103,7 +103,6 @@ namespace Mengine
 		ResourceHolder<ResourceSpine> m_resourceSpine;
 			
 		spSkeleton * m_skeleton;
-
 		spAnimationStateData * m_animationStateData;
 
 		struct Animation

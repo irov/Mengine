@@ -602,7 +602,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_crashEngine()
         {
-            *((uint32_t*)nullptr) = 0xDEADC0DE;
+            volatile uint32_t * nullptr_crash = nullptr;
+            *nullptr_crash = 0xDEADC0DE;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_freezeEngine()

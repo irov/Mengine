@@ -209,7 +209,16 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+        if( memory == nullptr )
+        {
+            LOGGER_ERROR( "movie2 '%s' group '%s' can`t load stream archive file '%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
 
         void * memory_buffer = memory->getBuffer();
 
@@ -220,11 +229,17 @@ namespace Mengine
 
         aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, (ae_voidptr_t)_resource.get() );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( movieData, false );
+        if( movieData == nullptr )
+        {
+            return false;
+        }
 
         aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( movieStream, false );
+        if( movieStream == nullptr )
+        {
+            return false;
+        }
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;

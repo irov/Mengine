@@ -26,15 +26,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptProviderService::_initializeService()
     {
-        bool developmentMode = HAS_OPTION( "dev" );
-
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         int crt_warn = _CrtSetReportMode( _CRT_WARN, _CRTDBG_REPORT_MODE );
         int crt_error = _CrtSetReportMode( _CRT_ERROR, _CRTDBG_REPORT_MODE );
         int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif        
 
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, developmentMode, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, MENGINE_DEBUG_ATTRIBUTE( true, false ), false, true );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );

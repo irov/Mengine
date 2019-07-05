@@ -36,6 +36,17 @@ namespace Mengine
 
         ~EntityScriptMethod() override
         {
+            for( const EntityPrototypeGeneratorPtr & generator : m_entityPrototypeGenerators )
+            {
+                const ConstString & category = generator->getCategory();
+                const ConstString & prototype = generator->getPrototype();
+
+                PROTOTYPE_SERVICE()
+                    ->removePrototype( category, prototype );
+            }
+
+            m_entityPrototypeGenerators.clear();
+
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryEntityPrototypeGenerator );
 
             m_factoryEntityPrototypeGenerator = nullptr;
@@ -48,6 +59,8 @@ namespace Mengine
             EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
 
             generator->setGenerator( _generator );
+
+            m_entityPrototypeGenerators.emplace_back( generator );
 
             bool successful = PROTOTYPE_SERVICE()
                 ->addPrototype( _category, _prototype, generator );
@@ -112,6 +125,9 @@ namespace Mengine
 
     protected:
         FactoryPtr m_factoryEntityPrototypeGenerator;
+
+        typedef Vector<EntityPrototypeGeneratorPtr> VectorEntityPrototypeGenerators;
+        VectorEntityPrototypeGenerators m_entityPrototypeGenerators;
     };
     //////////////////////////////////////////////////////////////////////////
     class superclass_new_Entity

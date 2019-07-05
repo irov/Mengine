@@ -254,13 +254,13 @@ namespace Mengine
 
             const FilePath & filePath = meta_FragmentShader.get_File_Path();
 
-            ConstString fileConverter;
-            meta_FragmentShader.get_File_Converter( &fileConverter );
+            ConstString fileConverterType;
+            meta_FragmentShader.get_File_Converter( &fileConverterType );
 
             bool isCompile = false;
             meta_FragmentShader.get_File_Compile( &isCompile );
 
-            RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, fileConverter, isCompile );
+            RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, fileConverterType, isCompile );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load fragment shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
@@ -989,11 +989,11 @@ namespace Mengine
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converter, bool _compile )
+    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile )
     {
         FilePath outFilePath;
         if( CONVERTER_SERVICE()
-            ->convert( _converter, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return nullptr;
         }
@@ -1010,11 +1010,11 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converter, bool _compile )
+    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile )
     {
         FilePath outFilePath;
         if( CONVERTER_SERVICE()
-            ->convert( _converter, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return nullptr;
         }

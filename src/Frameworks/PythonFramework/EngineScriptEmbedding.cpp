@@ -3695,11 +3695,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "addShapeFollowerCustomSize", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerCustomSize );
         pybind::def_functor( _kernel, "addShapeFollowerTextureUVScale", nodeScriptMethod, &EngineScriptMethod::s_addShapeFollowerTextureUVScale );
         pybind::def_functor( _kernel, "removeNodeFollower", nodeScriptMethod, &EngineScriptMethod::s_removeNodeFollower );
-
         pybind::def_functor( _kernel, "moduleMessage", nodeScriptMethod, &EngineScriptMethod::s_moduleMessage );
-
         pybind::def_functor( _kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
-
         pybind::def_functor( _kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable> >( _kernel, "PythonValueFollower" )

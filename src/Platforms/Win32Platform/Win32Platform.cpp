@@ -93,7 +93,7 @@ namespace Mengine
 
             if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
             {
-                Char userPath[MENGINE_MAX_PATH] = { 0 };
+                Char userPath[MENGINE_MAX_PATH] = {0};
                 this->getUserPath( userPath );
 
                 String dumpPath;
@@ -101,7 +101,7 @@ namespace Mengine
                 dumpPath += "Dump";
                 dumpPath += "_";
 
-                Char date[1024] = { 0 };
+                Char date[1024] = {0};
                 this->makeDateTime( date, 1024 );
 
                 dumpPath += date;
@@ -304,7 +304,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcessDump()
     {
-        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        Char userPath[MENGINE_MAX_PATH] = {0};
         this->getUserPath( userPath );
 
         String processDumpPath;
@@ -312,7 +312,7 @@ namespace Mengine
         processDumpPath += "Process";
         processDumpPath += "_";
 
-        Char date[1024] = { 0 };
+        Char date[1024] = {0};
         PLATFORM_SERVICE()
             ->makeDateTime( date, 1024 );
 
@@ -383,16 +383,16 @@ namespace Mengine
     void Win32Platform::updatePlatform()
     {
         this->setActive_( true );
-        
+
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
-		
-		bool developmentMode = HAS_OPTION( "dev" );
 
-		if( developmentMode == true )
-		{
-			Win32AntifreezeMonitor::run();
-		}
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        if( developmentMode == true )
+        {
+            Win32AntifreezeMonitor::run();
+        }
 
 #ifdef MENGINE_DEBUG
         try
@@ -407,10 +407,10 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-				if( developmentMode == true )
-				{
-					Win32AntifreezeMonitor::ping();
-				}
+                if( developmentMode == true )
+                {
+                    Win32AntifreezeMonitor::ping();
+                }
 
                 MSG  msg;
                 while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) != FALSE )
@@ -491,10 +491,10 @@ namespace Mengine
         }
 #endif
 
-		if( developmentMode == true )
-		{
-			Win32AntifreezeMonitor::stop();
-		}
+        if( developmentMode == true )
+        {
+            Win32AntifreezeMonitor::stop();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::stopPlatform()
@@ -818,22 +818,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_sonvertUTF32toUTF8( UINT32 _utf32, Char * _utf8 )
     {
-        if( _utf32 <= 0x7F ) {
+        if( _utf32 <= 0x7F )
+        {
             _utf8[0] = (Char)_utf32;
             _utf8[1] = '\0';
         }
-        else if( _utf32 <= 0x7FF ) {
+        else if( _utf32 <= 0x7FF )
+        {
             _utf8[0] = 0xC0 | (Char)((_utf32 >> 6) & 0x1F);
             _utf8[1] = 0x80 | (Char)(_utf32 & 0x3F);
             _utf8[2] = '\0';
         }
-        else if( _utf32 <= 0xFFFF ) {
+        else if( _utf32 <= 0xFFFF )
+        {
             _utf8[0] = 0xE0 | (Char)((_utf32 >> 12) & 0x0F);
             _utf8[1] = 0x80 | (Char)((_utf32 >> 6) & 0x3F);
             _utf8[2] = 0x80 | (Char)(_utf32 & 0x3F);
             _utf8[3] = '\0';
         }
-        else if( _utf32 <= 0x10FFFF ) {
+        else if( _utf32 <= 0x10FFFF )
+        {
             _utf8[0] = 0xF0 | (Char)((_utf32 >> 18) & 0x0F);
             _utf8[1] = 0x80 | (Char)((_utf32 >> 12) & 0x3F);
             _utf8[2] = 0x80 | (Char)((_utf32 >> 6) & 0x3F);
@@ -1865,7 +1869,7 @@ namespace Mengine
                     {
                         continue;
                     }
-                    
+
                     WChar sPath2[MENGINE_MAX_PATH] = {0};
                     ::wcscpy( sPath2, sPath );
                     ::wcscat( sPath2, L"\0" );
@@ -1889,7 +1893,7 @@ namespace Mengine
                     {
                         wcscpy( unicode_out, unicode_filepath );
                     }
-                    
+
                     Char utf8_filepath[MENGINE_MAX_PATH];
                     if( Helper::unicodeToUtf8( unicode_out, utf8_filepath, MENGINE_MAX_PATH ) == false )
                     {
@@ -1966,7 +1970,7 @@ namespace Mengine
                 if( stop == true )
                 {
                     ::FindClose( hFind );
-                 
+
                     *_stop = true;
 
                     return true;
@@ -2282,12 +2286,12 @@ namespace Mengine
             return false;
         }
 
-        Helper::unicodeToUtf8( unicode_value, _value, _size );        
+        Helper::unicodeToUtf8( unicode_value, _value, _size );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createProcess( const Char * _process, const Char * _command )
+    bool Win32Platform::createProcess( const Char * _process, const Char * _command, uint32_t * _exitCode )
     {
         if( _command == nullptr && _command[0] != '\0' && _command[0] != ' ' )
         {
@@ -2299,6 +2303,11 @@ namespace Mengine
             return false;
         }
 
+        LOGGER_MESSAGE( "create process '%s %s'"
+            , _process
+            , _command
+        );
+
         WChar unicode_process[MAX_PATH] = {'\0'};
         Helper::utf8ToUnicode( _process, unicode_process, MAX_PATH );
 
@@ -2307,7 +2316,14 @@ namespace Mengine
 
         STARTUPINFO info = {0};
         PROCESS_INFORMATION processInfo = {0};
-        if( ::CreateProcess( unicode_process, unicode_command, NULL, NULL, FALSE, 0, NULL, NULL, &info, &processInfo ) == FALSE )
+        if( ::CreateProcess( unicode_process, unicode_command
+            , NULL
+            , NULL
+            , FALSE
+            , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
+            , NULL
+            , &info
+            , &processInfo ) == FALSE )
         {
             DWORD le = GetLastError();
 
@@ -2322,10 +2338,33 @@ namespace Mengine
 
             return false;
         }
-        
+
         WaitForSingleObject( processInfo.hProcess, INFINITE );
+
+        DWORD exitCode;
+        BOOL result = GetExitCodeProcess( processInfo.hProcess, &exitCode );
+
         CloseHandle( processInfo.hProcess );
         CloseHandle( processInfo.hThread );
+
+        if( result == FALSE )
+        {
+            LOGGER_ERROR( "CreateProcess execute invalid get exit code\n[%s %s]\n"
+                , _process
+                , _command
+            );
+
+            return false;
+        }
+
+        LOGGER_MESSAGE( "result [%u]"
+            , exitCode
+        );
+
+        if( _exitCode != nullptr )
+        {
+            *_exitCode = (uint32_t)exitCode;
+        }
 
         return true;
     }

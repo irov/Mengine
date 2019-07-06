@@ -21,7 +21,6 @@
 
 #include "Config/Stringstream.h"
 
-#include "pybind/pybind.hpp"
 #include "stdex/allocator_report.h"
 
 #include <iomanip>
@@ -118,131 +117,127 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external )
     {
-        MENGINE_UNUSED( _node );
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _external );
+        if( _node->isActivate() == false )
+        {
+            return;
+        }
 
-        //if( _node->isActivate() == false )
-        //{
-        //    return;
-        //}
+        RenderInterface * selfRender = _node->getRender();
 
-        //RenderInterface * selfRender = _node->getRender();
+        if( selfRender != nullptr )
+        {
+            if( selfRender->isRenderEnable() == false )
+            {
+                return;
+            }
 
-        //if( selfRender != nullptr )
-        //{
-        //    if( selfRender->isRenderEnable() == false )
-        //    {
-        //        return;
-        //    }
+            if( selfRender->isHide() == true )
+            {
+                return;
+            }
 
-        //    if( selfRender->isHide() == true )
-        //    {
-        //        return;
-        //    }
+            if( selfRender->isLocalTransparent() == true )
+            {
+                return;
+            }
 
-        //    if( selfRender->isLocalTransparent() == true )
-        //    {
-        //        return;
-        //    }
+            if( selfRender->isExternalRender() == true && _external == false )
+            {
+                return;
+            }
 
-        //    if( selfRender->isExternalRender() == true && _external == false )
-        //    {
-        //        return;
-        //    }
+            RenderContext self_context;
 
-        //    RenderContext self_context;
+            const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
 
-        //    const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
+            if( renderViewport != nullptr )
+            {
+                self_context.viewport = renderViewport;
+            }
+            else
+            {
+                self_context.viewport = _context->viewport;
+            }
 
-        //    if( renderViewport != nullptr )
-        //    {
-        //        self_context.viewport = renderViewport;
-        //    }
-        //    else
-        //    {
-        //        self_context.viewport = _context->viewport;
-        //    }
+            const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
 
-        //    const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
+            if( renderCamera != nullptr )
+            {
+                self_context.camera = renderCamera;
+            }
+            else
+            {
+                self_context.camera = _context->camera;
+            }
 
-        //    if( renderCamera != nullptr )
-        //    {
-        //        self_context.camera = renderCamera;
-        //    }
-        //    else
-        //    {
-        //        self_context.camera = _context->camera;
-        //    }
+            const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
 
-        //    const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
+            if( renderScissor != nullptr )
+            {
+                self_context.scissor = renderScissor;
+            }
+            else
+            {
+                self_context.scissor = _context->scissor;
+            }
 
-        //    if( renderScissor != nullptr )
-        //    {
-        //        self_context.scissor = renderScissor;
-        //    }
-        //    else
-        //    {
-        //        self_context.scissor = _context->scissor;
-        //    }
+            const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
 
-        //    const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
+            if( renderTarget != nullptr )
+            {
+                self_context.target = renderTarget;
+            }
+            else
+            {
+                self_context.target = _context->target;
+            }
 
-        //    if( renderTarget != nullptr )
-        //    {
-        //        self_context.target = renderTarget;
-        //    }
-        //    else
-        //    {
-        //        self_context.target = _context->target;
-        //    }
+            if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
+            {
+                selfRender->render( &self_context );
 
-        //    if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
-        //    {
-        //        selfRender->render( &self_context );
+                const ConstString & type = _node->getType();
 
-        //        const ConstString & type = _node->getType();
+                const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
 
-        //        const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
+                if( nodeDebugRender != nullptr )
+                {
+                    nodeDebugRender->render( &self_context, _node.get() );
+                }
+            }
 
-        //        if( nodeDebugRender != nullptr )
-        //        {
-        //            nodeDebugRender->render( &self_context, _node.get() );
-        //        }
-        //    }
+            const RenderContext * children_context = &self_context;
+            _node->foreachChildrenUnslug( [this, children_context]( const NodePtr & _child )
+            {
+                this->renderDebugNode( _child, children_context, false );
+            } );
 
-        //    const RenderContext * children_context = &self_context;
-        //    _node->foreachChildrenUnslug( [this, children_context]( const NodePtr & _child )
-        //    {
-        //        this->renderDebugNode( _child, children_context, false );
-        //    } );
+            if( self_context.target != nullptr )
+            {
+                const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
 
-        //    if( self_context.target != nullptr )
-        //    {
-        //        const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
+                if( targetRender != nullptr )
+                {
+                    targetRender->render( _context );
+                }
+            }
+        }
+        else
+        {
+            _node->foreachChildrenUnslug( [this, _context]( const NodePtr & _child )
+            {
+                this->renderDebugNode( _child, _context, false );
+            } );
 
-        //        if( targetRender != nullptr )
-        //        {
-        //            targetRender->render( _context );
-        //        }
-        //    }
-        //}
-        //else
-        //{
-        //    _node->foreachChildrenUnslug( [this, _context]( const NodePtr & _child )
-        //    {
-        //        this->renderDebugNode( _child, _context, false );
-        //    } );
+            const ConstString & type = _node->getType();
 
-        //    const ConstString & type = _node->getType();
+            const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
 
-        //    const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
-
-        //    if( nodeDebugRender != nullptr )
-        //    {
-        //        nodeDebugRender->render( _context, _node.get() );
-        //    }
-        //}
+            if( nodeDebugRender != nullptr )
+            {
+                nodeDebugRender->render( _context, _node.get() );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _nodeDebugRender )

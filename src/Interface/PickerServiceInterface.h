@@ -41,7 +41,7 @@ namespace Mengine
         virtual bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) = 0;
 
     public:
-        virtual PickerTrapState * regTrap( const PickerTrapInterfacePtr & _trap ) = 0;
+        virtual PickerTrapState * regTrap( const PickerTrapInterfacePtr & _trap, bool _exclusive ) = 0;
         virtual void unregTrap( PickerTrapState * _id ) = 0;
 
         virtual void updateTraps() = 0;

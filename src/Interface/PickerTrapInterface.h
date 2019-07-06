@@ -24,6 +24,7 @@ namespace Mengine
         bool pressed;
         bool handle;
         bool dead;
+        bool exclusive;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;

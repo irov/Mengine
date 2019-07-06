@@ -1039,13 +1039,15 @@ namespace Mengine
         const ConstString & aliasTestId = TEXT_SERVICE()
             ->getTextAlias( m_aliasEnvironment, m_textId );
 
-        m_textEntry = TEXT_SERVICE()
+        TextEntryInterfacePtr textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
 
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_textEntry, "'%s' can't find text ID '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( textEntry, "'%s' can't find text ID '%s'"
             , this->getName().c_str()
             , m_textId.c_str()
         );
+
+        m_textEntry = textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextField::calcFontName() const
@@ -1418,6 +1420,11 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
+    const ConstString& TextField::getTextID() const
+    {
+        return m_textId;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::removeTextID()
     {
         m_textEntry = nullptr;
@@ -1426,7 +1433,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextField::getTextID() const
+    const ConstString & TextField::getTextEntryID() const
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();
 
@@ -1499,7 +1506,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "'%s:%s' except error '%s'"
                 , this->getName().c_str()
-                , this->getTextID().c_str()
+                , this->getTextEntryID().c_str()
                 , _ex.what()
             );
         }
@@ -1533,7 +1540,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
                 , this->getName().c_str()
-                , this->getTextID().c_str()
+                , this->getTextEntryID().c_str()
                 , m_textFormatArgs.size()
             );
 

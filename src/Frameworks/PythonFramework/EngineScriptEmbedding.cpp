@@ -2550,7 +2550,7 @@ namespace Mengine
         bool s_existText( const ConstString & _key )
         {
             bool exist = TEXT_SERVICE()
-                ->existText( _key, nullptr );
+                ->hasTextEntry( _key, nullptr );
 
             return exist;
         }

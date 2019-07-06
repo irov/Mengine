@@ -50,9 +50,10 @@ namespace Mengine
 
     public:
         void setTextID( const ConstString& _key );
+        const ConstString& getTextID() const;
         void removeTextID();
 
-        const ConstString & getTextID() const;
+        const ConstString & getTextEntryID() const;
 
         void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
         const ConstString & getTextAliasEnvironment() const;

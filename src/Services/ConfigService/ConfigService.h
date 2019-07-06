@@ -9,6 +9,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<IniUtil::IniStore> VectorIniStores;
+    //////////////////////////////////////////////////////////////////////////
     class ConfigService
         : public ServiceBase<ConfigServiceInterface>
     {
@@ -21,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _publicConfigPath, const FilePath & _privateConfigPath ) override;
+        bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
         bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
@@ -44,9 +47,8 @@ namespace Mengine
 
     protected:
         Tags m_platformTags;
-
-        IniUtil::IniStore m_publicINI;
-        IniUtil::IniStore m_privateINI;
+        
+        VectorIniStores m_stores;
     };
 }
 

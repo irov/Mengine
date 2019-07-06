@@ -6,9 +6,6 @@ namespace Mengine
     MemoryProxy::MemoryProxy()
         : m_ptr( nullptr )
         , m_size( 0 )
-#ifdef MENGINE_DEBUG
-        , m_doc( nullptr )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////

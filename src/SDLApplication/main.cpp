@@ -41,6 +41,8 @@ int main( int argc, char * argv[] )
     }
 #endif
 
+    stdex_allocator_finalize();
+
     return 0;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -7,11 +7,11 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/MemoryStore.h"
 #include "Kernel/Params.h"
 #include "Kernel/String.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
+#include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Resolution.h"
@@ -35,7 +35,7 @@ namespace Mengine
             ~IniStore();
 
             FilePath path;
-            MemoryStore memory;
+            MemoryInterfacePtr memory;
 
             tinyini_t ini;
         };
@@ -60,6 +60,7 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
         //////////////////////////////////////////////////////////////////////////
         bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );

@@ -2797,7 +2797,7 @@ namespace Mengine
         bool s_hasTextByKey( const ConstString& _key )
         {
             bool value = TEXT_SERVICE()
-                ->existText( _key, nullptr );
+                ->hasTextEntry( _key, nullptr );
 
             return value;
         }
@@ -2806,7 +2806,7 @@ namespace Mengine
         {
             TextEntryInterfacePtr entry;
             if( TEXT_SERVICE()
-                ->existText( _key, &entry ) == false )
+                ->hasTextEntry( _key, &entry ) == false )
             {
                 pybind::throw_exception( "invalid get key '%s'"
                     , _key.c_str()
@@ -2831,7 +2831,7 @@ namespace Mengine
         {
             TextEntryInterfacePtr entry;
             if( TEXT_SERVICE()
-                ->existText( _key, &entry ) == false )
+                ->hasTextEntry( _key, &entry ) == false )
             {
                 pybind::throw_exception( "invalid get key '%s'"
                     , _key.c_str()

@@ -290,7 +290,7 @@ namespace Mengine
             {
                 TextEntryInterfacePtr entry;
                 if( TEXT_SERVICE()
-                    ->existText( layer.name, &entry ) == false )
+                    ->hasTextEntry( layer.name, &entry ) == false )
                 {
                     LOGGER_ERROR( "'%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
                         , _resource->getName().c_str()

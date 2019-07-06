@@ -122,7 +122,7 @@ namespace Mengine
         virtual bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) = 0;
 
     public:
-        virtual bool createProcess( const Char * _process, const Char * _command ) = 0;
+        virtual bool createProcess( const Char * _process, const Char * _command, uint32_t * _exitCode ) = 0;
 
     public:
         virtual void abort() = 0;

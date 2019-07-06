@@ -35,7 +35,7 @@ namespace Mengine
             , bool _isOverride ) = 0;
 
     public:
-        virtual bool existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const = 0;
+        virtual bool hasTextEntry( const ConstString& _key, TextEntryInterfacePtr * _entry ) const = 0;
         virtual const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const = 0;
 
     public:

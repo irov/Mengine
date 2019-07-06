@@ -72,19 +72,24 @@ namespace Mengine
             , full_input.c_str()
         );
 
-        LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
+        LOGGER_MESSAGE( "converting file '%s' to '%s'"
             , full_input.c_str()
             , full_output.c_str()
-            , buffer
         );
 
+        uint32_t exitCode;
         if( PLATFORM_SERVICE()
-            ->createProcess( fxcPath.c_str(), buffer ) == false )
+            ->createProcess( fxcPath.c_str(), buffer, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer
             );
 
+            return false;
+        }
+
+        if( exitCode != 0 )
+        {
             return false;
         }
 

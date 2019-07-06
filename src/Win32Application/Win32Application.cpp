@@ -904,7 +904,7 @@ namespace Mengine
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+            ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
             LOGGER_WARNING( "Application not setup title 'APPLICATION_TITLE'"
             );

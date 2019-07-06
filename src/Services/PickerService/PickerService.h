@@ -52,7 +52,7 @@ namespace Mengine
         bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) override;
 
     public:
-        PickerTrapState * regTrap( const PickerTrapInterfacePtr & _trap ) override;
+        PickerTrapState * regTrap( const PickerTrapInterfacePtr & _trap, bool _exclusive ) override;
         void unregTrap( PickerTrapState * _id ) override;
 
         void updateTraps() override;
@@ -94,6 +94,7 @@ namespace Mengine
         VectorPickerTrapStates m_states;
 
         uint32_t m_pickerTrapCount;
+        uint32_t m_pickerTrapExclusiveCount;
 
         bool m_block;
         bool m_handleValue;

@@ -14,8 +14,6 @@
 
 #include "Config/Config.h"
 
-#include "pybind/extract.hpp"
-
 #include "stdex/span.h"
 
 namespace Mengine

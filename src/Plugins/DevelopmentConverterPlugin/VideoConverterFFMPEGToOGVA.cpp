@@ -42,13 +42,19 @@ namespace Mengine
             , buffer.c_str()
         );
 
+        uint32_t exitCode;
         if( PLATFORM_SERVICE()
-            ->createProcess( "ffmpeg.exe", buffer.c_str() ) == false )
+            ->createProcess( "ffmpeg.exe", buffer.c_str(), &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()
             );
 
+            return false;
+        }
+
+        if( exitCode != 0 )
+        {
             return false;
         }
 

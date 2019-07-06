@@ -121,7 +121,7 @@ namespace Mengine
     protected:
         void sleep( uint32_t _ms ) override;
         bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) override;
-        bool createProcess( const Char * _process, const Char * _command ) override;
+        bool createProcess( const Char * _process, const Char * _command, uint32_t * _exitCode ) override;
         void abort() override;
 
     protected:

@@ -280,8 +280,8 @@ namespace Mengine
             return false;
         }
 
-        IniUtil::getIniValue( ini, "Game", "Path", m_ñonfigPaths );        
-        IniUtil::getIniValue( ini, "Config", "Path", m_ñonfigPaths );
+        IniUtil::getIniValue( ini, "Game", "Path", m_configPaths );
+        IniUtil::getIniValue( ini, "Config", "Path", m_configPaths );
 
         FilePath resourcePath;
         if( IniUtil::getIniValue( ini, "Resource", "Path", resourcePath ) == true )
@@ -299,7 +299,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        for( const FilePath & filePath : m_ñonfigPaths )
+        for( const FilePath & filePath : m_configPaths )
         {
             if( CONFIG_SERVICE()
                 ->loadConfig( fileGroup, filePath ) == false )

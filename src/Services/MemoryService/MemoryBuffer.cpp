@@ -10,24 +10,19 @@ namespace Mengine
     MemoryBuffer::MemoryBuffer()
         : m_memory( nullptr )
         , m_size( 0 )
-#ifdef MENGINE_DEBUG
-        , m_doc( nullptr )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory, MENGINE_DEBUG_ATTRIBUTE( m_doc, "" ) );
+        Helper::freeMemory( m_memory, MENGINE_DEBUG_ATTRIBUTE( m_doc.c_str(), "" ) );
 
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _doc )
     {
-        MENGINE_UNUSED( _doc );
-
-        void * buffer = this->newBuffer( _size, MENGINE_DEBUG_ATTRIBUTE( _doc, "" ) );
+        void * buffer = this->newBuffer( _size, _doc );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }

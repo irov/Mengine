@@ -44,8 +44,6 @@
 
 #include "math/angle.h"
 
-#include "pybind/extract.hpp"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -1784,6 +1782,8 @@ namespace Mengine
     {
         MovieEventPtr layer_event = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( layer_event, false );
 
         layer_event->setResourceMovie( m_resourceMovie );
 

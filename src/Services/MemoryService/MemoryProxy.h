@@ -6,6 +6,10 @@
 
 #include "stdex/thread_guard.h"
 
+#ifdef MENGINE_DEBUG
+#include "Kernel/String.h"
+#endif
+
 namespace Mengine
 {
     class MemoryProxy
@@ -29,7 +33,7 @@ namespace Mengine
         size_t m_size;
 
 #ifdef MENGINE_DEBUG
-        const Char * m_doc;
+        String m_doc;
 #endif
 
         STDEX_THREAD_GUARD_INIT;

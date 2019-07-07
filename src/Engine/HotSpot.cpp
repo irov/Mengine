@@ -5,17 +5,16 @@
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
 
-#include "pybind/extract.hpp"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpot::HotSpot()
-        : m_outward( false )
+        : m_picker( nullptr )
+        , m_outward( false )
         , m_global( false )
-        , m_picker( nullptr )
+        , m_exclusive( false )
         , m_defaultHandle( true )
     {
     }
@@ -75,6 +74,16 @@ namespace Mengine
         return m_global;
     }
     //////////////////////////////////////////////////////////////////////////
+    void HotSpot::setExclusive( bool _value )
+    {
+        m_exclusive = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpot::getExclusive() const
+    {
+        return m_exclusive;
+    }
+    //////////////////////////////////////////////////////////////////////////
     PickerTrapState * HotSpot::propagatePickerTrapState() const
     {
         return m_picker;
@@ -92,7 +101,7 @@ namespace Mengine
         }
 
         m_picker = PICKER_SERVICE()
-            ->regTrap( PickerTrapInterfacePtr( this ) );
+            ->regTrap( PickerTrapInterfacePtr( this ), m_exclusive );
 
         PICKER_SERVICE()
             ->updateTraps();

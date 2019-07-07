@@ -280,18 +280,8 @@ namespace Mengine
             return false;
         }
 
-        FilePath publicConfigPath;
-        if( IniUtil::getIniValue( ini, "Config", "Public", publicConfigPath ) == true ||
-            IniUtil::getIniValue( ini, "Game", "Path", publicConfigPath ) == true )
-        {
-            m_publicConfigPath = publicConfigPath;
-        }
-
-        FilePath privateConfigPath;
-        if( IniUtil::getIniValue( ini, "Config", "Private", privateConfigPath ) == true )
-        {
-            m_privateConfigPath = privateConfigPath;
-        }
+        IniUtil::getIniValue( ini, "Game", "Path", m_ñonfigPaths );        
+        IniUtil::getIniValue( ini, "Config", "Path", m_ñonfigPaths );
 
         FilePath resourcePath;
         if( IniUtil::getIniValue( ini, "Resource", "Path", resourcePath ) == true )
@@ -309,14 +299,17 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        if( CONFIG_SERVICE()
-            ->loadConfig( fileGroup, m_publicConfigPath, m_privateConfigPath ) == false )
+        for( const FilePath & filePath : m_ñonfigPaths )
         {
-            LOGGER_ERROR( "invalid load config %s"
-                , m_publicConfigPath.c_str()
-            );
+            if( CONFIG_SERVICE()
+                ->loadConfig( fileGroup, filePath ) == false )
+            {
+                LOGGER_ERROR( "invalid load config %s"
+                    , filePath.c_str()
+                );
 
-            return false;
+                return false;
+            }
         }
 
         return true;
@@ -535,8 +528,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initialize()
     {
-        stdex_allocator_initialize();
-
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
         
         ServiceProviderInterface * serviceProvider;
@@ -547,6 +538,7 @@ namespace Mengine
         m_serviceProvider = serviceProvider;
 
         SERVICE_CREATE( FactoryService );
+        SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( OptionsService );
 
@@ -633,7 +625,6 @@ namespace Mengine
         SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );
         SERVICE_CREATE( PrefetcherService );
-        SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
         SERVICE_CREATE( EnumeratorService );
@@ -904,7 +895,7 @@ namespace Mengine
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+            ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
             LOGGER_WARNING( "Application not setup title 'APPLICATION_TITLE'"
             );
@@ -1076,9 +1067,7 @@ namespace Mengine
 
         m_mutexAllocatorPool = nullptr;
 
-        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
-
-        stdex_allocator_finalize();
+        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );        
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Application::update()

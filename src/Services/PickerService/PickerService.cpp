@@ -23,8 +23,9 @@ namespace Mengine
         class PickerVisitor
         {
         public:
-            PickerVisitor( VectorPickerTrapStates & _traps )
+            PickerVisitor( VectorPickerTrapStates & _traps, bool _exclusive )
                 : m_traps( _traps )
+                , m_exclusive( _exclusive )
             {
             }
 
@@ -123,6 +124,11 @@ namespace Mengine
                     return;
                 }
 
+                if( m_exclusive == true && trapState->exclusive == false )
+                {
+                    return;
+                }
+
                 if( trapState->dead == true )
                 {
                     return;
@@ -138,6 +144,8 @@ namespace Mengine
 
         protected:
             VectorPickerTrapStates & m_traps;
+            
+            bool m_exclusive;
 
             RenderViewportInterfacePtr m_currentViewport;
             RenderCameraInterfacePtr m_currentCamera;
@@ -146,6 +154,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PickerService::PickerService()
         : m_pickerTrapCount( 0 )
+        , m_pickerTrapExclusiveCount( 0 )
         , m_block( false )
         , m_handleValue( true )
         , m_invalidateTraps( false )
@@ -261,7 +270,7 @@ namespace Mengine
         this->updateDead_();
     }
     //////////////////////////////////////////////////////////////////////////
-    PickerTrapState * PickerService::regTrap( const PickerTrapInterfacePtr & _trap )
+    PickerTrapState * PickerService::regTrap( const PickerTrapInterfacePtr & _trap, bool _exclusive )
     {
         PickerTrapState state;
 
@@ -273,7 +282,13 @@ namespace Mengine
         state.pressed = false;
         state.handle = false;
         state.dead = false;
+        state.exclusive = _exclusive;
 
+        if( _exclusive == true )
+        {
+            ++m_pickerTrapExclusiveCount;
+        }
+        
         m_pickerTrapState.emplace_back( state );
         PickerTrapState & refState = m_pickerTrapState.back();
 
@@ -305,7 +320,11 @@ namespace Mengine
             if( state.id == _ref->id )
             {
                 state.dead = true;
-                //it->picked = false;
+
+                if( state.exclusive == true )
+                {
+                    --m_pickerTrapExclusiveCount;
+                }
 
                 --m_pickerTrapCount;
 
@@ -707,7 +726,7 @@ namespace Mengine
 
         m_states.clear();
 
-        PickerVisitor pv( m_states );
+        PickerVisitor pv( m_states, m_pickerTrapExclusiveCount != 0 );
         pv.visit( m_viewport, m_camera, m_scene );
 
         for( VectorPickerTrapStates::reverse_iterator
@@ -759,7 +778,7 @@ namespace Mengine
             return false;
         }
 
-        PickerVisitor pv( _states );
+        PickerVisitor pv( _states, m_pickerTrapExclusiveCount != 0 );
         pv.visit( m_viewport, m_camera, m_scene );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()

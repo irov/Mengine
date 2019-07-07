@@ -130,7 +130,7 @@ namespace Mengine
     public:
         bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const override;
         void sleep( uint32_t _ms ) override;
-        bool createProcess( const Char * _process, const Char * _command ) override;
+        bool createProcess( const Char * _process, const Char * _command, uint32_t * _code ) override;
         bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) override;
         void abort() override;
 

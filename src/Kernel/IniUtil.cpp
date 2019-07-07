@@ -49,18 +49,22 @@ namespace Mengine
         {
             size_t size = _stream->size();
 
-            Char * buffer = _ini.memory.allocate( size + 1, MENGINE_DOCUMENT_FUNCTION );
-            _stream->read( buffer, size );
-            buffer[size] = '\0';
+            MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+                ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
-            if( buffer[0] == 'R' && buffer[1] == 'G' && buffer[2] == 'C' && buffer[3] == 'D' )
+            Char * memory_buffer = memory->newBuffer( size + 1, MENGINE_DOCUMENT_FUNCTION );
+
+            _stream->read( memory_buffer, size );
+            memory_buffer[size] = '\0';
+
+            if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
             {
-                uint32_t parrot = *(uint32_t *)(buffer + 4);
+                uint32_t parrot = *(uint32_t *)(memory_buffer + 4);
 
-                Helper::ravingcode( parrot, buffer + 8, size - 8, buffer + 8 );
+                Helper::ravingcode( parrot, memory_buffer + 8, size - 8, memory_buffer + 8 );
             }
 
-            if( tinyini_load( &_ini.ini, buffer ) == TINYINI_RESULT_FAILURE )
+            if( tinyini_load( &_ini.ini, memory_buffer ) == TINYINI_RESULT_FAILURE )
             {
                 LOGGER_ERROR( "ini invalid load '%s'"
                     , tinyini_get_error_message( &_ini.ini )
@@ -68,6 +72,8 @@ namespace Mengine
 
                 return false;
             }
+
+            _ini.memory = memory;
 
             return true;
         }
@@ -387,6 +393,22 @@ namespace Mengine
                 const Char * value = tinyini_get_property_values( &_ini.ini, _section, _key, index );
 
                 ConstString cs = Helper::stringizeString( value );
+
+                _values.emplace_back( cs );
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values )
+        {
+            uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
+
+            for( uint32_t index = 0; index != count; ++index )
+            {
+                const Char * value = tinyini_get_property_values( &_ini.ini, _section, _key, index );
+
+                FilePath cs = Helper::stringizeFilePath( value );
 
                 _values.emplace_back( cs );
             }

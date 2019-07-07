@@ -334,6 +334,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         ThreadConditionVariableInterfacePtr conditionVariable = THREAD_SYSTEM()
             ->createConditionVariable( _doc );
 
@@ -341,7 +343,10 @@ namespace Mengine
         MainCodeDesc desc;
         desc.conditionVariable = conditionVariable;
         desc.lambda = _lambda;
+
+#ifdef MENGINE_DEBUG
         desc.doc = _doc;
+#endif
         m_mainCodes.emplace_back( desc );
         m_mutexMainCode->unlock();
 

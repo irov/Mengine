@@ -40,8 +40,6 @@
 #include "ResourceMovie2Validator.h"
 #include "Movie2DebuggerBoundingBox.h"
 
-#include "pybind/pybind.hpp"
-
 #include <stdlib.h>
 #include <stdarg.h>
 

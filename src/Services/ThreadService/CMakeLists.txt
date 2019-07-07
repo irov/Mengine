@@ -6,7 +6,6 @@ src
 	ThreadService.cpp
     ThreadQueue.h
     ThreadQueue.cpp
-    ThreadMutexDummy.h
 )
 
 ADD_MENGINE_LIBRARY()

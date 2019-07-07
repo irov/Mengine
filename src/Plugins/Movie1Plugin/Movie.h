@@ -24,9 +24,6 @@
 
 #include "Config/Vector.h"
 
-#include "pybind/pybind.hpp"
-
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

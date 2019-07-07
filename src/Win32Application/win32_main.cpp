@@ -15,6 +15,8 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
     UNREFERENCED_PARAMETER( lpCmdLine );
     UNREFERENCED_PARAMETER( nShowCmd );
         
+    stdex_allocator_initialize();
+
 #ifndef MENGINE_DEBUG
     try
 #endif
@@ -42,6 +44,8 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
     }
 #endif    
+
+    stdex_allocator_finalize();
 
     return 0;
 }

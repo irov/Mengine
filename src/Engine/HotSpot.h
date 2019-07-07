@@ -32,6 +32,10 @@ namespace Mengine
         bool getGlobal() const;
 
     public:
+        void setExclusive( bool _value );
+        bool getExclusive() const;
+
+    public:
         bool isMousePickerOver() const;
 
     public:
@@ -52,7 +56,6 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        //void _setLocalHide( bool _value ) override;
         void _freeze( bool _value ) override;
 
     protected:
@@ -88,10 +91,9 @@ namespace Mengine
     protected:
         PickerTrapState * m_picker;
 
-        //mutable mt::box2f m_cacheBoundingBox;
-
         bool m_outward;
         bool m_global;
+        bool m_exclusive;
 
         bool m_defaultHandle;
     };

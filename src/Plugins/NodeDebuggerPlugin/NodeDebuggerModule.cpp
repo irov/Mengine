@@ -37,7 +37,6 @@
 
 #include "Config/Stringstream.h"
 
-#include "pybind/pybind.hpp"
 #include "stdex/allocator_report.h"
 
 #include <iomanip>
@@ -65,8 +64,9 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
 
         Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & ) {
+            uint32_t exitCode;
             PLATFORM_SERVICE()
-                ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790" );
+                ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", &exitCode );
         }, MENGINE_DOCUMENT_FUNCTION );
 
         return true;
@@ -583,15 +583,15 @@ namespace Mengine
         const ConstString & textID = _textField->getTextID();
         const ConstString & textAliasEnvironment = _textField->getTextAliasEnvironment();
 
-        serializeNodeProp( textID, "TextID", xmlNode );
-        serializeNodeProp( textAliasEnvironment, "TextAliasEnvironment", xmlNode );
-
         const ConstString & aliasTestId = TEXT_SERVICE()
             ->getTextAlias( textAliasEnvironment, textID );
 
+        serializeNodeProp( aliasTestId, "TextID", xmlNode );
+        serializeNodeProp( textAliasEnvironment, "TextAliasEnvironment", xmlNode );
+
         TextEntryInterfacePtr textEntry;
         if( TEXT_SERVICE()
-            ->existText( aliasTestId, &textEntry ) == false )
+            ->hasTextEntry( aliasTestId, &textEntry ) == false )
         {
             serializeNodeProp( false, "HasText", xmlNode );
         }
@@ -612,6 +612,14 @@ namespace Mengine
             Helper::getStringFormat( fmt, textValue, textFormatArgs );
 
             serializeNodeProp( fmt, "Text", xmlNode );
+
+            serializeNodeProp( _textField->calcFontName(), "TotalFontName", xmlNode );
+            serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
+            serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
+            serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
+            serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+            serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
+            serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
         }
 
         serializeNodeProp( _textField->getFontName(), "FontName", xmlNode );
@@ -621,14 +629,6 @@ namespace Mengine
         serializeNodeProp( _textField->getCharScale(), "CharScale", xmlNode );
         serializeNodeProp( (uint32_t)_textField->getHorizontAlign(), "HorizontAlign", xmlNode );
         serializeNodeProp( (uint32_t)_textField->getVerticalAlign(), "VerticalAlign", xmlNode );
-
-        serializeNodeProp( _textField->calcFontName(), "TotalFontName", xmlNode );
-        serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
-        serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
-        serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
-        serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
-        serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
-        serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
 
         serializeNodeProp( _textField->getMaxCharCount(), "MaxCharCount", xmlNode );
         serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );

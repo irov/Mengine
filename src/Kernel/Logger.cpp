@@ -1,5 +1,7 @@
 #include "Logger.h"
 
+#include "Interface/PlatformInterface.h"
+
 #include "Config/String.h"
 #include "Config/StringRegex.h"
 
@@ -39,8 +41,33 @@ namespace Mengine
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerOperator::logMessageTimeStamp() const
+    {
+        if( SERVICE_EXIST( PlatformInterface ) == true )
+        {
+            PlatformDateTime dateTime;
+            PLATFORM_SERVICE()
+                ->getDateTime( &dateTime );
+
+            Char str_time[256] = { 0 };
+            int size_time = sprintf( str_time, "%02u.%02u.%04u [%02u:%02u:%02u:%04u] "
+                , dateTime.day
+                , dateTime.month
+                , dateTime.year
+                , dateTime.hour
+                , dateTime.minute
+                , dateTime.second
+                , dateTime.milliseconds
+            );
+
+            this->logMessage( str_time, size_time );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageArgs( const Char * _format, va_list _args ) const
     {
+        this->logMessageTimeStamp();
+
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
         int32_t size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, _args );
 
@@ -74,7 +101,7 @@ namespace Mengine
 
         if( m_file != nullptr )
         {
-            this->logMessageStamp( str, size );
+            this->logMessageFunctionStamp( str, size );
         }
         else
         {
@@ -82,7 +109,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessageStamp( const Char * _msg, uint32_t _size ) const
+    void LoggerOperator::logMessageFunctionStamp( const Char * _msg, uint32_t _size ) const
     {
         Char str2[MENGINE_LOGGER_MAX_MESSAGE + 256] = {0};
 

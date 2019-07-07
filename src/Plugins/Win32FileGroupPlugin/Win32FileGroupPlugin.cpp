@@ -64,7 +64,7 @@ namespace Mengine
         size_t currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( currentPath );
 
-        FilePath relationPath = Helper::stringizeFilePathSize( currentPath, currentPathLen );
+        FilePath relationPath = Helper::stringizeFilePathSize( currentPath, (FilePath::size_type)currentPathLen );
 
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<Detail::Win32FileGroupDirectoryFactory>( relationPath ) );
 

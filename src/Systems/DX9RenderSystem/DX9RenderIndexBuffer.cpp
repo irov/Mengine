@@ -177,8 +177,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size, const Char * _doc )
     {
+        UINT sizeToLock = (UINT)(_size * m_indexSize);
+
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pIB, Lock, (0, _size * m_indexSize, &lock_memory, D3DLOCK_DISCARD) )
+        IF_DXCALL( m_pIB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size

@@ -34,7 +34,9 @@ namespace Mengine
 
             const VectorCharData & charsData = tl.getCharsData();
 
-            vertexCount += charsData.size() * 4;
+            uint32_t charsDataCount = (uint32_t)charsData.size();
+
+            vertexCount += charsDataCount * 4;
 
             VectorRenderVertex2D & vertexData = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( vertexCount );

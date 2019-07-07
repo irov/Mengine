@@ -12,12 +12,12 @@ namespace Mengine
     class MemoryAllocator
     {
     public:
-        inline void * operator new (size_t _size)
+        inline void * operator new ( size_t _size )
         {
             return stdex_malloc( _size, Typename<T>::value );
         }
 
-        inline void operator delete (void * _ptr, size_t _size)
+        inline void operator delete ( void * _ptr, size_t _size )
         {
             MENGINE_UNUSED( _size );
 
@@ -45,9 +45,9 @@ namespace Mengine
             size_t memory_size = sizeof( T );
             void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
 
-            new (memory_buffer)T( std::forward<Args>( _args ) ... );
+            new ( memory_buffer )T( std::forward<Args>( _args ) ... );
 
-            return reinterpret_cast<T *>(memory_buffer);
+            return reinterpret_cast<T *>( memory_buffer );
         }
 
         template<class T>
@@ -59,21 +59,21 @@ namespace Mengine
         }
 
         template<class T>
-        T * allocateArrayT( uint32_t _count )
+        T * allocateArrayT( size_t _count )
         {
             size_t memory_size = sizeof( T ) * _count;
             void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
 
-            return reinterpret_cast<T *>(memory_buffer);
+            return reinterpret_cast<T *>( memory_buffer );
         }
 
         template<class T>
-        T * reallocateArrayT( T * _buffer, uint32_t _count )
+        T * reallocateArrayT( T * _buffer, size_t _count )
         {
             size_t memory_size = sizeof( T ) * _count;
             void * memory_buffer = stdex_realloc( _buffer, memory_size, Typename<T>::value );
 
-            return reinterpret_cast<T *>(memory_buffer);
+            return reinterpret_cast<T *>( memory_buffer );
         }
 
         template<class T>

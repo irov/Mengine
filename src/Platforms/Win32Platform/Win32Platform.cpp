@@ -101,10 +101,20 @@ namespace Mengine
                 dumpPath += "Dump";
                 dumpPath += "_";
 
-                Char date[1024] = {0};
-                this->makeDateTime( date, 1024 );
+                PlatformDateTime dateTime;
+                this->getDateTime( &dateTime );
 
-                dumpPath += date;
+                Stringstream ss_date;
+                ss_date << dateTime.year
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+                String str_date = ss_date.str();
+
+                dumpPath += str_date;
                 dumpPath += ".dmp";
 
                 Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
@@ -114,7 +124,7 @@ namespace Mengine
 
         SYSTEMTIME tm;
         GetLocalTime( &tm );
-        LOGGER_INFO( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+        LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
             , tm.wDay
             , tm.wMonth
             , tm.wYear
@@ -125,7 +135,7 @@ namespace Mengine
 
         MEMORYSTATUSEX mem_st;
         GlobalMemoryStatusEx( &mem_st );
-        LOGGER_INFO( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
+        LOGGER_MESSAGE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
             , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
             , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
             , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
@@ -312,11 +322,20 @@ namespace Mengine
         processDumpPath += "Process";
         processDumpPath += "_";
 
-        Char date[1024] = {0};
-        PLATFORM_SERVICE()
-            ->makeDateTime( date, 1024 );
+        PlatformDateTime dateTime;
+        this->getDateTime( &dateTime );
 
-        processDumpPath += date;
+        Stringstream ss_date;
+        ss_date << dateTime.year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+        String str_date = ss_date.str();
+
+        processDumpPath += str_date;
         processDumpPath += ".dmp";
 
         WString unicode_processDumpPath;
@@ -2027,30 +2046,23 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::makeDateTime( Char * _out, size_t _capacity ) const
+    void Win32Platform::getDateTime( PlatformDateTime * _dateTime ) const
     {
-        std::time_t ctTime;
-        std::time( &ctTime );
-        std::tm* sTime = std::localtime( &ctTime );
-
-        Stringstream ss;
-        ss << 1900 + sTime->tm_year
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (sTime->tm_mon + 1)
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_mday
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_hour
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_min
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_sec;
-
-        String str_date = ss.str();
-
-        if( str_date.size() >= _capacity )
+        if( _dateTime == nullptr )
         {
-            return false;
+            return;
         }
 
-        strcpy( _out, str_date.c_str() );
+        SYSTEMTIME time;
+        ::GetLocalTime( &time );
 
-        return true;
+        _dateTime->year = time.wYear;
+        _dateTime->month = time.wMonth;
+        _dateTime->day = time.wDay;
+        _dateTime->hour = time.wHour;
+        _dateTime->minute = time.wMinute;
+        _dateTime->second = time.wSecond;
+        _dateTime->milliseconds = time.wMilliseconds;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )

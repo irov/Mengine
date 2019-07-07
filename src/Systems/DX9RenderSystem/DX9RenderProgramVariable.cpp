@@ -33,7 +33,7 @@ namespace Mengine
         void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, uint32_t _type, T * _values, uint32_t _size, uint32_t _count )
         {
             _variable.type = _type;
-            _variable.offset = _container.size();
+            _variable.offset = (uint32_t)_container.size();
             _variable.size = _size;
             _variable.count = _count;
 

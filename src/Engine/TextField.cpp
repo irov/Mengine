@@ -1044,7 +1044,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( textEntry, "'%s' can't find text ID '%s'"
             , this->getName().c_str()
-            , m_textId.c_str()
+            , aliasTestId.c_str()
         );
 
         m_textEntry = textEntry;

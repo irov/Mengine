@@ -181,7 +181,7 @@ namespace Mengine
             BoostPolygon::ring_type::size_type ring_size = ring.size();
 
             Polygon outer_polygon;
-            outer_polygon.reserve( ring_size );
+            outer_polygon.reserve( (Mengine::Polygon::size_type)ring_size );
 
             for( const mt::vec2f & v : stdex::span::range( ring, 0, -1 ) )
             {
@@ -196,7 +196,7 @@ namespace Mengine
                 BoostPolygon::ring_type::size_type ring_inner_size = ring_inner.size();
 
                 Polygon inner_polygon;
-                inner_polygon.reserve( ring_inner_size );
+                inner_polygon.reserve( (Mengine::Polygon::size_type)ring_inner_size );
 
                 for( const mt::vec2f & v : stdex::span::range( ring_inner, 0, -1 ) )
                 {

@@ -170,6 +170,10 @@ PLUGIN_EXPORT( Spine );
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
+PLUGIN_EXPORT( ResourceConvert );
+#endif
+
 #ifdef MENGINE_PLUGIN_MOVIE_STATIC
 PLUGIN_EXPORT( Movie );
 #endif
@@ -660,6 +664,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
+        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
+#endif 
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
         MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );

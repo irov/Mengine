@@ -52,6 +52,7 @@
 #include <ctime>
 #include <algorithm>
 #include <functional>
+#include <iomanip>
 
 #include "resource.h"
 
@@ -453,12 +454,22 @@ namespace Mengine
             return true;
         }
 
-        Char date[1024] = {0};
+        PlatformDateTime dateTime;
         PLATFORM_SERVICE()
-            ->makeDateTime( date, 1024 );
+            ->getDateTime( &dateTime );
+
+        Stringstream ss_date;
+        ss_date << dateTime.year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+        String str_date = ss_date.str();
 
         WString unicode_date;
-        Helper::utf8ToUnicode( date, unicode_date );
+        Helper::utf8ToUnicode( str_date, unicode_date );
 
         WString unicode_logFilename;
         unicode_logFilename += L"Game";
@@ -531,7 +542,10 @@ namespace Mengine
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
         
         ServiceProviderInterface * serviceProvider;
-        SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
+        if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
+        {
+            return false;
+        }
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 

@@ -24,13 +24,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::_initializeService()
     {
-        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        SERVICE_WAIT( PlatformInterface, [this]()
         {
             const Tags & platformTags = PLATFORM_SERVICE()
                 ->getPlatformTags();
 
             m_platformTags = platformTags;
-        }
+
+            return true;
+        } );
 
         return true;
     }

@@ -11,7 +11,6 @@
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
 #include "Kernel/AnimationEventReceiver.h"
-#include "Kernel/ResourceHolder.h"
 #include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
@@ -93,8 +92,8 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-        void _update( const UpdateContext * _context ) override;
-        void render( const RenderContext * _state ) const override;
+        void update( const UpdateContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
 
         void _updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
@@ -111,7 +110,7 @@ namespace Mengine
         void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) override;
 
     protected:
-        ResourceHolder<ResourceAstralax> m_resourceParticle;
+        ResourceAstralaxPtr m_resourceParticle;
 
         ConstString m_emitterImageName;
 

@@ -55,7 +55,7 @@ namespace Mengine
         virtual bool _prepare();
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
         virtual bool _affect( const UpdateContext * _context, float * _used ) = 0;

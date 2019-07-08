@@ -66,7 +66,7 @@ namespace Mengine
         return desc.velocity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Motor::_update( const UpdateContext * _context )
+    void Motor::update( const UpdateContext * _context )
     {
         if( m_node == nullptr )
         {

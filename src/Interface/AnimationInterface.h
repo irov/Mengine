@@ -40,7 +40,7 @@ namespace Mengine
         virtual void setAutoPlay( bool _autoPlay ) = 0;
         virtual bool isAutoPlay() const = 0;
 
-        virtual void setStretch( float _scretch ) = 0;
+        virtual void setStretch( float _stretch ) = 0;
         virtual float getStretch() const = 0;
 
     public:

@@ -40,11 +40,11 @@ namespace Mengine
 
     public:
         void tick( const UpdateContext * _context ) override;
-        void render( const RenderContext * _state ) override;
+        void render( const RenderContext * _context ) override;
 
     protected:
         virtual void _tick( const UpdateContext * _context );
-        virtual void _render( const RenderContext * _state );
+        virtual void _render( const RenderContext * _context );
 
     public:
         void message( const ConstString & _messageName, const MapWParams & _params ) override;

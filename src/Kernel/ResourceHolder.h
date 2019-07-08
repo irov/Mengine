@@ -109,7 +109,7 @@ namespace Mengine
             m_compile = false;
         }
 
-        inline bool isCompile() const
+        bool isCompile() const
         {
             return m_compile;
         }

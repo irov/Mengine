@@ -1,6 +1,6 @@
-#include "LoaderResourceJSON.h"
+#include "LoaderResourceSpineAtlasTexturepacker.h"
 
-#include "ResourceJSON.h"
+#include "ResourceSpineAtlasTexturepacker.h"
 
 #include "Metacode/Metacode.h"
 
@@ -9,23 +9,24 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    LoaderResourceJSON::LoaderResourceJSON()
+    LoaderResourceSpineAtlasTexturepacker::LoaderResourceSpineAtlasTexturepacker()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    LoaderResourceJSON::~LoaderResourceJSON()
+    LoaderResourceSpineAtlasTexturepacker::~LoaderResourceSpineAtlasTexturepacker()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceJSON::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceSpineAtlasTexturepacker::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceJSON* resource = stdex::intrusive_get<ResourceJSON*>( _loadable );
+        ResourceSpineAtlasTexturepacker * resource = stdex::intrusive_get<ResourceSpineAtlasTexturepacker *>( _loadable );
 
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceJSON* metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceJSON*>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceJSON::setFilePath );
-        metadata->getm_File_Converter( resource, &ResourceJSON::setConverterType );
+        metadata->getm_File_Path( resource, &ResourceSpineAtlasTexturepacker::setFilePath );
+        metadata->getm_File_Converter( resource, &ResourceSpineAtlasTexturepacker::setConverterType );
+        metadata->getm_Texturepacker_Name( resource, &ResourceSpineAtlasTexturepacker::setResourceTexturepackerName );
 
         return true;
     }

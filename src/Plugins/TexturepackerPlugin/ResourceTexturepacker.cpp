@@ -17,6 +17,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceTexturepacker::ResourceTexturepacker()
+        : m_atlasWidth(0)
+        , m_atlasHeight(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,61 +26,61 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::setResourceJSONName( const ConstString& _resourceJSONName )
+    uint32_t ResourceTexturepacker::getAtlasWidth() const
+    {
+        return m_atlasWidth;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ResourceTexturepacker::getAtlasHeight() const
+    {
+        return m_atlasHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceTexturepacker::getAtlasWidthInv() const
+    {
+        return m_atlasWidthInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceTexturepacker::getAtlasHeightInv() const
+    {
+        return m_atlasHeightInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceTexturepacker::setResourceJSONName( const ConstString & _resourceJSONName )
     {
         m_resourceJSONName = _resourceJSONName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString& ResourceTexturepacker::getResourceJSONName() const
+    const ConstString & ResourceTexturepacker::getResourceJSONName() const
     {
         return m_resourceJSONName;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceTexturepacker::setResourceImageName( const ConstString& _resourceImageName )
+    void ResourceTexturepacker::setResourceImageName( const ConstString & _resourceImageName )
     {
         m_resourceImageName = _resourceImageName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString& ResourceTexturepacker::getResourceImageName() const
+    const ConstString & ResourceTexturepacker::getResourceImageName() const
     {
         return m_resourceImageName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr& ResourceTexturepacker::getFrame( const ConstString& _name ) const
+    const ResourceImagePtr & ResourceTexturepacker::getFrame( const ConstString & _name ) const
     {
-        const ResourceImagePtr& image = m_frames.find( _name );
+        const ResourceImagePtr & image = m_hashtableFrames.find( _name );
 
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ResourceTexturepacker::getFramesCount() const
+    const VectorResourceImages & ResourceTexturepacker::getFrames() const
     {
-        uint32_t size = (uint32_t)m_frames.size();
-
-        return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceTexturepacker::getFrameByIndex( uint32_t _index ) const
-    {
-        MENGINE_ASSERTION( _index < m_frames.size() );
-
-        uint32_t enumerator = 0;
-        for( const HashtableTexturepackerFrames::value_type & frame : m_frames )
-        { 
-            if( enumerator != _index )
-            {
-                continue;
-            }
-
-            return frame.element;
-        }
-
-        return ResourceImagePtr::none();
+        return m_frames;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
-        const ResourceImagePtr& resourceImage = RESOURCE_SERVICE()
+        const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
             ->getResource( m_resourceImageName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
@@ -90,7 +92,7 @@ namespace Mengine
 
         m_resourceImage = resourceImage;
 
-        const ResourcePtr& resourceJSON = RESOURCE_SERVICE()
+        const ResourcePtr & resourceJSON = RESOURCE_SERVICE()
             ->getResource( m_resourceJSONName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
@@ -105,8 +107,8 @@ namespace Mengine
         bool atlasHasAlpha = m_resourceImage->hasAlpha();
         bool atlasIsPremultiply = m_resourceImage->isPremultiply();
         bool atlasIsPow2 = m_resourceImage->isPow2();
-        const RenderTextureInterfacePtr& atlasTexture = m_resourceImage->getTexture();
-        const RenderTextureInterfacePtr& atlasTextureAlpha = m_resourceImage->getTextureAlpha();
+        const RenderTextureInterfacePtr & atlasTexture = m_resourceImage->getTexture();
+        const RenderTextureInterfacePtr & atlasTextureAlpha = m_resourceImage->getTextureAlpha();
 
         UnknownResourceJSONInterface * resourceJsonInterface = m_resourceJSON->getUnknown();
 
@@ -131,12 +133,18 @@ namespace Mengine
         uint32_t atlas_width_pow2 = Helper::getTexturePOW2( atlas_width );
         uint32_t atlas_height_pow2 = Helper::getTexturePOW2( atlas_height );
 
-        float atlas_width_1inv = 1.f / (float)atlas_width_pow2;
-        float atlas_height_1inv = 1.f / (float)atlas_height_pow2;
+        m_atlasWidth = atlas_width_pow2;
+        m_atlasHeight = atlas_height_pow2;
+
+        float atlas_width_inv = 1.f / (float)atlas_width_pow2;
+        float atlas_height_inv = 1.f / (float)atlas_height_pow2;
+
+        m_atlasWidthInv = atlas_width_inv;
+        m_atlasHeightInv = atlas_height_inv;
 
         jpp::object root_frames = root["frames"];
 
-        for( auto&& [name, value] : root_frames )
+        for( auto && [name, value] : root_frames )
         {
             jpp::object frame = value["frame"];
 
@@ -172,6 +180,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( image, false );
 
+            image->setName( c_name );
             image->setTexture( atlasTexture );
             image->setTextureAlpha( atlasTextureAlpha );
 
@@ -180,10 +189,10 @@ namespace Mengine
             image->setSize( size );
 
             mt::vec4f uv_mask( (float)frame_x, (float)frame_y, (float)(frame_x + frame_w), (float)(frame_y + frame_h) );
-            uv_mask.x *= atlas_width_1inv;
-            uv_mask.y *= atlas_height_1inv;
-            uv_mask.z *= atlas_width_1inv;
-            uv_mask.w *= atlas_height_1inv;
+            uv_mask.x *= atlas_width_inv;
+            uv_mask.y *= atlas_height_inv;
+            uv_mask.z *= atlas_width_inv;
+            uv_mask.w *= atlas_height_inv;
 
             mt::uv4f uv;
             mt::uv4_from_mask( uv, uv_mask );
@@ -200,7 +209,8 @@ namespace Mengine
             image->setPremultiply( atlasIsPremultiply );
             image->setPow2( atlasIsPow2 );
 
-            m_frames.emplace( c_name, image );
+            m_hashtableFrames.emplace( c_name, image );
+            m_frames.push_back( image );
         }
 
         return true;
@@ -219,5 +229,8 @@ namespace Mengine
             m_resourceImage->decrementReference();
             m_resourceImage = nullptr;
         }
+
+        m_hashtableFrames.clear();
+        m_frames.clear();
     }
 }

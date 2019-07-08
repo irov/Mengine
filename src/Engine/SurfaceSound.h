@@ -7,8 +7,6 @@
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 
-#include "Kernel/ResourceHolder.h"
-
 #include "Engine/ResourceSound.h"
 
 #include "Interface/SoundBufferInterface.h"
@@ -88,7 +86,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        bool _update( const UpdateContext * _context ) override;
+        bool update( const UpdateContext * _context ) override;
 
     protected:
         void _setLoop( bool _value ) override;
@@ -103,7 +101,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     private:
-        ResourceHolder<ResourceSound> m_resourceSound;
+        ResourceSoundPtr m_resourceSound;
 
         SoundBufferInterfacePtr m_soundBuffer;
         SoundIdentityInterfacePtr m_soundEmitter;

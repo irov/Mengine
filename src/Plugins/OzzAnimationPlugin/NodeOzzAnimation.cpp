@@ -100,20 +100,18 @@ namespace Mengine
         return m_resourceMesh;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeOzzAnimation::addOzzAnimationSampler( const ConstString & _name, const SamplerOzzAnimationInterfacePtr & _sampler )
+    void NodeOzzAnimation::addOzzAnimationSampler( const SamplerOzzAnimationInterfacePtr & _sampler )
     {
-        SamplerDesc desc;
-        desc.name = _name;
-        desc.sampler = _sampler;
-
-        m_samplerOzzAnimations.push_back( desc );
+        m_samplerOzzAnimations.emplace_back( _sampler );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::removeOzzAnimationSampler( const ConstString & _name )
     {
         VectorSamplerOzzAnimations::iterator it_found = std::find_if( m_samplerOzzAnimations.begin(), m_samplerOzzAnimations.end()
-            , [_name]( const SamplerDesc & _desc ) { return _desc.name == _name; }
-        );
+            , [_name]( const SamplerOzzAnimationPtr & _sampler )
+        {
+            return _sampler->getName() == _name;
+        } );
 
         if( it_found == m_samplerOzzAnimations.end() )
         {
@@ -125,14 +123,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const SamplerOzzAnimationInterfacePtr & NodeOzzAnimation::findOzzAnimationSampler( const ConstString & _name ) const
     {
-        for( const SamplerDesc & desc : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
         {
-            if( desc.name != _name )
+            if( sampler->getName() != _name )
             {
                 continue;
             }
 
-            return desc.sampler;
+            return sampler;
         }
 
         return SamplerOzzAnimationInterfacePtr::none();
@@ -147,9 +145,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const SamplerOzzAnimationInterfacePtr & NodeOzzAnimation::getOzzAnimationSampler( uint32_t _index ) const
     {
-        const SamplerDesc & desc = m_samplerOzzAnimations[_index];
-
-        const SamplerOzzAnimationInterfacePtr & sampler = desc.sampler;
+        const SamplerOzzAnimationPtr & sampler = m_samplerOzzAnimations[_index];
 
         return sampler;
     }
@@ -262,10 +258,8 @@ namespace Mengine
 
         m_material = material;
 
-        for( const SamplerDesc & desc : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
         {
-            const SamplerOzzAnimationPtr & sampler = desc.sampler;
-
             if( sampler->compile() == false )
             {
                 return false;
@@ -291,10 +285,8 @@ namespace Mengine
         m_indexBuffer = nullptr;
         m_material = nullptr;
 
-        for( const SamplerDesc & desc : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
         {
-            const SamplerOzzAnimationPtr & sampler = desc.sampler;
-
             sampler->release();
         }
 
@@ -305,12 +297,10 @@ namespace Mengine
         m_resourceMesh->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeOzzAnimation::_update( const UpdateContext * _context )
+    void NodeOzzAnimation::update( const UpdateContext * _context )
     {
-        for( const SamplerDesc & desc : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
         {
-            const SamplerOzzAnimationPtr & sampler = desc.sampler;
-
             sampler->update( _context );
         }
 
@@ -322,10 +312,8 @@ namespace Mengine
         ozz::animation::BlendingJob::Layer layers[32];
         uint32_t layers_iterator = 0;
 
-        for( const SamplerDesc & desc : m_samplerOzzAnimations )
+        for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
         {
-            const SamplerOzzAnimationPtr & sampler = desc.sampler;
-
             if( sampler->isCompile() == false )
             {
                 continue;

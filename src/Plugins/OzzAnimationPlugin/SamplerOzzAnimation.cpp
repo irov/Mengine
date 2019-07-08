@@ -55,7 +55,7 @@ namespace Mengine
         return m_locals;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_update( const UpdateContext * _context )
+    void SamplerOzzAnimation::update( const UpdateContext * _context )
     {
         if( this->isCompile() == false )
         {

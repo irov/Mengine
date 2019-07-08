@@ -30,7 +30,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2Scissor> Movie2ScissorPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const Viewport & Movie2Scissor::getScissorViewport() const
+    MENGINE_INLINE const Viewport & Movie2Scissor::getScissorViewport() const
     {
         return m_viewport;
     }

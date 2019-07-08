@@ -1,102 +1,91 @@
-#	include "ResourceSpineSkeleton.h"
+#include "ResourceSpineSkeleton.h"
+
+#include "Interface/ResourceServiceInterface.h"
+
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     ResourceSpineSkeleton::ResourceSpineSkeleton()
-		: m_skeletonData(nullptr)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
+        : m_skeletonData( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     ResourceSpineSkeleton::~ResourceSpineSkeleton()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	spSkeletonData * ResourceSpineSkeleton::getSkeletonData() const
-	{
-		return m_skeletonData;
-	}
-	//////////////////////////////////////////////////////////////////////////
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineSkeleton::setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas )
+    {
+        m_resourceSpineAtlasName = _resourceSpineAtlas;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceSpineSkeleton::getResourceSpineAtlasName() const
+    {
+        return m_resourceSpineAtlasName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    spSkeletonData * ResourceSpineSkeleton::getSkeletonData() const
+    {
+        return m_skeletonData;
+    }
+    //////////////////////////////////////////////////////////////////////////
     spAnimation * ResourceSpineSkeleton::findSkeletonAnimation( const ConstString & _name ) const
-	{
-		spAnimation * animation = spSkeletonData_findAnimation( m_skeletonData, _name.c_str() );
+    {
+        spAnimation * animation = spSkeletonData_findAnimation( m_skeletonData, _name.c_str() );
 
-		return animation;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSpine::_compile()
-	{
+        return animation;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceSpineSkeleton::_compile()
+    {
+        ResourceSpineAtlasPtr resourceSpineAtlas = RESOURCE_SERVICE()
+            ->getResource( m_resourceSpineAtlasName );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas, false );
+
+        m_resourceSpineAtlas = resourceSpineAtlas;
+
+        const FilePath & filePath = this->getFilePath();
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-		MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFileString( fileGroup, m_skeletonPath, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
-		if( skeleton_buffer == nullptr )
-		{
-			return false;
-		}
-		
-		const char * skeleton_buffer = skeleton_memory->getBuffer();
+        MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory, false );
+
+        const char * skeleton_memory_buffer = skeleton_memory->getBuffer();
+
+        spAtlas * atlas = m_resourceSpineAtlas->getSpineAtlas();
 
         spSkeletonJson * skeletonJson = spSkeletonJson_create( atlas );
-		
-        spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, skeleton_buffer );
 
-		skeleton_buffer = nullptr;
+        spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, skeleton_memory_buffer );
 
-		spSkeletonJson_dispose( skeletonJson );
+        skeleton_memory = nullptr;
 
-		if( skeletonData == nullptr )
-		{
-			spAtlas_dispose( atlas );
+        spSkeletonJson_dispose( skeletonJson );
 
-			for( TVectorImageDesc::iterator
-				it = m_images.begin(),
-				it_end = m_images.end();
-			it != it_end;
-			++it )
-			{
-				const ResourceImagePtr & image = it->image;
+        if( skeletonData == nullptr )
+        {
+            return false;
+        }
 
-				image->decrementReference();
-			}
+        m_skeletonData = skeletonData;
 
-			return false;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineSkeleton::_release()
+    {
+        if( m_skeletonData != nullptr )
+        {
+            spSkeletonData_dispose( m_skeletonData );
+            m_skeletonData = nullptr;
+        }
 
-		m_atlas = atlas;
-		m_skeletonData = skeletonData;
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSpine::_release()
-	{
-		for( TVectorImageDesc::iterator
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
-		{
-			const ResourceImagePtr & image = it->image;
-
-			image->decrementReference();
-		}
-
-		if( m_skeletonData != nullptr )
-		{
-			spSkeletonData_dispose( m_skeletonData );
-			m_skeletonData = nullptr;
-		}
-
-		if( m_atlas != nullptr )
-		{
-			spAtlas_dispose( m_atlas );
-			m_atlas = nullptr;
-		}				
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSpine::_isValid() const
-	{
-		return true;
-	}
+        m_resourceSpineAtlas = nullptr;
+    }
 }

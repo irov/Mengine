@@ -38,9 +38,4 @@ namespace Mengine
         UPDATE_SERVICE()
             ->replaceUpdatater( m_updatableProxyId, _deep );
     }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseUpdation::update( const UpdateContext * _context )
-    {
-        this->_update( _context );
-    }
 }

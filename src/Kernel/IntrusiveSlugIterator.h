@@ -72,7 +72,7 @@ namespace Mengine
             pos_right_adapt_right_adapt->link_before( linked_type_ptr( &m_slug ) );
         }
 
-        inline bool eof() const
+        bool eof() const
         {
             const linked_type * pos = this->adapt_right();
 
@@ -81,28 +81,28 @@ namespace Mengine
             return pos == head;
         }
 
-        inline const value_type * operator -> () const
+        const value_type * operator -> () const
         {
             const linked_type * linked = this->current();
 
             return static_cast<const value_type *>(linked);
         }
 
-        inline const value_type * operator * () const
+        const value_type * operator * () const
         {
             const linked_type * linked = this->current();
 
             return static_cast<const value_type *>(linked);
         }
 
-        inline value_type * operator -> ()
+        value_type * operator -> ()
         {
             linked_type * linked = this->current();
 
             return static_cast<value_type *>(linked);
         }
 
-        inline value_type * operator * ()
+        value_type * operator * ()
         {
             linked_type * linked = this->current();
 
@@ -110,21 +110,21 @@ namespace Mengine
         }
 
     protected:
-        inline linked_type * current()
+        linked_type * current()
         {
             linked_type * pos = this->adapt_right();
 
             return pos;
         }
 
-        inline const linked_type * current() const
+        const linked_type * current() const
         {
             const linked_type * pos = this->adapt_right();
 
             return pos;
         }
 
-        inline const linked_type * adapt_( const linked_type * _pos ) const
+        const linked_type * adapt_( const linked_type * _pos ) const
         {
             const linked_type * pos = _pos;
 
@@ -136,7 +136,7 @@ namespace Mengine
             return pos;
         }
 
-        inline linked_type * adapt_right()
+        linked_type * adapt_right()
         {
             linked_type * pos = m_slug.right_get();
 
@@ -148,7 +148,7 @@ namespace Mengine
             return pos;
         }
 
-        inline const linked_type * adapt_right() const
+        const linked_type * adapt_right() const
         {
             const linked_type * pos = m_slug.right_get();
 

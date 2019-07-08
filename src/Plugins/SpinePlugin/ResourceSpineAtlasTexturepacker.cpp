@@ -1,254 +1,169 @@
-#	include "ResourceSpine.h"
+#include "ResourceSpineAtlasTexturepacker.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ResourceInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
-#	include "Metacode/Metacode.h"
+#include "Kernel/Logger.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
-#	include "Core/MemoryHelper.h"
-
-#	include "Logger/Logger.h"
+#include "spine/extension.h"
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ResourceSpine::ResourceSpine()
-		: m_atlas(nullptr)
-		, m_skeletonData(nullptr)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceSpine::~ResourceSpine()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSpine::_loader( const Metabuf::Metadata * _meta )
-	{
-		const Metacode::Meta_DataBlock::Meta_ResourceSpine * metadata
-			= static_cast<const Metacode::Meta_DataBlock::Meta_ResourceSpine *>(_meta);
+    //////////////////////////////////////////////////////////////////////////
+    ResourceSpineAtlasTexturepacker::ResourceSpineAtlasTexturepacker()
+        : m_atlas( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ResourceSpineAtlasTexturepacker::~ResourceSpineAtlasTexturepacker()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineAtlasTexturepacker::setResourceTexturepackerName( const ConstString & _resourceTexturepackerName )
+    {
+        m_resourceTexturepackerName = _resourceTexturepackerName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceSpineAtlasTexturepacker::getResourceTexturepackerName() const
+    {
+        return m_resourceTexturepackerName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    spAtlas * ResourceSpineAtlasTexturepacker::getSpineAtlas() const
+    {
+        return m_atlas;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceSpineAtlasTexturepacker::_compile()
+    {
+        ResourcePtr resourceTexturepacker = RESOURCE_SERVICE()
+            ->getResource( m_resourceTexturepackerName );
 
-		m_skeletonPath = metadata->get_Skeleton_Path();
-		m_atlasPath = metadata->get_Atlas_Path();
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker, false );
 
-		const Metacode::Meta_DataBlock::Meta_ResourceSpine::TVectorMeta_Image & includes_images = metadata->get_IncludesImage();
+        m_resourceTexturepacker = resourceTexturepacker;
 
-		for( Metacode::Meta_DataBlock::Meta_ResourceSpine::TVectorMeta_Image::const_iterator
-			it = includes_images.begin(),
-			it_end = includes_images.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_DataBlock::Meta_ResourceSpine::Meta_Image & meta_image = *it;
+        UnknownResourceTexturepackerInterface * unknownResourceTexturepacker = m_resourceTexturepacker->getUnknown();
 
-			const ConstString & name = meta_image.get_Name();
-			const ConstString & resourceName = meta_image.get_Resource();
+        uint32_t atlasWidth = unknownResourceTexturepacker->getAtlasWidth();
+        uint32_t atlasHeight = unknownResourceTexturepacker->getAtlasHeight();
 
-			ResourceImagePtr image = RESOURCE_SERVICE( m_serviceProvider )
-				->getResourceReferenceT<ResourceImagePtr>( resourceName );
+        float atlasWidthF = (float)atlasWidth;
+        float atlasHeightF = (float)atlasHeight;
 
-			if( image == nullptr )
-			{
-				return false;
-			}
+        float atlasWidthInv = unknownResourceTexturepacker->getAtlasWidthInv();
+        float atlasHeightInv = unknownResourceTexturepacker->getAtlasHeightInv();
 
-			const mt::vec2f & ms = image->getMaxSize();
-			
-			if( mt::equal_f_f( ms.x, ms.y ) == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("ResourceSpine::_loader %s resource image %s not square texture %f:%f"
-					, this->getName().c_str()
-					, resourceName.c_str()
-					, ms.x
-					, ms.y
-					);
+        spAtlas * atlas = NEW( spAtlas );
 
-				return false;
-			}
+        MENGINE_ASSERTION_MEMORY_PANIC( atlas, false );
 
-			ImageDesc desc;
-			desc.name = name;
-			desc.image = image;
+        char * atlas_name = MALLOC( char, 1 );
+        atlas_name[0] = '\0';
 
-			m_images.push_back( desc );
-		}
+        spAtlasPage * page = spAtlasPage_create( atlas, atlas_name );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImagePtr ResourceSpine::getResourceImage_( const char * _name ) const
-	{
-		for( TVectorImageDesc::const_iterator
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
-		{
-			const ImageDesc & desc = *it;
+        page->width = atlasWidth;
+        page->height = atlasHeight;
+        page->minFilter = SP_ATLAS_LINEAR;
+        page->magFilter = SP_ATLAS_LINEAR;
+        page->uWrap = SP_ATLAS_CLAMPTOEDGE;
+        page->vWrap = SP_ATLAS_CLAMPTOEDGE;
+        page->rendererObject = nullptr;
 
-			if( desc.name != _name )
-			{
-				continue;
-			}
+        atlas->pages = page;
 
-			return desc.image;
-		}
+        spAtlasRegion * lastRegion = nullptr;
 
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	spAtlas * ResourceSpine::getAtlas() const
-	{
-		return m_atlas;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	spSkeletonData * ResourceSpine::getSkeletonData() const
-	{
-		return m_skeletonData;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	spAnimation * ResourceSpine::findSkeletonAnimation( const ConstString & _name ) const
-	{
-		spAnimation * animation = spSkeletonData_findAnimation( m_skeletonData, _name.c_str() );
+        const VectorResourceImages & frames = unknownResourceTexturepacker->getFrames();
 
-		return animation;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	extern "C" void _spAtlasPage_createTexture( spAtlasPage * _page, const char * _path )
-	{
-		ResourceSpine * resource = (ResourceSpine*)_page->atlas->rendererObject;
+        for( const ResourceImagePtr & frame : frames )
+        {
+            spAtlasRegion * region = spAtlasRegion_create();
 
-		ResourceImagePtr resourceImage = resource->getResourceImage_( _path );
+            region->page = page;
 
-		if( resourceImage == nullptr )
-		{
-			return;
-		}
+            const ConstString & frame_name = frame->getName();
 
-		const mt::vec2f & size = resourceImage->getMaxSize();
+            ConstString::size_type frame_name_size = frame_name.size();
 
-		_page->width = (int)size.x;
-		_page->height = (int)size.y;
-		_page->rendererObject = (void *)resourceImage.get();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	extern "C" void _spAtlasPage_disposeTexture( spAtlasPage * _page )
-	{
-		(void)_page;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	extern "C" char * _spUtil_readFile( const char* path, int* length )
-	{
-		(void)path;
-		(void)length;
+            char * region_name = MALLOC( char, frame_name_size + 1 );
+            memcpy( region_name, frame_name.c_str(), frame_name_size );
+            region_name[frame_name_size] = '\0';
 
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSpine::_compile()
-	{
-		for( TVectorImageDesc::iterator
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
-		{
-			const ResourceImagePtr & image = it->image;
+            region->name = region_name;
 
-			if( image->incrementReference() == false )
-			{
-				return false;
-			}
-		}
+            bool uvImageRotate = frame->isUVImageRotate();
 
-		const ConstString & category = this->getCategory();
+            region->rotate = uvImageRotate;
 
-		MemoryCacheBufferInterfacePtr atlas_buffer = Helper::createMemoryCacheFile( m_serviceProvider, category, m_atlasPath, false, "ResourceSpine::_compile m_atlasPath" );
+            const mt::uv4f & uv = frame->getUVImage();
 
-		if( atlas_buffer == nullptr )
-		{
-			return false;
-		}
+            region->x = (int)(uv.p0.x * atlasWidthF + 0.5f);
+            region->y = (int)(uv.p0.y * atlasHeightF + 0.5f);
 
-		const char * atlas_memory = atlas_buffer->getMemory();
-		size_t atlas_size = atlas_buffer->getSize();
+            const mt::vec2f & size = frame->getSize();
 
-		int spine_atlas_size = (int)atlas_size;
+            region->width = (int)(size.x + 0.5f);
+            region->height = (int)(size.y + 0.5f);
 
-		spAtlas * atlas = spAtlas_create( atlas_memory, spine_atlas_size, "", this );
+            region->u = uv.p0.x;
+            region->v = uv.p0.y;
 
-		atlas_buffer = nullptr;
+            if( uvImageRotate == true )
+            {
+                region->u2 = (region->x + region->height) * atlasWidthInv;
+                region->v2 = (region->y + region->width) * atlasHeightInv;
+            }
+            else
+            {
+                region->u2 = (region->x + region->width) * atlasWidthInv;
+                region->v2 = (region->y + region->height) * atlasHeightInv;
+            }
 
-		spSkeletonJson * skeletonJson = spSkeletonJson_create( atlas );
-		
-		MemoryCacheBufferInterfacePtr skeleton_buffer = Helper::createMemoryCacheFileString( m_serviceProvider, category, m_skeletonPath, false, "ResourceSpine::_compile m_skeletonPath" );
+            const mt::vec2f & maxSize = frame->getMaxSize();
 
-		if( skeleton_buffer == nullptr )
-		{
-			return false;
-		}
-		
-		const char * json_memory = skeleton_buffer->getMemory();
-		
-		spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, json_memory );
+            region->originalWidth = (int)(maxSize.x + 0.5f);
+            region->originalHeight = (int)(maxSize.y + 0.5f);
 
-		skeleton_buffer = nullptr;
+            const mt::vec2f & offset = frame->getOffset();
 
-		spSkeletonJson_dispose( skeletonJson );
+            region->offsetX = (int)(offset.x + 0.5f);
+            region->offsetY = (int)(offset.y + 0.5f);
 
-		if( skeletonData == nullptr )
-		{
-			spAtlas_dispose( atlas );
+            region->index = -1;
 
-			for( TVectorImageDesc::iterator
-				it = m_images.begin(),
-				it_end = m_images.end();
-			it != it_end;
-			++it )
-			{
-				const ResourceImagePtr & image = it->image;
+            if( lastRegion != nullptr )
+            {
+                lastRegion->next = region;
+            }
+            else
+            {
+                atlas->regions = region;
+            }
 
-				image->decrementReference();
-			}
+            lastRegion = region;
+        }
 
-			return false;
-		}
+        m_atlas = atlas;
 
-		m_atlas = atlas;
-		m_skeletonData = skeletonData;
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSpine::_release()
-	{
-		for( TVectorImageDesc::iterator
-			it = m_images.begin(),
-			it_end = m_images.end();
-		it != it_end;
-		++it )
-		{
-			const ResourceImagePtr & image = it->image;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineAtlasTexturepacker::_release()
+    {
+        if( m_resourceTexturepacker != nullptr )
+        {
+            m_resourceTexturepacker->decrementReference();
+            m_resourceTexturepacker = nullptr;
+        }
 
-			image->decrementReference();
-		}
-
-		if( m_skeletonData != nullptr )
-		{
-			spSkeletonData_dispose( m_skeletonData );
-			m_skeletonData = nullptr;
-		}
-
-		if( m_atlas != nullptr )
-		{
-			spAtlas_dispose( m_atlas );
-			m_atlas = nullptr;
-		}				
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSpine::_isValid() const
-	{
-		return true;
-	}
+        if( m_atlas != nullptr )
+        {
+            spAtlas_dispose( m_atlas );
+            m_atlas = nullptr;
+        }
+    }
 }

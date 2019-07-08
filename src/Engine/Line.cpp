@@ -55,7 +55,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Line::render( const RenderContext * _state ) const
+    void Line::render( const RenderContext * _context ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -106,7 +106,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        this->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
+        this->addRenderQuad( _context, material, m_vertices, 4, nullptr, false );
     }
     //////////////////////////////////////////////////////////////////////////
 

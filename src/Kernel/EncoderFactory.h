@@ -52,7 +52,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type )
+        MENGINE_INLINE EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type )
         {
             EncoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<EncoderFactory<T>>();
 
@@ -72,7 +72,7 @@ namespace Mengine
             return factory;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline void unregisterEncoder( const ConstString & _type )
+        MENGINE_INLINE void unregisterEncoder( const ConstString & _type )
         {
             EncoderFactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 

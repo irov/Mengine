@@ -70,12 +70,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderTexture, RenderTextureInterface> RenderTexturePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const FileGroupInterfacePtr & RenderTexture::getCategory() const
+    MENGINE_INLINE const FileGroupInterfacePtr & RenderTexture::getCategory() const
     {
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const FilePath & RenderTexture::getFileName() const
+    MENGINE_INLINE const FilePath & RenderTexture::getFileName() const
     {
         return m_fileName;
     }

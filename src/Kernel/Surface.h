@@ -58,12 +58,11 @@ namespace Mengine
         void deactivate();
 
     public:
-        bool update( const UpdateContext * _context );
+        virtual bool update( const UpdateContext * _context ) = 0;
 
     protected:
         virtual void _activate();
-        virtual void _deactivate();
-        virtual bool _update( const UpdateContext * _context );
+        virtual void _deactivate();        
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Surface> SurfacePtr;

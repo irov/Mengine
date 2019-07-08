@@ -31,26 +31,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
 
-#ifdef MENGINE_DEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    String k = it.key();
-
-                    LOGGER_ERROR( "surface '%s' invalid kwds '%s'"
-                        , _surface->getName().c_str()
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
+            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
             return _kernel->ret_none();
         }

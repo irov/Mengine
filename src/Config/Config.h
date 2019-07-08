@@ -28,6 +28,8 @@
 #define MENGINE_DEBUG_ATTRIBUTE(X, Y) (Y)
 #endif
 
+#define MENGINE_INLINE inline
+
 #if defined(WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #elif defined(__APPLE__)

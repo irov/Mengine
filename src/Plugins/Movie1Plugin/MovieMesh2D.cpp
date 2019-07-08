@@ -45,7 +45,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceImage.compile() == false )
+        if( m_resourceImage->compile() == false )
         {
             LOGGER_ERROR( "'%s' image resource %s not compile"
                 , this->getName().c_str()
@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_release()
     {
-        m_resourceImage.release();
+        m_resourceImage->release();
 
         this->releaseMaterial();
     }
@@ -72,7 +72,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceImage]() {m_resourceImage = _resourceImage; } );
+        this->recompile( [this, _resourceImage]()
+        {
+            m_resourceImage = _resourceImage;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & MovieMesh2D::getResourceImage() const
@@ -91,7 +94,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::render( const RenderContext * _state ) const
+    void MovieMesh2D::render( const RenderContext * _context ) const
     {
         if( m_vertexCount == 0 )
         {
@@ -103,7 +106,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false );
+        this->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

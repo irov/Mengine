@@ -34,7 +34,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         mt::vec3f m_from;

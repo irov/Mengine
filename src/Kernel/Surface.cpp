@@ -37,13 +37,6 @@ namespace Mengine
         this->_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Surface::update( const UpdateContext * _context )
-    {
-        bool successful = this->_update( _context );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Surface::_activate()
     {
         //Empty
@@ -54,7 +47,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Surface::_update( const UpdateContext * _context )
+    bool Surface::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );
 

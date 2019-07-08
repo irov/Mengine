@@ -40,7 +40,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_DECLARE( Name )\
     public:\
-		inline const Char * getPluginName() const override { return Name; };\
+		MENGINE_INLINE const Char * getPluginName() const override { return Name; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\

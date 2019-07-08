@@ -4,8 +4,6 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/FixedVertices.h"
 
-#include "Kernel/ResourceHolder.h"
-
 #include "ResourceWindow.h"
 
 namespace Mengine
@@ -52,10 +50,10 @@ namespace Mengine
         void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const override;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
-        ResourceHolder<ResourceWindow> m_resourceWindow;
+        ResourceWindowPtr m_resourceWindow;
 
         mt::vec2f m_clientSize;
 

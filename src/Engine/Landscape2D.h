@@ -9,6 +9,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorResourceImages.h"
 
 #include "Config/Vector.h"
 
@@ -18,8 +19,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceImagePtr> VectorResourceImage;
     //////////////////////////////////////////////////////////////////////////
     struct RenderMaterial;
     struct RenderMaterialGroup;
@@ -49,14 +48,14 @@ namespace Mengine
         ~Landscape2D() override;
 
     public:
-        void setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
+        void setBackParts( const VectorResourceImages & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
 
     protected:
         bool _compile() override;
         void _release() override;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void _invalidateWorldMatrix() override;
@@ -66,8 +65,8 @@ namespace Mengine
         void updateElementWM_() const;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM( uint32_t _offset ) const;
-        inline const VectorLandscape2DElements & getElementWM() const;
+        MENGINE_INLINE const RenderVertex2D * getVerticesWM( uint32_t _offset ) const;
+        MENGINE_INLINE const VectorLandscape2DElements & getElementWM() const;
 
     protected:
         bool compileResources_();
@@ -76,7 +75,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        VectorResourceImage m_images;
+        VectorResourceImages m_images;
 
         uint32_t m_elementCountX;
         uint32_t m_elementCountY;
@@ -91,7 +90,7 @@ namespace Mengine
         mutable bool m_invalidateElementWM;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset ) const
+    MENGINE_INLINE const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset ) const
     {
         if( m_invalidateVerticesWM == true )
         {
@@ -101,7 +100,7 @@ namespace Mengine
         return &m_verticesWM[_offset];
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const VectorLandscape2DElements & Landscape2D::getElementWM() const
+    MENGINE_INLINE const VectorLandscape2DElements & Landscape2D::getElementWM() const
     {
         if( m_invalidateElementWM == true )
         {

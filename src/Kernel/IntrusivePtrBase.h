@@ -25,33 +25,33 @@ namespace Mengine
         virtual uint32_t getrefcount() const = 0;
 
     public:
-        inline static void intrusive_ptr_add_ref( IntrusivePtrBase * _ptr ) noexcept;
-        inline static void intrusive_ptr_dec_ref( IntrusivePtrBase * _ptr ) noexcept;
-        inline static uint32_t intrusive_ptr_get_ref( const IntrusivePtrBase * _ptr ) noexcept;
+        MENGINE_INLINE static void intrusive_ptr_add_ref( IntrusivePtrBase * _ptr ) noexcept;
+        MENGINE_INLINE static void intrusive_ptr_dec_ref( IntrusivePtrBase * _ptr ) noexcept;
+        MENGINE_INLINE static uint32_t intrusive_ptr_get_ref( const IntrusivePtrBase * _ptr ) noexcept;
         
         template<class T>
-        inline static void intrusive_ptr_setup( T *& _ptr, T * _other );
+        MENGINE_INLINE static void intrusive_ptr_setup( T *& _ptr, T * _other );
 
         template<class T>
-        inline static void intrusive_ptr_release( T *& _ptr );
+        MENGINE_INLINE static void intrusive_ptr_release( T *& _ptr );
 
-#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#ifdef STDEX_INTRUSIVE_PTR_DEBUG
     public:
-        inline static bool intrusive_ptr_check_ref( const IntrusivePtrBase * _ptr ) noexcept;
-#	endif
+        MENGINE_INLINE static bool intrusive_ptr_check_ref( const IntrusivePtrBase * _ptr ) noexcept;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
-    inline void IntrusivePtrBase::intrusive_ptr_add_ref( IntrusivePtrBase * _ptr ) noexcept
+    MENGINE_INLINE void IntrusivePtrBase::intrusive_ptr_add_ref( IntrusivePtrBase * _ptr ) noexcept
     {
         _ptr->incref();
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void IntrusivePtrBase::intrusive_ptr_dec_ref( IntrusivePtrBase * _ptr ) noexcept
+    MENGINE_INLINE void IntrusivePtrBase::intrusive_ptr_dec_ref( IntrusivePtrBase * _ptr ) noexcept
     {
         _ptr->decref();
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t IntrusivePtrBase::intrusive_ptr_get_ref( const IntrusivePtrBase * _ptr ) noexcept
+    MENGINE_INLINE uint32_t IntrusivePtrBase::intrusive_ptr_get_ref( const IntrusivePtrBase * _ptr ) noexcept
     {
         uint32_t refcount = _ptr->getrefcount();
 
@@ -59,7 +59,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline void IntrusivePtrBase::intrusive_ptr_setup( T *& _ptr, T * _other )
+    MENGINE_INLINE void IntrusivePtrBase::intrusive_ptr_setup( T *& _ptr, T * _other )
     {
         _ptr = _other;
 
@@ -70,7 +70,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline void IntrusivePtrBase::intrusive_ptr_release( T *& _ptr )
+    MENGINE_INLINE void IntrusivePtrBase::intrusive_ptr_release( T *& _ptr )
     {
         if( _ptr != nullptr )
         {
@@ -79,9 +79,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+#ifdef STDEX_INTRUSIVE_PTR_DEBUG
     //////////////////////////////////////////////////////////////////////////
-    inline bool IntrusivePtrBase::intrusive_ptr_check_ref( const IntrusivePtrBase * _ptr ) noexcept
+    MENGINE_INLINE bool IntrusivePtrBase::intrusive_ptr_check_ref( const IntrusivePtrBase * _ptr ) noexcept
     {
         uint32_t refcount = _ptr->getrefcount();
 
@@ -92,5 +92,5 @@ namespace Mengine
 
         return true;
     }
-#	endif
+#endif
 }

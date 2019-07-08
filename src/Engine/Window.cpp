@@ -74,7 +74,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceWindow.compile() == false )
+        if( m_resourceWindow->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' invalid compile"
                 , this->getName().c_str()
@@ -184,10 +184,10 @@ namespace Mengine
             edge.material = nullptr;
         }
 
-        m_resourceWindow.release();
+        m_resourceWindow->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::render( const RenderContext * _state ) const
+    void Window::render( const RenderContext * _context ) const
     {
         const RenderVertex2D * vertices = this->getVertices();
 
@@ -197,14 +197,14 @@ namespace Mengine
         {
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
-            this->addRenderQuad( _state, edge.material, &vertices[0 * 4], 4, bb, false );
+            this->addRenderQuad( _context, edge.material, &vertices[0 * 4], 4, bb, false );
         }
 
         for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
         {
             const WindowEdge & edge = m_edge[i];
 
-            this->addRenderQuad( _state, edge.material, &vertices[i * 4], 4, bb, false );
+            this->addRenderQuad( _context, edge.material, &vertices[i * 4], 4, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////

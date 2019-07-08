@@ -2,6 +2,8 @@
 
 #include "SpineInterface.h"
 
+#include "ResourceSpineAtlas.h"
+
 #include "Kernel/Resource.h"
 #include "Kernel/Content.h"
 
@@ -9,31 +11,38 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ResourceSpineSkeleton
-		: public Resource
+    class ResourceSpineSkeleton
+        : public Resource
         , public Content
         , public UnknownResourceSpineSkeleton
-	{
+    {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();
 
-	public:
+    public:
         ResourceSpineSkeleton();
-		~ResourceSpineSkeleton() override;
+        ~ResourceSpineSkeleton() override;
 
-	public:
+    public:
+        void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas );
+        const ConstString & getResourceSpineAtlasName() const;
+
+    public:
         spSkeletonData * getSkeletonData() const;
         spAnimation * findSkeletonAnimation( const ConstString & _name ) const;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	public:
+    public:
+        ConstString m_resourceSpineAtlasName;
+        ResourceSpineAtlasPtr m_resourceSpineAtlas;
+
         spSkeletonData * m_skeletonData;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceSpineSkeleton> ResourceSpineSkeletonPtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ResourceSpineSkeleton> ResourceSpineSkeletonPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

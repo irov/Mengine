@@ -4,8 +4,6 @@
 
 #include "ResourceTestPick.h"
 
-#include "Kernel/ResourceHolder.h"
-
 namespace Mengine
 {
     class HotSpotImage
@@ -40,7 +38,7 @@ namespace Mengine
         void getScreenBoundingBox( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb ) const;
 
     protected:
-        ResourceHolder<ResourceTestPick> m_resourceTestPick;
+        ResourceTestPickPtr m_resourceTestPick;
 
         float m_alphaTest;
     };

@@ -14,20 +14,20 @@ namespace Mengine
 
     public:
         template<class T>
-        inline void writePOD( const T & _t )
+        void writePOD( const T & _t )
         {
             const void * buff = (const void *)(&_t);
             m_stream->write( buff, sizeof( T ) );
         }
 
         template<class T>
-        inline void writePODs( const T * _t, uint32_t _count )
+        void writePODs( const T * _t, uint32_t _count )
         {
             const void * buff = (const void *)(_t);
             m_stream->write( buff, sizeof( T ) * _count );
         }
 
-        inline bool write( const void * _t, size_t _size )
+        MENGINE_INLINE bool write( const void * _t, size_t _size )
         {
             bool successful = m_stream->write( _t, _size );
 

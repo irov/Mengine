@@ -109,7 +109,7 @@ namespace Mengine
         vsprintf( msg, _format, argList );
         va_end( argList );
 
-        LOGGER_ERROR( "MoviePlugin error '%s' code '%d'"
+        LOGGER_ERROR( "error '%s' code '%d'"
             , msg
             , _code
         );
@@ -126,18 +126,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MoviePlugin::_initializePlugin()
     {
-        const Char * hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "NONE" );
-
-        size_t hashkeylen = strlen( hashkey );
-
-        if( hashkeylen != 40 )
-        {
-            LOGGER_ERROR( "invalid HASHKEY '%s'"
-                , hashkey
-            );
-
-            return false;
-        }
+        const Char * hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "" );
 
         m_hashkey = hashkey;
 

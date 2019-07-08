@@ -48,7 +48,7 @@ namespace Mengine
 
     public:
         void setRelationTransformation( Transformation * _relationTransformation );
-        inline Transformation * getRelationTransformation() const;
+        MENGINE_INLINE Transformation * getRelationTransformation() const;
 
     public:
         void removeRelationTransformation();
@@ -58,22 +58,22 @@ namespace Mengine
         void removeRelationTransformationChild_( Transformation * _childTransformation );
 
     public:
-        inline const mt::mat4f & getWorldMatrix() const;
+        MENGINE_INLINE const mt::mat4f & getWorldMatrix() const;
 
     public:
-        inline bool isIdentityLocalMatrix() const;
-        inline bool isIdentityWorldMatrix() const;
+        MENGINE_INLINE bool isIdentityLocalMatrix() const;
+        MENGINE_INLINE bool isIdentityWorldMatrix() const;
 
     public:
         void setWorldPosition( const mt::vec3f & _pos );
         const mt::vec3f & getWorldPosition() const;
 
     public:
-        inline const mt::mat4f & getLocalMatrix() const;
+        MENGINE_INLINE const mt::mat4f & getLocalMatrix() const;
 
     public:
         void setLocalPosition( const mt::vec3f & _position );
-        inline const mt::vec3f & getLocalPosition() const;
+        MENGINE_INLINE const mt::vec3f & getLocalPosition() const;
 
     public:
         void setLocalPositionX( float _x );
@@ -88,25 +88,25 @@ namespace Mengine
 
     public:
         void setLocalOrigin( const mt::vec3f& _origin );
-        inline const mt::vec3f & getLocalOrigin() const;
+        MENGINE_INLINE const mt::vec3f & getLocalOrigin() const;
 
         void setLocalScale( const mt::vec3f& _scale );
-        inline const mt::vec3f & getLocalScale() const;
+        MENGINE_INLINE const mt::vec3f & getLocalScale() const;
 
         void setLocalSkew( const mt::vec2f & _skew );
-        inline const mt::vec2f & getLocalSkew() const;
+        MENGINE_INLINE const mt::vec2f & getLocalSkew() const;
 
         void setLocalOrientationX( float _angle );
-        inline float getLocalOrientationX() const;
+        MENGINE_INLINE float getLocalOrientationX() const;
 
         void setLocalOrientationY( float _angle );
-        inline float getLocalOrientationY() const;
+        MENGINE_INLINE float getLocalOrientationY() const;
 
         void setLocalOrientationZ( float _angle );
-        inline float getLocalOrientationZ() const;
+        MENGINE_INLINE float getLocalOrientationZ() const;
 
         void setLocalOrientation( const mt::vec3f & _orientation );
-        inline const mt::vec3f & getLocalOrientation() const;
+        MENGINE_INLINE const mt::vec3f & getLocalOrientation() const;
 
         bool isIdentityOrientation() const;
 
@@ -137,7 +137,7 @@ namespace Mengine
 
     public:
         void invalidateWorldMatrix();
-        inline bool isInvalidateWorldMatrix() const;
+        MENGINE_INLINE bool isInvalidateWorldMatrix() const;
 
     protected:
         virtual void _invalidateWorldMatrix();
@@ -175,62 +175,62 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Transformation> TransformationPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline Transformation * Transformation::getRelationTransformation() const
+    MENGINE_INLINE Transformation * Transformation::getRelationTransformation() const
     {
         return m_relationTransformation;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f & Transformation::getLocalPosition()const
+    MENGINE_INLINE const mt::vec3f & Transformation::getLocalPosition()const
     {
         return m_position;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f& Transformation::getLocalOrigin() const
+    MENGINE_INLINE const mt::vec3f& Transformation::getLocalOrigin() const
     {
         return m_origin;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f& Transformation::getLocalScale() const
+    MENGINE_INLINE const mt::vec3f& Transformation::getLocalScale() const
     {
         return m_scale;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec2f & Transformation::getLocalSkew() const
+    MENGINE_INLINE const mt::vec2f & Transformation::getLocalSkew() const
     {
         return m_skew;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Transformation::getLocalOrientationX() const
+    MENGINE_INLINE float Transformation::getLocalOrientationX() const
     {
         return m_orientation.x;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Transformation::getLocalOrientationY() const
+    MENGINE_INLINE float Transformation::getLocalOrientationY() const
     {
         return m_orientation.y;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Transformation::getLocalOrientationZ() const
+    MENGINE_INLINE float Transformation::getLocalOrientationZ() const
     {
         return m_orientation.z;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f & Transformation::getLocalOrientation() const
+    MENGINE_INLINE const mt::vec3f & Transformation::getLocalOrientation() const
     {
         return m_orientation;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Transformation::isInvalidateWorldMatrix() const
+    MENGINE_INLINE bool Transformation::isInvalidateWorldMatrix() const
     {
         return m_invalidateWorldMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Transformation::isIdentityLocalMatrix() const
+    MENGINE_INLINE bool Transformation::isIdentityLocalMatrix() const
     {
         return m_transformationFlag == 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Transformation::isIdentityWorldMatrix() const
+    MENGINE_INLINE bool Transformation::isIdentityWorldMatrix() const
     {
         if( m_invalidateWorldMatrix == true )
         {
@@ -240,7 +240,7 @@ namespace Mengine
         return m_identityWorldMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & Transformation::getLocalMatrix() const
+    MENGINE_INLINE const mt::mat4f & Transformation::getLocalMatrix() const
     {
         if( m_invalidateLocalMatrix == true )
         {
@@ -250,7 +250,7 @@ namespace Mengine
         return m_localMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & Transformation::getWorldMatrix() const
+    MENGINE_INLINE const mt::mat4f & Transformation::getWorldMatrix() const
     {
         if( m_invalidateWorldMatrix == true )
         {

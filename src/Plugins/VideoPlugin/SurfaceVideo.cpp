@@ -94,7 +94,7 @@ namespace Mengine
         this->updateVideoBuffer_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_update( const UpdateContext * _context )
+    bool SurfaceVideo::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
@@ -124,7 +124,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceVideo.compile() == false )
+        if( m_resourceVideo->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , this->getName().c_str()
@@ -199,7 +199,7 @@ namespace Mengine
             m_videoDecoder = nullptr;
         }
 
-        m_resourceVideo.release();
+        m_resourceVideo->release();
 
         m_textures[0] = nullptr;
 

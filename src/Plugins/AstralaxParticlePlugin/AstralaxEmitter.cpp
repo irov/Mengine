@@ -71,7 +71,7 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        if( m_resourceParticle.compile() == false )
+        if( m_resourceParticle->compile() == false )
         {
             LOGGER_ERROR( "emitter '%s' resource '%s' not compile"
                 , m_name.c_str()
@@ -179,7 +179,7 @@ namespace Mengine
     {
         m_emitter = nullptr;
 
-        m_resourceParticle.release();
+        m_resourceParticle->release();
 
         Helper::freeArrayT( m_renderVertices );
         m_renderVertices = nullptr;
@@ -297,7 +297,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_update( const UpdateContext * _context )
+    void AstralaxEmitter::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
@@ -323,7 +323,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::render( const RenderContext * _state ) const
+    void AstralaxEmitter::render( const RenderContext * _context ) const
     {
         if( this->isPlay() == false )
         {
@@ -412,7 +412,7 @@ namespace Mengine
             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                 ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, mesh.textures, textures, MENGINE_DOCUMENT_FUNCTION );
 
-            this->addRenderObject( _state, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false );
+            this->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////

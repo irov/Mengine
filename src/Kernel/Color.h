@@ -24,7 +24,7 @@ namespace Mengine
     class Color
     {
     public:
-        Color() noexcept
+        MENGINE_INLINE Color() noexcept
             : m_r( 1.f )
             , m_g( 1.f )
             , m_b( 1.f )
@@ -34,7 +34,7 @@ namespace Mengine
         {
         }
 
-        explicit Color( float _r, float _g, float _b, float _a )
+        MENGINE_INLINE explicit Color( float _r, float _g, float _b, float _a )
             : m_r( _r )
             , m_g( _g )
             , m_b( _b )
@@ -44,12 +44,12 @@ namespace Mengine
         {
         }
 
-        explicit Color( ColorValue_ARGB _argb )
+        MENGINE_INLINE explicit Color( ColorValue_ARGB _argb )
         {
             this->setAsARGB( _argb );
         }
 
-        Color( const Color & _copy )
+        MENGINE_INLINE Color( const Color & _copy )
             : m_r( _copy.m_r )
             , m_g( _copy.m_g )
             , m_b( _copy.m_b )
@@ -59,7 +59,7 @@ namespace Mengine
         {
         }
 
-        Color & operator = ( const Color & _other )
+        MENGINE_INLINE Color & operator = ( const Color & _other )
         {
             m_r = _other.m_r;
             m_g = _other.m_g;
@@ -82,10 +82,10 @@ namespace Mengine
 
     public:
         void setAsARGB( ColorValue_ARGB _val );
-        inline ColorValue_ARGB getAsARGB() const;
+        MENGINE_INLINE ColorValue_ARGB getAsARGB() const;
 
     public:
-        bool operator == ( const Color & _rhs ) const
+        MENGINE_INLINE bool operator == ( const Color & _rhs ) const
         {
             ColorValue_ARGB self_argb = this->getAsARGB();
             ColorValue_ARGB other_argb = _rhs.getAsARGB();
@@ -93,12 +93,12 @@ namespace Mengine
             return self_argb == other_argb;
         }
 
-        bool operator != ( const Color & _rhs ) const
+        MENGINE_INLINE bool operator != ( const Color & _rhs ) const
         {
             return !(*this == _rhs);
         }
 
-        inline Color & operator *= ( const float _f )
+        MENGINE_INLINE Color & operator *= ( const float _f )
         {
             m_r *= _f;
             m_g *= _f;
@@ -110,7 +110,7 @@ namespace Mengine
             return *this;
         }
 
-        inline Color & operator *= ( const Color & _rhs )
+        MENGINE_INLINE Color & operator *= ( const Color & _rhs )
         {
             if( _rhs.getInvalidateRGBA_() == Detail::COLOR_INVALIDATE_IDENTITY )
             {
@@ -127,7 +127,7 @@ namespace Mengine
             return *this;
         }
 
-        inline Color operator + ( const Color& _color ) const
+        MENGINE_INLINE Color operator + ( const Color& _color ) const
         {
             float r = m_r + _color.m_r;
             float g = m_g + _color.m_g;
@@ -137,7 +137,7 @@ namespace Mengine
             return Color( r, g, b, a );
         }
 
-        inline Color operator - ( const Color & _color ) const
+        MENGINE_INLINE Color operator - ( const Color & _color ) const
         {
             float r = m_r - _color.m_r;
             float g = m_g - _color.m_g;
@@ -147,7 +147,7 @@ namespace Mengine
             return Color( r, g, b, a );
         }
 
-        inline Color operator * ( float _f ) const
+        MENGINE_INLINE Color operator * ( float _f ) const
         {
             float r = m_r * _f;
             float g = m_g * _f;
@@ -157,7 +157,7 @@ namespace Mengine
             return Color( r, g, b, a );
         }
 
-        inline Color operator * ( const Color & _rhs ) const
+        MENGINE_INLINE Color operator * ( const Color & _rhs ) const
         {
             if( _rhs.getInvalidateRGBA_() == Detail::COLOR_INVALIDATE_IDENTITY )
             {
@@ -183,32 +183,32 @@ namespace Mengine
 
     public:
         void setR( float _r );
-        inline float getR() const;
+        MENGINE_INLINE float getR() const;
 
         void setG( float _g );
-        inline float getG() const;
+        MENGINE_INLINE float getG() const;
 
         void setB( float _b );
-        inline float getB() const;
+        MENGINE_INLINE float getB() const;
 
         void setA( float _a );
-        inline float getA() const;
+        MENGINE_INLINE float getA() const;
 
     public:
-        inline static const Color & identity();
+        MENGINE_INLINE static const Color & identity();
 
     public:
-        inline bool isSolid() const;
+        MENGINE_INLINE bool isSolid() const;
 
     public:
-        inline bool isIdentity() const;
+        MENGINE_INLINE bool isIdentity() const;
 
     protected:
-        inline void invalidate() const;
+        MENGINE_INLINE void invalidate() const;
 
     protected:
         void updateRGBA_() const;
-        inline uint32_t getInvalidateRGBA_() const;
+        MENGINE_INLINE uint32_t getInvalidateRGBA_() const;
 
     protected:
         float m_r;
@@ -221,39 +221,39 @@ namespace Mengine
         mutable uint32_t m_invalidateARGB;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline float Color::getR() const
+    MENGINE_INLINE float Color::getR() const
     {
         return m_r;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Color::getG() const
+    MENGINE_INLINE float Color::getG() const
     {
         return m_g;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Color::getB() const
+    MENGINE_INLINE float Color::getB() const
     {
         return m_b;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Color::getA() const
+    MENGINE_INLINE float Color::getA() const
     {
         return m_a;
     }
     //////////////////////////////////////////////////////////////////////////	
-    inline bool Color::isSolid() const
+    MENGINE_INLINE bool Color::isSolid() const
     {
         return mt::equal_f_1( m_a );
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Color::isIdentity() const
+    MENGINE_INLINE bool Color::isIdentity() const
     {
         uint32_t invalidateARGB = this->getInvalidateRGBA_();
 
         return invalidateARGB == Detail::COLOR_INVALIDATE_IDENTITY;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t Color::getInvalidateRGBA_() const
+    MENGINE_INLINE uint32_t Color::getInvalidateRGBA_() const
     {
         if( m_invalidateARGB == Detail::COLOR_INVALIDATE_TRUE )
         {
@@ -263,12 +263,12 @@ namespace Mengine
         return m_invalidateARGB;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void Color::invalidate() const
+    MENGINE_INLINE void Color::invalidate() const
     {
         m_invalidateARGB = Detail::COLOR_INVALIDATE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline ColorValue_ARGB Color::getAsARGB() const
+    MENGINE_INLINE ColorValue_ARGB Color::getAsARGB() const
     {
         if( m_invalidateARGB == Detail::COLOR_INVALIDATE_TRUE )
         {
@@ -278,7 +278,7 @@ namespace Mengine
         return m_argb;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Color & Color::identity()
+    MENGINE_INLINE const Color & Color::identity()
     {
         static Color c;
 

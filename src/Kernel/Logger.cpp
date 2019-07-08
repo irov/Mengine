@@ -41,77 +41,36 @@ namespace Mengine
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessageTimeStamp() const
+    int32_t LoggerOperator::makeTimeStamp( Char * _buffer, int32_t _offset ) const
     {
-        if( SERVICE_EXIST( PlatformInterface ) == true )
+        if( SERVICE_EXIST( PlatformInterface ) == false )
         {
-            PlatformDateTime dateTime;
-            PLATFORM_SERVICE()
-                ->getDateTime( &dateTime );
-
-            Char str_time[256] = { 0 };
-            int size_time = sprintf( str_time, "%02u.%02u.%04u [%02u:%02u:%02u:%04u] "
-                , dateTime.day
-                , dateTime.month
-                , dateTime.year
-                , dateTime.hour
-                , dateTime.minute
-                , dateTime.second
-                , dateTime.milliseconds
-            );
-
-            this->logMessage( str_time, size_time );
+            return 0;
         }
+
+        PlatformDateTime dateTime;
+        PLATFORM_SERVICE()
+            ->getDateTime( &dateTime );
+
+        int size = snprintf( _buffer + _offset, MENGINE_LOGGER_MAX_MESSAGE - _offset, "%02u.%02u.%04u [%02u:%02u:%02u:%04u] "
+            , dateTime.day
+            , dateTime.month
+            , dateTime.year
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+            , dateTime.milliseconds
+        );
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessageArgs( const Char * _format, va_list _args ) const
+    int32_t LoggerOperator::makeFunctionStamp( Char * _buffer, int32_t _offset ) const
     {
-        this->logMessageTimeStamp();
-
-        Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
-        int32_t size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, _args );
-
-        if( size < 0 )
+        if( m_file == nullptr )
         {
-            const Char msg[] = "LoggerOperator::operator invalid message :(\n";
-            this->logMessage( msg, sizeof( msg ) );
-
-            size = sprintf( str, "%s", _format );
-
-            if( size < 0 )
-            {
-                return;
-            }
-
-            str[size] = '\n';
-            str[size + 1] = 0;
-
-            this->logMessage( _format, size + 1 );
-
-            return;
+            return 0;
         }
-
-        if( size > (MENGINE_LOGGER_MAX_MESSAGE - 2) )
-        {
-            size = MENGINE_LOGGER_MAX_MESSAGE - 2;
-        }
-
-        str[size + 0] = '\n';
-        str[size + 1] = 0;
-
-        if( m_file != nullptr )
-        {
-            this->logMessageFunctionStamp( str, size );
-        }
-        else
-        {
-            this->logMessage( str, size + 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessageFunctionStamp( const Char * _msg, uint32_t _size ) const
-    {
-        Char str2[MENGINE_LOGGER_MAX_MESSAGE + 256] = {0};
 
         String str_function = m_file;
 
@@ -137,23 +96,50 @@ namespace Mengine
             str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
         }
 
-        int32_t size2 = snprintf( str2, MENGINE_LOGGER_MAX_MESSAGE + 256, "%s[%u]: %.*s"
+        int32_t size = snprintf( _buffer + _offset, MENGINE_LOGGER_MAX_MESSAGE - _offset, "%s[%u] "
             , str_function.c_str()
             , m_line
-            , _size
-            , _msg
         );
 
-		if( size2 == -1 )
-		{
-			return;
-		}
-
-        str2[size2 + 0] = '\n';
-        str2[size2 + 1] = 0;
-
-        this->logMessage( str2, size2 + 1 );
+        return size;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerOperator::logMessageArgs( const Char * _format, va_list _args ) const
+    {
+        Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
+
+        int size = 0;
+
+        size += this->makeTimeStamp( str, size );
+        size += this->makeFunctionStamp( str, size );
+
+        size += vsnprintf( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
+
+        if( size < 0 )
+        {
+            const Char msg[] = "invalid message :(\n";
+            this->logMessage( msg, sizeof( msg ) );
+
+            size = sprintf( str, "%s", _format );
+
+            if( size < 0 )
+            {
+                return;
+            }
+
+            str[size] = '\n';
+            str[size + 1] = 0;
+
+            this->logMessage( _format, size + 1 );
+
+            return;
+        }
+
+        str[size + 0] = '\n';
+        str[size + 1] = 0;
+
+        this->logMessage( str, size + 1 );
+    }    
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessage( const Char * _msg, uint32_t _size ) const
     {

@@ -18,8 +18,8 @@ namespace Mengine
         void initialize( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );
 
     public:
-        inline const FilePath & getFilePath() const;
-        inline const FileGroupInterfacePtr & getFileGroup() const;
+        MENGINE_INLINE const FilePath & getFilePath() const;
+        MENGINE_INLINE const FileGroupInterfacePtr & getFileGroup() const;
 
     protected:
         void _onPreparation() override;
@@ -36,12 +36,12 @@ namespace Mengine
         PrefetcherObserverInterfacePtr m_observer;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const FilePath & ThreadTaskPrefetch::getFilePath() const
+    MENGINE_INLINE const FilePath & ThreadTaskPrefetch::getFilePath() const
     {
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const FileGroupInterfacePtr & ThreadTaskPrefetch::getFileGroup() const
+    MENGINE_INLINE const FileGroupInterfacePtr & ThreadTaskPrefetch::getFileGroup() const
     {
         return m_fileGroup;
     }

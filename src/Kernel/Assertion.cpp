@@ -58,17 +58,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
-            LOGGER_ERROR( "File [%s:%d] Assertion: '%s'"
+            va_list argList;
+            va_start( argList, _format );
+
+            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
+            vsnprintf( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
+
+            va_end( argList );
+
+            LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("File %s [line:%d] Assertion [%s]: %s"
                 , _file
                 , _line
-                , _test );
-
-            va_list args;
-            va_start( args, _format );
-
-            LOGGER_ERROR.logMessageArgs( _format, args );
-
-            va_end( args );
+                , _test
+                , str_info);
 
             if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level != ASSERTION_LEVEL_FATAL )
             {

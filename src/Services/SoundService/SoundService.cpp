@@ -1501,7 +1501,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const
     {
-        uint32_t playCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->state == ESS_PLAY; } );
+        uint32_t playCount = (uint32_t)std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->state == ESS_PLAY; } );
 
         uint32_t MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
 

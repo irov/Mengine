@@ -79,7 +79,7 @@ namespace Mengine
 
         m_receivers.erase( it_found );
 
-        m_flag &= ~(1U << _event);
+        m_flag &= ~(1ULL << _event);
     }
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const

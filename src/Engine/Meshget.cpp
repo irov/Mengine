@@ -62,9 +62,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Meshget::setVertices( const VectorPositions & _positions, const VectorUVs & _uv, const VectorColors & _colors, const VectorRenderIndex & _indices )
     {
-        uint32_t positions_count = _positions.size();
-        uint32_t uvs_count = _uv.size();
-        uint32_t colors_count = _colors.size();
+        VectorPositions::size_type positions_count = _positions.size();
+        VectorUVs::size_type uvs_count = _uv.size();
+        VectorRenderIndex::size_type colors_count = _colors.size();
 
         if( positions_count != uvs_count || positions_count != colors_count )
         {
@@ -74,7 +74,6 @@ namespace Mengine
         m_positions = _positions;
         m_uvs = _uv;
         m_colors = _colors;
-        
         m_indices = _indices;
 
         m_verticesWM.resize( positions_count );

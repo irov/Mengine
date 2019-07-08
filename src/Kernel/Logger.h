@@ -17,8 +17,9 @@ namespace Mengine
         const LoggerOperator & operator()( const Char * _format, ... ) const;
 
     public:
+        void logMessageTimeStamp() const;
         void logMessageArgs( const Char * _format, va_list _args ) const;
-        void logMessageStamp( const Char * _msg, uint32_t _size ) const;
+        void logMessageFunctionStamp( const Char * _msg, uint32_t _size ) const;
         void logMessage( const Char * _msg, uint32_t _size ) const;
 
     protected:
@@ -33,16 +34,14 @@ namespace Mengine
 #define LOGGER_VERBOSE_LEVEL( LEVEL, FUNCTION, LINE )\
 	if( LOGGER_SERVICE()->validMessage(LEVEL, 0) == false) {} else Mengine::LoggerOperator(LEVEL, 0, (FUNCTION), (LINE))
 //////////////////////////////////////////////////////////////////////////
-#ifdef __GNUC__
-//////////////////////////////////////////////////////////////////////////
 #define LOGGER_FATAL\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_CRITICAL\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_ERROR\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_PERFORMANCE\
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, nullptr, 0 )
@@ -51,7 +50,7 @@ namespace Mengine
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_WARNING\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_MESSAGE\
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, nullptr, 0 )
@@ -59,30 +58,3 @@ namespace Mengine
 #define LOGGER_INFO\
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
-#else
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_FATAL\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, __FUNCTION__, __LINE__ )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_CRITICAL\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, __FUNCTION__, __LINE__ )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_ERROR\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, __FUNCTION__, __LINE__ )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_PERFORMANCE\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, nullptr, 0 )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_STATISTIC\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_WARNING\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, __FUNCTION__, __LINE__ )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_MESSAGE\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, nullptr, 0 )
-//////////////////////////////////////////////////////////////////////////
-#define LOGGER_INFO\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, nullptr, 0 )
-//////////////////////////////////////////////////////////////////////////
-#endif

@@ -8,6 +8,16 @@
 #define MENGINE_UNUSED(X) ((void)X)
 #endif
 
+#ifdef __GNUC__
+#define MENGINE_CODE_FILE __FILE__
+#define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
+#define MENGINE_CODE_LINE __LINE__
+#else
+#define MENGINE_CODE_FILE __FILE__
+#define MENGINE_CODE_FUNCTION __FUNCTION__
+#define MENGINE_CODE_LINE __LINE__
+#endif
+
 #ifndef NDEBUG
 #define MENGINE_DEBUG
 #endif

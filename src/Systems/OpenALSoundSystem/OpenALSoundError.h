@@ -11,12 +11,12 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define OPENAL_CALL(Method, Args)\
-    (Method Args, Mengine::Helper::OpenALErrorCheck( #Method, __FILE__, __LINE__ ))
+    (Method Args, Mengine::Helper::OpenALErrorCheck( #Method, MENGINE_CODE_FILE, MENGINE_CODE_LINE ))
 //////////////////////////////////////////////////////////////////////////
 #define IF_OPENAL_CALL(Method, Args)\
-    if((Method Args, Mengine::Helper::OpenALErrorCheck( #Method, __FILE__, __LINE__ )) == false)
+    if((Method Args, Mengine::Helper::OpenALErrorCheck( #Method, MENGINE_CODE_FILE, MENGINE_CODE_LINE )) == false)
 //////////////////////////////////////////////////////////////////////////
 #define RET_OPENAL_CALL(Type, Ret, Method, Args)\
-    Type Ret = Method Args; Mengine::Helper::OpenALErrorCheck( #Method, __FILE__, __LINE__ )
+    Type Ret = Method Args; Mengine::Helper::OpenALErrorCheck( #Method, MENGINE_CODE_FILE, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
 

@@ -34,7 +34,7 @@ namespace Mengine
             const Char * value_str = _path.c_str();
             String::size_type value_size = _path.size();
 
-            FilePath fp = Helper::stringizeFilePathSize( value_str, value_size );
+            FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
 
             return fp;
         }

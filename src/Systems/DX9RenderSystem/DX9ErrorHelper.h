@@ -27,7 +27,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define DXERRORCHECK( Method, HRES )\
-	(Mengine::DX9ErrorHelper(__FILE__, __LINE__, Method ) == HRES)
+	(Mengine::DX9ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, Method ) == HRES)
 //////////////////////////////////////////////////////////////////////////
 #define IF_DXERRORCHECK( Method, HRES )\
 	if( DXERRORCHECK(#Method, HRES) )

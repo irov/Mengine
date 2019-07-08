@@ -164,8 +164,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::draw( const void * _buffer, size_t _size, const Char * _doc )
     {
+        UINT sizeToLock = (UINT)(_size * m_vertexSize);
+
         void * lock_memory = nullptr;
-        IF_DXCALL( m_pVB, Lock, (0, _size * m_vertexSize, &lock_memory, D3DLOCK_DISCARD) )
+        IF_DXCALL( m_pVB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size

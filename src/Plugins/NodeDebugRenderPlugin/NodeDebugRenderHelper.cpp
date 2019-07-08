@@ -15,7 +15,7 @@ namespace Mengine
                 ->addRenderLine( _context
                     , debugMaterial
                     , _vertices.data()
-                    , _vertices.size()
+                    , (uint32_t)_vertices.size()
                     , nullptr
                     , true );
         }
@@ -28,7 +28,7 @@ namespace Mengine
             VectorRenderVertex2D & vertices = RENDER_SERVICE()
                 ->getDebugRenderVertex2D( vertexCount );
 
-            std::vector<mt::vec2f> ring( numpoints );
+            Vector<mt::vec2f> ring( numpoints );
 
             for( uint32_t i = 0; i != numpoints; ++i )
             {

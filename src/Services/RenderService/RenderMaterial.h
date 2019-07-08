@@ -29,11 +29,11 @@ namespace Mengine
         void update( float _time, float _timing ) override;
 
     public:
-        inline uint32_t getHash() const;
-        inline EPrimitiveType getPrimitiveType() const override;
-        inline uint32_t getTextureCount() const override;
-        inline const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const override;
-        inline const RenderMaterialStage * getStage() const override;
+        MENGINE_INLINE uint32_t getHash() const;
+        MENGINE_INLINE EPrimitiveType getPrimitiveType() const override;
+        MENGINE_INLINE uint32_t getTextureCount() const override;
+        MENGINE_INLINE const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const override;
+        MENGINE_INLINE const RenderMaterialStage * getStage() const override;
 
     protected:
         ConstString m_name;
@@ -49,37 +49,37 @@ namespace Mengine
         const RenderMaterialStage * m_stage;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const ConstString & RenderMaterial::getName() const
+    MENGINE_INLINE const ConstString & RenderMaterial::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t RenderMaterial::getId() const
+    MENGINE_INLINE uint32_t RenderMaterial::getId() const
     {
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t RenderMaterial::getHash() const
+    MENGINE_INLINE uint32_t RenderMaterial::getHash() const
     {
         return m_hash;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline EPrimitiveType RenderMaterial::getPrimitiveType() const
+    MENGINE_INLINE EPrimitiveType RenderMaterial::getPrimitiveType() const
     {
         return m_primitiveType;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t RenderMaterial::getTextureCount() const
+    MENGINE_INLINE uint32_t RenderMaterial::getTextureCount() const
     {
         return m_textureCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderTextureInterfacePtr & RenderMaterial::getTexture( uint32_t _index ) const
+    MENGINE_INLINE const RenderTextureInterfacePtr & RenderMaterial::getTexture( uint32_t _index ) const
     {
         return m_textures[_index];
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterialStage * RenderMaterial::getStage() const
+    MENGINE_INLINE const RenderMaterialStage * RenderMaterial::getStage() const
     {
         return m_stage;
     }

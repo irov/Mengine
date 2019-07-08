@@ -71,11 +71,11 @@ namespace Mengine
         virtual bool isExternalRender() const = 0;
 
     public:
-        virtual void render( const RenderContext * _state ) const = 0;
+        virtual void render( const RenderContext * _context ) const = 0;
         virtual void renderWithChildren( const RenderContext * _context, bool _external ) const = 0;
 
     public:
-        virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _state ) const = 0;
+        virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderInterface> RenderInterfacePtr;

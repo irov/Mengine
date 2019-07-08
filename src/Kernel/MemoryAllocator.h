@@ -12,24 +12,24 @@ namespace Mengine
     class MemoryAllocator
     {
     public:
-        inline void * operator new ( size_t _size )
+        void * operator new ( size_t _size )
         {
             return stdex_malloc( _size, Typename<T>::value );
         }
 
-        inline void operator delete ( void * _ptr, size_t _size )
+        void operator delete ( void * _ptr, size_t _size )
         {
             MENGINE_UNUSED( _size );
 
             stdex_free( _ptr, Typename<T>::value );
         }
 
-        inline void * operator new []( size_t _size )
+        void * operator new []( size_t _size )
         {
             return stdex_malloc( _size, Typename<T>::value );
         }
 
-            inline void operator delete []( void * _ptr, size_t _size )
+            void operator delete []( void * _ptr, size_t _size )
         {
             MENGINE_UNUSED( _size );
 
@@ -77,19 +77,19 @@ namespace Mengine
         }
 
         template<class T>
-        inline void freeArrayT( T * _memory )
+        void freeArrayT( T * _memory )
         {
             stdex_free( _memory, Typename<T>::value );
         }
 
-        inline void * allocateMemory( size_t _size, const Char * _doc )
+        MENGINE_INLINE void * allocateMemory( size_t _size, const Char * _doc )
         {
             void * memory_buffer = stdex_malloc( _size, _doc );
 
             return memory_buffer;
         }
 
-        inline 	void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
+        MENGINE_INLINE void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
         {
             MENGINE_UNUSED( _doc );
             void * memory_buffer = stdex_realloc( _buffer, _size, _doc );
@@ -97,7 +97,7 @@ namespace Mengine
             return memory_buffer;
         }
 
-        inline void freeMemory( void * _memory, const Char * _doc )
+        MENGINE_INLINE void freeMemory( void * _memory, const Char * _doc )
         {
             stdex_free( _memory, _doc );
         }

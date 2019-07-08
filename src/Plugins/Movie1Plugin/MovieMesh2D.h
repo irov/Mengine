@@ -7,7 +7,6 @@
 #include "Kernel/Materialable.h"
 
 #include "Kernel/ResourceImage.h"
-#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
@@ -42,7 +41,7 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
         void _invalidateColor() override;
@@ -64,13 +63,13 @@ namespace Mengine
         void updateVerticesColor() const;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM() const;
+        MENGINE_INLINE const RenderVertex2D * getVerticesWM() const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ResourceHolder<ResourceImage> m_resourceImage;
+        ResourceImagePtr m_resourceImage;
 
         const MovieFrameShape * m_shape;
 
@@ -88,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MovieMesh2D> MovieMesh2DPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * MovieMesh2D::getVerticesWM() const
+    MENGINE_INLINE const RenderVertex2D * MovieMesh2D::getVerticesWM() const
     {
         if( m_invalidateVerticesWM == true )
         {

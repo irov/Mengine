@@ -26,7 +26,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceImage]() {m_resourceImage = _resourceImage; } );
+        this->recompile( [this, _resourceImage]()
+        {
+            m_resourceImage = _resourceImage;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & SurfaceImage::getResourceImage() const
@@ -40,7 +43,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceImage.compile() == false )
+        if( m_resourceImage->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , this->getName().c_str()
@@ -57,12 +60,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImage::_release()
     {
-        m_resourceImage.release();
+        m_resourceImage->release();
 
         this->releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImage::_update( const UpdateContext * _context )
+    bool SurfaceImage::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );
 

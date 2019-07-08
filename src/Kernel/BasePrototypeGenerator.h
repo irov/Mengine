@@ -16,10 +16,10 @@ namespace Mengine
 
     public:
         void setCategory( const ConstString & _category ) override;
-        inline const ConstString & getCategory() const override;
+        MENGINE_INLINE const ConstString & getCategory() const override;
 
         void setPrototype( const ConstString & _prototype ) override;
-        inline const ConstString & getPrototype() const override;
+        MENGINE_INLINE const ConstString & getPrototype() const override;
 
     protected:
         bool initialize() override;
@@ -33,12 +33,12 @@ namespace Mengine
         ConstString m_prototype;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const ConstString & BasePrototypeGenerator::getCategory() const
+    MENGINE_INLINE const ConstString & BasePrototypeGenerator::getCategory() const
     {
         return m_category;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const ConstString & BasePrototypeGenerator::getPrototype() const
+    MENGINE_INLINE const ConstString & BasePrototypeGenerator::getPrototype() const
     {
         return m_prototype;
     }

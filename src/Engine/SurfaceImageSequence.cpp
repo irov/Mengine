@@ -41,7 +41,7 @@ namespace Mengine
         return m_resourceImageSequence;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImageSequence::_update( const UpdateContext * _context )
+    bool SurfaceImageSequence::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
@@ -120,7 +120,7 @@ namespace Mengine
             , m_name.c_str()
         );
 
-        if( m_resourceImageSequence.compile() == false )
+        if( m_resourceImageSequence->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , m_name.c_str()
@@ -173,7 +173,7 @@ namespace Mengine
     {
         m_materials.clear();
 
-        m_resourceImageSequence.release();
+        m_resourceImageSequence->release();
 
         m_play = false;
     }

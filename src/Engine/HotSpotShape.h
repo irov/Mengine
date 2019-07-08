@@ -4,8 +4,6 @@
 
 #include "ResourceShape.h"
 
-#include "Kernel/ResourceHolder.h"
-
 namespace Mengine
 {
     class HotSpotShape
@@ -24,7 +22,7 @@ namespace Mengine
         void _release() override;
 
     private:
-        ResourceHolder<ResourceShape> m_resourceShape;
+        ResourceShapePtr m_resourceShape;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<HotSpotShape> HotSpotShapePtr;

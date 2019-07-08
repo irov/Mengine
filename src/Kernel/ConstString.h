@@ -33,7 +33,7 @@ namespace Mengine
         static const ConstString & none();
 
     public:
-        inline size_type size() const
+        MENGINE_INLINE size_type size() const
         {
             if( m_holder == nullptr )
             {
@@ -45,7 +45,7 @@ namespace Mengine
             return holder_size;
         }
 
-        inline const value_type * c_str() const
+        MENGINE_INLINE const value_type * c_str() const
         {
             if( m_holder == nullptr )
             {
@@ -57,12 +57,12 @@ namespace Mengine
             return holder_str;
         }
 
-        inline bool empty() const
+        MENGINE_INLINE bool empty() const
         {
             return m_holder == none().m_holder;
         }
 
-        inline hash_type hash() const
+        MENGINE_INLINE hash_type hash() const
         {
             if( m_holder == nullptr )
             {
@@ -74,47 +74,47 @@ namespace Mengine
             return holder_hash;
         }
 
-        inline void clear()
+        MENGINE_INLINE void clear()
         {
             *this = ConstString::none();
         }
 
     public:
-        inline ConstString & operator = ( const ConstString & _right ) noexcept
+        MENGINE_INLINE ConstString & operator = ( const ConstString & _right ) noexcept
         {
             m_holder = _right.m_holder;
 
             return *this;
         }
 
-        inline bool operator == ( const ConstString & _right ) const noexcept
+        MENGINE_INLINE bool operator == ( const ConstString & _right ) const noexcept
         {
             return m_holder == _right.m_holder;
         }
 
-        inline bool operator != ( const ConstString & _right ) const noexcept
+        MENGINE_INLINE bool operator != ( const ConstString & _right ) const noexcept
         {
             return !this->operator == ( _right );
         }
 
-        inline bool operator < ( const ConstString & _right ) const noexcept
+        MENGINE_INLINE bool operator < ( const ConstString & _right ) const noexcept
         {
             return m_holder < _right.m_holder;
         }
 
-        inline bool operator <= ( const ConstString & _right ) const noexcept
+        MENGINE_INLINE bool operator <= ( const ConstString & _right ) const noexcept
         {
             return m_holder <= _right.m_holder;
         }
 
-        inline bool operator > ( const ConstString & _right ) const noexcept
+        MENGINE_INLINE bool operator > ( const ConstString & _right ) const noexcept
         {
             const bool result = !(*this <= _right);
 
             return result;
         }
 
-        inline bool operator >= ( const ConstString & _right ) const noexcept
+        MENGINE_INLINE bool operator >= ( const ConstString & _right ) const noexcept
         {
             const bool result = !(*this < _right);
 

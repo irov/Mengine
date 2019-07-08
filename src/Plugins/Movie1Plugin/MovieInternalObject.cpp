@@ -59,7 +59,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceInternalObject.compile() == false )
+        if( m_resourceInternalObject->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' not compile"
                 , this->getName().c_str()
@@ -94,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieInternalObject::_release()
     {
-        m_resourceInternalObject.release();
+        m_resourceInternalObject->release();
 
         m_internalObject.reset();
     }

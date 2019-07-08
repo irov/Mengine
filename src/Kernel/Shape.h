@@ -31,7 +31,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
         void _invalidateColor() override;

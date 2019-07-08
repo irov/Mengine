@@ -5,15 +5,13 @@
 #include "Kernel/Resource.h"
 #include "Kernel/Content.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/VectorResourceImages.h"
 #include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceImagePtr> VectorResourceImages;
-    //////////////////////////////////////////////////////////////////////////
     class ResourceAstralax
         : public Resource
         , public Content

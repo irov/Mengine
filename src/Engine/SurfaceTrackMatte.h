@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/ResourceHolder.h"
 
 namespace Mengine
 {
@@ -56,6 +55,9 @@ namespace Mengine
         void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) override;
 
     protected:
+        bool update( const UpdateContext * _context ) override;
+
+    protected:
         bool _compile() override;
         void _release() override;
 
@@ -63,8 +65,8 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ResourceHolder<ResourceImage> m_resourceImage;
-        ResourceHolder<ResourceImage> m_resourceTrackMatteImage;
+       ResourceImagePtr m_resourceImage;
+       ResourceImagePtr m_resourceTrackMatteImage;
 
         RenderProgramVariableInterfacePtr m_programVariable;
 

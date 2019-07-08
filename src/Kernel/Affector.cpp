@@ -103,7 +103,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Affector::_update( const UpdateContext * _context )
+    void Affector::update( const UpdateContext * _context )
     {
         float used = 0.f;
         bool finish = this->_affect( _context, &used );

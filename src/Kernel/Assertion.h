@@ -85,7 +85,7 @@ namespace Mengine
             return AssertionReturnOperator<T>( _value );
         }
         //////////////////////////////////////////////////////////////////////////
-        inline AssertionReturnOperator<void> makeAssertionReturnOperator()
+        MENGINE_INLINE AssertionReturnOperator<void> makeAssertionReturnOperator()
         {
             return AssertionReturnOperator<void>();
         }

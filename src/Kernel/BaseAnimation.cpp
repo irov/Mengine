@@ -157,21 +157,21 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseAnimation::setStretch( float _scretch )
+    void BaseAnimation::setStretch( float _stretch )
     {
-        if( mt::equal_f_f( m_stretch, _scretch ) == true )
+        if( mt::equal_f_f( m_stretch, _stretch ) == true )
         {
             return;
         }
 
-        m_stretch = _scretch;
+        m_stretch = _stretch;
 
-        this->_setStretch( _scretch );
+        this->_setStretch( _stretch );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseAnimation::_setStretch( float _scretch )
+    void BaseAnimation::_setStretch( float _stretch )
     {
-        MENGINE_UNUSED( _scretch );
+        MENGINE_UNUSED( _stretch );
 
         //Empty
     }
@@ -303,9 +303,9 @@ namespace Mengine
         }
 
         float speedFactor = this->getAnimationSpeedFactor();
-        float scretch = this->getStretch();
+        float stretch = this->getStretch();
 
-        totalTime *= speedFactor / scretch;
+        totalTime *= speedFactor / stretch;
 
         return totalTime;
     }

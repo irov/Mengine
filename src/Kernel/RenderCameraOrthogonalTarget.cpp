@@ -37,7 +37,7 @@ namespace Mengine
         return m_speed;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderCameraOrthogonalTarget::_update( const UpdateContext * _context )
+    void RenderCameraOrthogonalTarget::update( const UpdateContext * _context )
     {
         if( m_camera == nullptr )
         {

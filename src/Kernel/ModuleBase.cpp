@@ -83,9 +83,9 @@ namespace Mengine
         this->_tick( _context );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::render( const RenderContext * _state )
+    void ModuleBase::render( const RenderContext * _context )
     {
-        this->_render( _state );
+        this->_render( _context );
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_tick( const UpdateContext * _context )
@@ -95,9 +95,9 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::_render( const RenderContext * _state )
+    void ModuleBase::_render( const RenderContext * _context )
     {
-        MENGINE_UNUSED( _state );
+        MENGINE_UNUSED( _context );
 
         //Empty
     }

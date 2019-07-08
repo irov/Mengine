@@ -26,23 +26,23 @@ namespace Mengine
         typedef Char value_type;
 
     public:
-        inline const value_type * c_str() const noexcept
+        MENGINE_INLINE const value_type * c_str() const noexcept
         {
             return m_data;
         }
 
-        inline size_type size() const noexcept
+        MENGINE_INLINE size_type size() const noexcept
         {
             return m_size;
         }
 
-        inline bool empty() const noexcept
+        MENGINE_INLINE bool empty() const noexcept
         {
             return m_size == 0;
         }
 
     public:
-        inline hash_type hash() const noexcept
+        MENGINE_INLINE hash_type hash() const noexcept
         {
             return m_hash;
         }

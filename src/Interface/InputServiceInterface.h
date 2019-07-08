@@ -73,7 +73,7 @@ namespace Mengine
         virtual void pushEvent( const InputUnionEvent & _event ) = 0;
 
     public:
-        inline void pushMouseMoveEvent( uint32_t _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
+        MENGINE_INLINE void pushMouseMoveEvent( uint32_t _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
         {
             float vx;
             float vy;
@@ -95,7 +95,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        inline void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, uint32_t _button, float _pressure, bool _isDown )
+        MENGINE_INLINE void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, uint32_t _button, float _pressure, bool _isDown )
         {
             float vx;
             float vy;
@@ -118,7 +118,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        inline void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
+        MENGINE_INLINE void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
         {
             float vx;
             float vy;
@@ -136,7 +136,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        inline void pushTextEvent( float _x, float _y, WChar _key )
+        MENGINE_INLINE void pushTextEvent( float _x, float _y, WChar _key )
         {
             float vx;
             float vy;
@@ -152,7 +152,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        inline void pushMouseLeaveEvent( uint32_t _touchId, float _x, float _y, float _pressure )
+        MENGINE_INLINE void pushMouseLeaveEvent( uint32_t _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;
@@ -170,7 +170,7 @@ namespace Mengine
         }
 
         //////////////////////////////////////////////////////////////////////////
-        inline void pushMouseEnterEvent( uint32_t _touchId, float _x, float _y, float _pressure )
+        MENGINE_INLINE void pushMouseEnterEvent( uint32_t _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;
@@ -187,7 +187,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        inline void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int32_t _whell )
+        MENGINE_INLINE void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int32_t _whell )
         {
             float vx;
             float vy;
@@ -204,7 +204,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        inline void pushMousePositionEvent( uint32_t _touchId, float _x, float _y, float _pressure )
+        MENGINE_INLINE void pushMousePositionEvent( uint32_t _touchId, float _x, float _y, float _pressure )
         {
             float vx;
             float vy;

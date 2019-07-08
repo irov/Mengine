@@ -21,5 +21,3 @@ if defined ARCHITECTURE (
 )
 
 @popd
-
-pause

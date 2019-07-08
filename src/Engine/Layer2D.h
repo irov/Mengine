@@ -3,7 +3,6 @@
 #include "Kernel/Layer.h"
 #include "Kernel/NoneRender.h"
 #include "Kernel/ResourceImage.h"
-#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/Viewport.h"
 #include "Kernel/RenderVertex2D.h"
@@ -53,8 +52,8 @@ namespace Mengine
         const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;
 
     public:
-        inline const RenderVertex2D * getVerticesImageMaskWM() const;
-        inline const RenderMaterialInterfacePtr & getMaterialImageMask() const;
+        MENGINE_INLINE const RenderVertex2D * getVerticesImageMaskWM() const;
+        MENGINE_INLINE const RenderMaterialInterfacePtr & getMaterialImageMask() const;
 
     protected:
         void updateVerticesImageMaskWM() const;
@@ -74,7 +73,7 @@ namespace Mengine
 
         RenderInterfacePtr m_renderTarget;
 
-        ResourceHolder<ResourceImage> m_resourceImageMask;
+        ResourceImagePtr m_resourceImageMask;
 
         RenderMaterialInterfacePtr m_materialImageMask;
 
@@ -88,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Layer2D> Layer2DPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * Layer2D::getVerticesImageMaskWM() const
+    MENGINE_INLINE const RenderVertex2D * Layer2D::getVerticesImageMaskWM() const
     {
         if( m_invalidateVerticesImageMaskColor == true )
         {
@@ -107,7 +106,7 @@ namespace Mengine
         return m_verticesImageMaskWM;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterialInterfacePtr & Layer2D::getMaterialImageMask() const
+    MENGINE_INLINE const RenderMaterialInterfacePtr & Layer2D::getMaterialImageMask() const
     {
         return m_materialImageMask;
     }

@@ -57,12 +57,12 @@ namespace boost
             template<size_t Dimension>
             struct access<mt::vec2f, Dimension >
             {
-                static inline float get( mt::vec2f const& p )
+                static float get( mt::vec2f const& p )
                 {
                     return p.template get<Dimension>();
                 }
 
-                static inline void set( mt::vec2f & p, float const& value )
+                static void set( mt::vec2f & p, float const& value )
                 {
                     p.template set<Dimension>( value );
                 }

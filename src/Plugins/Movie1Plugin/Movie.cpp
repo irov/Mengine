@@ -154,7 +154,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_setTime( float _time )
     {
-        if( m_resourceMovie.empty() == true )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR( "'%s' not activate"
                 , this->getName().c_str()
@@ -386,7 +386,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_setFirstFrame()
     {
-        if( m_resourceMovie.empty() == true )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR( "'%s' not activate"
                 , this->getName().c_str()
@@ -400,7 +400,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_setLastFrame()
     {
-        if( m_resourceMovie.empty() == true )
+        if( m_resourceMovie == nullptr )
         {
             LOGGER_ERROR( "'%s' not activate"
                 , this->getName().c_str()
@@ -1847,7 +1847,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceMovie.compile() == false )
+        if( m_resourceMovie->compile() == false )
         {
             LOGGER_ERROR( "movie '%s' resource %s not compile"
                 , m_name.c_str()
@@ -1900,7 +1900,7 @@ namespace Mengine
     {
         this->removeLayersParent_();
 
-        m_resourceMovie.release();
+        m_resourceMovie->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie::updateCamera_()
@@ -2288,7 +2288,7 @@ namespace Mengine
         Node::_destroy();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_update( const UpdateContext * _context )
+    void Movie::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {

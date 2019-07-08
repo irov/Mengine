@@ -17,6 +17,6 @@ namespace Mengine
         ~Isometric() override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
     };
 }

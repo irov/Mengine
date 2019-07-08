@@ -55,7 +55,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline DecoderFactoryInterfacePtr registerDecoder( const ConstString & _type )
+        MENGINE_INLINE DecoderFactoryInterfacePtr registerDecoder( const ConstString & _type )
         {
             DecoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<DecoderFactory<T>>();
 
@@ -75,7 +75,7 @@ namespace Mengine
             return factory;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline void unregisterDecoder( const ConstString & _type )
+        MENGINE_INLINE void unregisterDecoder( const ConstString & _type )
         {
             DecoderFactoryInterfacePtr factory = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 

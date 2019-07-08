@@ -25,7 +25,7 @@ namespace Mengine
 
     public:
         void setFactory( Factory * _factory );
-        inline Factory * getFactory() const noexcept;
+        MENGINE_INLINE Factory * getFactory() const noexcept;
 
     public:
         void setImmortal( bool _value );
@@ -54,7 +54,7 @@ namespace Mengine
 
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
     public:
-        inline static bool intrusive_ptr_check_ref( const Factorable * _ptr );
+        MENGINE_INLINE static bool intrusive_ptr_check_ref( const Factorable * _ptr );
 #endif
 
     protected:
@@ -70,13 +70,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline Factory * Factorable::getFactory() const noexcept
+    MENGINE_INLINE Factory * Factorable::getFactory() const noexcept
     {
         return m_factory;
     }
     //////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
-    inline bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )
+    MENGINE_INLINE bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )
     {
         if( _ptr == nullptr )
         {

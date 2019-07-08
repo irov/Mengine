@@ -237,7 +237,7 @@ namespace Mengine
             , m_size.y
         );
 
-        if( m_resourceImageMask.compile() == false )
+        if( m_resourceImageMask->compile() == false )
         {
             LOGGER_ERROR( "'%s' invalid compile resource image mask '%s'"
                 , this->getName().c_str()
@@ -287,7 +287,7 @@ namespace Mengine
     {
         m_materialImageMask = nullptr;
 
-        m_resourceImageMask.release();
+        m_resourceImageMask->release();
 
         m_renderTarget = nullptr;
 

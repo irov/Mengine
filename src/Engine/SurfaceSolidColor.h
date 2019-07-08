@@ -32,6 +32,9 @@ namespace Mengine
         void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) override;
 
     protected:
+        bool update( const UpdateContext * _context ) override;
+
+    protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:

@@ -33,7 +33,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceSound.compile() == false )
+        if( m_resourceSound->compile() == false )
         {
             LOGGER_ERROR( "sound '%s' resource '%s' not compile"
                 , this->getName().c_str()
@@ -91,10 +91,10 @@ namespace Mengine
         m_soundEmitter = nullptr;
         m_soundBuffer = nullptr;
 
-        m_resourceSound.release();
+        m_resourceSound->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_update( const UpdateContext * _context )
+    bool SurfaceSound::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );
 

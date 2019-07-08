@@ -636,12 +636,12 @@ namespace Mengine
                 , m_emitterImageName.c_str()
             );
 
-            resourceHIT->decrementReference();
+            resourceHIT->release();
 
             return false;
         }
 
-        resourceHIT->decrementReference();
+        resourceHIT->release();
 
         return true;
     }

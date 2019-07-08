@@ -59,7 +59,7 @@ namespace Mengine
 
             if( element.resourceImage != nullptr )
             {
-                element.resourceImage->decrementReference();
+                element.resourceImage->release();
                 element.resourceImage = nullptr;
             }
         }

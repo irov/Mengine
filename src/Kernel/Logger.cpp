@@ -52,10 +52,7 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getDateTime( &dateTime );
 
-        int size = snprintf( _buffer + _offset, MENGINE_LOGGER_MAX_MESSAGE - _offset, "%02u.%02u.%04u [%02u:%02u:%02u:%04u] "
-            , dateTime.day
-            , dateTime.month
-            , dateTime.year
+        int size = snprintf( _buffer + _offset, MENGINE_LOGGER_MAX_MESSAGE - _offset, "[%02u:%02u:%02u:%04u] "
             , dateTime.hour
             , dateTime.minute
             , dateTime.second

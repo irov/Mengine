@@ -30,7 +30,7 @@ namespace Mengine
     {
         for( const ResourcePtr & resource : m_resources )
         {
-            if( resource->incrementReference() == false )
+            if( resource->compile() == false )
             {
                 return false;
             }
@@ -51,7 +51,7 @@ namespace Mengine
     {
         for( const ResourcePtr & resource : m_resources )
         {
-            resource->decrementReference();
+            resource->release();
         }
 
         for( Movie2DataImageDesc * desc : m_images )

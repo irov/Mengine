@@ -59,7 +59,7 @@ namespace Mengine
         {
             if( el.material != nullptr )
             {
-                el.image->decrementReference();
+                el.image->release();
                 el.image = nullptr;
 
                 el.material = nullptr;
@@ -102,7 +102,7 @@ namespace Mengine
             {
                 if( el.material != nullptr )
                 {
-                    el.image->decrementReference();
+                    el.image->release();
 
                     el.material = nullptr;
                 }
@@ -111,7 +111,7 @@ namespace Mengine
             {
                 if( el.material == nullptr )
                 {
-                    if( el.image->incrementReference() == false )
+                    if( el.image->compile() == false )
                     {
                         LOGGER_ERROR( "'%s' image resource %s not compile"
                             , m_name.c_str()

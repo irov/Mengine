@@ -1173,7 +1173,7 @@ namespace Mengine
 
             float duration = resourceMovie->getDuration();
 
-            resourceMovie->decrementReference();
+            resourceMovie->release();
 
             return duration;
         }
@@ -1235,7 +1235,7 @@ namespace Mengine
 
             bool result = s_hasMovieElement2( resource, _slotName, _typeName );
 
-            resource->decrementReference();
+            resource->release();
 
             return result;
         }

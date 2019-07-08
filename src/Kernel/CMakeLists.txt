@@ -90,7 +90,6 @@ Affector
     LambdaAffectorAccumulateLinear.h
     AffectorCallbackInterface.h
     AffectorHelper.h
-    AffectorHelper.cpp
 	AffectorType.h
     AffectorType.cpp
 )
@@ -185,13 +184,6 @@ Animation
     BaseAnimation.cpp
 )
 
-
-ADD_FILTER(
-Parallax
-	Parallax.cpp
-	Parallax.h
-)
-
 ADD_FILTER(
 MatrixProxy
 	MatrixProxy.cpp
@@ -235,7 +227,6 @@ Resource
 	Compilable.cpp
 	Compilable.h
     ResourceCacher.h
-    ResourceHolder.h
     Resource.cpp
     Resource.h
 )

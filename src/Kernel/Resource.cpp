@@ -10,7 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Resource::Resource()
-        : m_cache( false )
+        : m_compileReferenceCount( 0 )
+        , m_cache( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,29 +56,43 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Resource::_incrementZero()
+    bool Resource::compile()
     {
-        bool result = this->compile();
+        if( ++m_compileReferenceCount == 1 )
+        {
+            if( Compilable::compile() == false )
+            {
+                return false;
+            }
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_COMPILE, this );
 #endif
+        }
 
-        return result;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::_decrementZero()
+    void Resource::release()
     {
-        this->release();
+        MENGINE_ASSERTION_FATAL( m_compileReferenceCount != 0, "'%s:%s' release compile ref count == 0"
+            , this->getType().c_str()
+            , this->getName().c_str()
+        );
+
+        if( --m_compileReferenceCount == 0 )
+        {
+            Compilable::release();
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this );
 #endif
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Resource::cache()
     {
-        if( this->incrementReference() == false )
+        if( this->compile() == false )
         {
             LOGGER_ERROR( "resource '%s:%s' invalid increment reference"
                 , this->getGroupName().c_str()
@@ -100,7 +115,7 @@ namespace Mengine
 
         this->_uncache();
 
-        this->decrementReference();
+        this->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::_cache()

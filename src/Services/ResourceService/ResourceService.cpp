@@ -57,7 +57,7 @@ namespace Mengine
         {
             const ResourcePtr & resource = value.element;
 
-            uint32_t refcount = resource->countReference();
+            uint32_t refcount = resource->getCompileReferenceCount();
 
             if( refcount != 0 )
             {
@@ -193,7 +193,7 @@ namespace Mengine
 
             if( precompile == true )
             {
-                resource->incrementReference();
+                resource->compile();
             }
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -457,7 +457,7 @@ namespace Mengine
             , _name.c_str()
         );
 
-        if( resource->incrementReference() == false )
+        if( resource->compile() == false )
         {
             LOGGER_ERROR( "resource '%s' '%s' is not compile!"
                 , _name.c_str()

@@ -1069,7 +1069,7 @@ namespace Mengine
                 return false;
             }
 
-            if( resource->incrementReference() == false )
+            if( resource->compile() == false )
             {
                 LOGGER_ERROR( "resource '%s' type '%s' invalid compile"
                     , _nameResource.c_str()
@@ -1088,22 +1088,14 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResource( _nameResource, &resource ) == false )
             {
-                LOGGER_ERROR( "Mengine.directResourceRelease: not found resource '%s'"
+                LOGGER_ERROR( "not found resource '%s'"
                     , _nameResource.c_str()
                 );
 
                 return false;
             }
 
-            if( resource->decrementReference() == false )
-            {
-                LOGGER_ERROR( "Mengine.directResourceCompile: resource '%s' type '%s' invalid release"
-                    , _nameResource.c_str()
-                    , resource->getType().c_str()
-                );
-
-                return false;
-            }
+            resource->release();
 
             return true;
         }
@@ -1794,7 +1786,7 @@ namespace Mengine
                 return false;
             }
 
-            resourceFile->decrementReference();
+            resourceFile->release();
 
             return true;
         }
@@ -3303,9 +3295,9 @@ namespace Mengine
             , public ConcreteVisitor<Resource>
         {
         protected:
-            void accept( Resource* _resource ) override
+            void accept( Resource * _resource ) override
             {
-                _resource->incrementReference();
+                _resource->compile();
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -3335,7 +3327,7 @@ namespace Mengine
         protected:
             void accept( Resource * _resource ) override
             {
-                _resource->decrementReference();
+                _resource->release();
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -3362,7 +3354,7 @@ namespace Mengine
             RESOURCE_SERVICE()
                 ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
             {
-                _resource->incrementReference();
+                _resource->compile();
             } );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3371,7 +3363,7 @@ namespace Mengine
             RESOURCE_SERVICE()
                 ->foreachTagsResources( _tags, []( const ResourcePtr & _resource )
             {
-                _resource->decrementReference();
+                _resource->release();
             } );
         }
         //////////////////////////////////////////////////////////////////////////

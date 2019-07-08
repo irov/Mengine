@@ -53,7 +53,7 @@ namespace Mengine
         uint32_t iterator = 0U;
         for( const ResourceImagePtr & resourceImage : m_resourceImages )
         {
-            if( resourceImage->incrementReference() == false )
+            if( resourceImage->compile() == false )
             {
                 LOGGER_ERROR( "resource '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
@@ -87,14 +87,7 @@ namespace Mengine
     {
         for( const ResourceImagePtr & resourceImage : m_resourceImages )
         {
-            if( resourceImage->decrementReference() == false )
-            {
-                LOGGER_ERROR( "resource '%s' file '%s' can't invalid compile resource image '%s'"
-                    , this->getName().c_str()
-                    , this->getFilePath().c_str()
-                    , resourceImage->getName().c_str()
-                );
-            }
+            resourceImage->release();
         }
 
         m_container = nullptr;

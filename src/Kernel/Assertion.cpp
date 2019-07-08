@@ -78,7 +78,10 @@ namespace Mengine
             }
 
 #ifdef MENGINE_PLATFORM_WINDOWS
-            DebugBreak();
+            if( IsDebuggerPresent() == TRUE )
+            {
+                DebugBreak();
+            }
 #endif
         }
     }

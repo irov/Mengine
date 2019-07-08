@@ -93,13 +93,13 @@ namespace Mengine
 
         if( m_resourceImageRGB != nullptr )
         {
-            m_resourceImageRGB->decrementReference();
+            m_resourceImageRGB->release();
             m_resourceImageRGB = nullptr;
         }
 
         if( m_resourceImageAlpha != nullptr )
         {
-            m_resourceImageAlpha->decrementReference();
+            m_resourceImageAlpha->release();
             m_resourceImageAlpha = nullptr;
         }
     }

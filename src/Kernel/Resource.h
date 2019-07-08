@@ -5,7 +5,6 @@
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
-#include "Kernel/Reference.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Unknowable.h"
@@ -25,7 +24,6 @@ namespace Mengine
         , public Contentable
         , public Magicable
         , public Identity
-        , public Reference
         , public Scriptable
         , public Visitable
         , public Unknowable
@@ -58,6 +56,13 @@ namespace Mengine
         virtual bool _initialize();
 
     public:
+        bool compile() override;
+        void release() override;
+
+    public:
+        MENGINE_INLINE uint32_t getCompileReferenceCount() const;
+
+    public:
         bool cache();
         void uncache();
 
@@ -69,10 +74,8 @@ namespace Mengine
         virtual void _uncache();
 
     protected:
-        bool _incrementZero() override;
-        void _decrementZero() override;
+        uint32_t m_compileReferenceCount;
 
-    protected:
         ConstString m_locale;
         FileGroupInterfacePtr m_fileGroup;
         ConstString m_groupName;
@@ -96,6 +99,11 @@ namespace Mengine
     MENGINE_INLINE const ConstString & Resource::getGroupName() const
     {
         return m_groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const
+    {
+        return m_compileReferenceCount;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool Resource::isCache() const

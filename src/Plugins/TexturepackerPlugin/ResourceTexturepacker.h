@@ -23,6 +23,13 @@ namespace Mengine
         ~ResourceTexturepacker() override;
 
     public:
+        uint32_t getAtlasWidth() const override;
+        uint32_t getAtlasHeight() const override;
+
+        float getAtlasWidthInv() const override;
+        float getAtlasHeightInv() const override;
+
+    public:
         void setResourceJSONName( const ConstString& _resourceJSONName );
         const ConstString& getResourceJSONName() const;
 
@@ -34,14 +41,19 @@ namespace Mengine
         const ResourceImagePtr & getFrame( const ConstString & _name ) const override;
 
     public:
-        uint32_t getFramesCount() const override;
-        const ResourceImagePtr & getFrameByIndex( uint32_t _index ) const override;
+        const VectorResourceImages & getFrames() const override;
 
     protected:
         bool _compile() override;
         void _release() override;
 
     protected:
+        uint32_t m_atlasWidth;
+        uint32_t m_atlasHeight;
+
+        float m_atlasWidthInv;
+        float m_atlasHeightInv;
+
         ConstString m_resourceJSONName;
         ResourcePtr m_resourceJSON;
 
@@ -49,7 +61,9 @@ namespace Mengine
         ResourceImagePtr m_resourceImage;
 
         typedef Hashtable<ConstString, ResourceImagePtr> HashtableTexturepackerFrames;
-        HashtableTexturepackerFrames m_frames;
+        HashtableTexturepackerFrames m_hashtableFrames;
+
+        VectorResourceImages m_frames;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceTexturepacker> ResourceTexturepackerPtr;

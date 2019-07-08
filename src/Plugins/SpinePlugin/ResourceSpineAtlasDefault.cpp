@@ -1,8 +1,6 @@
-#include "ResourceSpineAtlas.h"
+#include "ResourceSpineAtlasDefault.h"
 
 #include "Interface/ResourceServiceInterface.h"
-
-#include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/MemoryHelper.h"
@@ -12,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlas * _resource, const char * _path )
+    const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlasDefault * _resource, const char * _path )
     {
         const ResourceImagePtr & resourceImage = _resource->getResourceImage_( _path );
 
@@ -21,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     extern "C" void _spAtlasPage_createTexture( spAtlasPage * _page, const char * _path )
     {
-        Mengine::ResourceSpineAtlas * resource = (Mengine::ResourceSpineAtlas *)_page->atlas->rendererObject;
+        Mengine::ResourceSpineAtlasDefault * resource = (Mengine::ResourceSpineAtlasDefault *)_page->atlas->rendererObject;
 
         const ResourceImagePtr & resourceImage = _spAtlasPage_createTexture2( resource, _path );
 
@@ -49,18 +47,18 @@ namespace Mengine
 
         return nullptr;
     }
-	//////////////////////////////////////////////////////////////////////////
-    ResourceSpineAtlas::ResourceSpineAtlas()
+    //////////////////////////////////////////////////////////////////////////
+    ResourceSpineAtlasDefault::ResourceSpineAtlasDefault()
         : m_atlas( nullptr )
     {
-	}
-	//////////////////////////////////////////////////////////////////////////
-    ResourceSpineAtlas::~ResourceSpineAtlas()
-	{
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSpineAtlas::addResourceImageDesc( const ConstString & _name, const ConstString & _resourceImageName )
-    {        
+    ResourceSpineAtlasDefault::~ResourceSpineAtlasDefault()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineAtlasDefault::addResourceImageDesc( const ConstString & _name, const ConstString & _resourceImageName )
+    {
         ImageDesc desc;
         desc.name = _name;
         desc.resourceImageName = _resourceImageName;
@@ -68,13 +66,13 @@ namespace Mengine
 
         m_images.emplace_back( desc );
     }
-	//////////////////////////////////////////////////////////////////////////
-	spAtlas * ResourceSpineAtlas::getAtlas() const
-	{
-		return m_atlas;
-	}
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceSpineAtlas::getResourceImage_( const Char * _name ) const
+    spAtlas * ResourceSpineAtlasDefault::getAtlas() const
+    {
+        return m_atlas;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceSpineAtlasDefault::getResourceImage_( const Char * _name ) const
     {
         for( const ImageDesc & desc : m_images )
         {
@@ -88,9 +86,9 @@ namespace Mengine
 
         return ResourceImagePtr::none();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceSpineAtlas::_compile()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceSpineAtlasDefault::_compile()
+    {
         for( ImageDesc & desc : m_images )
         {
             const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
@@ -112,14 +110,14 @@ namespace Mengine
         }
 
         const FilePath & filePath = this->getFilePath();
-		const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         MemoryInterfacePtr atlas_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas_memory, false );
 
-		const char * atlas_memory_buffer = atlas_memory->getBuffer();
-		size_t atlas_memory_size = atlas_memory->getSize();
+        const char * atlas_memory_buffer = atlas_memory->getBuffer();
+        size_t atlas_memory_size = atlas_memory->getSize();
 
         spAtlas * atlas = spAtlas_create( atlas_memory_buffer, (int)atlas_memory_size, "", this );
 
@@ -128,12 +126,12 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( atlas, false );
 
         m_atlas = atlas;
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceSpineAtlas::_release()
-	{
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSpineAtlasDefault::_release()
+    {
         for( ImageDesc & desc : m_images )
         {
             const ResourceImagePtr & resourceImage = desc.resourceImage;
@@ -142,10 +140,10 @@ namespace Mengine
             desc.resourceImage = nullptr;
         }
 
-		if( m_atlas != nullptr )
-		{
-			spAtlas_dispose( m_atlas );
-			m_atlas = nullptr;
-		}				
-	}
+        if( m_atlas != nullptr )
+        {
+            spAtlas_dispose( m_atlas );
+            m_atlas = nullptr;
+        }
+    }
 }

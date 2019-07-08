@@ -147,7 +147,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height )
+    void Landscape2D::setBackParts( const VectorResourceImages & _images, uint32_t _countX, uint32_t _countY, float _width, float _height )
     {
         this->recompile( [this, _images]() {m_images = _images; } );
 
@@ -159,7 +159,7 @@ namespace Mengine
         uint32_t i = 0;
         uint32_t j = 0;
 
-        VectorResourceImage::size_type elementCount = m_images.size();
+        VectorResourceImages::size_type elementCount = m_images.size();
         m_elements.reserve( elementCount );
         m_verticesWM.resize( elementCount * 4 );
 

@@ -152,7 +152,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<HotSpotPolygon *> VectorHotSpotPolygons;
+    typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygons;
     //////////////////////////////////////////////////////////////////////////
     class EngineScriptMethod
         : public Factorable
@@ -1748,7 +1748,7 @@ namespace Mengine
 
             Polygon correct_polygon;
 
-            for( const HotSpotPolygon * overlap_hotspot : _overlap )
+            for( const HotSpotPolygonPtr & overlap_hotspot : _overlap )
             {
                 const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 

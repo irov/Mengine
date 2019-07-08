@@ -49,6 +49,7 @@
 #include <iomanip>
 
 #include "Kernel/ResourceImage.h"
+#include "Kernel/VectorResourceImages.h"
 #include "Engine/ResourceCursorICO.h"
 
 #include "Kernel/String.h"
@@ -69,8 +70,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceImage *> VectorResourceImage;
-    typedef Vector<HotSpotPolygon *> VectorHotSpotPolygons;
+    typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygons;
     //////////////////////////////////////////////////////////////////////////
     class HelperScriptMethod
         : public Factorable
@@ -3294,8 +3294,8 @@ namespace Mengine
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>());
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>());
 
-        pybind::registration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(_kernel);
-        pybind::registration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(_kernel);
+        pybind::registration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
+        pybind::registration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
 
         pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
         pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
@@ -3608,8 +3608,8 @@ namespace Mengine
         pybind::unregistration_type_cast<Blobject>(_kernel);
         pybind::unregistration_type_cast<Tags>(_kernel);
 
-        pybind::unregistration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(_kernel);
-        pybind::unregistration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
 
         pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
         pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);

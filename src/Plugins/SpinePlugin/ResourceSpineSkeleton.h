@@ -9,31 +9,31 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ResourceSpineSkeleton
-		: public Resource
+    class ResourceSpineSkeleton
+        : public Resource
         , public Content
         , public UnknownResourceSpineSkeleton
-	{
+    {
         DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();
 
-	public:
+    public:
         ResourceSpineSkeleton();
-		~ResourceSpineSkeleton() override;
+        ~ResourceSpineSkeleton() override;
 
-	public:
+    public:
         spSkeletonData * getSkeletonData() const;
         spAnimation * findSkeletonAnimation( const ConstString & _name ) const;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	public:
+    public:
         spSkeletonData * m_skeletonData;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceSpineSkeleton> ResourceSpineSkeletonPtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ResourceSpineSkeleton> ResourceSpineSkeletonPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

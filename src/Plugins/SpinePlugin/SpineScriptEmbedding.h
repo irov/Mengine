@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class JSONScriptEmbedding
+    class SpineScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        JSONScriptEmbedding();
-        ~JSONScriptEmbedding() override;
+        SpineScriptEmbedding();
+        ~SpineScriptEmbedding() override;
 
     public:
         bool embedding( pybind::kernel_interface * _kernel ) override;

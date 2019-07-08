@@ -8,6 +8,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
+#include "Kernel/VectorResourceImages.h"
 
 #include "Config/Vector.h"
 
@@ -23,8 +24,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class AstralaxParticleSystem;
-
+    //////////////////////////////////////////////////////////////////////////
     class AstralaxEmitterContainer
         : public AstralaxEmitterContainerInterface
         , public Factorable
@@ -66,9 +68,9 @@ namespace Mengine
 
         MemoryInterfacePtr m_memory;
 
-        typedef Vector<ResourceImagePtr> VectorResourceImage;
-        VectorResourceImage m_resourceImages;
+        VectorResourceImages m_resourceImages;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxEmitterContainer> AstralaxEmitterContainer2Ptr;
+    //////////////////////////////////////////////////////////////////////////
 }

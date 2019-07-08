@@ -891,8 +891,14 @@ namespace Mengine
             return false;
         }
 
-        FRAMEWORK_SERVICE()
-            ->onFrameworkInitialize();
+        if( FRAMEWORK_SERVICE()
+            ->onFrameworkInitialize() == false )
+        {
+            LOGGER_CRITICAL( "Framework invalid initialize"
+            );
+
+            return false;
+        }
 
         if( GAME_SERVICE()
             ->loadPersonality() == false )

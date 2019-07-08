@@ -33,125 +33,125 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class Spine
-		: public Node
-		, public Eventable
-		, public Animatable
-	{
+        : public Node
+        , public Eventable
+        , public Animatable
+    {
         EVENT_RECEIVER( SpineEventReceiver );
 
-	public:
-		Spine();
-		~Spine();
+    public:
+        Spine();
+        ~Spine();
 
-	public:
-		void setResourceSpine( const ResourceSpinePtr & _resourceSpine );
-		const ResourceSpinePtr & getResourceSpine() const;
+    public:
+        void setResourceSpine( const ResourceSpinePtr & _resourceSpine );
+        const ResourceSpinePtr & getResourceSpine() const;
 
-	public:
-		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix );
+    public:
+        bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix );
 
-	public:
-		bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
-		bool removeStateAnimation( const ConstString & _state );
+    public:
+        bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
+        bool removeStateAnimation( const ConstString & _state );
 
-	public:
-		bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor );
-		float getStateAnimationSpeedFactor( const ConstString & _state ) const;
+    public:
+        bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor );
+        float getStateAnimationSpeedFactor( const ConstString & _state ) const;
 
-		bool setStateAnimationTiming( const ConstString & _state, float _timing );
-		float getStateAnimationTiming( const ConstString & _state ) const;
+        bool setStateAnimationTiming( const ConstString & _state, float _timing );
+        float getStateAnimationTiming( const ConstString & _state ) const;
 
-		bool setStateAnimationFreeze( const ConstString & _state, bool _freeze );
-		bool getStateAnimationFreeze( const ConstString & _state ) const;
+        bool setStateAnimationFreeze( const ConstString & _state, bool _freeze );
+        bool getStateAnimationFreeze( const ConstString & _state ) const;
 
-		float getStateAnimationDuration( const ConstString & _state ) const;
-		
-	public:
-		float getAnimationDuration( const ConstString & _name );
+        float getStateAnimationDuration( const ConstString & _state ) const;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    public:
+        float getAnimationDuration( const ConstString & _name );
 
-	protected:
-		void _update( float _current, float _timing ) override;
-		void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		bool _play( float _time ) override;
-		bool _restart( uint32_t _enumerator, float _time ) override;
-		void _pause( uint32_t _enumerator ) override;
-		void _resume( uint32_t _enumerator, float _resume ) override;
-		void _stop( uint32_t _enumerator ) override;
-		void _end( uint32_t _enumerator ) override;
-		bool _interrupt( uint32_t _enumerator ) override;
+    protected:
+        void _update( float _current, float _timing ) override;
+        void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
 
-	public:
-		void addAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
+    protected:
+        bool _play( float _time ) override;
+        bool _restart( uint32_t _enumerator, float _time ) override;
+        void _pause( uint32_t _enumerator ) override;
+        void _resume( uint32_t _enumerator, float _resume ) override;
+        void _stop( uint32_t _enumerator ) override;
+        void _end( uint32_t _enumerator ) override;
+        bool _interrupt( uint32_t _enumerator ) override;
 
-	protected:
-		void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm );
-		void fillIndices_( RenderIndices * _vertices2D, const int * _triangles, int _count );
-		
-	protected:
-		RenderMaterialInterfacePtr makeMaterial_( spSlot * _slot, ResourceImage * _resourceImage ) const;
+    public:
+        void addAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
 
-	protected:		
-		void updateAnimation_();
+    protected:
+        void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm );
+        void fillIndices_( RenderIndices * _vertices2D, const int * _triangles, int _count );
 
-	protected:
-		ResourceHolder<ResourceSpine> m_resourceSpine;
-			
-		spSkeleton * m_skeleton;
-		spAnimationStateData * m_animationStateData;
+    protected:
+        RenderMaterialInterfacePtr makeMaterial_( spSlot * _slot, ResourceImage * _resourceImage ) const;
 
-		struct Animation
-		{
-			ConstString name;
-			spAnimationState * state;
-			float timing;
-			float duration;
-			float speedFactor;
-			bool freeze;
-			bool complete;
-			bool loop;
-		};
+    protected:
+        void updateAnimation_();
 
-		typedef stdex::map<ConstString, Animation> TMapAnimations;
-		TMapAnimations m_animations;
+    protected:
+        ResourceHolder<ResourceSpine> m_resourceSpine;
 
-		struct AttachmentMesh
-		{
-			ResourceImagePtr image;
-			RenderMaterialInterfacePtr material;
+        spSkeleton * m_skeleton;
+        spAnimationStateData * m_animationStateData;
 
-			typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
-			TArrayRenderVertex2D vertices;
+        struct Animation
+        {
+            ConstString name;
+            spAnimationState * state;
+            float timing;
+            float duration;
+            float speedFactor;
+            bool freeze;
+            bool complete;
+            bool loop;
+        };
 
-			typedef stdex::heap_array<RenderIndices> TArrayRenderIndices;
-			TArrayRenderIndices indices;
-		};
+        typedef stdex::map<ConstString, Animation> TMapAnimations;
+        TMapAnimations m_animations;
 
-		typedef stdex::map<const char *, AttachmentMesh> TVectorAttachmentMesh;
-		TVectorAttachmentMesh m_attachmentMeshes;
+        struct AttachmentMesh
+        {
+            ResourceImagePtr image;
+            RenderMaterialInterfacePtr material;
 
-		struct AnimationEvent
-		{
-			int trackIndex;
-			spEventType type;
+            typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
+            TArrayRenderVertex2D vertices;
 
-			ConstString state;
-			ConstString animation;
+            typedef stdex::heap_array<RenderIndices> TArrayRenderIndices;
+            TArrayRenderIndices indices;
+        };
 
-			const char * eventName;
-			int eventIntValue;
-			float eventFloatValue;
-			const char* eventStringValue;
+        typedef stdex::map<const char *, AttachmentMesh> TVectorAttachmentMesh;
+        TVectorAttachmentMesh m_attachmentMeshes;
 
-			int loopCount;
-		};
+        struct AnimationEvent
+        {
+            int trackIndex;
+            spEventType type;
 
-		typedef stdex::vector<AnimationEvent> TVectorAnimationEvent;
-		TVectorAnimationEvent m_events;
-	};
+            ConstString state;
+            ConstString animation;
+
+            const char * eventName;
+            int eventIntValue;
+            float eventFloatValue;
+            const char * eventStringValue;
+
+            int loopCount;
+        };
+
+        typedef stdex::vector<AnimationEvent> TVectorAnimationEvent;
+        TVectorAnimationEvent m_events;
+    };
 }

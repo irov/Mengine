@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class LoaderResourceJSON
+    class LoaderResourceSpineAtlasDefault
         : public LoaderInterface
         , public Factorable
     {
     public:
-        LoaderResourceJSON();
-        ~LoaderResourceJSON() override;
+        LoaderResourceSpineAtlasDefault();
+        ~LoaderResourceSpineAtlasDefault() override;
 
     protected:
         bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;

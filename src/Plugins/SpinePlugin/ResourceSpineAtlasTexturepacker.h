@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SpineInterface.h"
+#include "ResourceSpineAtlas.h"
 
 #include "Kernel/Resource.h"
 #include "Kernel/Content.h"
@@ -11,24 +11,19 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ResourceSpineAtlasTexturepacker
-        : public Resource
-        , public Content
+        : public ResourceSpineAtlas
     {
-        DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
-
     public:
         ResourceSpineAtlasTexturepacker();
         ~ResourceSpineAtlasTexturepacker() override;
 
     public:
-        void setResourceTexturepacker( const ConstString & _resourceTexturepackerName );
-        const ConstString & getResourceTexturepacker() const;
+        void setResourceTexturepackerName( const ConstString & _resourceTexturepackerName );
+        const ConstString & getResourceTexturepackerName() const;
 
     public:
-        spAtlas * getAtlas() const;
+        spAtlas * getAtlas() const override;
 
     protected:
         bool _compile() override;

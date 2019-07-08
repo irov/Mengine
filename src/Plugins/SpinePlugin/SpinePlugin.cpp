@@ -1,18 +1,21 @@
-#	include "SpinePlugin.h"
+#include "SpinePlugin.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
-#	include "PythonScriptWrapper/ScriptClassWrapper.h"
-#	include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
+#include "SpineScriptEmbedding.h"
 
-#	include "Kernel/NodePrototypeGenerator.h"
-#	include "Kernel/ResourcePrototypeGenerator.h"
+#include "ResourceSpineAtlasDefault.h"
+#include "ResourceSpineAtlasTexturepacker.h"
+#include "ResourceSpineSkeleton.h"
 
-#	include "Spine.h"
-#	include "ResourceSpine.h"
+#include "LoaderResourceSpineAtlasDefault.h"
+#include "LoaderResourceSpineAtlasTexturepacker.h"
+#include "LoaderResourceSpineSkeleton.h"
 
-#	include "pybind/pybind.hpp"
+#include "Kernel/ResourcePrototypeGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Spine, Mengine::SpinePlugin );
@@ -20,84 +23,74 @@ PLUGIN_FACTORY( Spine, Mengine::SpinePlugin );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class PythonSpineEventReceiver
-        : public PythonAnimatableEventReceiver<SpineEventReceiver>
+    SpinePlugin::SpinePlugin()
     {
-    public:
-        void onSpineEvent( const char * _eventName, int _eventIntValue, float _eventFloatValue, const char * _eventStringValue ) override
-        {
-            m_cb.call( _eventName, _eventIntValue, _eventFloatValue, _eventStringValue );
-        }
-
-        void onSpineStateAnimationEnd( const ConstString & _state, const ConstString & _animation, bool _isEnd ) override
-        {
-            m_cb.call( _state, _animation, _isEnd );
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static PyObject * s_Spine_setEventListener( pybind::kernel_interface * _kernel, Spine * _spine, PyObject * _args, PyObject * _kwds )
-    {
-        (void)_args;
-
-        MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
-
-        pybind::dict py_kwds( _kernel, _kwds );
-        Helper::registerAnimatableEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine );
-        
-        Helper::registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineEvent", EVENT_SPINE_EVENT );
-        Helper::registerEventReceiver<PythonSpineEventReceiver>( py_kwds, _spine, "onSpineStateAnimationEnd", EVENT_SPINE_STATE_ANIMATION_END );
-
-        return pybind::ret_none();
     }
-	//////////////////////////////////////////////////////////////////////////
-	SpinePlugin::SpinePlugin()
-	{
-	}
     //////////////////////////////////////////////////////////////////////////
     SpinePlugin::~SpinePlugin()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SpinePlugin::_initialize()
-	{
-		pybind::kernel_interface * kernel = pybind::get_kernel();
+    //////////////////////////////////////////////////////////////////////////
+    bool SpinePlugin::_initializePlugin()
+    {
+        SERVICE_WAIT( ScriptServiceInterface, []()
+        {
+            ADD_SCRIPT_EMBEDDING( SpineScriptEmbedding );
 
-		pybind::interface_<Spine, pybind::bases<Node, Eventable, Animatable> >( kernel, "Spine", false )
-			.def( "setResourceSpine", &Spine::setResourceSpine )
-			.def( "getResourceSpine", &Spine::getResourceSpine )
-			.def( "mixAnimation", &Spine::mixAnimation )
-			.def( "getAnimationDuration", &Spine::getAnimationDuration )
-			.def( "setStateAnimation", &Spine::setStateAnimation )
-			.def( "removeStateAnimation", &Spine::removeStateAnimation )
-			.def( "setStateAnimationSpeedFactor", &Spine::setStateAnimationSpeedFactor )
-			.def( "getStateAnimationSpeedFactor", &Spine::getStateAnimationSpeedFactor )
-			.def( "setStateAnimationTiming", &Spine::setStateAnimationTiming )
-			.def( "getStateAnimationTiming", &Spine::getStateAnimationTiming )
-			.def( "setStateAnimationFreeze", &Spine::setStateAnimationFreeze )
-			.def( "getStateAnimationFreeze", &Spine::getStateAnimationFreeze )
-			.def( "getStateAnimationDuration", &Spine::getStateAnimationDuration )
-            .def_static_native_kernel( "setEventListener", &s_Spine_setEventListener )
-			;
+            return true;
+        } );
 
-		pybind::interface_<ResourceSpine, pybind::bases<ResourceReference> >( kernel, "ResourceSpine", false )
-			;
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlas" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceSpineAtlasDefault, 64>>() ) == false )
+        {
+            return false;
+        }
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "Spine" ), new ClassScriptWrapper<Spine>() );
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceSpineAtlasTexturepacker, 64>>() ) == false )
+        {
+            return false;
+        }
 
-		SCRIPT_SERVICE( m_serviceProvider )
-			->setWrapper( Helper::stringizeString( m_serviceProvider, "ResourceSpine" ), new ClassScriptWrapper<ResourceSpine>() );
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceSpineSkeleton, 64>>() ) == false )
+        {
+            return false;
+        }
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Spine" ), new NodePrototypeGenerator<Spine, 128> );
+        SERVICE_WAIT( LoaderServiceInterface, []()
+        {
+            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), Helper::makeFactorableUnique<LoaderResourceSpineAtlasDefault>() );
+            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), Helper::makeFactorableUnique<LoaderResourceSpineAtlasTexturepacker>() );
+            VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), Helper::makeFactorableUnique<LoaderResourceSpineSkeleton>() );
 
-		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceSpine" ), new ResourcePrototypeGenerator<ResourceSpine, 128> );
+            return true;
+        } );
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SpinePlugin::_finalize()
-	{
-	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SpinePlugin::_finalizePlugin()
+    {
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            REMOVE_SCRIPT_EMBEDDING( SpineScriptEmbedding );
+        }
+
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
+        }
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlas" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
+    }
 }

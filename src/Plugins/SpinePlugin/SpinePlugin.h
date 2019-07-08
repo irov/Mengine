@@ -4,17 +4,17 @@
 
 namespace Mengine
 {
-	class SpinePlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "Spine" )
+    class SpinePlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "Spine" )
 
-	public:
-		SpinePlugin();
+    public:
+        SpinePlugin();
         ~SpinePlugin() override;
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
-	};
+    protected:
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
+    };
 }

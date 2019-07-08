@@ -9,6 +9,7 @@
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorResourceImages.h"
 
 #include "Config/Vector.h"
 
@@ -18,8 +19,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceImagePtr> VectorResourceImage;
     //////////////////////////////////////////////////////////////////////////
     struct RenderMaterial;
     struct RenderMaterialGroup;
@@ -49,7 +48,7 @@ namespace Mengine
         ~Landscape2D() override;
 
     public:
-        void setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
+        void setBackParts( const VectorResourceImages & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
 
     protected:
         bool _compile() override;
@@ -76,7 +75,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        VectorResourceImage m_images;
+        VectorResourceImages m_images;
 
         uint32_t m_elementCountX;
         uint32_t m_elementCountY;

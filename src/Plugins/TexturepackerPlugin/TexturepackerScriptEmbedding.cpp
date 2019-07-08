@@ -31,8 +31,7 @@ namespace Mengine
     {
         pybind::interface_<ResourceTexturepacker, pybind::bases<Resource> >( _kernel, "ResourceTexturepacker", false )
             .def( "getFrame", &ResourceTexturepacker::getFrame )
-            .def( "getFramesCount", &ResourceTexturepacker::getFramesCount )
-            .def( "getFrameByIndex", &ResourceTexturepacker::getFrameByIndex )
+            .def( "getFrames", &ResourceTexturepacker::getFrames )
             ;
 
         VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceTexturepacker> >( _kernel ) );

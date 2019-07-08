@@ -396,6 +396,8 @@ Core
 	ConstStringHolderLocalString.cpp
 	VectorConstString.h
     
+    VectorResourceImages.h
+    
     UID.h
     UID.cpp        
         

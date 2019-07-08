@@ -9,8 +9,9 @@ src
     
     ResourceSpineSkeleton.h
     ResourceSpineSkeleton.cpp    
-    ResourceSpineAtlas.h
-    ResourceSpineAtlas.cpp
+    ResourceSpineAtlas.h    
+    ResourceSpineAtlasDefault.h
+    ResourceSpineAtlasDefault.cpp
     ResourceSpineAtlasTexturepacker.h
     ResourceSpineAtlasTexturepacker.cpp
     
@@ -18,8 +19,8 @@ src
     SpinePlugin.cpp
     SpinePlugin.def
     
-    LoaderResourceSpineAtlas.h
-    LoaderResourceSpineAtlas.cpp
+    LoaderResourceSpineAtlasDefault.h
+    LoaderResourceSpineAtlasDefault.cpp
     LoaderResourceSpineAtlasTexturepacker.h
     LoaderResourceSpineAtlasTexturepacker.cpp
 

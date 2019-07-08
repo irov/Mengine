@@ -1,4 +1,4 @@
-#include "JSONScriptEmbedding.h"
+#include "SpineScriptEmbedding.h"
 
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
@@ -28,7 +28,7 @@ namespace Mengine
             case jpp::e_type::JPP_OBJECT:
                 {
                     pybind::dict d( _kernel );
-                    
+
                     for( auto && [key, value] : _obj )
                     {
                         d[key] = jpp2pybind( _kernel, value );
@@ -41,10 +41,10 @@ namespace Mengine
             case jpp::e_type::JPP_ARRAY:
                 {
                     pybind::list a( _kernel );
-                    
+
                     for( const jpp::object & value : jpp::array( _obj ) )
                     {
-                        a += jpp2pybind( _kernel, value );                        
+                        a += jpp2pybind( _kernel, value );
                     }
 
                     return a;
@@ -52,7 +52,7 @@ namespace Mengine
             case jpp::e_type::JPP_STRING:
                 {
                     const char * value = _obj;
-                    
+
                     return pybind::make_object_t( _kernel, value );
                 }break;
             case jpp::e_type::JPP_INTEGER:
@@ -64,7 +64,7 @@ namespace Mengine
             case jpp::e_type::JPP_REAL:
                 {
                     float value = _obj;
-                    
+
                     return pybind::make_object_t( _kernel, value );
                 }break;
             case jpp::e_type::JPP_TRUE:
@@ -91,7 +91,7 @@ namespace Mengine
         static pybind::object s_getJSON( pybind::kernel_interface * _kernel, ResourceJSON * _resource )
         {
             const jpp::object & root = _resource->getJSON();
-            
+
             pybind::object ob = jpp2pybind( _kernel, root );
 
             return ob;

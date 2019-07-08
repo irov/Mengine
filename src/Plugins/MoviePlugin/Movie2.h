@@ -5,7 +5,6 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/Surface.h"
-#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
@@ -131,10 +130,10 @@ namespace Mengine
         void _setAnimationSpeedFactor( float _factor ) override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
@@ -211,7 +210,7 @@ namespace Mengine
         void updateAnimationSpeedFactor_( float _factor );
 
     public:
-        ResourceHolder<ResourceMovie2> m_resourceMovie2;
+        ResourceMovie2Ptr m_resourceMovie2;
 
         ConstString m_compositionName;
 

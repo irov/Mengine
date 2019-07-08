@@ -57,12 +57,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderViewport> RenderViewportPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline void RenderViewport::invalidateViewport_()
+    MENGINE_INLINE void RenderViewport::invalidateViewport_()
     {
         m_invalidateViewport = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Viewport & RenderViewport::getViewport() const
+    MENGINE_INLINE const Viewport & RenderViewport::getViewport() const
     {
         if( m_invalidateViewport == true )
         {

@@ -49,25 +49,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _sampler );
 
-#ifdef MENGINE_DEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    String k = it.key();
-
-                    LOGGER_ERROR( "sampler invalid kwds '%s'"
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
+            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _sampler, py_kwds );
 
             return _kernel->ret_none();
         }

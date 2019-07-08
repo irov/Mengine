@@ -137,13 +137,22 @@ namespace Mengine
         *_out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SurfaceTrackMatte::update( const UpdateContext * _context )
+    {
+        MENGINE_UNUSED( _context );
+
+        //Empty
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImage, false, "'%s' resource is null"
             , this->getName().c_str()
         );
 
-        if( m_resourceImage.compile() == false )
+        if( m_resourceImage->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , this->getName().c_str()
@@ -157,7 +166,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceTrackMatteImage.compile() == false )
+        if( m_resourceTrackMatteImage->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , this->getName().c_str()
@@ -174,8 +183,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceTrackMatte::_release()
     {
-        m_resourceImage.release();
-        m_resourceTrackMatteImage.release();
+        m_resourceImage->release();
+        m_resourceTrackMatteImage->release();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceTrackMatte::_updateMaterial() const

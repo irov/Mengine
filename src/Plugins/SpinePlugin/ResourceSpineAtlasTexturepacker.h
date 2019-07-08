@@ -23,7 +23,7 @@ namespace Mengine
         const ConstString & getResourceTexturepackerName() const;
 
     public:
-        spAtlas * getAtlas() const override;
+        spAtlas * getSpineAtlas() const override;
 
     protected:
         bool _compile() override;

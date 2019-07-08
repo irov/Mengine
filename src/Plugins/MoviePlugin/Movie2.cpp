@@ -2025,7 +2025,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceMovie2.compile() == false )
+        if( m_resourceMovie2->compile() == false )
         {
             LOGGER_ERROR( "name '%s' resource %s not compile"
                 , m_name.c_str()
@@ -2156,7 +2156,7 @@ namespace Mengine
 
         m_surfaces.clear();
 
-        m_resourceMovie2.release();
+        m_resourceMovie2->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_activate()
@@ -2327,7 +2327,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_update( const UpdateContext * _context )
+    void Movie2::update( const UpdateContext * _context )
     {
         if( m_composition == nullptr )
         {

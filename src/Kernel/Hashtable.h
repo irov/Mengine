@@ -173,14 +173,14 @@ namespace Mengine
         class const_iterator
         {
         public:
-            inline const_iterator( value_type * _carriage, value_type * _end )
+            const_iterator( value_type * _carriage, value_type * _end )
                 : m_carriage( _carriage )
                 , m_end( _end )
             {
                 this->adapt_();
             }
 
-            inline const_iterator( const const_iterator & _it )
+            const_iterator( const const_iterator & _it )
                 : m_carriage( _it.m_carriage )
                 , m_end( _it.m_end )
             {
@@ -196,28 +196,28 @@ namespace Mengine
             }
 
         public:
-            inline const value_type * operator -> () const
+            const value_type * operator -> () const
             {
                 return m_carriage;
             }
 
-            inline const value_type & operator * () const
+            const value_type & operator * () const
             {
                 return *m_carriage;
             }
 
         public:
-            inline bool operator == ( const const_iterator & _it ) const
+            bool operator == ( const const_iterator & _it ) const
             {
                 return m_carriage == _it.m_carriage;
             }
 
-            inline bool operator != ( const const_iterator & _it ) const
+            bool operator != ( const const_iterator & _it ) const
             {
                 return !this->operator == ( _it );
             }
 
-            inline const_iterator & operator ++ ()
+            const_iterator & operator ++ ()
             {
                 ++m_carriage;
 
@@ -226,7 +226,7 @@ namespace Mengine
                 return *this;
             }
 
-            inline const_iterator operator ++ ( int )
+            const_iterator operator ++ ( int )
             {
                 const_iterator tmp = *this;
                 ++*this;
@@ -235,7 +235,7 @@ namespace Mengine
             }
 
         protected:
-            inline void adapt_()
+            void adapt_()
             {
                 for( ; m_carriage != m_end; ++m_carriage )
                 {
@@ -259,12 +259,12 @@ namespace Mengine
         };
 
     public:
-        inline const_iterator begin() const
+        const_iterator begin() const
         {
             return const_iterator( m_buffer, m_buffer + m_capacity );
         }
 
-        inline const_iterator end() const
+        const_iterator end() const
         {
             return const_iterator( m_buffer + m_capacity, m_buffer + m_capacity );
         }

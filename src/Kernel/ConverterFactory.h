@@ -49,7 +49,7 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        inline ConverterFactoryInterfacePtr registerConverter( const Char * _type )
+        MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type )
         {
             ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T> >();
 
@@ -67,7 +67,7 @@ namespace Mengine
             return converter;
         }
 
-        inline void unregisterConverter( const Char * _type )
+        MENGINE_INLINE void unregisterConverter( const Char * _type )
         {
             CONVERTER_SERVICE()
                 ->unregisterConverter( Helper::stringizeString( _type ) );

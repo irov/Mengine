@@ -14,10 +14,10 @@ namespace Mengine
         ~BoundingBox();
 
     public:
-        inline const mt::box2f * getBoundingBox() const;
+        MENGINE_INLINE const mt::box2f * getBoundingBox() const;
 
     public:
-        inline void invalidateBoundingBox() const;
+        MENGINE_INLINE void invalidateBoundingBox() const;
 
     protected:
         void updateBoundingBox() const;
@@ -33,12 +33,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<BoundingBox> BoundingBoxPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline void BoundingBox::invalidateBoundingBox() const
+    MENGINE_INLINE void BoundingBox::invalidateBoundingBox() const
     {
         m_invalidateBoundingBox = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::box2f * BoundingBox::getBoundingBox() const
+    MENGINE_INLINE const mt::box2f * BoundingBox::getBoundingBox() const
     {
         if( m_invalidateBoundingBox == true )
         {

@@ -2,6 +2,8 @@
 
 #include "SpineInterface.h"
 
+#include "ResourceSpineAtlas.h"
+
 #include "Kernel/Resource.h"
 #include "Kernel/Content.h"
 
@@ -23,6 +25,10 @@ namespace Mengine
         ~ResourceSpineSkeleton() override;
 
     public:
+        void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas );
+        const ConstString & getResourceSpineAtlasName() const;
+
+    public:
         spSkeletonData * getSkeletonData() const;
         spAnimation * findSkeletonAnimation( const ConstString & _name ) const;
 
@@ -31,6 +37,9 @@ namespace Mengine
         void _release() override;
 
     public:
+        ConstString m_resourceSpineAtlasName;
+        ResourceSpineAtlasPtr m_resourceSpineAtlas;
+
         spSkeletonData * m_skeletonData;
     };
     //////////////////////////////////////////////////////////////////////////

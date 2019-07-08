@@ -39,13 +39,13 @@ namespace Mengine
 
     public:
         void setLocale( const ConstString & _locale );
-        inline const ConstString & getLocale() const;
+        MENGINE_INLINE const ConstString & getLocale() const;
 
         void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
-        inline const FileGroupInterfacePtr & getFileGroup() const;
+        MENGINE_INLINE const FileGroupInterfacePtr & getFileGroup() const;
 
         void setGroupName( const ConstString & _groupName );
-        inline const ConstString & getGroupName() const;
+        MENGINE_INLINE const ConstString & getGroupName() const;
 
     public:
         void setTags( const Tags & _tags );
@@ -62,7 +62,7 @@ namespace Mengine
         void uncache();
 
     public:
-        inline bool isCache() const;
+        MENGINE_INLINE bool isCache() const;
 
     protected:
         virtual void _cache();
@@ -83,22 +83,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const ConstString & Resource::getLocale() const
+    MENGINE_INLINE const ConstString & Resource::getLocale() const
     {
         return m_locale;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const FileGroupInterfacePtr & Resource::getFileGroup() const
+    MENGINE_INLINE const FileGroupInterfacePtr & Resource::getFileGroup() const
     {
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const ConstString & Resource::getGroupName() const
+    MENGINE_INLINE const ConstString & Resource::getGroupName() const
     {
         return m_groupName;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Resource::isCache() const
+    MENGINE_INLINE bool Resource::isCache() const
     {
         return m_cache;
     }

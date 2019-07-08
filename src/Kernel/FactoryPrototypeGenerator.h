@@ -14,7 +14,7 @@ namespace Mengine
         ~FactoryPrototypeGenerator() override;
 
     protected:
-        inline const FactoryPtr & getFactory() const;
+        MENGINE_INLINE const FactoryPtr & getFactory() const;
 
     protected:
         bool initialize() override;
@@ -30,7 +30,7 @@ namespace Mengine
         FactoryPtr m_factory;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const FactoryPtr & FactoryPrototypeGenerator::getFactory() const
+    MENGINE_INLINE const FactoryPtr & FactoryPrototypeGenerator::getFactory() const
     {
         return m_factory;
     }

@@ -14,7 +14,6 @@
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/Materialable.h"
-#include "Kernel/ResourceHolder.h"
 
 #include "ResourceMovie.h"
 #include "MovieNodeExtra.h"
@@ -142,7 +141,7 @@ namespace Mengine
         void _destroy() override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
         void render( const RenderContext * _context ) const override;
 
     protected:
@@ -208,11 +207,11 @@ namespace Mengine
         bool addMovieNode_( const MovieLayer & _layer, const NodePtr & _node, const AnimatablePtr & _animatable, const SoundablePtr & _soundable, const MoviePtr & _movie );
 
     protected:
-        inline const NodePtr & getLayerNode_( const MovieLayer & _layer ) const;
-        inline const AnimationInterfacePtr & getLayerAnimation_( const MovieLayer & _layer ) const;
-        inline const SoundablePtr & getLayerSoundable_( const MovieLayer & _layer ) const;
-        inline const MoviePtr & getLayerMovie_( const MovieLayer & _layer ) const;
-        inline const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE const NodePtr & getLayerNode_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE const AnimationInterfacePtr & getLayerAnimation_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE const SoundablePtr & getLayerSoundable_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE const MoviePtr & getLayerMovie_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
 
     protected:
         void getFrameTime_( float _time, uint32_t & _frame, float & _timing ) const;
@@ -228,16 +227,16 @@ namespace Mengine
 
     protected:
         void setEnableLayer_( const MovieLayer & _layer, bool _enable );
-        inline bool getEnableLayer_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE bool getEnableLayer_( const MovieLayer & _layer ) const;
 
         void setVisibleLayer_( const MovieLayer & _layer, bool _visible );
-        inline bool getVisibleLayer_( const MovieLayer & _layer ) const;
+        MENGINE_INLINE bool getVisibleLayer_( const MovieLayer & _layer ) const;
 
     protected:
         bool setupBlendingMode_( const MovieLayer & _layer, const MaterialablePtr & _materiable );
 
     protected:
-        ResourceHolder<ResourceMovie> m_resourceMovie;
+        ResourceMoviePtr m_resourceMovie;
 
         RenderCameraProjectionPtr m_renderCameraProjection;
         RenderViewportPtr m_renderViewport;
@@ -276,49 +275,49 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie> MoviePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const NodePtr & Movie::getLayerNode_( const MovieLayer & _layer ) const
+    MENGINE_INLINE const NodePtr & Movie::getLayerNode_( const MovieLayer & _layer ) const
     {
         const Nodies & ns = m_nodies[_layer.index - 1];
 
         return ns.node;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const AnimationInterfacePtr & Movie::getLayerAnimation_( const MovieLayer & _layer ) const
+    MENGINE_INLINE const AnimationInterfacePtr & Movie::getLayerAnimation_( const MovieLayer & _layer ) const
     {
         const Nodies & ns = m_nodies[_layer.index - 1];
 
         return ns.animation;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const SoundablePtr & Movie::getLayerSoundable_( const MovieLayer & _layer ) const
+    MENGINE_INLINE const SoundablePtr & Movie::getLayerSoundable_( const MovieLayer & _layer ) const
     {
         const Nodies & ns = m_nodies[_layer.index - 1];
 
         return ns.soundable;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const MoviePtr & Movie::getLayerMovie_( const MovieLayer & _layer ) const
+    MENGINE_INLINE const MoviePtr & Movie::getLayerMovie_( const MovieLayer & _layer ) const
     {
         const Nodies & ns = m_nodies[_layer.index - 1];
 
         return ns.movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const NodePtr & Movie::getLayerParent_( const MovieLayer & _layer ) const
+    MENGINE_INLINE const NodePtr & Movie::getLayerParent_( const MovieLayer & _layer ) const
     {
         const Nodies & ns = m_nodies[_layer.parent - 1];
 
         return ns.node;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Movie::getVisibleLayer_( const MovieLayer & _layer ) const
+    MENGINE_INLINE bool Movie::getVisibleLayer_( const MovieLayer & _layer ) const
     {
         const Nodies & nd = m_nodies[_layer.index - 1];
 
         return nd.visible;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Movie::getEnableLayer_( const MovieLayer & _layer ) const
+    MENGINE_INLINE bool Movie::getEnableLayer_( const MovieLayer & _layer ) const
     {
         const Nodies & nd = m_nodies[_layer.index - 1];
 

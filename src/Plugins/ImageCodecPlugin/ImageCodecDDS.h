@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
     //////////////////////////////////////////////////////////////////////////
-    inline PixelFormat s_convertFourCCFormat( uint32_t fourcc )
+    MENGINE_INLINE PixelFormat s_convertFourCCFormat( uint32_t fourcc )
     {
         // convert dxt pixel format
         switch( fourcc )
@@ -90,7 +90,7 @@ namespace Mengine
         return PF_UNKNOWN;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t s_convertFormatFourCC( PixelFormat _format )
+    MENGINE_INLINE uint32_t s_convertFormatFourCC( PixelFormat _format )
     {
         // convert dxt pixel format
         switch( _format )

@@ -37,26 +37,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( _kernel, py_kwds, _node );
 
-#ifdef MENGINE_DEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    String k = it.key();
-
-                    LOGGER_ERROR( "node '%s' invalid kwds '%s'"
-                        , _node->getName().c_str()
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
+            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
             return _kernel->ret_none();
         }
@@ -182,26 +163,7 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( _kernel, py_kwds, _node );
 
-#ifdef MENGINE_DEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    String k = it.key();
-
-                    LOGGER_ERROR( "node '%s' invalid kwds '%s'"
-                        , _node->getName().c_str()
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
+            MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
             return _kernel->ret_none();
         }

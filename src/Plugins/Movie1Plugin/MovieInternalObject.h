@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/ResourceHolder.h"
 #include "Kernel/BaseRender.h"
 
 #include "ResourceInternalObject.h"
@@ -51,7 +50,7 @@ namespace Mengine
         void render( const RenderContext * _context ) const override;
 
     protected:
-        ResourceHolder<ResourceInternalObject> m_resourceInternalObject;
+        ResourceInternalObjectPtr m_resourceInternalObject;
         Movie * m_movie;
 
         pybind::object m_internalObject;

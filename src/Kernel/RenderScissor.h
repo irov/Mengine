@@ -43,12 +43,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderScissor> RenderScissorPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline void RenderScissor::invalidateViewport_()
+    MENGINE_INLINE void RenderScissor::invalidateViewport_()
     {
         m_invalidateViewport = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Viewport & RenderScissor::getScissorViewport() const
+    MENGINE_INLINE const Viewport & RenderScissor::getScissorViewport() const
     {
         if( m_invalidateViewport == true )
         {

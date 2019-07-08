@@ -84,13 +84,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_update( const UpdateContext * _context )
+    void Meshget::update( const UpdateContext * _context )
     {
         EVENTABLE_METHOD( EVENT_MESHGET_UPDATE )
             ->onMeshgetUpdate( _context );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::render( const RenderContext * _state ) const
+    void Meshget::render( const RenderContext * _context ) const
     {
         if( m_positions.empty() == true )
         {
@@ -108,7 +108,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, bb, false );
+        this->addRenderObject( _context, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

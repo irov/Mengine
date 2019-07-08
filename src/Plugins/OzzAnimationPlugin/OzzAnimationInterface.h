@@ -51,7 +51,8 @@ namespace Mengine
     typedef IntrusivePtr<UnknownResourceOzzMeshInterface> UnknownResourceOzzMeshInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SamplerOzzAnimationInterface
-        : public Compilable
+        : public Identity
+        , public Compilable
         , public Updatable
         , public Animatable
         , public Eventable
@@ -84,7 +85,7 @@ namespace Mengine
         virtual const ResourcePtr & getResourceOzzMesh() const = 0;
 
     public:
-        virtual void addOzzAnimationSampler( const ConstString & _name, const SamplerOzzAnimationInterfacePtr & _sampler ) = 0;
+        virtual void addOzzAnimationSampler( const SamplerOzzAnimationInterfacePtr & _sampler ) = 0;
         virtual void removeOzzAnimationSampler( const ConstString & _name ) = 0;
 
         virtual const SamplerOzzAnimationInterfacePtr & findOzzAnimationSampler( const ConstString & _name ) const = 0;

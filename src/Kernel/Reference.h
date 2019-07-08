@@ -16,7 +16,7 @@ namespace Mengine
         bool incrementReference();
         bool decrementReference();
 
-        inline uint32_t countReference() const;
+        MENGINE_INLINE uint32_t countReference() const;
 
     protected:
         virtual bool _incrementZero();
@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Reference> ReferencePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t Reference::countReference() const
+    MENGINE_INLINE uint32_t Reference::countReference() const
     {
         return m_refcounter;
     }

@@ -411,7 +411,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapePacMan::render( const RenderContext * _state ) const
+    void ShapePacMan::render( const RenderContext * _context ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -419,7 +419,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, bb, false );
+        this->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

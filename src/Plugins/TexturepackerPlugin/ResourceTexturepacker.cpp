@@ -26,12 +26,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    float ResourceTexturepacker::getAtlasWidth() const
+    uint32_t ResourceTexturepacker::getAtlasWidth() const
     {
         return m_atlasWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    float ResourceTexturepacker::getAtlasHeight() const
+    uint32_t ResourceTexturepacker::getAtlasHeight() const
     {
         return m_atlasHeight;
     }

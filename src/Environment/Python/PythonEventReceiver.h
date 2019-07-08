@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Kernel/Eventable.h"
-
+#include "Kernel/Identity.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Logger.h"
+#include "Kernel/Error.h"
 
 #include "Config/Char.h"
+#include "Config/String.h"
 
 #include "pybind/object.hpp"
 #include "pybind/dict.hpp"
@@ -40,6 +43,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        MENGINE_INLINE void assertPythonEventReceiver( const Identity * _identity, const pybind::dict & _kwds )
+        {
+            if( _kwds.empty() == true )
+            {
+                return;
+            }
+
+            for( pybind::dict::iterator
+                it = _kwds.begin(),
+                it_end = _kwds.end();
+                it != it_end;
+                ++it )
+            {
+                String k = it.key();
+
+                LOGGER_ERROR( "node '%s:%s' invalid kwds '%s'"
+                    , _identity->getType().c_str()
+                    , _identity->getName().c_str()
+                    , k.c_str()
+                );
+            }
+
+            ERROR_FATAL( "invalid python event receiver '%s:%s'"
+                , _identity->getType().c_str()
+                , _identity->getName().c_str()
+            );
+        }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
         void registerPythonEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable, const Char * _method, uint32_t _event )
@@ -145,3 +176,11 @@ namespace Mengine
         }
     }
 }
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_DEBUG
+#   define MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER(Identity, Kwds)\
+    Helper::assertPythonEventReceiver(Identity, Kwds)
+#else
+#   define MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER(Identity, Kwds)
+#endif
+//////////////////////////////////////////////////////////////////////////

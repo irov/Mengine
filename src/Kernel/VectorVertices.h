@@ -13,8 +13,8 @@ namespace Mengine
         ~VectorVertices();
 
     public:
-        inline VectorRenderVertex2D & getVertices();
-        inline void invalidateVertices( uint8_t _invalidate = 0xFE );
+        MENGINE_INLINE VectorRenderVertex2D & getVertices();
+        MENGINE_INLINE void invalidateVertices( uint8_t _invalidate = 0xFE );
 
     protected:
         void updateVertices_();
@@ -27,7 +27,7 @@ namespace Mengine
         uint8_t m_invalidateVertices;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline VectorRenderVertex2D & VectorVertices::getVertices()
+    MENGINE_INLINE VectorRenderVertex2D & VectorVertices::getVertices()
     {
         if( m_invalidateVertices != 0 )
         {
@@ -37,7 +37,7 @@ namespace Mengine
         return m_vertices;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void VectorVertices::invalidateVertices( uint8_t _invalidate )
+    MENGINE_INLINE void VectorVertices::invalidateVertices( uint8_t _invalidate )
     {
         m_invalidateVertices |= _invalidate;
     }

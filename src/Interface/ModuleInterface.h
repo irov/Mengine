@@ -28,7 +28,7 @@ namespace Mengine
 
     public:
         virtual void tick( const UpdateContext * _context ) = 0;
-        virtual void render( const RenderContext * _state ) = 0;
+        virtual void render( const RenderContext * _context ) = 0;
 
     public:
         virtual void message( const ConstString & _messageName, const MapWParams & _params ) = 0;

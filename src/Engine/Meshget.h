@@ -67,8 +67,8 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
-        void render( const RenderContext * _state ) const override;
+        void update( const UpdateContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
@@ -86,7 +86,7 @@ namespace Mengine
         void updateVerticesColor() const;
 
     protected:
-        inline const VectorRenderVertex2D & getVerticesWM() const;
+        MENGINE_INLINE const VectorRenderVertex2D & getVerticesWM() const;
 
     protected:
         SurfacePtr m_surface;
@@ -103,7 +103,7 @@ namespace Mengine
         mutable bool m_invalidateVerticesColor;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const VectorRenderVertex2D & Meshget::getVerticesWM() const
+    MENGINE_INLINE const VectorRenderVertex2D & Meshget::getVerticesWM() const
     {
         if( m_invalidateVerticesWM == true )
         {

@@ -25,6 +25,8 @@ namespace Mengine
         metadata->getm_File_Path( resource, &Content::setFilePath );
         metadata->getm_File_Converter( resource, &Content::setConverterType );
 
+        metadata->getm_Atlas_Name( resource, &ResourceSpineSkeleton::setResourceSpineAtlasName );
+
         return true;
     }
 }

@@ -27,51 +27,51 @@ namespace Mengine
         typedef Resource IntrusiveDerivedType;
 
     public:
-        inline void setMaxSize( const mt::vec2f & _size );
-        inline const mt::vec2f & getMaxSize() const;
+        MENGINE_INLINE void setMaxSize( const mt::vec2f & _size );
+        MENGINE_INLINE const mt::vec2f & getMaxSize() const;
 
-        inline void setSize( const mt::vec2f & _size );
-        inline const mt::vec2f & getSize() const;
+        MENGINE_INLINE void setSize( const mt::vec2f & _size );
+        MENGINE_INLINE const mt::vec2f & getSize() const;
 
-        inline void setOffset( const mt::vec2f & _size );
-        inline const mt::vec2f & getOffset() const;
+        MENGINE_INLINE void setOffset( const mt::vec2f & _size );
+        MENGINE_INLINE const mt::vec2f & getOffset() const;
 
-        inline void setUVImage( const mt::uv4f & _uv );
-        inline const mt::uv4f & getUVImage() const;
+        MENGINE_INLINE void setUVImage( const mt::uv4f & _uv );
+        MENGINE_INLINE const mt::uv4f & getUVImage() const;
 
-        inline void setUVAlpha( const mt::uv4f & _uv );
-        inline const mt::uv4f & getUVAlpha() const;
+        MENGINE_INLINE void setUVAlpha( const mt::uv4f & _uv );
+        MENGINE_INLINE const mt::uv4f & getUVAlpha() const;
 
-        inline void setUVTextureImage( const mt::uv4f & _uv );
-        inline const mt::uv4f & getUVTextureImage() const;
+        MENGINE_INLINE void setUVTextureImage( const mt::uv4f & _uv );
+        MENGINE_INLINE const mt::uv4f & getUVTextureImage() const;
         
-        inline void setUVTextureAlpha( const mt::uv4f & _uv );
-        inline const mt::uv4f & getUVTextureAlpha() const;
+        MENGINE_INLINE void setUVTextureAlpha( const mt::uv4f & _uv );
+        MENGINE_INLINE const mt::uv4f & getUVTextureAlpha() const;
 
-        inline void setUVImageRotate( bool _rotate );
-        inline bool isUVImageRotate() const;
+        MENGINE_INLINE void setUVImageRotate( bool _rotate );
+        MENGINE_INLINE bool isUVImageRotate() const;
 
-        inline void setUVAlphaRotate( bool _rotate );
-        inline bool isUVAlphaRotate() const;
+        MENGINE_INLINE void setUVAlphaRotate( bool _rotate );
+        MENGINE_INLINE bool isUVAlphaRotate() const;
 
-        inline void setAlpha( bool _alpha );
-        inline bool hasAlpha() const;
+        MENGINE_INLINE void setAlpha( bool _alpha );
+        MENGINE_INLINE bool hasAlpha() const;
 
-        inline void setPremultiply( bool _alpha );
-        inline bool isPremultiply() const;
+        MENGINE_INLINE void setPremultiply( bool _alpha );
+        MENGINE_INLINE bool isPremultiply() const;
 
-        inline void setPow2( bool _pow2 );
-        inline bool isPow2() const;
+        MENGINE_INLINE void setPow2( bool _pow2 );
+        MENGINE_INLINE bool isPow2() const;
 
     public:
         void setTexture( const RenderTextureInterfacePtr & _texture );
-        inline const RenderTextureInterfacePtr & getTexture() const;
+        MENGINE_INLINE const RenderTextureInterfacePtr & getTexture() const;
 
         void setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha );
-        inline const RenderTextureInterfacePtr & getTextureAlpha() const;
+        MENGINE_INLINE const RenderTextureInterfacePtr & getTextureAlpha() const;
 
-        inline void setColor( const Color & _color );
-        inline const Color & getColor() const;
+        MENGINE_INLINE void setColor( const Color & _color );
+        MENGINE_INLINE const Color & getColor() const;
 
     public:
         void correctUVImage( const mt::vec2f & _in, mt::vec2f * _out ) const;
@@ -105,142 +105,142 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceImage, Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setMaxSize( const mt::vec2f & _maxSize )
+    MENGINE_INLINE void ResourceImage::setMaxSize( const mt::vec2f & _maxSize )
     {
         m_maxSize = _maxSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec2f & ResourceImage::getMaxSize() const
+    MENGINE_INLINE const mt::vec2f & ResourceImage::getMaxSize() const
     {
         return m_maxSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setSize( const mt::vec2f & _size )
+    MENGINE_INLINE void ResourceImage::setSize( const mt::vec2f & _size )
     {
         m_size = _size;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec2f & ResourceImage::getSize() const
+    MENGINE_INLINE const mt::vec2f & ResourceImage::getSize() const
     {
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setOffset( const mt::vec2f & _offset )
+    MENGINE_INLINE void ResourceImage::setOffset( const mt::vec2f & _offset )
     {
         m_offset = _offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec2f & ResourceImage::getOffset() const
+    MENGINE_INLINE const mt::vec2f & ResourceImage::getOffset() const
     {
         return m_offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setUVImage( const mt::uv4f & _uv )
+    MENGINE_INLINE void ResourceImage::setUVImage( const mt::uv4f & _uv )
     {
         m_uvImage = _uv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::uv4f & ResourceImage::getUVImage() const
+    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVImage() const
     {
         return m_uvImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setUVAlpha( const mt::uv4f & _uv )
+    MENGINE_INLINE void ResourceImage::setUVAlpha( const mt::uv4f & _uv )
     {
         m_uvAlpha = _uv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::uv4f & ResourceImage::getUVAlpha() const
+    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVAlpha() const
     {
         return m_uvAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setUVTextureImage( const mt::uv4f & _uv )
+    MENGINE_INLINE void ResourceImage::setUVTextureImage( const mt::uv4f & _uv )
     {
         m_uvTextureImage = _uv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::uv4f & ResourceImage::getUVTextureImage() const
+    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTextureImage() const
     {
         return m_uvTextureImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setUVTextureAlpha( const mt::uv4f & _uv )
+    MENGINE_INLINE void ResourceImage::setUVTextureAlpha( const mt::uv4f & _uv )
     {
         m_uvTextureAlpha = _uv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::uv4f & ResourceImage::getUVTextureAlpha() const
+    MENGINE_INLINE const mt::uv4f & ResourceImage::getUVTextureAlpha() const
     {
         return m_uvTextureAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderTextureInterfacePtr & ResourceImage::getTexture() const
+    MENGINE_INLINE const RenderTextureInterfacePtr & ResourceImage::getTexture() const
     {
         return m_texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderTextureInterfacePtr & ResourceImage::getTextureAlpha() const
+    MENGINE_INLINE const RenderTextureInterfacePtr & ResourceImage::getTextureAlpha() const
     {
         return m_textureAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setColor( const Color & _color )
+    MENGINE_INLINE void ResourceImage::setColor( const Color & _color )
     {
         m_color = _color;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Color & ResourceImage::getColor() const
+    MENGINE_INLINE const Color & ResourceImage::getColor() const
     {
         return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setUVImageRotate( bool _rotate )
+    MENGINE_INLINE void ResourceImage::setUVImageRotate( bool _rotate )
     {
         m_uvImageRotate = _rotate;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isUVImageRotate() const
+    MENGINE_INLINE bool ResourceImage::isUVImageRotate() const
     {
         return m_uvImageRotate;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setUVAlphaRotate( bool _rotate )
+    MENGINE_INLINE void ResourceImage::setUVAlphaRotate( bool _rotate )
     {
         m_uvAlphaRotate = _rotate;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isUVAlphaRotate() const
+    MENGINE_INLINE bool ResourceImage::isUVAlphaRotate() const
     {
         return m_uvAlphaRotate;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setAlpha( bool _alpha )
+    MENGINE_INLINE void ResourceImage::setAlpha( bool _alpha )
     {
         m_hasAlpha = _alpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::hasAlpha() const
+    MENGINE_INLINE bool ResourceImage::hasAlpha() const
     {
         return m_hasAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setPremultiply( bool _premultiply )
+    MENGINE_INLINE void ResourceImage::setPremultiply( bool _premultiply )
     {
         m_isPremultiply = _premultiply;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isPremultiply() const
+    MENGINE_INLINE bool ResourceImage::isPremultiply() const
     {
         return m_isPremultiply;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setPow2( bool _pow2 )
+    MENGINE_INLINE void ResourceImage::setPow2( bool _pow2 )
     {
         m_isPow2 = _pow2;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isPow2() const
+    MENGINE_INLINE bool ResourceImage::isPow2() const
     {
         return m_isPow2;
     }

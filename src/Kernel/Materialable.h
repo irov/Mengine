@@ -58,11 +58,11 @@ namespace Mengine
         RenderMaterialInterfacePtr makeTextureMaterial( const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid, const Char * _doc ) const;
 
     public:
-        inline const RenderMaterialInterfacePtr & getMaterial() const;
+        MENGINE_INLINE const RenderMaterialInterfacePtr & getMaterial() const;
 
     protected:
-        inline void invalidateMaterial();
-        inline bool isInvalidateMaterial() const;
+        MENGINE_INLINE void invalidateMaterial();
+        MENGINE_INLINE bool isInvalidateMaterial() const;
 
     protected:
         RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
@@ -86,17 +86,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Materialable> MaterialablePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline void Materialable::invalidateMaterial()
+    MENGINE_INLINE void Materialable::invalidateMaterial()
     {
         m_invalidateMaterial = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Materialable::isInvalidateMaterial() const
+    MENGINE_INLINE bool Materialable::isInvalidateMaterial() const
     {
         return m_invalidateMaterial;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterialInterfacePtr & Materialable::getMaterial() const
+    MENGINE_INLINE const RenderMaterialInterfacePtr & Materialable::getMaterial() const
     {
         if( this->isInvalidateMaterial() == true )
         {

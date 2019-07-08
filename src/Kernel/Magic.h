@@ -17,7 +17,7 @@ namespace Mengine
 
     namespace Helper
     {
-        inline bool magicTest4( const Char * _header, const Char * _magic )
+        MENGINE_INLINE bool magicTest4( const Char * _header, const Char * _magic )
         {
             return (_header[0] == _magic[0])
                 && (_header[1] == _magic[1])

@@ -63,19 +63,19 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        inline bool isTexturePOW2( uint32_t n )
+        MENGINE_INLINE bool isTexturePOW2( uint32_t n )
         {
             return !(n & (n - 1));
         }
         //////////////////////////////////////////////////////////////////////////
-        inline uint32_t getPower2( uint32_t _n )
+        MENGINE_INLINE uint32_t getPower2( uint32_t _n )
         {
             uint32_t np = 1 << _n;
 
             return np;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline uint32_t getTexturePOW2( uint32_t n )
+        MENGINE_INLINE uint32_t getTexturePOW2( uint32_t n )
         {
             --n;
             n |= n >> 16;
@@ -89,13 +89,13 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline const T & Max( const T & _left, const T & _right )
+        const T & Max( const T & _left, const T & _right )
         {
             return _left < _right ? _right : _left;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline const T & Min( const T & _left, const T & _right )
+        const T & Min( const T & _left, const T & _right )
         {
             return _right < _left ? _right : _left;
         }

@@ -1,15 +1,19 @@
-#	include "Spine.h"
+#include "Spine.h"
 
-#	include "Kernel/Materialable.h"
+#include "Interface/StringizeServiceInterface.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/RenderSystemInterface.h"
+#include "Kernel/Materialable.h"
+#include "Kernel/Document.h"
+#include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
-#	include "Logger/Logger.h"
+#include "stdex/memorycopy.h"
 
-#	ifndef MENGINE_SPINE_MAX_VERTICES
-#	define MENGINE_SPINE_MAX_VERTICES 512
-#	endif
+#include <algorithm>
+
+#ifndef MENGINE_SPINE_MAX_VERTICES
+#define MENGINE_SPINE_MAX_VERTICES 512
+#endif
 
 namespace Mengine
 {
@@ -24,38 +28,39 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::setResourceSpine( const ResourceSpinePtr & _resourceSpine )
+    void Spine::setResourceSpineSkeleton( const ResourceSpineSkeletonPtr & _resourceSpineSkeleton )
     {
-        if( m_resourceSpine == _resourceSpine )
+        if( m_resourceSpineSkeleton == _resourceSpineSkeleton )
         {
             return;
         }
 
-        m_resourceSpine = _resourceSpine;
-
-        this->recompile();
+        this->recompile( [this, _resourceSpineSkeleton]()
+        {
+            m_resourceSpineSkeleton = _resourceSpineSkeleton;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceSpinePtr & Spine::getResourceSpine() const
+    const ResourceSpineSkeletonPtr & Spine::getResourceSpineSkeleton() const
     {
-        return m_resourceSpine;
+        return m_resourceSpineSkeleton;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::mixAnimation( const ConstString & _first, const ConstString & _second, float _mix )
     {
-        if( m_resourceSpine == nullptr )
+        if( m_resourceSpineSkeleton == nullptr )
         {
             return false;
         }
 
-        spAnimation * animation_first = m_resourceSpine->findSkeletonAnimation( _first );
+        spAnimation * animation_first = m_resourceSpineSkeleton->findSkeletonAnimation( _first );
 
         if( animation_first == nullptr )
         {
             return false;
         }
 
-        spAnimation * animation_second = m_resourceSpine->findSkeletonAnimation( _second );
+        spAnimation * animation_second = m_resourceSpineSkeleton->findSkeletonAnimation( _second );
 
         if( animation_second == nullptr )
         {
@@ -67,18 +72,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void s_spAnimationStateListener( spAnimationState * state, int trackIndex, spEventType type, spEvent * event, int loopCount )
+    namespace Detail
     {
-        Spine * spine = static_cast<Spine *>(state->rendererObject);
+        //////////////////////////////////////////////////////////////////////////
+        static void s_spAnimationStateListener( spAnimationState * state, spEventType type, spTrackEntry * entry, spEvent * event )
+        {
+            Spine * spine = static_cast<Spine *>(state->rendererObject);
 
-        spine->addAnimationEvent( state, trackIndex, type, event, loopCount );
+            spine->addAnimationEvent_( state, type, entry, event );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::setStateAnimation %s invalid setup state '%s' name '%s' not compile!"
+            LOGGER_ERROR( "'%s' invalid setup state '%s' name '%s' not compile!"
                 , this->getName().c_str()
                 , _state.c_str()
                 , _name.c_str()
@@ -87,133 +96,150 @@ namespace Mengine
             return false;
         }
 
-        TMapAnimations::iterator it_found = m_animations.find( _state );
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found != m_animations.end() )
         {
-            spAnimationState * state = it_found->second.state;
+            const AnimationDesc & desc = *it_found;
 
-            spAnimationState_clearTracks( state );
+            spAnimationState * animationState = desc.animationState;
 
-            spAnimationState_dispose( state );
+            spAnimationState_clearTracks( animationState );
+
+            spAnimationState_dispose( animationState );
 
             m_animations.erase( it_found );
         }
 
-        spAnimation * animation = m_resourceSpine->findSkeletonAnimation( _name );
+        spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 
-        if( animation == nullptr )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
 
-        spAnimationState * state = spAnimationState_create( m_animationStateData );
+        spAnimationState * animationState = spAnimationState_create( m_animationStateData );
 
-        state->rendererObject = this;
-        state->listener = &s_spAnimationStateListener;
+        animationState->rendererObject = this;
+        animationState->listener = &Detail::s_spAnimationStateListener;
 
-        spAnimationState_setAnimation( state, 0, animation, _loop ? 1 : 0 );
+        spAnimationState_setAnimation( animationState, 0, animation, _loop ? 1 : 0 );
 
-        Animation an;
+        AnimationDesc desc;
 
-        an.name = _name;
-        an.state = state;
-        an.timing = _timing;
-        an.duration = animation->duration * 1000.f;
-        an.speedFactor = _speedFactor;
-        an.freeze = false;
-        an.complete = false;
-        an.loop = _loop;
+        desc.state = _state;
+        desc.name = _name;
+        desc.animationState = animationState;
+        desc.timing = _timing;
+        desc.duration = animation->duration * 1000.f;
+        desc.speedFactor = _speedFactor;
+        desc.freeze = false;
+        desc.complete = false;
+        desc.loop = _loop;
 
-        float spTiming = an.timing * 0.001f;
+        float spTiming = desc.timing * 0.001f;
 
-        spAnimationState_update( state, spTiming );
+        spAnimationState_update( animationState, spTiming );
 
-        m_animations.insert( std::make_pair( _state, an ) );
+        m_animations.emplace_back( desc );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::removeStateAnimation( const ConstString & _state )
     {
-        TMapAnimations::iterator it_found = m_animations.find( _state );
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::removeAnimation invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
+            );
 
             return false;
         }
 
-        Animation & an = it_found->second;
+        const AnimationDesc & desc = *it_found;
 
-        spAnimationState * state = an.state;
+        spAnimationState * animationState = desc.animationState;
 
-        spAnimationState_clearTracks( state );
-
-        spAnimationState_dispose( state );
+        spAnimationState_clearTracks( animationState );
+        spAnimationState_dispose( animationState );
 
         m_animations.erase( it_found );
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor )
     {
-        TMapAnimations::iterator it_found = m_animations.find( _state );
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::setAnimationSpeedFactor invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
+            );
 
             return false;
         }
 
-        Animation & an = it_found->second;
+        AnimationDesc & desc = *it_found;
 
-        an.speedFactor = _speedFactor;
+        desc.speedFactor = _speedFactor;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     float Spine::getStateAnimationSpeedFactor( const ConstString & _state ) const
     {
-        TMapAnimations::const_iterator it_found = m_animations.find( _state );
+        VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::getAnimationSpeedFactor invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
-
-            return 0.f;
-        }
-
-        const Animation & an = it_found->second;
-
-        return an.speedFactor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Spine::setStateAnimationTiming( const ConstString & _state, float _timing )
-    {
-        TMapAnimations::const_iterator it_found = m_animations.find( _state );
-
-        if( it_found == m_animations.end() )
-        {
-            LOGGER_ERROR( m_serviceProvider )("Spine::setAnimationTiming invalid not found state '%s'"
-                , _state.c_str()
-                );
+            );
 
             return false;
         }
 
-        Animation an = it_found->second;
+        const AnimationDesc & desc = *it_found;
 
-        if( this->setStateAnimation( _state, an.name, _timing, an.speedFactor, an.loop ) == false )
+        return desc.speedFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Spine::setStateAnimationTiming( const ConstString & _state, float _timing )
+    {
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
+
+        if( it_found == m_animations.end() )
+        {
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
+                , _state.c_str()
+            );
+
+            return false;
+        }
+
+        AnimationDesc & desc = *it_found;
+
+        if( this->setStateAnimation( _state, desc.name, _timing, desc.speedFactor, desc.loop ) == false )
         {
             return false;
         }
@@ -223,153 +249,130 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimationFreeze( const ConstString & _state, bool _freeze )
     {
-        TMapAnimations::iterator it_found = m_animations.find( _state );
+        VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::setAnimationFreeze invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
+            );
 
             return false;
         }
 
-        Animation & an = it_found->second;
+        AnimationDesc & desc = *it_found;
 
-        an.freeze = _freeze;
+        desc.freeze = _freeze;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::getStateAnimationFreeze( const ConstString & _state ) const
     {
-        TMapAnimations::const_iterator it_found = m_animations.find( _state );
+        VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::getAnimationFreeze invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
+            );
 
             return false;
         }
 
-        const Animation & an = it_found->second;
+        const AnimationDesc & desc = *it_found;
 
-        return an.freeze;
+        return desc.freeze;
     }
     //////////////////////////////////////////////////////////////////////////
     float Spine::getStateAnimationTiming( const ConstString & _state ) const
     {
-        TMapAnimations::const_iterator it_found = m_animations.find( _state );
+        VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::getAnimationSpeedFactor invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
+            );
 
-            return 0.f;
+            return false;
         }
 
-        const Animation & an = it_found->second;
+        const AnimationDesc & desc = *it_found;
 
-        return an.timing;
+        return desc.timing;
     }
     //////////////////////////////////////////////////////////////////////////
     float Spine::getStateAnimationDuration( const ConstString & _state ) const
     {
-        TMapAnimations::const_iterator it_found = m_animations.find( _state );
+        VectorAnimations::const_iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
+        {
+            return _desc.state == _state;
+        } );
 
         if( it_found == m_animations.end() )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::getStateAnimationDuration invalid not found state '%s'"
+            LOGGER_ERROR( "'%s' invalid found state animation '%s'"
                 , _state.c_str()
-                );
+            );
 
-            return 0.f;
+            return false;
         }
 
-        const Animation & an = it_found->second;
+        const AnimationDesc & desc = *it_found;
 
-        return an.duration;
+        return desc.duration;
     }
     //////////////////////////////////////////////////////////////////////////
     float Spine::getAnimationDuration( const ConstString & _name )
     {
-        if( m_resourceSpine == nullptr )
+        if( this->isCompile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::getDuration %s not setup resource"
+            LOGGER_ERROR( "'%s' not setup resource"
                 , this->getName().c_str()
-                );
+            );
 
             return 0.f;
         }
 
-        //TODO FIXME
-        bool compile = m_resourceSpine.isCompile();
+        spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 
-        if( compile == false )
-        {
-            m_resourceSpine.compile();
-        }
-
-        spAnimation * animation = m_resourceSpine->findSkeletonAnimation( _name );
-
-        if( animation == nullptr )
-        {
-            LOGGER_ERROR( m_serviceProvider )("Spine::getDuration %s invalid find skeleton animation %s"
-                , this->getName().c_str()
-                , _name.c_str()
-                );
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( animation, 0.f, "'%s' invalid find skeleton animation '%s'"
+            , this->getName().c_str()
+            , _name.c_str()
+        );
 
         float duration = animation->duration * 1000.f;
-
-        if( compile == false )
-        {
-            m_resourceSpine.release();
-        }
 
         return duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    //void Spine::_setEventListener( const pybind::dict & _listener )
-    //{		
-        //this->registerEvent( EVENT_SPINE_END, ("onSpineEnd"), _listener );
-        //this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
-        //this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
-        //this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
-        //this->registerEvent( EVENT_SPINE_EVENT, ("onSpineEvent"), _listener );
-        //this->registerEvent( EVENT_SPINE_STATE_ANIMATION_END, ("onSpineStateAnimationEnd"), _listener );
-
-        //this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
-    //}
-    //////////////////////////////////////////////////////////////////////////
     bool Spine::_compile()
     {
-        if( m_resourceSpine == nullptr )
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceSpineSkeleton, false, "'%s' resource is null"
+            , m_name.c_str()
+        );
+
+        if( m_resourceSpineSkeleton->compile() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::_compile: '%s' resource is null"
+            LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , m_name.c_str()
+                , m_resourceSpineSkeleton->getName().c_str()
                 );
 
             return false;
         }
 
-        if( m_resourceSpine.compile() == false )
-        {
-            LOGGER_ERROR( m_serviceProvider )("Spine::_compile: '%s' resource '%s' is not compile"
-                , m_name.c_str()
-                , m_resourceSpine->getName().c_str()
-                );
-
-            return false;
-        }
-
-        spSkeletonData * skeletonData = m_resourceSpine->getSkeletonData();
+        spSkeletonData * skeletonData = m_resourceSpineSkeleton->getSkeletonData();
 
         spSkeleton * skeleton = spSkeleton_create( skeletonData );
 
@@ -389,17 +392,12 @@ namespace Mengine
     {
         Node::_release();
 
-        for( TMapAnimations::iterator
-            it = m_animations.begin(),
-            it_end = m_animations.end();
-            it != it_end;
-            ++it )
+        for( AnimationDesc & desc : m_animations )
         {
-            spAnimationState * state = it->second.state;
+            spAnimationState * animationState = desc.animationState;
 
-            spAnimationState_clearTracks( state );
-
-            spAnimationState_dispose( state );
+            spAnimationState_clearTracks( animationState );
+            spAnimationState_dispose( animationState );
         }
 
         m_animations.clear();
@@ -418,14 +416,19 @@ namespace Mengine
 
         m_attachmentMeshes.clear();
 
-        m_resourceSpine.release();
+        m_resourceSpineSkeleton->release();
+
+        m_events.clear();
+        m_eventsAux.clear();        
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * _slot, ResourceImage * _resourceImage ) const
+    RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * _slot, const ResourceImage * _resourceImage ) const
     {
         EMaterialBlendMode blendMode = EMB_NORMAL;
 
-        switch( _slot->data->blendMode )
+        const spSlotData * data = _slot->data;
+
+        switch( data->blendMode )
         {
         case SP_BLEND_MODE_NORMAL:
             {
@@ -447,30 +450,24 @@ namespace Mengine
             break;
         }
 
-        RenderMaterialInterfacePtr material = Helper::makeImageMaterial( m_serviceProvider, _resourceImage, ConstString::none(), blendMode, false, false );
+        RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( _resourceImage ), ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FUNCTION );
 
-        if( material == nullptr )
-        {
-            LOGGER_ERROR( m_serviceProvider )("Spine::updateMaterial_ %s resource %s image %s m_material is NULL"
-                , this->getName().c_str()
-                , m_resourceSpine->getName().c_str()
-                , _resourceImage->getName().c_str()
-                );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' resource '%s' image '%s' m_material is NULL"
+            , this->getName().c_str()
+            , m_resourceSpineSkeleton->getName().c_str()
+            , _resourceImage->getName().c_str()
+        );
 
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::addAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
+    void Spine::addAnimationEvent_( spAnimationState * _animationState, spEventType _type, spTrackEntry * _entry, spEvent * _event )
     {
-        (void)_loopCount;
-        (void)_event;
+        MENGINE_UNUSED( _event );
 
-        AnimationEvent ev;
+        AnimationEventDesc ev;
 
-        ev.trackIndex = _trackIndex;
+        ev.trackIndex = _entry->trackIndex;
         ev.type = _type;
 
         bool event_valid = false;
@@ -486,31 +483,25 @@ namespace Mengine
                 ev.eventFloatValue = 0.f;
                 ev.eventStringValue = nullptr;
 
-                for( TMapAnimations::iterator
-                    it = m_animations.begin(),
-                    it_end = m_animations.end();
-                    it != it_end;
-                    ++it )
+                for( AnimationDesc & desc : m_animations )
                 {
-                    const ConstString & key = it->first;
+                    const ConstString & state = desc.state;
 
-                    Animation & an = it->second;
-
-                    if( an.state != _state )
+                    if( desc.animationState != _animationState )
                     {
                         continue;
                     }
 
-                    if( an.loop == true )
+                    if( desc.loop == true )
                     {
                         break;
                     }
 
-                    an.complete = true;
-                    an.timing = an.duration;
+                    desc.complete = true;
+                    desc.timing = desc.duration;
 
-                    ev.state = key;
-                    ev.animation = an.name;
+                    ev.state = state;
+                    ev.name = desc.name;
 
                     event_valid = true;
                     break;
@@ -527,7 +518,7 @@ namespace Mengine
             }break;
         }
 
-        ev.loopCount = _loopCount;
+        ev.loopCount = _entry->loop;
 
         if( event_valid == false )
         {
@@ -537,7 +528,7 @@ namespace Mengine
         m_events.push_back( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::_update( float _current, float _timing )
+    void Spine::update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
@@ -549,82 +540,55 @@ namespace Mengine
             return;
         }
 
-        //if( this->getResourceSpine()->getName() == "Effect_BuyUpgrade" )
-        //{
-        //	printf( "!" );
-        //}
+        float totalTiming = this->calcTotalTime( _context );
 
-        if( m_playTime > _current )
-        {
-            float deltha = m_playTime - _current;
-            _timing -= deltha;
-        }
-
-        float speedFactor = this->getAnimationSpeedFactor();
-        float scretch = this->getStretch();
-        float total_timing = _timing * speedFactor / scretch;
-
-        float spTiming = total_timing * 0.001f;
+        float spTiming = totalTiming * 0.001f;
 
         spSkeleton_update( m_skeleton, spTiming );
 
-        for( TMapAnimations::iterator
-            it = m_animations.begin(),
-            it_end = m_animations.end();
-            it != it_end;
-            ++it )
+        for( AnimationDesc & desc : m_animations )
         {
-            Animation & an = it->second;
-
-            if( an.freeze == true )
+            if( desc.freeze == true )
             {
                 continue;
             }
 
-            if( an.complete == true )
+            if( desc.complete == true )
             {
                 continue;
             }
 
-            float an_timing = total_timing * an.speedFactor;
+            float an_timing = totalTiming * desc.speedFactor;
 
-            an.timing += an_timing;
+            desc.timing += an_timing;
 
-            while( an.timing >= an.duration )
+            while( desc.timing >= desc.duration )
             {
-                an.timing -= an.duration;
+                desc.timing -= desc.duration;
             }
 
-            spAnimationState * state = an.state;
+            spAnimationState * animationState = desc.animationState;
 
             float sp_an_timing = an_timing * 0.001f;
 
-            spAnimationState_update( state, sp_an_timing );
-            spAnimationState_apply( state, m_skeleton );
+            spAnimationState_update( animationState, sp_an_timing );
+            spAnimationState_apply( animationState, m_skeleton );
         }
 
         spSkeleton_updateWorldTransform( m_skeleton );
 
-        TVectorAnimationEvent events;
-        m_events.swap( events );
+        m_eventsAux = std::move( m_events );
 
-        bool loop = this->getLoop();
+        bool loop = this->isLoop();
 
-        for( TVectorAnimationEvent::const_iterator
-            it = events.begin(),
-            it_end = events.end();
-            it != it_end;
-            ++it )
+        for( const AnimationEventDesc & desc : m_eventsAux )
         {
-            const AnimationEvent & ev = *it;
-
-            switch( ev.type )
+            switch( desc.type )
             {
             case SP_ANIMATION_COMPLETE:
                 {
-                    EVENTABLE_METHOD( this, EVENT_SPINE_STATE_ANIMATION_END )
-                        ->onSpineStateAnimationEnd( ev.state, ev.animation, true );
-                    //EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_STATE_ANIMATION_END )(this, ev.state, ev.animation, true);
+                    EVENTABLE_METHOD( EVENT_SPINE_STATE_ANIMATION_END )
+                        ->onSpineStateAnimationEnd( desc.state, desc.name, true );
 
                     if( loop == false )
                     {
@@ -633,32 +597,24 @@ namespace Mengine
                 }break;
             case SP_ANIMATION_EVENT:
                 {
-                    EVENTABLE_METHOD( this, EVENT_SPINE_EVENT )
-                        ->onSpineEvent( ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue );
-                    //EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_EVENT )(this, ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue);
+                    EVENTABLE_METHOD( EVENT_SPINE_EVENT )
+                        ->onSpineEvent( desc.eventName, desc.eventIntValue, desc.eventFloatValue, desc.eventStringValue );
                 }break;
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::_render( RenderServiceInterface * _renderService, const RenderObjectState * _state )
+    void Spine::render( const RenderContext * _context ) const
     {
-        //if( this->getResourceSpine()->getName() == "Effect_BuyUpgrade" )
-        //{
-        //	printf( "!" );
-        //}
-
-        const mt::box2f & bb = this->getBoundingBox();
-
         const mt::mat4f & wm = this->getWorldMatrix();
 
         int slotCount = m_skeleton->slotsCount;
 
-        const int quadTriangles[6] = {0, 1, 2, 2, 3, 0};
+        const RenderIndex quadTriangles[6] = { 0, 1, 2, 2, 3, 0 };
 
         float attachment_vertices[MENGINE_SPINE_MAX_VERTICES * 2];
 
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
         float nr = color.getR();
@@ -675,11 +631,23 @@ namespace Mengine
                 continue;
             }
 
-            AttachmentMesh & mesh = m_attachmentMeshes[slot->data->name];
+            uint32_t slotIndex = (uint32_t)slot->data->index;
+
+            VectorAttachmentMesh::iterator it_found = std::find_if( m_attachmentMeshes.begin(), m_attachmentMeshes.end(), [slotIndex]( const AttachmentMeshDesc & _desc )
+            {
+                return _desc.index == slotIndex;
+            } );
+
+            if( it_found == m_attachmentMeshes.end() )
+            {
+                it_found = m_attachmentMeshes.insert( m_attachmentMeshes.end(), AttachmentMeshDesc() );
+            }
+
+            AttachmentMeshDesc & mesh = *it_found;
 
             const float * uvs = nullptr;
             int verticesCount;
-            const int * triangles;
+            const RenderIndex * triangles;
             int trianglesCount;
 
             float ar = 1.f;
@@ -697,16 +665,16 @@ namespace Mengine
                 {
                     spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
 
-                    spRegionAttachment_computeWorldVertices( attachment, slot->bone, attachment_vertices );
+                    spRegionAttachment_computeWorldVertices( attachment, slot->bone, attachment_vertices, 0, 2 );
 
                     uvs = attachment->uvs;
-                    verticesCount = 8;
+                    verticesCount = 4;
                     triangles = quadTriangles;
                     trianglesCount = 6;
-                    ar = attachment->r;
-                    ag = attachment->g;
-                    ab = attachment->b;
-                    aa = attachment->a;
+                    ar = attachment->color.r;
+                    ag = attachment->color.g;
+                    ab = attachment->color.b;
+                    aa = attachment->color.a;
 
                     resourceImage = (ResourceImage *)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
 
@@ -717,41 +685,21 @@ namespace Mengine
                 {
                     spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
 
-                    spMeshAttachment_computeWorldVertices( attachment, slot, attachment_vertices );
+                    spVertexAttachment_computeWorldVertices( &attachment->super, slot, 0, attachment->super.worldVerticesLength, attachment_vertices, 0, 2 );
 
                     uvs = attachment->uvs;
-                    verticesCount = attachment->verticesCount;
+                    verticesCount = attachment->super.worldVerticesLength;
                     triangles = attachment->triangles;
                     trianglesCount = attachment->trianglesCount;
-                    ar = attachment->r;
-                    ag = attachment->g;
-                    ab = attachment->b;
-                    aa = attachment->a;
+                    ar = attachment->color.r;
+                    ag = attachment->color.g;
+                    ab = attachment->color.b;
+                    aa = attachment->color.a;
 
                     resourceImage = (ResourceImage *)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
 
-                    mesh.vertices.resize( attachment->verticesCount / 2 );
-                    mesh.indices.resize( attachment->trianglesCount );
-                }break;
-            case SP_ATTACHMENT_SKINNED_MESH:
-                {
-                    spSkinnedMeshAttachment * attachment = (spSkinnedMeshAttachment *)slot->attachment;
-
-                    spSkinnedMeshAttachment_computeWorldVertices( attachment, slot, attachment_vertices );
-
-                    uvs = attachment->uvs;
-                    verticesCount = attachment->uvsCount;
-                    triangles = attachment->triangles;
-                    trianglesCount = attachment->trianglesCount;
-                    ar = attachment->r;
-                    ag = attachment->g;
-                    ab = attachment->b;
-                    aa = attachment->a;
-
-                    resourceImage = (ResourceImage *)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
-
-                    mesh.vertices.resize( attachment->uvsCount / 2 );
-                    mesh.indices.resize( attachment->trianglesCount );
+                    mesh.vertices.resize( verticesCount );
+                    mesh.indices.resize( trianglesCount );
                 }break;
             default:
                 continue;
@@ -765,27 +713,28 @@ namespace Mengine
                 mesh.material = this->makeMaterial_( slot, resourceImage );
             }
 
-            float wr = nr * m_skeleton->r * slot->r * ar;
-            float wg = ng * m_skeleton->g * slot->g * ag;
-            float wb = nb * m_skeleton->b * slot->b * ab;
-            float wa = na * m_skeleton->a * slot->a * aa;
+            float wr = nr * m_skeleton->color.r * slot->color.r * ar;
+            float wg = ng * m_skeleton->color.g * slot->color.g * ag;
+            float wb = nb * m_skeleton->color.b * slot->color.b * ab;
+            float wa = na * m_skeleton->color.a * slot->color.a * aa;
 
-            ColourValue_ARGB argb = Helper::makeARGB( wr, wg, wb, wa );
+            ColorValue_ARGB argb = Helper::makeARGB( wr, wg, wb, wa );
 
-            RenderVertex2D * vertices = mesh.vertices.buff();
-            RenderIndices * indices = mesh.indices.buff();
+            RenderVertex2D * vertices = mesh.vertices.data();
+            RenderIndex * indices = mesh.indices.data();
 
-            this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount / 2, wm );
+            this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount, wm );
             this->fillIndices_( indices, triangles, trianglesCount );
 
             const RenderMaterialInterfacePtr & material = mesh.material;
 
-            _renderService
-                ->addRenderObject( _state, material, vertices, verticesCount / 2, indices, trianglesCount, &bb, false );
+            const mt::box2f * bb = this->getBoundingBox();
+
+            this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm )
+    void Spine::fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColorValue_ARGB _argb, int _count, const mt::mat4f & _wm ) const
     {
         for( int i = 0; i != _count; ++i )
         {
@@ -813,26 +762,26 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::fillIndices_( RenderIndices * _indices, const int * _triangles, int _count )
+    void Spine::fillIndices_( RenderIndex * _indices, const RenderIndex * _triangles, uint32_t _count ) const
     {
-        for( int i = 0; i != _count; ++i )
-        {
-            _indices[i] = (RenderIndices)_triangles[i];
-        }
+        stdex::memorycopy_pod( _indices, 0, _triangles, _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::_play( float _time )
+    bool Spine::_play( uint32_t _enumerator, float _time )
     {
-        (void)_time;
+        MENGINE_UNUSED( _time );
 
         if( this->isActivate() == false )
         {
-            LOGGER_ERROR( m_serviceProvider )("Spine::_play: '%s' play not activate"
+            LOGGER_ERROR( "'%s' play not activate"
                 , this->getName().c_str()
                 );
 
             return false;
         }
+
+        EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
+            ->onAnimationPlay( _enumerator, _time );
 
         //bool loop = this->getLoop();
 
@@ -843,52 +792,42 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_restart( uint32_t _enumerator, float _time )
     {
-        (void)_time;
-        (void)_enumerator;
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
+            ->onAnimationRestart( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Spine::_pause( uint32_t _enumerator )
     {
-        (void)_enumerator;
-
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
-            ->onAnimatablePause( _enumerator );
+        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
+            ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Spine::_resume( uint32_t _enumerator, float _time )
     {
-        (void)_enumerator;
-        (void)_time;
-
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESUME )
-            ->onAnimatableResume( _enumerator, _time );
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
+            ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::_stop( uint32_t _enumerator )
+    bool Spine::_stop( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
-        //EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, false);
-        //EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Spine::_end( uint32_t _enumerator )
     {
-        (void)_enumerator;
-
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
-        //EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, true);
-        //EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_interrupt( uint32_t _enumerator )
     {
-        (void)_enumerator;
+        EVENTABLE_METHOD( EVENT_ANIMATION_INTERRUPT )
+            ->onAnimationInterrupt( _enumerator );
 
         return true;
     }

@@ -77,7 +77,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Point::render( const RenderContext * _state ) const
+    void Point::render( const RenderContext * _context ) const
     {
         if( m_linked == nullptr )
         {
@@ -139,7 +139,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        this->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
+        this->addRenderQuad( _context, material, m_vertices, 4, nullptr, false );
     }
     //////////////////////////////////////////////////////////////////////////
 }

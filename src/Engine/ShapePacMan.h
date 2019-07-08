@@ -27,13 +27,13 @@ namespace Mengine
         void updateVerticesColor() const;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM() const;
+        MENGINE_INLINE const RenderVertex2D * getVerticesWM() const;
 
     protected:
         float m_angleFrom;
@@ -47,7 +47,7 @@ namespace Mengine
         mutable uint32_t m_vertexCount;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * ShapePacMan::getVerticesWM() const
+    MENGINE_INLINE const RenderVertex2D * ShapePacMan::getVerticesWM() const
     {
         if( m_invalidateVerticesLocal == true )
         {

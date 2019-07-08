@@ -128,9 +128,9 @@ namespace Mengine
     {
         if( m_resourceImage != nullptr )
         {
-            if( m_resourceImage.compile() == false )
+            if( m_resourceImage->compile() == false )
             {
-                LOGGER_ERROR( "Grid2D::compileResource_ '%s' image resource %s not compile"
+                LOGGER_ERROR( "'%s' image resource %s not compile"
                     , m_name.c_str()
                     , m_resourceImage->getName().c_str()
                 );
@@ -141,7 +141,7 @@ namespace Mengine
 
         if( m_countX < 2 || m_countY < 2 )
         {
-            LOGGER_ERROR( "Grid2D::compileResources_ '%s' count X|Y not setup %d:%d"
+            LOGGER_ERROR( "'%s' count X|Y not setup %d:%d"
                 , m_name.c_str()
                 , m_countX
                 , m_countY
@@ -209,7 +209,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::_release()
     {
-        m_resourceImage.release();
+        m_resourceImage->release();
 
         m_vertices.clear();
         m_verticesWM.clear();
@@ -229,7 +229,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::render( const RenderContext * _state ) const
+    void Grid2D::render( const RenderContext * _context ) const
     {
         const RenderIndex * indices = &m_indices[0];
         uint32_t indicesCount = (uint32_t)m_indices.size();
@@ -241,7 +241,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false );
+        this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_() const

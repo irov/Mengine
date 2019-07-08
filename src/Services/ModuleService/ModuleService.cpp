@@ -98,11 +98,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::render( const RenderContext * _state )
+    void ModuleService::render( const RenderContext * _context )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->render( _state );
+            module->render( _context );
         }
     }
     //////////////////////////////////////////////////////////////////////////

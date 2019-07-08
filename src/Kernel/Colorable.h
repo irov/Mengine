@@ -14,39 +14,39 @@ namespace Mengine
 
     public:
         void setPersonalColor( const Color& _color );
-        inline const Color & getPersonalColor() const;
+        MENGINE_INLINE const Color & getPersonalColor() const;
 
         void setPersonalAlpha( float _alpha );
-        inline float getPersonalAlpha() const;
+        MENGINE_INLINE float getPersonalAlpha() const;
 
         void setLocalColor( const Color& _color );
-        inline const Color & getLocalColor() const;
+        MENGINE_INLINE const Color & getLocalColor() const;
 
         void setLocalColorR( float _value );
-        inline float getLocalColorR() const;
+        MENGINE_INLINE float getLocalColorR() const;
 
         void setLocalColorG( float _value );
-        inline float getLocalColorG() const;
+        MENGINE_INLINE float getLocalColorG() const;
 
         void setLocalColorB( float _value );
-        inline float getLocalColorB() const;
+        MENGINE_INLINE float getLocalColorB() const;
 
         void setLocalColorRGB( float _r, float _g, float _b );
         void setLocalColorRGBA( float _r, float _g, float _b, float _a );
 
         void setLocalAlpha( float _value );
-        inline float getLocalAlpha() const;
+        MENGINE_INLINE float getLocalAlpha() const;
 
     public:
-        inline bool isLocalTransparent() const;
-        inline bool isPersonalTransparent() const;
+        MENGINE_INLINE bool isLocalTransparent() const;
+        MENGINE_INLINE bool isPersonalTransparent() const;
 
     protected:
-        inline const Color & getRelationColor() const;
+        MENGINE_INLINE const Color & getRelationColor() const;
 
     public:
         virtual void invalidateColor();
-        inline bool isInvalidateColor() const;
+        MENGINE_INLINE bool isInvalidateColor() const;
 
     protected:
         const Color& updateRelationColor( const Color& _parentColor ) const;
@@ -83,59 +83,59 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Colorable> ColorablePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline bool Colorable::isLocalTransparent() const
+    MENGINE_INLINE bool Colorable::isLocalTransparent() const
     {
         return m_localTransparent;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Colorable::isPersonalTransparent() const
+    MENGINE_INLINE bool Colorable::isPersonalTransparent() const
     {
         return m_personalTransparent;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Color & Colorable::getRelationColor() const
+    MENGINE_INLINE const Color & Colorable::getRelationColor() const
     {
         return m_relationColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Colorable::isInvalidateColor() const
+    MENGINE_INLINE bool Colorable::isInvalidateColor() const
     {
         return m_invalidateRelationColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Color & Colorable::getPersonalColor() const
+    MENGINE_INLINE const Color & Colorable::getPersonalColor() const
     {
         return m_personalColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Colorable::getPersonalAlpha() const
+    MENGINE_INLINE float Colorable::getPersonalAlpha() const
     {
         float alpha = m_personalColor.getA();
 
         return alpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Color& Colorable::getLocalColor() const
+    MENGINE_INLINE const Color& Colorable::getLocalColor() const
     {
         return m_localColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Colorable::getLocalColorR() const
+    MENGINE_INLINE float Colorable::getLocalColorR() const
     {
         return m_localColor.getR();
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Colorable::getLocalColorG() const
+    MENGINE_INLINE float Colorable::getLocalColorG() const
     {
         return m_localColor.getG();
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Colorable::getLocalColorB() const
+    MENGINE_INLINE float Colorable::getLocalColorB() const
     {
         return m_localColor.getB();
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float Colorable::getLocalAlpha() const
+    MENGINE_INLINE float Colorable::getLocalAlpha() const
     {
         return m_localColor.getA();
     }

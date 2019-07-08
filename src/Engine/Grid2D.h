@@ -5,7 +5,6 @@
 #include "Kernel/Materialable.h"
 
 #include "Kernel/ResourceImage.h"
-#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
@@ -58,7 +57,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void _invalidateWorldMatrix() override;
@@ -72,10 +71,10 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM() const;
+        MENGINE_INLINE const RenderVertex2D * getVerticesWM() const;
 
     protected:
-        ResourceHolder<ResourceImage> m_resourceImage;
+        ResourceImagePtr m_resourceImage;
 
         float m_width;
         float m_height;
@@ -96,7 +95,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Grid2D> Grid2DPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * Grid2D::getVerticesWM() const
+    MENGINE_INLINE const RenderVertex2D * Grid2D::getVerticesWM() const
     {
         if( m_invalidateVerticesWM == true )
         {

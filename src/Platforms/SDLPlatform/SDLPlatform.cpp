@@ -296,14 +296,26 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        LOGGER_WARNING( "Device info:"
+        PlatformDateTime dateTime;
+        this->getDateTime( &dateTime );
+
+        LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+            , dateTime.day
+            , dateTime.month
+            , dateTime.year
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
         );
 
-        LOGGER_WARNING( "Platform: %s"
+        LOGGER_MESSAGE( "Device info:"
+        );
+
+        LOGGER_MESSAGE( "Platform: %s"
             , sdlPlatform
         );
 
-        LOGGER_WARNING( "RAM: %d MB"
+        LOGGER_MESSAGE( "RAM: %d MB"
             , sdlRam
         );
 
@@ -1177,30 +1189,23 @@ namespace Mengine
 #endif		
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::makeDateTime( Char * _out, size_t _capacity ) const
+    void SDLPlatform::getDateTime( PlatformDateTime * _dateTime ) const
     {
-        std::time_t ctTime;
-        std::time( &ctTime );
-        std::tm* sTime = std::localtime( &ctTime );
-
-        Stringstream ss;
-        ss << 1900 + sTime->tm_year
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (sTime->tm_mon + 1)
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_mday
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_hour
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_min
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_sec;
-
-        String str_date = ss.str();
-
-        if( str_date.size() >= _capacity )
+        if( _dateTime == nullptr )
         {
-            return false;
+            return;
         }
 
-        strcpy( _out, str_date.c_str() );
+        std::time_t ctTime = std::time( nullptr );
+        std::tm * sTime = std::localtime( &ctTime );
 
-        return true;
+        _dateTime->year = 1900 + sTime->tm_year;
+        _dateTime->month = sTime->tm_mon + 1;
+        _dateTime->day = sTime->tm_mday;
+        _dateTime->hour = sTime->tm_hour;
+        _dateTime->minute = sTime->tm_min;
+        _dateTime->second = sTime->tm_sec;
+        _dateTime->milliseconds = SDL_GetTicks();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )
@@ -1241,10 +1246,11 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createProcess( const Char * _process, const Char * _command )
+    bool SDLPlatform::createProcess( const Char * _process, const Char * _command, uint32_t * _code )
     {
         MENGINE_UNUSED( _process );
         MENGINE_UNUSED( _command );
+        MENGINE_UNUSED( _code );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

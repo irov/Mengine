@@ -5,8 +5,6 @@
 #include "Kernel/PluginBase.h"
 #include "Kernel/Factory.h"
 
-#include "pybind/pybind.hpp"
-
 namespace Mengine
 {
     class cURLPlugin

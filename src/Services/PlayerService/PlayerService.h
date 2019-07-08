@@ -17,8 +17,6 @@
 
 #include "math/vec3.h"
 
-#include "pybind/types.hpp"
-
 namespace Mengine
 {
     class PlayerService

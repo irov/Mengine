@@ -65,8 +65,7 @@ namespace Mengine
 
         bool m_developmentMode;
 
-        FilePath m_publicConfigPath;
-        FilePath m_privateConfigPath;
+        VectorFilePath m_configPaths;
         FilePath m_resourceConfigPath;
     };
 }

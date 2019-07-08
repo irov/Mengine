@@ -9,6 +9,10 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "Config/Stringstream.h"
+
+#include <iomanip>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -29,11 +33,21 @@ namespace Mengine
 
         utf8_logFilename += "_";
 
-        Char date[1024] = { 0 };
+        PlatformDateTime dateTime;
         PLATFORM_SERVICE()
-            ->makeDateTime( date, 1024 );
+            ->getDateTime( &dateTime );
+
+        Stringstream ss_date;
+        ss_date << dateTime.year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+        String str_date = ss_date.str();
         
-        utf8_logFilename += date;
+        utf8_logFilename += str_date;
 
         utf8_logFilename += ".log";
 

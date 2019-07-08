@@ -64,8 +64,7 @@ namespace Mengine
         LoggerInterfacePtr m_fileLog;
         LoggerInterfacePtr m_loggerMessageBox;
 
-        FilePath m_publicConfigPath;
-        FilePath m_privateConfigPath;
+        VectorFilePath m_configPaths;
         FilePath m_resourceConfigPath;
     };
 }

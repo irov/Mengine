@@ -22,5 +22,3 @@ set "YEAR=2017"
 
 :end
 @echo Done
-
-@pause

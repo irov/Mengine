@@ -12,9 +12,6 @@ namespace Mengine
         , m_size( 0 )
         , m_pos( nullptr )
         , m_end( nullptr )
-#ifdef MENGINE_DEBUG
-        , m_doc( nullptr )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////

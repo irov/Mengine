@@ -115,7 +115,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_GET( Type )\
-	(Mengine::Helper::getService<Type>(__FILE__, __LINE__))
+	(Mengine::Helper::getService<Type>(MENGINE_CODE_FILE, MENGINE_CODE_LINE))
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXIST( Type )\
 	(Mengine::Helper::existService<Type>())
@@ -143,10 +143,10 @@ namespace Mengine
 	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\
-	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), false, #Name, __FILE__, __LINE__)
+	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), false, #Name, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE_SAFE( Name )\
-	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), true, #Name, __FILE__, __LINE__)
+	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), true, #Name, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FINALIZE( Type )\
 	SERVICE_PROVIDER_GET()->finalizeServiceT<Type>()

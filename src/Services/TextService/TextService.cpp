@@ -754,7 +754,7 @@ namespace Mengine
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
+    bool TextService::hasTextEntry( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 

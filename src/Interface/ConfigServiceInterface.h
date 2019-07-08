@@ -21,7 +21,7 @@ namespace Mengine
         SERVICE_DECLARE( "ConfigService" );
 
     public:
-        virtual bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _publicConfigPath, const FilePath & _privateConfigPath ) = 0;
+        virtual bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
         virtual bool getValue( const Char * _section, const Char * _key, bool _default ) const = 0;

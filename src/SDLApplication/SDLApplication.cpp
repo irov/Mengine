@@ -170,6 +170,10 @@ PLUGIN_EXPORT( Spine );
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
+PLUGIN_EXPORT( ResourceConvert );
+#endif
+
 #ifdef MENGINE_PLUGIN_MOVIE_STATIC
 PLUGIN_EXPORT( Movie );
 #endif
@@ -325,13 +329,8 @@ namespace Mengine
             }
         }
 
-        m_publicConfigPath = Helper::stringizeFilePath( publicConfigPath );
-
-        const Char * privateConfigPath;
-        if( IniUtil::getIniValue( ini, "Config", "Private", &privateConfigPath ) == true )
-        {
-            m_privateConfigPath = Helper::stringizeFilePath( privateConfigPath );
-        }
+        IniUtil::getIniValue( ini, "Game", "Path", m_configPaths );
+        IniUtil::getIniValue( ini, "Config", "Path", m_configPaths );
 
         const Char * resourcePath;
         if( IniUtil::getIniValue( ini, "Resource", "Path", &resourcePath ) == false )
@@ -354,18 +353,20 @@ namespace Mengine
         SERVICE_CREATE( ConfigService );
 
 
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        if( CONFIG_SERVICE()
-            ->loadConfig( defaultFileGroup, m_publicConfigPath, m_privateConfigPath ) == false )
+        for( const FilePath & filePath : m_configPaths )
         {
-            LOGGER_ERROR( "invalid load config '%s' private '%s'"
-                , m_publicConfigPath.c_str()
-                , m_privateConfigPath.c_str()
-            );
+            if( CONFIG_SERVICE()
+                ->loadConfig( fileGroup, filePath ) == false )
+            {
+                LOGGER_ERROR( "invalid load config %s"
+                    , filePath.c_str()
+                );
 
-            return false;
+                return false;
+            }
         }
 
         return true;
@@ -506,8 +507,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initialize( const int argc, char** argv )
     {
-        stdex_allocator_initialize();
-
         setlocale( LC_ALL, "C" );
 
         ServiceProviderInterface * serviceProvider;
@@ -521,6 +520,8 @@ namespace Mengine
         m_serviceProvider = serviceProvider;
 
         SERVICE_CREATE( FactoryService );
+        SERVICE_CREATE( MemoryService );
+        SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( OptionsService );
 
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
@@ -548,7 +549,6 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( Platform );
         SERVICE_CREATE( PluginService );
 
@@ -608,8 +608,7 @@ namespace Mengine
         SERVICE_CREATE( ModuleService );
         SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );
-        SERVICE_CREATE( PrefetcherService );
-        SERVICE_CREATE( MemoryService );
+        SERVICE_CREATE( PrefetcherService );        
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
         SERVICE_CREATE( EnumeratorService );
@@ -665,6 +664,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
+        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
+#endif 
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
         MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
@@ -870,7 +873,7 @@ namespace Mengine
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
-            ->existText( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
+            ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
             LOGGER_WARNING( "Application not setup title 'APPLICATION_TITLE'"
             );
@@ -1026,8 +1029,6 @@ namespace Mengine
 
         m_mutexAllocatorPool = nullptr;
 
-        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
-
-        stdex_allocator_finalize();
+        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );        
     }
 }

@@ -55,7 +55,6 @@
 
 #include "math/mat3.h"
 
-#include "pybind/pybind.hpp"
 #include "stdex/allocator_report.h"
 
 #include <iomanip>
@@ -556,7 +555,7 @@ namespace Mengine
 
         if( scene != nullptr )
         {
-            if( debugMask == false )
+            if( debugMask == 0 )
             {
                 Helper::nodeRenderChildren( scene.get(), &context, false );
             }
@@ -578,7 +577,7 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            if( debugMask == false )
+            if( debugMask == 0 )
             {
                 Helper::nodeRenderChildren( m_arrow.get(), &context, false );
             }

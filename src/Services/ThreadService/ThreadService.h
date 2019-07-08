@@ -4,11 +4,10 @@
 #include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadConditionVariableInterface.h"
 
-#include "Kernel/ServiceBase.h"
-
 #include "ThreadQueue.h"
-#include "ThreadMutexDummy.h"
 
+#include "Kernel/ServiceBase.h"
+#include "Kernel/ThreadMutexDummy.h"
 #include "Kernel/Factory.h"
 
 #include "Config/String.h"
@@ -102,7 +101,9 @@ namespace Mengine
         {
             ThreadConditionVariableInterfacePtr conditionVariable;
             LambdaMainThreadCode lambda;
+#ifdef MENGINE_DEBUG
             String doc;
+#endif
         };
 
         typedef Vector<MainCodeDesc> VectorMainCodeDescs;

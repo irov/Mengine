@@ -41,7 +41,7 @@ namespace Mengine
         bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
 
     public:
-        bool existText( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
+        bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
         const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const override;
 
     public:

@@ -355,8 +355,6 @@ Core
     PixelFormat.cpp
     
     MemoryAllocator.h
-	MemoryStore.h
-	MemoryStore.cpp
     
     MemoryHelper.h
     MemoryHelper.cpp
@@ -404,7 +402,10 @@ Core
     RenderUtils.h
 	RenderUtils.cpp
     
-    OutputStreamWriter.h   
+    OutputStreamWriter.h
+        
+    ThreadMutexDummy.h
+    ThreadMutexDummy.cpp
     
     PluginBase.h
     PluginBase.cpp

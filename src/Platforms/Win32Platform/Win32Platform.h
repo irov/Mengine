@@ -106,7 +106,7 @@ namespace Mengine
         uint64_t getFileTime( const Char * _path ) const override;
 
     public:
-        bool makeDateTime( Char * _out, size_t _capacity ) const override;
+        void getDateTime( PlatformDateTime * _dateTime ) const override;
 
     public:
         bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
@@ -121,7 +121,7 @@ namespace Mengine
     protected:
         void sleep( uint32_t _ms ) override;
         bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) override;
-        bool createProcess( const Char * _process, const Char * _command ) override;
+        bool createProcess( const Char * _process, const Char * _command, uint32_t * _exitCode ) override;
         void abort() override;
 
     protected:

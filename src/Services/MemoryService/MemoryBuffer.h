@@ -5,6 +5,10 @@
 
 #include "Kernel/Factorable.h"
 
+#ifdef MENGINE_DEBUG
+#include "Kernel/String.h"
+#endif
+
 namespace Mengine
 {
     class MemoryBuffer
@@ -29,7 +33,7 @@ namespace Mengine
         size_t m_size;
 
 #ifdef MENGINE_DEBUG
-        const Char * m_doc;
+        String m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

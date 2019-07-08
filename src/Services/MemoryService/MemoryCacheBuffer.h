@@ -47,7 +47,7 @@ namespace Mengine
         size_t m_size;
 
 #ifdef MENGINE_DEBUG
-        const Char * m_doc;
+        String m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////	

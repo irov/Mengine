@@ -31,7 +31,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        if( m_resourceShape.compile() == false )
+        if( m_resourceShape->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' not compile"
                 , this->getName().c_str()
@@ -50,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpotShape::_release()
     {
-        m_resourceShape.release();
+        m_resourceShape->release();
 
         HotSpotPolygon::_release();
     }

@@ -15,7 +15,7 @@ namespace Mengine
         ~Compilable();
 
     public:
-        inline bool isCompile() const;
+        MENGINE_INLINE bool isCompile() const;
 
     public:
         virtual bool compile();
@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Compilable> CompilablePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline bool Compilable::isCompile() const
+    MENGINE_INLINE bool Compilable::isCompile() const
     {
         return m_compile;
     }

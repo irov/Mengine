@@ -31,7 +31,7 @@ namespace Mengine
         return m_resourceTexturepackerName;
     }
     //////////////////////////////////////////////////////////////////////////
-    spAtlas * ResourceSpineAtlasTexturepacker::getAtlas() const
+    spAtlas * ResourceSpineAtlasTexturepacker::getSpineAtlas() const
     {
         return m_atlas;
     }

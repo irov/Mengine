@@ -32,7 +32,7 @@ namespace Mengine
         };
     }
     ////////////////////////////////////////////////////////////////////////
-    void Isometric::_update( const UpdateContext * _context )
+    void Isometric::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );
 

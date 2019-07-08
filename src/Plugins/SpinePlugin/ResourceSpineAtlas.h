@@ -17,7 +17,7 @@ namespace Mengine
         DECLARE_CONTENTABLE();
 
 	public:
-        virtual spAtlas * getAtlas() const = 0;
+        virtual spAtlas * getSpineAtlas() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ResourceSpineAtlas> ResourceSpineAtlasPtr;

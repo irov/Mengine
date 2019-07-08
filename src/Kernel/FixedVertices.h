@@ -21,7 +21,7 @@ namespace Mengine
             stdex::memorycopy( m_vertices, _vertices, VerticesCount );
         }
 
-        inline const RenderVertex2D * getVertices() const
+        MENGINE_INLINE const RenderVertex2D * getVertices() const
         {
             if( m_invalidateVertices != 0 )
             {
@@ -31,13 +31,13 @@ namespace Mengine
             return m_vertices;
         }
 
-        inline void invalidateVertices( uint8_t _invalidate = 0xFF ) const
+        MENGINE_INLINE void invalidateVertices( uint8_t _invalidate = 0xFF ) const
         {
             m_invalidateVertices |= _invalidate;
         }
 
     private:
-        inline void updateVertices_() const
+        MENGINE_INLINE void updateVertices_() const
         {
             this->_updateVertices( m_vertices, m_invalidateVertices );
 
@@ -51,6 +51,7 @@ namespace Mengine
         mutable RenderVertex2D m_vertices[VerticesCount];
         mutable uint8_t m_invalidateVertices;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef FixedVertices<4> QuadVertices;
+    //////////////////////////////////////////////////////////////////////////
 }

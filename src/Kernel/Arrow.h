@@ -59,7 +59,7 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         EArrowType m_arrowType;

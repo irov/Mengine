@@ -36,7 +36,7 @@ namespace Mengine
         mt::vec3f getVelocity( const ConstString & _name ) const;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
         NodePtr m_node;

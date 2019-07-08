@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Kernel/Surface.h"
+#include "Kernel/Resource.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
-#include "Kernel/ResourceHolder.h"
 #include "Kernel/AnimationEventReceiver.h"
 
 namespace Mengine
@@ -15,6 +15,7 @@ namespace Mengine
     {
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_END = __EVENT_ANIMATION_LAST__,
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK,
+        __EVENT_SURFACE_IMAGESEQUENCE__
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceImageSequenceEventReceiver
@@ -80,7 +81,7 @@ namespace Mengine
         bool _interrupt( uint32_t _enumerator ) override;
 
     protected:
-        bool _update( const UpdateContext * _context ) override;
+        bool update( const UpdateContext * _context ) override;
 
     protected:
         bool _compile() override;
@@ -93,7 +94,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ResourceHolder<ResourceImageSequence> m_resourceImageSequence;
+        ResourceImageSequencePtr m_resourceImageSequence;
 
         float m_frameTime;
 

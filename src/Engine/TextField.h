@@ -129,7 +129,7 @@ namespace Mengine
         uint32_t getCharCount() const;
 
     public:
-        void render( const RenderContext * _state ) const override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         bool _activate() override;
@@ -155,14 +155,14 @@ namespace Mengine
 
         void invalidateVerticesWM_() const;
 
-        inline const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
+        MENGINE_INLINE const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
 
         void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D& _vertexData ) const;
 
     protected:
         void invalidateTextLines() const;
         void invalidateTextEntry() const;
-        inline bool isInvalidateTextLines() const;
+        MENGINE_INLINE bool isInvalidateTextLines() const;
 
         bool updateTextLines_() const;
         void updateTextLinesWrap_( VectorTextLineChunks2 & _textLines ) const;
@@ -170,11 +170,11 @@ namespace Mengine
         bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLineChunks2 & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
 
     public:
-        inline const TextEntryInterfacePtr & getTextEntry() const;
-        inline const TextFontInterfacePtr & getFont() const;
+        MENGINE_INLINE const TextEntryInterfacePtr & getTextEntry() const;
+        MENGINE_INLINE const TextFontInterfacePtr & getFont() const;
 
     protected:
-        inline void invalidateFont() const;
+        MENGINE_INLINE void invalidateFont() const;
         bool updateFont_() const;
         void updateTextEntry_() const;
 
@@ -263,7 +263,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font ) const
+    MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font ) const
     {
         if( m_invalidateVerticesWM == true )
         {
@@ -273,12 +273,12 @@ namespace Mengine
         return m_vertexDataTextWM;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool TextField::isInvalidateTextLines() const
+    MENGINE_INLINE bool TextField::isInvalidateTextLines() const
     {
         return m_invalidateTextLines;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const TextFontInterfacePtr & TextField::getFont() const
+    MENGINE_INLINE const TextFontInterfacePtr & TextField::getFont() const
     {
         if( m_invalidateFont == true )
         {
@@ -291,7 +291,7 @@ namespace Mengine
         return m_font;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const TextEntryInterfacePtr & TextField::getTextEntry() const
+    MENGINE_INLINE const TextEntryInterfacePtr & TextField::getTextEntry() const
     {
         if( m_invalidateTextEntry == true )
         {
@@ -301,7 +301,7 @@ namespace Mengine
         return m_textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void TextField::invalidateFont() const
+    MENGINE_INLINE void TextField::invalidateFont() const
     {
         m_invalidateFont = true;
 

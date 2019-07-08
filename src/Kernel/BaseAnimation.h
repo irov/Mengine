@@ -46,7 +46,7 @@ namespace Mengine
         void setAutoPlay( bool _autoPlay ) override;
         bool isAutoPlay() const override;
 
-        void setStretch( float _scretch ) override;
+        void setStretch( float _stretch ) override;
         float getStretch() const override;
 
     public:
@@ -89,7 +89,7 @@ namespace Mengine
         virtual void _setLastFrame();
         virtual void _setPlayCount( uint32_t _count );
         virtual void _setAutoPlay( bool _autoPlay );
-        virtual void _setStretch( float _scretch );
+        virtual void _setStretch( float _stretch );
 
     protected:
         virtual bool _play( uint32_t _enumerator, float _time ) = 0;
@@ -123,47 +123,47 @@ namespace Mengine
         bool m_loop;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::isPlay() const
+    MENGINE_INLINE bool BaseAnimation::isPlay() const
     {
         return m_play == true && m_pause == false;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::isPause() const
+    MENGINE_INLINE bool BaseAnimation::isPause() const
     {
         return m_pause;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::isLoop() const
+    MENGINE_INLINE bool BaseAnimation::isLoop() const
     {
         return m_loop;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float BaseAnimation::getAnimationSpeedFactor() const
+    MENGINE_INLINE float BaseAnimation::getAnimationSpeedFactor() const
     {
         return m_animationSpeedFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t BaseAnimation::getPlayCount() const
+    MENGINE_INLINE uint32_t BaseAnimation::getPlayCount() const
     {
         return m_playCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t BaseAnimation::getPlayIterator() const
+    MENGINE_INLINE uint32_t BaseAnimation::getPlayIterator() const
     {
         return m_playIterator;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float BaseAnimation::getStretch() const
+    MENGINE_INLINE float BaseAnimation::getStretch() const
     {
         return m_stretch;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::isInterrupt() const
+    MENGINE_INLINE bool BaseAnimation::isInterrupt() const
     {
         return m_interrupt;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::isLastCicle() const
+    MENGINE_INLINE bool BaseAnimation::isLastCicle() const
     {
         if( m_interrupt == true )
         {
@@ -183,32 +183,32 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t BaseAnimation::getPlayId() const
+    MENGINE_INLINE uint32_t BaseAnimation::getPlayId() const
     {
         return m_playId;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float BaseAnimation::getPlayTime() const
+    MENGINE_INLINE float BaseAnimation::getPlayTime() const
     {
         return m_playTime;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float BaseAnimation::getIntervalStart() const
+    MENGINE_INLINE float BaseAnimation::getIntervalStart() const
     {
         return m_intervalStart;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float BaseAnimation::getIntervalBegin() const
+    MENGINE_INLINE float BaseAnimation::getIntervalBegin() const
     {
         return m_intervalBegin;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline float BaseAnimation::getIntervalEnd() const
+    MENGINE_INLINE float BaseAnimation::getIntervalEnd() const
     {
         return m_intervalEnd;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::isAutoPlay() const
+    MENGINE_INLINE bool BaseAnimation::isAutoPlay() const
     {
         return m_autoPlay;
     }

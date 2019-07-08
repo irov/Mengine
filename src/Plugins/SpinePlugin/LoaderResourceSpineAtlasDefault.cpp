@@ -1,6 +1,6 @@
 #include "LoaderResourceSpineAtlasDefault.h"
 
-#include "ResourceSpineAtlas.h"
+#include "ResourceSpineAtlasDefault.h"
 
 #include "Metacode/Metacode.h"
 

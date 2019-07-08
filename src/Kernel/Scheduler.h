@@ -63,7 +63,7 @@ namespace Mengine
         float getTime() const override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
         ConstString m_name;

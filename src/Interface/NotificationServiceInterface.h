@@ -120,7 +120,7 @@ namespace Mengine
 
     public:
         template<uint32_t ID, class ... Args>
-        inline bool notify( Args && ... _args )
+        bool notify( Args && ... _args )
         {
             bool successful = this->notify_tuple<ID>( std::make_tuple( std::forward<Args>( _args ) ... ) );
 
@@ -129,7 +129,7 @@ namespace Mengine
 
     protected:
         template<uint32_t ID>
-        inline bool notify_tuple( const typename Notificator<ID>::args_type & _args )
+        bool notify_tuple( const typename Notificator<ID>::args_type & _args )
         {
             typedef ArgsObserverCallable<ID> args_observer_type;
 

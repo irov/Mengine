@@ -53,7 +53,7 @@ namespace Mengine
         const ResourcePtr & getResourceOzzMesh() const override;
 
     public:
-        void addOzzAnimationSampler( const ConstString & _name, const SamplerOzzAnimationInterfacePtr & _sampler ) override;
+        void addOzzAnimationSampler( const SamplerOzzAnimationInterfacePtr & _sampler ) override;
         void removeOzzAnimationSampler( const ConstString & _name ) override;
 
         const SamplerOzzAnimationInterfacePtr & findOzzAnimationSampler( const ConstString & _name ) const override;
@@ -69,8 +69,8 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
-        void render( const RenderContext * _state ) const override;
+        void update( const UpdateContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void updateAnimation_();
@@ -80,13 +80,7 @@ namespace Mengine
         ResourceOzzSkeletonPtr m_resourceSkeleton;
         ResourceOzzMeshPtr m_resourceMesh;
 
-        struct SamplerDesc
-        {
-            ConstString name;
-            SamplerOzzAnimationPtr sampler;
-        };
-
-        typedef Vector<SamplerDesc> VectorSamplerOzzAnimations;
+        typedef Vector<SamplerOzzAnimationPtr> VectorSamplerOzzAnimations;
         VectorSamplerOzzAnimations m_samplerOzzAnimations;
 
         ozz::Range<ozz::math::SoaTransform> m_blendedLocals;

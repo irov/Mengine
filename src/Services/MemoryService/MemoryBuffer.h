@@ -24,9 +24,9 @@ namespace Mengine
         Pointer newBuffer( size_t _size, const Char * _doc ) override;
 
     public:
-        inline Pointer getBuffer() const override;
-        inline size_t getSize() const override;
-        inline bool empty() const override;
+        MENGINE_INLINE Pointer getBuffer() const override;
+        MENGINE_INLINE size_t getSize() const override;
+        MENGINE_INLINE bool empty() const override;
 
     protected:
         void * m_memory;
@@ -37,17 +37,17 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    inline Pointer MemoryBuffer::getBuffer() const
+    MENGINE_INLINE Pointer MemoryBuffer::getBuffer() const
     {
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline size_t MemoryBuffer::getSize() const
+    MENGINE_INLINE size_t MemoryBuffer::getSize() const
     {
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool MemoryBuffer::empty() const
+    MENGINE_INLINE bool MemoryBuffer::empty() const
     {
         return m_size == 0;
     }

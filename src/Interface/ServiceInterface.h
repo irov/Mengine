@@ -36,7 +36,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline T * getService( const Char * _file, uint32_t _line )
+        T * getService( const Char * _file, uint32_t _line )
         {
             MENGINE_UNUSED( _file );
             MENGINE_UNUSED( _line );
@@ -90,7 +90,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        inline bool existService()
+        bool existService()
         {
             static bool s_exist = false;
 
@@ -125,8 +125,8 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
-        inline static const Char * getStaticServiceID(){ return ID; };\
-		inline const Char * getServiceID() const override { return ID; };\
+        MENGINE_INLINE static const Char * getStaticServiceID(){ return ID; };\
+		MENGINE_INLINE const Char * getServiceID() const override { return ID; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\

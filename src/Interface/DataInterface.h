@@ -21,7 +21,7 @@ namespace Mengine
 
     public:
         template<class T>
-        inline Pointer allocateMemoryT( size_t _count ) const
+        Pointer allocateMemoryT( size_t _count ) const
         {
             size_t total_size = sizeof( T ) * _count;
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/ResourceHolder.h"
 
 namespace Mengine
 {
@@ -36,13 +35,13 @@ namespace Mengine
         void _release() override;
 
     protected:
-        bool _update( const UpdateContext * _context ) override;
+        bool update( const UpdateContext * _context ) override;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ResourceHolder<ResourceImage> m_resourceImage;
+        ResourceImagePtr m_resourceImage;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceImage> SurfaceImagePtr;

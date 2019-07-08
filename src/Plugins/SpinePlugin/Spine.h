@@ -1,51 +1,43 @@
-#	pragma once
+#pragma once
 
-#	include "Kernel/Node.h"
-#	include "Kernel/Animatable.h"
+#include "Interface/RenderMaterialInterface.h"
 
-#	include "ResourceSpine.h"
+#include "SpineInterface.h"
 
-#	ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning (disable:4510)
-#	pragma warning (disable:4512)
-#	pragma warning (disable:4610)
-#	endif
+#include "Kernel/Node.h"
+#include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseRender.h"
+#include "Kernel/BaseEventation.h"
+#include "Kernel/ResourceImage.h"
+#include "Kernel/VectorRenderVertex2D.h"
+#include "Kernel/VectorRenderIndex.h"
 
-#	include "spine/spine.h"
+#include "ResourceSpineSkeleton.h"
 
-#	include <stdex/heap_array.h>
+#include "spine/spine.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    enum SpineEventFlag
-    {
-        EVENT_SPINE_EVENT = __EVENT_ANIMATABLE_LAST__,
-        EVENT_SPINE_STATE_ANIMATION_END
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class SpineEventReceiver
-        : public AnimatableEventReceiver
-    {
-    public:
-        virtual void onSpineEvent( const char * _eventName, int _eventIntValue, float _eventFloatValue, const char * _eventStringValue ) = 0;
-        virtual void onSpineStateAnimationEnd( const ConstString & _state, const ConstString & _animation, bool _isEnd ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
+{    
     class Spine
         : public Node
-        , public Eventable
-        , public Animatable
+        , public BaseAnimation
+        , public BaseUpdation
+        , public BaseRender
+        , public BaseEventation
     {
-        EVENT_RECEIVER( SpineEventReceiver );
+        DECLARE_VISITABLE( Node );
+        DECLARE_UPDATABLE();
+        DECLARE_RENDERABLE();
+        DECLARE_ANIMATABLE();
+        DECLARE_EVENTABLE( SpineEventReceiver );
 
     public:
         Spine();
-        ~Spine();
+        ~Spine() override;
 
     public:
-        void setResourceSpine( const ResourceSpinePtr & _resourceSpine );
-        const ResourceSpinePtr & getResourceSpine() const;
+        void setResourceSpineSkeleton( const ResourceSpineSkeletonPtr & _resourceSpineSkeleton );
+        const ResourceSpineSkeletonPtr & getResourceSpineSkeleton() const;
 
     public:
         bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix );
@@ -74,41 +66,44 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _update( float _current, float _timing ) override;
-        void _render( RenderServiceInterface * _renderService, const RenderObjectState * _state ) override;
+        void update( const UpdateContext * _context ) override;
 
     protected:
-        bool _play( float _time ) override;
+        void render( const RenderContext * _context ) const override;
+
+    protected:
+        bool _play( uint32_t _enumerator, float _time ) override;
         bool _restart( uint32_t _enumerator, float _time ) override;
         void _pause( uint32_t _enumerator ) override;
         void _resume( uint32_t _enumerator, float _resume ) override;
-        void _stop( uint32_t _enumerator ) override;
+        bool _stop( uint32_t _enumerator ) override;
         void _end( uint32_t _enumerator ) override;
         bool _interrupt( uint32_t _enumerator ) override;
 
     public:
-        void addAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
+        void addAnimationEvent_( spAnimationState * _animationState, spEventType _type, spTrackEntry * _entry, spEvent * _event );
 
     protected:
-        void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm );
-        void fillIndices_( RenderIndices * _vertices2D, const int * _triangles, int _count );
+        void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColorValue_ARGB _argb, int _count, const mt::mat4f & _wm ) const;
+        void fillIndices_( RenderIndex * _vertices2D, const RenderIndex * _triangles, uint32_t _count ) const;
 
     protected:
-        RenderMaterialInterfacePtr makeMaterial_( spSlot * _slot, ResourceImage * _resourceImage ) const;
+        RenderMaterialInterfacePtr makeMaterial_( spSlot * _slot, const ResourceImage * _resourceImage ) const;
 
     protected:
         void updateAnimation_();
 
     protected:
-        ResourceHolder<ResourceSpine> m_resourceSpine;
+        ResourceSpineSkeletonPtr m_resourceSpineSkeleton;
 
         spSkeleton * m_skeleton;
         spAnimationStateData * m_animationStateData;
 
-        struct Animation
+        struct AnimationDesc
         {
+            ConstString state;
             ConstString name;
-            spAnimationState * state;
+            spAnimationState * animationState;
             float timing;
             float duration;
             float speedFactor;
@@ -117,31 +112,30 @@ namespace Mengine
             bool loop;
         };
 
-        typedef stdex::map<ConstString, Animation> TMapAnimations;
-        TMapAnimations m_animations;
+        typedef Vector<AnimationDesc> VectorAnimations;
+        VectorAnimations m_animations;
 
-        struct AttachmentMesh
+        struct AttachmentMeshDesc
         {
-            ResourceImagePtr image;
+            uint32_t index;
+
+            ResourceImage * image;
             RenderMaterialInterfacePtr material;
 
-            typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
-            TArrayRenderVertex2D vertices;
-
-            typedef stdex::heap_array<RenderIndices> TArrayRenderIndices;
-            TArrayRenderIndices indices;
+            VectorRenderVertex2D vertices;
+            VectorRenderIndex indices;
         };
 
-        typedef stdex::map<const char *, AttachmentMesh> TVectorAttachmentMesh;
-        TVectorAttachmentMesh m_attachmentMeshes;
+        typedef Vector<AttachmentMeshDesc> VectorAttachmentMesh;
+        mutable VectorAttachmentMesh m_attachmentMeshes;
 
-        struct AnimationEvent
+        struct AnimationEventDesc
         {
             int trackIndex;
             spEventType type;
 
             ConstString state;
-            ConstString animation;
+            ConstString name;
 
             const char * eventName;
             int eventIntValue;
@@ -151,7 +145,8 @@ namespace Mengine
             int loopCount;
         };
 
-        typedef stdex::vector<AnimationEvent> TVectorAnimationEvent;
-        TVectorAnimationEvent m_events;
+        typedef Vector<AnimationEventDesc> VectorAnimationEvent;
+        VectorAnimationEvent m_events;
+        VectorAnimationEvent m_eventsAux;
     };
 }

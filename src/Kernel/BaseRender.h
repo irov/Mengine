@@ -23,7 +23,7 @@ namespace Mengine
         void setRelationRender( RenderInterface * _relationRender ) override;
         void setRelationRenderFront( RenderInterface * _relationRender ) override;
         void removeRelationRender() override;
-        inline BaseRender * getRelationRender() const override;
+        MENGINE_INLINE BaseRender * getRelationRender() const override;
 
     public:
         void moveRelationRenderFront( RenderInterface * _childRender ) override;
@@ -35,15 +35,15 @@ namespace Mengine
 
     public:
         void setRenderEnable( bool _enable ) override;
-        inline bool isRenderEnable() const override;
+        MENGINE_INLINE bool isRenderEnable() const override;
 
     public:
         void setHide( bool _hide ) override;
-        inline bool isHide() const override;
+        MENGINE_INLINE bool isHide() const override;
 
     public:
         void setLocalHide( bool _localHide ) override;
-        inline bool isLocalHide() const override;
+        MENGINE_INLINE bool isLocalHide() const override;
 
     protected:
         virtual void _setHide( bool _hide );
@@ -83,29 +83,29 @@ namespace Mengine
 
     public:
         void setExternalRender( bool _externalRender ) override;
-        inline bool isExternalRender() const override;
+        MENGINE_INLINE bool isExternalRender() const override;
 
     protected:
         virtual void _setExternalRender( bool _externalRender );
 
     protected:
-        void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderMesh( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _vertexCount, uint32_t _indexCount ) const;
 
-        void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
             , const mt::box2f * _bb, bool _debug ) const;
 
-        void addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) const;
 
-        void addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderLine( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) const;
 
@@ -124,7 +124,7 @@ namespace Mengine
         void _setLocalTransparent( bool _transparent ) override;
 
     public:
-        inline bool isRendering() const;
+        MENGINE_INLINE bool isRendering() const;
 
     protected:
         void updateRendering_() const;
@@ -150,7 +150,7 @@ namespace Mengine
         mutable bool m_invalidateRendering;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseRender::isRendering() const
+    MENGINE_INLINE bool BaseRender::isRendering() const
     {
         if( m_invalidateRendering == true )
         {
@@ -160,27 +160,27 @@ namespace Mengine
         return m_rendering;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline BaseRender * BaseRender::getRelationRender() const
+    MENGINE_INLINE BaseRender * BaseRender::getRelationRender() const
     {
         return m_relationRender;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseRender::isRenderEnable() const
+    MENGINE_INLINE bool BaseRender::isRenderEnable() const
     {
         return m_renderEnable;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseRender::isHide() const
+    MENGINE_INLINE bool BaseRender::isHide() const
     {
         return m_hide;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseRender::isLocalHide() const
+    MENGINE_INLINE bool BaseRender::isLocalHide() const
     {
         return m_localHide;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseRender::isExternalRender() const
+    MENGINE_INLINE bool BaseRender::isExternalRender() const
     {
         return m_externalRender;
     }

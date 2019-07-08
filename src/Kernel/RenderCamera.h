@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderCamera> RenderCameraPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & RenderCamera::getCameraProjectionMatrix() const
+    MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraProjectionMatrix() const
     {
         if( m_invalidateProjectionMatrix == true )
         {
@@ -82,7 +82,7 @@ namespace Mengine
         return m_projectionMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & RenderCamera::getCameraProjectionMatrixInv() const
+    MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraProjectionMatrixInv() const
     {
         if( m_invalidateProjectionMatrix == true )
         {
@@ -94,7 +94,7 @@ namespace Mengine
         return m_projectionMatrixInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & RenderCamera::getCameraViewMatrix() const
+    MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraViewMatrix() const
     {
         if( m_invalidateViewMatrix == true )
         {
@@ -106,7 +106,7 @@ namespace Mengine
         return m_viewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & RenderCamera::getCameraViewMatrixInv() const
+    MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraViewMatrixInv() const
     {
         if( m_invalidateViewMatrix == true )
         {
@@ -118,7 +118,7 @@ namespace Mengine
         return m_viewMatrixInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & RenderCamera::getCameraViewProjectionMatrix() const
+    MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraViewProjectionMatrix() const
     {
         if( m_invalidateViewProjectionMatrix == true )
         {
@@ -130,7 +130,7 @@ namespace Mengine
         return m_viewProjectionMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::mat4f & RenderCamera::getCameraViewProjectionMatrixInv() const
+    MENGINE_INLINE const mt::mat4f & RenderCamera::getCameraViewProjectionMatrixInv() const
     {
         if( m_invalidateViewProjectionMatrix == true )
         {
@@ -142,13 +142,13 @@ namespace Mengine
         return m_viewProjectionMatrixInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void RenderCamera::invalidateViewMatrix_()
+    MENGINE_INLINE void RenderCamera::invalidateViewMatrix_()
     {
         m_invalidateViewMatrix = true;
         m_invalidateViewProjectionMatrix = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void RenderCamera::invalidateProjectionMatrix_()
+    MENGINE_INLINE void RenderCamera::invalidateProjectionMatrix_()
     {
         m_invalidateProjectionMatrix = true;
         m_invalidateViewProjectionMatrix = true;

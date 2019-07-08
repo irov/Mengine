@@ -71,14 +71,14 @@ namespace Mengine
         m_verticesWM.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::render( const RenderContext * _state ) const
+    void Landscape2D::render( const RenderContext * _context ) const
     {
         const VectorLandscape2DElements & elementsWM = this->getElementWM();
 
         mt::vec2f min_screen( 0.f, 0.f );
         mt::vec2f max_screen( 1.f, 1.f );
 
-        const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderCameraInterfacePtr & camera = _context->camera;
 
         const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
@@ -140,7 +140,7 @@ namespace Mengine
             {
                 const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-                this->addRenderQuad( _state, el.material, vertices, 4, &el.bb_wm, false );
+                this->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false );
             }
 
             elementVertexOffset += 4;

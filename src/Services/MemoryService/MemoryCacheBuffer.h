@@ -30,10 +30,10 @@ namespace Mengine
         Pointer newBuffer( size_t _size, const Char * _doc ) override;
 
     public:
-        inline Pointer getBuffer() const override;
+        MENGINE_INLINE Pointer getBuffer() const override;
 
-        inline size_t getSize() const override;
-        inline bool empty() const override;
+        MENGINE_INLINE size_t getSize() const override;
+        MENGINE_INLINE bool empty() const override;
 
     protected:
         void uncache_();
@@ -51,17 +51,17 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////	
-    inline Pointer MemoryCacheBuffer::getBuffer() const
+    MENGINE_INLINE Pointer MemoryCacheBuffer::getBuffer() const
     {
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline size_t MemoryCacheBuffer::getSize() const
+    MENGINE_INLINE size_t MemoryCacheBuffer::getSize() const
     {
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool MemoryCacheBuffer::empty() const
+    MENGINE_INLINE bool MemoryCacheBuffer::empty() const
     {
         return m_size == 0;
     }

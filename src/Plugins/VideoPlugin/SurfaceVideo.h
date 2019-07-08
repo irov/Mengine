@@ -6,7 +6,6 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/AnimationEventReceiver.h"
-#include "Kernel/ResourceHolder.h"
 
 #include "ResourceVideo.h"
 
@@ -62,7 +61,7 @@ namespace Mengine
 
     protected:
         void _activate() override;
-        bool _update( const UpdateContext * _context ) override;
+        bool update( const UpdateContext * _context ) override;
 
     protected:
         void _setTime( float _time ) override;
@@ -94,7 +93,7 @@ namespace Mengine
         void updateSize_();
 
     protected:
-        ResourceHolder<ResourceVideo> m_resourceVideo;
+        ResourceVideoPtr m_resourceVideo;
 
         RenderTextureInterfacePtr m_textures[1];
 

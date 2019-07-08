@@ -24,7 +24,7 @@ namespace Mengine
         const ResourceImagePtr & getResourceImage_( const Char * _name ) const;
 
 	public:
-        spAtlas * getAtlas() const override;
+        spAtlas * getSpineAtlas() const override;
 
 	protected:
 		bool _compile() override;

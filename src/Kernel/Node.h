@@ -61,8 +61,8 @@ namespace Mengine
         uint32_t m_uniqueIdentity;
 
     public:
-        inline Node * getParent() const;
-        inline bool hasParent() const;
+        MENGINE_INLINE Node * getParent() const;
+        MENGINE_INLINE bool hasParent() const;
 
     public:
         void addChild( const NodePtr & _node );
@@ -77,8 +77,8 @@ namespace Mengine
         typedef Lambda<void( const NodePtr & node )> LambdaDestroyChildren;
         void destroyChildren( const LambdaDestroyChildren & _lambda );
 
-        inline IntrusiveSlugListNodeChild & getChildren();
-        inline const IntrusiveSlugListNodeChild & getChildren() const;
+        MENGINE_INLINE IntrusiveSlugListNodeChild & getChildren();
+        MENGINE_INLINE const IntrusiveSlugListNodeChild & getChildren() const;
         uint32_t getChildrenRecursiveCount() const;
 
         NodePtr findChild( const ConstString & _name, bool _recursion ) const;
@@ -148,9 +148,9 @@ namespace Mengine
         void deactivate();
 
     public:
-        inline bool isActivate() const;
-        inline bool isAfterActive() const;
-        inline bool isDeactivating() const;
+        MENGINE_INLINE bool isActivate() const;
+        MENGINE_INLINE bool isAfterActive() const;
+        MENGINE_INLINE bool isDeactivating() const;
 
     protected:
         virtual bool _activate();
@@ -178,11 +178,11 @@ namespace Mengine
         bool enableForce();
 
     public:
-        inline bool isEnable() const;
+        MENGINE_INLINE bool isEnable() const;
 
     public:
         void freeze( bool _value );
-        inline bool isFreeze() const;
+        MENGINE_INLINE bool isFreeze() const;
 
     protected:
         virtual void _freeze( bool _value );
@@ -209,47 +209,47 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isActivate() const
+    MENGINE_INLINE bool Node::isActivate() const
     {
         return m_active;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isAfterActive() const
+    MENGINE_INLINE bool Node::isAfterActive() const
     {
         return m_afterActive;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isDeactivating() const
+    MENGINE_INLINE bool Node::isDeactivating() const
     {
         return m_deactivating;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isFreeze() const
+    MENGINE_INLINE bool Node::isFreeze() const
     {
         return m_freeze;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isEnable() const
+    MENGINE_INLINE bool Node::isEnable() const
     {
         return m_enable;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline Node * Node::getParent() const
+    MENGINE_INLINE Node * Node::getParent() const
     {
         return m_parent;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool Node::hasParent() const
+    MENGINE_INLINE bool Node::hasParent() const
     {
         return m_parent != nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline IntrusiveSlugListNodeChild & Node::getChildren()
+    MENGINE_INLINE IntrusiveSlugListNodeChild & Node::getChildren()
     {
         return m_children;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const IntrusiveSlugListNodeChild & Node::getChildren() const
+    MENGINE_INLINE const IntrusiveSlugListNodeChild & Node::getChildren() const
     {
         return m_children;
     }
@@ -267,7 +267,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T reinterpret_node_cast( void * _node )
+    T reinterpret_node_cast( void * _node )
     {
 #ifdef MENGINE_DEBUG
         if( _node == nullptr )
@@ -291,7 +291,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T node_static_cast( Node * _node )
+    T node_static_cast( Node * _node )
     {
 #ifdef MENGINE_DEBUG
         if( _node == nullptr )
@@ -309,7 +309,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T node_static_cast( const Node * _node )
+    T node_static_cast( const Node * _node )
     {
 #ifdef MENGINE_DEBUG
         if( _node == nullptr )

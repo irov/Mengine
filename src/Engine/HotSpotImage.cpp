@@ -90,9 +90,9 @@ namespace Mengine
             , this->getName().c_str()
         );
           
-        if( m_resourceTestPick.compile() == false )
+        if( m_resourceTestPick->compile() == false )
         {
-            LOGGER_ERROR( "HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
+            LOGGER_ERROR( "'%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
                 , m_resourceTestPick->getName().c_str()
             );
@@ -105,7 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpotImage::_release()
     {
-        m_resourceTestPick.release();
+        m_resourceTestPick->release();
 
         HotSpot::_release();
     }

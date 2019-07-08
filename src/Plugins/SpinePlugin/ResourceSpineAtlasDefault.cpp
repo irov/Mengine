@@ -67,7 +67,7 @@ namespace Mengine
         m_images.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    spAtlas * ResourceSpineAtlasDefault::getAtlas() const
+    spAtlas * ResourceSpineAtlasDefault::getSpineAtlas() const
     {
         return m_atlas;
     }

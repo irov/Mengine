@@ -234,7 +234,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Scheduler::_update( const UpdateContext * _context )
+    void Scheduler::update( const UpdateContext * _context )
     {
         float total_time = _context->time * m_speedFactor;
 

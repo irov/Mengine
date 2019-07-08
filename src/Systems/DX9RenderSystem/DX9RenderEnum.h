@@ -13,7 +13,7 @@ namespace Mengine
     static const D3DFORMAT D16SFormats[] = { D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT)0 };
     static const D3DFORMAT D16Formats[] = { D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT)0 };
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t s_getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
+    MENGINE_INLINE uint32_t s_getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
     {
         switch( _pType )
         {
@@ -33,7 +33,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DMULTISAMPLE_TYPE s_getMultiSampleType( uint32_t _count )
+    MENGINE_INLINE D3DMULTISAMPLE_TYPE s_getMultiSampleType( uint32_t _count )
     {
         switch( _count )
         {
@@ -69,7 +69,7 @@ namespace Mengine
         return D3DMULTISAMPLE_NONE;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline DWORD s_toD3DBufferLock( EBufferLockFlag _flag )
+    MENGINE_INLINE DWORD s_toD3DBufferLock( EBufferLockFlag _flag )
     {
         switch( _flag )
         {
@@ -86,7 +86,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DFORMAT s_toD3DFormat( PixelFormat _format )
+    MENGINE_INLINE D3DFORMAT s_toD3DFormat( PixelFormat _format )
     {
         switch( _format )
         {
@@ -130,7 +130,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    inline DWORD s_toD3DBlendFactor( EBlendFactor _blend )
+    MENGINE_INLINE DWORD s_toD3DBlendFactor( EBlendFactor _blend )
     {
         switch( _blend )
         {
@@ -158,7 +158,7 @@ namespace Mengine
         return D3DBLEND_ZERO;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline DWORD s_toD3DBlendOp( EBlendOp _blend )
+    MENGINE_INLINE DWORD s_toD3DBlendOp( EBlendOp _blend )
     {
         switch( _blend )
         {
@@ -176,7 +176,7 @@ namespace Mengine
         return D3DBLENDOP_ADD;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )
+    MENGINE_INLINE D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )
     {
         switch( _type )
         {
@@ -196,7 +196,7 @@ namespace Mengine
         return D3DPT_POINTLIST;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
+    MENGINE_INLINE D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
     {
         switch( _mode )
         {
@@ -215,7 +215,7 @@ namespace Mengine
         return D3DTADDRESS_CLAMP;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DCULL s_toD3DCullMode( ECullMode _mode )
+    MENGINE_INLINE D3DCULL s_toD3DCullMode( ECullMode _mode )
     {
         switch( _mode )
         {
@@ -229,7 +229,7 @@ namespace Mengine
         return D3DCULL_NONE;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DCMPFUNC s_toD3DCmpFunc( ECompareFunction _func )
+    MENGINE_INLINE D3DCMPFUNC s_toD3DCmpFunc( ECompareFunction _func )
     {
         switch( _func )
         {
@@ -253,7 +253,7 @@ namespace Mengine
         return D3DCMP_NEVER;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DFILLMODE s_toD3DFillMode( EFillMode _mode )
+    MENGINE_INLINE D3DFILLMODE s_toD3DFillMode( EFillMode _mode )
     {
         switch( _mode )
         {
@@ -267,7 +267,7 @@ namespace Mengine
         return D3DFILL_POINT;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DSHADEMODE s_toD3DShadeMode( EShadeType _type )
+    MENGINE_INLINE D3DSHADEMODE s_toD3DShadeMode( EShadeType _type )
     {
         switch( _type )
         {
@@ -281,7 +281,7 @@ namespace Mengine
         return D3DSHADE_FLAT;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DTEXTUREOP s_toD3DTextureOp( ETextureOp _textureOp )
+    MENGINE_INLINE D3DTEXTUREOP s_toD3DTextureOp( ETextureOp _textureOp )
     {
         switch( _textureOp )
         {
@@ -301,7 +301,7 @@ namespace Mengine
         return D3DTOP_DISABLE;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline DWORD s_toD3DTextureArg( ETextureArgument _texArg )
+    MENGINE_INLINE DWORD s_toD3DTextureArg( ETextureArgument _texArg )
     {
         switch( _texArg )
         {
@@ -320,7 +320,7 @@ namespace Mengine
         return D3DTA_DIFFUSE;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DSAMPLERSTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
+    MENGINE_INLINE D3DSAMPLERSTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
     {
         switch( _filterType )
         {
@@ -335,7 +335,7 @@ namespace Mengine
         return D3DSAMP_MAGFILTER;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
+    MENGINE_INLINE D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
     {
         switch( _filter )
         {
@@ -356,7 +356,7 @@ namespace Mengine
         return D3DTEXF_NONE;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t s_getD3DFormatRange( D3DFORMAT _format )
+    MENGINE_INLINE uint32_t s_getD3DFormatRange( D3DFORMAT _format )
     {
         switch( _format )
         {
@@ -369,7 +369,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool s_lessD3DFormats( D3DFORMAT _format1, D3DFORMAT _format2 )
+    MENGINE_INLINE bool s_lessD3DFormats( D3DFORMAT _format1, D3DFORMAT _format2 )
     {
         uint32_t format_id1 = s_getD3DFormatRange( _format1 );
         uint32_t format_id2 = s_getD3DFormatRange( _format2 );
@@ -377,7 +377,7 @@ namespace Mengine
         return format_id1 < format_id2;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const Char * s_getD3DFormatName( D3DFORMAT _format )
+    MENGINE_INLINE const Char * s_getD3DFormatName( D3DFORMAT _format )
     {
         switch( _format )
         {
@@ -390,7 +390,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t s_getD3DFormatBits( D3DFORMAT _format )
+    MENGINE_INLINE uint32_t s_getD3DFormatBits( D3DFORMAT _format )
     {
         switch( _format )
         {
@@ -403,7 +403,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DFORMAT s_getD3DIndexFormat()
+    MENGINE_INLINE D3DFORMAT s_getD3DIndexFormat()
     {
         switch( sizeof( RenderIndex ) )
         {

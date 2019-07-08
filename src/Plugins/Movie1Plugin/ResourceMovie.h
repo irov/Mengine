@@ -242,7 +242,7 @@ namespace Mengine
         const mt::box2f & getBoundBox() const;
 
     public:
-        inline const MovieFramePackInterfacePtr & getFramePack() const;
+        MENGINE_INLINE const MovieFramePackInterfacePtr & getFramePack() const;
 
     public:
         bool hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const;
@@ -287,7 +287,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceMovie> ResourceMoviePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const
+    MENGINE_INLINE const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const
     {
         return m_keyFramePack;
     }

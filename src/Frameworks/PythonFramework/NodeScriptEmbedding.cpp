@@ -80,7 +80,6 @@
 
 #include "Kernel/Interender.h"
 #include "Kernel/Isometric.h"
-#include "Kernel/Parallax.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"

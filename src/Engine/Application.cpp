@@ -41,7 +41,6 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/Interender.h"
 #include "Kernel/Isometric.h"
-#include "Kernel/Parallax.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -2042,7 +2041,7 @@ namespace Mengine
     {
         if( m_cursorResource != nullptr )
         {
-            m_cursorResource->decrementReference();
+            m_cursorResource->release();
         }
 
         const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()

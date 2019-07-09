@@ -220,13 +220,13 @@ namespace Mengine
     {
         if( m_resourceJSON != nullptr )
         {
-            m_resourceJSON->decrementReference();
+            m_resourceJSON->release();
             m_resourceJSON = nullptr;
         }
 
         if( m_resourceImage != nullptr )
         {
-            m_resourceImage->decrementReference();
+            m_resourceImage->release();
             m_resourceImage = nullptr;
         }
 

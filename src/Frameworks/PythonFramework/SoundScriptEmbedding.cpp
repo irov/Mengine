@@ -69,7 +69,7 @@ namespace Mengine
             {
                 if( m_resource != nullptr )
                 {
-                    m_resource->decrementReference();
+                    m_resource->release();
                     m_resource = nullptr;
                 }
             }
@@ -107,7 +107,7 @@ namespace Mengine
                     );
                 }
 
-                m_resource->decrementReference();
+                m_resource->release();
                 m_resource = nullptr;
 
                 m_soundBuffer = nullptr;
@@ -131,7 +131,7 @@ namespace Mengine
                     );
                 }
 
-                m_resource->decrementReference();
+                m_resource->release();
                 m_resource = nullptr;
 
                 m_soundBuffer = nullptr;
@@ -174,7 +174,7 @@ namespace Mengine
 
             if( soundBuffer == nullptr )
             {
-                resource->decrementReference();
+                resource->release();
 
                 return nullptr;
             }
@@ -197,7 +197,7 @@ namespace Mengine
                     _cb.call_args( nullptr, 2, _args );
                 }
 
-                resource->decrementReference();
+                resource->release();
 
                 return nullptr;
             }
@@ -220,7 +220,7 @@ namespace Mengine
                     _cb.call_args( nullptr, 2, _args );
                 }
 
-                resource->decrementReference();
+                resource->release();
 
                 return nullptr;
             }

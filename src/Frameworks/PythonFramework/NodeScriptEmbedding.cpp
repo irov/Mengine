@@ -18,6 +18,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
+#include "Kernel/Reference.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
@@ -2381,7 +2382,7 @@ namespace Mengine
             .def( "getContent", &Contentable::getContent )
             ;
 
-        pybind::interface_<Resource, pybind::bases<Contentable, Scriptable, Compilable, Identity, Reference> >( _kernel, "ResourceReference", false )
+        pybind::interface_<Resource, pybind::bases<Contentable, Scriptable, Compilable, Identity> >( _kernel, "ResourceReference", false )
             .def( "setLocale", &Resource::setLocale )
             .def( "getLocale", &Resource::getLocale )
             .def( "setFileGroup", &Resource::setFileGroup )

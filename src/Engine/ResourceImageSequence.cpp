@@ -51,7 +51,7 @@ namespace Mengine
     {
         for( FrameImageSequence & sequence : m_sequence )
         {
-            sequence.resource->decrementReference();
+            sequence.resource->release();
             sequence.resource = nullptr;
         }
     }

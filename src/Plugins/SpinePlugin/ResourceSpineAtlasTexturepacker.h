@@ -14,6 +14,8 @@ namespace Mengine
     class ResourceSpineAtlasTexturepacker
         : public ResourceSpineAtlas
     {
+        DECLARE_VISITABLE( ResourceSpineAtlas );
+
     public:
         ResourceSpineAtlasTexturepacker();
         ~ResourceSpineAtlasTexturepacker() override;

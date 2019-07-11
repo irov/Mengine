@@ -8,18 +8,16 @@
 #include "spine/spine.h"
 
 namespace Mengine
-{	
-	class ResourceSpineAtlas
-		: public Resource
-        , public Content
-	{
+{
+    class ResourceSpineAtlas
+        : public Resource
+    {
         DECLARE_VISITABLE( Resource );
-        DECLARE_CONTENTABLE();
 
-	public:
+    public:
         virtual spAtlas * getSpineAtlas() const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceSpineAtlas> ResourceSpineAtlasPtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ResourceSpineAtlas> ResourceSpineAtlasPtr;
     //////////////////////////////////////////////////////////////////////////
 }

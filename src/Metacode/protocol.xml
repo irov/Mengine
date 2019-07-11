@@ -1,4 +1,4 @@
-<Protocol Version = "139">
+<Protocol Version = "140">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -467,9 +467,6 @@
         </Node>
 
         <Node Name="ResourceSpineAtlasTexturepacker" Inheritance = "Resource">
-          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
-          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
-
           <Member Node="Texturepacker" Name="Name" Type="Mengine::ConstString"/>
         </Node>
 

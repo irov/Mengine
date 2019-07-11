@@ -11,11 +11,14 @@
 #include "ResourceSpineAtlasTexturepacker.h"
 #include "ResourceSpineSkeleton.h"
 
+#include "Spine.h"
+
 #include "LoaderResourceSpineAtlasDefault.h"
 #include "LoaderResourceSpineAtlasTexturepacker.h"
 #include "LoaderResourceSpineSkeleton.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/NodePrototypeGenerator.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Spine, Mengine::SpinePlugin );
@@ -58,6 +61,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Spine" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Spine, 128>>() ) == false )
+        {
+            return false;
+        }
+
         SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), Helper::makeFactorableUnique<LoaderResourceSpineAtlasDefault>() );
@@ -92,5 +101,8 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Spine" ) );
     }
 }

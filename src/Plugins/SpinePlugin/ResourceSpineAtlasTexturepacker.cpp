@@ -71,7 +71,9 @@ namespace Mengine
         page->magFilter = SP_ATLAS_LINEAR;
         page->uWrap = SP_ATLAS_CLAMPTOEDGE;
         page->vWrap = SP_ATLAS_CLAMPTOEDGE;
-        page->rendererObject = nullptr;
+
+        const ResourceImagePtr & atlasImage = unknownResourceTexturepacker->getAtlasImage();
+        page->rendererObject = atlasImage.get();
 
         atlas->pages = page;
 
@@ -156,7 +158,7 @@ namespace Mengine
     {
         if( m_resourceTexturepacker != nullptr )
         {
-            m_resourceTexturepacker->decrementReference();
+            m_resourceTexturepacker->release();
             m_resourceTexturepacker = nullptr;
         }
 

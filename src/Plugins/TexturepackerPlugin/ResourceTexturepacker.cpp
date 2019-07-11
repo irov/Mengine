@@ -66,6 +66,11 @@ namespace Mengine
         return m_resourceImageName;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceTexturepacker::getAtlasImage() const
+    {
+        return m_resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceTexturepacker::getFrame( const ConstString & _name ) const
     {
         const ResourceImagePtr & image = m_hashtableFrames.find( _name );

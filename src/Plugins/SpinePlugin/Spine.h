@@ -17,7 +17,7 @@
 #include "spine/spine.h"
 
 namespace Mengine
-{    
+{
     class Spine
         : public Node
         , public BaseAnimation
@@ -70,6 +70,9 @@ namespace Mengine
 
     protected:
         void render( const RenderContext * _context ) const override;
+
+    protected:
+        void _afterActivate() override;
 
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;

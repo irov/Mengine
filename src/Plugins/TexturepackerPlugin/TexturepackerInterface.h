@@ -19,6 +19,9 @@ namespace Mengine
         virtual float getAtlasHeightInv() const = 0;
 
     public:
+        virtual const ResourceImagePtr & getAtlasImage() const = 0;
+
+    public:
         virtual const ResourceImagePtr & getFrame( const ConstString & _name ) const = 0;
 
     public:

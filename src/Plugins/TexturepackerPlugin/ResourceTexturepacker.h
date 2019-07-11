@@ -38,6 +38,9 @@ namespace Mengine
         const ConstString& getResourceImageName() const;
 
     public:
+        const ResourceImagePtr & getAtlasImage() const override;
+
+    public:
         const ResourceImagePtr & getFrame( const ConstString & _name ) const override;
 
     public:

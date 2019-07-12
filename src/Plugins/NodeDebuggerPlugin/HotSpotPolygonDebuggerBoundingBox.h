@@ -7,7 +7,7 @@
 namespace Mengine
 {
     class HotSpotPolygonDebuggerBoundingBox
-        : public BaseDebuggerBoundingBox<HotSpotPolygon>
+        : public BaseDebuggerBoundingBox<HotSpotPolygonPtr>
         , public Factorable
     {
     public:

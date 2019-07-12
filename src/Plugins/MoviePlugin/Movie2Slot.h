@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/NoneRender.h"
+#include "Kernel/DummyRender.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Movie2Slot
         : public Node
-        , public NoneRender
+        , public DummyRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

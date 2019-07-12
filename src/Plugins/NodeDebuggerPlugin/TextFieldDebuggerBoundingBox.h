@@ -7,7 +7,7 @@
 namespace Mengine
 {
     class TextFieldDebuggerBoundingBox
-        : public BaseDebuggerBoundingBox<TextField>
+        : public BaseDebuggerBoundingBox<TextFieldPtr>
         , public Factorable
     {
     public:

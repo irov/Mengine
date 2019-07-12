@@ -139,11 +139,6 @@ namespace Mengine
         virtual void finalizeRenderResources() = 0;
 
     public:
-        virtual void mousePosition( const InputMousePositionEvent & _event ) = 0;
-        virtual void mouseEnter( const InputMousePositionEvent & _event ) = 0;
-        virtual void mouseLeave( const InputMousePositionEvent & _event ) = 0;
-
-    public:
         virtual void setFocus( bool _focus ) = 0;
         virtual void setFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;

@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 139;
+        return 140;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 2942256626; 
+        return 3423237859; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -3652,21 +3652,9 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
-        {
-            Meta_DataBlock::Meta_Resource::_parseData( _buff, _size, _read, _userData );
-        
-            Metabuf::read( _buff, _size, _read, _userData, this->m_File_Path );
-        }
-        //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _userData );
-        
-            if( (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0 )
-            {
-                Metabuf::read( _buff, _size, _read, _userData, this->m_File_Converter );
-            }
         
             if( (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) != 0 )
             {

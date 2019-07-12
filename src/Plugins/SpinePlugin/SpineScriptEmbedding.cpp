@@ -83,10 +83,10 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_Spine_setEventListener )
             ;
 
-        pybind::interface_<ResourceSpineAtlas, pybind::bases<Resource, Content> >( _kernel, "ResourceSpineAtlas", false )
+        pybind::interface_<ResourceSpineAtlas, pybind::bases<Resource> >( _kernel, "ResourceSpineAtlas", false )
             ;
 
-        pybind::interface_<ResourceSpineAtlasDefault, pybind::bases<ResourceSpineAtlas> >( _kernel, "ResourceSpineAtlasDefault", false )
+        pybind::interface_<ResourceSpineAtlasDefault, pybind::bases<ResourceSpineAtlas, Content> >( _kernel, "ResourceSpineAtlasDefault", false )
             .def( "addResourceImageDesc", &ResourceSpineAtlasDefault::addResourceImageDesc )
             ;
 
@@ -112,7 +112,7 @@ namespace Mengine
         _kernel->remove_scope<ResourceSpineAtlas>();
         _kernel->remove_scope<ResourceSpineAtlasDefault>();
         _kernel->remove_scope<ResourceSpineAtlasTexturepacker>();
-        _kernel->remove_scope<ResourceSpineSkeleton>();        
+        _kernel->remove_scope<ResourceSpineSkeleton>();
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Spine" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ) );

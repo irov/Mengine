@@ -17,145 +17,9 @@ SERVICE_FACTORY( PickerService, Mengine::PickerService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    namespace
-    {
-        //////////////////////////////////////////////////////////////////////////
-        class PickerVisitor
-        {
-        public:
-            PickerVisitor( VectorPickerTrapStates & _traps, bool _exclusive )
-                : m_traps( _traps )
-                , m_exclusive( _exclusive )
-            {
-            }
-
-            ~PickerVisitor()
-            {
-            }
-
-        protected:
-            void operator = ( const PickerVisitor & )
-            {
-            }
-
-        public:
-            void visit( const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const NodePtr & _node )
-            {
-                RenderInterface * render = _node->getRender();
-
-                if( render != nullptr )
-                {
-                    RenderViewportInterfacePtr nodeViewport = render->getRenderViewport();
-
-                    if( nodeViewport == nullptr )
-                    {
-                        nodeViewport = _viewport;
-                    }
-
-                    RenderCameraInterfacePtr nodeCamera = render->getRenderCamera();
-
-                    if( nodeCamera == nullptr )
-                    {
-                        nodeCamera = _camera;
-                    }
-
-                    m_currentViewport = nodeViewport;
-                    m_currentCamera = nodeCamera;
-                }
-                else
-                {
-                    m_currentViewport = _viewport;
-                    m_currentCamera = _camera;
-                }
-
-                RenderViewportInterfacePtr visitViewport = m_currentViewport;
-                RenderCameraInterfacePtr visitCamera = m_currentCamera;
-
-                this->accept( _node );
-
-                const IntrusiveSlugListNodeChild & child = _node->getChildren();
-
-                NodePtr single_child = child.single();
-
-                if( single_child != nullptr )
-                {
-                    this->visit( visitViewport, visitCamera, single_child );
-                }
-                else if( child.countSlugs() == 0 )
-                {
-                    for( IntrusiveSlugListNodeChild::unslug_const_iterator
-                        it = child.ubegin(),
-                        it_end = child.uend();
-                        it != it_end;
-                        ++it )
-                    {
-                        NodePtr children = (*it);
-
-                        this->visit( visitViewport, visitCamera, children );
-                    }
-                }
-                else
-                {
-                    for( IntrusiveSlugChild it( child ); it.eof() == false; )
-                    {
-                        NodePtr children( *it );
-
-                        it.next_shuffle();
-
-                        this->visit( visitViewport, visitCamera, children );
-                    }
-                }
-            }
-
-        protected:
-            void accept( const NodePtr & _node )
-            {
-                PickerTrapInterface * trap = _node->getPickerTrap();
-
-                if( trap == nullptr )
-                {
-                    return;
-                }
-
-                PickerTrapState * trapState = trap->propagatePickerTrapState();
-
-                if( trapState == nullptr )
-                {
-                    return;
-                }
-
-                if( m_exclusive == true && trapState->exclusive == false )
-                {
-                    return;
-                }
-
-                if( trapState->dead == true )
-                {
-                    return;
-                }
-
-                PickerTrapStateDesc desc;
-                desc.state = trapState;
-                desc.viewport = m_currentViewport;
-                desc.camera = m_currentCamera;
-
-                m_traps.emplace_back( desc );
-            }
-
-        protected:
-            VectorPickerTrapStates & m_traps;
-            
-            bool m_exclusive;
-
-            RenderViewportInterfacePtr m_currentViewport;
-            RenderCameraInterfacePtr m_currentCamera;
-        };
-    }
     //////////////////////////////////////////////////////////////////////////
     PickerService::PickerService()
-        : m_pickerTrapCount( 0 )
-        , m_pickerTrapExclusiveCount( 0 )
-        , m_block( false )
+        : m_block( false )
         , m_handleValue( true )
         , m_invalidateTraps( false )
     {
@@ -177,9 +41,7 @@ namespace Mengine
 
         m_viewport = nullptr;
         m_camera = nullptr;
-        m_scissor = nullptr;
 
-        m_pickerTrapState.clear();
         m_states.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -196,58 +58,62 @@ namespace Mengine
     void PickerService::setArrow( const ArrowPtr & _arrow )
     {
         m_arrow = _arrow;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setScene( const ScenePtr & _scene )
     {
         m_scene = _scene;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
     {
         m_viewport = _viewport;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setRenderCamera( const RenderCameraInterfacePtr & _camera )
     {
         m_camera = _camera;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
     {
         m_scissor = _scissor;
+
+        this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps )
+    bool PickerService::pickTrap( const mt::vec2f & _point, VectorPickers & _pickers )
     {
-        VectorPickerTrapStates states;
-        states.reserve( m_pickerTrapCount );
-
-        if( this->proccesTraps_( _point.x, _point.y, states ) == false )
+        VectorPickerStates states;
+        if( this->proccesStates_( _point.x, _point.y, states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = states.rbegin(),
             it_end = states.rend();
             it != it_end;
             ++it )
         {
-            PickerTrapState * state = it->state;
+            PickerStateDesc & desc = *it;
 
-            if( state->dead == true )
+            PickerInterface * picker = desc.picker;
+
+            if( picker->isPickerPicked() == false )
             {
                 continue;
             }
 
-            if( state->picked == false )
-            {
-                continue;
-            }
-
-            const PickerTrapInterfacePtr & trap = state->trap;
-            _traps.emplace_back( trap );
+            _pickers.emplace_back( picker );
         }
 
         return true;
@@ -261,40 +127,10 @@ namespace Mengine
 
             m_invalidateTraps = false;
         }
-
-        this->updateDead_();
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::clear()
     {
-        this->updateDead_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PickerTrapState * PickerService::regTrap( const PickerTrapInterfacePtr & _trap, bool _exclusive )
-    {
-        PickerTrapState state;
-
-        state.trap = _trap;
-
-        uint32_t id = GENERATE_UNIQUE_IDENTITY();
-        state.id = id;
-        state.picked = false;
-        state.pressed = false;
-        state.handle = false;
-        state.dead = false;
-        state.exclusive = _exclusive;
-
-        if( _exclusive == true )
-        {
-            ++m_pickerTrapExclusiveCount;
-        }
-        
-        m_pickerTrapState.emplace_back( state );
-        PickerTrapState & refState = m_pickerTrapState.back();
-
-        ++m_pickerTrapCount;
-
-        return &refState;
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::updateTraps()
@@ -302,10 +138,8 @@ namespace Mengine
         const mt::vec2f & pos = INPUT_SERVICE()
             ->getCursorPosition( 0 );
 
-        VectorPickerTrapStates states;
-        states.reserve( m_pickerTrapCount );
-
-        this->proccesTraps_( pos.x, pos.y, states );
+        VectorPickerStates states;
+        this->proccesStates_( pos.x, pos.y, states );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::invalidateTraps()
@@ -313,57 +147,28 @@ namespace Mengine
         m_invalidateTraps = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::unregTrap( PickerTrapState * _ref )
-    {
-        for( PickerTrapState & state : m_pickerTrapState )
-        {
-            if( state.id == _ref->id )
-            {
-                state.dead = true;
-
-                if( state.exclusive == true )
-                {
-                    --m_pickerTrapExclusiveCount;
-                }
-
-                --m_pickerTrapCount;
-
-                if( state.picked == true )
-                {
-                    state.picked = false;
-                    state.trap->onHandleMouseOverDestroy();
-                }
-
-                break;
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleKeyEvent( const InputKeyEvent & _event )
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            PickerTrapState * state = it->state;
+            PickerStateDesc & desc = *it;
 
-            if( state->dead == true )
-            {
-                continue;
-            }
+            PickerInterface * picker = desc.picker;
 
-            const PickerTrapInterfacePtr & trap = state->trap;
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            if( trap->handleKeyEvent( _event ) == false )
+            if( inputHandler->handleKeyEvent( _event ) == false )
             {
                 continue;
             }
@@ -378,27 +183,24 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            PickerTrapState * state = it->state;
+            PickerStateDesc & desc = *it;
 
-            if( state->dead == true )
-            {
-                continue;
-            }
+            PickerInterface * picker = desc.picker;
 
-            const PickerTrapInterfacePtr & trap = state->trap;
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            if( trap->handleTextEvent( _event ) == false )
+            if( inputHandler->handleTextEvent( _event ) == false )
             {
                 continue;
             }
@@ -413,27 +215,22 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            const PickerTrapStateDesc & desc = *it;
+            const PickerStateDesc & desc = *it;
 
-            PickerTrapState * state = desc.state;
+            PickerInterface * picker = desc.picker;
 
-            if( state->dead == true )
-            {
-                continue;
-            }
-
-            if( state->picked == false )
+            if( picker->isPickerPicked() == false )
             {
                 continue;
             }
@@ -443,20 +240,20 @@ namespace Mengine
             //	continue;
             //}
 
-            const PickerTrapInterfacePtr & trap = state->trap;
-
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             mt::vec2f wp;
             m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
             ne.y = wp.y;
-            ne.isPressed = state->pressed;
+            ne.isPressed = picker->isPickerPressed();
 
-            if( trap->handleMouseButtonEvent( ne ) == false )
+            if( inputHandler->handleMouseButtonEvent( ne ) == false )
             {
                 continue;
             }
@@ -471,41 +268,34 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            const PickerTrapStateDesc & desc = *it;
+            const PickerStateDesc & desc = *it;
 
-            PickerTrapState * state = desc.state;
+            PickerInterface * picker = desc.picker;
 
-            if( state->dead == true )
-            {
-                continue;
-            }
-
-            if( state->picked == false )
+            if( picker->isPickerPicked() == false )
             {
                 continue;
             }
 
             if( _event.isDown == true )
             {
-                state->pressed = true;
+                picker->setPickerPressed( true );
             }
             //else if( state->pressed == false )
             //{
             //	continue;
             //}
-
-            const PickerTrapInterfacePtr & trap = state->trap;
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
@@ -513,12 +303,14 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
             ne.y = wp.y;
-            ne.isPressed = state->pressed;
+            ne.isPressed = picker->isPickerPressed();
 
-            if( trap->handleMouseButtonEventBegin( ne ) == false )
+            if( inputHandler->handleMouseButtonEventBegin( ne ) == false )
             {
                 continue;
             }
@@ -533,44 +325,37 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            const PickerTrapStateDesc & desc = *it;
+            const PickerStateDesc & desc = *it;
 
-            PickerTrapState * state = desc.state;
+            PickerInterface * picker = desc.picker;
 
-            if( state->dead == true )
-            {
-                continue;
-            }
-
-            if( state->picked == false )
+            if( picker->isPickerPicked() == false )
             {
                 continue;
             }
 
             if( _event.isDown == false )
             {
-                if( state->pressed == false )
+                if( picker->isPickerPressed() == false )
                 {
                     //continue;
                 }
                 else
                 {
-                    state->pressed = false;
+                    picker->setPickerPressed( false );
                 }
             }
-
-            const PickerTrapInterfacePtr & trap = state->trap;
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
@@ -578,12 +363,14 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
             ne.y = wp.y;
-            ne.isPressed = state->pressed;
+            ne.isPressed = picker->isPickerPressed();
 
-            if( trap->handleMouseButtonEventEnd( ne ) == false )
+            if( inputHandler->handleMouseButtonEventEnd( ne ) == false )
             {
                 continue;
             }
@@ -598,32 +385,25 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            const PickerTrapStateDesc & desc = *it;
+            const PickerStateDesc & desc = *it;
 
-            PickerTrapState * state = desc.state;
+            PickerInterface * picker = desc.picker;
 
-            if( state->dead == true )
+            if( picker->isPickerPicked() == false )
             {
                 continue;
             }
-
-            if( state->picked == false )
-            {
-                continue;
-            }
-
-            const PickerTrapInterfacePtr & trap = state->trap;
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
@@ -634,13 +414,15 @@ namespace Mengine
             mt::vec2f dp;
             m_arrow->calcPointDeltha( camera, mt::vec2f( _event.dx, _event.dy ), &dp );
 
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
             InputMouseMoveEvent ne = _event;
             ne.x = wp.x;
             ne.y = wp.y;
             ne.dx = dp.x;
             ne.dy = dp.y;
 
-            if( trap->handleMouseMove( ne ) == false )
+            if( inputHandler->handleMouseMove( ne ) == false )
             {
                 continue;
             }
@@ -655,32 +437,25 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
         {
             return false;
         }
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            const PickerTrapStateDesc & desc = *it;
+            PickerStateDesc & desc = *it;
 
-            PickerTrapState * state = desc.state;
+            PickerInterface * picker = desc.picker;
 
-            if( state->dead == true )
+            if( picker->isPickerPicked() == false )
             {
                 continue;
             }
-
-            if( state->picked == false )
-            {
-                continue;
-            }
-
-            const PickerTrapInterfacePtr & trap = state->trap;
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
@@ -688,11 +463,13 @@ namespace Mengine
             mt::vec2f wp;
             m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
             InputMouseWheelEvent ne = _event;
             ne.x = wp.x;
             ne.y = wp.y;
 
-            if( trap->handleMouseWheel( ne ) == false )
+            if( inputHandler->handleMouseWheel( ne ) == false )
             {
                 continue;
             }
@@ -703,14 +480,16 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::handleMouseEnter( const InputMousePositionEvent & _event )
+    bool PickerService::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
         m_states.clear();
 
-        this->proccesTraps_( _event.x, _event.y, m_states );
+        this->proccesStates_( _event.x, _event.y, m_states );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::handleMouseLeave( const InputMousePositionEvent & _event )
+    void PickerService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
         MENGINE_UNUSED( _event );
 
@@ -725,35 +504,103 @@ namespace Mengine
         }
 
         m_states.clear();
+        this->fillStates_( m_states );
 
-        PickerVisitor pv( m_states, m_pickerTrapExclusiveCount != 0 );
-        pv.visit( m_viewport, m_camera, m_scene );
-
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = m_states.rbegin(),
             it_end = m_states.rend();
             it != it_end;
             ++it )
         {
-            PickerTrapState * state = it->state;
+            PickerStateDesc & desc = *it;
 
-            if( state->dead == true )
+            PickerInterface * picker = desc.picker;
+
+            if( picker->isPickerPicked() == true )
             {
-                continue;
-            }
+                picker->setPickerPicked( false );
 
-            const PickerTrapInterfacePtr & trap = state->trap;
+                InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-            if( state->picked == true )
-            {
-                state->picked = false;
+                InputMouseLeaveEvent el = _event;
 
-                trap->onHandleMouseLeave();
+                inputHandler->handleMouseLeave( el );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states )
+    void PickerService::fillStates_( VectorPickerStates & _states ) const
+    {
+        PickerStateDesc root_desc;
+
+        PickerInterface * root_picker = m_scene->getPicker();
+
+        const RenderViewportInterfacePtr & pickerViewport = root_picker->getPickerViewport();
+
+        if( pickerViewport != nullptr )
+        {
+            root_desc.viewport = pickerViewport;
+        }
+        else
+        {
+            root_desc.viewport = m_viewport;
+        }
+
+        const RenderCameraInterfacePtr & pickerCamera = root_picker->getPickerCamera();
+
+        if( pickerCamera != nullptr )
+        {
+            root_desc.camera = pickerCamera;
+        }
+        else
+        {
+            root_desc.camera = m_camera;
+        }
+
+        _states.push_back( root_desc );
+
+        for( VectorPickerStates::size_type index = 0; index != _states.size(); ++index )
+        {
+            PickerStateDesc & desc = _states[index];
+
+            PickerInterface * picker = desc.picker;
+            const RenderViewportInterfacePtr & viewport = desc.viewport;
+            const RenderCameraInterfacePtr & camera = desc.camera;
+
+            picker->foreachPickerChildren( [&_states, &viewport, &camera]( PickerInterface * _picker )
+            {
+                PickerStateDesc child_desc;
+
+                child_desc.picker = _picker;
+
+                const RenderViewportInterfacePtr & pickerViewport = _picker->getPickerViewport();
+
+                if( pickerViewport != nullptr )
+                {
+                    child_desc.viewport = pickerViewport;
+                }
+                else
+                {
+                    child_desc.viewport = viewport;
+                }
+
+                const RenderCameraInterfacePtr & pickerCamera = _picker->getPickerCamera();
+
+                if( pickerCamera != nullptr )
+                {
+                    child_desc.camera = pickerCamera;
+                }
+                else
+                {
+                    child_desc.camera = camera;
+                }
+
+                _states.push_back( child_desc );
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PickerService::proccesStates_( float _x, float _y, VectorPickerStates & _states )
     {
         if( m_arrow == nullptr )
         {
@@ -778,8 +625,7 @@ namespace Mengine
             return false;
         }
 
-        PickerVisitor pv( _states, m_pickerTrapExclusiveCount != 0 );
-        pv.visit( m_viewport, m_camera, m_scene );
+        this->fillStates_( _states );
 
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
@@ -789,98 +635,86 @@ namespace Mengine
 
         bool handle = false;
 
-        for( VectorPickerTrapStates::reverse_iterator
+        for( VectorPickerStates::reverse_iterator
             it = _states.rbegin(),
             it_end = _states.rend();
             it != it_end;
             ++it )
         {
-            PickerTrapStateDesc & desc = *it;
+            PickerStateDesc & desc = *it;
 
-            PickerTrapState * state = desc.state;
-
-            if( state->dead == true )
-            {
-                continue;
-            }
-
-            const PickerTrapInterfacePtr & trap = state->trap;
+            PickerInterface * picker = desc.picker;
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             if( handle == false || m_handleValue == false )
             {
-                bool picked = trap->pick( adapt_screen_position, viewport, camera, contentResolution, m_arrow );
+                bool picked = picker->pick( adapt_screen_position, viewport, camera, contentResolution, m_arrow );
 
                 if( m_block == false && picked == true )
                 {
-                    if( state->picked == false )
+                    if( picker->isPickerPicked() == false )
                     {
-                        state->picked = true;
+                        picker->setPickerPicked( true );
 
-                        handle = trap->onHandleMouseEnter( adapt_screen_position.x, adapt_screen_position.y );
+                        InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
-                        state->handle = handle;
+                        InputMouseEnterEvent ne;
+                        ne.type = IET_MOUSE_ENTER;
+                        ne.touchId = 0;
+                        ne.x = adapt_screen_position.x;
+                        ne.y = adapt_screen_position.y;
+                        ne.pressure = 0.f;
+
+                        handle = inputHandler->handleMouseEnter( ne );
+
+                        picker->setPickerHandle( handle );
                     }
                     else
                     {
-                        handle = state->handle;
+                        handle = picker->isPickerHandle();
                     }
                 }
                 else
                 {
-                    if( state->picked == true )
+                    if( picker->isPickerPicked() == true )
                     {
-                        state->picked = false;
-                        trap->onHandleMouseLeave();
+                        picker->setPickerPicked( false );
+
+                        InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
+                        InputMouseLeaveEvent ne;
+                        ne.type = IET_MOUSE_LEAVE;
+                        ne.touchId = 0;
+                        ne.x = adapt_screen_position.x;
+                        ne.y = adapt_screen_position.y;
+                        ne.pressure = 0.f;
+
+                        inputHandler->handleMouseLeave( ne );
                     }
                 }
             }
             else
             {
-                if( state->picked == true )
+                if( picker->isPickerPicked() == true )
                 {
-                    state->picked = false;
-                    trap->onHandleMouseLeave();
+                    picker->setPickerPicked( false );
+
+                    InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
+                    InputMouseLeaveEvent ne;
+                    ne.type = IET_MOUSE_LEAVE;
+                    ne.touchId = 0;
+                    ne.x = adapt_screen_position.x;
+                    ne.y = adapt_screen_position.y;
+                    ne.pressure = 0.f;
+
+                    inputHandler->handleMouseLeave( ne );
                 }
             }
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PickerService::updateDead_()
-    {
-        for( ListPickerTrapState::iterator
-            it = m_pickerTrapState.begin();
-            it != m_pickerTrapState.end(); )
-        {
-            if( it->dead == true )
-            {
-                it = m_pickerTrapState.erase( it );
-            }
-            else
-            {
-                ++it;
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t PickerService::getPickerTrapCount() const
-    {
-        uint32_t count = 0;
-
-        for( const PickerTrapState & state : m_pickerTrapState )
-        {
-            if( state.dead == true )
-            {
-                continue;
-            }
-
-            ++count;
-        }
-
-        return count;
     }
 }

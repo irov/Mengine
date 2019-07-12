@@ -4,6 +4,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -14,8 +15,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/PolygonHelper.h"
-#include "Kernel/NodeRenderHelper.h"
-#include "Kernel/ScriptWrapperInterface.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

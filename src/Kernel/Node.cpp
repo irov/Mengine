@@ -9,7 +9,8 @@
 
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/IntrusivePtrScope.h"
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
+#include "Kernel/NodePickerHierarchy.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
@@ -253,7 +254,7 @@ namespace Mengine
 
             if( oldRenderParent != nullptr )
             {
-                this->foreachRenderCloseChildren( []( RenderInterface * _render )
+                this->foreachRenderCloseChildren_( []( RenderInterface * _render )
                 {
                     _render->removeRelationRender();
                 } );
@@ -291,14 +292,14 @@ namespace Mengine
             {
                 if( newRenderParent != nullptr )
                 {
-                    this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                    this->foreachRenderCloseChildren_( [newRenderParent]( RenderInterface * _render )
                     {
                         _render->setRelationRender( newRenderParent );
                     } );
                 }
                 else
                 {
-                    this->foreachRenderCloseChildren( []( RenderInterface * _render )
+                    this->foreachRenderCloseChildren_( []( RenderInterface * _render )
                     {
                         _render->removeRelationRender();
                     } );
@@ -337,14 +338,14 @@ namespace Mengine
             {
                 if( newRenderParent != nullptr )
                 {
-                    this->foreachReverseRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                    this->foreachRenderReverseCloseChildren_( [newRenderParent]( RenderInterface * _render )
                     {
                         _render->setRelationRenderFront( newRenderParent );
                     } );
                 }
                 else
                 {
-                    this->foreachReverseRenderCloseChildren( []( RenderInterface * _render )
+                    this->foreachRenderReverseCloseChildren_( []( RenderInterface * _render )
                     {
                         _render->removeRelationRender();
                     } );
@@ -368,7 +369,7 @@ namespace Mengine
             }
             else
             {
-                this->foreachReverseRenderCloseChildren( [render]( RenderInterface * _childRender )
+                this->foreachRenderReverseCloseChildren_( [render]( RenderInterface * _childRender )
                 {
                     render->moveRelationRenderFront( _childRender );
                 } );
@@ -418,7 +419,7 @@ namespace Mengine
             }
             else
             {
-                this->foreachRenderCloseChildren( [render]( RenderInterface * _childRender )
+                this->foreachRenderCloseChildren_( [render]( RenderInterface * _childRender )
                 {
                     render->moveRelationRenderBack( _childRender );
                 } );
@@ -434,6 +435,7 @@ namespace Mengine
     {
         this->removeRelationTransformation();
         this->removeRelationRender_();
+        this->removeRelationPicker_();
 
         Node * oldparent = m_parent;
         m_parent = nullptr;
@@ -447,19 +449,23 @@ namespace Mengine
         {
         case ENCI_FRONT:
             {
+                this->setRelationTransformation( _parent );
                 this->setRelationRenderFront_( _parent );
+                this->setRelationPickerFront_( _parent );
             }break;
         case ENCI_MIDDLE:
             {
+                this->setRelationTransformation( _parent );
                 this->setRelationRender_( _parent );
+                this->setRelationPicker_( _parent );
             }break;
         case ENCI_BACK:
             {
+                this->setRelationTransformation( _parent );
                 this->setRelationRender_( _parent );
+                this->setRelationPicker_( _parent );
             }break;
-        }
-
-        this->setRelationTransformation( _parent );
+        }        
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -657,14 +663,17 @@ namespace Mengine
             case ENCI_FRONT:
                 {
                     this->moveChildRenderFront_( _child );
+                    this->moveChildPickerFront_( _child );
                 }break;
             case ENCI_MIDDLE:
                 {
                     this->moveChildRenderMiddle_( *_insert, _child );
+                    this->moveChildPickerMiddle_( *_insert, _child );
                 }break;
             case ENCI_BACK:
                 {
                     this->moveChildRenderBack_( _child );
+                    this->moveChildPickerBack_( _child );
                 }break;
             }
         }
@@ -795,7 +804,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )
+    void Node::foreachRenderCloseChildren_( const LambdaRenderCloseChildren & _lambda )
     {
         this->foreachChildren( [&_lambda]( const NodePtr & _child )
         {
@@ -807,12 +816,12 @@ namespace Mengine
             }
             else
             {
-                _child->foreachRenderCloseChildren( _lambda );
+                _child->foreachRenderCloseChildren_( _lambda );
             }
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::foreachReverseRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )
+    void Node::foreachRenderReverseCloseChildren_( const LambdaRenderCloseChildren & _lambda )
     {
         this->foreachChildrenReverse( [&_lambda]( const NodePtr & _child )
         {
@@ -824,7 +833,237 @@ namespace Mengine
             }
             else
             {
-                _child->foreachReverseRenderCloseChildren( _lambda );
+                _child->foreachRenderReverseCloseChildren_( _lambda );
+            }
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::removeRelationPicker_()
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            PickerInterface * oldParent = picker->getRelationPicker();
+
+            if( oldParent != nullptr )
+            {
+                picker->removeRelationPicker();
+            }
+        }
+        else
+        {
+            PickerInterface * oldParent = Helper::getNodePickerInheritance( m_parent );
+
+            if( oldParent != nullptr )
+            {
+                this->foreachPickerCloseChildren_( []( PickerInterface * _children )
+                {
+                    _children->removeRelationPicker();
+                } );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::setRelationPicker_( Node * _parent )
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            PickerInterface * oldParent = picker->getRelationPicker();
+            PickerInterface * newParent = Helper::getNodePickerInheritance( _parent );
+
+            if( oldParent != newParent )
+            {
+                if( newParent != nullptr )
+                {
+                    picker->setRelationPicker( newParent );
+                }
+                else
+                {
+                    picker->removeRelationPicker();
+                }
+            }
+        }
+        else
+        {
+            PickerInterface * oldParent = Helper::getNodePickerInheritance( m_parent );
+            PickerInterface * newParent = Helper::getNodePickerInheritance( _parent );
+
+            if( oldParent != newParent )
+            {
+                if( newParent != nullptr )
+                {
+                    this->foreachPickerCloseChildren_( [newParent]( PickerInterface * _children )
+                    {
+                        _children->setRelationPicker( newParent );
+                    } );
+                }
+                else
+                {
+                    this->foreachPickerCloseChildren_( []( PickerInterface * _children )
+                    {
+                        _children->removeRelationPicker();
+                    } );
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::setRelationPickerFront_( Node * _parent )
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            PickerInterface * oldParent = picker->getRelationPicker();
+            PickerInterface * newParent = Helper::getNodePickerInheritance( _parent );
+
+            if( oldParent != newParent )
+            {
+                if( newParent != nullptr )
+                {
+                    picker->setRelationPickerFront( newParent );
+                }
+                else
+                {
+                    picker->removeRelationPicker();
+                }
+            }
+        }
+        else
+        {
+            PickerInterface * oldParent = Helper::getNodePickerInheritance( m_parent );
+            PickerInterface * newParent = Helper::getNodePickerInheritance( _parent );
+
+            if( oldParent != newParent )
+            {
+                if( newParent != nullptr )
+                {
+                    this->foreachPickerReverseCloseChildren_( [newParent]( PickerInterface * _children )
+                    {
+                        _children->setRelationPickerFront( newParent );
+                    } );
+                }
+                else
+                {
+                    this->foreachPickerReverseCloseChildren_( []( PickerInterface * _children )
+                    {
+                        _children->removeRelationPicker();
+                    } );
+                }
+
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildPickerFront_( const NodePtr & _child )
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            PickerInterface * childPicker = _child->getPicker();
+
+            if( childPicker != nullptr )
+            {
+                picker->moveRelationPickerFront( childPicker );
+            }
+            else
+            {
+                this->foreachPickerReverseCloseChildren_( [picker]( PickerInterface * _children )
+                {
+                    picker->moveRelationPickerFront( _children );
+                } );
+            }
+        }
+        else
+        {
+            MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildPickerMiddle_( const NodePtr & _after, const NodePtr & _child )
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            PickerInterface * afterPicker = _after->getPicker();
+            PickerInterface * childPicker = _child->getPicker();
+
+            if( afterPicker != nullptr && childPicker != nullptr )
+            {
+                picker->moveRelationPickerMiddle( afterPicker, childPicker );
+            }
+            else
+            {
+                MENGINE_ASSERTION_NOT_IMPLEMENTED();
+            }
+        }
+        else
+        {
+            MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildPickerBack_( const NodePtr & _child )
+    {
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            PickerInterface * childPicker = _child->getPicker();
+
+            if( childPicker != nullptr )
+            {
+                picker->moveRelationPickerBack( childPicker );
+            }
+            else
+            {
+                this->foreachPickerCloseChildren_( [picker]( PickerInterface * _children )
+                {
+                    picker->moveRelationPickerBack( _children );
+                } );
+            }
+        }
+        else
+        {
+            MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda )
+    {
+        this->foreachChildren( [&_lambda]( const NodePtr & _child )
+        {
+            PickerInterface * picker = _child->getPicker();
+
+            if( picker != nullptr )
+            {
+                _lambda( picker );
+            }
+            else
+            {
+                _child->foreachPickerCloseChildren_( _lambda );
+            }
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda )
+    {
+        this->foreachChildrenReverse( [&_lambda]( const NodePtr & _child )
+        {
+            PickerInterface * picker = _child->getPicker();
+
+            if( picker != nullptr )
+            {
+                _lambda( picker );
+            }
+            else
+            {
+                _child->foreachPickerReverseCloseChildren_( _lambda );
             }
         } );
     }

@@ -13,8 +13,7 @@ Mixin\\\\Eventable
 )
 
 ADD_FILTER(
-Mixin\\\\Scriptable
-    ScriptWrapperInterface.h
+Mixin\\\\Scriptable    
 	Scriptable.cpp
 	Scriptable.h
 )
@@ -66,17 +65,30 @@ Mixin\\\\Observable
 )
 
 ADD_FILTER(
+Mixin\\\\Pickerable
+    Pickerable.h
+)
+
+ADD_FILTER(
 BaseUpdation    
     BaseUpdation.cpp
     BaseUpdation.h
 )
 
 ADD_FILTER(
+BasePicker
+    BasePicker.cpp
+    BasePicker.h
+	DummyPicker.cpp
+    DummyPicker.h
+)
+
+ADD_FILTER(
 BaseRender
 	BaseRender.cpp
 	BaseRender.h
-    NoneRender.cpp
-    NoneRender.h
+    DummyRender.cpp
+    DummyRender.h
 )
 
 ADD_FILTER(
@@ -104,8 +116,10 @@ ADD_FILTER(
 Node
 	Node.cpp
 	Node.h  
-    NodeRenderHelper.cpp
-    NodeRenderHelper.h
+    NodeRenderHierarchy.cpp
+    NodeRenderHierarchy.h
+    NodePickerHierarchy.cpp
+    NodePickerHierarchy.h
     NodeUniqueFinder.cpp
     NodeUniqueFinder.h
 )

@@ -7,7 +7,7 @@
 namespace Mengine
 {
     class Movie2DebuggerBoundingBox
-        : public BaseDebuggerBoundingBox<Movie2>
+        : public BaseDebuggerBoundingBox<Movie2Ptr>
         , public Factorable
     {
     public:

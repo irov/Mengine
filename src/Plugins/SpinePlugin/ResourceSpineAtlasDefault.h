@@ -9,11 +9,15 @@
 #include "spine/spine.h"
 
 namespace Mengine
-{	
-	class ResourceSpineAtlasDefault
-		: public ResourceSpineAtlas
+{
+    class ResourceSpineAtlasDefault
+        : public ResourceSpineAtlas
+        , public Content
     {
-	public:
+        DECLARE_VISITABLE( ResourceSpineAtlas );
+        DECLARE_CONTENTABLE();
+
+    public:
         ResourceSpineAtlasDefault();
         ~ResourceSpineAtlasDefault() override;
 
@@ -23,12 +27,12 @@ namespace Mengine
     protected:
         const ResourceImagePtr & getResourceImage_( const Char * _name ) const;
 
-	public:
+    public:
         spAtlas * getSpineAtlas() const override;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
     protected:
         struct ImageDesc
@@ -41,11 +45,12 @@ namespace Mengine
         typedef Vector<ImageDesc> VectorImageDesc;
         VectorImageDesc m_images;
 
-		spAtlas * m_atlas;        
+        spAtlas * m_atlas;
 
+    protected:
         friend const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlasDefault *, const char * );
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceSpineAtlasDefault> ResourceSpineAtlasDefaultPtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::intrusive_ptr<ResourceSpineAtlasDefault> ResourceSpineAtlasDefaultPtr;
     //////////////////////////////////////////////////////////////////////////
 }

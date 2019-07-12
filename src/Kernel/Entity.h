@@ -3,7 +3,7 @@
 #include "Interface/EventationInterface.h"
 
 #include "Kernel/Node.h"
-#include "Kernel/NoneRender.h"
+#include "Kernel/DummyRender.h"
 
 namespace Mengine
 {
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Entity
         : public Node
-        , public NoneRender
+        , public DummyRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();

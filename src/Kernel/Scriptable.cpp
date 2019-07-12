@@ -1,8 +1,9 @@
 #include "Scriptable.h"
 
+#include "Interface/ScriptWrapperInterface.h"
+
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/ScriptWrapperInterface.h"
 
 #include "pybind/kernel.hpp"
 

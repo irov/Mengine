@@ -5,10 +5,10 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ScriptModuleInterface.h"
+#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 
-#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 

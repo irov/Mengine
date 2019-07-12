@@ -5,12 +5,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class NoneRender
+    class DummyRender
         : public BaseRender
     {
     public:
-        NoneRender();
-        ~NoneRender() override;
+        DummyRender();
+        ~DummyRender() override;
 
     public:
         void render( const RenderContext * _context ) const override;

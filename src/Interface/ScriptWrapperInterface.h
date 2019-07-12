@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/Interface.h"
+
 extern "C"
 {
     struct _object;
@@ -12,7 +14,7 @@ namespace Mengine
     class Scriptable;
     //////////////////////////////////////////////////////////////////////////
     class ScriptWrapperInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual PyObject * wrap( Scriptable * _scriptable ) = 0;

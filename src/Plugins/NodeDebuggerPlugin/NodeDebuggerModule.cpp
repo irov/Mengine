@@ -27,7 +27,7 @@
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionVocabulary.h"
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/Scene.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"

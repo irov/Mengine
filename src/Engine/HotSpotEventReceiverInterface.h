@@ -28,8 +28,8 @@ namespace Mengine
     public:
         virtual void onHotSpotActivate() = 0;
         virtual void onHotSpotDeactivate() = 0;
-        virtual void onHotSpotMouseLeave() = 0;
-        virtual bool onHotSpotMouseEnter( float _x, float _y ) = 0;
+        virtual bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) = 0;
+        virtual void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
         virtual bool onHotSpotKey( const InputKeyEvent & _event ) = 0;
         virtual bool onHotSpotText( const InputTextEvent & _event ) = 0;
         virtual bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) = 0;

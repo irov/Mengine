@@ -30,6 +30,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/ScriptWrapperInterface.h"
 
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
@@ -49,7 +50,6 @@
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/BasePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
@@ -953,7 +953,7 @@ namespace Mengine
 
         if( m_mouseEnter == false )
         {
-            InputMousePositionEvent ne;
+            InputMouseEnterEvent ne;
             ne.type = IET_MOUSE_ENTER;
             ne.touchId = _event.touchId;
             ne.x = vx;
@@ -1047,7 +1047,7 @@ namespace Mengine
 
         if( m_mouseEnter == false )
         {
-            InputMousePositionEvent ne;
+            InputMouseEnterEvent ne;
             ne.type = IET_MOUSE_ENTER;
             ne.touchId = _event.touchId;
             ne.x = vx;
@@ -1057,11 +1057,11 @@ namespace Mengine
             this->mouseEnter( ne );
         }
 
-        GAME_SERVICE()
-            ->mousePosition( _event );
+        //GAME_SERVICE()
+        //    ->mousePosition( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::mouseEnter( const InputMousePositionEvent & _event )
+    void Application::mouseEnter( const InputMouseEnterEvent & _event )
     {
         float vx;
         float vy;
@@ -1074,20 +1074,22 @@ namespace Mengine
 
         m_mouseEnter = true;
 
-        InputMousePositionEvent vevent = _event;
-        vevent.x = vx;
-        vevent.y = vy;
+        InputMouseEnterEvent ne = _event;
+        ne.x = vx;
+        ne.y = vy;
 
         GAME_SERVICE()
-            ->mouseEnter( _event );
+            ->handleMouseEnter( ne );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::mouseLeave( const InputMousePositionEvent & _event )
+    void Application::mouseLeave( const InputMouseLeaveEvent & _event )
     {
         m_mouseEnter = false;
 
+        InputMouseLeaveEvent ne = _event;
+
         GAME_SERVICE()
-            ->mouseLeave( _event );
+            ->handleMouseLeave( ne );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::quit()

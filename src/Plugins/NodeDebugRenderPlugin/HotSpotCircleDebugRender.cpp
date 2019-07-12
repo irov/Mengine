@@ -19,7 +19,9 @@ namespace Mengine
     {
         uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
-        if( _node->isMousePickerOver() == true )
+        PickerInterface * picker = _node->getPicker();
+
+        if( picker->isPickerPicked() == true )
         {
             debugColor = 0xFFFF0000;
         }

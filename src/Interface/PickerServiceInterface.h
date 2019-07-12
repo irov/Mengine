@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/PickerTrapInterface.h"
 
+#include "Kernel/Scene.h"
+
 #include "Config/Vector.h"
 
 #include "math/vec2.h"
@@ -10,9 +12,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<PickerTrapInterfacePtr> VectorPickerTraps;
+    typedef Vector<PickerInterface *> VectorPickers;
     //////////////////////////////////////////////////////////////////////////
     class PickerServiceInterface
         : public ServiceInterface
@@ -38,21 +38,11 @@ namespace Mengine
         virtual void clear() = 0;
 
     public:
-        virtual bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) = 0;
+        virtual bool pickTrap( const mt::vec2f& _point, VectorPickers & _pickers ) = 0;
 
     public:
-        virtual PickerTrapState * regTrap( const PickerTrapInterfacePtr & _trap, bool _exclusive ) = 0;
-        virtual void unregTrap( PickerTrapState * _id ) = 0;
-
         virtual void updateTraps() = 0;
         virtual void invalidateTraps() = 0;
-
-    public:
-        virtual uint32_t getPickerTrapCount() const = 0;
-
-    public:
-        virtual void handleMouseEnter( const InputMousePositionEvent & _event ) = 0;
-        virtual void handleMouseLeave( const InputMousePositionEvent & _event ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

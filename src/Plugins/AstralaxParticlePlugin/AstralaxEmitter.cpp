@@ -10,7 +10,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/UnknownResourceImageDataInterface.h"
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/RenderUtils.h"

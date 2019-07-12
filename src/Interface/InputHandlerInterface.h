@@ -76,6 +76,26 @@ namespace Mengine
         float pressure;
     };
     //////////////////////////////////////////////////////////////////////////
+    struct InputMouseEnterEvent
+    {
+        InputEventType type;
+
+        uint32_t touchId;
+        float x;
+        float y;
+        float pressure;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct InputMouseLeaveEvent
+    {
+        InputEventType type;
+
+        uint32_t touchId;
+        float x;
+        float y;
+        float pressure;
+    };
+    //////////////////////////////////////////////////////////////////////////
     struct InputMousePositionEvent
     {
         InputEventType type;
@@ -99,6 +119,10 @@ namespace Mengine
         virtual bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) = 0;
         virtual bool handleMouseMove( const InputMouseMoveEvent & _event ) = 0;
         virtual bool handleMouseWheel( const InputMouseWheelEvent & _event ) = 0;
+
+    public:
+        virtual bool handleMouseEnter( const InputMouseEnterEvent & _event ) = 0;
+        virtual void handleMouseLeave( const InputMouseLeaveEvent & _event ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<InputHandlerInterface> InputHandlerInterfacePtr;

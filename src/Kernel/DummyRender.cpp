@@ -1,26 +1,26 @@
-#include "Kernel/NoneRender.h"
+#include "Kernel/DummyRender.h"
 
 #include "Interface/RenderInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    NoneRender::NoneRender()
+    DummyRender::DummyRender()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    NoneRender::~NoneRender()
+    DummyRender::~DummyRender()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NoneRender::render( const RenderContext * _context ) const
+    void DummyRender::render( const RenderContext * _context ) const
     {
         MENGINE_UNUSED( _context );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void NoneRender::renderWithChildren( const RenderContext * _context, bool _external ) const
+    void DummyRender::renderWithChildren( const RenderContext * _context, bool _external ) const
     {
         if( this->isRendering() == false )
         {
@@ -40,7 +40,7 @@ namespace Mengine
         context.scissor = m_renderScissor != nullptr ? m_renderScissor : _context->scissor;
         context.target = m_renderTarget != nullptr ? m_renderTarget : _context->target;
 
-        for( const BaseRender * child : m_relationRenderChildren )
+        for( const BaseRender * child : m_renderChildren )
         {
             child->renderWithChildren( &context, false );
         }

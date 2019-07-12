@@ -23,7 +23,7 @@ namespace Mengine
     protected:
         bool getBoundingBox( const NodePtr & _node, mt::box2f * _bb ) override
         {
-            IntrusivePtr<T> t = stdex::intrusive_static_cast<IntrusivePtr<T>>(_node);
+            T t = stdex::intrusive_static_cast<T>(_node);
 
             bool successful = this->_getBoundingBox( t, _bb );
 
@@ -31,7 +31,7 @@ namespace Mengine
         }
 
     protected:
-        virtual bool _getBoundingBox( const IntrusivePtr<T> & _node, mt::box2f * _bb ) = 0;
+        virtual bool _getBoundingBox( const T & _node, mt::box2f * _bb ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

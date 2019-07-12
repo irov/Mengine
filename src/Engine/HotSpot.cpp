@@ -11,8 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpot::HotSpot()
-        : m_picker( nullptr )
-        , m_outward( false )
+        : m_outward( false )
         , m_global( false )
         , m_exclusive( false )
         , m_defaultHandle( true )
@@ -31,27 +30,6 @@ namespace Mengine
     bool HotSpot::getOutward() const
     {
         return m_outward;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::isMousePickerOver() const
-    {
-        if( m_picker == nullptr )
-        {
-            LOGGER_ERROR( "'%s' not activate picker"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        bool picked = m_picker->picked;
-
-        return picked;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PickerTrapInterface * HotSpot::getPickerTrap()
-    {
-        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::setDefaultHandle( bool _handle )
@@ -84,74 +62,48 @@ namespace Mengine
         return m_exclusive;
     }
     //////////////////////////////////////////////////////////////////////////
-    PickerTrapState * HotSpot::propagatePickerTrapState() const
-    {
-        return m_picker;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void HotSpot::activatePicker_()
     {
-        if( m_picker != nullptr )
-        {
-            LOGGER_ERROR( "'%s' alredy activate picker"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
-
-        m_picker = PICKER_SERVICE()
-            ->regTrap( PickerTrapInterfacePtr( this ), m_exclusive );
-
-        PICKER_SERVICE()
-            ->updateTraps();
-
         EVENTABLE_METHOD( EVENT_ACTIVATE )
             ->onHotSpotActivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::deactivatePicker_()
     {
-        if( m_picker == nullptr )
+        if( this->isPickerPicked() == true )
         {
-            LOGGER_ERROR( "'%s' alredy deactivate picker"
-                , this->getName().c_str()
-            );
+            this->setPickerPicked( false );
 
-            return;
+            EVENTABLE_METHOD( EVENT_MOUSE_OVER_DESTROY )
+                ->onHotSpotMouseOverDestroy();
         }
-
-        PickerTrapState * picker = m_picker;
-        m_picker = nullptr;
-
-        PICKER_SERVICE()
-            ->unregTrap( picker );
-
-        PICKER_SERVICE()
-            ->updateTraps();
 
         EVENTABLE_METHOD( EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::onHandleMouseLeave()
+    Scriptable * HotSpot::getPickerScriptable()
     {
-        EVENTABLE_METHOD( EVENT_MOUSE_LEAVE )
-            ->onHotSpotMouseLeave();
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::onHandleMouseOverDestroy()
+    InputHandlerInterface * HotSpot::getPickerInputHandler()
     {
-        EVENTABLE_METHOD( EVENT_MOUSE_OVER_DESTROY )
-            ->onHotSpotMouseOverDestroy();
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::onHandleMouseEnter( float _x, float _y )
+    bool HotSpot::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_MOUSE_ENTER, m_defaultHandle )
-            ->onHotSpotMouseEnter( _x, _y );
+            ->onHotSpotMouseEnter( _event );
 
         return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::handleMouseLeave( const InputMouseLeaveEvent & _event )
+    {
+        EVENTABLE_METHOD( EVENT_MOUSE_LEAVE )
+            ->onHotSpotMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
@@ -230,19 +182,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_invalidateWorldMatrix()
-    {
-        Node::_invalidateWorldMatrix();
-
-        if( m_picker == nullptr )
-        {
-            return;
-        }
-
-        PICKER_SERVICE()
-            ->invalidateTraps();
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_activate()
     {
         if( Node::_activate() == false )
@@ -273,7 +212,7 @@ namespace Mengine
         Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow )
+    bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const
     {
         if( this->isActivate() == false )
         {
@@ -305,7 +244,6 @@ namespace Mengine
             {
                 const Polygon & polygon = _arrow->getPolygon();
 
-                //m_result = m_hotspot->testPolygon( m_camera, m_viewport, m_gameViewport, m_point, polygon );
                 bool result = this->testPolygon( _camera, _viewport, _contentResolution, _point, polygon );
 
                 return result;
@@ -313,10 +251,5 @@ namespace Mengine
         }
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Scriptable * HotSpot::propagatePickerScriptable()
-    {
-        return this;
     }
 }

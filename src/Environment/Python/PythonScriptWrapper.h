@@ -1,12 +1,11 @@
 #pragma once
 
+#include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
-#include "Kernel/ScriptWrapperInterface.h"
-
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"

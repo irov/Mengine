@@ -2,6 +2,7 @@
 
 #include "Kernel/Identity.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/Pickerable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Compilable.h"
 #include "Kernel/Updatable.h"
@@ -45,6 +46,7 @@ namespace Mengine
         , public Scriptable
         , public Animatable
         , public Eventable
+        , public Pickerable
         , public Unknowable
     {
         DECLARE_VISITABLE_BASE();
@@ -126,6 +128,10 @@ namespace Mengine
 
         NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
 
+    public:
+        void visitChildren( const VisitorPtr & _visitor );
+
+    public:
         void removeRelationRender_();
         void setRelationRender_( Node * _parent );
         void setRelationRenderFront_( Node * _parent );
@@ -133,12 +139,22 @@ namespace Mengine
         void moveChildRenderMiddle_( const NodePtr & _after, const NodePtr & _child );
         void moveChildRenderBack_( const NodePtr & _child );
 
-        typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
-        void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
-        void foreachReverseRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
+    protected:
+        typedef const Lambda<void( RenderInterface * )> LambdaRenderCloseChildren;
+        void foreachRenderCloseChildren_( const LambdaRenderCloseChildren & _lambda );
+        void foreachRenderReverseCloseChildren_( const LambdaRenderCloseChildren & _lambda );
 
     public:
-        void visitChildren( const VisitorPtr & _visitor );
+        void removeRelationPicker_();
+        void setRelationPicker_( Node * _parent );
+        void setRelationPickerFront_( Node * _parent );
+        void moveChildPickerFront_( const NodePtr & _child );
+        void moveChildPickerMiddle_( const NodePtr & _after, const NodePtr & _child );
+        void moveChildPickerBack_( const NodePtr & _child );
+
+        typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
+        void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );
+        void foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda );
 
     protected:
         void _destroy() override;

@@ -21,15 +21,17 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonHotSpotEventReceiver::onHotSpotMouseLeave()
+    bool PythonHotSpotEventReceiver::onHotSpotMouseEnter( const InputMouseEnterEvent & _event )
     {
-        m_cb.call();
+        return m_cb.call( _event.x, _event.y );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonHotSpotEventReceiver::onHotSpotMouseEnter( float _x, float _y )
+    void PythonHotSpotEventReceiver::onHotSpotMouseLeave( const InputMouseLeaveEvent & _event )
     {
-        return m_cb.call( _x, _y );
-    }
+        MENGINE_UNUSED( _event );
+
+        m_cb.call();
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool PythonHotSpotEventReceiver::onHotSpotKey( const InputKeyEvent & _event )
     {

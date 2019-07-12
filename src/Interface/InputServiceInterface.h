@@ -25,6 +25,8 @@ namespace Mengine
         InputMouseWheelEvent wheel;
         InputMouseMoveEvent move;
         InputMousePositionEvent position;
+        InputMouseEnterEvent enter;
+        InputMouseLeaveEvent leave;
     };
     //////////////////////////////////////////////////////////////////////////
     class InputMousePositionProviderInterface
@@ -159,12 +161,12 @@ namespace Mengine
             this->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.position.type = IET_MOUSE_LEAVE;
+            ev.leave.type = IET_MOUSE_LEAVE;
 
-            ev.position.touchId = _touchId;
-            ev.position.x = vx;
-            ev.position.y = vy;
-            ev.position.pressure = _pressure;
+            ev.leave.touchId = _touchId;
+            ev.leave.x = vx;
+            ev.leave.y = vy;
+            ev.leave.pressure = _pressure;
 
             this->pushEvent( ev );
         }
@@ -177,12 +179,12 @@ namespace Mengine
             this->validCursorPosition( _x, _y, &vx, &vy );
 
             InputUnionEvent ev;
-            ev.position.type = IET_MOUSE_ENTER;
+            ev.enter.type = IET_MOUSE_ENTER;
 
-            ev.position.touchId = _touchId;
-            ev.position.x = vx;
-            ev.position.y = vy;
-            ev.position.pressure = _pressure;
+            ev.enter.touchId = _touchId;
+            ev.enter.x = vx;
+            ev.enter.y = vy;
+            ev.enter.pressure = _pressure;
 
             this->pushEvent( ev );
         }

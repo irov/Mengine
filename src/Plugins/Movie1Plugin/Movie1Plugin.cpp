@@ -27,7 +27,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/PolygonHelper.h"
 
 #include "Kernel/Logger.h"

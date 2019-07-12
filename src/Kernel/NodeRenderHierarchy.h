@@ -8,8 +8,6 @@
 
 #include "Kernel/Node.h"
 
-#include "Config/Lambda.h"
-
 namespace Mengine
 {
     namespace Helper

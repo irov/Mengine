@@ -62,9 +62,8 @@ namespace Mengine
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     public:
-        void mousePosition( const InputMousePositionEvent & _event ) override;
-        void mouseEnter( const InputMousePositionEvent & _event ) override;
-        void mouseLeave( const InputMousePositionEvent & _event ) override;
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     public:
         void setFocus( bool _focus ) override;

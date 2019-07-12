@@ -176,6 +176,44 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PlayerGlobalInputHandler::handleMouseEnter( const InputMouseEnterEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleMouseEnter( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerGlobalInputHandler::handleMouseLeave( const InputMouseLeaveEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleMouseLeave( _event );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
@@ -313,6 +351,22 @@ namespace Mengine
                 //Empty
 
                 return false;
+            }
+
+            bool handleMouseEnter( const InputMouseEnterEvent & _event ) override
+            {
+                MENGINE_UNUSED( _event );
+
+                //Empty
+
+                return false;
+            }
+
+            void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
+            {
+                MENGINE_UNUSED( _event );
+
+                //Empty
             }
 
         protected:

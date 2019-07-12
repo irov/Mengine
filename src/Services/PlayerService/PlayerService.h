@@ -92,11 +92,11 @@ namespace Mengine
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     public:
-        void onFocus( bool _focus ) override;
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
-        void onAppMouseLeave( const InputMousePositionEvent & _event ) override;
-        void onAppMouseEnter( const InputMousePositionEvent & _event ) override;
-        void onAppMousePosition( const InputMousePositionEvent & _event ) override;
+    public:
+        void onFocus( bool _focus ) override;
 
         void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
         void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;

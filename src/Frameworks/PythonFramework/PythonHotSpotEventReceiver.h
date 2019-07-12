@@ -20,8 +20,8 @@ namespace Mengine
     public:
         void onHotSpotActivate() override;
         void onHotSpotDeactivate() override;
-        void onHotSpotMouseLeave() override;
-        bool onHotSpotMouseEnter( float _x, float _y ) override;
+        bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override;
         bool onHotSpotKey( const InputKeyEvent & _event ) override;
         bool onHotSpotText( const InputTextEvent & _event ) override;
         bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override;

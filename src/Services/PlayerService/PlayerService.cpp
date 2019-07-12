@@ -30,7 +30,7 @@
 
 #include "Kernel/Scene.h"
 
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -598,26 +598,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::onAppMouseLeave( const InputMousePositionEvent & _event )
-    {
-        if( m_arrow != nullptr )
-        {
-            m_arrow->onAppMouseLeave();
-        }
-
-        const ScenePtr & scene = SCENE_SERVICE()
-            ->getCurrentScene();
-
-        if( scene != nullptr && scene->isActivate() == true )
-        {
-            scene->onAppMouseLeave();
-        }
-
-        PICKER_SERVICE()
-            ->handleMouseLeave( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::onAppMouseEnter( const InputMousePositionEvent & _event )
+    bool PlayerService::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
         if( m_arrow != nullptr )
         {
@@ -634,11 +615,27 @@ namespace Mengine
 
         PICKER_SERVICE()
             ->handleMouseEnter( _event );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::onAppMousePosition( const InputMousePositionEvent & _event )
+    void PlayerService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
-        MENGINE_UNUSED( _event );
+        if( m_arrow != nullptr )
+        {
+            m_arrow->onAppMouseLeave();
+        }
+
+        const ScenePtr & scene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        if( scene != nullptr && scene->isActivate() == true )
+        {
+            scene->onAppMouseLeave();
+        }
+
+        PICKER_SERVICE()
+            ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFullscreen( const Resolution & _resolution, bool _fullscreen )

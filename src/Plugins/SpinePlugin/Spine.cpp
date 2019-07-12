@@ -1,6 +1,7 @@
 #include "Spine.h"
 
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Document.h"
@@ -85,66 +86,77 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
     {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' invalid setup state '%s' name '%s' not compile!"
-                , this->getName().c_str()
-                , _state.c_str()
-                , _name.c_str()
-                );
-
-            return false;
-        }
-
         VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )
         {
             return _desc.state == _state;
         } );
 
-        if( it_found != m_animations.end() )
+        if( this->isCompile() == true )
         {
-            const AnimationDesc & desc = *it_found;
+            if( it_found != m_animations.end() )
+            {
+                const AnimationDesc & desc = *it_found;
 
-            spAnimationState * animationState = desc.animationState;
+                spAnimationState * animationState = desc.animationState;
 
-            spAnimationState_clearTracks( animationState );
+                spAnimationState_clearTracks( animationState );
+                spAnimationState_dispose( animationState );
 
-            spAnimationState_dispose( animationState );
+                m_animations.erase( it_found );
+            }
 
-            m_animations.erase( it_found );
+            spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            spAnimationState * animationState = spAnimationState_create( m_animationStateData );
+
+            animationState->rendererObject = this;
+            animationState->listener = &Detail::s_spAnimationStateListener;
+
+            spAnimationState_setAnimation( animationState, 0, animation, _loop ? 1 : 0 );
+
+            AnimationDesc desc;
+
+            desc.state = _state;
+            desc.name = _name;
+            desc.animationState = animationState;
+            desc.timing = _timing;
+            desc.duration = animation->duration * 1000.f;
+            desc.speedFactor = _speedFactor;
+            desc.freeze = false;
+            desc.complete = false;
+            desc.loop = _loop;
+
+            float spTiming = desc.timing * 0.001f;
+            spAnimationState_update( animationState, spTiming );
+
+            m_animations.emplace_back( desc );
         }
+        else
+        {
+            if( it_found != m_animations.end() )
+            {
+                m_animations.erase( it_found );
+            }
 
-        spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
+            AnimationDesc desc;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
-            , this->getName().c_str()
-            , _name.c_str()
-        );
+            desc.state = _state;
+            desc.name = _name;
+            desc.animationState = nullptr;
+            desc.timing = _timing;
+            desc.duration = -1.f;
+            desc.speedFactor = _speedFactor;
+            desc.freeze = false;
+            desc.complete = false;
+            desc.loop = _loop;
 
-        spAnimationState * animationState = spAnimationState_create( m_animationStateData );
-
-        animationState->rendererObject = this;
-        animationState->listener = &Detail::s_spAnimationStateListener;
-
-        spAnimationState_setAnimation( animationState, 0, animation, _loop ? 1 : 0 );
-
-        AnimationDesc desc;
-
-        desc.state = _state;
-        desc.name = _name;
-        desc.animationState = animationState;
-        desc.timing = _timing;
-        desc.duration = animation->duration * 1000.f;
-        desc.speedFactor = _speedFactor;
-        desc.freeze = false;
-        desc.complete = false;
-        desc.loop = _loop;
-
-        float spTiming = desc.timing * 0.001f;
-
-        spAnimationState_update( animationState, spTiming );
-
-        m_animations.emplace_back( desc );
+            m_animations.emplace_back( desc );
+        }
 
         return true;
     }
@@ -165,15 +177,18 @@ namespace Mengine
             return false;
         }
 
-        const AnimationDesc & desc = *it_found;
+        if( this->isCompile() == true )
+        {
+            const AnimationDesc & desc = *it_found;
 
-        spAnimationState * animationState = desc.animationState;
+            spAnimationState * animationState = desc.animationState;
 
-        spAnimationState_clearTracks( animationState );
-        spAnimationState_dispose( animationState );
+            spAnimationState_clearTracks( animationState );
+            spAnimationState_dispose( animationState );
+        }
 
         m_animations.erase( it_found );
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -367,7 +382,7 @@ namespace Mengine
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
                 , m_name.c_str()
                 , m_resourceSpineSkeleton->getName().c_str()
-                );
+            );
 
             return false;
         }
@@ -385,6 +400,30 @@ namespace Mengine
         m_skeleton = skeleton;
         m_animationStateData = animationStateData;
 
+        for( AnimationDesc & desc : m_animations )
+        {
+            spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( desc.name );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( animation, false, "'%s' invalid found animation '%s'"
+                , this->getName().c_str()
+                , desc.name.c_str()
+            );
+
+            spAnimationState * animationState = spAnimationState_create( m_animationStateData );
+
+            animationState->rendererObject = this;
+            animationState->listener = &Detail::s_spAnimationStateListener;
+
+            spAnimationState_setAnimation( animationState, 0, animation, desc.loop ? 1 : 0 );
+
+            desc.animationState = animationState;
+            desc.duration = animation->duration * 1000.f;
+
+            float spTiming = desc.timing * 0.001f;
+
+            spAnimationState_update( animationState, spTiming );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -398,6 +437,9 @@ namespace Mengine
 
             spAnimationState_clearTracks( animationState );
             spAnimationState_dispose( animationState );
+
+            desc.animationState = nullptr;
+            desc.duration = -1.f;
         }
 
         m_animations.clear();
@@ -419,7 +461,7 @@ namespace Mengine
         m_resourceSpineSkeleton->release();
 
         m_events.clear();
-        m_eventsAux.clear();        
+        m_eventsAux.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * _slot, const ResourceImage * _resourceImage ) const
@@ -767,6 +809,29 @@ namespace Mengine
         stdex::memorycopy_pod( _indices, 0, _triangles, _count );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Spine::_afterActivate()
+    {
+        Node::_afterActivate();
+
+        bool autoPlay = this->isAutoPlay();
+
+        if( autoPlay == true )
+        {
+            float time = TIMELINE_SERVICE()
+                ->getTime();
+
+            if( this->play( time ) == 0 )
+            {
+                LOGGER_ERROR( "'%s' resource '%s' auto play return 0"
+                    , this->getName().c_str()
+                    , this->m_resourceSpineSkeleton->getName().c_str()
+                );
+
+                return;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Spine::_play( uint32_t _enumerator, float _time )
     {
         MENGINE_UNUSED( _time );
@@ -775,7 +840,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "'%s' play not activate"
                 , this->getName().c_str()
-                );
+            );
 
             return false;
         }

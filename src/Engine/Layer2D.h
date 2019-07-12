@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Kernel/Layer.h"
-#include "Kernel/NoneRender.h"
+#include "Kernel/DummyRender.h"
+#include "Kernel/DummyPicker.h"
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Viewport.h"
@@ -15,10 +16,12 @@ namespace Mengine
 
     class Layer2D
         : public Layer
-        , public NoneRender
+        , public DummyRender
+        , public DummyPicker
     {
         DECLARE_VISITABLE( Layer );
         DECLARE_RENDERABLE();
+        DECLARE_PICKER();
 
     public:
         Layer2D();
@@ -62,6 +65,10 @@ namespace Mengine
     protected:
         void _invalidateColor() override;
         void _invalidateWorldMatrix() override;
+
+    protected:
+        const RenderViewportInterfacePtr & getPickerViewport() const override;
+        const RenderCameraInterfacePtr & getPickerCamera() const override;
 
     protected:
         mt::vec2f m_size;

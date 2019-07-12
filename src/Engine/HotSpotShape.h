@@ -25,6 +25,6 @@ namespace Mengine
         ResourceShapePtr m_resourceShape;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<HotSpotShape> HotSpotShapePtr;
+    typedef IntrusivePtr<HotSpotShape, Node> HotSpotShapePtr;
     //////////////////////////////////////////////////////////////////////////
 }

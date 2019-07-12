@@ -101,7 +101,7 @@ namespace Mengine
                 , desc.resourceImageName.c_str()
             );
 
-            if( resourceImage->incrementReference() == false )
+            if( resourceImage->compile() == false )
             {
                 return false;
             }
@@ -109,8 +109,8 @@ namespace Mengine
             desc.resourceImage = resourceImage;
         }
 
-        const FilePath & filePath = this->getFilePath();
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         MemoryInterfacePtr atlas_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -136,7 +136,7 @@ namespace Mengine
         {
             const ResourceImagePtr & resourceImage = desc.resourceImage;
 
-            resourceImage->decrementReference();
+            resourceImage->release();
             desc.resourceImage = nullptr;
         }
 

@@ -17,8 +17,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceTexturepacker::ResourceTexturepacker()
-        : m_atlasWidth(0)
-        , m_atlasHeight(0)
+        : m_atlasWidth( 0 )
+        , m_atlasHeight( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -64,6 +64,11 @@ namespace Mengine
     const ConstString & ResourceTexturepacker::getResourceImageName() const
     {
         return m_resourceImageName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceTexturepacker::getAtlasImage() const
+    {
+        return m_resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceTexturepacker::getFrame( const ConstString & _name ) const

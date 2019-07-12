@@ -24,8 +24,6 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlasTexturepacker *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceSpineAtlasTexturepacker::setFilePath );
-        metadata->getm_File_Converter( resource, &ResourceSpineAtlasTexturepacker::setConverterType );
         metadata->getm_Texturepacker_Name( resource, &ResourceSpineAtlasTexturepacker::setResourceTexturepackerName );
 
         return true;

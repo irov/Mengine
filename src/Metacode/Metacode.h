@@ -6275,52 +6275,10 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_File_Converter = (1 <<2),
-                    EMETA_Texturepacker_Name = (1 <<3),
+                    EMETA_Texturepacker_Name = (1 <<2),
                 };
                 
             public:
-                bool has_File_Converter() const
-                {
-                    return (m_flagNoRequiredAttribute & EMETA_File_Converter) != 0;
-                }
-                
-                template<class C, class M>
-                bool getm_File_Converter( C _self, M _method ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    (_self->*_method)( this->m_File_Converter );
-                
-                    return true;
-                }
-                
-                bool get_File_Converter( Mengine::ConstString * _value ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_File_Converter) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    *_value = this->m_File_Converter;
-                
-                    return true;
-                }
-                
-                template<class C, class M>
-                void getm_File_Path( C _self, M _method ) const
-                {
-                    (_self->*_method)( this->m_File_Path );
-                }
-                
-                const Mengine::FilePath & get_File_Path() const
-                {
-                    return this->m_File_Path;
-                }
-                
                 bool has_Texturepacker_Name() const
                 {
                     return (m_flagNoRequiredAttribute & EMETA_Texturepacker_Name) != 0;
@@ -6355,15 +6313,12 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
             protected:
-                Mengine::ConstString m_File_Converter;
-                Mengine::FilePath m_File_Path;
                 Mengine::ConstString m_Texturepacker_Name;
             };
             

@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( RenderInterface * )> LambdaRender;
-        virtual void foreachChildren( const LambdaRender & _lambda ) = 0;
+        virtual void foreachRenderChildren( const LambdaRender & _lambda ) = 0;
 
     public:
         virtual void setRenderEnable( bool _enable ) = 0;

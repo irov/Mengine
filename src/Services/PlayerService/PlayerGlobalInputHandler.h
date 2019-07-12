@@ -47,6 +47,10 @@ namespace Mengine
         bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
+    public:
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
+
     protected:
         struct GlobalHandlerDesc
         {

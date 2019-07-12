@@ -52,8 +52,8 @@ namespace Mengine
         virtual bool mouseMove( const InputMouseMoveEvent& _event ) = 0;
         virtual bool mouseWheel( const InputMouseWheelEvent & _event ) = 0;
         virtual void mousePosition( const InputMousePositionEvent & _event ) = 0;
-        virtual void mouseEnter( const InputMousePositionEvent & _event ) = 0;
-        virtual void mouseLeave( const InputMousePositionEvent & _event ) = 0;
+        virtual void mouseEnter( const InputMouseEnterEvent & _event ) = 0;
+        virtual void mouseLeave( const InputMouseLeaveEvent & _event ) = 0;
 
     public:
         virtual void paint() = 0;

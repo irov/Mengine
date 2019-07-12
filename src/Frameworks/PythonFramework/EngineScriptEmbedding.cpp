@@ -2548,9 +2548,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
         {
-            VectorPickerTraps traps;
+            VectorPickers pickers;
             PICKER_SERVICE()
-                ->pickTrap( _point, traps );
+                ->pickTrap( _point, pickers );
 
             pybind::list pyret( _kernel );
 
@@ -2562,9 +2562,14 @@ namespace Mengine
                 return pyret;
             }
 
-            for( const PickerTrapInterfacePtr & trap : traps )
+            for( PickerInterface * picker : pickers )
             {
-                Scriptable * scriptable = trap->propagatePickerScriptable();
+                Scriptable * scriptable = picker->getPickerScriptable();
+
+                if( scriptable == nullptr )
+                {
+                    continue;
+                }
 
                 pyret.append( scriptable );
             }
@@ -2688,6 +2693,8 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _event );
 
+                //Empty
+
                 return false;
             }
 
@@ -2696,12 +2703,16 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _event );
 
+                //Empty
+
                 return false;
             }
 
             bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
             {
                 MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
@@ -2710,12 +2721,16 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _event );
 
+                //Empty
+
                 return false;
             }
 
             bool handleMouseMove( const InputMouseMoveEvent & _event ) override
             {
                 MENGINE_UNUSED( _event );
+
+                //Empty
 
                 return false;
             }
@@ -2724,7 +2739,25 @@ namespace Mengine
             {
                 MENGINE_UNUSED( _event );
 
+                //Empty
+
                 return false;
+            }
+
+            bool handleMouseEnter( const InputMouseEnterEvent & _event ) override
+            {
+                MENGINE_UNUSED( _event );
+
+                //Empty
+
+                return false;
+            }
+
+            void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
+            {
+                MENGINE_UNUSED( _event );
+
+                //Empty
             }
 
         protected:

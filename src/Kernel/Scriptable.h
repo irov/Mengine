@@ -1,15 +1,9 @@
 #pragma once
 
+#include "Interface/ScriptWrapperInterface.h"
+
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
-
-#include "Kernel/ScriptWrapperInterface.h"
-
-extern "C"
-{
-    struct _object;
-    typedef _object PyObject;
-}
 
 namespace pybind
 {

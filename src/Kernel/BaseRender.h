@@ -31,7 +31,7 @@ namespace Mengine
         void moveRelationRenderBack( RenderInterface * _childRender ) override;
 
     public:
-        void foreachChildren( const LambdaRender & _lambda ) override;
+        void foreachRenderChildren( const LambdaRender & _lambda ) override;
 
     public:
         void setRenderEnable( bool _enable ) override;
@@ -133,7 +133,7 @@ namespace Mengine
         BaseRender * m_relationRender;
 
         typedef Vector<BaseRender *> VectorBaseRender;
-        VectorBaseRender m_relationRenderChildren;
+        VectorBaseRender m_renderChildren;
 
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;

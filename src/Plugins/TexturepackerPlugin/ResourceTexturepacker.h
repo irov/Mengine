@@ -15,7 +15,7 @@ namespace Mengine
         : public Resource
         , public UnknownResourceTexturepackerInterface
     {
-        DECLARE_VISITABLE(Resource);
+        DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
 
     public:
@@ -30,12 +30,12 @@ namespace Mengine
         float getAtlasHeightInv() const override;
 
     public:
-        void setResourceJSONName( const ConstString& _resourceJSONName );
-        const ConstString& getResourceJSONName() const;
+        void setResourceJSONName( const ConstString & _resourceJSONName );
+        const ConstString & getResourceJSONName() const;
 
     public:
-        void setResourceImageName(const ConstString& _resourceImageName);
-        const ConstString& getResourceImageName() const;
+        void setResourceImageName( const ConstString & _resourceImageName );
+        const ConstString & getResourceImageName() const;
 
     public:
         const ResourceImagePtr & getAtlasImage() const override;

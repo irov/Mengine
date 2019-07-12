@@ -335,4 +335,18 @@ namespace Mengine
 
         m_invalidateVerticesImageMaskWM = true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderViewportInterfacePtr & Layer2D::getPickerViewport() const
+    {
+        const RenderViewportInterfacePtr & viewport = this->getRenderViewport();
+
+        return viewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderCameraInterfacePtr & Layer2D::getPickerCamera() const
+    {
+        const RenderCameraInterfacePtr & camera = this->getRenderCamera();
+
+        return camera;
+    }
 }

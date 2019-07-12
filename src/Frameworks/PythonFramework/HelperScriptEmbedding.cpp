@@ -22,7 +22,7 @@
 #include "Config/Stringstream.h"
 
 #include "Kernel/Node.h"
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TagsHelper.h"

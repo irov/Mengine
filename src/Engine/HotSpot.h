@@ -8,16 +8,19 @@
 
 #include "Kernel/Polygon.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/BasePicker.h"
 
 namespace Mengine
 {
     class HotSpot
         : public Node
         , public BaseEventation
-        , public PickerTrapInterface
+        , public BasePicker
+        , public InputHandlerInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE( HotSpotEventReceiverInterface );
+        DECLARE_PICKER();
 
     public:
         HotSpot();
@@ -34,12 +37,6 @@ namespace Mengine
     public:
         void setExclusive( bool _value );
         bool getExclusive() const;
-
-    public:
-        bool isMousePickerOver() const;
-
-    public:
-        PickerTrapInterface * getPickerTrap() override;
 
     public:
         void setDefaultHandle( bool _handle );
@@ -59,23 +56,11 @@ namespace Mengine
         void _freeze( bool _value ) override;
 
     protected:
-        void _invalidateWorldMatrix() override;
+        bool pick( const mt::vec2f& _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
 
-    protected:
-        void activatePicker_();
-        void deactivatePicker_();
-
-    protected:
-        bool pick( const mt::vec2f& _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) override;
-
-    protected:
-        PickerTrapState * propagatePickerTrapState() const override;
-        Scriptable * propagatePickerScriptable() override;
-
-    protected:
-        bool onHandleMouseEnter( float _x, float _y ) override;
-        void onHandleMouseLeave() override;
-        void onHandleMouseOverDestroy() override;
+    public:
+        Scriptable * getPickerScriptable() override;
+        InputHandlerInterface * getPickerInputHandler() override;
 
     public:
         bool handleKeyEvent( const InputKeyEvent & _event ) override;
@@ -89,8 +74,14 @@ namespace Mengine
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     protected:
-        PickerTrapState * m_picker;
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
+    protected:
+        void activatePicker_();
+        void deactivatePicker_();
+
+    protected:
         bool m_outward;
         bool m_global;
         bool m_exclusive;
@@ -98,6 +89,6 @@ namespace Mengine
         bool m_defaultHandle;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<HotSpot> HotSpotPtr;
+    typedef IntrusivePtr<HotSpot, Node> HotSpotPtr;
     //////////////////////////////////////////////////////////////////////////
 }

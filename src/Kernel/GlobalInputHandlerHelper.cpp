@@ -86,6 +86,20 @@ namespace Mengine
                     return false;
                 }
 
+                bool handleMouseEnter( const InputMouseEnterEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    return false;
+                }
+
+                void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
+                {
+                    MENGINE_UNUSED( _event );
+
+                    //Empty
+                }
+
             protected:
                 KeyCode m_code;
                 bool m_isDown;

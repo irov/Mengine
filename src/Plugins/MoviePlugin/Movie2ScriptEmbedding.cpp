@@ -3,6 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -10,7 +11,6 @@
 #include "Movie2.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "pybind/pybind.hpp"

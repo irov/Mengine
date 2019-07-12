@@ -21,10 +21,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceTexturepacker::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceTexturepacker* resource = stdex::intrusive_get<ResourceTexturepacker*>( _loadable );
+        ResourceTexturepacker * resource = stdex::intrusive_get<ResourceTexturepacker *>( _loadable );
 
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker* metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker*>(_meta);
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker * metadata
+            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceTexturepacker *>(_meta);
 
         metadata->getm_JSON_Name( resource, &ResourceTexturepacker::setResourceJSONName );
         metadata->getm_Image_Name( resource, &ResourceTexturepacker::setResourceImageName );

@@ -32,7 +32,6 @@ SERVICE_FACTORY( GameService, Mengine::GameService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-
     //////////////////////////////////////////////////////////////////////////
     GameService::GameService()
         : m_timingFactor( 1.f )
@@ -217,28 +216,24 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::mouseLeave( const InputMousePositionEvent & _event )
-    {
-        EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_LEAVE )
-            ->onGameAppMouseLeave();
-
-        PLAYER_SERVICE()
-            ->onAppMouseLeave( _event );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameService::mouseEnter( const InputMousePositionEvent & _event )
+    bool GameService::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
         EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_ENTER )
             ->onGameAppMouseEnter( _event.x, _event.y );
 
         PLAYER_SERVICE()
-            ->onAppMouseEnter( _event );
+            ->handleMouseEnter( _event );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::mousePosition( const InputMousePositionEvent & _event )
+    void GameService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
+        EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_LEAVE )
+            ->onGameAppMouseLeave();
+
         PLAYER_SERVICE()
-            ->onAppMousePosition( _event );
+            ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::update()

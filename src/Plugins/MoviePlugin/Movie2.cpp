@@ -19,7 +19,7 @@
 #include "Kernel/Layer.h"
 
 #include "Kernel/NodeHelper.h"
-#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"

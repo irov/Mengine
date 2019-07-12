@@ -51,6 +51,7 @@ src
     GameServiceInterface.h
     PlayerServiceInterface.h
     SchedulerInterface.h
+    PickerInterface.h
     PickerTrapInterface.h
     PickerServiceInterface.h
     PrototypeGeneratorInterface.h
@@ -100,6 +101,7 @@ src
     FrameworkInterface.h
     PluginServiceInterface.h
     DynamicLibraryInterface.h
+    ScriptWrapperInterface.h
     
 	dummy.cpp
 )

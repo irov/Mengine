@@ -4,6 +4,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -19,7 +20,6 @@
 #include "NodeOzzAnimation.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "pybind/pybind.hpp"

@@ -1,6 +1,4 @@
-#include "NodeRenderHelper.h"
-
-#include "Kernel/Node.h"
+#include "NodeRenderHierarchy.h"
 
 #define MENGINE_NEW_RENDER
 

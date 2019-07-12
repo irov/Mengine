@@ -3,8 +3,7 @@
 #include "HotSpot.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class HotSpotPolygon
         : public HotSpot
     {
@@ -37,6 +36,6 @@ namespace Mengine
         mutable bool m_invalidatePolygonWM;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<HotSpotPolygon> HotSpotPolygonPtr;
+    typedef IntrusivePtr<HotSpotPolygon, HotSpot> HotSpotPolygonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

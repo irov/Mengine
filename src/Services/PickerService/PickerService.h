@@ -6,22 +6,21 @@
 #include "Kernel/Viewport.h"
 
 #include "Config/Vector.h"
-#include "Config/List.h"
 
 namespace Mengine
 {
-    struct PickerTrapStateDesc
+    struct PickerStateDesc
     {
-        PickerTrapState * state;
+        PickerInterface * picker;
 
         RenderViewportInterfacePtr viewport;
         RenderCameraInterfacePtr camera;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<PickerTrapStateDesc> VectorPickerTrapStates;
+    typedef Vector<PickerStateDesc> VectorPickerStates;
     //////////////////////////////////////////////////////////////////////////
     class PickerService
-        : public ServiceBase<PickerServiceInterface>
+        : public ServiceBase<PickerServiceInterface>        
     {
     public:
         PickerService();
@@ -49,12 +48,9 @@ namespace Mengine
         void clear() override;
 
     public:
-        bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) override;
+        bool pickTrap( const mt::vec2f & _point, VectorPickers & _pickers ) override;
 
     public:
-        PickerTrapState * regTrap( const PickerTrapInterfacePtr & _trap, bool _exclusive ) override;
-        void unregTrap( PickerTrapState * _id ) override;
-
         void updateTraps() override;
         void invalidateTraps() override;
 
@@ -70,15 +66,12 @@ namespace Mengine
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     public:
-        void handleMouseEnter( const InputMousePositionEvent & _event ) override;
-        void handleMouseLeave( const InputMousePositionEvent & _event ) override;
-
-    public:
-        uint32_t getPickerTrapCount() const override;
+        bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
+        void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
     private:
-        bool proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states );
-        void updateDead_();
+        void fillStates_( VectorPickerStates & _states ) const;
+        bool proccesStates_( float _x, float _y, VectorPickerStates & _states );
 
     protected:
         ArrowPtr m_arrow;
@@ -88,13 +81,7 @@ namespace Mengine
         RenderCameraInterfacePtr m_camera;
         RenderScissorInterfacePtr m_scissor;
 
-        typedef List<PickerTrapState> ListPickerTrapState;
-        ListPickerTrapState m_pickerTrapState;
-
-        VectorPickerTrapStates m_states;
-
-        uint32_t m_pickerTrapCount;
-        uint32_t m_pickerTrapExclusiveCount;
+        VectorPickerStates m_states;
 
         bool m_block;
         bool m_handleValue;

@@ -25,10 +25,6 @@ namespace Mengine
     public:
         virtual void onFocus( bool _focus ) = 0;
 
-        virtual void onAppMouseLeave( const InputMousePositionEvent & _event ) = 0;
-        virtual void onAppMouseEnter( const InputMousePositionEvent & _event ) = 0;
-        virtual void onAppMousePosition( const InputMousePositionEvent & _event ) = 0;
-
         virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
         virtual void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) = 0;

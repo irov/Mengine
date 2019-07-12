@@ -82,11 +82,11 @@ namespace Mengine
                 }break;
             case IET_MOUSE_ENTER:
                 {
-                    this->mouseEnterEvent_( ev.position );
+                    this->mouseEnterEvent_( ev.enter );
                 }break;
             case IET_MOUSE_LEAVE:
                 {
-                    this->mouseLeaveEvent_( ev.position );
+                    this->mouseLeaveEvent_( ev.leave );
                 }
             }
         }
@@ -312,7 +312,10 @@ namespace Mengine
     void InputService::removeMousePositionProvider( uint32_t _id )
     {
         VectorMousePositionProviders::iterator it_found =
-            std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc ) { return _desc.id == _id; } );
+            std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
 
         if( it_found == m_mousePositionProviders.end() )
         {
@@ -338,90 +341,90 @@ namespace Mengine
         m_eventsAdd.emplace_back( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::keyEvent_( const InputKeyEvent & _params )
+    void InputService::keyEvent_( const InputKeyEvent & _event )
     {
-        bool isRepeat = (m_keyBuffer[_params.code] == true && _params.isDown == true);
+        bool isRepeat = (m_keyBuffer[_event.code] == true && _event.isDown == true);
 
-        m_keyBuffer[_params.code] = _params.isDown;
+        m_keyBuffer[_event.code] = _event.isDown;
 
         InputKeyEvent event;
-        event.type = _params.type;
-        event.x = _params.x;
-        event.y = _params.y;
-        event.code = _params.code;
-        event.isDown = _params.isDown;
+        event.type = _event.type;
+        event.x = _event.x;
+        event.y = _event.y;
+        event.code = _event.code;
+        event.isDown = _event.isDown;
         event.isRepeat = isRepeat;
 
         APPLICATION_SERVICE()
             ->keyEvent( event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::textEvent_( const InputTextEvent & _params )
+    void InputService::textEvent_( const InputTextEvent & _event )
     {
         APPLICATION_SERVICE()
-            ->textEvent( _params );
+            ->textEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _params )
+    void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
     {
-        m_mouseBuffer[_params.button] = _params.isDown;
-        m_mouseBufferSpecial[_params.button] = this->isSpecialDown();
+        m_mouseBuffer[_event.button] = _event.isDown;
+        m_mouseBufferSpecial[_event.button] = this->isSpecialDown();
 
-        this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 
         APPLICATION_SERVICE()
-            ->mouseButtonEvent( _params );
+            ->mouseButtonEvent( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _params )
+    void InputService::mouseMoveEvent_( const InputMouseMoveEvent & _event )
     {
         if( PLATFORM_SERVICE()
             ->hasTouchpad() == true )
         {
             if( this->isAnyMouseButtonDown() == true )
             {
-                this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+                this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 
                 APPLICATION_SERVICE()
-                    ->mouseMove( _params );
+                    ->mouseMove( _event );
             }
         }
         else
         {
-            this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+            this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 
             APPLICATION_SERVICE()
-                ->mouseMove( _params );
+                ->mouseMove( _event );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseWheelEvent_( const InputMouseWheelEvent& _params )
+    void InputService::mouseWheelEvent_( const InputMouseWheelEvent & _event )
     {
         APPLICATION_SERVICE()
-            ->mouseWheel( _params );
+            ->mouseWheel( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mousePositionEvent_( const InputMousePositionEvent& _params )
+    void InputService::mousePositionEvent_( const InputMousePositionEvent & _event )
     {
-        this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 
         APPLICATION_SERVICE()
-            ->mousePosition( _params );
+            ->mousePosition( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseEnterEvent_( const InputMousePositionEvent& _params )
+    void InputService::mouseEnterEvent_( const InputMouseEnterEvent & _event )
     {
-        this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 
         APPLICATION_SERVICE()
-            ->mouseEnter( _params );
+            ->mouseEnter( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::mouseLeaveEvent_( const InputMousePositionEvent& _params )
+    void InputService::mouseLeaveEvent_( const InputMouseLeaveEvent & _event )
     {
-        this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 
         APPLICATION_SERVICE()
-            ->mouseLeave( _params );
+            ->mouseLeave( _event );
     }
 }

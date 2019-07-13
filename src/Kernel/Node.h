@@ -27,7 +27,6 @@ namespace Mengine
         ENCI_BACK
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveSlugListSize<Node> IntrusiveSlugListNodeChild;
@@ -210,9 +209,6 @@ namespace Mengine
     protected:
         uint32_t getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
-
-    public:
-        virtual PickerTrapInterface * getPickerTrap();
 
     protected:
         bool m_active;

@@ -2305,7 +2305,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcess( const Char * _process, const Char * _command, uint32_t * _exitCode )
     {
-        if( _command == nullptr && _command[0] != '\0' && _command[0] != ' ' )
+        if( _command == nullptr || (_command[0] != '\0' && _command[0] != ' ') )
         {
             LOGGER_ERROR( "process '%s' invalid command line '%s'"
                 , _process

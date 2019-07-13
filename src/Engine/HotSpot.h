@@ -2,8 +2,6 @@
 
 #include "Kernel/Node.h"
 
-#include "Interface/PickerTrapInterface.h"
-
 #include "HotSpotEventReceiverInterface.h"
 
 #include "Kernel/Polygon.h"
@@ -41,6 +39,9 @@ namespace Mengine
     public:
         void setDefaultHandle( bool _handle );
         bool getDefaultHandle() const;
+
+    public:
+        bool isMousePickerOver() const;
 
     public:
         virtual bool testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const = 0;

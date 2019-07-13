@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/PickerTrapInterface.h"
 
 #include "Kernel/Scene.h"
 
@@ -12,7 +11,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<PickerInterface *> VectorPickers;
+    typedef Vector<PickerInterfacePtr> VectorPickers;
     //////////////////////////////////////////////////////////////////////////
     class PickerServiceInterface
         : public ServiceInterface

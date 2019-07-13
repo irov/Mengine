@@ -9,10 +9,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BasePicker::BasePicker()
         : m_relationPicker( nullptr )
+        , m_pickerEnable( false )
         , m_pickerPicked( false )
         , m_pickerPressed( false )
         , m_pickerHandle( false )
-        , m_pickerDead( false )
         , m_pickerExclusive( false )
     {
     }
@@ -113,6 +113,29 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BasePicker::foreachPickerChildrenEnabled( const LambdaPicker & _lambda )
+    {
+        if( m_pickerEnable == false )
+        {
+            return;
+        }
+
+        for( BasePicker * child : m_pickerChildren )
+        {
+            if( child->m_pickerEnable == false )
+            {
+                continue;
+            }
+
+            _lambda( child );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BasePicker::setPickerEnable( bool _enable )
+    {
+        m_pickerEnable = _enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerPicked( bool _picked )
     {
         m_pickerPicked = _picked;
@@ -126,11 +149,6 @@ namespace Mengine
     void BasePicker::setPickerHandle( bool _handle )
     {
         m_pickerHandle = _handle;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BasePicker::setPickerDead( bool _dead )
-    {
-        m_pickerDead = _dead;
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerExclusive( bool _exclusive )

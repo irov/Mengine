@@ -62,8 +62,27 @@ namespace Mengine
         return m_exclusive;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool HotSpot::isMousePickerOver() const
+    {
+        if( this->isPickerEnable() == false )
+        {
+            return false;
+        }
+
+        bool picked = this->isPickerPicked();
+
+        return picked;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void HotSpot::activatePicker_()
     {
+        this->setPickerPicked( false );
+        this->setPickerPressed( false );
+        this->setPickerHandle( false );
+
+        PICKER_SERVICE()
+            ->updateTraps();
+
         EVENTABLE_METHOD( EVENT_ACTIVATE )
             ->onHotSpotActivate();
     }
@@ -77,6 +96,9 @@ namespace Mengine
             EVENTABLE_METHOD( EVENT_MOUSE_OVER_DESTROY )
                 ->onHotSpotMouseOverDestroy();
         }
+
+        PICKER_SERVICE()
+            ->updateTraps();
 
         EVENTABLE_METHOD( EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
@@ -214,11 +236,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const
     {
-        if( this->isActivate() == false )
-        {
-            return false;
-        }
-
         EArrowType arrowType = _arrow->getArrowType();
 
         switch( arrowType )

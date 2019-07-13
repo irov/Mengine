@@ -308,7 +308,7 @@ namespace Mengine
 
                         line.advanceCharOffset( cd, charScale * m_autoScaleFactor, offset2 );
 
-                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
+                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.textureMask, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
 
                         if( chunk.material == material )
                         {

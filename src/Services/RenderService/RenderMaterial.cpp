@@ -20,7 +20,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderMaterial::initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage )
+    void RenderMaterial::initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const mt::uv4f * _uvs, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage )
     {
         m_name = _name;
 
@@ -33,6 +33,7 @@ namespace Mengine
 
         for( uint32_t i = 0; i != m_textureCount; ++i )
         {
+            m_uvs[i] = _uvs[i];
             m_textures[i] = _textures[i];
         }
     }

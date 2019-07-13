@@ -95,6 +95,7 @@ namespace Mengine
     protected:
         ResourceVideoPtr m_resourceVideo;
 
+        mt::uv4f m_textureMasks[1];
         RenderTextureInterfacePtr m_textures[1];
 
         VideoDecoderInterfacePtr m_videoDecoder;

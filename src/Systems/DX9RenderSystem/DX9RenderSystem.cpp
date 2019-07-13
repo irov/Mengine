@@ -32,6 +32,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include "math/uv4.h"
+
 #include <algorithm>
 #include <cmath>
 #include <stdio.h>
@@ -65,10 +67,15 @@ namespace Mengine
             m_textureEnable[i] = false;
         }
 
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
+        {
+            mt::uv4_from_mask( m_textureMasks[i], mt::vec4f( 0.f, 0.f, 1.f, 1.f ) );
+        }
+
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_totalWVPInvMatrix );
+        mt::ident_m4( m_totalWVPInvMatrix );        
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::~DX9RenderSystem()
@@ -604,6 +611,14 @@ namespace Mengine
         MENGINE_UNUSED( _rect );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::setTextureMask( uint32_t _index, const mt::uv4f & _mask )
+    {
+        MENGINE_UNUSED( _index );
+        MENGINE_UNUSED( _mask );
+
+        //m_textureMasks[_index] = _mask;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
@@ -1677,6 +1692,7 @@ namespace Mengine
         DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
 
         dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
+        dx9_program->bindTextureMask( m_pD3DDevice, m_textureMasks );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc )

@@ -164,13 +164,19 @@ namespace Mengine
 
                     mt::vec2f * uvs = Helper::allocateArrayT<mt::vec2f>( vertex_count );
 
-                    for( uint32_t index = 0; index != vertex_count; ++index )
+                    mt::vec2f * uvs_iterator = uvs;
+
+                    for( const ae_vector2_t 
+                        * it = _callbackData->uvs,
+                        *it_end = _callbackData->uvs + vertex_count;
+                        it != it_end;
+                        ++it, ++uvs_iterator )
                     {
                         mt::vec2f uv;
-                        const float * uv2 = _callbackData->uvs[index];
+                        const float * uv2 = *it;
                         uv.from_f2( uv2 );
 
-                        resource_image->correctUVImage( uv, uvs + index );
+                        resource_image->correctUVImage( uv, uvs_iterator );
                     }
 
                     *_rd = uvs;

@@ -249,12 +249,16 @@ namespace Mengine
 
         const RenderTextureInterfacePtr & renderTargetTextureMask = m_resourceImageMask->getTexture();
 
+        mt::uv4f uvs[2];
+        //uvs[0] - Default
+        uvs[1] = m_resourceImageMask->getUVTextureImage();
+
         RenderTextureInterfacePtr texures[2];
         texures[0] = renderTargetTexture;
         texures[1] = renderTargetTextureMask;
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, 2, texures, MENGINE_DOCUMENT_FUNCTION );
+            ->getMaterial3( EM_TEXTURE_ALPHAMASK_BLEND, PT_TRIANGLELIST, 2, uvs, texures, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, false, "invalid get material" );
 

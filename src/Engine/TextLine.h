@@ -32,6 +32,8 @@ namespace Mengine
         mt::uv4f uv;
 
         uint32_t fontId;
+
+        mt::uv4f textureMask;
         RenderTextureInterfacePtr texture;
     };
     //////////////////////////////////////////////////////////////////////////

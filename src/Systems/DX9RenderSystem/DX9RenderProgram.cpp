@@ -81,6 +81,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgram::bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks )
+    {
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            const mt::uv4f & mask =_textureMasks[index];
+
+            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2, mask.buff(), 2) );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
         MENGINE_UNUSED( _worldMatrix );

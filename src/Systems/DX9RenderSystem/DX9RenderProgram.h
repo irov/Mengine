@@ -36,6 +36,7 @@ namespace Mengine
         void enable( IDirect3DDevice9 * _pD3DDevice );
 
     public:
+        void bindTextureMask( IDirect3DDevice9 * _pD3DDevice, const mt::uv4f * _textureMasks );
         void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix );
 
     protected:

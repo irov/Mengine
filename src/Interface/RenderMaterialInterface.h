@@ -71,6 +71,7 @@ namespace Mengine
     public:
         virtual EPrimitiveType getPrimitiveType() const = 0;
         virtual uint32_t getTextureCount() const = 0;
+        virtual const mt::uv4f & getUV( uint32_t _index ) const = 0;
         virtual const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const = 0;
         virtual const RenderMaterialStage * getStage() const = 0;
     };

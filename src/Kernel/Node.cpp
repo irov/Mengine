@@ -1428,6 +1428,13 @@ namespace Mengine
         {
             render->setRenderEnable( true );
         }
+
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            picker->setPickerEnable( true );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_deactivate()
@@ -1444,6 +1451,13 @@ namespace Mengine
         if( render != nullptr )
         {
             render->setRenderEnable( false );
+        }
+
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            picker->setPickerEnable( false );
         }
 
         Affectorable::stopAllAffectors();
@@ -1542,10 +1556,5 @@ namespace Mengine
         uint32_t deep = this->getLeafDeep();
 
         return deep;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PickerTrapInterface * Node::getPickerTrap()
-    {
-        return nullptr;
     }
 }

@@ -44,7 +44,6 @@
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/PickerTrapInterface.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -2484,10 +2483,6 @@ namespace Mengine
             .def( "getUpdation", &Updatable::getUpdation )
             ;
 
-        pybind::interface_<Renderable, pybind::bases<Mixin> >( _kernel, "Renderable" )
-            .def( "getRender", &Renderable::getRender )
-            ;
-
         pybind::interface_<Colorable, pybind::bases<Mixin> >( _kernel, "Colorable" )
             .def( "setLocalColor", &Colorable::setLocalColor )
             .def( "getLocalColor", &Colorable::getLocalColor )
@@ -2527,6 +2522,23 @@ namespace Mengine
             .def( "getRenderTarget", &RenderInterface::getRenderTarget )
             .def( "setExternalRender", &RenderInterface::setExternalRender )
             .def( "isExternalRender", &RenderInterface::isExternalRender )
+            ;
+
+        pybind::interface_<Renderable, pybind::bases<Mixin> >( _kernel, "Renderable" )
+            .def( "getRender", &Renderable::getRender )
+            ;
+
+        pybind::interface_<PickerInterface, pybind::bases<Mixin> >( _kernel, "PickerInterface", false )
+            .def( "isPickerEnable", &PickerInterface::isPickerEnable )
+            .def( "isPickerPicked", &PickerInterface::isPickerPicked )
+            .def( "isPickerPressed", &PickerInterface::isPickerPressed )
+            .def( "isPickerHandle", &PickerInterface::isPickerHandle )
+            .def( "isPickerExclusive", &PickerInterface::isPickerExclusive )
+            .def( "pick", &PickerInterface::pick )
+            ;
+
+        pybind::interface_<Pickerable, pybind::bases<Mixin> >( _kernel, "Pickerable" )
+            .def_const( "getPicker", &Pickerable::getPicker )
             ;
 
         pybind::interface_<AnimationInterface, pybind::bases<Mixin> >( _kernel, "Animation" )
@@ -2590,7 +2602,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, Compilable, Renderable, Affectorable> >( _kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, Compilable, Renderable, Pickerable, Affectorable> >( _kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -2902,21 +2914,17 @@ namespace Mengine
             //    .def( "getParallaxFactor", &Parallax::getParallaxFactor )
             //    ;
 
-            pybind::interface_<PickerTrapInterface, pybind::bases<Mixin> >( _kernel, "PickerTrap", false )
-                .def( "pick", &PickerTrapInterface::pick )
-                ;
-
             pybind::interface_<HotSpot, pybind::bases<Node, Eventable> >( _kernel, "HotSpot", false )
                 .def( "testPoint", &HotSpot::testPoint )
                 .def( "setOutward", &HotSpot::setOutward )
                 .def( "getOutward", &HotSpot::getOutward )
-                .def( "setGlobal", &HotSpotPolygon::setGlobal )
-                .def( "getGlobal", &HotSpotPolygon::getGlobal )
-                .def( "setExclusive", &HotSpotPolygon::setExclusive )
-                .def( "getExclusive", &HotSpotPolygon::getExclusive )
+                .def( "setGlobal", &HotSpot::setGlobal )
+                .def( "getGlobal", &HotSpot::getGlobal )
+                .def( "setExclusive", &HotSpot::setExclusive )
+                .def( "getExclusive", &HotSpot::getExclusive )
                 .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                 .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
-                .def( "isMousePickerOver", &HotSpot::isPickerPressed )
+                .def( "isMousePickerOver", &HotSpot::isPickerPicked )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
                 .def_proxy_native_kernel( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
                 ;

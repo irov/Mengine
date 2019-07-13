@@ -403,8 +403,6 @@ namespace Mengine
 //                    ->visitPrefetches( cttv );
 //
 //                ss << "Prefetcher " << cttv->getCount() << std::endl;
-//
-//                ss << "PickerTrapCount:" << PICKER_SERVICE()->getPickerTrapCount() << std::endl;
 //            }
 //            else if( m_showDebugText == 3 )
 //            {

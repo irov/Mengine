@@ -92,21 +92,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::pickTrap( const mt::vec2f & _point, VectorPickers & _pickers )
     {
-        VectorPickerStates states;
-        if( this->proccesStates_( _point.x, _point.y, states ) == false )
+        //m_statesAux.clear();
+        VectorPickerStates statesAux;
+        if( this->proccesStates_( _point.x, _point.y, statesAux ) == false )
         {
             return false;
         }
 
         for( VectorPickerStates::reverse_iterator
-            it = states.rbegin(),
-            it_end = states.rend();
+            it = statesAux.rbegin(),
+            it_end = statesAux.rend();
             it != it_end;
             ++it )
         {
             PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -138,8 +139,8 @@ namespace Mengine
         const mt::vec2f & pos = INPUT_SERVICE()
             ->getCursorPosition( 0 );
 
-        VectorPickerStates states;
-        this->proccesStates_( pos.x, pos.y, states );
+        VectorPickerStates statesAux;
+        this->proccesStates_( pos.x, pos.y, statesAux );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::invalidateTraps()
@@ -164,7 +165,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -196,7 +197,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -228,7 +229,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -281,7 +282,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -338,7 +339,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -398,7 +399,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -450,7 +451,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -514,7 +515,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             if( picker->isPickerPicked() == true )
             {
@@ -534,6 +535,13 @@ namespace Mengine
         PickerStateDesc root_desc;
 
         PickerInterface * root_picker = m_scene->getPicker();
+
+        if( root_picker->isPickerEnable() == false )
+        {
+            return;
+        }
+
+        root_desc.picker = root_picker;
 
         const RenderViewportInterfacePtr & pickerViewport = root_picker->getPickerViewport();
 
@@ -563,12 +571,12 @@ namespace Mengine
         {
             PickerStateDesc & desc = _states[index];
 
-            PickerInterface * picker = desc.picker;
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const PickerInterfacePtr & picker = desc.picker;
 
-            picker->foreachPickerChildren( [&_states, &viewport, &camera]( PickerInterface * _picker )
+            picker->foreachPickerChildrenEnabled( [&_states, index]( PickerInterface * _picker )
             {
+                PickerStateDesc & parent_desc = _states[index];
+
                 PickerStateDesc child_desc;
 
                 child_desc.picker = _picker;
@@ -581,7 +589,7 @@ namespace Mengine
                 }
                 else
                 {
-                    child_desc.viewport = viewport;
+                    child_desc.viewport = parent_desc.viewport;
                 }
 
                 const RenderCameraInterfacePtr & pickerCamera = _picker->getPickerCamera();
@@ -592,12 +600,18 @@ namespace Mengine
                 }
                 else
                 {
-                    child_desc.camera = camera;
+                    child_desc.camera = parent_desc.camera;
                 }
 
                 _states.push_back( child_desc );
             } );
         }
+
+        VectorPickerStates::iterator it_erase = std::remove_if( _states.begin(), _states.end(), []( const PickerStateDesc & _desc ) 
+        { 
+            return _desc.picker->isPickerDummy(); 
+        } );
+        _states.erase( it_erase, _states.end() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::proccesStates_( float _x, float _y, VectorPickerStates & _states )
@@ -643,7 +657,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            PickerInterface * picker = desc.picker;
+            const PickerInterfacePtr & picker = desc.picker;
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;

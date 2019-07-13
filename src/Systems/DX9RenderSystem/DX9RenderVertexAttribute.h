@@ -43,7 +43,7 @@ namespace Mengine
         IDirect3DDevice9 * m_pD3DDevice;
         IDirect3DVertexDeclaration9 * m_vertexDeclaration;
 
-        struct Attribute
+        struct AttributeDesc
         {
             ConstString uniform;
 
@@ -55,7 +55,7 @@ namespace Mengine
             bool normalized;
         };
 
-        typedef Vector<Attribute> VectorAttribute;
+        typedef Vector<AttributeDesc> VectorAttribute;
         VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////

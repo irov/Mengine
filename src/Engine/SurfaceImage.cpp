@@ -148,13 +148,13 @@ namespace Mengine
         {
         case 0:
             {
-                const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
+                const mt::uv4f & uv = m_resourceImage->getUVImage();
 
                 return uv;
             } break;
         case 1:
             {
-                const mt::uv4f & uv = m_resourceImage->getUVTextureAlpha();
+                const mt::uv4f & uv = m_resourceImage->getUVAlpha();
 
                 return uv;
             } break;
@@ -164,28 +164,6 @@ namespace Mengine
         }
 
         return mt::uv4f::identity();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_resourceImage, "'%s' not setup texture"
-            , this->getName().c_str()
-        );
-
-        switch( _index )
-        {
-        case 0:
-            {
-                m_resourceImage->correctUVImage( _in, _out );
-            } break;
-        case 1:
-            {
-                m_resourceImage->correctUVAlpha( _in, _out );
-            } break;
-        default:
-            {
-            }break;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImage::getColor() const

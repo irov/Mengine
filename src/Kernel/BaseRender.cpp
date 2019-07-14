@@ -75,7 +75,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::moveRelationRenderFront( RenderInterface * _childRender )
     {
-        MENGINE_ASSERTION( m_renderChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_renderChildren.empty() == false, "move child is empty" );
 
         BaseRender * childRender = static_cast<BaseRender *>(_childRender);
 
@@ -92,7 +92,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender )
     {
-        MENGINE_ASSERTION( m_renderChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_renderChildren.empty() == false, "move child is empty" );
 
         BaseRender * afterRender = static_cast<BaseRender *>(_afterRender);
         BaseRender * childRender = static_cast<BaseRender *>(_childRender);
@@ -103,7 +103,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::moveRelationRenderBack( RenderInterface * _childRender )
     {
-        MENGINE_ASSERTION( m_renderChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_renderChildren.empty() == false, "move child is empty" );
 
         BaseRender * childRender = static_cast<BaseRender *>(_childRender);
 
@@ -187,7 +187,7 @@ namespace Mengine
     {
         VectorBaseRender::iterator it_erase = std::find( m_renderChildren.begin(), m_renderChildren.end(), _childRender );
 
-        MENGINE_ASSERTION( it_erase != m_renderChildren.end(), "remove relation child is not found" );
+        MENGINE_ASSERTION_FATAL( it_erase != m_renderChildren.end(), "remove relation child is not found" );
 
         m_renderChildren.erase( it_erase );
     }
@@ -196,7 +196,7 @@ namespace Mengine
     {
         VectorBaseRender::iterator it_insert = std::find( m_renderChildren.begin(), m_renderChildren.end(), _afterRender );
 
-        MENGINE_ASSERTION( it_insert != m_renderChildren.end(), "after relation child is not found" );
+        MENGINE_ASSERTION_FATAL( it_insert != m_renderChildren.end(), "after relation child is not found" );
 
         m_renderChildren.insert( it_insert, _childRender );
     }

@@ -55,8 +55,6 @@ namespace Mengine
         uint32_t getUVCount() const override;
         const mt::uv4f & getUV( uint32_t _index ) const override;
 
-        void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) override;
-
         const Color & getColor() const override;
 
     protected:

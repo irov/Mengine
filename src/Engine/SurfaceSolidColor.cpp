@@ -40,13 +40,6 @@ namespace Mengine
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSolidColor::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
-    {
-        MENGINE_UNUSED( _index );
-
-        *_out = _in;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceSolidColor::getMaxSize() const
     {
         return m_size;

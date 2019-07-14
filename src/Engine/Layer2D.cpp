@@ -251,7 +251,7 @@ namespace Mengine
 
         mt::uv4f uvs[2];
         //uvs[0] - Default
-        uvs[1] = m_resourceImageMask->getUVTextureImage();
+        //uvs[1] = m_resourceImageMask->getUVTextureImage();
 
         RenderTextureInterfacePtr texures[2];
         texures[0] = renderTargetTexture;

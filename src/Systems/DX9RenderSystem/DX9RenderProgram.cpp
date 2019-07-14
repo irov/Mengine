@@ -87,7 +87,18 @@ namespace Mengine
         {
             const mt::uv4f & mask =_textureMasks[index];
 
-            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2, mask.buff(), 2) );
+            float uvs[8];
+            uvs[0 * 2 + 0] = mask.p0.x;
+            uvs[0 * 2 + 1] = mask.p0.y;
+            uvs[1 * 2 + 0] = mask.p1.x;
+            uvs[1 * 2 + 1] = mask.p1.y;
+            uvs[2 * 2 + 0] = mask.p2.x;
+            uvs[2 * 2 + 1] = mask.p2.y;
+            uvs[3 * 2 + 0] = mask.p3.x;
+            uvs[3 * 2 + 1] = mask.p3.y;
+
+            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2 + 0, uvs + 0, 1) );
+            DXCALL( _pD3DDevice, SetVertexShaderConstantF, (4 + index * 2 + 1, uvs + 4, 1) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

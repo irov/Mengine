@@ -1051,8 +1051,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
         SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
 
-        SERVICE_FINALIZE( Mengine::PlatformInterface );
-
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );
 
         if( m_fileLog != nullptr )
@@ -1078,12 +1076,14 @@ namespace Mengine
         }
 
         SERVICE_FINALIZE( Mengine::FileServiceInterface );
+
+        stdex_allocator_finalize_threadsafe();
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
+
+        SERVICE_FINALIZE( Mengine::PlatformInterface );
         SERVICE_FINALIZE( Mengine::OptionsServiceInterface );
         SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
         SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
-
-        stdex_allocator_finalize_threadsafe();
 
         m_mutexAllocatorPool = nullptr;
 

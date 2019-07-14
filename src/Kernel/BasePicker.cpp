@@ -62,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::moveRelationPickerFront( PickerInterface * _childPicker )
     {
-        MENGINE_ASSERTION( m_pickerChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
 
         BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
 
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::moveRelationPickerMiddle( PickerInterface * _afterPicker, PickerInterface * _childPicker )
     {
-        MENGINE_ASSERTION( m_pickerChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
 
         BasePicker * afterPicker = static_cast<BasePicker *>(_afterPicker);
         BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::moveRelationPickerBack( PickerInterface * _childPicker )
     {
-        MENGINE_ASSERTION( m_pickerChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
 
         BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
 
@@ -180,7 +180,7 @@ namespace Mengine
     {
         VectorBasePicker::iterator it_erase = std::find( m_pickerChildren.begin(), m_pickerChildren.end(), _childPicker );
 
-        MENGINE_ASSERTION( it_erase != m_pickerChildren.end(), "remove relation child is not found" );
+        MENGINE_ASSERTION_FATAL( it_erase != m_pickerChildren.end(), "remove relation child is not found" );
 
         m_pickerChildren.erase( it_erase );
     }
@@ -189,7 +189,7 @@ namespace Mengine
     {
         VectorBasePicker::iterator it_insert = std::find( m_pickerChildren.begin(), m_pickerChildren.end(), _afterPicker );
 
-        MENGINE_ASSERTION( it_insert != m_pickerChildren.end(), "after relation child is not found" );
+        MENGINE_ASSERTION_FATAL( it_insert != m_pickerChildren.end(), "after relation child is not found" );
 
         m_pickerChildren.insert( it_insert, _childPicker );
     }

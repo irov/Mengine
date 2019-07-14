@@ -17,6 +17,89 @@ SERVICE_FACTORY( PickerService, Mengine::PickerService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        class PickerVisitor
+        {
+        public:
+            PickerVisitor( VectorPickerStates & _states, bool _exclusive )
+                : m_states( _states )
+                , m_exclusive( _exclusive )
+            {
+            }
+
+            ~PickerVisitor()
+            {
+            }
+
+        protected:
+            void operator = ( const PickerVisitor & )
+            {
+            }
+
+        public:
+            void visit( PickerInterface * _picker, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera )
+            {
+                PickerStateDesc desc;
+
+                if( _picker->isPickerEnable() == false )
+                {
+                    return;
+                }
+
+                if( m_exclusive == true && _picker->isPickerExclusive() == false )
+                {
+                    return;
+                }
+
+                desc.picker = _picker;
+
+                const RenderViewportInterfacePtr & pickerViewport = _picker->getPickerViewport();
+
+                if( pickerViewport != nullptr )
+                {
+                    desc.viewport = pickerViewport;
+                }
+                else
+                {
+                    desc.viewport = _viewport;
+                }
+
+                const RenderCameraInterfacePtr & pickerCamera = _picker->getPickerCamera();
+
+                if( pickerCamera != nullptr )
+                {
+                    desc.camera = pickerCamera;
+                }
+                else
+                {
+                    desc.camera = _camera;
+                }
+
+                m_currentViewport = desc.viewport;
+                m_currentCamera = desc.camera;
+
+                m_states.push_back( desc );
+
+                RenderViewportInterfacePtr visitViewport = m_currentViewport;
+                RenderCameraInterfacePtr visitCamera = m_currentCamera;
+
+                _picker->foreachPickerChildrenEnabled( [this, &visitViewport, &visitCamera]( PickerInterface * _picker )
+                {
+                    this->visit( _picker, visitViewport, visitCamera );
+                } );
+            }
+
+        protected:
+            VectorPickerStates & m_states;
+
+            bool m_exclusive;
+
+            RenderViewportInterfacePtr m_currentViewport;
+            RenderCameraInterfacePtr m_currentCamera;
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     PickerService::PickerService()
         : m_block( false )
@@ -532,84 +615,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::fillStates_( VectorPickerStates & _states ) const
     {
-        PickerStateDesc root_desc;
+        PickerInterface * picker = m_scene->getPicker();
 
-        PickerInterface * root_picker = m_scene->getPicker();
+        Detail::PickerVisitor visitor( _states, false );
+        visitor.visit( picker, m_viewport, m_camera );
 
-        if( root_picker->isPickerEnable() == false )
+        VectorPickerStates::iterator it_erase = std::remove_if( _states.begin(), _states.end(), []( const PickerStateDesc & _desc )
         {
-            return;
-        }
-
-        root_desc.picker = root_picker;
-
-        const RenderViewportInterfacePtr & pickerViewport = root_picker->getPickerViewport();
-
-        if( pickerViewport != nullptr )
-        {
-            root_desc.viewport = pickerViewport;
-        }
-        else
-        {
-            root_desc.viewport = m_viewport;
-        }
-
-        const RenderCameraInterfacePtr & pickerCamera = root_picker->getPickerCamera();
-
-        if( pickerCamera != nullptr )
-        {
-            root_desc.camera = pickerCamera;
-        }
-        else
-        {
-            root_desc.camera = m_camera;
-        }
-
-        _states.push_back( root_desc );
-
-        for( VectorPickerStates::size_type index = 0; index != _states.size(); ++index )
-        {
-            PickerStateDesc & desc = _states[index];
-
-            const PickerInterfacePtr & picker = desc.picker;
-
-            picker->foreachPickerChildrenEnabled( [&_states, index]( PickerInterface * _picker )
-            {
-                PickerStateDesc & parent_desc = _states[index];
-
-                PickerStateDesc child_desc;
-
-                child_desc.picker = _picker;
-
-                const RenderViewportInterfacePtr & pickerViewport = _picker->getPickerViewport();
-
-                if( pickerViewport != nullptr )
-                {
-                    child_desc.viewport = pickerViewport;
-                }
-                else
-                {
-                    child_desc.viewport = parent_desc.viewport;
-                }
-
-                const RenderCameraInterfacePtr & pickerCamera = _picker->getPickerCamera();
-
-                if( pickerCamera != nullptr )
-                {
-                    child_desc.camera = pickerCamera;
-                }
-                else
-                {
-                    child_desc.camera = parent_desc.camera;
-                }
-
-                _states.push_back( child_desc );
-            } );
-        }
-
-        VectorPickerStates::iterator it_erase = std::remove_if( _states.begin(), _states.end(), []( const PickerStateDesc & _desc ) 
-        { 
-            return _desc.picker->isPickerDummy(); 
+            return _desc.picker->isPickerDummy();
         } );
         _states.erase( it_erase, _states.end() );
     }

@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_ASSERTION_MAX_MESSAGE
 #define MENGINE_ASSERTION_MAX_MESSAGE 8192
 #endif
@@ -66,13 +65,16 @@ namespace Mengine
 
             va_end( argList );
 
-            LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("File %s [line:%d] Assertion [%s]: %s"
-                , _file
-                , _line
-                , _test
-                , str_info);
+            if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )
+            {
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("File %s [line:%d] Assertion [%s]: %s"
+                    , _file
+                    , _line
+                    , _test
+                    , str_info);
+            }
 
-            if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level != ASSERTION_LEVEL_FATAL )
+            if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level >= ASSERTION_LEVEL_ERROR )
             {
                 return;
             }

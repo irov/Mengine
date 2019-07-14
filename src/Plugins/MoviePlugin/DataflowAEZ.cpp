@@ -127,79 +127,7 @@ namespace Mengine
             default:
                 break;
             }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_cache_uv_available( const aeMovieDataCacheUVAvailableCallbackData * _callbackData, ae_voidptr_t _ud )
-        {
-            AE_UNUSED( _callbackData );
-            AE_UNUSED( _ud );
-
-            return AE_TRUE;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
-        {
-            AE_UNUSED( _ud );
-
-            const aeMovieResource * movie_resource = _callbackData->resource;
-
-            aeMovieResourceTypeEnum resource_type = movie_resource->type;
-
-            switch( resource_type )
-            {
-            case AE_MOVIE_RESOURCE_IMAGE:
-                {
-                    const aeMovieResourceImage * movie_resource_image = reinterpret_cast<const aeMovieResourceImage *>(movie_resource);
-
-                    if( movie_resource_image->atlas_image != AE_NULLPTR )
-                    {
-                        break;
-                    }
-
-                    const Movie2DataImageDesc * image_desc = reinterpret_cast<const Movie2DataImageDesc *>(movie_resource->userdata);
-
-                    const ResourceImagePtr & resource_image = image_desc->resourceImage;
-
-                    ae_uint32_t vertex_count = _callbackData->vertex_count;
-
-                    mt::vec2f * uvs = Helper::allocateArrayT<mt::vec2f>( vertex_count );
-
-                    mt::vec2f * uvs_iterator = uvs;
-
-                    for( const ae_vector2_t 
-                        * it = _callbackData->uvs,
-                        *it_end = _callbackData->uvs + vertex_count;
-                        it != it_end;
-                        ++it, ++uvs_iterator )
-                    {
-                        mt::vec2f uv;
-                        const float * uv2 = *it;
-                        uv.from_f2( uv2 );
-
-                        resource_image->correctUVImage( uv, uvs_iterator );
-                    }
-
-                    *_rd = uvs;
-                }break;
-            default:
-                {
-                }break;
-            }
-
-            return AE_TRUE;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_userdata_t _ud )
-        {
-            MENGINE_UNUSED( _ud );
-
-            if( _callbackData->uv_cache_userdata == AE_NULLPTR )
-            {
-                return;
-            }
-
-            Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_userdata) );
-        }
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     DataflowAEZ::DataflowAEZ()
@@ -286,9 +214,6 @@ namespace Mengine
 
         data_providers.resource_provider = &Detail::__movie_resource_provider;
         data_providers.resource_deleter = &Detail::__movie_resource_deleter;
-        data_providers.cache_uv_available = &Detail::__movie_cache_uv_available;
-        data_providers.cache_uv_provider = &Detail::__movie_cache_uv_provider;
-        data_providers.cache_uv_deleter = &Detail::__movie_cache_uv_deleter;
 
         aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, data );
 

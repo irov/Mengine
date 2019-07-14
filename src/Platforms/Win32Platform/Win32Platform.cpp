@@ -2262,12 +2262,12 @@ namespace Mengine
         Helper::utf8ToUnicode( _key, unicode_key, MAX_PATH );
 
         HKEY hKey;
-        LONG lRes = RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
+        LONG lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ, &hKey );
 
         if( lRes == ERROR_FILE_NOT_FOUND )
         {
 #ifdef _MSC_VER
-            lRes = RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
+            lRes = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, unicode_path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );
 #endif
         }
 
@@ -2286,7 +2286,7 @@ namespace Mengine
         DWORD dwBufferSize = 1024;
         LONG nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
 
-        RegCloseKey( hKey );
+        ::RegCloseKey( hKey );
 
         if( nError != ERROR_SUCCESS )
         {
@@ -2326,15 +2326,43 @@ namespace Mengine
         WChar unicode_command[4096] = {'\0'};
         Helper::utf8ToUnicode( _command, unicode_command, 4096 );
 
-        STARTUPINFO info = {0};
+        SECURITY_ATTRIBUTES sa;
+        sa.nLength = sizeof( sa );
+        sa.lpSecurityDescriptor = NULL;
+        sa.bInheritHandle = TRUE;
+
+        WChar tempPathBuffer[MAX_PATH];
+        ::GetTempPath( MAX_PATH, tempPathBuffer );
+
+        WChar tempFileNameBuffer[MAX_PATH];
+        ::GetTempFileName( tempPathBuffer,
+            L"Process",
+            0,
+            tempFileNameBuffer );
+
+        HANDLE hWriteTempFile = ::CreateFile( tempFileNameBuffer,
+            FILE_APPEND_DATA,
+            FILE_SHARE_WRITE | FILE_SHARE_READ,
+            &sa,
+            OPEN_ALWAYS,
+            FILE_ATTRIBUTE_TEMPORARY,
+            NULL );
+
+        STARTUPINFO startupInfo = {0};
+        startupInfo.cb = sizeof( STARTUPINFO );
+        startupInfo.dwFlags = STARTF_USESTDHANDLES;
+        startupInfo.hStdOutput = hWriteTempFile;
+        startupInfo.hStdError = hWriteTempFile;
+        startupInfo.hStdInput = NULL;
+
         PROCESS_INFORMATION processInfo = {0};
         if( ::CreateProcess( unicode_process, unicode_command
             , NULL
             , NULL
-            , FALSE
+            , TRUE
             , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
             , NULL
-            , &info
+            , &startupInfo
             , &processInfo ) == FALSE )
         {
             DWORD le = GetLastError();
@@ -2351,13 +2379,15 @@ namespace Mengine
             return false;
         }
 
-        WaitForSingleObject( processInfo.hProcess, INFINITE );
+        ::WaitForSingleObject( processInfo.hProcess, INFINITE );
 
         DWORD exitCode;
-        BOOL result = GetExitCodeProcess( processInfo.hProcess, &exitCode );
+        BOOL result = ::GetExitCodeProcess( processInfo.hProcess, &exitCode );
 
-        CloseHandle( processInfo.hProcess );
-        CloseHandle( processInfo.hThread );
+        ::CloseHandle( processInfo.hProcess );
+        ::CloseHandle( processInfo.hThread );
+
+        ::CloseHandle( hWriteTempFile );
 
         if( result == FALSE )
         {
@@ -2372,6 +2402,32 @@ namespace Mengine
         LOGGER_MESSAGE( "result [%u]"
             , exitCode
         );
+        
+        if( exitCode != 0 )
+        {
+            HANDLE hReadTempFile = ::CreateFile( tempFileNameBuffer,
+                FILE_GENERIC_READ,
+                FILE_SHARE_WRITE | FILE_SHARE_READ,
+                &sa,
+                OPEN_ALWAYS,
+                FILE_ATTRIBUTE_TEMPORARY,
+                NULL );
+
+            DWORD tempFileSizeHigh;
+            DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
+
+            Char tempFileBuffer[4096] = { 0 };
+
+            DWORD dwBytesRead;
+            DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
+            ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
+
+            LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("%s"
+                , tempFileBuffer
+                );
+
+            CloseHandle( hReadTempFile );
+        }
 
         if( _exitCode != nullptr )
         {

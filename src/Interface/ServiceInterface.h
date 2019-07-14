@@ -3,6 +3,7 @@
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/Typename.h"
 
 namespace Mengine
@@ -17,6 +18,8 @@ namespace Mengine
     protected:
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
+
+    public:
         virtual bool isInitializeService() const = 0;
 
     public:
@@ -64,7 +67,7 @@ namespace Mengine
 
                 if( service_ptr == nullptr )
                 {
-                    MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s not found"
+                    MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' not found"
                         , serviceName
                         );
 
@@ -74,7 +77,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 if( dynamic_cast<T *>(service_ptr) == nullptr )
                 {
-                    MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid cast to %s"
+                    MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid cast to '%s'"
                         , serviceName
                         , Typename<T>::value
                         );
@@ -85,6 +88,10 @@ namespace Mengine
 
                 s_service = static_cast<T *>(service_ptr);
             }
+
+            MENGINE_ASSERTION( s_service == nullptr || s_service->isInitializeService() == true, "service '%s' not initialized"
+                , T::getStaticServiceID()
+            );
 
             return s_service;
         }
@@ -119,6 +126,9 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXIST( Type )\
 	(Mengine::Helper::existService<Type>())
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_IS_INITIALIZE( Type )\
+	(SERVICE_EXIST( Type ) == true && SERVICE_PROVIDER_GET()->getService( Type::getStaticServiceID() )->isInitializeService() == true)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_NAME_CREATE(Name)\
 	__createMengineService##Name

@@ -615,10 +615,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureMask( uint32_t _index, const mt::uv4f & _mask )
     {
-        MENGINE_UNUSED( _index );
-        MENGINE_UNUSED( _mask );
-
-        //m_textureMasks[_index] = _mask;
+        m_textureMasks[_index] = _mask;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )

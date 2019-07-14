@@ -130,13 +130,6 @@ namespace Mengine
         return color;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceTrackMatte::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
-    {
-        MENGINE_UNUSED( _index );
-
-        *_out = _in;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );

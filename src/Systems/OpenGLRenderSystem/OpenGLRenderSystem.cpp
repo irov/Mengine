@@ -312,6 +312,11 @@ namespace Mengine
         this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::setTextureMask( uint32_t _index, const mt::uv4f & _mask )
+    {
+        m_textureMasks[_index] = _mask;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
     {
         MENGINE_UNUSED( _stage );

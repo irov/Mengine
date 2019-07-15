@@ -55,6 +55,8 @@ namespace Mengine
 
             holdres.clear();
         }
+
+        m_poolHolderStringMemory.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void StringizeService::stringize( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )

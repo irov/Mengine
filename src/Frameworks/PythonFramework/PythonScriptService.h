@@ -98,7 +98,7 @@ namespace Mengine
 
         ScriptModuleFinderPtr m_moduleFinder;
 
-        PyObject * m_moduleMenge;
+        PyObject * m_moduleMengine;
 
         VectorScriptModulePack m_bootstrapperModules;
 
@@ -112,7 +112,7 @@ namespace Mengine
         typedef Map<ConstString, MapModules> MapCategoryPrototypies;
         MapCategoryPrototypies m_prototypies;
 
-        typedef Pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
+        typedef Pool<ConstStringHolderPythonString, 256> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;
 
         FactoryPtr m_factoryScriptModule;

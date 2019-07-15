@@ -41,6 +41,11 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
 
-        SERVICE_FINALIZE( BitmapGlyphServiceInterface );
+        SERVICE_FINALIZE( BitmapGlyphService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BitmapFontPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( BitmapGlyphService );
     }
 }

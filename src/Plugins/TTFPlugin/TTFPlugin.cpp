@@ -119,14 +119,14 @@ namespace Mengine
         DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
         dataflowFE->finalize();
 
-        SERVICE_FINALIZE( TTFAtlasServiceInterface );
+        SERVICE_FINALIZE( TTFAtlasService );
 
         FT_Done_FreeType( m_ftlibrary );
         m_ftlibrary = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TTFPlugin::_destroy()
+    void TTFPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( TTFAtlasServiceInterface );
+        SERVICE_DESTROY( TTFAtlasService );
     }
 }

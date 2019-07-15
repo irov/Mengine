@@ -9,8 +9,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ServiceBase.h"
 
-#include "Kernel/Logger.h"
-
 #include "math/vec4.h"
 
 #include "Config/Map.h"

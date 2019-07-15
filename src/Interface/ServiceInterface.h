@@ -130,8 +130,11 @@ namespace Mengine
 #define SERVICE_IS_INITIALIZE( Type )\
 	(SERVICE_EXIST( Type ) == true && SERVICE_PROVIDER_GET()->getService( Type::getStaticServiceID() )->isInitializeService() == true)
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_NAME_CREATE(Name)\
+#define SERVICE_FUNCTION_CREATE(Name)\
 	__createMengineService##Name
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_FUNCTION_NOMINATION(Name)\
+	__nominationMengineService##Name
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
@@ -140,29 +143,32 @@ namespace Mengine
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\
-    bool SERVICE_NAME_CREATE(Name)(Mengine::ServiceInterfacePtr*_service){\
+    bool SERVICE_FUNCTION_CREATE(Name)(Mengine::ServiceInterfacePtr*_service){\
     if(_service==nullptr){return false;}\
 	try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
+    const Mengine::Char * SERVICE_FUNCTION_NOMINATION(Name)(){\
+    return Implement::getStaticServiceID();}\
 	struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DEPENDENCY( Type, Dependency )\
     SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN( Name )\
-	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*)
+	extern bool SERVICE_FUNCTION_CREATE( Name )(Mengine::ServiceInterfacePtr*);\
+    extern const Mengine::Char * SERVICE_FUNCTION_NOMINATION( Name )()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\
-	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), false, #Name, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_FUNCTION_CREATE(Name), false, #Name, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE_SAFE( Name )\
-	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), true, #Name, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
+	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_FUNCTION_CREATE(Name), true, #Name, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_FINALIZE( Type )\
-	SERVICE_PROVIDER_GET()->finalizeServiceT<Type>()
+#define SERVICE_FINALIZE( Name )\
+	SERVICE_PROVIDER_GET()->finalizeService(SERVICE_FUNCTION_NOMINATION(Name)())
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_DESTROY( Type )\
-	SERVICE_PROVIDER_GET()->destroyServiceT<Type>()
+#define SERVICE_DESTROY( Name )\
+	SERVICE_PROVIDER_GET()->destroyService(SERVICE_FUNCTION_NOMINATION(Name)())
     //////////////////////////////////////////////////////////////////////////
 #define SERVICE_WAIT( Type, Lambda )\
     SERVICE_PROVIDER_GET()->waitService(Type::getStaticServiceID(), Lambda)

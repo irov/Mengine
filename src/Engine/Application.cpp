@@ -23,7 +23,7 @@
 #include "Interface/GameServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
-#include "Interface/GraveyardInterface.h"
+#include "Interface/GraveyardServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
@@ -206,9 +206,18 @@ namespace Mengine
             m_aspectRatioViewports[aspect] = viewports.viewport;
         }
 
-        m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( "en" ) );
+        if( HAS_OPTION( "locale" ) == true )
+        {
+            const Char * option_locale = GET_OPTION_VALUE( "locale" );
 
-        LOGGER_MESSAGE( "locale %s"
+            m_locale = Helper::stringizeString( option_locale );
+        }
+        else
+        {
+            m_locale = CONFIG_VALUE( "Locale", "Default", STRINGIZE_FILEPATH_LOCAL( "en" ) );
+        }
+
+        LOGGER_MESSAGE( "setup locale '%s'"
             , m_locale.c_str()
         );
 
@@ -284,6 +293,8 @@ namespace Mengine
         bool nopause = HAS_OPTION( "nopause" );
 
         this->setNopause( nopause );
+
+        m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
 
         return true;
     }
@@ -582,11 +593,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIniPath )
     {
-        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == false )
-        {
-            return false;
-        }
-
         if( _resourceIniPath.empty() == false )
         {
             if( PACKAGE_SERVICE()
@@ -597,17 +603,6 @@ namespace Mengine
 
                 return false;
             }
-        }
-
-        if( HAS_OPTION( "locale" ) == true )
-        {
-            const Char * option_locale = GET_OPTION_VALUE( "locale" );
-
-            m_locale = Helper::stringizeString( option_locale );
-
-            LOGGER_MESSAGE( "setup locale '%s'"
-                , m_locale.c_str()
-            );
         }
 
         const Tags & platformTags = PLATFORM_SERVICE()
@@ -642,8 +637,6 @@ namespace Mengine
             }
         }
 #endif
-
-        m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
 
         return true;
     }
@@ -1307,7 +1300,7 @@ namespace Mengine
                 ->tick( &applicationContext );
         }
 
-        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->tick( &applicationContext );

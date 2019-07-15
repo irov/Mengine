@@ -68,17 +68,21 @@ namespace Mengine
 
             return true;
         }
-
-        if( m_dynamicLoad == true 
-            && SERVICE_EXIST( ThreadServiceInterface ) == true )
+        
+        if( m_dynamicLoad == true )
         {
-            m_mutexAllocatorPool = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT( "Plugin '%s'", this->getPluginName() ) );
+            SERVICE_WAIT( ThreadServiceInterface, [this]()
+            {
+                m_mutexAllocatorPool = THREAD_SERVICE()
+                    ->createMutex( MENGINE_DOCUMENT( "Plugin '%s'", this->getPluginName() ) );
 
-            stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-                , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
-                , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
-            );
+                stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
+                    , (stdex_allocator_thread_lock_t)& s_stdex_thread_lock
+                    , (stdex_allocator_thread_unlock_t)& s_stdex_thread_unlock
+                );
+
+                return true;
+            } );
         }
 
         bool successful = this->_initializePlugin();
@@ -136,6 +140,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::destroy()
     {
+        this->_destroyPlugin();
         this->_destroy();
 
         bool dynamicLoad = m_dynamicLoad;
@@ -159,6 +164,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::_finalizePlugin()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::_destroyPlugin()
     {
         //Empty
     }

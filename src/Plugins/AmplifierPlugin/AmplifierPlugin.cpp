@@ -29,11 +29,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AmplifierPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::AmplifierInterface );
+        SERVICE_FINALIZE( Amplifier );
     }
     //////////////////////////////////////////////////////////////////////////
     void AmplifierPlugin::_destroy()
     {
-        SERVICE_DESTROY( Mengine::AmplifierInterface );
+        SERVICE_DESTROY( Amplifier );
     }
 }

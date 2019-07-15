@@ -43,11 +43,11 @@ namespace Mengine
             REMOVE_SCRIPT_EMBEDDING( cURLScriptEmbedding );
         }        
 
-        SERVICE_FINALIZE( Mengine::cURLServiceInterface );
+        SERVICE_FINALIZE( cURLService );
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLPlugin::_destroy()
     {
-        SERVICE_DESTROY( Mengine::cURLServiceInterface );
+        SERVICE_DESTROY( cURLService );
     }
 }

@@ -591,6 +591,7 @@ namespace Mengine
         }
 
         m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
+        m_currentProgram->bindTextureMask( m_textureMasks );
 
         if( m_currentProgramVariable != nullptr )
         {

@@ -11,6 +11,11 @@ namespace Mengine
         : m_programId( 0 )
         , m_samplerCount( 0 )
     {
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES * 2; ++i )
+        {
+            m_samplerMaskLocation[i] = -1;
+        }
+
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
         {
             m_matrixLocation[i] = -1;
@@ -136,6 +141,18 @@ namespace Mengine
 
             m_matrixLocation[i] = location;
         }
+
+        const Char * samplerMask_uniforms[] = { "textureMask0", "textureMask1", "textureMask2", "textureMask3", "textureMask4", "textureMask5", "textureMask6", "textureMask7" };
+
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES * 2; ++i )
+        {
+            const Char * uniform = samplerMask_uniforms[i];
+
+            GLint location;
+            GLCALLR( location, glGetUniformLocation, (programId, uniform) );
+
+            m_samplerMaskLocation[i] = location;
+        }
         
         for( uint32_t index = 0; index != m_samplerCount; ++index )
         {
@@ -165,6 +182,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgram::release()
     {
+        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES * 2; ++i )
+        {
+            m_samplerMaskLocation[i] = -1;
+        }
+
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
         {
             m_matrixLocation[i] = -1;
@@ -231,6 +253,35 @@ namespace Mengine
             GLint location = m_matrixLocation[EPML_WORLD_VIEW_PROJECTION];
 
             GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _totalWVPMatrix.buff()) );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderProgram::bindTextureMask( const mt::uv4f * _textureMasks ) const
+    {
+        for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
+        {
+            GLint location0 = m_samplerMaskLocation[index * 2 + 0];
+            GLint location1 = m_samplerMaskLocation[index * 2 + 1];
+
+            if( location0 == -1 || location1 == -1 )
+            {
+                break;
+            }
+
+            mt::uv4f mask = _textureMasks[index];
+
+            float uvs[8];
+            uvs[0 * 2 + 0] = mask.p0.x;
+            uvs[0 * 2 + 1] = mask.p0.y;
+            uvs[1 * 2 + 0] = mask.p1.x;
+            uvs[1 * 2 + 1] = mask.p1.y;
+            uvs[2 * 2 + 0] = mask.p2.x;
+            uvs[2 * 2 + 1] = mask.p2.y;
+            uvs[3 * 2 + 0] = mask.p3.x;
+            uvs[3 * 2 + 1] = mask.p3.y;
+
+            GLCALL( glUniform4fv, (location0, 1, uvs + 0) );
+            GLCALL( glUniform4fv, (location1, 1, uvs + 4) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

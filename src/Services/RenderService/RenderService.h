@@ -274,7 +274,7 @@ namespace Mengine
         bool createWhitePixelTexture_();
 
     protected:
-        void updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture );
+        void updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture, const mt::uv4f & _uv );
         void updateMaterial_( RenderMaterialInterface * _material );
         void updateStage_( const RenderMaterialStage * _stage );
 

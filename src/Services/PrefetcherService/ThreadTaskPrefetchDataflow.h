@@ -31,8 +31,6 @@ namespace Mengine
     protected:
         DataInterfacePtr m_data;
         MemoryInterfacePtr m_memory;
-
-        bool m_threadFlow;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskPrefetchDataflow, ThreadTaskPrefetch> ThreadTaskPrefetchDataflowPtr;

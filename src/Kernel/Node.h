@@ -27,7 +27,6 @@ namespace Mengine
         ENCI_BACK
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveSlugListSize<Node> IntrusiveSlugListNodeChild;
@@ -152,6 +151,8 @@ namespace Mengine
         void moveChildPickerMiddle_( const NodePtr & _after, const NodePtr & _child );
         void moveChildPickerBack_( const NodePtr & _child );
 
+        PickerInterface * getPickerSiblingPrev( const NodePtr & _after ) const;
+
         typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
         void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );
         void foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda );
@@ -210,9 +211,6 @@ namespace Mengine
     protected:
         uint32_t getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
-
-    public:
-        virtual PickerTrapInterface * getPickerTrap();
 
     protected:
         bool m_active;

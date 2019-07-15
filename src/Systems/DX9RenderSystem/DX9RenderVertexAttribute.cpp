@@ -35,24 +35,24 @@ namespace Mengine
 
         DWORD declaration_iterator = 0;
 
-        for( const Attribute & attribute : m_attributes )
+        for( const AttributeDesc & desc : m_attributes )
         {
-            if( attribute.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
+            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inVert" ) )
             {
                 declaration[declaration_iterator++] = { 0, 0, D3DDECLTYPE_FLOAT3, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 };
             }
 
-            if( attribute.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
+            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inCol" ) )
             {
                 declaration[declaration_iterator++] = { 0, 12, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 };
             }
 
-            if( attribute.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
+            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV0" ) )
             {
                 declaration[declaration_iterator++] = { 0, 16, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 };
             }
 
-            if( attribute.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
+            if( desc.uniform == STRINGIZE_STRING_LOCAL( "inUV1" ) )
             {
                 declaration[declaration_iterator++] = { 0, 24, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1 };
             }
@@ -90,14 +90,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexAttribute::addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset )
     {
-        Attribute attr;
-        attr.uniform = _uniform;
-        attr.size = _size;
-        attr.type = _type;
-        attr.normalized = _normalized;
-        attr.stride = _stride;
-        attr.offset = _offset;
+        AttributeDesc desc;
+        desc.uniform = _uniform;
+        desc.size = _size;
+        desc.type = _type;
+        desc.normalized = _normalized;
+        desc.stride = _stride;
+        desc.offset = _offset;
 
-        m_attributes.emplace_back( attr );
+        m_attributes.emplace_back( desc );
     }
 }

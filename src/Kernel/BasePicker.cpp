@@ -9,10 +9,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BasePicker::BasePicker()
         : m_relationPicker( nullptr )
+        , m_pickerEnable( false )
         , m_pickerPicked( false )
         , m_pickerPressed( false )
         , m_pickerHandle( false )
-        , m_pickerDead( false )
         , m_pickerExclusive( false )
     {
     }
@@ -62,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::moveRelationPickerFront( PickerInterface * _childPicker )
     {
-        MENGINE_ASSERTION( m_pickerChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
 
         BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
 
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::moveRelationPickerMiddle( PickerInterface * _afterPicker, PickerInterface * _childPicker )
     {
-        MENGINE_ASSERTION( m_pickerChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
 
         BasePicker * afterPicker = static_cast<BasePicker *>(_afterPicker);
         BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
@@ -90,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::moveRelationPickerBack( PickerInterface * _childPicker )
     {
-        MENGINE_ASSERTION( m_pickerChildren.empty() == false, "move child is empty" );
+        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
 
         BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
 
@@ -113,6 +113,29 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BasePicker::foreachPickerChildrenEnabled( const LambdaPicker & _lambda )
+    {
+        if( m_pickerEnable == false )
+        {
+            return;
+        }
+
+        for( BasePicker * child : m_pickerChildren )
+        {
+            if( child->m_pickerEnable == false )
+            {
+                continue;
+            }
+
+            _lambda( child );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BasePicker::setPickerEnable( bool _enable )
+    {
+        m_pickerEnable = _enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerPicked( bool _picked )
     {
         m_pickerPicked = _picked;
@@ -126,11 +149,6 @@ namespace Mengine
     void BasePicker::setPickerHandle( bool _handle )
     {
         m_pickerHandle = _handle;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BasePicker::setPickerDead( bool _dead )
-    {
-        m_pickerDead = _dead;
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerExclusive( bool _exclusive )
@@ -162,7 +180,7 @@ namespace Mengine
     {
         VectorBasePicker::iterator it_erase = std::find( m_pickerChildren.begin(), m_pickerChildren.end(), _childPicker );
 
-        MENGINE_ASSERTION( it_erase != m_pickerChildren.end(), "remove relation child is not found" );
+        MENGINE_ASSERTION_FATAL( it_erase != m_pickerChildren.end(), "remove relation child is not found" );
 
         m_pickerChildren.erase( it_erase );
     }
@@ -171,7 +189,7 @@ namespace Mengine
     {
         VectorBasePicker::iterator it_insert = std::find( m_pickerChildren.begin(), m_pickerChildren.end(), _afterPicker );
 
-        MENGINE_ASSERTION( it_insert != m_pickerChildren.end(), "after relation child is not found" );
+        MENGINE_ASSERTION_FATAL( it_insert != m_pickerChildren.end(), "after relation child is not found" );
 
         m_pickerChildren.insert( it_insert, _childPicker );
     }

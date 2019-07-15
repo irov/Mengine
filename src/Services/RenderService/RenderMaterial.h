@@ -19,7 +19,7 @@ namespace Mengine
         ~RenderMaterial() override;
 
     public:
-        void initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage );
+        void initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const mt::uv4f * _uvs, const RenderTextureInterfacePtr * _textures, const RenderMaterialStage * _stage );
 
     public:
         const ConstString & getName() const override;
@@ -32,6 +32,7 @@ namespace Mengine
         MENGINE_INLINE uint32_t getHash() const;
         MENGINE_INLINE EPrimitiveType getPrimitiveType() const override;
         MENGINE_INLINE uint32_t getTextureCount() const override;
+        MENGINE_INLINE const mt::uv4f & getUV( uint32_t _index ) const override;
         MENGINE_INLINE const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const override;
         MENGINE_INLINE const RenderMaterialStage * getStage() const override;
 
@@ -44,6 +45,7 @@ namespace Mengine
         EPrimitiveType m_primitiveType;
 
         uint32_t m_textureCount;
+        mt::uv4f m_uvs[MENGINE_MAX_TEXTURE_STAGES];
         RenderTextureInterfacePtr m_textures[MENGINE_MAX_TEXTURE_STAGES];
 
         const RenderMaterialStage * m_stage;
@@ -72,6 +74,11 @@ namespace Mengine
     MENGINE_INLINE uint32_t RenderMaterial::getTextureCount() const
     {
         return m_textureCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE const mt::uv4f & RenderMaterial::getUV( uint32_t _index ) const
+    {
+        return m_uvs[_index];
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const RenderTextureInterfacePtr & RenderMaterial::getTexture( uint32_t _index ) const

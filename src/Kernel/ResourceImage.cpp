@@ -39,7 +39,7 @@ namespace Mengine
         {
             const FilePath & filePath = m_texture->getFileName();
 
-            LOGGER_INFO( "ResourceImage::_release %s release texture %s"
+            LOGGER_INFO( "'%s' release texture '%s'"
                 , this->getName().c_str()
                 , filePath.c_str()
             );
@@ -51,36 +51,12 @@ namespace Mengine
         {
             const FilePath & filePath = m_textureAlpha->getFileName();
 
-            LOGGER_INFO( "ResourceImage::_release %s release texture alpha %s"
+            LOGGER_INFO( "'%s' release texture alpha '%s'"
                 , this->getName().c_str()
                 , filePath.c_str()
             );
 
             m_textureAlpha = nullptr;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImage::correctUVImage( const mt::vec2f & _in, mt::vec2f * _out ) const
-    {
-        if( m_uvImageRotate == false )
-        {
-            mt::uv4_quad_point( *_out, m_uvTextureImage, _in );
-        }
-        else
-        {
-            mt::multiply_tetragon_uv4_v2( *_out, m_uvTextureImage, _in );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImage::correctUVAlpha( const mt::vec2f & _in, mt::vec2f * _out ) const
-    {
-        if( m_uvAlphaRotate == false )
-        {
-            mt::uv4_quad_point( *_out, m_uvTextureAlpha, _in );
-        }
-        else
-        {
-            mt::multiply_tetragon_uv4_v2( *_out, m_uvTextureAlpha, _in );
         }
     }
 }

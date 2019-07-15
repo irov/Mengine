@@ -41,6 +41,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::setCurrentScene( const ScenePtr & _scene, bool _immediately, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
     {
+        if( this->isInitializeService() == false )
+        {
+            return false;
+        }
+
         if( m_commands.empty() == false )
         {
             return false;
@@ -66,6 +71,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::restartCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb )
     {
+        if( this->isInitializeService() == false )
+        {
+            return false;
+        }
+
         if( m_commands.empty() == false )
         {
             return false;
@@ -92,6 +102,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::removeCurrentScene( bool _immediately, const SceneChangeCallbackInterfacePtr & _cb )
     {
+        if( this->isInitializeService() == false )
+        {
+            return false;
+        }
+
         if( m_commands.empty() == false )
         {
             return false;

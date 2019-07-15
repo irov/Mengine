@@ -52,7 +52,6 @@ src
     PlayerServiceInterface.h
     SchedulerInterface.h
     PickerInterface.h
-    PickerTrapInterface.h
     PickerServiceInterface.h
     PrototypeGeneratorInterface.h
     PrototypeServiceInterface.h

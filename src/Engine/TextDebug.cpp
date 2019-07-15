@@ -77,7 +77,7 @@ namespace Mengine
                 tl.advanceCharOffset( cd, 1.f, offset );
 
                 RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
+                    ->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 1, &cd.textureMask, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
 
                 if( new_chunk.material == material )
                 {

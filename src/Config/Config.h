@@ -4,6 +4,10 @@
 #define MENGINE_MAX_PATH 260
 #endif
 
+#define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MENGINE_MIN(a, b) ((a) < (b) ? (a) : (b))
+
+
 #ifndef MENGINE_UNUSED
 #define MENGINE_UNUSED(X) ((void)X)
 #endif

@@ -54,16 +54,15 @@ namespace Mengine
             , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
     public:
-        // Render frame into _image
-        // int rect[4] - rectangle represents desired frame area in pixels
         virtual bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) = 0;
 
     public:
-        // входные данные: матрица 4 на 4
         virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
         virtual	void setViewMatrix( const mt::mat4f & _view ) = 0;
         virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
+    public:
+        virtual void setTextureMask( uint32_t _index, const mt::uv4f & _mask ) = 0;
         virtual void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) = 0;
 
     public:
@@ -142,7 +141,8 @@ namespace Mengine
         virtual uint32_t getTextureMemoryUse() const = 0;
         virtual uint32_t getTextureCount() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define RENDER_SYSTEM()\
     ((Mengine::RenderSystemInterface*)SERVICE_GET(Mengine::RenderSystemInterface))    
-}
+//////////////////////////////////////////////////////////////////////////

@@ -44,10 +44,14 @@ namespace Mengine
             , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
         void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
-        // Render frame into _image
-        // int rect[4] - rectangle represents desired frame area in pixels
+        
+    public:
         bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
-        // входные данные: матрица 4 на 4
+        
+    public:
+        void setTextureMask( uint32_t _index, const mt::uv4f & _mask ) override;
+
+    public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
         void setViewMatrix( const mt::mat4f & _modelView ) override;
         void setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix ) override;
@@ -231,6 +235,7 @@ namespace Mengine
         typedef stdex::intrusive_list<DX9RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
         IntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
 
+        mt::uv4f m_textureMasks[MENGINE_MAX_TEXTURE_STAGES];
 
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_modelViewMatrix;

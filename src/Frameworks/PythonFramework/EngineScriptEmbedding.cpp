@@ -2562,7 +2562,7 @@ namespace Mengine
                 return pyret;
             }
 
-            for( PickerInterface * picker : pickers )
+            for( const PickerInterfacePtr & picker : pickers )
             {
                 Scriptable * scriptable = picker->getPickerScriptable();
 

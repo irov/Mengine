@@ -43,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     int32_t LoggerOperator::makeTimeStamp( Char * _buffer, int32_t _offset ) const
     {
-        if( SERVICE_EXIST( PlatformInterface ) == false )
+        if( SERVICE_IS_INITIALIZE( PlatformInterface ) == false )
         {
             return 0;
         }
@@ -130,6 +130,11 @@ namespace Mengine
             this->logMessage( _format, size + 1 );
 
             return;
+        }
+
+        if( size > MENGINE_LOGGER_MAX_MESSAGE - 2 )
+        {
+            size = MENGINE_LOGGER_MAX_MESSAGE - 2;
         }
 
         str[size + 0] = '\n';

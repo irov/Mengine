@@ -27,6 +27,14 @@ namespace Mengine
 
     public:
         void foreachPickerChildren( const LambdaPicker & _lambda ) override;
+        void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) override;
+
+    public:
+        void setPickerEnable( bool _enable ) override;
+        MENGINE_INLINE bool isPickerEnable() const override;
+
+    public:
+        MENGINE_INLINE bool isPickerDummy() const override;
 
     public:
         void setPickerPicked( bool _picked ) override;
@@ -35,8 +43,6 @@ namespace Mengine
         MENGINE_INLINE bool isPickerPressed() const override;
         void setPickerHandle( bool _handle ) override;
         MENGINE_INLINE bool isPickerHandle() const override;
-        void setPickerDead( bool _dead ) override;
-        MENGINE_INLINE bool isPickerDead() const override;
         void setPickerExclusive( bool _exclusive ) override;
         MENGINE_INLINE bool isPickerExclusive() const override;
 
@@ -56,16 +62,27 @@ namespace Mengine
         typedef Vector<BasePicker *> VectorBasePicker;
         VectorBasePicker m_pickerChildren;
 
+        bool m_pickerEnable;
+
         bool m_pickerPicked;
         bool m_pickerPressed;
         bool m_pickerHandle;
-        bool m_pickerDead;
         bool m_pickerExclusive;
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE BasePicker * BasePicker::getRelationPicker() const
     {
         return m_relationPicker;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool BasePicker::isPickerEnable() const
+    {
+        return m_pickerEnable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool BasePicker::isPickerDummy() const
+    {
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BasePicker::isPickerPicked() const
@@ -81,11 +98,6 @@ namespace Mengine
     MENGINE_INLINE bool BasePicker::isPickerHandle() const
     {
         return m_pickerHandle;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool BasePicker::isPickerDead() const
-    {
-        return m_pickerDead;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE bool BasePicker::isPickerExclusive() const

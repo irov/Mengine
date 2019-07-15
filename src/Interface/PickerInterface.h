@@ -32,6 +32,14 @@ namespace Mengine
     public:
         typedef Lambda<void( PickerInterface * )> LambdaPicker;
         virtual void foreachPickerChildren( const LambdaPicker & _lambda ) = 0;
+        virtual void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) = 0;
+
+    public:
+        virtual void setPickerEnable( bool _enable ) = 0;
+        virtual bool isPickerEnable() const = 0;
+
+    public:
+        virtual bool isPickerDummy() const = 0;
 
     public:
         virtual void setPickerPicked( bool _picked ) = 0;
@@ -40,8 +48,6 @@ namespace Mengine
         virtual bool isPickerPressed() const = 0;
         virtual void setPickerHandle( bool _picked ) = 0;
         virtual bool isPickerHandle() const = 0;
-        virtual void setPickerDead( bool _picked ) = 0;
-        virtual bool isPickerDead() const = 0;
         virtual void setPickerExclusive( bool _picked ) = 0;
         virtual bool isPickerExclusive() const = 0;
 

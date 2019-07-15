@@ -29,8 +29,6 @@ namespace Mengine
 
         const Color & getColor() const override;
 
-        void correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) override;
-
     protected:
         bool update( const UpdateContext * _context ) override;
 

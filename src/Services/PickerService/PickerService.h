@@ -11,7 +11,7 @@ namespace Mengine
 {
     struct PickerStateDesc
     {
-        PickerInterface * picker;
+        PickerInterfacePtr picker;
 
         RenderViewportInterfacePtr viewport;
         RenderCameraInterfacePtr camera;
@@ -82,6 +82,7 @@ namespace Mengine
         RenderScissorInterfacePtr m_scissor;
 
         VectorPickerStates m_states;
+        //VectorPickerStates m_statesAux;
 
         bool m_block;
         bool m_handleValue;

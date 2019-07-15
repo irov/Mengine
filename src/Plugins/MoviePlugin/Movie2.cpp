@@ -2560,34 +2560,16 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        if( mesh.uv_cache_userdata == AE_NULLPTR )
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
-                            for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
-                            {
-                                RenderVertex2D & v = vertices[index];
+                            const float * mesh_uv = mesh.uv[index];
 
-                                mt::vec2f uv;
-                                const float * uv2 = mesh.uv[index];
-                                uv.from_f2( uv2 );
+                            RenderVertex2D & v = vertices[index];
 
-                                resourceImage->correctUVImage( uv, v.uv + 0 );
-                                resourceImage->correctUVAlpha( uv, v.uv + 1 );
-                            }
+                            v.uv[0].from_f2( mesh_uv );
+                            v.uv[1].from_f2( mesh_uv );
                         }
-                        else
-                        {
-                            const mt::vec2f * uvs = reinterpret_cast<const mt::vec2f *>(mesh.uv_cache_userdata);
-
-                            for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
-                            {
-                                RenderVertex2D & v = vertices[index];
-
-                                const mt::vec2f & uv = uvs[index];
-
-                                v.uv[0] = uv;
-                                v.uv[1] = uv;
-                            }
-                        }
+                        
 
                         if( mesh.shader_userdata != AE_NULLPTR )
                         {
@@ -2595,10 +2577,10 @@ namespace Mengine
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            mt::vec2f uv_zero;
-                            mt::vec2f uv_one;
-                            resourceImage->correctUVImage( mt::vec2f( 0.f, 0.f ), &uv_zero );
-                            resourceImage->correctUVImage( mt::vec2f( 1.f, 1.f ), &uv_one );
+                            const mt::uv4f & uv = resourceImage->getUVImage();
+
+                            const mt::vec2f & uv_zero = uv.p0;
+                            const mt::vec2f & uv_one = uv.p2;
 
                             const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
 
@@ -2717,8 +2699,8 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            surface->correctUV( 0, uv, v.uv + 0 );
-                            surface->correctUV( 1, uv, v.uv + 1 );
+                            v.uv[0] = uv;
+                            v.uv[1] = uv;
 
                             v.color = total_mesh_color;
                         }
@@ -2753,7 +2735,6 @@ namespace Mengine
                         vertex_iterator += mesh.vertexCount;
 
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
-                        const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
                         const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_userdata);
 
@@ -2777,10 +2758,7 @@ namespace Mengine
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            uv.from_f2( &mesh.uv[index][0] );
-
-                            resourceImage->correctUVImage( uv, v.uv + 0 );
+                            v.uv[0].from_f2( &mesh.uv[index][0] );
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -2788,7 +2766,7 @@ namespace Mengine
                                 vp.to_vec2f()
                             );
 
-                            resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
+                            v.uv[1] = uv_track_matte;
 
                             v.color = total_mesh_color;
                         }
@@ -2811,27 +2789,24 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &track_matte_mesh->uv[index][0] );
 
-                            mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
-
-                            if( uvbb[0] > uv_correct.x )
+                            if( uvbb[0] > uv.x )
                             {
-                                uvbb[0] = uv_correct.x;
+                                uvbb[0] = uv.x;
                             }
 
-                            if( uvbb[1] > uv_correct.y )
+                            if( uvbb[1] > uv.y )
                             {
-                                uvbb[1] = uv_correct.y;
+                                uvbb[1] = uv.y;
                             }
 
-                            if( uvbb[2] < uv_correct.x )
+                            if( uvbb[2] < uv.x )
                             {
-                                uvbb[2] = uv_correct.x;
+                                uvbb[2] = uv.x;
                             }
 
-                            if( uvbb[3] < uv_correct.y )
+                            if( uvbb[3] < uv.y )
                             {
-                                uvbb[3] = uv_correct.y;
+                                uvbb[3] = uv.y;
                             }
                         }
 
@@ -2859,7 +2834,6 @@ namespace Mengine
                         surfaceTrackMatte->compile();
 
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
-                        const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
                         const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_userdata);
 
@@ -2886,7 +2860,7 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            resourceImage->correctUVImage( uv, v.uv + 0 );
+                            v.uv[0] = uv;
 
                             mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
@@ -2894,7 +2868,7 @@ namespace Mengine
                                 vp.to_vec2f()
                             );
 
-                            resourceTrackMatteImage->correctUVAlpha( uv_track_matte, v.uv + 1 );
+                            v.uv[1] = uv_track_matte;
 
                             v.color = total_mesh_color;
                         }
@@ -2917,27 +2891,24 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &track_matte_mesh->uv[index][0] );
 
-                            mt::vec2f uv_correct;
-                            resourceTrackMatteImage->correctUVAlpha( uv, &uv_correct );
-
-                            if( uvbb[0] > uv_correct.x )
+                            if( uvbb[0] > uv.x )
                             {
-                                uvbb[0] = uv_correct.x;
+                                uvbb[0] = uv.x;
                             }
 
-                            if( uvbb[1] > uv_correct.y )
+                            if( uvbb[1] > uv.y )
                             {
-                                uvbb[1] = uv_correct.y;
+                                uvbb[1] = uv.y;
                             }
 
-                            if( uvbb[2] < uv_correct.x )
+                            if( uvbb[2] < uv.x )
                             {
-                                uvbb[2] = uv_correct.x;
+                                uvbb[2] = uv.x;
                             }
 
-                            if( uvbb[3] < uv_correct.y )
+                            if( uvbb[3] < uv.y )
                             {
-                                uvbb[3] = uv_correct.y;
+                                uvbb[3] = uv.y;
                             }
                         }
 

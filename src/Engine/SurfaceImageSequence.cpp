@@ -451,35 +451,6 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out )
-    {
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR( "'%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
-
-        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
-
-        switch( _index )
-        {
-        case 0:
-            {
-                resourceImage->correctUVImage( _in, _out );
-            } break;
-        case 1:
-            {
-                resourceImage->correctUVAlpha( _in, _out );
-            } break;
-        default:
-            {
-            }break;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImageSequence::getColor() const
     {
         if( this->isCompile() == false )

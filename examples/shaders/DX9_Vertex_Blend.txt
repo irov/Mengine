@@ -1,4 +1,6 @@
 float4x4 ModelViewMatrix;
+float4 TextureMask0;
+float4 TextureMask1;
 
 struct a2v { 
     float4 pos : POSITION;
@@ -9,13 +11,22 @@ struct a2v {
 struct v2p {
     float4 pos : POSITION;
     float4 color : COLOR0;
-    float2 tex0 : TEXCOORD0;      
+    float2 tex0 : TEXCOORD0;
 };
 
 void main(in a2v IN, out v2p OUT)
 {
     OUT.pos = mul(IN.pos, ModelViewMatrix);
     OUT.color = IN.color;
-    OUT.tex0 = IN.tex0;
+    
+    float2 p0 = float2(TextureMask0.x, TextureMask0.y);
+    float2 p1 = float2(TextureMask0.z, TextureMask0.w);
+    float2 p2 = float2(TextureMask1.x, TextureMask1.y);
+    float2 p3 = float2(TextureMask1.z, TextureMask1.w);    
+    float2 pw = p1 - p0;
+    float2 ph = p3 - p0;
+    
+    OUT.tex0.x = p0.x + pw.x * IN.tex0.x + ph.x * IN.tex0.y;
+    OUT.tex0.y = p0.y + pw.y * IN.tex0.x + ph.y * IN.tex0.y;
 }
 

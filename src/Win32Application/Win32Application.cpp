@@ -69,8 +69,6 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
 SERVICE_EXTERN( Bootstrapper );
 
-PLUGIN_EXPORT( Zip );
-PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( Win32FileGroup );
 
 namespace Mengine
@@ -93,17 +91,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32Application::~Win32Application()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeArchiveService_()
-    {
-        LOGGER_INFO( "Initialize Zip..." );
-        PLUGIN_CREATE( Zip );
-        
-        LOGGER_INFO( "Initialize LZ4..." );
-        PLUGIN_CREATE( LZ4 );
-        
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::loadApplicationConfig_()
@@ -301,7 +288,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeLogFile_()
+    bool Win32Application::initializeLoggerFile_()
     {
         bool nologs = HAS_OPTION( "nologs" );
 
@@ -375,7 +362,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeLogService_()
+    bool Win32Application::initializeLoggerService_()
     {
         if( LOGGER_SERVICE()
             ->isSilent() == true )
@@ -419,7 +406,7 @@ namespace Mengine
 
         SERVICE_WAIT( LoggerServiceInterface, [this]()
         {
-            if( this->initializeLogService_() == false )
+            if( this->initializeLoggerService_() == false )
             {
                 return false;
             }
@@ -454,17 +441,7 @@ namespace Mengine
                 return false;
             }
 
-            if( this->initializeLogFile_() == false )
-            {
-                return false;
-            }
-
-            return true;
-        } );
-
-        SERVICE_WAIT( ArchiveServiceInterface, [this]()
-        {
-            if( this->initializeArchiveService_() == false )
+            if( this->initializeLoggerFile_() == false )
             {
                 return false;
             }
@@ -495,6 +472,8 @@ namespace Mengine
 
             return false;
         }
+
+        LOGGER_INFO( "initialize Game..." );
         
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -640,10 +619,4 @@ namespace Mengine
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );        
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32Application::update()
-    {
-        //
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

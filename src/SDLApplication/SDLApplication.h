@@ -42,14 +42,12 @@ namespace Mengine
         bool loadApplicationConfig_();
 
     protected:
-        bool initializeFileEngine_();
-        bool initializeConfigEngine_();
+        bool initializeOptionsService_( const int argc, char ** argv );
+        bool initializeFileService_();
+        bool initializeConfigService_();
         bool initializeUserDirectory_();
         bool initializeLoggerFile_();
-        bool initializeLoggerEngine_();
-        bool initializeRenderEngine_();
-        bool initializeSoundEngine_();
-        bool initializeArchiveService_();
+        bool initializeLoggerService_();
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

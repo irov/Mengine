@@ -170,6 +170,8 @@ namespace Mengine
         m_currentRenderTransformation = nullptr;
         m_currentRenderScissor = nullptr;
 
+        m_poolRenderPass.clear();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
 
         m_factoryRenderBatch = nullptr;

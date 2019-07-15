@@ -48,27 +48,6 @@ namespace Mengine
         virtual void stopServices() = 0;
 
     public:
-        template<class T>
-        bool finalizeServiceT()
-        {
-            const Char * name = T::getStaticServiceID();
-
-            bool successful = this->finalizeService( name );
-
-            return successful;
-        }
-
-        template<class T>
-        bool destroyServiceT()
-        {
-            const Char * name = T::getStaticServiceID();
-
-            bool successful = this->destroyService( name );
-
-            return successful;
-        }
-
-    public:
         virtual void destroy() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

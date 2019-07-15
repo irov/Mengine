@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/FileGroupInterface.h"
+#include "Interface/RenderImageInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/Rect.h"
@@ -9,9 +10,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class RenderTextureInterface
         : public Mixin
     {
@@ -29,8 +27,8 @@ namespace Mengine
 
         virtual const mt::uv4f & getUV() const = 0;
 
-        virtual void setCategory( const FileGroupInterfacePtr & _fileGroup ) = 0;
-        virtual const FileGroupInterfacePtr & getCategory() const = 0;
+        virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
+        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
 
         virtual void setFileName( const FilePath & _fileName ) = 0;
         virtual const FilePath & getFileName() const = 0;

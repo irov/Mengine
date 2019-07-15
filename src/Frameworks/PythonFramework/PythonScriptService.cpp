@@ -214,7 +214,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PythonScriptService::PythonScriptService()
         : m_kernel( nullptr )
-        , m_moduleMenge( nullptr )
+        , m_moduleMengine( nullptr )
         , m_initializeModules( false )
     {
     }
@@ -248,14 +248,14 @@ namespace Mengine
 
         pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, nullptr );
 
-        m_moduleMenge = this->initModule( "Menge" );
+        m_moduleMengine = this->initModule( "Menge" );
 
         this->addGlobalModule( "Menge"
-            , m_moduleMenge
+            , m_moduleMengine
         );
 
         this->addGlobalModule( "Mengine"
-            , m_moduleMenge
+            , m_moduleMengine
         );
 
         uint32_t python_version = kernel->get_python_version();
@@ -264,7 +264,7 @@ namespace Mengine
             , pybind::ptr( m_kernel, python_version )
         );
 
-        kernel->set_currentmodule( m_moduleMenge );
+        kernel->set_currentmodule( m_moduleMengine );
 
         pybind::interface_<PythonScriptLogger>( m_kernel, "PythonScriptLogger", true )
             .def_native_kernel( "write", &PythonScriptLogger::py_write )
@@ -424,6 +424,9 @@ namespace Mengine
         m_kernel->remove_scope<PythonScriptModuleFinder>();
 
         m_bootstrapperModules.clear();
+
+        m_prototypies.clear();
+        m_poolPythonString.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
@@ -780,6 +783,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::stringize( PyObject * _object, ConstString & _cstr )
     {
+#ifdef MENGINE_DEBUG
         if( m_kernel->string_check( _object ) == false )
         {
             LOGGER_ERROR( "invalid stringize object '%s'"
@@ -788,6 +792,7 @@ namespace Mengine
 
             return false;
         }
+#endif
 
         if( m_kernel->string_size( _object ) == 0 )
         {
@@ -798,7 +803,7 @@ namespace Mengine
 
         ConstStringHolderPythonString * holder = m_poolPythonString.createT();
 
-        holder->setPythonObject( m_kernel, (PyObject*)_object );
+        holder->setPythonObject( m_kernel, (PyObject *)_object );
 
         STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr );

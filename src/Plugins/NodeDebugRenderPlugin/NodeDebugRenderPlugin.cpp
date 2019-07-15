@@ -74,11 +74,11 @@ namespace Mengine
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ) );
 
-        SERVICE_FINALIZE( Mengine::NodeDebugRenderServiceInterface );
+        SERVICE_FINALIZE( NodeDebugRenderService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderPlugin::_destroy()
+    void NodeDebugRenderPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Mengine::NodeDebugRenderServiceInterface );
+        SERVICE_DESTROY( NodeDebugRenderService );
     }
 }

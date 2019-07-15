@@ -226,14 +226,19 @@ namespace Mengine
         return Helper::s_getValueT( m_stores, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConfigService::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const
+    void ConfigService::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _values ) const
     {
-        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _value );
+        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConfigService::getValues( const Char * _section, const Char * _key, VectorString & _value ) const
+    void ConfigService::getValues( const Char * _section, const Char * _key, VectorConstString & _values ) const
     {
-        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _value );
+        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ConfigService::getValues( const Char * _section, const Char * _key, VectorString & _values ) const
+    {
+        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConfigService::getSection( const Char * _section, MapParams & _params ) const

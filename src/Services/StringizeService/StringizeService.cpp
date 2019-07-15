@@ -49,7 +49,7 @@ namespace Mengine
             }
         }
 
-        for( uint32_t i = 0; i != 4096; ++i )
+        for( uint32_t i = 0; i != MENGINE_STRINGIZE_HOLDER_COUNT; ++i )
         {
             IntrusiveListConstStringHolder & holdres = m_holdres[i];
 
@@ -306,7 +306,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     StringizeService::IntrusiveListConstStringHolder & StringizeService::getList_( ConstStringHolder::hash_type _hash )
     {
-        uint32_t branch = (uint32_t)_hash % 4096;
+        uint32_t branch = (uint32_t)_hash % MENGINE_STRINGIZE_HOLDER_COUNT;
         IntrusiveListConstStringHolder & list = m_holdres[branch];
 
         return list;

@@ -40,6 +40,7 @@ namespace Mengine
 
     public:
         void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const override;
+        void getValues( const Char * _section, const Char * _key, VectorConstString & _value ) const override;
         void getValues( const Char * _section, const Char * _key, VectorString & _value ) const override;
 
     public:

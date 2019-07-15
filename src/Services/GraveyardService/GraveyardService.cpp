@@ -85,7 +85,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = _texture->getCategory();
+        const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
         const FilePath & filePath = _texture->getFileName();
 
         if( filePath.empty() == true )

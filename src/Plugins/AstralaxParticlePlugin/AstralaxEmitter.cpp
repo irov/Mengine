@@ -68,13 +68,13 @@ namespace Mengine
     bool AstralaxEmitter::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceParticle, false, "emitter '%s' resource is null"
-            , m_name.c_str()
+            , this->getName().c_str()
         );
 
         if( m_resourceParticle->compile() == false )
         {
             LOGGER_ERROR( "emitter '%s' resource '%s' not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceParticle->getName().c_str()
             );
 
@@ -84,7 +84,7 @@ namespace Mengine
         AstralaxEmitterInterfacePtr emitter = m_resourceParticle->createEmitter( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( emitter, false, "emitter '%s' can't create emitter source '%s'"
-            , m_name.c_str()
+            , this->getName().c_str()
             , m_resourceParticle->getName().c_str()
         );
 
@@ -286,7 +286,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "emitter '%s' can't compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return false;
@@ -678,7 +678,7 @@ namespace Mengine
         if( Helper::triangulate( m_polygon, points ) == false )
         {
             LOGGER_ERROR( "emitter '%s' wrong polygon"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return false;
@@ -687,7 +687,7 @@ namespace Mengine
         if( points.empty() == true )
         {
             LOGGER_ERROR( "emitter '%s' empty points"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return false;
@@ -699,7 +699,7 @@ namespace Mengine
         if( _emitter->changeEmitterModel( triangles_ptr, (uint32_t)triangles_size ) == false )
         {
             LOGGER_ERROR( "emitter '%s' changeEmitterModel Error polygon"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return false;
@@ -734,7 +734,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "emitter '%s' can't compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return 0.f;

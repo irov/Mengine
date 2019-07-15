@@ -393,7 +393,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "'%s' not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return 0;
@@ -465,7 +465,7 @@ namespace Mengine
                 ->existFont( _fontName, &font ) == false )
             {
                 LOGGER_ERROR( "'%s' not found font '%s'"
-                    , m_name.c_str()
+                    , this->getName().c_str()
                     , _fontName.c_str()
                 );
 

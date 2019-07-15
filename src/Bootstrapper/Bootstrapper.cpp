@@ -170,6 +170,22 @@ PLUGIN_EXPORT( JSON );
 PLUGIN_EXPORT( Texturepacker );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
+PLUGIN_EXPORT( AndroidNativeFacebook );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
+PLUGIN_EXPORT( AndroidNativeUnityAds );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
+PLUGIN_EXPORT( AndroidNativeAdMob );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
+PLUGIN_EXPORT( AndroidNativeDevToDev );
+#endif
+
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -425,22 +441,6 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-        PLUGIN_EXPORT( AndroidNativeFacebook );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-        PLUGIN_EXPORT( AndroidNativeUnityAds );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-        PLUGIN_EXPORT( AndroidNativeAdMob );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-        PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
 #	undef MENGINE_ADD_PLUGIN

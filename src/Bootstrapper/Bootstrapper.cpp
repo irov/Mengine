@@ -74,6 +74,9 @@ SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
 
+PLUGIN_EXPORT( Zip );
+PLUGIN_EXPORT( LZ4 );
+
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
 PLUGIN_EXPORT( Amplifier );
@@ -251,7 +254,12 @@ namespace Mengine
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( FileService );
         SERVICE_CREATE( ConfigService );
+
         SERVICE_CREATE( ArchiveService );
+
+        PLUGIN_CREATE( Zip );
+        PLUGIN_CREATE( LZ4 );
+
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
         SERVICE_CREATE( PrototypeService );
@@ -401,6 +409,38 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
         MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
+        PLUGIN_EXPORT( AndroidNativeFacebook );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
+        PLUGIN_EXPORT( AndroidNativeUnityAds );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
+        PLUGIN_EXPORT( AndroidNativeAdMob );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
+        PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
 #	undef MENGINE_ADD_PLUGIN

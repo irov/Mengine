@@ -2028,7 +2028,7 @@ namespace Mengine
         if( m_resourceMovie2->compile() == false )
         {
             LOGGER_ERROR( "name '%s' resource %s not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceMovie2->getName().c_str()
             );
 
@@ -2038,7 +2038,7 @@ namespace Mengine
         const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( compositionData, false, "name '%s' resource %s not found composition '%s'"
-            , m_name.c_str()
+            , this->getName().c_str()
             , m_resourceMovie2->getName().c_str()
             , m_compositionName.c_str()
         );
@@ -2080,7 +2080,7 @@ namespace Mengine
         const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
         MENGINE_ASSERTION_MEMORY_PANIC( composition, false, "name '%s' resource '%s' invalid create composition '%s'"
-            , m_name.c_str()
+            , this->getName().c_str()
             , m_resourceMovie2->getName().c_str()
             , m_compositionName.c_str()
         );

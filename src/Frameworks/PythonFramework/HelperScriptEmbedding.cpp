@@ -1982,49 +1982,60 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_getConfigBool( const Char * _section, const Char * _key, bool _default )
         {
-            bool result = CONFIG_SERVICE()
-                ->getValue( _section, _key, _default );
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            bool result = config->getValue( _section, _key, _default );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t s_getConfigInt( const Char * _section, const Char * _key, int32_t _default )
         {
-            int32_t result = CONFIG_SERVICE()
-                ->getValue( _section, _key, _default );
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            int32_t result = config->getValue( _section, _key, _default );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_getConfigUInt( const Char * _section, const Char * _key, uint32_t _default )
         {
-            uint32_t result = CONFIG_SERVICE()
-                ->getValue( _section, _key, _default );
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            uint32_t result = config->getValue( _section, _key, _default );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         uint64_t s_getConfigUInt64( const Char * _section, const Char * _key, uint64_t _default )
         {
-            uint64_t result = CONFIG_SERVICE()
-                ->getValue( _section, _key, _default );
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            uint64_t result = config->getValue( _section, _key, _default );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         float s_getConfigFloat( const Char * _section, const Char * _key, float _default )
         {
-            float result = CONFIG_SERVICE()
-                ->getValue( _section, _key, _default );
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            float result = config->getValue( _section, _key, _default );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
         const Char * s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
         {
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
 
-            const Char * result = CONFIG_SERVICE()
-                ->getValue( _section, _key, _default );
+            const Char * result = config->getValue( _section, _key, _default );
 
             return result;
         }

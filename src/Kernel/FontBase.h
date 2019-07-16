@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/TextFontInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Compilable.h"
@@ -60,7 +61,7 @@ namespace Mengine
         bool prepareGlyph( const U32String & _text ) override;
 
     protected:
-        bool initializeBase_( const IniUtil::IniStore & _ini );
+        bool initializeBase_( const ConfigInterfacePtr & _config );
 
     protected:
         virtual bool _validateGlyphes( const U32String & _codes ) const = 0;

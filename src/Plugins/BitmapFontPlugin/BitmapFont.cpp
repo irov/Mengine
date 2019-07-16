@@ -9,7 +9,6 @@
 
 #include "BitmapFontInterface.h"
 
-#include "Kernel/IniUtil.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -26,17 +25,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini )
+    bool BitmapFont::initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
     {
         m_fileGroup = _fileGroup;
 
-        if( this->initializeBase_( _ini ) == false )
+        if( this->initializeBase_( _config ) == false )
         {
             return false;
         }
 
         FilePath glyphPath;
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Glyph", glyphPath ) == false )
+        if( _config->hasValue( m_name.c_str(), "Glyph", &glyphPath ) == false )
         {
             LOGGER_ERROR( "invalid font %s don't setup Glyph"
                 , m_name.c_str()
@@ -57,7 +56,7 @@ namespace Mengine
 
         m_height = m_glyph->getHeight();
 
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Image", m_pathFontImage ) == false )
+        if( _config->hasValue( m_name.c_str(), "Image", &m_pathFontImage ) == false )
         {
             LOGGER_ERROR( "invalid font %s dont setup Image"
                 , m_name.c_str()

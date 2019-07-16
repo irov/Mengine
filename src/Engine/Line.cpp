@@ -50,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Line::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr, nullptr, MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
         return material;
     }

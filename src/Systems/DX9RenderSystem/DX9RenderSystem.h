@@ -46,10 +46,7 @@ namespace Mengine
         void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
         
     public:
-        bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
-        
-    public:
-        void setTextureMask( uint32_t _index, const mt::uv4f & _mask ) override;
+        bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;        
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
@@ -234,8 +231,6 @@ namespace Mengine
 
         typedef stdex::intrusive_list<DX9RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
         IntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
-
-        mt::uv4f m_textureMasks[MENGINE_MAX_TEXTURE_STAGES];
 
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_modelViewMatrix;

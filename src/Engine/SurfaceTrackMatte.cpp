@@ -130,6 +130,13 @@ namespace Mengine
         return color;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SurfaceTrackMatte::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    {
+        MENGINE_UNUSED( _index );
+
+        *_out = _in;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SurfaceTrackMatte::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );
@@ -188,22 +195,17 @@ namespace Mengine
 
         if( textureAlpha == nullptr )
         {
-            mt::uv4f uvs[2];
             RenderTextureInterfacePtr textures[2];
-
-            uvs[0] = m_resourceImage->getUVTextureImage();
             textures[0] = m_resourceImage->getTexture();
 
             const RenderTextureInterfacePtr & trackMatteTextureAlpha = m_resourceTrackMatteImage->getTextureAlpha();
 
             if( trackMatteTextureAlpha == nullptr )
             {
-                uvs[1] = m_resourceTrackMatteImage->getUVTextureImage();
                 textures[1] = m_resourceTrackMatteImage->getTexture();
             }
             else
             {
-                uvs[1] = m_resourceTrackMatteImage->getUVTextureAlpha();
                 textures[1] = trackMatteTextureAlpha;
             }
 
@@ -220,22 +222,22 @@ namespace Mengine
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     case EMB_ADD:
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     default:
@@ -258,22 +260,22 @@ namespace Mengine
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     case EMB_ADD:
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     default:
@@ -301,10 +303,6 @@ namespace Mengine
         }
         else
         {
-            mt::uv4f uvs[2];
-            uvs[0] = m_resourceImage->getUVTextureImage();
-            uvs[1] = m_resourceTrackMatteImage->getUVTextureAlpha();
-
             RenderTextureInterfacePtr textures[3];
             textures[0] = m_resourceImage->getTexture();
             textures[1] = textureAlpha;
@@ -333,22 +331,22 @@ namespace Mengine
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     case EMB_ADD:
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     default:
@@ -371,22 +369,22 @@ namespace Mengine
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     case EMB_ADD:
                         {
                             if( premultiply == false )
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                             else
                             {
-                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, uvs, textures, MENGINE_DOCUMENT_FUNCTION );
+                                material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY_EXTERNAL_ALPHA, PT_TRIANGLELIST, 3, textures, MENGINE_DOCUMENT_FUNCTION );
                             }
                         }break;
                     default:

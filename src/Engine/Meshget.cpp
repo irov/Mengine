@@ -201,8 +201,8 @@ namespace Mengine
             mt::vec3f & wm_pos = m_verticesWM[i].position;
             mt::mul_v3_v3_m4( wm_pos, pos, wm );
 
-            m_verticesWM[i].uv[0] = uv;
-            m_verticesWM[i].uv[1] = uv;
+            m_surface->correctUV( 0, uv, m_verticesWM[i].uv + 0 );
+            m_surface->correctUV( 1, uv, m_verticesWM[i].uv + 1 );
         }
     }
 }

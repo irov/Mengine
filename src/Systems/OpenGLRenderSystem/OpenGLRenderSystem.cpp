@@ -314,11 +314,6 @@ namespace Mengine
         this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureMask( uint32_t _index, const mt::uv4f & _mask )
-    {
-        m_textureMasks[_index] = _mask;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
     {
         MENGINE_UNUSED( _stage );
@@ -593,7 +588,6 @@ namespace Mengine
         }
 
         m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
-        m_currentProgram->bindTextureMask( m_textureMasks );
 
         if( m_currentProgramVariable != nullptr )
         {

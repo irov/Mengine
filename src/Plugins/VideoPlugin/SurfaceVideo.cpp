@@ -87,8 +87,6 @@ namespace Mengine
         m_uv.p1 = mt::vec2f( u, 0.f );
         m_uv.p2 = mt::vec2f( u, v );
         m_uv.p3 = mt::vec2f( 0.f, v );
-
-        m_textureMasks[0] = m_uv;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_activate()
@@ -233,6 +231,13 @@ namespace Mengine
         MENGINE_UNUSED( _index );
 
         return m_uv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceVideo::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    {
+        MENGINE_UNUSED( _index );
+
+        mt::uv4_quad_point( *_out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceVideo::getColor() const
@@ -563,7 +568,7 @@ namespace Mengine
     {
         this->updateVideoBuffer_();
 
-        RenderMaterialInterfacePtr material = this->makeTextureMaterial( 1, m_textureMasks, m_textures, false, MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialInterfacePtr material = this->makeTextureMaterial( 1, m_textures, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "surface %s invalid make material"
             , this->getName().c_str()

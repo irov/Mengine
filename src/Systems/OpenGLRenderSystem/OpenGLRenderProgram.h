@@ -69,8 +69,7 @@ namespace Mengine
         OpenGLRenderVertexAttributePtr m_vertexAttribute;
 
         uint32_t m_samplerCount;
-        
-        GLint m_samplerMaskLocation[MENGINE_MAX_TEXTURE_STAGES * 2];
+
         GLint m_matrixLocation[EPML_MAX_COUNT];
         GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
     };

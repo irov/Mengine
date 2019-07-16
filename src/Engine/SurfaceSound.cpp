@@ -94,6 +94,13 @@ namespace Mengine
         m_resourceSound->release();
     }
     //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    {
+        MENGINE_UNUSED( _index );
+
+        *_out = _in;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::update( const UpdateContext * _context )
     {
         MENGINE_UNUSED( _context );

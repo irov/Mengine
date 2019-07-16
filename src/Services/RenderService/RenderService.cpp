@@ -585,7 +585,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture, const mt::uv4f & _uv )
+    void RenderService::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture )
     {
         uint32_t texture_id = _texture->getId();
         uint32_t current_texture_id = m_currentTexturesID[_stageId];
@@ -598,8 +598,6 @@ namespace Mengine
 
             m_renderSystem->setTexture( _stageId, image );
         }
-
-        m_renderSystem->setTextureMask( _stageId, _uv );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::updateMaterial_( RenderMaterialInterface * _material )
@@ -627,16 +625,15 @@ namespace Mengine
 
         for( uint32_t stageId = 0; stageId != m_currentTextureStage; ++stageId )
         {
-            const mt::uv4f & uv = _material->getUV( stageId );
             const RenderTextureInterfacePtr & texture = _material->getTexture( stageId );
 
             if( texture == nullptr )
             {
-                this->updateTexture_( stageId, m_nullTexture, uv );
+                this->updateTexture_( stageId, m_nullTexture );
             }
             else
             {
-                this->updateTexture_( stageId, texture, uv );
+                this->updateTexture_( stageId, texture );
             }
         }
 
@@ -1384,7 +1381,7 @@ namespace Mengine
                 EPrimitiveType primitiveType = _material->getPrimitiveType();
 
                 const RenderMaterialInterfacePtr & new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr, nullptr, MENGINE_DOCUMENT_FUNCTION );
+                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
                 if( new_material == nullptr )
                 {

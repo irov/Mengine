@@ -12,7 +12,6 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/UserdataServiceInterface.h"
-#include "Interface/DataServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"

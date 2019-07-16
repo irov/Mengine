@@ -9,7 +9,6 @@ Bootstrapper
 INCLUDE_DIRECTORIES(
 	${THIRDPARTY_DIR}/stdex/include
     ${THIRDPARTY_DIR}/libmath/include
-    ${THIRDPARTY_DIR}/tinyini/include
     )
     
 ADD_MENGINE_LIBRARY()

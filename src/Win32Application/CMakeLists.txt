@@ -40,8 +40,7 @@ if(MENGINE_TOOLCHAIN_MSVC)
     SET(SRC_FILES ${SRC_FILES} Win32Application.rc)
 endif()
 
-INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/tinyini/include
+INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/libmath/include
     )
     

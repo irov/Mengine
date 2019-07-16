@@ -20,7 +20,8 @@ src
 	DecoderFactoryInterface.h
 	EncoderInterface.h
 	EncoderFactoryInterface.h
-	CodecServiceInterface.h	
+	CodecServiceInterface.h
+    ConfigInterface.h
     ConfigServiceInterface.h
     DataInterface.h
 	DataflowInterface.h

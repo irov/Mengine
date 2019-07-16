@@ -14,7 +14,6 @@
 #include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
-#include "Kernel/IniUtil.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -49,16 +48,16 @@ namespace Mengine
         m_ftlibrary = _ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini )
+    bool TTFFont::initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
     {
         m_fileGroup = _fileGroup;
 
-        if( this->initializeBase_( _ini ) == false )
+        if( this->initializeBase_( _config ) == false )
         {
             return false;
         }
 
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
+        if( _config->hasValue( m_name.c_str(), "Path", &m_ttfPath ) == false )
         {
             LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
                 , m_name.c_str()
@@ -67,7 +66,7 @@ namespace Mengine
             return false;
         }
 
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height ) == false )
+        if( _config->hasValue( m_name.c_str(), "Height", &m_height ) == false )
         {
             LOGGER_ERROR( "invalid font '%s' don't setup Height"
                 , m_name.c_str()
@@ -76,9 +75,9 @@ namespace Mengine
             return false;
         }
 
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "FEPath", m_ttfFEPath ) == true )
+        if( _config->hasValue( m_name.c_str(), "FEPath", &m_ttfFEPath ) == true )
         {
-            if( IniUtil::getIniValue( _ini, m_name.c_str(), "FEName", m_ttfFEName ) == false )
+            if( _config->hasValue( m_name.c_str(), "FEName", &m_ttfFEName ) == false )
             {
                 LOGGER_ERROR( "invalid font '%s' don't setup FEName"
                     , m_name.c_str()
@@ -88,7 +87,7 @@ namespace Mengine
             }
         }
 
-        IniUtil::getIniValue( _ini, m_name.c_str(), "FESample", m_FESample );
+        _config->hasValue( m_name.c_str(), "FESample", &m_FESample );
 
         for( uint32_t index = 0; index != FE_MAX_PINS; ++index )
         {

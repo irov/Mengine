@@ -39,7 +39,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/FileLogger.h"
-#include "Kernel/IniUtil.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
@@ -109,27 +108,16 @@ namespace Mengine
             return true;
         }
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->createConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open application settings %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid open application settings '%s'"
             , applicationPath.c_str()
-        );
+        );        
 
-        IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, stream ) == false )
-        {
-            LOGGER_ERROR( "invalid load application settings %s"
-                , applicationPath.c_str()
-            );
-
-            return false;
-        }
-
-        IniUtil::getIniValue( ini, "Game", "Path", m_configPaths );
-        IniUtil::getIniValue( ini, "Config", "Path", m_configPaths );
-
-        IniUtil::getIniValue( ini, "Resource", "Path", m_resourceConfigPath );
+        config->getValues( "Game", "Path", m_configPaths );
+        config->getValues( "Config", "Path", m_configPaths );
+        config->getValues( "Resource", "Path", m_resourceConfigPaths );
 
         return true;
     }
@@ -144,7 +132,7 @@ namespace Mengine
         for( const FilePath & filePath : m_configPaths )
         {
             if( CONFIG_SERVICE()
-                ->loadConfig( fileGroup, filePath ) == false )
+                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "invalid load config %s"
                     , filePath.c_str()
@@ -479,7 +467,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         if( APPLICATION_SERVICE()
-            ->initializeGame( fileGroup, m_resourceConfigPath ) == false )
+            ->initializeGame( fileGroup, m_resourceConfigPaths ) == false )
         {
             LOGGER_CRITICAL( "invalid initialize Game"
             );

@@ -16,8 +16,7 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Services
 )
 
-INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/tinyini/include
+INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/libmath/include
     ${THIRDPARTY_DIR}/metabuf/include
     ) 

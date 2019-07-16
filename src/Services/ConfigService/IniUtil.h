@@ -63,19 +63,6 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );
-        //////////////////////////////////////////////////////////////////////////
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const ConstString & _value );
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const String & _value );
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const Char * _value, size_t _size );
-        bool writeIniSection( const OutputStreamInterfacePtr & _file, const Char * _section, uint32_t _sectionSize );
-        //////////////////////////////////////////////////////////////////////////
-        template<class T, size_t I_Size>
-        static bool writeIniSection( const OutputStreamInterfacePtr & _file, T( &_section )[I_Size] )
-        {
-            bool result = writeIniSection( _file, _section, sizeof( _section ) - 1 );
-
-            return result;
-        }
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );        
     }
 }

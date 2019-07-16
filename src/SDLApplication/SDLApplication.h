@@ -64,6 +64,6 @@ namespace Mengine
         bool m_developmentMode;
 
         VectorFilePath m_configPaths;
-        FilePath m_resourceConfigPath;
+        VectorFilePath m_resourceConfigPaths;
     };
 }

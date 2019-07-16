@@ -1,7 +1,5 @@
 #include "FontBase.h"
 
-#include "Kernel/IniUtil.h"
-
 #include "Kernel/Logger.h"
 
 #include "utf8.h"
@@ -301,22 +299,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
+    bool FontBase::initializeBase_( const ConfigInterfacePtr & _config )
     {
         Color colorFont;
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colorFont ) == true )
+        if( _config->hasValue( m_name.c_str(), "ColorFont", &colorFont ) == true )
         {
             this->setColorFont( colorFont );
         }
 
         float lineOffset;
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "LineOffset", lineOffset ) == true )
+        if( _config->hasValue( m_name.c_str(), "LineOffset", &lineOffset ) == true )
         {
             this->setLineOffset( lineOffset );
         }
 
         float charOffset;
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "CharOffset", charOffset ) == true )
+        if( _config->hasValue( m_name.c_str(), "CharOffset", &charOffset ) == true )
         {
             this->setCharOffset( charOffset );
         }

@@ -148,13 +148,13 @@ namespace Mengine
         {
         case 0:
             {
-                const mt::uv4f & uv = m_resourceImage->getUVImage();
+                const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
 
                 return uv;
             } break;
         case 1:
             {
-                const mt::uv4f & uv = m_resourceImage->getUVAlpha();
+                const mt::uv4f & uv = m_resourceImage->getUVTextureAlpha();
 
                 return uv;
             } break;

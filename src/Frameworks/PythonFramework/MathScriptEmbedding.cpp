@@ -690,6 +690,7 @@ namespace Mengine
             ;
 
         pybind::struct_<Polygon>( _kernel, "Polygon" )
+            .def_constructor( pybind::init<>() )
             .def_convert( &ScriptMethod::Polygon_convert, nullptr )
             .def( "getPoints", &Polygon::getPoints )
             ;

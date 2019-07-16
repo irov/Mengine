@@ -19,7 +19,6 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
-#include "Interface/ChronometerServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
@@ -493,9 +492,6 @@ namespace Mengine
         {
             m_globalInputHandler->update();
         }
-
-        CHRONOMETER_SERVICE()
-            ->update();
 
         return true;
     }

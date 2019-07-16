@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Tags::removeTag( const ConstString & _tag )
     {
-        VectorConstString::const_iterator it_found = std::find( m_values.begin(), m_values.end(), _tag );
+        VectorConstString::iterator it_found = std::find( m_values.begin(), m_values.end(), _tag );
 
         if( it_found == m_values.end() )
         {
@@ -63,10 +63,5 @@ namespace Mengine
     const VectorConstString & Tags::getValues() const
     {
         return m_values;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Tags::swap( Tags & _tags )
-    {
-        m_values.swap( _tags.m_values );
     }
 }

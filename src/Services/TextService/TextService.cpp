@@ -519,7 +519,7 @@ namespace Mengine
             );
 
             ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
-            config->getValue( fontName.c_str(), "Type", &fontType );
+            config->hasValue( fontName.c_str(), "Type", &fontType );
 
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FUNCTION );

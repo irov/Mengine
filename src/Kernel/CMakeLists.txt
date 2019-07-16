@@ -341,8 +341,8 @@ Core
         
     GlyphCode.h
     
-    IniUtil.h
-    IniUtil.cpp
+    IniHelper.h
+    IniHelper.cpp
     
     HashType.h
    
@@ -549,7 +549,6 @@ Error
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/boost )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/utf8/source )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/tinyini/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

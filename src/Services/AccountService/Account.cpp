@@ -3,14 +3,15 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/IniUtil.h"
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
+#include "Kernel/IniHelper.h"
 
 namespace Mengine
 {
@@ -160,8 +161,10 @@ namespace Mengine
             return false;
         }
 
-        IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, m_fileGroup, m_settingsPath ) == false )
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->createConfig( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
+
+        if( config == nullptr )
         {
             LOGGER_ERROR( "parsing Account '%s' settings failed '%s'"
                 , m_id.c_str()
@@ -172,7 +175,7 @@ namespace Mengine
         }
 
         const Char * projectVersion_s;
-        if( IniUtil::getIniValue( ini, "ACCOUNT", "PROJECT_VERSION", &projectVersion_s ) == false )
+        if( config->hasValue( "ACCOUNT", "PROJECT_VERSION", &projectVersion_s ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found project version"
                 , m_id.c_str()
@@ -204,7 +207,7 @@ namespace Mengine
         }
 
         const Char * uid;
-        if( IniUtil::getIniValue( ini, "ACCOUNT", "UID", &uid ) == false )
+        if( config->hasValue( "ACCOUNT", "UID", &uid ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found uid"
                 , m_id.c_str()
@@ -225,7 +228,7 @@ namespace Mengine
             Setting & st = it->second;
 
             const Char * value;
-            if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), &value ) == false )
+            if( config->hasValue( "SETTINGS", key.c_str(), &value ) == false )
             {
                 LOGGER_MESSAGE( "account '%s' failed get setting '%s'"
                     , m_id.c_str()
@@ -251,7 +254,7 @@ namespace Mengine
             , m_settingsPath.c_str()
         );
 
-        IniUtil::writeIniSection( file, "[ACCOUNT]" );
+        Helper::writeIniSection( file, "[ACCOUNT]" );
 
         String projectVersion_s;
         if( Helper::unsignedToString( m_projectVersion, projectVersion_s ) == false )
@@ -259,10 +262,10 @@ namespace Mengine
             return false;
         }
 
-        IniUtil::writeIniSetting( file, "PROJECT_VERSION", projectVersion_s );
-        IniUtil::writeIniSetting( file, "UID", m_uid.data, AccountUID::size_data );
+        Helper::writeIniSetting( file, "PROJECT_VERSION", projectVersion_s );
+        Helper::writeIniSetting( file, "UID", m_uid.data, AccountUID::size_data );
 
-        IniUtil::writeIniSection( file, "[SETTINGS]" );
+        Helper::writeIniSection( file, "[SETTINGS]" );
 
         for( MapSettings::const_iterator
             it = m_settings.begin(),
@@ -273,7 +276,7 @@ namespace Mengine
             const ConstString & key = it->first;
             const Setting & st = it->second;
 
-            IniUtil::writeIniSetting( file, key.c_str(), st.value );
+            Helper::writeIniSetting( file, key.c_str(), st.value );
         }
 
         return true;

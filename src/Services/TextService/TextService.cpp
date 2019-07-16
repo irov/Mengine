@@ -8,12 +8,12 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/String.h"
-#include "Kernel/IniUtil.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -329,7 +329,7 @@ namespace Mengine
                     uint32_t value = 0;
                     if( sscanf( str_value, "%u", &value ) != 1 )
                     {
-                        LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
+                        LOGGER_ERROR( "'%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -341,7 +341,7 @@ namespace Mengine
                 }
                 else
                 {
-                    LOGGER_ERROR( "TextService::loadResource %s:%s invalid tag '%s' for text '%s'"
+                    LOGGER_ERROR( "'%s:%s' invalid tag '%s' for text '%s'"
                         , m_fileGroup->getName().c_str()
                         , m_filePath.c_str()
                         , str_key
@@ -352,7 +352,7 @@ namespace Mengine
 
             if( text.empty() == true && isEmpty == false )
             {
-                LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid text key '%s' value is empty"
+                LOGGER_ERROR( "'%s:%s' invalid text key '%s' value is empty"
                     , m_fileGroup->getName().c_str()
                     , m_filePath.c_str()
                     , text_key.c_str()
@@ -498,46 +498,35 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+    bool TextService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _fileGroup, _path ) == false )
-        {
-            LOGGER_ERROR( "TextService::loadFonts Invalid load settings '%s'"
-                , _path.c_str()
-            );
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->createConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
+            , _filePath.c_str()
+        );
 
         VectorConstString fonts;
-        IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
+        config->getValues( "GAME_FONTS", "Font", fonts );
 
         for( const ConstString & fontName : fonts )
         {
-            if( IniUtil::hasIniSection( ini, fontName.c_str() ) == false )
-            {
-                LOGGER_ERROR( "invalid '%s:%s' section for FONT '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _path.c_str()
-                    , fontName.c_str()
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_RETURN( config->hasSection( fontName.c_str() ) == true, false, "invalid '%s:%s' section for FONT '%s'"
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
+                , fontName.c_str()
+            );
 
             ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
-            IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType );
-
-            //bool precompile = false;
-            //IniUtil::getIniValue( ini, fontName.c_str(), "Precompile", precompile );
+            config->getValue( fontName.c_str(), "Type", &fontType );
 
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid initialize '%s:%s' font '%s' not found type '%s'"
                 , _fileGroup->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
                 , fontName.c_str()
                 , fontType.c_str()
             );
@@ -545,35 +534,21 @@ namespace Mengine
             font->setName( fontName );
             font->setType( fontType );
 
-            if( font->initialize( _fileGroup, ini ) == false )
+            if( font->initialize( _fileGroup, config ) == false )
             {
                 LOGGER_ERROR( "invalid initialize '%s:%s' font '%s'"
                     , _fileGroup->getName().c_str()
-                    , _path.c_str()
+                    , _filePath.c_str()
                     , fontName.c_str()
                 );
 
                 return false;
             }
 
-            //if( precompile == true )
-            //{
-            //    if( font->compileFont() == false )
-            //    {
-            //        LOGGER_ERROR( "invalid precompile '%s:%s' font %s"
-            //            , _fileGroup->getName().c_str()
-            //            , _path.c_str()
-            //            , fontName.c_str()
-            //        );
-
-            //        return false;
-            //    }
-            //}
-
             LOGGER_INFO( "add font '%s' path '%s:%s'"
                 , fontName.c_str()
                 , _fileGroup->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             m_fonts.emplace( fontName, font );
@@ -595,7 +570,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' invalidate!"
                         , _fileGroup->getName().c_str()
-                        , _path.c_str()
+                        , _filePath.c_str()
                         , font->getName().c_str()
                     );
 
@@ -611,7 +586,7 @@ namespace Mengine
 #endif
 
         ConstString defaultFontName;
-        if( IniUtil::getIniValue( ini, "GAME_FONTS", "Default", defaultFontName ) == true )
+        if( config->hasValue( "GAME_FONTS", "Default", &defaultFontName ) == true )
         {
             m_defaultFontName = defaultFontName;
         }
@@ -619,28 +594,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+    bool TextService::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _fileGroup, _path ) == false )
-        {
-            LOGGER_ERROR( "invalid load settings '%s'"
-                , _path.c_str()
-            );
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->createConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
+            , _filePath.c_str()
+        );
 
         VectorConstString fonts;
-        IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
+        config->getValues( "GAME_FONTS", "Font", fonts );
 
         for( const ConstString & fontName : fonts )
         {
-            if( IniUtil::hasIniSection( ini, fontName.c_str() ) == false )
+            if( config->hasSection( fontName.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid '%s:%s' section for FONT '%s'"
                     , _fileGroup->getName().c_str()
-                    , _path.c_str()
+                    , _filePath.c_str()
                     , fontName.c_str()
                 );
 

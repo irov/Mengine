@@ -17,7 +17,6 @@
 #include "SDLDynamicLibrary.h"
 
 #include "Kernel/FileLogger.h"
-#include "Kernel/IniUtil.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/AssertionNotImplemented.h"

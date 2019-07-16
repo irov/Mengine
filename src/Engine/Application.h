@@ -33,7 +33,7 @@ namespace Mengine
         bool getAllowFullscreenSwitchShortcut() const override;
 
     public:
-        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIniPath ) override;
+        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths ) override;
 
     public:
         void changeWindowResolution( const Resolution & _resolution ) override;

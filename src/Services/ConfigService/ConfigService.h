@@ -2,16 +2,15 @@
 
 #include "Interface/ConfigServiceInterface.h"
 
+#include "IniConfig.h"
+
 #include "Kernel/ServiceBase.h"
 
 #include "Kernel/Tags.h"
-#include "Kernel/IniUtil.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    typedef Vector<IniUtil::IniStore> VectorIniStores;
-    //////////////////////////////////////////////////////////////////////////
+{    
     class ConfigService
         : public ServiceBase<ConfigServiceInterface>
     {
@@ -24,33 +23,19 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        ConfigInterfacePtr createConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
 
     public:
-        bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
-        int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const override;
-        uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const override;
-        uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const override;
-        float getValue( const Char * _section, const Char * _key, float _default ) const override;
-        double getValue( const Char * _section, const Char * _key, double _default ) const override;
-        const Char * getValue( const Char * _section, const Char * _key, const Char * _default ) const override;
-        ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const override;
-        FilePath getValue( const Char * _section, const Char * _key, const FilePath & _default ) const override;
-        Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const override;
+        bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
 
     public:
-        void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const override;
-        void getValues( const Char * _section, const Char * _key, VectorConstString & _value ) const override;
-        void getValues( const Char * _section, const Char * _key, VectorString & _value ) const override;
-
-    public:
-        void getSection( const Char * _section, MapParams & _params ) const override;
+        const ConfigInterfacePtr & getDefaultConfig() const override;
 
     protected:
         Tags m_platformTags;
-        
-        VectorIniStores m_stores;
+
+        INIConfigPtr m_defaultConfig;
+
+        FactoryPtr m_factoryConfig;
     };
 }
-
-

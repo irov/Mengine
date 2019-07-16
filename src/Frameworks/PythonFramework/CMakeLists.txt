@@ -133,7 +133,6 @@ INCLUDE_DIRECTORIES(
 	${THIRDPARTY_DIR}/libmovie/include
     ${THIRDPARTY_DIR}/libmath/include
 	${THIRDPARTY_DIR}/utf8/source
-    ${THIRDPARTY_DIR}/tinyini/include
     ) 
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_PYTHONFRAMEWORK)

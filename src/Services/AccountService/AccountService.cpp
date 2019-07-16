@@ -14,9 +14,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-#include "Kernel/IniUtil.h"
 #include "Kernel/String.h"
 #include "Kernel/UID.h"
+#include "Kernel/IniHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -500,8 +500,10 @@ namespace Mengine
             return true;
         }
 
-        IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, m_fileGroup, accountsPath ) == false )
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->createConfig( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
+
+        if( config == nullptr )
         {
             LOGGER_ERROR( "parsing accounts failed '%s'"
                 , accountsPath.c_str()
@@ -510,7 +512,7 @@ namespace Mengine
             return false;
         }
 
-        if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator ) == false )
+        if( config->hasValue( "SETTINGS", "AccountEnumerator", &m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get AccountEnumerator failed '%s'"
                 , accountsPath.c_str()
@@ -519,14 +521,14 @@ namespace Mengine
             return false;
         }
 
-        if( IniUtil::getIniValue( ini, "SETTINGS", "GlobalAccountID", m_globalAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "GlobalAccountID", &m_globalAccountID ) == false )
         {
             LOGGER_INFO( "get GlobalAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
 
-        if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "DefaultAccountID", &m_defaultAccountID ) == false )
         {
             LOGGER_INFO( "get DefaultAccountID failed '%s'"
                 , accountsPath.c_str()
@@ -534,7 +536,7 @@ namespace Mengine
         }
 
         ConstString selectAccountID;
-        if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID ) == false )
+        if( config->hasValue( "SETTINGS", "SelectAccountID", &selectAccountID ) == false )
         {
             LOGGER_INFO( "get SelectAccountID failed '%s'"
                 , accountsPath.c_str()
@@ -542,12 +544,7 @@ namespace Mengine
         }
 
         VectorConstString values;
-        if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values ) == false )
-        {
-            LOGGER_INFO( "get ACCOUNTS failed '%s'"
-                , accountsPath.c_str()
-            );
-        }
+        config->getValues( "ACCOUNTS", "Account", values );
 
         AccountInterfacePtr validAccount = nullptr;
 
@@ -664,29 +661,29 @@ namespace Mengine
             , accountsPath.c_str()
         );
 
-        IniUtil::writeIniSection( file, "[SETTINGS]" );
+        Helper::writeIniSection( file, "[SETTINGS]" );
 
         if( m_globalAccountID.empty() == false )
         {
-            IniUtil::writeIniSetting( file, "GlobalAccountID", m_globalAccountID );
+            Helper::writeIniSetting( file, "GlobalAccountID", m_globalAccountID );
         }
 
         if( m_defaultAccountID.empty() == false )
         {
-            IniUtil::writeIniSetting( file, "DefaultAccountID", m_defaultAccountID );
+            Helper::writeIniSetting( file, "DefaultAccountID", m_defaultAccountID );
         }
 
         if( m_currentAccountID.empty() == false )
         {
-            IniUtil::writeIniSetting( file, "SelectAccountID", m_currentAccountID );
+            Helper::writeIniSetting( file, "SelectAccountID", m_currentAccountID );
         }
 
         String AccountEnumerator;
         Helper::unsignedToString( m_playerEnumerator, AccountEnumerator );
 
-        IniUtil::writeIniSetting( file, "AccountEnumerator", AccountEnumerator );
+        Helper::writeIniSetting( file, "AccountEnumerator", AccountEnumerator );
 
-        IniUtil::writeIniSection( file, "[ACCOUNTS]" );
+        Helper::writeIniSection( file, "[ACCOUNTS]" );
 
         for( MapAccounts::iterator
             it = m_accounts.begin(),
@@ -696,7 +693,7 @@ namespace Mengine
         {
             const ConstString & accountID = it->first;
 
-            IniUtil::writeIniSetting( file, "Account", accountID );
+            Helper::writeIniSetting( file, "Account", accountID );
         }
 
         for( MapAccounts::iterator

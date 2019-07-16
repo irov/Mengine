@@ -1,27 +1,16 @@
 uniform highp mat4 wvpMatrix;
-uniform highp vec4 textureMask0;
-uniform highp vec4 textureMask1;
 
 attribute highp vec4 inVert;
-attribute highp vec2 inUV0;
 attribute mediump vec4 inCol;
+attribute highp vec2 inUV0;
 
-varying highp vec2 v_UV0;
 varying mediump vec4 v_Col;
+varying highp vec2 v_UV0;
 
 void main(void)
 {
 	gl_Position = wvpMatrix * inVert;
 	v_Col = inCol;
-    
-    highp vec2 p0 = vec2(textureMask0.x, textureMask0.y);
-    highp vec2 p1 = vec2(textureMask0.z, textureMask0.w);
-    highp vec2 p2 = vec2(textureMask1.x, textureMask1.y);
-    highp vec2 p3 = vec2(textureMask1.z, textureMask1.w);
-    highp vec2 pw = p1 - p0;
-    highp vec2 ph = p3 - p0;
-    
-    v_UV0.x = p0.x + pw.x * inUV0.x + ph.x * inUV0.y;
-    v_UV0.y = p0.y + pw.y * inUV0.x + ph.y * inUV0.y;
+    v_UV0 = inUV0;
 }
 

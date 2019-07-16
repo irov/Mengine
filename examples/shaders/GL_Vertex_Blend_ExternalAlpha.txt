@@ -1,41 +1,19 @@
 uniform mat4 wvpMatrix;
-uniform vec4 textureMask0;
-uniform vec4 textureMask1;
-uniform vec4 textureMask2;
-uniform vec4 textureMask3;
 
 attribute vec4 inVert;
+attribute vec4 inCol;
 attribute vec2 inUV0;
 attribute vec2 inUV1;
-attribute vec4 inCol;
 
+varying vec4 v_Col;
 varying vec2 v_UV0;
 varying vec2 v_UV1;
-varying vec4 v_Col;
 
 void main(void)
 {
 	gl_Position = wvpMatrix * inVert;
 	v_Col = inCol;
-    
-    vec2 p00 = vec2(textureMask0.x, textureMask0.y);
-    vec2 p01 = vec2(textureMask0.z, textureMask0.w);
-    vec2 p02 = vec2(textureMask1.x, textureMask1.y);
-    vec2 p03 = vec2(textureMask1.z, textureMask1.w);    
-    vec2 p0w = p01 - p00;
-    vec2 p0h = p03 - p00;    
-    
-    v_UV0.x = p00.x + p0w.x * inUV0.x + p0h.x * inUV0.y;
-    v_UV0.y = p00.y + p0w.y * inUV0.x + p0h.y * inUV0.y;
-    
-    vec2 p10 = vec2(textureMask2.x, textureMask2.y);
-    vec2 p11 = vec2(textureMask2.z, textureMask2.w);
-    vec2 p12 = vec2(textureMask3.x, textureMask3.y);
-    vec2 p13 = vec2(textureMask3.z, textureMask3.w);
-    vec2 p1w = p11 - p10;
-    vec2 p1h = p13 - p10;
-    
-    v_UV1.x = p10.x + p1w.x * inUV1.x + p1h.x * inUV1.y;
-    v_UV1.y = p10.y + p1w.y * inUV1.x + p1h.y * inUV1.y;
+    v_UV0 = inUV0;
+    v_UV1 = inUV1;
 }
 

@@ -30,8 +30,8 @@ namespace Mengine
         uint32_t getId() const override;
 
     public:
-        void setCategory( const FileGroupInterfacePtr & _fileGroup ) override;
-        const FileGroupInterfacePtr & getCategory() const override;
+        void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
+        const FileGroupInterfacePtr & getFileGroup() const override;
 
         void setFileName( const FilePath & _fileName ) override;
         const FilePath & getFileName() const override;
@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderTexture, RenderTextureInterface> RenderTexturePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FileGroupInterfacePtr & RenderTexture::getCategory() const
+    MENGINE_INLINE const FileGroupInterfacePtr & RenderTexture::getFileGroup() const
     {
         return m_fileGroup;
     }

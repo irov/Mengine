@@ -64,7 +64,6 @@ namespace Mengine
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
 
     public:
-        void setTextureMask( uint32_t _index, const mt::uv4f & _mask ) override;
         void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) override;
 
     public:
@@ -162,8 +161,6 @@ namespace Mengine
         ConstString m_renderPlatform;
 
         Viewport m_viewport;
-
-        mt::uv4f m_textureMasks[MENGINE_MAX_TEXTURE_STAGES];
 
         mt::mat4f m_worldMatrix;
         mt::mat4f m_viewMatrix;

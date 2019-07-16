@@ -33,7 +33,7 @@ namespace Mengine
         if( m_images.empty() == true )
         {
             LOGGER_ERROR( "landscape '%s' images is empty"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return false;
@@ -42,7 +42,7 @@ namespace Mengine
         if( m_elementCountX == 0 || m_elementCountY == 0 )
         {
             LOGGER_ERROR( "landscape '%s' count X|Y not setup %d:%d"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_elementCountX
                 , m_elementCountY
             );
@@ -114,7 +114,7 @@ namespace Mengine
                     if( el.image->compile() == false )
                     {
                         LOGGER_ERROR( "'%s' image resource %s not compile"
-                            , m_name.c_str()
+                            , this->getName().c_str()
                             , el.image->getName().c_str()
                         );
 
@@ -124,7 +124,7 @@ namespace Mengine
                     RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false, MENGINE_DOCUMENT_FUNCTION );
 
                     MENGINE_ASSERTION_MEMORY_PANIC_VOID( material, "'%s' invalid get material"
-                        , m_name.c_str()
+                        , this->getName().c_str()
                     );
 
                     el.material = material;

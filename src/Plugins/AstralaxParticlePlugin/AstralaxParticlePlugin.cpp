@@ -11,7 +11,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AstralaxService );
-SERVICE_EXTERN( ParticleSystem );
+SERVICE_EXTERN( AstralaxSystem );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AstralaxParticlePlugin, Mengine::AstralaxParticlePlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ namespace Mengine
         LOGGER_INFO( "Initializing Astralax Particle System..." );
 
         SERVICE_CREATE( AstralaxService );
-        SERVICE_CREATE( ParticleSystem );
+        SERVICE_CREATE( AstralaxSystem );
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
             , Helper::makeModuleFactory<AstralaxParticleModule>() );
@@ -41,13 +41,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticlePlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::AstralaxSystemInterface );
-        SERVICE_FINALIZE( Mengine::AstralaxServiceInterface );
+        SERVICE_FINALIZE( AstralaxService );
+        SERVICE_FINALIZE( AstralaxSystem );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticlePlugin::_destroy()
+    void AstralaxParticlePlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Mengine::AstralaxSystemInterface );
-        SERVICE_DESTROY( Mengine::AstralaxServiceInterface );
+        SERVICE_DESTROY( AstralaxService );
+        SERVICE_DESTROY( AstralaxSystem );
     }
 }

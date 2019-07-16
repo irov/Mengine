@@ -33,8 +33,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonFrameworkPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::FrameworkInterface );
-        SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
-        SERVICE_FINALIZE( Mengine::ScriptProviderServiceInterface );
+        SERVICE_FINALIZE( Framework );
+        SERVICE_FINALIZE( ScriptService );
+        SERVICE_FINALIZE( ScriptProviderService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonFrameworkPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( Framework );
+        SERVICE_DESTROY( ScriptService );
+        SERVICE_DESTROY( ScriptProviderService );
     }
 }

@@ -17,8 +17,8 @@ struct v2p {
 void main(in a2v IN, out v2p OUT)
 {
     OUT.pos = mul(IN.pos, ModelViewMatrix);
-    OUT.color = IN.color;
-    OUT.tex0 = IN.tex0;
+    OUT.color = IN.color;    
+    OUT.tex0 = IN.tex0;    
     OUT.tex1 = IN.tex1;
 }
 

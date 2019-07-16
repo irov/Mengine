@@ -1,8 +1,6 @@
-#include "Config/Config.h"
-
 #include "SDLApplication.h"
 
-#include "Interface/ServiceInterface.h"
+#include "Config/Config.h"
 
 #include "SDL.h"
 
@@ -13,12 +11,9 @@ int main( int argc, char * argv[] )
 {
     stdex_allocator_initialize();
 
-    Mengine::SDLApplication application;
-
-#ifdef MENGINE_DEBUG
-    try
-#endif
     {
+        Mengine::SDLApplication application;
+
         bool initialize = application.initialize( argc, argv );
 
         if( initialize == true )
@@ -32,14 +27,6 @@ int main( int argc, char * argv[] )
 
         application.finalize();
     }
-#ifdef MENGINE_DEBUG
-    catch( const std::exception & se )
-    {
-        const char * se_what = se.what();
-
-        SDL_ShowSimpleMessageBox( SDL_MESSAGEBOX_ERROR, "Mengine exception", se_what, NULL );
-    }
-#endif
 
     stdex_allocator_finalize();
 

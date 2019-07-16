@@ -308,7 +308,7 @@ namespace Mengine
 
                         line.advanceCharOffset( cd, charScale * m_autoScaleFactor, offset2 );
 
-                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.textureMask, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
+                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
 
                         if( chunk.material == material )
                         {
@@ -393,7 +393,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "'%s' not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return 0;
@@ -465,7 +465,7 @@ namespace Mengine
                 ->existFont( _fontName, &font ) == false )
             {
                 LOGGER_ERROR( "'%s' not found font '%s'"
-                    , m_name.c_str()
+                    , this->getName().c_str()
                     , _fontName.c_str()
                 );
 

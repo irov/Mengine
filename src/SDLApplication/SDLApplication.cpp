@@ -13,7 +13,7 @@
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/UserdataServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/GraveyardInterface.h"
+#include "Interface/GraveyardServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
@@ -36,6 +36,7 @@
 #include "Interface/EasingServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+#include "Interface/BootstrapperInterface.h"
 
 #include <cstdio>
 #include <clocale>
@@ -47,6 +48,7 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/Document.h"
+#include "Kernel/Logger.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -68,161 +70,12 @@
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
 
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( FactoryService );
-SERVICE_EXTERN( Platform );
-SERVICE_EXTERN( Application );
-SERVICE_EXTERN( StringizeService );
-SERVICE_EXTERN( LoggerService );
-
-SERVICE_EXTERN( ArchiveService );
-
-SERVICE_EXTERN( ThreadSystem );
-SERVICE_EXTERN( ThreadService );
-
-SERVICE_EXTERN( RenderSystem );
-SERVICE_EXTERN( RenderService );
-SERVICE_EXTERN( RenderTextureService );
-SERVICE_EXTERN( RenderMaterialService );
-
-SERVICE_EXTERN( UnicodeSystem );
-
-SERVICE_EXTERN( FileService );
-
-SERVICE_EXTERN( NotificationService );
-
-SERVICE_EXTERN( SoundSystem );
-SERVICE_EXTERN( SilentSoundSystem );
-SERVICE_EXTERN( SoundService );
-
-SERVICE_EXTERN( InputService );
-SERVICE_EXTERN( CodecService );
-SERVICE_EXTERN( PluginService );
-SERVICE_EXTERN( VocabularyService );
-
-SERVICE_EXTERN( ModuleService );
-SERVICE_EXTERN( DataService );
-SERVICE_EXTERN( MemoryService );
-SERVICE_EXTERN( ConverterService );
-SERVICE_EXTERN( ConfigService );
-SERVICE_EXTERN( PrefetcherService );
-SERVICE_EXTERN( OptionsService );
-SERVICE_EXTERN( TimeSystem );
-SERVICE_EXTERN( EnumeratorService );
-SERVICE_EXTERN( PrototypeService );
-SERVICE_EXTERN( UpdateService );
-SERVICE_EXTERN( LoaderService );
-SERVICE_EXTERN( RenderService );
-SERVICE_EXTERN( RenderMaterialService );
-SERVICE_EXTERN( RenderTextureService );
-SERVICE_EXTERN( ResourceService );
-SERVICE_EXTERN( TextService );
-SERVICE_EXTERN( WatchdogService );
-SERVICE_EXTERN( GraveyardService );
-SERVICE_EXTERN( PackageService );
-SERVICE_EXTERN( UserdataService );
-SERVICE_EXTERN( PlayerService );
-SERVICE_EXTERN( GameService );
-SERVICE_EXTERN( TimelineService );
-SERVICE_EXTERN( EasingService );
-SERVICE_EXTERN( AccountService );
-SERVICE_EXTERN( SceneService );
-SERVICE_EXTERN( ChronometerService );
-SERVICE_EXTERN( PickerService );
+SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_EXPORT( ImageCodec );
-PLUGIN_EXPORT( SoundCodec );
-PLUGIN_EXPORT( Amplifier );
-PLUGIN_EXPORT( Zip );
-PLUGIN_EXPORT( LZ4 );
-PLUGIN_EXPORT( BitmapFont );
-PLUGIN_EXPORT( DebugRender );
-PLUGIN_EXPORT( ResourceValidate );
-
-#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
-PLUGIN_EXPORT( MetabufLoader );
-#endif
-
-#ifdef MENGINE_PLUGIN_VIDEO_STATIC
-PLUGIN_EXPORT( Video );
-#endif
-
-#ifdef MENGINE_PLUGIN_THEORA_STATIC
-PLUGIN_EXPORT( Theora );
-#endif
-
-#ifdef MENGINE_PLUGIN_TTF_STATIC
-PLUGIN_EXPORT( TTF );
-#endif
-
-#ifdef MENGINE_PLUGIN_CURL_STATIC
-PLUGIN_EXPORT( cURL );
-#endif
-
-#ifdef MENGINE_PLUGIN_SPINE_STATIC
-PLUGIN_EXPORT( Spine );
-#endif
-
-#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
-PLUGIN_EXPORT( ResourcePrefetcher );
-#endif
-
-#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
-PLUGIN_EXPORT( ResourceConvert );
-#endif
-
-#ifdef MENGINE_PLUGIN_MOVIE_STATIC
-PLUGIN_EXPORT( Movie );
-#endif
-
-#ifdef MENGINE_PLUGIN_MOVIE1_STATIC
-PLUGIN_EXPORT( Movie1 );
-#endif
-
-//PLUGIN_EXPORT( Box2D );
-PLUGIN_EXPORT( OggVorbis );
-//PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( SDLFileGroup );
-
-#ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
-PLUGIN_EXPORT( AstralaxParticlePlugin2 );
-#endif
-
-#ifdef MENGINE_PLUGIN_STEAM_STATIC
-PLUGIN_EXPORT( Steam );
-#endif
-
-#ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
-PLUGIN_EXPORT( NodeDebugger );
-#endif
-
-#ifdef MENGINE_PLUGIN_POSIX_SOCKET_STATIC
-PLUGIN_EXPORT( PosixSocket );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-PLUGIN_EXPORT( AndroidNativeFacebook );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-PLUGIN_EXPORT( AndroidNativeUnityAds );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-PLUGIN_EXPORT( AndroidNativeAdMob );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-PLUGIN_EXPORT( AndroidNativeDevToDev );
-#endif
-
-#ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
-PLUGIN_EXPORT( PythonFramework );
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -249,11 +102,28 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeFileEngine_()
+    bool SDLApplication::initializeOptionsService_( const int argc, char ** argv )
     {
-        LOGGER_INFO( "Inititalizing File Service..." );
-        SERVICE_CREATE( FileService );
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
 
+        for( int i = 1; i < argc; ++i )
+        {
+            const Char * arg = argv[i];
+
+            arguments->addArgument( arg );
+        }
+
+        if( OPTIONS_SERVICE()
+            ->setArguments( arguments ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLApplication::initializeFileService_()
+    {
         LOGGER_INFO( "Initialize SDL file group..." );
         PLUGIN_CREATE( SDLFileGroup );
 
@@ -347,11 +217,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeConfigEngine_()
+    bool SDLApplication::initializeConfigService_()
     {
-        LOGGER_WARNING( "Inititalizing Config Manager..." );
-        SERVICE_CREATE( ConfigService );
-
+        LOGGER_WARNING( "Inititalizing Config Service..." );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -411,7 +279,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeLoggerEngine_()
+    bool SDLApplication::initializeLoggerService_()
     {
         if( LOGGER_SERVICE()
             ->isSilent() == true )
@@ -440,72 +308,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeArchiveService_()
-    {
-        LOGGER_INFO( "Inititalizing Archive Service..." );
-
-        {
-            LOGGER_INFO( "initialize Zip..." );
-
-            PLUGIN_CREATE( Zip );
-        }
-
-        {
-            LOGGER_INFO( "initialize LZ4..." );
-
-            PLUGIN_CREATE( LZ4 );
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeRenderEngine_()
-    {
-        LOGGER_INFO( "Initializing Render Service..." );
-
-        if( SERVICE_CREATE( RenderSystem ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_CREATE( RenderTextureService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_CREATE( RenderMaterialService ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeSoundEngine_()
-    {
-        LOGGER_INFO( "Initializing Sound Service..." );
-
-        SERVICE_CREATE( SoundSystem );
-
-        bool muteMode = HAS_OPTION( "mute" );
-
-        if( muteMode == true || SERVICE_EXIST( Mengine::SoundSystemInterface ) == false )
-        {
-            SERVICE_CREATE( SilentSoundSystem );
-        }
-
-        if( SERVICE_CREATE( SoundService ) == false )
-        {
-            LOGGER_ERROR( "Failed to create Sound Engine"
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize( const int argc, char** argv )
+    bool SDLApplication::initialize( const int argc, char ** argv )
     {
         setlocale( LC_ALL, "C" );
 
@@ -519,328 +322,87 @@ namespace Mengine
 
         m_serviceProvider = serviceProvider;
 
-        SERVICE_CREATE( FactoryService );
-        SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( UnicodeSystem );
-        SERVICE_CREATE( OptionsService );
-
-        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
-
-        for( int i = 1; i < argc; ++i )
+        SERVICE_PROVIDER_GET()
+            ->waitService( OptionsServiceInterface::getStaticServiceID(), [this, argc, argv]()
         {
-            const Char * arg = argv[i];
-
-            arguments->addArgument( arg );
-        }
-
-        if( OPTIONS_SERVICE()
-            ->setArguments( arguments ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_CREATE( NotificationService );
-        SERVICE_CREATE( StringizeService );
-        SERVICE_CREATE( VocabularyService );
-        SERVICE_CREATE( LoggerService );
-
-        if( this->initializeLoggerEngine_() == false )
-        {
-            return false;
-        }
-
-        SERVICE_CREATE( Platform );
-        SERVICE_CREATE( PluginService );
-
-        if( this->initializeFileEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->loadApplicationConfig_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeConfigEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeUserDirectory_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeLoggerFile_() == false )
-        {
-            return false;
-        }
-
-        SERVICE_CREATE( ArchiveService );
-
-        if( this->initializeArchiveService_() == false )
-        {
-            return false;
-        }
-
-        SERVICE_CREATE( ThreadSystem );
-        SERVICE_CREATE( ThreadService );
-
-        m_mutexAllocatorPool = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
-
-        stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-            , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
-            , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
-        );
-
-        if( this->initializeRenderEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeSoundEngine_() == false )
-        {
-            return false;
-        }
-
-        SERVICE_CREATE( ModuleService );
-        SERVICE_CREATE( CodecService );
-        SERVICE_CREATE( DataService );
-        SERVICE_CREATE( PrefetcherService );        
-        SERVICE_CREATE( ConverterService );
-        SERVICE_CREATE( InputService );
-        SERVICE_CREATE( EnumeratorService );
-        SERVICE_CREATE( TimeSystem );
-        SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( UpdateService );
-        SERVICE_CREATE( LoaderService );
-        SERVICE_CREATE( RenderService );
-        SERVICE_CREATE( RenderMaterialService );
-        SERVICE_CREATE( RenderTextureService );
-        SERVICE_CREATE( ChronometerService );
-        SERVICE_CREATE( AccountService );
-        SERVICE_CREATE( SceneService );
-        SERVICE_CREATE( ResourceService );
-        SERVICE_CREATE( TextService );
-        SERVICE_CREATE( WatchdogService );
-        SERVICE_CREATE( GraveyardService );
-        SERVICE_CREATE( PackageService );
-        SERVICE_CREATE( UserdataService );
-        SERVICE_CREATE( PickerService );
-        SERVICE_CREATE( PlayerService );
-        SERVICE_CREATE( GameService );
-        SERVICE_CREATE( TimelineService );
-        SERVICE_CREATE( EasingService );
-
-#define MENGINE_ADD_PLUGIN( Name, Info )\
-        do{LOGGER_INFO( Info );\
-        if(	PLUGIN_CREATE(Name) == false ){\
-        LOGGER_ERROR( "Invalid %s", Info );}else{\
-        LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
-
-#ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin PythonFramework..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_DEBUGRENDER_STATIC
-        MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
-        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
-#endif
-
-        MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
-        MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
-        MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
-        MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
-
-#ifdef MENGINE_PLUGIN_VIDEO_STATIC
-        MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
-        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
-        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
-#endif 
-
-#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
-        MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
-#endif
-
-
-#ifdef MENGINE_PLUGIN_THEORA_STATIC
-        MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora..." );
-#endif
-
-        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
-
-#ifdef MENGINE_PLUGIN_TTF_STATIC
-        MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_CURL_STATIC
-        MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_SPINE_STATIC
-        MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_MOVIE_STATIC
-        MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_MOVIE1_STATIC
-        MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1..." );
-#endif
-
-        //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
-        //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
-
-        //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
-
-#ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
-        MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
-#endif
-
-
-#ifdef MENGINE_PLUGIN_STEAM_STATIC
-        MENGINE_ADD_PLUGIN( Steam, "initialize Steam Plugin..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
-        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_POSIX_SOCKET_STATIC
-        MENGINE_ADD_PLUGIN( PosixSocket, "initialize Plugin PosixSocket..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
-#endif
-
-#undef MENGINE_ADD_PLUGIN
-
-        VectorString plugins;
-        CONFIG_VALUES( "Plugins", "Name", plugins );
-
-        for( const String & pluginName : plugins )
-        {
-            if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str() ) == false )
-            {
-                LOGGER_ERROR( "Application Failed to load plugin '%s'"
-                    , pluginName.c_str()
-                );
-
-                return false;
-            }
-        }
-
-#ifdef MENGINE_MASTER_RELEASE
-        bool devplugins = false;
-        bool devmodules = false;
-#else
-#ifdef MENGINE_DEBUG
-        bool devplugins = true;
-        bool devmodules = true;
-#else
-        bool developmentMode = HAS_OPTION( "dev" );
-        bool devplugins = developmentMode;
-        bool devmodules = developmentMode;
-#endif
-#endif
-
-        bool nodevplugins = HAS_OPTION( "nodevplugins" );
-
-        if( devplugins == true && nodevplugins == false )
-        {
-            VectorString devPlugins;
-            CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
-
-            for( const String & pluginName : devPlugins )
-            {
-                if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName.c_str() ) == false )
-                {
-                    LOGGER_WARNING( "Application Failed to load dev plugin '%s'"
-                        , pluginName.c_str()
-                    );
-                }
-            }
-        }
-
-        SERVICE_CREATE( Application );
-
-        VectorString modules;
-        CONFIG_VALUES( "Modules", "Name", modules );
-
-        for( const String & moduleName : modules )
-        {
-            if( MODULE_SERVICE()
-                ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "Application Failed to run module '%s'"
-                    , moduleName.c_str()
-                );
-
-                return false;
-            }
-        }
-
-        bool nodevmodules = HAS_OPTION( "nodevmodules" );
-
-        if( devmodules == true && nodevmodules == false )
-        {
-            VectorString devModules;
-            CONFIG_VALUES( "DevModules", "Name", devModules );
-
-            for( const String & moduleName : devModules )
-            {
-                if( MODULE_SERVICE()
-                    ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
-                {
-                    LOGGER_ERROR( "Application Failed to run dev module '%s'"
-                        , moduleName.c_str()
-                    );
-                }
-            }
-        }
-
-        FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", FilePath::none() );
-
-        if( renderMaterialsPath.empty() == false )
-        {
-            const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-                ->getDefaultFileGroup();
-
-            if( RENDERMATERIAL_SERVICE()
-                ->loadMaterials( defaultFileGroup, renderMaterialsPath ) == false )
+            if( this->initializeOptionsService_( argc, argv ) == false )
             {
                 return false;
             }
-        }
 
-        LOGGER_INFO( "Application Create..." );
+            return true;
+        } );
+
+        SERVICE_WAIT( LoggerServiceInterface, [this]()
+        {
+            if( this->initializeLoggerService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        SERVICE_WAIT( FileServiceInterface, [this]()
+        {
+            if( this->initializeFileService_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        SERVICE_WAIT( ConfigServiceInterface, [this]()
+        {
+            if( this->loadApplicationConfig_() == false )
+            {
+                return false;
+            }
+
+            if( this->initializeConfigService_() == false )
+            {
+                return false;
+            }
+
+            if( this->initializeUserDirectory_() == false )
+            {
+                return false;
+            }
+
+            if( this->initializeLoggerFile_() == false )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        {
+            m_mutexAllocatorPool = THREAD_SERVICE()
+                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+            stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
+                , (stdex_allocator_thread_lock_t)& s_stdex_thread_lock
+                , (stdex_allocator_thread_unlock_t)& s_stdex_thread_unlock
+            );
+
+            return true;
+        } );
+
+        SERVICE_CREATE( Bootstrapper );
+
+        if( BOOTSTRAPPER_SERVICE()
+            ->run() == false )
+        {
+            LOGGER_CRITICAL( "invalid bootstrap"
+            );
+
+            return false;
+        }
+        
+        LOGGER_INFO( "initialize Game..." );
 
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -854,8 +416,11 @@ namespace Mengine
             return false;
         }
 
-        FRAMEWORK_SERVICE()
-            ->onFrameworkInitialize();
+        if( FRAMEWORK_SERVICE()
+            ->onFrameworkInitialize() == false )
+        {
+            return false;
+        }
 
         if( GAME_SERVICE()
             ->loadPersonality() == false )
@@ -926,109 +491,48 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLApplication::finalize()
     {
-        SERVICE_FINALIZE( Mengine::ModuleServiceInterface );
-
-        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        SERVICE_LEAVE( FileServiceInterface, [this]()
         {
-            PLATFORM_SERVICE()
-                ->stopPlatform();
-        }
+            if( m_fileLog != nullptr )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_fileLog );
 
-        if( SERVICE_EXIST( Mengine::NotificationServiceInterface ) == true )
+                m_fileLog = nullptr;
+            }
+        } );
+
+        SERVICE_LEAVE( LoggerServiceInterface, [this]()
         {
-            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
-        }
+            if( m_loggerStdio != nullptr )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerStdio );
 
-        SERVICE_PROVIDER_STOP();
+                m_loggerStdio = nullptr;
+            }
 
-        if( SERVICE_EXIST( Mengine::ThreadServiceInterface ) == true )
+            if( m_loggerMessageBox != nullptr )
+            {
+                LOGGER_SERVICE()
+                    ->unregisterLogger( m_loggerMessageBox );
+
+                m_loggerMessageBox = nullptr;
+            }
+        } );
+
+        SERVICE_LEAVE( ThreadServiceInterface, [this]()
         {
-            THREAD_SERVICE()
-                ->stopTasks();
-        }
+            stdex_allocator_finalize_threadsafe();
 
-        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
-        SERVICE_FINALIZE( Mengine::GameServiceInterface );
-        SERVICE_FINALIZE( Mengine::PickerServiceInterface );
-        SERVICE_FINALIZE( Mengine::SceneServiceInterface );
-        SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
-        SERVICE_FINALIZE( Mengine::ApplicationInterface );
-        SERVICE_FINALIZE( Mengine::PackageServiceInterface );
-        SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
-        SERVICE_FINALIZE( Mengine::GraveyardInterface );
-        SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
-        SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
-        SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
-        SERVICE_FINALIZE( Mengine::TextServiceInterface );
-        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
-        SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
-        SERVICE_FINALIZE( Mengine::DataServiceInterface );
-        SERVICE_FINALIZE( Mengine::PluginServiceInterface );
-        SERVICE_FINALIZE( Mengine::InputServiceInterface );
-        SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
+            m_mutexAllocatorPool = nullptr;
+        } );
 
-        SERVICE_FINALIZE( Mengine::CodecServiceInterface );
+        BOOTSTRAPPER_SERVICE()
+            ->stop();
 
-        SERVICE_FINALIZE( Mengine::SoundServiceInterface );
-        SERVICE_FINALIZE( Mengine::SoundSystemInterface );
+        SERVICE_FINALIZE( Bootstrapper );
 
-        SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
-
-        SERVICE_FINALIZE( Mengine::RenderServiceInterface );
-        SERVICE_FINALIZE( Mengine::RenderMaterialServiceInterface );
-        SERVICE_FINALIZE( Mengine::RenderTextureServiceInterface );
-        SERVICE_FINALIZE( Mengine::RenderSystemInterface );
-
-        SERVICE_FINALIZE( Mengine::ConfigServiceInterface );
-        SERVICE_FINALIZE( Mengine::StringizeServiceInterface );
-
-        SERVICE_FINALIZE( Mengine::ArchiveServiceInterface );
-        SERVICE_FINALIZE( Mengine::MemoryServiceInterface );
-        SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
-
-        SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
-
-        SERVICE_FINALIZE( Mengine::TimeSystemInterface );
-
-        SERVICE_FINALIZE( Mengine::EasingServiceInterface );
-        SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
-        SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
-
-        SERVICE_FINALIZE( Mengine::PlatformInterface );
-
-        if( m_fileLog != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_fileLog );
-
-            m_fileLog = nullptr;
-        }
-
-        if( m_loggerStdio != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_loggerStdio );
-
-            m_loggerStdio = nullptr;
-        }
-
-        if( m_loggerMessageBox != nullptr )
-        {
-            LOGGER_SERVICE()
-                ->unregisterLogger( m_loggerMessageBox );
-
-            m_loggerMessageBox = nullptr;
-        }
-
-        SERVICE_FINALIZE( Mengine::FileServiceInterface );
-        SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
-        SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
-        SERVICE_FINALIZE( Mengine::LoggerServiceInterface );
-
-        stdex_allocator_finalize_threadsafe();
-
-        m_mutexAllocatorPool = nullptr;
-
-        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );        
+        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }
 }

@@ -39,9 +39,6 @@ namespace Mengine
         void finalize();
 
     public:
-        void update();
-
-    public:
         void loop();
 
     protected:
@@ -50,9 +47,9 @@ namespace Mengine
     protected:
         bool initializeFileService_();
         bool initializeUserDirectory_();
-        bool initializeLogFile_();
+        bool initializeLoggerFile_();
         bool initializeOptionsService_();
-        bool initializeLogService_();
+        bool initializeLoggerService_();
         bool initializeConfigService_();
         bool initializeArchiveService_();
 

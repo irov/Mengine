@@ -6,6 +6,7 @@
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/AspectRatioViewports.h"
@@ -37,6 +38,7 @@ namespace Mengine
 
     public:
         virtual void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const = 0;
+        virtual void getValues( const Char * _section, const Char * _key, VectorConstString & _value ) const = 0;
         virtual void getValues( const Char * _section, const Char * _key, VectorString & _value ) const = 0;
 
     public:

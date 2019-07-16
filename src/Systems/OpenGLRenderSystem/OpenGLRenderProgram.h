@@ -56,6 +56,7 @@ namespace Mengine
         void disable() const;
 
         void bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const;
+        void bindTextureMask( const mt::uv4f * _textureMasks ) const;
         bool bindTexture( uint32_t _textureInd ) const;
 
     protected:
@@ -68,7 +69,7 @@ namespace Mengine
         OpenGLRenderVertexAttributePtr m_vertexAttribute;
 
         uint32_t m_samplerCount;
-        
+
         GLint m_matrixLocation[EPML_MAX_COUNT];
         GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
     };

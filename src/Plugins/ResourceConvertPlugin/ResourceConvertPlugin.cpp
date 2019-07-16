@@ -36,11 +36,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::ResourceConvertServiceInterface );
+        SERVICE_FINALIZE( ResourceConvertService );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertPlugin::_destroy()
     {
-        SERVICE_DESTROY( Mengine::ResourceConvertServiceInterface );
+        SERVICE_DESTROY( ResourceConvertService );
     }
 }

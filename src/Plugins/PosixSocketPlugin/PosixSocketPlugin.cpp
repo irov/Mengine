@@ -31,11 +31,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PosixSocketPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::SocketSystemInterface );
+        SERVICE_FINALIZE( SocketSystem );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PosixSocketPlugin::_destroy()
+    void PosixSocketPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Mengine::SocketSystemInterface );
+        SERVICE_DESTROY( SocketSystem );
     }
 }

@@ -117,13 +117,13 @@ namespace Mengine
     bool SurfaceImageSequence::_compile()
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageSequence, false, "'%s' resource is null"
-            , m_name.c_str()
+            , this->getName().c_str()
         );
 
         if( m_resourceImageSequence->compile() == false )
         {
             LOGGER_ERROR( "'%s' resource '%s' is not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceImageSequence->getName().c_str()
             );
 
@@ -133,7 +133,7 @@ namespace Mengine
         uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
         MENGINE_ASSERTION_RETURN( m_currentFrame >= sequenceCount, false, "'%s' m_frame(%d) >= sequenceCount(%d)"
-            , m_name.c_str()
+            , this->getName().c_str()
             , m_currentFrame
             , sequenceCount
         );
@@ -319,7 +319,7 @@ namespace Mengine
             if( _frame >= sequenceCount )
             {
                 LOGGER_ERROR( "'%s' _frame(%d) >= sequenceCount(%d)"
-                    , m_name.c_str()
+                    , this->getName().c_str()
                     , _frame
                     , sequenceCount
                 );
@@ -451,6 +451,35 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
+    void SurfaceImageSequence::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "'%s' not compile"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
+
+        switch( _index )
+        {
+        case 0:
+            {
+                resourceImage->correctUVImage( _in, _out );
+            } break;
+        case 1:
+            {
+                resourceImage->correctUVAlpha( _in, _out );
+            } break;
+        default:
+            {
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Color & SurfaceImageSequence::getColor() const
     {
         if( this->isCompile() == false )
@@ -490,7 +519,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "'%s' not activate"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return;
@@ -517,7 +546,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "'%s' not activate"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return 0.f;

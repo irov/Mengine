@@ -243,17 +243,16 @@ namespace Mengine
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
-        size_t triangle_indices_buffer_size = triangle_indices.size();
+        Detail::Mesh::VectorTriangleIndices::size_type triangle_indices_buffer_size = triangle_indices.size();
 
         indexStream->resize( triangle_indices_buffer_size );
 
         m_indexBuffer = indexStream;
 
-        const mt::uv4f & uv = m_resourceImage->getUVTextureImage();
         const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture();
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &uv, &texture, MENGINE_DOCUMENT_FUNCTION );
+            ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, false );
 

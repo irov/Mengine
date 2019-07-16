@@ -119,6 +119,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
 
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
@@ -126,6 +127,7 @@ namespace Mengine
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderProgram = nullptr;
+        m_factoryRenderProgramVariable = nullptr;
 
         m_cacheRenderImages.clear();
         m_cacheRenderVertexShaders.clear();
@@ -310,11 +312,6 @@ namespace Mengine
         m_projectionMatrix = _projectionMatrix;
 
         this->updatePMWMatrix_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setTextureMask( uint32_t _index, const mt::uv4f & _mask )
-    {
-        m_textureMasks[_index] = _mask;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )

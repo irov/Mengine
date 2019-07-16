@@ -103,11 +103,11 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ) );
 
-        SERVICE_FINALIZE( Mengine::ResourcePrefetcherServiceInterface );
+        SERVICE_FINALIZE( ResourcePrefetcherService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourcePrefetcherPlugin::_destroy()
+    void ResourcePrefetcherPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Mengine::ResourcePrefetcherServiceInterface );
+        SERVICE_DESTROY( ResourcePrefetcherService );
     }
 }

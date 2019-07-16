@@ -54,13 +54,13 @@ namespace Mengine
             return nullptr;
         }
 
-        ServiceInterfacePtr service;
+        ServiceInterface * service;
         if( (*_generator)(&service) == false )
         {
             return nullptr;
         }
 
-        return service;
+        return ServiceInterfacePtr::from( service );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::initializeService( FServiceProviderGenerator _generator, bool _safe, const Char * _doc, const Char * _file, uint32_t _line )

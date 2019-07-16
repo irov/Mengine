@@ -5,7 +5,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Movie2Interface.h"

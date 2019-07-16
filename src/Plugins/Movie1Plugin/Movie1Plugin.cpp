@@ -6,7 +6,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/DataServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"

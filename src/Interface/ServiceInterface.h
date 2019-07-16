@@ -143,7 +143,7 @@ namespace Mengine
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\
-    bool SERVICE_FUNCTION_CREATE(Name)(Mengine::ServiceInterfacePtr*_service){\
+    bool SERVICE_FUNCTION_CREATE(Name)(Mengine::ServiceInterface**_service){\
     if(_service==nullptr){return false;}\
 	try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
@@ -155,7 +155,7 @@ namespace Mengine
     SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN( Name )\
-	extern bool SERVICE_FUNCTION_CREATE( Name )(Mengine::ServiceInterfacePtr*);\
+	extern bool SERVICE_FUNCTION_CREATE( Name )(Mengine::ServiceInterface**);\
     extern const Mengine::Char * SERVICE_FUNCTION_NOMINATION( Name )()
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\

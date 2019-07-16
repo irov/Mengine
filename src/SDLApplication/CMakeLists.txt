@@ -99,6 +99,8 @@ if(MENGINE_TARGET_MAC)
     set_target_properties( ${MY_LIB_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST info.plist.in)
 endif()
 
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} Bootstrapper )
+
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
 	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )

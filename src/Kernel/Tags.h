@@ -25,18 +25,7 @@ namespace Mengine
     public:
         const VectorConstString & getValues() const;
 
-    public:
-        void swap( Tags & _tags );
-
     protected:
         VectorConstString m_values;
     };
-}
-
-namespace std
-{
-    template<> MENGINE_INLINE void swap( Mengine::Tags & _left, Mengine::Tags & _right )
-    {
-        _left.swap( _right );
-    }
 }

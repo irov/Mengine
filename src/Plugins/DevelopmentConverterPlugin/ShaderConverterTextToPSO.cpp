@@ -66,7 +66,7 @@ namespace Mengine
         String full_output = pakPath.c_str();
         full_output += m_options.outputFileName.c_str();
         
-        String buffer = " /nologo /T ps_2_0 /O3 /Fo \"" + full_output + "\" \"" + full_input + "\"";
+        String buffer = "/nologo /T ps_2_0 /O3 /Fo \"" + full_output + "\" \"" + full_input + "\"";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
@@ -76,7 +76,7 @@ namespace Mengine
 
         uint32_t exitCode;
         if( PLATFORM_SERVICE()
-            ->createProcess( fxcPath.c_str(), buffer.c_str(), &exitCode ) == false )
+            ->createProcess( fxcPath.c_str(), buffer.c_str(), true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()

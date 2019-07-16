@@ -93,7 +93,7 @@ namespace Mengine
 
             if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
             {
-                Char userPath[MENGINE_MAX_PATH] = {0};
+                Char userPath[MENGINE_MAX_PATH] = { 0 };
                 this->getUserPath( userPath );
 
                 String dumpPath;
@@ -288,7 +288,7 @@ namespace Mengine
             return false;
         }
 
-        typedef BOOL( WINAPI *PSETPROCESSDPIAWARE )(VOID);
+        typedef BOOL( WINAPI * PSETPROCESSDPIAWARE )(VOID);
 
         FARPROC pSetProcessDPIAware =
             ::GetProcAddress( hUser32, "SetProcessDPIAware" );
@@ -314,7 +314,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcessDump()
     {
-        Char userPath[MENGINE_MAX_PATH] = {0};
+        Char userPath[MENGINE_MAX_PATH] = { 0 };
         this->getUserPath( userPath );
 
         String processDumpPath;
@@ -357,7 +357,7 @@ namespace Mengine
             return false;
         }
 
-        typedef BOOL( WINAPI *MINIDUMPWRITEDUMP )(
+        typedef BOOL( WINAPI * MINIDUMPWRITEDUMP )(
             HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
             CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
             CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
@@ -561,7 +561,7 @@ namespace Mengine
             return 0;
         }
 
-        WChar unicode_shortpath[MENGINE_MAX_PATH] = {0};
+        WChar unicode_shortpath[MENGINE_MAX_PATH] = { 0 };
         DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
 
         if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
@@ -727,7 +727,7 @@ namespace Mengine
         case WM_GETMINMAXINFO:
             {
                 // Prevent the window from going smaller than some minimu size
-                MINMAXINFO * info = (MINMAXINFO*)lParam;
+                MINMAXINFO * info = (MINMAXINFO *)lParam;
 
                 info->ptMinTrackSize.x = 100;
                 info->ptMinTrackSize.y = 100;
@@ -1866,7 +1866,7 @@ namespace Mengine
     static bool s_listDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFilePath & _lambda, bool * _stop )
     {
         {
-            WChar sPath[MENGINE_MAX_PATH] = {0};
+            WChar sPath[MENGINE_MAX_PATH] = { 0 };
             ::wcscpy( sPath, _dir );
             ::wcscat( sPath, _path );
             ::wcscat( sPath, _mask );
@@ -1889,17 +1889,17 @@ namespace Mengine
                         continue;
                     }
 
-                    WChar sPath2[MENGINE_MAX_PATH] = {0};
+                    WChar sPath2[MENGINE_MAX_PATH] = { 0 };
                     ::wcscpy( sPath2, sPath );
                     ::wcscat( sPath2, L"\0" );
                     Helper::pathCorrectForwardslashW( sPath2 );
 
                     ::PathRemoveFileSpec( sPath2 );
 
-                    WChar unicode_filepath[MENGINE_MAX_PATH] = {0};
+                    WChar unicode_filepath[MENGINE_MAX_PATH] = { 0 };
                     ::PathCombine( unicode_filepath, sPath2, fdFile.cFileName );
 
-                    WChar unicode_out[MENGINE_MAX_PATH] = {0};
+                    WChar unicode_out[MENGINE_MAX_PATH] = { 0 };
                     if( wcslen( _dir ) != 0 )
                     {
                         ::PathRelativePathTo( unicode_out,
@@ -1939,7 +1939,7 @@ namespace Mengine
         }
 
         {
-            WChar sPath[MENGINE_MAX_PATH] = {0};
+            WChar sPath[MENGINE_MAX_PATH] = { 0 };
             ::wcscpy( sPath, _dir );
             ::wcscat( sPath, _path );
             ::wcscat( sPath, L"*.*" );
@@ -1967,13 +1967,13 @@ namespace Mengine
 
                 //WChar nextPath[2048];
                 //wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
-                WChar currentPath[MENGINE_MAX_PATH] = {0};
+                WChar currentPath[MENGINE_MAX_PATH] = { 0 };
                 ::wcscpy( currentPath, sPath );
                 ::wcscat( currentPath, L"\0" );
 
                 ::PathRemoveFileSpec( currentPath );
 
-                WChar nextPath[MENGINE_MAX_PATH] = {0};
+                WChar nextPath[MENGINE_MAX_PATH] = { 0 };
                 ::PathCombine( nextPath, currentPath, fdFile.cFileName );
 
                 ::wcscat( nextPath, L"\\" );
@@ -2025,7 +2025,7 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_fullbase[MENGINE_MAX_PATH] = {0};
+        WChar unicode_fullbase[MENGINE_MAX_PATH] = { 0 };
         ::GetFullPathName( unicode_base, MENGINE_MAX_PATH, unicode_fullbase, NULL );
 
         bool stop;
@@ -2067,7 +2067,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
     {
-        WChar szPath[MENGINE_MAX_PATH] = {0};
+        WChar szPath[MENGINE_MAX_PATH] = { 0 };
         ::PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
@@ -2230,7 +2230,7 @@ namespace Mengine
             NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
             _messageId,
             MAKELANGID( LANG_ENGLISH, SUBLANG_ENGLISH_US ),
-            (LPTSTR)&errorText,  // output 
+            (LPTSTR)& errorText,  // output 
             0, // minimum size for output buffer
             NULL ) == 0 )
         {
@@ -2253,12 +2253,12 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size )
+    bool Win32Platform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size )
     {
-        WChar unicode_path[MAX_PATH] = {'\0'};
+        WChar unicode_path[MAX_PATH] = { '\0' };
         Helper::utf8ToUnicode( _path, unicode_path, MAX_PATH );
 
-        WChar unicode_key[MAX_PATH] = {'\0'};
+        WChar unicode_key[MAX_PATH] = { '\0' };
         Helper::utf8ToUnicode( _key, unicode_key, MAX_PATH );
 
         HKEY hKey;
@@ -2281,7 +2281,7 @@ namespace Mengine
             return false;
         }
 
-        WChar unicode_value[1024] = {L'\0'};
+        WChar unicode_value[1024] = { L'\0' };
 
         DWORD dwBufferSize = 1024;
         LONG nError = ::RegQueryValueEx( hKey, unicode_key, 0, NULL, (LPBYTE)unicode_value, &dwBufferSize );
@@ -2303,9 +2303,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createProcess( const Char * _process, const Char * _command, uint32_t * _exitCode )
+    bool Win32Platform::createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode )
     {
-        if( _command == nullptr || (_command[0] != '\0' && _command[0] != ' ') )
+        if( _command == nullptr )
         {
             LOGGER_ERROR( "process '%s' invalid command line '%s'"
                 , _process
@@ -2320,118 +2320,150 @@ namespace Mengine
             , _command
         );
 
-        WChar unicode_process[MAX_PATH] = {'\0'};
+        WChar unicode_process[MAX_PATH] = { '\0' };
         Helper::utf8ToUnicode( _process, unicode_process, MAX_PATH );
 
-        WChar unicode_command[4096] = {'\0'};
-        Helper::utf8ToUnicode( _command, unicode_command, 4096 );
+        WChar unicode_command[4096] = { '\0' };
+        unicode_command[0] = ' ';
+        Helper::utf8ToUnicode( _command, unicode_command + 1, 4095 );
 
-        SECURITY_ATTRIBUTES sa;
-        sa.nLength = sizeof( sa );
-        sa.lpSecurityDescriptor = NULL;
-        sa.bInheritHandle = TRUE;
-
-        WChar tempPathBuffer[MAX_PATH];
-        ::GetTempPath( MAX_PATH, tempPathBuffer );
-
-        WChar tempFileNameBuffer[MAX_PATH];
-        ::GetTempFileName( tempPathBuffer,
-            L"Process",
-            0,
-            tempFileNameBuffer );
-
-        HANDLE hWriteTempFile = ::CreateFile( tempFileNameBuffer,
-            FILE_APPEND_DATA,
-            FILE_SHARE_WRITE | FILE_SHARE_READ,
-            &sa,
-            OPEN_ALWAYS,
-            FILE_ATTRIBUTE_TEMPORARY,
-            NULL );
-
-        STARTUPINFO startupInfo = {0};
-        startupInfo.cb = sizeof( STARTUPINFO );
-        startupInfo.dwFlags = STARTF_USESTDHANDLES;
-        startupInfo.hStdOutput = hWriteTempFile;
-        startupInfo.hStdError = hWriteTempFile;
-        startupInfo.hStdInput = NULL;
-
-        PROCESS_INFORMATION processInfo = {0};
-        if( ::CreateProcess( unicode_process, unicode_command
-            , NULL
-            , NULL
-            , TRUE
-            , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
-            , NULL
-            , &startupInfo
-            , &processInfo ) == FALSE )
+        if( _wait == true )
         {
-            DWORD le = GetLastError();
+            SECURITY_ATTRIBUTES sa;
+            sa.nLength = sizeof( sa );
+            sa.lpSecurityDescriptor = NULL;
+            sa.bInheritHandle = TRUE;
 
-            Char message[1024] = {'\0'};
-            this->getErrorMessage( le, message, 1024 );
+            WChar tempPathBuffer[MAX_PATH];
+            ::GetTempPath( MAX_PATH, tempPathBuffer );
 
-            LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
-                , _process
-                , message
-                , le
-            );
+            WChar tempFileNameBuffer[MAX_PATH];
+            ::GetTempFileName( tempPathBuffer,
+                L"Process",
+                0,
+                tempFileNameBuffer );
 
-            return false;
-        }
-
-        ::WaitForSingleObject( processInfo.hProcess, INFINITE );
-
-        DWORD exitCode;
-        BOOL result = ::GetExitCodeProcess( processInfo.hProcess, &exitCode );
-
-        ::CloseHandle( processInfo.hProcess );
-        ::CloseHandle( processInfo.hThread );
-
-        ::CloseHandle( hWriteTempFile );
-
-        if( result == FALSE )
-        {
-            LOGGER_ERROR( "CreateProcess execute invalid get exit code\n[%s %s]\n"
-                , _process
-                , _command
-            );
-
-            return false;
-        }
-
-        LOGGER_MESSAGE( "result [%u]"
-            , exitCode
-        );
-        
-        if( exitCode != 0 )
-        {
-            HANDLE hReadTempFile = ::CreateFile( tempFileNameBuffer,
-                FILE_GENERIC_READ,
+            HANDLE hWriteTempFile = ::CreateFile( tempFileNameBuffer,
+                FILE_APPEND_DATA,
                 FILE_SHARE_WRITE | FILE_SHARE_READ,
                 &sa,
                 OPEN_ALWAYS,
                 FILE_ATTRIBUTE_TEMPORARY,
                 NULL );
 
-            DWORD tempFileSizeHigh;
-            DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
+            STARTUPINFO startupInfo = { 0 };
+            startupInfo.cb = sizeof( STARTUPINFO );
+            startupInfo.dwFlags = STARTF_USESTDHANDLES;
+            startupInfo.hStdOutput = hWriteTempFile;
+            startupInfo.hStdError = hWriteTempFile;
+            startupInfo.hStdInput = NULL;
 
-            Char tempFileBuffer[4096] = { 0 };
+            PROCESS_INFORMATION processInfo = { 0 };
+            if( ::CreateProcess( unicode_process, unicode_command
+                , NULL
+                , NULL
+                , _wait == true ? TRUE : FALSE
+                , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
+                , NULL
+                , &startupInfo
+                , &processInfo ) == FALSE )
+            {
+                DWORD le = GetLastError();
 
-            DWORD dwBytesRead;
-            DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
-            ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
+                Char message[1024] = { '\0' };
+                this->getErrorMessage( le, message, 1024 );
 
-            LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("%s"
-                , tempFileBuffer
+                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
+                    , _process
+                    , message
+                    , le
                 );
 
-            CloseHandle( hReadTempFile );
-        }
+                return false;
+            }
 
-        if( _exitCode != nullptr )
+            ::WaitForSingleObject( processInfo.hProcess, INFINITE );
+
+            DWORD exitCode = 0;
+            BOOL result = ::GetExitCodeProcess( processInfo.hProcess, &exitCode );
+
+            ::CloseHandle( processInfo.hProcess );
+            ::CloseHandle( processInfo.hThread );
+
+            ::CloseHandle( hWriteTempFile );
+
+            if( result == FALSE )
+            {
+                LOGGER_ERROR( "CreateProcess execute invalid get exit code\n[%s %s]\n"
+                    , _process
+                    , _command
+                );
+
+                return false;
+            }
+
+            LOGGER_MESSAGE( "result [%u]"
+                , exitCode
+            );
+
+            if( exitCode != 0 )
+            {
+                HANDLE hReadTempFile = ::CreateFile( tempFileNameBuffer,
+                    FILE_GENERIC_READ,
+                    FILE_SHARE_WRITE | FILE_SHARE_READ,
+                    &sa,
+                    OPEN_ALWAYS,
+                    FILE_ATTRIBUTE_TEMPORARY,
+                    NULL );
+
+                DWORD tempFileSizeHigh;
+                DWORD tempFileSize = ::GetFileSize( hReadTempFile, &tempFileSizeHigh );
+
+                Char tempFileBuffer[4096] = { 0 };
+
+                DWORD dwBytesRead;
+                DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
+                ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
+
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("%s"
+                    , tempFileBuffer
+                    );
+
+                CloseHandle( hReadTempFile );
+            }
+
+            if( _exitCode != nullptr )
+            {
+                *_exitCode = (uint32_t)exitCode;
+            }
+        }
+        else
         {
-            *_exitCode = (uint32_t)exitCode;
+            STARTUPINFO startupInfo = { 0 };
+            startupInfo.cb = sizeof( STARTUPINFO );
+            PROCESS_INFORMATION processInfo = { 0 };
+            if( ::CreateProcess( unicode_process, unicode_command
+                , NULL
+                , NULL
+                , FALSE
+                , NORMAL_PRIORITY_CLASS | CREATE_NO_WINDOW, NULL
+                , NULL
+                , &startupInfo
+                , &processInfo ) == FALSE )
+            {
+                DWORD le = GetLastError();
+
+                Char message[1024] = { '\0' };
+                this->getErrorMessage( le, message, 1024 );
+
+                LOGGER_ERROR( "CreateProcess '%s' return error: %s [%d]"
+                    , _process
+                    , message
+                    , le
+                );
+
+                return false;
+            }
         }
 
         return true;
@@ -2568,7 +2600,7 @@ namespace Mengine
                 NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
                 hr,
                 MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                (LPTSTR)&errorText,  // output 
+                (LPTSTR)& errorText,  // output 
                 0, // minimum size for output buffer
                 NULL ) == 0 )
             {
@@ -2645,7 +2677,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorPosition( const mt::vec2f & _pos )
     {
-        POINT cPos = {(int32_t)_pos.x, (int32_t)_pos.y};
+        POINT cPos = { (int32_t)_pos.x, (int32_t)_pos.y };
         ::ClientToScreen( m_hWnd, &cPos );
 
         ::SetCursorPos( cPos.x, cPos.y );

@@ -3318,6 +3318,7 @@ namespace Mengine
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
 
         pybind::struct_<Tags>( _kernel, "Tags" )
+            .def_constructor( pybind::init<>() )
             .def_convert( &ScriptMethod::Tags_convert, nullptr )
             .def_repr( &ScriptMethod::Tags_repr )
             .def( "addTag", &Tags::addTag )

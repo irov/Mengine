@@ -56,11 +56,11 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMusic" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
-        SERVICE_FINALIZE( Mengine::ResourceValidateServiceInterface );
+        SERVICE_FINALIZE( ResourceValidateService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceValidatePlugin::_destroy()
+    void ResourceValidatePlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Mengine::ResourceValidateServiceInterface );
+        SERVICE_DESTROY( ResourceValidateService );
     }
 }

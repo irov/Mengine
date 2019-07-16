@@ -177,6 +177,28 @@ namespace Mengine
         return color;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SurfaceImage::correctUV( uint32_t _index, const mt::vec2f & _in, mt::vec2f * _out ) const
+    {
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_resourceImage, "'%s' not setup texture"
+            , this->getName().c_str()
+        );
+
+        switch( _index )
+        {
+        case 0:
+            {
+                m_resourceImage->correctUVImage( _in, _out );
+            } break;
+        case 1:
+            {
+                m_resourceImage->correctUVAlpha( _in, _out );
+            } break;
+        default:
+            {
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const
     {
         RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FUNCTION );

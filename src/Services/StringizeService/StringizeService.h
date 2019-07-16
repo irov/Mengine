@@ -11,6 +11,10 @@
 #include "stdex/intrusive_list.h"
 
 
+#ifndef MENGINE_STRINGIZE_HOLDER_COUNT
+#define MENGINE_STRINGIZE_HOLDER_COUNT 4096
+#endif
+
 #ifndef MENGINE_STRINGIZE_INTERNAL_COUNT
 #define MENGINE_STRINGIZE_INTERNAL_COUNT 1021
 #endif
@@ -42,7 +46,7 @@ namespace Mengine
         PoolConstStringHolderMemory m_poolHolderStringMemory;
 
         typedef stdex::intrusive_list<ConstStringHolder> IntrusiveListConstStringHolder;
-        IntrusiveListConstStringHolder m_holdres[4096];
+        IntrusiveListConstStringHolder m_holdres[MENGINE_STRINGIZE_HOLDER_COUNT];
 
         struct InternalHolder
         {

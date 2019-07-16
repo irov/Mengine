@@ -131,7 +131,7 @@ namespace Mengine
             if( m_resourceImage->compile() == false )
             {
                 LOGGER_ERROR( "'%s' image resource %s not compile"
-                    , m_name.c_str()
+                    , this->getName().c_str()
                     , m_resourceImage->getName().c_str()
                 );
 
@@ -142,7 +142,7 @@ namespace Mengine
         if( m_countX < 2 || m_countY < 2 )
         {
             LOGGER_ERROR( "'%s' count X|Y not setup %d:%d"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_countX
                 , m_countY
             );

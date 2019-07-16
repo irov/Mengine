@@ -4,7 +4,7 @@
 #include "Interface/WatchdogInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/GraveyardInterface.h"
+#include "Interface/GraveyardServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
@@ -291,7 +291,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
     {
-        _texture->setCategory( _fileGroup );
+        _texture->setFileGroup( _fileGroup );
         _texture->setFileName( _fileName );
 
         MapRenderTextureEntry & textures = this->getHashEntry_( _fileName );
@@ -319,7 +319,7 @@ namespace Mengine
             return RenderTextureInterfacePtr( texture );
         }
 
-        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
                 ->resurrectTexture( _fileGroup, _fileName, _doc );
@@ -487,7 +487,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
-        const FileGroupInterfacePtr & fileGroup = _texture->getCategory();
+        const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
         const FilePath & fileName = _texture->getFileName();
 
         if( fileName.empty() == false )
@@ -496,7 +496,7 @@ namespace Mengine
 
             textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
 
-            if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+            if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
             {
                 GRAVEYARD_SERVICE()
                     ->buryTexture( _texture );

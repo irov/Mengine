@@ -74,8 +74,8 @@ namespace Mengine
             {
                 if( this->createLayers_() == false )
                 {
-                    LOGGER_ERROR( "%s resource %s can't create layers"
-                        , m_name.c_str()
+                    LOGGER_ERROR( "'%s' resource '%s' can't create layers"
+                        , this->getName().c_str()
                         , m_resourceMovie->getName().c_str()
                     );
 
@@ -181,7 +181,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "movie '%s' not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return 0.f;
@@ -199,7 +199,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "movie '%s' not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return 0.f;
@@ -494,8 +494,8 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "%s invalid not compile"
-                , m_name.c_str()
+            LOGGER_ERROR( "'%s' invalid not compile"
+                , this->getName().c_str()
             );
 
             return false;
@@ -1850,7 +1850,7 @@ namespace Mengine
         if( m_resourceMovie->compile() == false )
         {
             LOGGER_ERROR( "movie '%s' resource %s not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceMovie->getName().c_str()
             );
 
@@ -1860,7 +1860,7 @@ namespace Mengine
         if( this->setupSceneEffect_() == false )
         {
             LOGGER_ERROR( "movie '%s' resource %s can't setup scene effect"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceMovie->getName().c_str()
             );
 
@@ -1870,7 +1870,7 @@ namespace Mengine
         if( this->setupLayersParent_() == false )
         {
             LOGGER_ERROR( "movie '%s' resource %s can't setup layer parents"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceMovie->getName().c_str()
             );
 
@@ -1880,7 +1880,7 @@ namespace Mengine
         if( this->compileLayers_() == false )
         {
             LOGGER_ERROR( "movie '%s' resource %s can't compile layers"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , m_resourceMovie->getName().c_str()
             );
 
@@ -2059,7 +2059,7 @@ namespace Mengine
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "movie '%s' is not compile"
-                , m_name.c_str()
+                , this->getName().c_str()
             );
 
             return;
@@ -2107,8 +2107,8 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Movie::pauseAnimation_ %s is not compile"
-                , m_name.c_str()
+            LOGGER_ERROR( "'%s' is not compile"
+                , this->getName().c_str()
             );
 
             return;
@@ -2148,8 +2148,8 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Movie::resumeAnimation_ %s is not compile"
-                , m_name.c_str()
+            LOGGER_ERROR( "'%s' is not compile"
+                , this->getName().c_str()
             );
 
             return;

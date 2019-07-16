@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/GraveyardInterface.h"
+#include "Interface/GraveyardServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -9,7 +9,7 @@ namespace Mengine
     typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
 
     class GraveyardService
-        : public ServiceBase<GraveyardInterface>
+        : public ServiceBase<GraveyardServiceInterface>
     {
     public:
         GraveyardService();

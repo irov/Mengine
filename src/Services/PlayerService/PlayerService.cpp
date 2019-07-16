@@ -5,7 +5,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/GraveyardInterface.h"
+#include "Interface/GraveyardServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
@@ -696,7 +696,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -748,7 +748,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -786,7 +786,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->setScene( nullptr );
 
-        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();

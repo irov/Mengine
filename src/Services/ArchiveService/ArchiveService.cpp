@@ -84,6 +84,7 @@ namespace Mengine
         }
 
         void * new_memory = memory->newBuffer( compressSize, MENGINE_DOCUMENT_FUNCTION );
+        MENGINE_UNUSED( new_memory );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_memory, nullptr, "invalid new memory '%d'"
             , compressSize

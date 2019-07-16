@@ -41,6 +41,7 @@ namespace Mengine
     protected:
         virtual bool _initializePlugin();
         virtual void _finalizePlugin();
+        virtual void _destroyPlugin();
         virtual bool _availablePlugin() const;
         virtual bool _systemPlugin() const;
 

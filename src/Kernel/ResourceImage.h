@@ -73,6 +73,10 @@ namespace Mengine
         MENGINE_INLINE void setColor( const Color & _color );
         MENGINE_INLINE const Color & getColor() const;
 
+    public:
+        void correctUVImage( const mt::vec2f & _in, mt::vec2f * _out ) const;
+        void correctUVAlpha( const mt::vec2f & _in, mt::vec2f * _out ) const;
+
     protected:
         void _release() override;
 

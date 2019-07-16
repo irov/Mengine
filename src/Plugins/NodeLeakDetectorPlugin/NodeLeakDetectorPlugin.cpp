@@ -50,11 +50,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeLeakDetectorPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::NodeLeakDetectorServiceInterface );
+        SERVICE_FINALIZE( NodeLeakDetectorService );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeLeakDetectorPlugin::_destroy()
     {
-        SERVICE_DESTROY( Mengine::NodeLeakDetectorServiceInterface );
+        SERVICE_DESTROY( NodeLeakDetectorService );
     }
 }

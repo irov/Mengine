@@ -31,11 +31,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32SocketPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::SocketSystemInterface );
+        SERVICE_FINALIZE( SocketSystem );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SocketPlugin::_destroy()
+    void Win32SocketPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Mengine::SocketSystemInterface );
+        SERVICE_DESTROY( SocketSystem );
     }
 }

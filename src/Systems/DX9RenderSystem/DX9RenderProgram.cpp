@@ -85,7 +85,7 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != MENGINE_MAX_TEXTURE_STAGES; ++index )
         {
-            const mt::uv4f & mask =_textureMasks[index];
+            const mt::uv4f & mask = _textureMasks[index];
 
             float uvs[8];
             uvs[0 * 2 + 0] = mask.p0.x;

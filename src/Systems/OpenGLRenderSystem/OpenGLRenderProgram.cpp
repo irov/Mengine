@@ -136,7 +136,7 @@ namespace Mengine
 
             m_matrixLocation[i] = location;
         }
-        
+       
         for( uint32_t index = 0; index != m_samplerCount; ++index )
         {
             Char samplerVar[16];

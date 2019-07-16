@@ -43,6 +43,7 @@ src
     InputHandlerInterface.h
     EasingInterface.h
     EasingServiceInterface.h
+    BootstrapperInterface.h
 
 	ConverterInterface.h
 	ConverterFactoryInterface.h
@@ -62,7 +63,7 @@ src
     PrefetcherObserverInterface.h
     PrefetcherServiceInterface.h
     AmplifierInterface.h
-    GraveyardInterface.h
+    GraveyardServiceInterface.h
     GlobalInputHandlerInterface.h
     NotificationServiceInterface.h
 	TimeSystemInterface.h

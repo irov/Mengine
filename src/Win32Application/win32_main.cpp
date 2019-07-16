@@ -1,25 +1,21 @@
-#include "Config/Config.h"
-
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Win32Application.h"
+
+#include "Config/Config.h"
 
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ INT nShowCmd )
 {
-    // keep compiler happy
-    UNREFERENCED_PARAMETER( hInstance );
-    UNREFERENCED_PARAMETER( hPrevInstance );
-    UNREFERENCED_PARAMETER( lpCmdLine );
-    UNREFERENCED_PARAMETER( nShowCmd );
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( lpCmdLine );
+    MENGINE_UNUSED( nShowCmd );
         
     stdex_allocator_initialize();
 
-#ifndef MENGINE_DEBUG
-    try
-#endif
     {
         Mengine::Win32Application app;
 
@@ -35,15 +31,7 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
         }
 
         app.finalize();
-    }
-#ifndef MENGINE_DEBUG
-    catch( const std::exception & se )
-    {
-        const char * se_what = se.what();
-
-        MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
-    }
-#endif    
+    }  
 
     stdex_allocator_finalize();
 

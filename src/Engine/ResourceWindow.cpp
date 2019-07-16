@@ -41,7 +41,7 @@ namespace Mengine
                 ->getResource( m_elements[i].resourceImageName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "window '%s' not found resource '%s'"
-                , m_name.c_str()
+                , this->getName().c_str()
                 , element.resourceImageName.c_str()
             );
 

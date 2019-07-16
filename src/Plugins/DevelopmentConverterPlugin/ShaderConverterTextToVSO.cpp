@@ -67,7 +67,7 @@ namespace Mengine
         full_output += m_options.outputFileName.c_str();
 
         Char buffer[2048];
-        sprintf( buffer, " /nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""
+        sprintf( buffer, "/nologo /T vs_1_1 /O3 /Fo \"%s\" \"%s\""
             , full_output.c_str()
             , full_input.c_str()
         );
@@ -79,7 +79,7 @@ namespace Mengine
 
         uint32_t exitCode;
         if( PLATFORM_SERVICE()
-            ->createProcess( fxcPath.c_str(), buffer, &exitCode ) == false )
+            ->createProcess( fxcPath.c_str(), buffer, true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer

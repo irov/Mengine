@@ -1245,11 +1245,12 @@ namespace Mengine
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createProcess( const Char * _process, const Char * _command, uint32_t * _code )
+    bool SDLPlatform::createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _code )
     {
         MENGINE_UNUSED( _process );
         MENGINE_UNUSED( _command );
         MENGINE_UNUSED( _code );
+        MENGINE_UNUSED( _wait );
 
         MENGINE_ASSERTION_NOT_IMPLEMENTED();
 

@@ -31,6 +31,7 @@
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
+#include "Interface/ChronometerServiceInterface.h"
 
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
@@ -1242,7 +1243,11 @@ namespace Mengine
         INPUT_SERVICE()
             ->update();
 
-        if( PLAYER_SERVICE()->update() == false )
+        CHRONOMETER_SERVICE()
+            ->update();
+
+        if( PLAYER_SERVICE()
+            ->update() == false )
         {
             this->quit();
 

@@ -66,7 +66,7 @@ namespace Mengine
         Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & ) {
             uint32_t exitCode;
             PLATFORM_SERVICE()
-                ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", &exitCode );
+                ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
         }, MENGINE_DOCUMENT_FUNCTION );
 
         return true;

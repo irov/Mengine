@@ -34,7 +34,7 @@ namespace Mengine
         String full_output = pakPath.c_str();
         full_output += m_options.outputFileName.c_str();
 
-        String buffer = " -loglevel error -y -threads 4 -i \"" + full_input + "\" -map_metadata -1 -ac 2 -ar 44100 -acodec libvorbis -aq 100 \"" + full_output + "\"";
+        String buffer = "-loglevel error -y -threads 4 -i \"" + full_input + "\" -map_metadata -1 -ac 2 -ar 44100 -acodec libvorbis -aq 100 \"" + full_output + "\"";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'"
             , full_input.c_str()
@@ -43,7 +43,7 @@ namespace Mengine
 
         uint32_t exitCode;
         if( PLATFORM_SERVICE()
-            ->createProcess( "ffmpeg.exe", buffer.c_str(), &exitCode ) == false )
+            ->createProcess( "ffmpeg.exe", buffer.c_str(), true, &exitCode ) == false )
         {
             LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()

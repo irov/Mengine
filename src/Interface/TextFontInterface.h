@@ -4,6 +4,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -18,11 +19,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    namespace IniUtil
-    {
-        struct IniStore;
-    }
     //////////////////////////////////////////////////////////////////////////
     enum EFontParams : uint32_t
     {
@@ -60,7 +56,7 @@ namespace Mengine
         virtual const ConstString & getType() const = 0;
 
     public:
-        virtual bool initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini ) = 0;
+        virtual bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) = 0;
 
     public:
         virtual bool isValid() = 0;

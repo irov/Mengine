@@ -22,7 +22,6 @@ endif()
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/SDL2/include
-    ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/libmath/include
 )
 

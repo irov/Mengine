@@ -62,6 +62,6 @@ namespace Mengine
         LoggerInterfacePtr m_loggerMessageBox;
 
         VectorFilePath m_configPaths;
-        FilePath m_resourceConfigPath;
+        VectorFilePath m_resourceConfigPaths;
     };
 }

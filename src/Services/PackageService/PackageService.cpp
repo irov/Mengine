@@ -5,16 +5,14 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/TagsHelper.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
-#include "Kernel/IniUtil.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );
@@ -58,20 +56,17 @@ namespace Mengine
             , _resourceIniPath.c_str()
         );
 
-        IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _fileGroup, _resourceIniPath ) == false )
-        {
-            LOGGER_ERROR( "invalid load resource settings '%s'"
-                , _resourceIniPath.c_str()
-            );
+        ConfigInterfacePtr config = CONFIG_SERVICE()
+            ->createConfig( _fileGroup, _resourceIniPath, _doc );
 
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load resource settings '%s'"
+            , _resourceIniPath.c_str()
+        );
 
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
 
         VectorString frameworkPacksSettings;
-        IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
+        config->getValues( "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
 
         for( const String & resourcePack : frameworkPacksSettings )
         {
@@ -86,7 +81,7 @@ namespace Mengine
             pack.preload = true;
             pack.type = c_dir;
 
-            if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
+            if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "'%s' invalid load resource pack no found section for '%s'"
                     , _resourceIniPath.c_str()
@@ -96,15 +91,15 @@ namespace Mengine
                 return false;
             }
 
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload );
+            config->hasValue( resourcePack.c_str(), "Name", &pack.name );
+            config->hasValue( resourcePack.c_str(), "Type", &pack.type );
+            config->hasValue( resourcePack.c_str(), "Category", &pack.category );
+            config->hasValue( resourcePack.c_str(), "Path", &pack.path );
+            config->hasValue( resourcePack.c_str(), "Locale", &pack.locale );
+            config->hasValue( resourcePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( resourcePack.c_str(), "Description", &pack.descriptionPath );
+            config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
+            config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
 
             if( this->addPackage( pack, _doc ) == false )
             {
@@ -113,7 +108,7 @@ namespace Mengine
         }
 
         VectorString resourcePacksSettings;
-        IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings );
+        config->getValues( "GAME_RESOURCES", "ResourcePack", resourcePacksSettings );
 
         for( const String & resourcePack : resourcePacksSettings )
         {
@@ -128,7 +123,7 @@ namespace Mengine
             pack.preload = true;
             pack.type = c_dir;
 
-            if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
+            if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "invalid load '%s' resource pack no found section for '%s'"
                     , _resourceIniPath.c_str()
@@ -138,15 +133,15 @@ namespace Mengine
                 return false;
             }
 
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Category", pack.category );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev );
-            IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload );
+            config->hasValue( resourcePack.c_str(), "Name", &pack.name );
+            config->hasValue( resourcePack.c_str(), "Type", &pack.type );
+            config->hasValue( resourcePack.c_str(), "Category", &pack.category );
+            config->hasValue( resourcePack.c_str(), "Path", &pack.path );
+            config->hasValue( resourcePack.c_str(), "Locale", &pack.locale );
+            config->hasValue( resourcePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( resourcePack.c_str(), "Description", &pack.descriptionPath );
+            config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
+            config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
 
             if( this->addPackage( pack, _doc ) == false )
             {
@@ -155,7 +150,7 @@ namespace Mengine
         }
 
         VectorString languagePackSettings;
-        IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings );
+        config->getValues( "GAME_RESOURCES", "LanguagePack", languagePackSettings );
 
         for( const String & languagePack : languagePackSettings )
         {
@@ -170,7 +165,7 @@ namespace Mengine
             pack.preload = true;
             pack.type = c_dir;
 
-            if( IniUtil::hasIniSection( ini, languagePack.c_str() ) == false )
+            if( config->hasSection( languagePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "invalid load '%s' language pack no found section for '%s'"
                     , _resourceIniPath.c_str()
@@ -180,15 +175,15 @@ namespace Mengine
                 return false;
             }
 
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Name", pack.name );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Type", pack.type );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Category", pack.category );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Path", pack.path );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Locale", pack.locale );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Platform", pack.platform );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Description", pack.descriptionPath );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev );
-            IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload );
+            config->hasValue( languagePack.c_str(), "Name", &pack.name );
+            config->hasValue( languagePack.c_str(), "Type", &pack.type );
+            config->hasValue( languagePack.c_str(), "Category", &pack.category );
+            config->hasValue( languagePack.c_str(), "Path", &pack.path );
+            config->hasValue( languagePack.c_str(), "Locale", &pack.locale );
+            config->hasValue( languagePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( languagePack.c_str(), "Description", &pack.descriptionPath );
+            config->hasValue( languagePack.c_str(), "Dev", &pack.dev );
+            config->hasValue( languagePack.c_str(), "PreLoad", &pack.preload );
 
             if( this->addPackage( pack, _doc ) == false )
             {

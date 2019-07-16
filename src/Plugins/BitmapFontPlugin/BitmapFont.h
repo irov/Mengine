@@ -17,7 +17,7 @@ namespace Mengine
         ~BitmapFont() override;
 
     protected:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini ) override;
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
 
     protected:
         bool isValid() override;

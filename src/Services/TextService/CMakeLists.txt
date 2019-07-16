@@ -18,7 +18,6 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/utf8/source
-    ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/libmath/include
     ) 
 

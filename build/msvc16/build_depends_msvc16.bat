@@ -7,7 +7,7 @@ if ["%~1"]==[""] (
 
 set "CONFIGURATION=%1"
 
-@echo Starting build dependencies %CONFIGURATION% configuration...
+@echo Starting build dependencies msvc %CONFIGURATION% configuration...
 
 set "VERSION=16"
 set "YEAR=2019"

@@ -31,3 +31,4 @@ public:\
     Mengine::RenderInterface * getRender() override{ return this; }\
     const Mengine::RenderInterface * getRenderConst() const override{ return this; }\
 protected:
+//////////////////////////////////////////////////////////////////////////

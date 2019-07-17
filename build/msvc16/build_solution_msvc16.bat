@@ -7,7 +7,7 @@ if ["%~1"]==[""] (
 
 set "CONFIGURATION=%1"
 
-@echo Starting build solution %CONFIGURATION% configuration...
+@echo Starting build solution msvc %CONFIGURATION% configuration...
 
 set "VERSION=16"
 set "YEAR=2019"
@@ -17,7 +17,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call build_solution.bat "SOURCE_DIRECTORY=%CD%\..\CMake\Win32" "SOLUTION_NAME=solution_msvc%VERSION%" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=build_msvc%VERSION%\%CONFIGURATION%"
+@call build_solution.bat "SOURCE_DIRECTORY=%CD%\..\CMake\Win32" "SOLUTION_NAME=solution_msvc%VERSION%" "GENERATOR=Visual Studio %VERSION% %YEAR%" "ARCHITECTURE=Win32" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=build_msvc%VERSION%\%CONFIGURATION%"
 @popd
 
 :end

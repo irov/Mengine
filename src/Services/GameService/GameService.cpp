@@ -564,7 +564,7 @@ namespace Mengine
 
         const String & param = it_find->second;
 
-        strcpy( _param, param.c_str() );
+        ::strcpy( _param, param.c_str() );
 
         return true;
     }

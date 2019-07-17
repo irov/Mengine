@@ -186,6 +186,10 @@ PLUGIN_EXPORT( AndroidNativeAdMob );
 PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
+PLUGIN_EXPORT( AndroidNativeLinking );
+#endif
+
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -441,6 +445,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native..." );
 #endif
 
 #	undef MENGINE_ADD_PLUGIN

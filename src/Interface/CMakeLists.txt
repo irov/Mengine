@@ -45,6 +45,7 @@ src
     EasingInterface.h
     EasingServiceInterface.h
     BootstrapperInterface.h
+    SecureServiceInterface.h
 
 	ConverterInterface.h
 	ConverterFactoryInterface.h

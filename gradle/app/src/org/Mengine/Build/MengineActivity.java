@@ -56,13 +56,9 @@ public class MengineActivity extends SDLActivity {
         _instance = this;
 
         AndroidNativeFacebook_setupFacebookJNI();
-
         AndroidNativeUnity_setupUnityJNI();
-
         AndroidNativeAdMob_setupAdMobJNI();
-
         AndroidNativeDevToDev_setupDevToDevJNI();
-
         AndroidNativeLinking_setupLinkingJNI();
     }
 

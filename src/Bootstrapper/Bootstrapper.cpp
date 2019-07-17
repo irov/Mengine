@@ -25,6 +25,7 @@
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
 
+SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( StringizeService );
@@ -262,6 +263,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
+        SERVICE_CREATE( SecureService );
         SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( UnicodeSystem );

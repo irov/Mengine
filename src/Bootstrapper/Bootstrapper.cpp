@@ -10,6 +10,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/FrameworkInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -638,6 +639,9 @@ namespace Mengine
         SERVICE_FINALIZE( ResourceService );
         SERVICE_FINALIZE( TextService );
         SERVICE_FINALIZE( DataService );
+
+        FRAMEWORK_SERVICE()
+            ->onFrameworkFinalize();
 
         PLUGIN_SERVICE()
             ->unloadPlugins();

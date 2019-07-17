@@ -38,7 +38,7 @@ namespace Mengine
 
     public:
         bool openURL( const WString & _url );
-        bool openMail( const WString & _email, const WString & _subject );
+        bool openMail( const WString & _email, const WString & _subject, const WString & _body );
 
     protected:
         LinkingEventation m_eventation;

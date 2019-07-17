@@ -25,6 +25,7 @@
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
 
+SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( StringizeService );
@@ -186,6 +187,10 @@ PLUGIN_EXPORT( AndroidNativeAdMob );
 PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
+PLUGIN_EXPORT( AndroidNativeLinking );
+#endif
+
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -258,6 +263,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
+        SERVICE_CREATE( SecureService );
         SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( UnicodeSystem );
@@ -441,6 +447,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native..." );
 #endif
 
 #	undef MENGINE_ADD_PLUGIN

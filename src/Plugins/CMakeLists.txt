@@ -66,6 +66,10 @@ if(MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV)
     ADD_SUBDIRECTORY(AndroidNativeDevToDevPlugin)
 endif()
 
+if(MENGINE_PLUGIN_ANDROID_NATIVE_LINKING)
+    ADD_SUBDIRECTORY(AndroidNativeLinkingPlugin)
+endif()
+
 if(MENGINE_PLUGIN_ASTRALAX)
     ADD_SUBDIRECTORY(AstralaxParticlePlugin)
 endif()

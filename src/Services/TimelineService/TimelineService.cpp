@@ -57,8 +57,7 @@ namespace Mengine
     {
         if( m_offsets.empty() == false )
         {
-            LOGGER_ERROR( "TimelineService::update invalid complete times"
-            );
+            LOGGER_ERROR( "invalid complete times" );
 
             return;
         }

@@ -1,6 +1,7 @@
 package org.Mengine.Build;
 
 import android.content.*;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -38,6 +39,8 @@ public class MengineActivity extends SDLActivity {
     static native void AndroidNativeDevToDev_setupDevToDevJNI();
     static native void AndroidNativeDevToDev_onSDKInitialized();
 
+    static native void AndroidNativeLinking_setupLinkingJNI();
+
     @Override
     protected String[] getLibraries() {
         return new String[]{
@@ -53,12 +56,10 @@ public class MengineActivity extends SDLActivity {
         _instance = this;
 
         AndroidNativeFacebook_setupFacebookJNI();
-
         AndroidNativeUnity_setupUnityJNI();
-
         AndroidNativeAdMob_setupAdMobJNI();
-
         AndroidNativeDevToDev_setupDevToDevJNI();
+        AndroidNativeLinking_setupLinkingJNI();
     }
 
     @Override
@@ -307,5 +308,22 @@ public class MengineActivity extends SDLActivity {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
             _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName);
         }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Linking Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void openURL(final String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
+        _instance.startActivity(Intent.createChooser(intent, ""));
+    }
+
+    public static void openMail(final String email, final String subject, final String body) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        _instance.startActivity(Intent.createChooser(intent, ""));
     }
 }

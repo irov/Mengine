@@ -640,8 +640,11 @@ namespace Mengine
         SERVICE_FINALIZE( TextService );
         SERVICE_FINALIZE( DataService );
 
-        FRAMEWORK_SERVICE()
-            ->onFrameworkFinalize();
+        if( SERVICE_EXIST( FrameworkInterface ) == true )
+        {
+            FRAMEWORK_SERVICE()
+                ->onFrameworkFinalize();
+        }
 
         PLUGIN_SERVICE()
             ->unloadPlugins();

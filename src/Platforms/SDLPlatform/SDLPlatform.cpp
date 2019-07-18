@@ -586,7 +586,7 @@ namespace Mengine
 
         SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr )("can't create dynamic library '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr, "can't create dynamic library '%s'"
             , _dynamicLibraryName
             );
 

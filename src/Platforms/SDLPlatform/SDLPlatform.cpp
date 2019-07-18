@@ -671,8 +671,12 @@ namespace Mengine
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createProcessDump()
+	bool SDLPlatform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
 	{
+        MENGINE_UNUSED( _dumpPath );
+        MENGINE_UNUSED( _pExceptionPointers );
+        MENGINE_UNUSED( _full );
+
 		MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
 		return false;

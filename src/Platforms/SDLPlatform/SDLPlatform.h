@@ -74,7 +74,7 @@ namespace Mengine
         bool getAlwaysFullscreen() const override;
 
         bool setProcessDPIAware() override;
-		bool createProcessDump() override;
+		bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
 
         size_t getCurrentPath( Char * _path ) const override;
         size_t getUserPath( Char * _path ) const override;

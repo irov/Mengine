@@ -29,7 +29,6 @@ namespace Mengine
     {	
         m_factoryThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
         m_factoryThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
-        m_factoryThreadConditionVariable = new FactoryPool<SDLThreadMutex, 16>();
 
         return true;
     }
@@ -92,18 +91,6 @@ namespace Mengine
         }
 
         return mutex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ThreadConditionVariableInterfacePtr SDLThreadSystem::createConditionVariable( const Char * _doc )
-    {
-        SDLThreadConditionVariablePtr conditionVariable = m_factoryThreadConditionVariable->createObject( _doc );
-
-        if( conditionVariable->initialize( _doc ) == false )
-        {
-            return nullptr;
-        }
-
-        return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     ptrdiff_t SDLThreadSystem::getCurrentThreadId() const

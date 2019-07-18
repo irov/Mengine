@@ -475,6 +475,14 @@ namespace Mengine
             return false;
         }
 
+        if( SERVICE_EXIST( FrameworkInterface ) == false )
+        {
+            LOGGER_CRITICAL( "invalid found Framework"
+            );
+
+            return false;
+        }
+
         if( FRAMEWORK_SERVICE()
             ->onFrameworkInitialize() == false )
         {

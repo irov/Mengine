@@ -37,8 +37,8 @@ namespace Mengine
         void setEventHandler( const LinkingEventHandlerPtr & _handler );
 
     public:
-        bool openMail( const String & _email, const String & _subject, const String & _body );
-        bool openURL( const String & _url );
+        bool openURL( const WString & _url );
+        bool openMail( const WString & _email, const WString & _subject, const WString & _body );
 
     protected:
         LinkingEventation m_eventation;

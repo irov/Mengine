@@ -8,8 +8,6 @@ src
     SDLThreadIdentity.h
     SDLThreadMutex.h
     SDLThreadMutex.cpp
-    SDLThreadConditionVariable.h
-    SDLThreadConditionVariable.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/SDL2/include )

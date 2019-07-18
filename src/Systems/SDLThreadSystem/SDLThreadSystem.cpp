@@ -2,12 +2,10 @@
 
 #include "SDLThreadIdentity.h"
 #include "SDLThreadMutex.h"
-#include "SDLThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -29,7 +27,6 @@ namespace Mengine
     {	
         m_factoryThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
         m_factoryThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
-        m_factoryThreadConditionVariable = new FactoryPool<SDLThreadMutex, 16>();
 
         return true;
     }
@@ -47,14 +44,14 @@ namespace Mengine
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr )("invalid create thread '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr, "invalid create thread '%s' (doc: %s)"
             , _name.c_str()
 			, _doc
 			);
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create mutex" );
 
         if( identity->initialize( _priority, _name, mutex, _doc ) == false )
         {
@@ -78,7 +75,7 @@ namespace Mengine
     {
 		SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject( _doc );
         
-		MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create (doc: '%s')"
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create (doc: '%s')"
 			, _doc
 			);
 
@@ -92,18 +89,6 @@ namespace Mengine
         }
 
         return mutex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ThreadConditionVariableInterfacePtr SDLThreadSystem::createConditionVariable( const Char * _doc )
-    {
-        SDLThreadConditionVariablePtr conditionVariable = m_factoryThreadConditionVariable->createObject( _doc );
-
-        if( conditionVariable->initialize( _doc ) == false )
-        {
-            return nullptr;
-        }
-
-        return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     ptrdiff_t SDLThreadSystem::getCurrentThreadId() const

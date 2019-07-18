@@ -68,9 +68,6 @@ namespace Mengine
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
-        m_mutexMainCode = THREAD_SYSTEM()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -100,8 +97,6 @@ namespace Mengine
 
         m_threadQueues.clear();
 
-        m_mainCodes.clear();
-
         for( ThreadDesc & desc : m_threads )
         {
             desc.identity->join();
@@ -109,8 +104,6 @@ namespace Mengine
         }
 
         m_threads.clear();
-
-        m_mutexMainCode = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutexDummy );
@@ -162,7 +155,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::destroyThread( const ConstString & _threadName )
+    bool ThreadService::destroyThread( const ConstString & _threadName, bool _wait )
     {
         for( VectorThreadDescs::iterator
             it = m_threads.begin(),
@@ -177,8 +170,15 @@ namespace Mengine
                 continue;
             }
 
-            td.identity->removeTask();
-            td.identity->join();
+            if( _wait == true )
+            {
+                td.identity->removeTask();
+                td.identity->join();
+            }
+            else
+            {
+                td.identity->detach();
+            }
 
             m_threads.erase( it );
 
@@ -331,27 +331,6 @@ namespace Mengine
             return;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadService::waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        ThreadConditionVariableInterfacePtr conditionVariable = THREAD_SYSTEM()
-            ->createConditionVariable( _doc );
-
-        m_mutexMainCode->lock();
-        MainCodeDesc desc;
-        desc.conditionVariable = conditionVariable;
-        desc.lambda = _lambda;
-
-#ifdef MENGINE_DEBUG
-        desc.doc = _doc;
-#endif
-        m_mainCodes.emplace_back( desc );
-        m_mutexMainCode->unlock();
-
-        conditionVariable->wait();
-    }
     ///////////////////////////////////////////////////////////////////////////
     void ThreadService::update()
     {
@@ -434,20 +413,6 @@ namespace Mengine
                 m_threadQueues[it_task] = m_threadQueues.back();
                 m_threadQueues.pop_back();
                 --it_task_end;
-            }
-        }
-
-        if( m_mainCodes.empty() == false )
-        {
-            VectorMainCodeDescs mainCodes;
-            m_mutexMainCode->lock();
-            std::swap( m_mainCodes, mainCodes );
-            m_mutexMainCode->unlock();
-
-            for( const MainCodeDesc & desc : mainCodes )
-            {
-                desc.lambda();
-                desc.conditionVariable->wake();
             }
         }
     }

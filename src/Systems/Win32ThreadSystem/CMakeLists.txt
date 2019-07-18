@@ -4,8 +4,6 @@ ADD_FILTER(
 src
 	Win32ThreadSystem.cpp
 	Win32ThreadSystem.h
-    Win32ThreadConditionVariable.cpp
-    Win32ThreadConditionVariable.h
 	Win32ThreadIdentity.cpp
     Win32ThreadIdentity.h
     Win32ThreadMutex.h

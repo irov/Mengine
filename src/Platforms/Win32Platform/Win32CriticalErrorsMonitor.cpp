@@ -9,16 +9,6 @@
 
 #include "stdex/stack.h"
 
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(push, 0) 
-#endif
-
-#include <DbgHelp.h>
-
-#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(pop) 
-#endif
-
 #include <cstdio>
 
 namespace Mengine
@@ -26,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct CrashDumpExceptionHandlerData
     {
-        WString dumpPath;
+        String dumpPath;
     };
     //////////////////////////////////////////////////////////////////////////
     static CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
@@ -38,63 +28,14 @@ namespace Mengine
             return false;
         }
 
-        HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-
-        if( hFile == INVALID_HANDLE_VALUE )
-        {
-            return false;
-        }
-
-        HMODULE dbghelp_dll = ::LoadLibrary( L"dbghelp.dll" );
-
-        if( dbghelp_dll == NULL )
-        {
-            ::CloseHandle( hFile );
-
-            return false;
-        }
-
-        typedef BOOL( WINAPI *MINIDUMPWRITEDUMP )(
-            HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
-            CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
-            CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
-            CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
-            );
-
-        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( dbghelp_dll, "MiniDumpWriteDump" );
-
-        if( MiniDumpWriteDump == NULL )
-        {
-            FreeLibrary( dbghelp_dll );
-            ::CloseHandle( hFile );
-
-            return false;
-        }
-
-        MINIDUMP_EXCEPTION_INFORMATION exinfo;
-
-        exinfo.ThreadId = ::GetCurrentThreadId();
-        exinfo.ExceptionPointers = pExceptionPointers;
-        exinfo.ClientPointers = TRUE;
-
-        HANDLE hProcess = GetCurrentProcess();
-        DWORD dwProcessId = GetCurrentProcessId();
-
-        MINIDUMP_TYPE dumptype = MINIDUMP_TYPE( MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo );
-
-        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, &exinfo, NULL, NULL );
-
-        FreeLibrary( dbghelp_dll );
-        ::CloseHandle( hFile );
-
-        if( successful == FALSE )
+        if( PLATFORM_SERVICE()
+            ->createProcessDump( g_crashDumpExceptionHandlerData->dumpPath.c_str(), pExceptionPointers, false ) == false )
         {
             return false;
         }
 
         return true;
     }
-
     //////////////////////////////////////////////////////////////////////////
     static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS* pExceptionPointers )
     {
@@ -103,7 +44,7 @@ namespace Mengine
         std::string stack;
         stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
 
-        LOGGER_CRITICAL( "catch exception and write dumb %ls\n\n\n %s\n\n\n"
+        LOGGER_CRITICAL( "catch exception and write dumb %s\n\n\n %s\n\n\n"
             , g_crashDumpExceptionHandlerData->dumpPath.c_str()
             , stack.c_str()
         );
@@ -115,7 +56,7 @@ namespace Mengine
     {
         g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
 
-        Helper::utf8ToUnicode( _dumpPath, g_crashDumpExceptionHandlerData->dumpPath );
+        g_crashDumpExceptionHandlerData->dumpPath = _dumpPath;
 
         ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
         ::SetUnhandledExceptionFilter( &s_exceptionHandler );

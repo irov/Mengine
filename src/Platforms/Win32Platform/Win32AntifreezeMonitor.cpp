@@ -1,77 +1,143 @@
 #include "Win32AntifreezeMonitor.h"
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
+#include "Kernel/AssertionMemoryPanic.h"
+
+#include "Config/Stringstream.h"
 
 #include <thread>
 #include <atomic>
 #include <chrono>
+#include <iomanip>
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct AntifreezeData
+    Win32AntifreezeMonitor::Win32AntifreezeMonitor()
+        : m_refalive( 0 )
+        , m_oldrefalive( 0 )
     {
-		std::atomic<uint32_t> seconds;
-        std::atomic<uint32_t> refalive;
-        std::atomic<bool> run;
-
-		std::thread th;
-    };
+    }
     //////////////////////////////////////////////////////////////////////////
-    AntifreezeData g_antifreezeData;
+    Win32AntifreezeMonitor::~Win32AntifreezeMonitor()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::run()
+    bool Win32AntifreezeMonitor::run()
     {
         uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 5U );
 
         if( seconds == 0U )
         {
-            return;
+            return true;
         }
 
-        g_antifreezeData.seconds = seconds;
-        g_antifreezeData.refalive = 0;
-        g_antifreezeData.run = true;
+        m_seconds = seconds;
 
-        g_antifreezeData.th = std::thread( []()
+        ThreadJobPtr threadJob = THREAD_SERVICE()
+            ->createJob( seconds * 1000, MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( threadJob, false, "invalid create thread job" );
+
+        m_threadJob = threadJob;
+
+        if( THREAD_SERVICE()
+            ->createThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
-            std::chrono::seconds pause_time( g_antifreezeData.seconds );
+            return false;
+        }
 
-            for( ; g_antifreezeData.run;)
-            {
-                uint32_t oldref = g_antifreezeData.refalive;
+        if( THREAD_SERVICE()
+            ->addTask( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), m_threadJob ) == false )
+        {
+            return false;
+        }
 
-                std::this_thread::sleep_for( pause_time );
+        uint32_t workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ) );
 
-                if( oldref == g_antifreezeData.refalive && oldref != 0 )
-                {
-                    PLATFORM_SERVICE()
-                        ->createProcessDump();
+        m_workerId = workerId;
 
-					LOGGER_ERROR( "Antifreeze monitor detect freeze process for %u seconds, and create dump!"
-						, g_antifreezeData.seconds.load()
-					);
-
-                    break;
-                }
-            }
-        } );
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::stop()
-    {        
-        if( g_antifreezeData.th.joinable() == true )
-        {
-            g_antifreezeData.run = false;
-            g_antifreezeData.th.detach();
-        }
+    {
+        m_threadJob->removeWorker( m_workerId );        
+        m_threadJob = nullptr;
+
+        THREAD_SERVICE()
+            ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
     {
-        g_antifreezeData.refalive++;        
+        m_refalive++;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32AntifreezeMonitor::onWork( uint32_t _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        uint32_t oldrefalive = m_oldrefalive;
+        m_oldrefalive = m_refalive;
+
+        if( oldrefalive == 0 )
+        {
+            return true;
+        }
+
+        if( oldrefalive != m_refalive )
+        {
+            return true;
+        }
+        
+        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        PLATFORM_SERVICE()
+            ->getUserPath( userPath );
+
+        String processDumpPath;
+        processDumpPath += userPath;
+        processDumpPath += "Antifreeze";
+        processDumpPath += "_";
+
+        PlatformDateTime dateTime;
+        PLATFORM_SERVICE()
+            ->getDateTime( &dateTime );
+
+        Stringstream ss_date;
+        ss_date << dateTime.year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.month
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+        String str_date = ss_date.str();
+
+        processDumpPath += str_date;
+        processDumpPath += ".dmp";
+
+        PLATFORM_SERVICE()
+            ->createProcessDump( processDumpPath.c_str(), nullptr, true );
+
+        LOGGER_ERROR( "Antifreeze monitor detect freeze process for %u seconds, and create dump '%s'!"
+            , m_seconds
+            , processDumpPath.c_str()
+        );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::onDone( uint32_t _id )
+    {
+        MENGINE_UNUSED( _id );
+
+        //Empty
     }
 }

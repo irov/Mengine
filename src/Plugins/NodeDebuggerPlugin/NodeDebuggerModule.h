@@ -105,6 +105,7 @@ namespace Mengine
         AtomicBool m_shouldRecreateServer;
         AtomicBool m_shouldUpdateScene;
         ThreadJobPtr m_threadJob;
+        uint32_t m_workerId;
         ThreadMutexInterfacePtr m_dataMutex;
         NodeDebuggerServerState m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;

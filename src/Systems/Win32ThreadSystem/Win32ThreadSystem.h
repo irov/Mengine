@@ -6,7 +6,6 @@
 
 #include "Win32ThreadIdentity.h"
 #include "Win32ThreadMutex.h"
-#include "Win32ThreadConditionVariable.h"
 
 #include "Kernel/Factory.h"
 #include "Kernel/FactoryWithMutex.h"
@@ -31,7 +30,6 @@ namespace Mengine
     public:
         ThreadIdentityInterfacePtr createThread( const ConstString & _name, int32_t _priority, const Char * _doc ) override;
         ThreadMutexInterfacePtr createMutex( const Char * _doc ) override;
-        ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
@@ -42,8 +40,5 @@ namespace Mengine
     protected:
         FactoryPtr m_factoryWin32ThreadIdentity;
         FactoryPtr m_factoryWin32ThreadMutex;
-        FactoryWithMutexPtr m_factoryWin32ThreadConditionVariable;
-
-        ThreadMutexInterfacePtr m_mutexConditionVariable;
     };
 }

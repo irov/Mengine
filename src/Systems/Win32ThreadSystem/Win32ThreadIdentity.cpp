@@ -92,8 +92,10 @@ namespace Mengine
 
         ::InitializeCriticalSection( &m_processLock );
 
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
         ::InitializeCriticalSection( &m_conditionLock );
         ::InitializeConditionVariable( &m_conditionVariable );
+#endif
 
         m_thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
@@ -108,9 +110,8 @@ namespace Mengine
             return false;
         }
 
-        DWORD threadId = ::GetThreadId( m_thread );
-
 #if defined(MENGINE_TOOLCHAIN_MSVC)
+        DWORD threadId = ::GetThreadId( m_thread );
         Detail::SetThreadName( threadId, _name.c_str() );
 #endif
 
@@ -149,9 +150,13 @@ namespace Mengine
     {
         while( m_exit == false )
         {
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
             ::EnterCriticalSection( &m_conditionLock );
             ::SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             ::LeaveCriticalSection( &m_conditionLock );
+#else
+            ::Sleep( 10 );
+#endif
 
             ::EnterCriticalSection( &m_processLock );
             if( m_task != nullptr && m_exit == false )
@@ -191,7 +196,9 @@ namespace Mengine
                 );
             }
 
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
             ::WakeConditionVariable( &m_conditionVariable );
+#endif
 
             successful = true;
         }
@@ -222,13 +229,40 @@ namespace Mengine
 
         m_exit = true;
 
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
         ::WakeConditionVariable( &m_conditionVariable );
+#endif
 
         ::WaitForSingleObject( m_thread, INFINITE );
         ::CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;
 
         ::DeleteCriticalSection( &m_processLock );
+
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
         ::DeleteCriticalSection( &m_conditionLock );
+#endif
     }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32ThreadIdentity::detach()
+    {
+        if( m_exit == true )
+        {
+            return;
+        }
+
+        m_exit = true;
+
+        ::CloseHandle( m_thread );
+        m_thread = INVALID_HANDLE_VALUE;
+
+        ::DeleteCriticalSection( &m_processLock );
+
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+        ::DeleteCriticalSection( &m_conditionLock );
+#endif
+
+        m_task = nullptr;
+    }
+
 }

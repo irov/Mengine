@@ -24,6 +24,7 @@
 
 #include "Config/Stringstream.h"
 
+#ifndef MENGINE_TOOLCHAIN_MINGW
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #endif
@@ -32,6 +33,7 @@
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(pop) 
+#endif
 #endif
 
 #include <cstdio>
@@ -85,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         {
             bool developmentMode = HAS_OPTION( "dev" );
             bool roamingMode = HAS_OPTION( "roaming" );
@@ -232,6 +234,8 @@ namespace Mengine
             m_touchpad = true;
         }
 
+        m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>();
+
         m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>();
 
         return true;
@@ -312,36 +316,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createProcessDump()
+    bool Win32Platform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
     {
-        Char userPath[MENGINE_MAX_PATH] = { 0 };
-        this->getUserPath( userPath );
-
-        String processDumpPath;
-        processDumpPath += userPath;
-        processDumpPath += "Process";
-        processDumpPath += "_";
-
-        PlatformDateTime dateTime;
-        this->getDateTime( &dateTime );
-
-        Stringstream ss_date;
-        ss_date << dateTime.year
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-        String str_date = ss_date.str();
-
-        processDumpPath += str_date;
-        processDumpPath += ".dmp";
-
+#if defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         WString unicode_processDumpPath;
-        Helper::utf8ToUnicode( processDumpPath, unicode_processDumpPath );
+        Helper::utf8ToUnicode( _dumpPath, unicode_processDumpPath );
 
-        HANDLE hFile = CreateFile( unicode_processDumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+        HANDLE hFile = ::CreateFile( unicode_processDumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
@@ -368,20 +349,36 @@ namespace Mengine
 
         if( MiniDumpWriteDump == NULL )
         {
-            FreeLibrary( dbghelp_dll );
+            ::FreeLibrary( dbghelp_dll );
             ::CloseHandle( hFile );
 
             return false;
         }
 
-        HANDLE hProcess = GetCurrentProcess();
-        DWORD dwProcessId = GetCurrentProcessId();
+        
+        MINIDUMP_EXCEPTION_INFORMATION exinfo;
 
-        MINIDUMP_TYPE dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
+        exinfo.ThreadId = ::GetCurrentThreadId();
+        exinfo.ExceptionPointers = (PEXCEPTION_POINTERS)_pExceptionPointers;
+        exinfo.ClientPointers = TRUE;
 
-        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, NULL, NULL, NULL );
+        HANDLE hProcess = ::GetCurrentProcess();
+        DWORD dwProcessId = ::GetCurrentProcessId();
 
-        FreeLibrary( dbghelp_dll );
+        MINIDUMP_TYPE dumptype;
+
+        if( _full == false )
+        {
+            dumptype = MINIDUMP_TYPE( MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo );
+        }
+        else
+        {
+            dumptype = MINIDUMP_TYPE( MiniDumpWithFullMemory | MiniDumpWithFullMemoryInfo | MiniDumpWithHandleData | MiniDumpWithUnloadedModules | MiniDumpWithThreadInfo );
+        }
+
+        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, (_pExceptionPointers == nullptr ? nullptr : &exinfo), NULL, NULL );
+
+        ::FreeLibrary( dbghelp_dll );
         ::CloseHandle( hFile );
 
         if( successful == FALSE )
@@ -390,11 +387,22 @@ namespace Mengine
         }
 
         return true;
+#endif
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {
-        //Empty
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        if( developmentMode == true )
+        {
+            if( m_antifreezeMonitor->run() == false )
+            {
+                return false;
+            }
+        }
 
         return true;
     }
@@ -408,14 +416,6 @@ namespace Mengine
 
         bool developmentMode = HAS_OPTION( "dev" );
 
-        if( developmentMode == true )
-        {
-            Win32AntifreezeMonitor::run();
-        }
-
-#ifdef MENGINE_DEBUG
-        try
-#endif
         {
             while( m_close == false )
             {
@@ -428,7 +428,7 @@ namespace Mengine
 
                 if( developmentMode == true )
                 {
-                    Win32AntifreezeMonitor::ping();
+                    m_antifreezeMonitor->ping();
                 }
 
                 MSG  msg;
@@ -501,23 +501,17 @@ namespace Mengine
                 m_update = false;
             }
         }
-#ifdef MENGINE_DEBUG
-        catch( const std::exception & ex )
-        {
-            LOGGER_CRITICAL( "Exception '%s'"
-                , ex.what()
-            );
-        }
-#endif
-
-        if( developmentMode == true )
-        {
-            Win32AntifreezeMonitor::stop();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::stopPlatform()
     {
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        if( developmentMode == true )
+        {
+            m_antifreezeMonitor->stop();
+        }
+
         m_mouseEvent.stop();
 
         if( m_hWnd != NULL )

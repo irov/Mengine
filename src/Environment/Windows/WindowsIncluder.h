@@ -1,7 +1,13 @@
 #pragma once
 
+#include "Config/Config.h"
+
 #ifndef MENGINE_WINDOWS_VERSION
-#define MENGINE_WINDOWS_VERSION 0x0600
+    #ifdef MENGINE_TOOLCHAIN_MINGW
+        #define MENGINE_WINDOWS_VERSION 0x0501
+    #else
+        #define MENGINE_WINDOWS_VERSION 0x0600
+    #endif
 #endif
 
 #ifdef WINVER
@@ -36,5 +42,4 @@
 #include <tlhelp32.h>
 #include <shellapi.h>
 #include <shlobj.h>
-#include <synchapi.h>
 #pragma warning(pop) 

@@ -48,6 +48,7 @@ namespace Mengine
         : m_serverState( NodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
         , m_shouldUpdateScene( false )
+        , m_workerId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -81,6 +82,15 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
+
+        if( m_threadJob != nullptr )
+        {
+            m_threadJob->removeWorker( m_workerId );
+            m_threadJob = nullptr;
+        }
+
+        THREAD_SERVICE()
+            ->joinTask( m_threadJob );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
@@ -448,7 +458,7 @@ namespace Mengine
         m_dataMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-        m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ) );
+        m_workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ) );
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 

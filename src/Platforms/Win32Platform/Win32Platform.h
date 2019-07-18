@@ -5,6 +5,7 @@
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
 #include "Win32FPSMonitor.h"
+#include "Win32AntifreezeMonitor.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
@@ -128,7 +129,7 @@ namespace Mengine
         bool setProcessDPIAware() override;
 
     public:
-        bool createProcessDump() override;
+        bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -152,6 +153,7 @@ namespace Mengine
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
 
         Win32FPSMonitorPtr m_fpsMonitor;
+        Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 
         Win32MouseEvent m_mouseEvent;
 

@@ -23,7 +23,6 @@ namespace Mengine
     public:
         ThreadIdentityInterfacePtr createThread( const ConstString & _name, int32_t _priority, const Char * _doc ) override;
         ThreadMutexInterfacePtr createMutex( const Char * _doc ) override;
-        ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
@@ -34,6 +33,5 @@ namespace Mengine
     protected:
         FactoryPtr m_factoryThreadIdentity;
         FactoryPtr m_factoryThreadMutex;
-        FactoryPtr m_factoryThreadConditionVariable;
     };
 }

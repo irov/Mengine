@@ -140,7 +140,7 @@ namespace Mengine
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE()
             ->openInputFile( m_fileGroupDev, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, 0, "error open protocol %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, 0, "error open protocol '%s'"
             , m_options.pathProtocol.c_str()
         );
 

@@ -2,12 +2,10 @@
 
 #include "SDLThreadIdentity.h"
 #include "SDLThreadMutex.h"
-#include "SDLThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -46,14 +44,14 @@ namespace Mengine
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject( _doc );
 
-		MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr )("invalid create thread '%s' (doc: %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr, "invalid create thread '%s' (doc: %s)"
             , _name.c_str()
 			, _doc
 			);
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create mutex" );
 
         if( identity->initialize( _priority, _name, mutex, _doc ) == false )
         {
@@ -77,7 +75,7 @@ namespace Mengine
     {
 		SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject( _doc );
         
-		MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create (doc: '%s')"
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create (doc: '%s')"
 			, _doc
 			);
 

@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) override;
-        bool destroyThread( const ConstString & _threadName ) override;
+        bool destroyThread( const ConstString & _threadName, bool _wait ) override;
 
     public:
         bool hasThread( const ConstString & _name ) const override;
@@ -47,9 +47,6 @@ namespace Mengine
     public:
         ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const Char * _doc ) override;
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
-
-    public:
-        void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc ) override;
 
     public:
         void update() override;
@@ -94,20 +91,6 @@ namespace Mengine
 
         typedef Vector<ThreadDesc> VectorThreadDescs;
         VectorThreadDescs m_threads;
-
-        ThreadMutexInterfacePtr m_mutexMainCode;
-
-        struct MainCodeDesc
-        {
-            ThreadConditionVariableInterfacePtr conditionVariable;
-            LambdaMainThreadCode lambda;
-#ifdef MENGINE_DEBUG
-            String doc;
-#endif
-        };
-
-        typedef Vector<MainCodeDesc> VectorMainCodeDescs;
-        VectorMainCodeDescs m_mainCodes;
 
         ptrdiff_t m_mainThreadId;
 

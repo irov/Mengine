@@ -5,6 +5,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include <winsock2.h> 
 
 namespace Mengine

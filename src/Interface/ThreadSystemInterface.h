@@ -17,7 +17,6 @@ namespace Mengine
     public:
         virtual ThreadIdentityInterfacePtr createThread( const ConstString & _name, int32_t _priority, const Char * _doc ) = 0;
         virtual ThreadMutexInterfacePtr createMutex( const Char * _doc ) = 0;
-        virtual ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _doc ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;

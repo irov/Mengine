@@ -116,6 +116,7 @@
 
 #include <ctime>
 #include <sstream>
+#include <iomanip>
 
 #include <math.h>
 
@@ -649,8 +650,34 @@ namespace Mengine
         {
             if( _event.code == KC_BACK && _event.isDown && INPUT_SERVICE()->isControlDown() == true )
             {
+                Char userPath[MENGINE_MAX_PATH] = { 0 };
                 PLATFORM_SERVICE()
-                    ->createProcessDump();
+                    ->getUserPath( userPath );
+
+                String processDumpPath;
+                processDumpPath += userPath;
+                processDumpPath += "Process";
+                processDumpPath += "_";
+
+                PlatformDateTime dateTime;
+                PLATFORM_SERVICE()
+                    ->getDateTime( &dateTime );
+
+                Stringstream ss_date;
+                ss_date << dateTime.year
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.month
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+                String str_date = ss_date.str();
+
+                processDumpPath += str_date;
+                processDumpPath += ".dmp";
+
+                PLATFORM_SERVICE()
+                    ->createProcessDump( processDumpPath.c_str(), nullptr, true );
             }
 
             if( _event.code == KC_F6 && _event.isDown )

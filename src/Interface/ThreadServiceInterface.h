@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         virtual bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) = 0;
-        virtual bool destroyThread( const ConstString & _threadName ) = 0;
+        virtual bool destroyThread( const ConstString & _threadName, bool _wait ) = 0;
 
     public:
         virtual bool hasThread( const ConstString & _name ) const = 0;
@@ -38,10 +38,6 @@ namespace Mengine
     public:
         virtual ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const Char * _doc ) = 0;
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
-
-    public:
-        typedef Lambda<void()> LambdaMainThreadCode;
-        virtual void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc ) = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex( const Char * _doc ) = 0;

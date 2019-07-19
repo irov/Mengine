@@ -586,7 +586,7 @@ namespace Mengine
 
         SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr )("can't create dynamic library '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr, "can't create dynamic library '%s'"
             , _dynamicLibraryName
             );
 
@@ -671,8 +671,12 @@ namespace Mengine
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createProcessDump()
+	bool SDLPlatform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
 	{
+        MENGINE_UNUSED( _dumpPath );
+        MENGINE_UNUSED( _pExceptionPointers );
+        MENGINE_UNUSED( _full );
+
 		MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
 		return false;

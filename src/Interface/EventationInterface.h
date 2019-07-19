@@ -16,7 +16,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;
+        virtual bool addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;
         virtual void removeEventReceiver( uint32_t _event ) = 0;
 
     public:

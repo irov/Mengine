@@ -32,7 +32,7 @@ namespace Mengine
         uint32_t m_event;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool BaseEventation::registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
+    bool BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
 #ifdef MENGINE_DEBUG
         if( _event >= (sizeof( m_flag ) * 8 - 1) )

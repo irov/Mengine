@@ -99,7 +99,7 @@ namespace Mengine
 
                 receiver->initialize( _kernel, py_event );
 
-                event->registerEventReceiver( _event, receiver );
+                event->addEventReceiver( _event, receiver );
             }
 
 #ifdef MENGINE_DEBUG
@@ -134,7 +134,7 @@ namespace Mengine
 
                 receiver->initialize( _kernel, py_method );
 
-                event->registerEventReceiver( _event, receiver );
+                event->addEventReceiver( _event, receiver );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ namespace Mengine
 
                 receiver->initialize( _kernel, py_method );
 
-                event->registerEventReceiver( _event, receiver );
+                event->addEventReceiver( _event, receiver );
             }
         }
         //////////////////////////////////////////////////////////////////////////

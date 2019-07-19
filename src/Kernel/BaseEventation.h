@@ -19,7 +19,7 @@ namespace Mengine
         ~BaseEventation() noexcept override;
 
     public:
-        bool registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override;
+        bool addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override;
         void removeEventReceiver( uint32_t _event ) override;
 
     public:

@@ -231,6 +231,27 @@ namespace Mengine
         m_thread = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SDLThreadIdentity::detach()
+    {
+        if( m_exit == true )
+        {
+            return;
+        }
+
+        m_exit = true;
+
+        SDL_DestroyMutex( m_processLock );
+        m_processLock = nullptr;
+
+        SDL_DestroyCond( m_conditionVariable );
+        m_conditionVariable = nullptr;
+
+        SDL_DestroyMutex( m_conditionLock );
+        m_conditionLock = nullptr;
+
+        m_thread = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     int32_t SDLThreadIdentity::getPriority() const
     {
         return m_priority;

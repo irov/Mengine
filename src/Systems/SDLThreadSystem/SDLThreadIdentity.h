@@ -33,6 +33,7 @@ namespace Mengine
 
     public:
         void join() override;
+        void detach() override;
 
     public:
         int32_t getPriority() const;

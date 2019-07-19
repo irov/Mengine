@@ -1283,7 +1283,7 @@ namespace Mengine
         const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
             ->getResource( _layer.source );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "%s resource %s can't compile sprite '%s' imageSolid resource = NULL"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "'%s' resource '%s' can't compile sprite '%s' imageSolid resource = NULL"
             , this->getName().c_str()
             , this->getResourceMovieName().c_str()
             , _layer.name.c_str()

@@ -1006,6 +1006,10 @@ namespace Mengine
 
         if( fontName.empty() == true )
         {
+            LOGGER_ERROR( "font '%s' invalid set font (no default?)"
+                , this->getName().c_str()
+            );
+
             return false;
         }
 
@@ -1064,6 +1068,14 @@ namespace Mengine
 
                 return fontName;
             }
+        }
+
+        if( m_fontName.empty() == true )
+        {
+            const ConstString & fontName = TEXT_SERVICE()
+                ->getDefaultFontName();
+
+            return fontName;
         }
 
         return m_fontName;

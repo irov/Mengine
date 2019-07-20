@@ -86,11 +86,12 @@ namespace Mengine
         if( m_threadJob != nullptr )
         {
             m_threadJob->removeWorker( m_workerId );
+
+            THREAD_SERVICE()
+                ->joinTask( m_threadJob );
+
             m_threadJob = nullptr;
         }
-
-        THREAD_SERVICE()
-            ->joinTask( m_threadJob );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const

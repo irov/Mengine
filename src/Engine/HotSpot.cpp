@@ -79,12 +79,6 @@ namespace Mengine
         this->setPickerPicked( false );
         this->setPickerPressed( false );
         this->setPickerHandle( false );
-
-        PICKER_SERVICE()
-            ->updateTraps();
-
-        EVENTABLE_METHOD( EVENT_ACTIVATE )
-            ->onHotSpotActivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::deactivatePicker_()
@@ -96,12 +90,23 @@ namespace Mengine
             EVENTABLE_METHOD( EVENT_MOUSE_OVER_DESTROY )
                 ->onHotSpotMouseOverDestroy();
         }
-
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::_setPickerEnable( bool _enable )
+    {
         PICKER_SERVICE()
             ->updateTraps();
 
-        EVENTABLE_METHOD( EVENT_DEACTIVATE )
-            ->onHotSpotDeactivate();
+        if( _enable == true )
+        {
+            EVENTABLE_METHOD( EVENT_ACTIVATE )
+                ->onHotSpotActivate();
+        }
+        else
+        {
+            EVENTABLE_METHOD( EVENT_DEACTIVATE )
+                ->onHotSpotDeactivate();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     Scriptable * HotSpot::getPickerScriptable()
@@ -216,12 +221,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_afterActivate()
     {
-        Node::_afterActivate();
-
         if( this->isFreeze() == false )
         {
             this->activatePicker_();
         }
+
+        Node::_afterActivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_deactivate()

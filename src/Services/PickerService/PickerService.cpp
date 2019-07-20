@@ -532,7 +532,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            PickerStateDesc & desc = *it;
+            const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
 

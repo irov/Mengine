@@ -34,6 +34,9 @@ namespace Mengine
         MENGINE_INLINE bool isPickerEnable() const override;
 
     public:
+        virtual void _setPickerEnable( bool _enable );
+
+    public:
         MENGINE_INLINE bool isPickerDummy() const override;
 
     public:

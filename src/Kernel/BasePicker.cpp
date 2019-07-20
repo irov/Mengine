@@ -134,11 +134,20 @@ namespace Mengine
     void BasePicker::setPickerEnable( bool _enable )
     {
         m_pickerEnable = _enable;
+
+        this->_setPickerEnable( _enable );
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerPicked( bool _picked )
     {
         m_pickerPicked = _picked;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BasePicker::_setPickerEnable( bool _enable )
+    {
+        MENGINE_UNUSED( _enable );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerPressed( bool _pressed )

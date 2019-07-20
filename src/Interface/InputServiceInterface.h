@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     union InputUnionEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         InputKeyEvent key;
         InputTextEvent text;
@@ -120,7 +120,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        MENGINE_INLINE void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
+        MENGINE_INLINE void pushKeyEvent( float _x, float _y, EKeyCode _code, bool _isDown, bool _repeating )
         {
             float vx;
             float vy;

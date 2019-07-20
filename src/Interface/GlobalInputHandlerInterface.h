@@ -19,7 +19,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( const InputKeyEvent & _event )> LambdaKeyHandler;
-        virtual uint32_t addGlobalKeyHandler( KeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc ) = 0;
+        virtual uint32_t addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc ) = 0;
 
     public:
         virtual bool enableGlobalHandler( uint32_t _id, bool _value ) = 0;

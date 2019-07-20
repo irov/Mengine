@@ -319,6 +319,11 @@ namespace Mengine
     bool Win32Platform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
     {
 #if defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
+        if( IsDebuggerPresent() == TRUE )
+        {
+            return false;
+        }
+
         WString unicode_processDumpPath;
         Helper::utf8ToUnicode( _dumpPath, unicode_processDumpPath );
 
@@ -739,7 +744,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                KeyCode code = (KeyCode)vkc;
+                EKeyCode code = (EKeyCode)vkc;
 
                 INPUT_SERVICE()
                     ->pushKeyEvent( point.x, point.y, code, true, false );
@@ -751,7 +756,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                KeyCode code = (KeyCode)vkc;
+                EKeyCode code = (EKeyCode)vkc;
 
                 INPUT_SERVICE()
                     ->pushKeyEvent( point.x, point.y, code, false, false );
@@ -1142,7 +1147,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                KeyCode code = (KeyCode)vkc;
+                EKeyCode code = (EKeyCode)vkc;
 
                 INPUT_SERVICE()
                     ->pushKeyEvent( point.x, point.y, code, true, false );
@@ -1157,7 +1162,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                KeyCode code = (KeyCode)vkc;
+                EKeyCode code = (EKeyCode)vkc;
 
                 INPUT_SERVICE()
                     ->pushKeyEvent( point.x, point.y, code, false, false );

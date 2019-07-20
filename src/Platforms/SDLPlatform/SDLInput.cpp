@@ -115,7 +115,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( x, y, point );
 
-                KeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
+                EKeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
 
                 if( code == KC_UNASSIGNED )
                 {
@@ -223,7 +223,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLInput::isKeyDown( Mengine::KeyCode _code ) const
+    bool SDLInput::isKeyDown( EKeyCode _code ) const
     {
         return m_keyDown[_code];
     }
@@ -360,7 +360,7 @@ namespace Mengine
 
         for( uint32_t i = 0; i != KC_MAX_CODE; ++i )
         {
-            KeyCode code = m_keys[i];
+            EKeyCode code = m_keys[i];
 
             if( code == KC_UNASSIGNED )
             {
@@ -371,19 +371,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    KeyCode SDLInput::getKeyCode_( SDL_Scancode _key ) const
+    EKeyCode SDLInput::getKeyCode_( SDL_Scancode _key ) const
     {
         if( _key >= SDL_NUM_SCANCODES )
         {
             return KC_UNASSIGNED;
         }
 
-        KeyCode code = m_keys[_key];
+        EKeyCode code = m_keys[_key];
 
         return code;
     }
     //////////////////////////////////////////////////////////////////////////
-    SDL_Scancode SDLInput::getSDLKey_( KeyCode _code ) const
+    SDL_Scancode SDLInput::getSDLKey_( EKeyCode _code ) const
     {
         if( _code >= KC_MAX_CODE )
         {

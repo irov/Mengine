@@ -8,7 +8,7 @@
 
 namespace Mengine
 {
-    enum EnumTransformation
+    enum ETransformation
     {
         TRANSFORMATION_INVALIDATE_IDENTITY = 0x00,
         TRANSFORMATION_INVALIDATE_POSITION = 0x01,

@@ -612,7 +612,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->handleMouseEnter( _event );
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::handleMouseLeave( const InputMouseLeaveEvent & _event )

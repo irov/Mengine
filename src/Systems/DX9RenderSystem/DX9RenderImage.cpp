@@ -30,7 +30,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
     {
         m_pD3DDevice = _pD3DDevice;
         m_pD3DTexture = _d3dInterface;
@@ -141,7 +141,7 @@ namespace Mengine
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9RenderImage::getHWPixelFormat() const
+    EPixelFormat DX9RenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
     }

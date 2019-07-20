@@ -16,7 +16,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum NodeOzzAnimationEventFlag
+    enum ENodeOzzAnimationEventFlag
     {
         __EVENT_NODE_OZZ_ANIMATION_LAST__ = __EVENT_ANIMATION_LAST__
     };

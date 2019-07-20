@@ -641,7 +641,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
+    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         IDirect3DTexture9 * dxTextureInterface = nullptr;
 
@@ -675,7 +675,7 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
+    RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _depth );
 
@@ -710,7 +710,7 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
         DX9RenderTargetTexturePtr target = m_factoryDX9TargetTexture->createObject( _doc );
 
@@ -736,7 +736,7 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
         DX9RenderTargetOffscreenPtr target = m_factoryDX9TargetOffscreen->createObject( _doc );
 
@@ -1012,7 +1012,7 @@ namespace Mengine
         return m_textureCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::supportTextureFormat( PixelFormat _format ) const
+    bool DX9RenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
         D3DFORMAT dxformat = s_toD3DFormat( _format );
 
@@ -1075,7 +1075,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture )
+    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, EPixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( m_pD3DDevice, false, "device not created" );
 
@@ -1756,7 +1756,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, Clear, (0, NULL, Flags, D3DCOLOR_XRGB( _r, _g, _b ), 1.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat, const Char * _doc )
+    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const Char * _doc )
     {
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
@@ -1795,7 +1795,7 @@ namespace Mengine
         uint32_t hwWidth = _image->getHWWidth();
         uint32_t hwHeight = _image->getHWHeight();
         uint32_t hwChannels = _image->getHWChannels();
-        PixelFormat hwPixelFormat = _image->getHWPixelFormat();
+        EPixelFormat hwPixelFormat = _image->getHWPixelFormat();
 
         uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
 

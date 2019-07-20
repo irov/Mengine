@@ -66,7 +66,7 @@ namespace Mengine
         uint32_t width = dataInfo->width;
         uint32_t height = dataInfo->height;
         uint32_t channels = dataInfo->channels;
-        PixelFormat format = dataInfo->format;
+        EPixelFormat format = dataInfo->format;
 
         uint32_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
 

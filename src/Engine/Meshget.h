@@ -26,7 +26,7 @@ namespace Mengine
     typedef Vector<mt::vec2f> VectorUVs;
     typedef Vector<mt::vec4f> VectorColors;
     //////////////////////////////////////////////////////////////////////////
-    enum MeshgetEventFlag
+    enum EMeshgetEventFlag
     {
         EVENT_MESHGET_UPDATE = 0
     };

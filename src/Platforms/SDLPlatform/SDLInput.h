@@ -33,7 +33,7 @@ namespace Mengine
         void showKeyboard( bool _value ); 
 
     public:
-        bool isKeyDown( Mengine::KeyCode _code ) const;
+        bool isKeyDown( EKeyCode _code ) const;
         bool isAnyKeyDown() const;
 
     protected:
@@ -50,7 +50,7 @@ namespace Mengine
     protected:
         bool m_keyDown[KC_MAX_CODE];
        
-        KeyCode m_keys[KC_MAX_CODE];
+        EKeyCode m_keys[KC_MAX_CODE];
         SDL_Scancode m_codes[SDL_NUM_SCANCODES];
 
         SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];
@@ -59,8 +59,8 @@ namespace Mengine
         float m_height;
 
     protected:
-        KeyCode getKeyCode_( SDL_Scancode _key ) const;
-        SDL_Scancode getSDLKey_( KeyCode _code ) const;
+        EKeyCode getKeyCode_( SDL_Scancode _key ) const;
+        SDL_Scancode getSDLKey_( EKeyCode _code ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLInput> SDLInputPtr;

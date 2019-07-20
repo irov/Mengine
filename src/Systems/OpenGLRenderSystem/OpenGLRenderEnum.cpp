@@ -152,7 +152,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum s_toGLInternalFormat( PixelFormat _format )
+    GLenum s_toGLInternalFormat( EPixelFormat _format )
     {
         switch( _format )
         {
@@ -185,7 +185,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum s_toGLColorFormat( PixelFormat _format )
+    GLenum s_toGLColorFormat( EPixelFormat _format )
     {
         switch( _format )
         {
@@ -213,7 +213,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    GLenum s_getGLColorDataType( PixelFormat _format )
+    GLenum s_getGLColorDataType( EPixelFormat _format )
     {
         switch( _format )
         {

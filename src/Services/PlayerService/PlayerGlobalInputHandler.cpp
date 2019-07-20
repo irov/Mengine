@@ -277,7 +277,7 @@ namespace Mengine
             , public Factorable
         {
         public:
-            GlobalKeyHandler( KeyCode _code, const PlayerGlobalInputHandler::LambdaKeyHandler & _handler )
+            GlobalKeyHandler( EKeyCode _code, const PlayerGlobalInputHandler::LambdaKeyHandler & _handler )
                 : m_code( _code )
                 , m_handler( _handler )
             {
@@ -370,12 +370,12 @@ namespace Mengine
             }
 
         protected:
-            KeyCode m_code;
+            EKeyCode m_code;
             PlayerGlobalInputHandler::LambdaKeyHandler m_handler;
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( KeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc )
+    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc )
     {
         InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _code, _lambda );
 

@@ -45,7 +45,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     NodeDebuggerModule::NodeDebuggerModule()
-        : m_serverState( NodeDebuggerServerState::Invalid )
+        : m_serverState( ENodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
@@ -108,22 +108,22 @@ namespace Mengine
     {
         switch( m_serverState )
         {
-        case NodeDebuggerServerState::Invalid:
+        case ENodeDebuggerServerState::Invalid:
             {
             }break;
-        case NodeDebuggerServerState::WaitingForClient:
+        case ENodeDebuggerServerState::WaitingForClient:
             {
                 int32_t check = m_socket->checkForClientConnection();
                 if( check < 0 )
                 {
                     // failed
-                    m_serverState = NodeDebuggerServerState::Invalid;
+                    m_serverState = ENodeDebuggerServerState::Invalid;
                     return false;
                 }
                 else if( check > 0 )
                 {
                     // got client connection
-                    m_serverState = NodeDebuggerServerState::Connected;
+                    m_serverState = ENodeDebuggerServerState::Connected;
 
                     APPLICATION_SERVICE()
                         ->setNopause( true );
@@ -131,7 +131,7 @@ namespace Mengine
                     m_shouldUpdateScene = true;
                 }
             } break;
-        case NodeDebuggerServerState::Connected:
+        case ENodeDebuggerServerState::Connected:
             {
                 // check if need to send data
                 m_dataMutex->lock();
@@ -176,7 +176,7 @@ namespace Mengine
                     if( clientDisconnected )
                     {
                         m_shouldRecreateServer = true;
-                        m_serverState = NodeDebuggerServerState::Invalid;
+                        m_serverState = ENodeDebuggerServerState::Invalid;
                         return true;
                     }
                 }
@@ -194,7 +194,7 @@ namespace Mengine
                         if( hdr->magic != PACKET_MAGIC )
                         {
                             m_shouldRecreateServer = true;
-                            m_serverState = NodeDebuggerServerState::Invalid;
+                            m_serverState = ENodeDebuggerServerState::Invalid;
                             return true;
                         }
 
@@ -250,7 +250,7 @@ namespace Mengine
     {
         m_shouldUpdateScene = false;
 
-        if( m_serverState == NodeDebuggerServerState::Connected )
+        if( m_serverState == ENodeDebuggerServerState::Connected )
         {
             this->sendScene( m_scene );
         }
@@ -478,7 +478,7 @@ namespace Mengine
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
         m_socket->bind( sci, false );
 
-        m_serverState = NodeDebuggerServerState::WaitingForClient;
+        m_serverState = ENodeDebuggerServerState::WaitingForClient;
 
         m_receivedData.resize( 0 );
         m_incomingPackets.resize( 0 );

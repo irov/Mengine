@@ -103,11 +103,11 @@ namespace Mengine
         virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
 
     public:
-        virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) = 0;
-        virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) = 0;
+        virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) = 0;
+        virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) = 0;
 
-        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc ) = 0;
-        virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc ) = 0;
+        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc ) = 0;
+        virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc ) = 0;
 
         virtual RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc ) = 0;
 
@@ -133,7 +133,7 @@ namespace Mengine
         virtual void setVSync( bool _vSync ) = 0;
         virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b ) = 0;
 
-        virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
+        virtual bool supportTextureFormat( EPixelFormat _format ) const = 0;
         virtual bool supportTextureNonPow2() const = 0;
         virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
 

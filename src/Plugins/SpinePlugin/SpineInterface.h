@@ -10,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum SpineEventFlag
+    enum ESpineEventFlag
     {
         EVENT_SPINE_EVENT = __EVENT_ANIMATION_LAST__,
         EVENT_SPINE_STATE_ANIMATION_END,

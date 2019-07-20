@@ -14,9 +14,9 @@ namespace Mengine
     GLenum s_toGLShadeMode( EShadeType _type );
     GLenum s_toMagFilter( ETextureFilter _magFilter );
     GLenum s_toGLMinFilter( ETextureFilter _minFilter, ETextureFilter _mipFilter );
-    GLenum s_toGLInternalFormat( PixelFormat _format );
-    GLenum s_toGLColorFormat( PixelFormat _format );
-    GLenum s_getGLColorDataType( PixelFormat _format );
+    GLenum s_toGLInternalFormat( EPixelFormat _format );
+    GLenum s_toGLColorFormat( EPixelFormat _format );
+    GLenum s_getGLColorDataType( EPixelFormat _format );
     GLenum s_getGLPrimitiveMode( EPrimitiveType _mode );
     GLenum s_getGLAddressMode( ETextureAddressMode _mode );
     GLenum s_getGLTextureArg( ETextureArgument _arg );

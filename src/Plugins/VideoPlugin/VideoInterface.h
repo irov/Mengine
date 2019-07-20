@@ -39,7 +39,7 @@ namespace Mengine
 
         float duration;
 
-        PixelFormat format;
+        EPixelFormat format;
         bool clamp;
 
         float getFrameTime() const
@@ -60,7 +60,7 @@ namespace Mengine
             , noSeek( false )
         {}
 
-        PixelFormat pixelFormat;
+        EPixelFormat pixelFormat;
 
         float duration;
         float fps;

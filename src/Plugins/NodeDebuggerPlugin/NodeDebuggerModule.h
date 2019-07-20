@@ -24,14 +24,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum class NodeDebuggerServerState : uint32_t
+    enum class ENodeDebuggerServerState : uint32_t
     {
         Invalid,
         WaitingForClient,
         Connected
     };
     //////////////////////////////////////////////////////////////////////////
-    enum class NodeDebuggerPacketType : uint32_t
+    enum class ENodeDebuggerPacketType : uint32_t
     {
         // asking packets
         Ask_Scene,
@@ -107,7 +107,7 @@ namespace Mengine
         ThreadJobPtr m_threadJob;
         uint32_t m_workerId;
         ThreadMutexInterfacePtr m_dataMutex;
-        NodeDebuggerServerState m_serverState;
+        ENodeDebuggerServerState m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Vector<uint8_t> m_receivedData;

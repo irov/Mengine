@@ -352,7 +352,7 @@ namespace Mengine
 
             if( this->loadFont_( desc.path ) == false )
             {
-                LOGGER_ERROR( "Package::enable '%s:%s' invalid load font '%s'"
+                LOGGER_ERROR( "'%s:%s' invalid load font '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
@@ -371,7 +371,7 @@ namespace Mengine
 
             if( this->loadText_( desc.path ) == false )
             {
-                LOGGER_ERROR( "Package::enable '%s:%s' invalid load text '%s'"
+                LOGGER_ERROR( "'%s:%s' invalid load text '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
@@ -390,7 +390,7 @@ namespace Mengine
 
             if( this->addUserData_( desc.name, desc.path ) == false )
             {
-                LOGGER_ERROR( "Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
+                LOGGER_ERROR( "'%s:%s' invalid load userdata '%s' path '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.name.c_str()
@@ -410,7 +410,7 @@ namespace Mengine
 
             if( this->loadMaterials_( desc.path ) == false )
             {
-                LOGGER_ERROR( "Package::enable '%s:%s' invalid load material '%s'"
+                LOGGER_ERROR( "'%s:%s' invalid load material '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
@@ -429,7 +429,7 @@ namespace Mengine
     {
         if( m_enable == false )
         {
-            LOGGER_ERROR( "Package::disable already disable '%s:%s' '%s'"
+            LOGGER_ERROR( "already disable '%s:%s' '%s'"
                 , m_path.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()

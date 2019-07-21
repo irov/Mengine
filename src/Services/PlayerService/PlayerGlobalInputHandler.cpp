@@ -50,7 +50,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleKeyEvent( _event );
+            bool handle = desc.handler->handleKeyEvent( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -70,7 +71,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleTextEvent( _event );
+            bool handle = desc.handler->handleTextEvent( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -90,7 +92,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleMouseButtonEvent( _event );
+            bool handle = desc.handler->handleMouseButtonEvent( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -110,7 +113,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleMouseButtonEventBegin( _event );
+            bool handle = desc.handler->handleMouseButtonEventBegin( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -130,7 +134,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleMouseButtonEventEnd( _event );
+            bool handle = desc.handler->handleMouseButtonEventEnd( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -150,7 +155,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleMouseMove( _event );
+            bool handle = desc.handler->handleMouseMove( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -170,7 +176,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleMouseWheel( _event );
+            bool handle = desc.handler->handleMouseWheel( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;
@@ -190,7 +197,8 @@ namespace Mengine
                 continue;
             }
 
-            desc.handler->handleMouseEnter( _event );
+            bool handle = desc.handler->handleMouseEnter( _event );
+            MENGINE_UNUSED( handle );
         }
 
         return false;

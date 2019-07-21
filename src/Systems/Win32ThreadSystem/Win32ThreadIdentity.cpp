@@ -158,14 +158,24 @@ namespace Mengine
             ::Sleep( 10 );
 #endif
 
-            ::EnterCriticalSection( &m_processLock );
-            if( m_task != nullptr && m_exit == false )
+            if( m_exit == true )
             {
-                m_mutex->lock();
-                m_task->main();
-                m_mutex->unlock();
-                m_task = nullptr;
+                break;
             }
+
+            ::EnterCriticalSection( &m_processLock );
+            ThreadTaskInterface * task = m_task;
+            m_task = nullptr;
+
+            if( task != nullptr && m_exit == false )
+            {
+                ThreadMutexInterface * mutex = m_mutex.get();
+
+                mutex->lock();
+                task->main();
+                mutex->unlock();
+            }
+
             ::LeaveCriticalSection( &m_processLock );
         }
     }
@@ -242,6 +252,8 @@ namespace Mengine
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
         ::DeleteCriticalSection( &m_conditionLock );
 #endif
+
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::detach()
@@ -253,6 +265,10 @@ namespace Mengine
 
         m_exit = true;
 
+#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
+        ::WakeConditionVariable( &m_conditionVariable );
+#endif
+
         ::CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;
 
@@ -263,6 +279,6 @@ namespace Mengine
 #endif
 
         m_task = nullptr;
+        m_mutex = nullptr;
     }
-
 }

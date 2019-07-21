@@ -83,7 +83,12 @@ namespace Mengine
         void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void sendPacket( NodeDebuggerPacket & _packet );
         void sendScene( const ScenePtr & _scene );
+        void sendPickerable( const ScenePtr & _scene );
+        void sendRenderable( const ScenePtr & _scene );
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
+        void serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode );
+        void serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode );
+        void serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode );
 
         void serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );

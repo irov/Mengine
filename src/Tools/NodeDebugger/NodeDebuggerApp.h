@@ -300,7 +300,7 @@ namespace Mengine
         NodeDebuggerApp();
         ~NodeDebuggerApp();
 
-        bool                        Initialize( const std::string & _address, const uint16_t _port );
+        bool                        Initialize( const String & _address, const uint16_t _port );
         void                        Loop();
         void                        Shutdown();
 
@@ -311,6 +311,8 @@ namespace Mengine
         void                        UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void                        ProcessPacket( const NodeDebuggerPacket & _packet );
         void                        ReceiveScene( const pugi::xml_node & _xmlContainer );
+        void                        ReceivePickerable( const pugi::xml_node & _xmlContainer );
+        void                        ReceiveRenderable( const pugi::xml_node & _xmlContainer );
         void                        DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
         Vector<uint32_t>            CollectNodePath( const DebuggerNode * _node );
         String                      PathToString( const Vector<uint32_t> & _path );
@@ -327,7 +329,7 @@ namespace Mengine
         void                        DoUILogTab();
         void                        DoUIExampleTab();
         String                      DoIPInput( const String & _title, const String & _inIP );
-        void                        DoNodeElement( DebuggerNode * _node );
+        void                        DoNodeElement( DebuggerNode * _node, const String & _tag );
         void                        DoNodeProperties( DebuggerNode * _node );
         void                        OnConnectButton();
         void                        OnDisconnectButton();
@@ -377,6 +379,8 @@ namespace Mengine
         std::mutex                  mDataMutex;
 
         DebuggerNode*               mScene;
+        DebuggerNode * mScenePickerable;
+        DebuggerNode * mSceneRenderable;
         String                      mSelectedNodePath;
         String                      mLastSelectedNodePath;
 

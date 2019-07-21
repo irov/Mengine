@@ -16,6 +16,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/PickerInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -253,6 +254,8 @@ namespace Mengine
         if( m_serverState == ENodeDebuggerServerState::Connected )
         {
             this->sendScene( m_scene );
+            this->sendPickerable( m_scene );
+            this->sendRenderable( m_scene );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -657,39 +660,7 @@ namespace Mengine
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
-        serializeNodeProp( _node->getUniqueIdentity(), "uid", xmlNode );
-        serializeNodeProp( _node->getName(), "name", xmlNode );
-        serializeNodeProp( _node->getType(), "type", xmlNode );
-        serializeNodeProp( _node->isEnable(), "enable", xmlNode );
-
-        this->serializeTransformation( _node, xmlNode );
-
-        RenderInterface * render = _node->getRender();
-
-        if( render != nullptr )
-        {
-            this->serializeRender( render, xmlNode );
-        }
-
-        AnimationInterface * animation = _node->getAnimation();
-        if( animation != nullptr )
-        {
-            this->serializeAnimation( animation, xmlNode );
-        }
-
-        TextFieldPtr textField = stdex::intrusive_dynamic_cast<TextFieldPtr>(_node);
-        if( textField != nullptr )
-        {
-            this->serializeTextField( textField, xmlNode );
-        }
-
-        UnknownInterface * unknownNode = _node->getUnknown();
-
-        UnknownMovie2Interface * unknownMovie2 = dynamic_cast<UnknownMovie2Interface *>(unknownNode);
-        if( unknownMovie2 != nullptr )
-        {
-            this->serializeMovie2( unknownMovie2, xmlNode );
-        }
+        this->serializeNodeSingle( _node, xmlNode );
 
         if( _node->emptyChildren() == false )
         {
@@ -698,6 +669,87 @@ namespace Mengine
             _node->foreachChildren( [this, &xmlChildrenContainer]( const NodePtr & _child )
             {
                 this->serializeNode( _child, xmlChildrenContainer );
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode )
+    {
+        serializeNodeProp( _node->getUniqueIdentity(), "uid", _xmlNode );
+        serializeNodeProp( _node->getName(), "name", _xmlNode );
+        serializeNodeProp( _node->getType(), "type", _xmlNode );
+        serializeNodeProp( _node->isEnable(), "enable", _xmlNode );
+
+        this->serializeTransformation( _node, _xmlNode );
+
+        RenderInterface * render = _node->getRender();
+
+        if( render != nullptr )
+        {
+            this->serializeRender( render, _xmlNode );
+        }
+
+        AnimationInterface * animation = _node->getAnimation();
+        if( animation != nullptr )
+        {
+            this->serializeAnimation( animation, _xmlNode );
+        }
+
+        TextFieldPtr textField = stdex::intrusive_dynamic_cast<TextFieldPtr>(_node);
+        if( textField != nullptr )
+        {
+            this->serializeTextField( textField, _xmlNode );
+        }
+
+        UnknownInterface * unknownNode = _node->getUnknown();
+
+        UnknownMovie2Interface * unknownMovie2 = dynamic_cast<UnknownMovie2Interface *>(unknownNode);
+        if( unknownMovie2 != nullptr )
+        {
+            this->serializeMovie2( unknownMovie2, _xmlNode );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode )
+    {
+        Node * nodeChild = dynamic_cast<Node *>(_picker);
+
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
+
+        if( nodeChild != nullptr )
+        {
+            this->serializeNodeSingle( NodePtr::from( nodeChild ), xmlNode );
+        }
+
+        if( _picker->emptyPickerChildren() == false )
+        {
+            pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
+
+            _picker->foreachPickerChildren( [this, &xmlChildrenContainer]( PickerInterface * _child )
+            {
+                this->serializePickerable( _child, xmlChildrenContainer );
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode )
+    {
+        Node * nodeChild = dynamic_cast<Node *>(_render);
+
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
+
+        if( nodeChild != nullptr )
+        {
+            this->serializeNodeSingle( NodePtr::from( nodeChild ), xmlNode );
+        }
+
+        if( _render->emptyRenderChildren() == false )
+        {
+            pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
+
+            _render->foreachRenderChildren( [this, &xmlChildrenContainer]( RenderInterface * _child )
+            {
+                this->serializeRenderable( _child, xmlChildrenContainer );
             } );
         }
     }
@@ -713,7 +765,7 @@ namespace Mengine
         {
             pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
-            serializeNode( _scene, payloadNode );
+            this->serializeNode( _scene, payloadNode );
         }
 
         NodeDebuggerPacket packet;
@@ -727,7 +779,67 @@ namespace Mengine
 #endif
         doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 
-        sendPacket( packet );
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendPickerable( const ScenePtr & _scene )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Pickerable" );
+
+        if( _scene != nullptr )
+        {
+            pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+            PickerInterface * picker = _scene->getPicker();
+
+            this->serializePickerable( picker, payloadNode );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef _DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendRenderable( const ScenePtr & _scene )
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Renderable" );
+
+        if( _scene != nullptr )
+        {
+            pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+            RenderInterface * render = _scene->getRender();
+
+            this->serializeRenderable( render, payloadNode );
+        }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef _DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::processPacket( NodeDebuggerPacket & _packet )

@@ -17,4 +17,18 @@ namespace Mengine
 
         //Empty
     }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderViewportInterfacePtr & Interender::getPickerViewport() const
+    {
+        const RenderViewportInterfacePtr & viewport = this->getRenderViewport();
+
+        return viewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderCameraInterfacePtr & Interender::getPickerCamera() const
+    {
+        const RenderCameraInterfacePtr & camera = this->getRenderCamera();
+
+        return camera;
+    }
 }

@@ -31,7 +31,11 @@ namespace Mengine
         void moveRelationRenderBack( RenderInterface * _childRender ) override;
 
     public:
+        bool emptyRenderChildren() const override;
+
+    public:
         void foreachRenderChildren( const LambdaRender & _lambda ) override;
+        void foreachRenderChildrenEnabled( const LambdaRender & _lambda ) override;
 
     public:
         void setRenderEnable( bool _enable ) override;

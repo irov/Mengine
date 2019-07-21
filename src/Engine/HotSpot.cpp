@@ -83,6 +83,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::deactivatePicker_()
     {
+        this->setPickerPressed( false );
+        this->setPickerHandle( false );
+
         if( this->isPickerPicked() == true )
         {
             this->setPickerPicked( false );
@@ -107,6 +110,19 @@ namespace Mengine
             EVENTABLE_METHOD( EVENT_HOTSPOT_DEACTIVATE )
                 ->onHotSpotDeactivate();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpot::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
+
+        if( this->isPickerEnable() == false )
+        {
+            return;
+        }
+
+        PICKER_SERVICE()
+            ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     Scriptable * HotSpot::getPickerScriptable()

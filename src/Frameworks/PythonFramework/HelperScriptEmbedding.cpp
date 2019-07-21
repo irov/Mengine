@@ -554,6 +554,8 @@ namespace Mengine
             mt::box2f bb;
             mt::insideout_box( bb );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, bb, "hotspot is NULL" );
+
             const Polygon & polygon = _hotspotPolygon->getPolygon();
 
             const VectorPoints & points = polygon.getPoints();

@@ -105,6 +105,11 @@ namespace Mengine
         this->addRelationPickerChildrenBack_( childPicker );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool BasePicker::emptyPickerChildren() const
+    {
+        return m_pickerChildren.empty();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::foreachPickerChildren( const LambdaPicker & _lambda )
     {
         for( PickerInterface * child : m_pickerChildren )

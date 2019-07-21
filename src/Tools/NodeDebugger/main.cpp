@@ -1,10 +1,12 @@
 #include "NodeDebuggerApp.h"
 
+#include "Config/String.h"
+
 #include "stdex/allocator.h"
 
-static std::string WideToUtf8( const std::wstring& wideStr )
+static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 {
-    std::string result;
+    Mengine::String result;
 
     const int inSize = static_cast<int>( wideStr.size() );
     const int outSize = ::WideCharToMultiByte( CP_UTF8, 0, wideStr.c_str(), inSize, nullptr, 0, nullptr, nullptr );
@@ -27,19 +29,20 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     stdex_allocator_initialize();
 
     {
-        std::string address;
+        Mengine::String address;
         uint16_t port = 0;
 
-        std::wstring cmdLine( lpCmdLine );
+        Mengine::WString cmdLine( lpCmdLine );
         if( !cmdLine.empty() )
         {
-            std::wstring::size_type columnPos = cmdLine.find( TEXT( ':' ) );
-            if( std::wstring::npos != columnPos )
+            Mengine::WString::size_type columnPos = cmdLine.find( TEXT( ':' ) );
+            if( Mengine::WString::npos != columnPos )
             {
-                std::wstring wideAddress = cmdLine.substr( 0, columnPos );
-                std::wstring widePort = cmdLine.substr( columnPos + 1 );
+                Mengine::WString wideAddress = cmdLine.substr( 0, columnPos );
+                Mengine::WString widePort = cmdLine.substr( columnPos + 1 );
 
-                port = static_cast<uint16_t>( std::stoi( widePort ) & 0xFFFF );
+                Mengine::WChar * ptr;
+                port = static_cast<uint16_t>(::wcstol( widePort.c_str(), &ptr, 10 ) & 0xFFFF);
                 address = WideToUtf8( wideAddress );
             }
         }

@@ -18,8 +18,9 @@ namespace Mengine
         }
 
     protected:
-        void incref() override
+        uint32_t incref() override
         {
+            return 1;
         }
 
         void decref() override

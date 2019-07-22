@@ -20,7 +20,7 @@ namespace Mengine
         }
 
     public:
-        virtual void incref() = 0;
+        virtual uint32_t incref() = 0;
         virtual void decref() = 0;
         virtual uint32_t getrefcount() const = 0;
 

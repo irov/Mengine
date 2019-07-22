@@ -3,6 +3,7 @@
 #include "Interface/Interface.h"
 
 #include "Kernel/KeyCode.h"
+#include "Kernel/MouseCode.h"
 
 #include "Config/Char.h"
 
@@ -48,7 +49,7 @@ namespace Mengine
         uint32_t touchId;
         float x;
         float y;
-        uint32_t button;
+        MouseCode code;
         float pressure;
         bool isDown;
         bool isPressed;
@@ -60,7 +61,7 @@ namespace Mengine
 
         float x;
         float y;
-        uint32_t button;
+        uint32_t code;
         int32_t wheel;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -367,8 +367,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _event )
     {
-        m_mouseBuffer[_event.button] = _event.isDown;
-        m_mouseBufferSpecial[_event.button] = this->isSpecialDown();
+        m_mouseBuffer[_event.code] = _event.isDown;
+        m_mouseBufferSpecial[_event.code] = this->isSpecialDown();
 
         this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
 

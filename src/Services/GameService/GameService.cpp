@@ -105,7 +105,7 @@ namespace Mengine
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON, handle )
-                ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
+                ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.code, _event.isDown );
         }
 
         if( handle == false )
@@ -130,7 +130,7 @@ namespace Mengine
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
-                ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
+                ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.code, _event.isDown );
         }
 
         if( handle == false )
@@ -155,7 +155,7 @@ namespace Mengine
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON_END, handle )
-                ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
+                ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.code, _event.isDown );
         }
 
         if( handle == false )
@@ -204,7 +204,7 @@ namespace Mengine
         if( handle == false )
         {
             handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_WHEEL, handle )
-                ->onGameMouseWheel( _event.button, _event.x, _event.y, _event.wheel );
+                ->onGameMouseWheel( _event.code, _event.x, _event.y, _event.wheel );
         }
 
         if( handle == false )

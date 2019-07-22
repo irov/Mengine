@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum InputEventType
+    enum EInputEventType
     {
         IET_KEY,
         IET_TEXT,
@@ -23,18 +23,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputKeyEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         float x;
         float y;
-        KeyCode code;
+        EKeyCode code;
         bool isDown;
         bool isRepeat;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputTextEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         float x;
         float y;
@@ -43,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseButtonEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         uint32_t touchId;
         float x;
@@ -56,7 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseWheelEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         float x;
         float y;
@@ -66,7 +66,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseMoveEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         uint32_t touchId;
         float x;
@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseEnterEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         uint32_t touchId;
         float x;
@@ -88,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMouseLeaveEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         uint32_t touchId;
         float x;
@@ -98,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct InputMousePositionEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         uint32_t touchId;
         float x;

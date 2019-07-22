@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     union InputUnionEvent
     {
-        InputEventType type;
+        EInputEventType type;
 
         InputKeyEvent key;
         InputTextEvent text;
@@ -33,7 +33,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) = 0;
+        virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<InputMousePositionProviderInterface> InputMousePositionProviderInterfacePtr;
@@ -61,8 +61,9 @@ namespace Mengine
         virtual bool isAnyMouseButtonDown() const = 0;
         virtual bool isMouseButtonDown( uint32_t _buttonId ) const = 0;
 
-        virtual void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) = 0;
+        virtual void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point, float _pressure ) = 0;
         virtual const mt::vec2f & getCursorPosition( uint32_t _touchId ) const = 0;
+        virtual float getCursorPressure( uint32_t _touchId ) const = 0;
         virtual bool validCursorPosition( float _x, float _y, float * _vx, float * _vy ) const = 0;
 
         virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) = 0;
@@ -120,7 +121,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        MENGINE_INLINE void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
+        MENGINE_INLINE void pushKeyEvent( float _x, float _y, EKeyCode _code, bool _isDown, bool _repeating )
         {
             float vx;
             float vy;

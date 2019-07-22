@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum ScriptHolderEventFlag
+    enum EScriptHolderEventFlag
     {
         EVENT_KEEP_SCRIPT = 0,
         EVENT_RELEASE_SCRIPT

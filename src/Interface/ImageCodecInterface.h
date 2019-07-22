@@ -30,7 +30,7 @@ namespace Mengine
 
         int32_t quality;
 
-        PixelFormat format;
+        EPixelFormat format;
 
         uint32_t getFullSize() const
         {
@@ -64,7 +64,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    enum ImageDecoderOptions
+    enum EImageDecoderOptions
     {
         DF_NONE = 0x00000000,
         DF_COUNT_ALPHA = 0x00000001,

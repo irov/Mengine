@@ -26,6 +26,9 @@ namespace Mengine
         void moveRelationPickerBack( PickerInterface * _childPicker ) override;
 
     public:
+        bool emptyPickerChildren() const override;
+
+    public:
         void foreachPickerChildren( const LambdaPicker & _lambda ) override;
         void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) override;
 

@@ -229,6 +229,7 @@ namespace Mengine
         m_conditionLock = nullptr;
 
         m_thread = nullptr;
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::detach()
@@ -240,6 +241,8 @@ namespace Mengine
 
         m_exit = true;
 
+        SDL_CondSignal( m_conditionVariable );
+
         SDL_DestroyMutex( m_processLock );
         m_processLock = nullptr;
 
@@ -250,6 +253,7 @@ namespace Mengine
         m_conditionLock = nullptr;
 
         m_thread = nullptr;
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLThreadIdentity::getPriority() const

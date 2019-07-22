@@ -11,7 +11,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef Lambda<void( const InputKeyEvent & )> LambdaInputKeyEvent;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalKeyHandler( KeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const Char * _doc );
+        uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const Char * _doc );
         void removeGlobalHandler( uint32_t _id );
         //////////////////////////////////////////////////////////////////////////
     }

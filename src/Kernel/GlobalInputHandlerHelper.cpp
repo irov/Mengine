@@ -18,7 +18,7 @@ namespace Mengine
                 , public Factorable
             {
             public:
-                GlobalKeyHandler( KeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event )
+                GlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event )
                     : m_code( _code )
                     , m_isDown( _isDown )
                     , m_event( _event )
@@ -101,7 +101,7 @@ namespace Mengine
                 }
 
             protected:
-                KeyCode m_code;
+                EKeyCode m_code;
                 bool m_isDown;
 
                 LambdaInputKeyEvent m_event;
@@ -111,7 +111,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalKeyHandler( KeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const Char * _doc )
+        uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const Char * _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();

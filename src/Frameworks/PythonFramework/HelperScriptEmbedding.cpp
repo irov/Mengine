@@ -554,6 +554,8 @@ namespace Mengine
             mt::box2f bb;
             mt::insideout_box( bb );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( _hotspotPolygon, bb, "hotspot is NULL" );
+
             const Polygon & polygon = _hotspotPolygon->getPolygon();
 
             const VectorPoints & points = polygon.getPoints();
@@ -3125,7 +3127,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HelperScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::enum_<KeyCode>( _kernel, "KeyCode" )
+        pybind::enum_<EKeyCode>( _kernel, "KeyCode" )
             .def( "KC_UNASSIGNED", KC_UNASSIGNED )
             .def( "KC_LBUTTON", KC_LBUTTON )
             .def( "KC_RBUTTON", KC_RBUTTON )

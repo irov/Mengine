@@ -24,14 +24,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum class NodeDebuggerServerState : uint32_t
+    enum class ENodeDebuggerServerState : uint32_t
     {
         Invalid,
         WaitingForClient,
         Connected
     };
     //////////////////////////////////////////////////////////////////////////
-    enum class NodeDebuggerPacketType : uint32_t
+    enum class ENodeDebuggerPacketType : uint32_t
     {
         // asking packets
         Ask_Scene,
@@ -83,7 +83,12 @@ namespace Mengine
         void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void sendPacket( NodeDebuggerPacket & _packet );
         void sendScene( const ScenePtr & _scene );
+        void sendPickerable( const ScenePtr & _scene );
+        void sendRenderable( const ScenePtr & _scene );
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
+        void serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode );
+        void serializePickerable( PickerInterface * _picker, pugi::xml_node & _xmlParentNode );
+        void serializeRenderable( RenderInterface * _render, pugi::xml_node & _xmlParentNode );
 
         void serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
@@ -107,7 +112,7 @@ namespace Mengine
         ThreadJobPtr m_threadJob;
         uint32_t m_workerId;
         ThreadMutexInterfacePtr m_dataMutex;
-        NodeDebuggerServerState m_serverState;
+        ENodeDebuggerServerState m_serverState;
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Vector<uint8_t> m_receivedData;

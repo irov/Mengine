@@ -77,13 +77,10 @@ namespace Mengine
                     desc.camera = _camera;
                 }
 
-                m_currentViewport = desc.viewport;
-                m_currentCamera = desc.camera;
-
                 m_states.push_back( desc );
 
-                RenderViewportInterfacePtr visitViewport = m_currentViewport;
-                RenderCameraInterfacePtr visitCamera = m_currentCamera;
+                RenderViewportInterfacePtr visitViewport = desc.viewport;
+                RenderCameraInterfacePtr visitCamera = desc.camera;
 
                 _picker->foreachPickerChildrenEnabled( [this, &visitViewport, &visitCamera]( PickerInterface * _picker )
                 {
@@ -95,9 +92,6 @@ namespace Mengine
             VectorPickerStates & m_states;
 
             bool m_exclusive;
-
-            RenderViewportInterfacePtr m_currentViewport;
-            RenderCameraInterfacePtr m_currentCamera;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -173,11 +167,11 @@ namespace Mengine
         this->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::pickTrap( const mt::vec2f & _point, VectorPickers & _pickers )
+    bool PickerService::pickTrap( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers & _pickers )
     {
         //m_statesAux.clear();
         VectorPickerStates statesAux;
-        if( this->proccesStates_( _point.x, _point.y, statesAux ) == false )
+        if( this->proccesStates_( _point.x, _point.y, _touchId, _pressure, statesAux ) == false )
         {
             return false;
         }
@@ -219,11 +213,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PickerService::updateTraps()
     {
-        const mt::vec2f & pos = INPUT_SERVICE()
+        const mt::vec2f & position = INPUT_SERVICE()
             ->getCursorPosition( 0 );
 
+        float pressure = INPUT_SERVICE()
+            ->getCursorPressure( 0 );
+
         VectorPickerStates statesAux;
-        this->proccesStates_( pos.x, pos.y, statesAux );
+        this->proccesStates_( position.x, position.y, 0, pressure, statesAux );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::invalidateTraps()
@@ -235,7 +232,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, 0, 0.f, m_states ) == false )
         {
             return false;
         }
@@ -249,6 +246,11 @@ namespace Mengine
             PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -267,7 +269,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, 0, 0.f, m_states ) == false )
         {
             return false;
         }
@@ -281,6 +283,11 @@ namespace Mengine
             PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -299,7 +306,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
             return false;
         }
@@ -313,6 +320,11 @@ namespace Mengine
             const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             if( picker->isPickerPicked() == false )
             {
@@ -352,7 +364,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
             return false;
         }
@@ -366,6 +378,11 @@ namespace Mengine
             const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             if( picker->isPickerPicked() == false )
             {
@@ -409,7 +426,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
             return false;
         }
@@ -423,6 +440,11 @@ namespace Mengine
             const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             if( picker->isPickerPicked() == false )
             {
@@ -469,7 +491,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
             return false;
         }
@@ -483,6 +505,11 @@ namespace Mengine
             const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             if( picker->isPickerPicked() == false )
             {
@@ -521,7 +548,7 @@ namespace Mengine
     {
         m_states.clear();
 
-        if( this->proccesStates_( _event.x, _event.y, m_states ) == false )
+        if( this->proccesStates_( _event.x, _event.y, 0, 0.f, m_states ) == false )
         {
             return false;
         }
@@ -535,6 +562,11 @@ namespace Mengine
             const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             if( picker->isPickerPicked() == false )
             {
@@ -568,15 +600,13 @@ namespace Mengine
     {
         m_states.clear();
 
-        this->proccesStates_( _event.x, _event.y, m_states );
+        this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states );
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
-        MENGINE_UNUSED( _event );
-
         if( m_arrow == nullptr )
         {
             return;
@@ -588,6 +618,7 @@ namespace Mengine
         }
 
         m_states.clear();
+
         this->fillStates_( m_states );
 
         for( VectorPickerStates::reverse_iterator
@@ -600,16 +631,23 @@ namespace Mengine
 
             const PickerInterfacePtr & picker = desc.picker;
 
-            if( picker->isPickerPicked() == true )
+            if( picker->isPickerEnable() == false )
             {
-                picker->setPickerPicked( false );
-
-                InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
-
-                InputMouseLeaveEvent el = _event;
-
-                inputHandler->handleMouseLeave( el );
+                continue;
             }
+
+            if( picker->isPickerPicked() == false )
+            {
+                continue;
+            }
+
+            picker->setPickerPicked( false );
+
+            InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
+
+            InputMouseLeaveEvent el = _event;
+
+            inputHandler->handleMouseLeave( el );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -627,7 +665,7 @@ namespace Mengine
         _states.erase( it_erase, _states.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PickerService::proccesStates_( float _x, float _y, VectorPickerStates & _states )
+    bool PickerService::proccesStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states )
     {
         if( m_arrow == nullptr )
         {
@@ -668,9 +706,14 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            PickerStateDesc & desc = *it;
+            const PickerStateDesc & desc = *it;
 
             const PickerInterfacePtr & picker = desc.picker;
+
+            if( picker->isPickerEnable() == false )
+            {
+                continue;
+            }
 
             const RenderViewportInterfacePtr & viewport = desc.viewport;
             const RenderCameraInterfacePtr & camera = desc.camera;
@@ -689,10 +732,10 @@ namespace Mengine
 
                         InputMouseEnterEvent ne;
                         ne.type = IET_MOUSE_ENTER;
-                        ne.touchId = 0;
+                        ne.touchId = _touchId;
                         ne.x = adapt_screen_position.x;
                         ne.y = adapt_screen_position.y;
-                        ne.pressure = 0.f;
+                        ne.pressure = _pressure;
 
                         handle = inputHandler->handleMouseEnter( ne );
 
@@ -700,7 +743,9 @@ namespace Mengine
                     }
                     else
                     {
-                        handle = picker->isPickerHandle();
+                        bool pickerHandle = picker->isPickerHandle();
+
+                        handle = pickerHandle;
                     }
                 }
                 else
@@ -713,10 +758,10 @@ namespace Mengine
 
                         InputMouseLeaveEvent ne;
                         ne.type = IET_MOUSE_LEAVE;
-                        ne.touchId = 0;
+                        ne.touchId = _touchId;
                         ne.x = adapt_screen_position.x;
                         ne.y = adapt_screen_position.y;
-                        ne.pressure = 0.f;
+                        ne.pressure = _pressure;
 
                         inputHandler->handleMouseLeave( ne );
                     }
@@ -732,10 +777,10 @@ namespace Mengine
 
                     InputMouseLeaveEvent ne;
                     ne.type = IET_MOUSE_LEAVE;
-                    ne.touchId = 0;
+                    ne.touchId = _touchId;
                     ne.x = adapt_screen_position.x;
                     ne.y = adapt_screen_position.y;
-                    ne.pressure = 0.f;
+                    ne.pressure = _pressure;
 
                     inputHandler->handleMouseLeave( ne );
                 }

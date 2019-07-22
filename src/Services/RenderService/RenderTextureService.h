@@ -33,8 +33,8 @@ namespace Mengine
         RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc ) override;
 
     public:
-        RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) override;
-        RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) override;
+        RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) override;
+        RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) override;
 
     public:
         RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName ) const override;
@@ -50,13 +50,13 @@ namespace Mengine
 
     public:
         void visitTexture( const LambdaRenderTexture & _lambda ) const override;
-        size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const override;
+        size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format ) const override;
 
     protected:
         bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
 
     protected:
-        void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
+        void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, EPixelFormat & _format ) const;
 
     protected:
         typedef Pair<ConstString, FilePath> MapRenderTextureKey;

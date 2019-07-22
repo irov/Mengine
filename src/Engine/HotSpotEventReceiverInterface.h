@@ -6,20 +6,20 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum HotSpotEventFlag
+    enum EHotSpotEventFlag
     {
-        EVENT_KEY = 0,
-        EVENT_TEXT,
-        EVENT_MOUSE_BUTTON,
-        EVENT_MOUSE_BUTTON_BEGIN,
-        EVENT_MOUSE_BUTTON_END,
-        EVENT_MOUSE_WHEEL,
-        EVENT_MOUSE_MOVE,
-        EVENT_MOUSE_ENTER,
-        EVENT_MOUSE_LEAVE,
-        EVENT_MOUSE_OVER_DESTROY,
-        EVENT_ACTIVATE,
-        EVENT_DEACTIVATE
+        EVENT_HOTSPOT_KEY = 0,
+        EVENT_HOTSPOT_TEXT,
+        EVENT_HOTSPOT_MOUSE_BUTTON,
+        EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN,
+        EVENT_HOTSPOT_MOUSE_BUTTON_END,
+        EVENT_HOTSPOT_MOUSE_WHEEL,
+        EVENT_HOTSPOT_MOUSE_MOVE,
+        EVENT_HOTSPOT_MOUSE_ENTER,
+        EVENT_HOTSPOT_MOUSE_LEAVE,
+        EVENT_HOTSPOT_MOUSE_OVER_DESTROY,
+        EVENT_HOTSPOT_ACTIVATE,
+        EVENT_HOTSPOT_DEACTIVATE
     };
     //////////////////////////////////////////////////////////////////////////
     class HotSpotEventReceiverInterface

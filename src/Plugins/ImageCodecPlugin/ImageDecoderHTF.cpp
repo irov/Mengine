@@ -12,7 +12,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static PixelFormat s_convertFormat( uint32_t _format )
+    static EPixelFormat s_convertFormat( uint32_t _format )
     {
         switch( _format )
         {

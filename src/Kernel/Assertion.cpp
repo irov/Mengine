@@ -4,6 +4,7 @@
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Environment/Windows/WindowsIncluder.h"
@@ -72,6 +73,12 @@ namespace Mengine
                     , _line
                     , _test
                     , str_info);
+            }
+
+            if( _level == ASSERTION_LEVEL_FATAL )
+            {
+                PLATFORM_SERVICE()
+                    ->abort();
             }
 
             if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level >= ASSERTION_LEVEL_ERROR )

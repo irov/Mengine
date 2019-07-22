@@ -18,7 +18,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool DataflowResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
         Content * content = _resource->getContent();
 
@@ -41,7 +41,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////        
-    bool DataflowResourcePrefetcher::unfetch( const ResourcePtr & _resource )
+    bool DataflowResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
         Content * content = _resource->getContent();
 

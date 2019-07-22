@@ -61,6 +61,7 @@ namespace Mengine
 
     public:
         Scriptable * getPickerScriptable() override;
+        Eventable * getPickerEventable() override;
         InputHandlerInterface * getPickerInputHandler() override;
 
     public:

@@ -7,6 +7,7 @@
 #include "Kernel/BoundingBox.h"
 #include "Kernel/RenderContext.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/Eventable.h"
 
 #include "Config/Lambda.h"
 
@@ -56,6 +57,8 @@ namespace Mengine
 
     public:
         virtual Scriptable * getPickerScriptable() = 0;
+        virtual Eventable * getPickerEventable() = 0;
+        
         virtual InputHandlerInterface * getPickerInputHandler() = 0;
 
 

@@ -553,8 +553,19 @@ namespace Mengine
         return m_textSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::calcTextViewport( Viewport & _viewport ) const
+    bool TextField::calcTextViewport( Viewport & _viewport ) const
     {
+        if( m_textId.empty() == true )
+        {
+            mt::box2f box;
+            mt::insideout_box( box );
+
+            _viewport.begin = box.minimum;
+            _viewport.end = box.maximum;
+
+            return false;
+        }
+
         const TextFontInterfacePtr & font = this->getFont();
 
         if( font == nullptr )
@@ -565,7 +576,7 @@ namespace Mengine
             _viewport.begin = box.minimum;
             _viewport.end = box.maximum;
 
-            return;
+            return false;
         }
 
         float lineOffset = this->calcLineOffset();
@@ -576,6 +587,8 @@ namespace Mengine
 
         _viewport.begin = mt::vec2f( 0.f, linesOffset ) - size;
         _viewport.end = mt::vec2f( 0.f, linesOffset );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesWrap_( VectorTextLineChunks2 & _textLines ) const

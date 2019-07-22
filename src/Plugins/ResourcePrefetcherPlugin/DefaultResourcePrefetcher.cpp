@@ -13,11 +13,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DefaultResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool DefaultResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
         if( _resource->compile() == false )
         {
-            LOGGER_ERROR( "invalid resource '%s:%s' prefetcher compile"
+            LOGGER_ERROR( "invalid group '%s' resource '%s:%s' compile"
+                , _resource->getGroupName().c_str()
                 , _resource->getType().c_str()
                 , _resource->getName().c_str()
             );
@@ -30,7 +31,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DefaultResourcePrefetcher::unfetch( const ResourcePtr & _resource )
+    bool DefaultResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
         _resource->release();
 

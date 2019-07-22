@@ -16,7 +16,10 @@ namespace Mengine
     void TextFieldDebugRender::_render( const RenderContext * _context, TextField * _node )
     {
         Viewport viewport;
-        _node->calcTextViewport( viewport );
+        if( _node->calcTextViewport( viewport ) == false )
+        {
+            return;
+        }
 
         mt::vec2f b = viewport.begin;
         mt::vec2f e = viewport.end;

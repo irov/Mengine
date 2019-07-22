@@ -26,7 +26,7 @@ namespace Mengine
         return m_archivator;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchiveResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool ArchiveResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
         Content * content = _resource->getContent();
 
@@ -49,7 +49,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////        
-    bool ArchiveResourcePrefetcher::unfetch( const ResourcePtr & _resource )
+    bool ArchiveResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
         Content * content = _resource->getContent();
 

@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool ImageDecoderResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
         Content * content = _resource->getContent();
 
@@ -34,7 +34,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderResourcePrefetcher::unfetch( const ResourcePtr & _resource )
+    bool ImageDecoderResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
         Content * content = _resource->getContent();
 

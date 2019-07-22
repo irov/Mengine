@@ -2,15 +2,14 @@
 
 #include "Interface/ArchivatorInterface.h"
 
-#include "ResourcePrefetcherInterface.h"
+#include "BaseResourcePrefetcher.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class ArchiveResourcePrefetcher
-        : public ResourcePrefetcherInterface
-        , public Factorable
+        : public BaseResourcePrefetcher
     {
     public:
         ArchiveResourcePrefetcher();
@@ -21,8 +20,8 @@ namespace Mengine
         const ArchivatorInterfacePtr & getArchivator() const;
 
     public:
-        bool prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool unfetch( const ResourcePtr & _resource ) override;
+        bool _prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const override;
+        bool _unfetch( const ResourcePtr & _resource ) const override;
 
     protected:
         ArchivatorInterfacePtr m_archivator;

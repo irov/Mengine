@@ -1,23 +1,20 @@
 #pragma once
 
-#include "ResourcePrefetcherInterface.h"
-
-#include "Engine/ResourceSound.h"
+#include "BaseResourcePrefetcher.h"
 
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class DefaultResourcePrefetcher
-        : public ResourcePrefetcherInterface
-        , public Factorable
+        : public BaseResourcePrefetcher
     {
     public:
         DefaultResourcePrefetcher();
         ~DefaultResourcePrefetcher() override;
 
     public:
-        bool prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool unfetch( const ResourcePtr & _resource ) override;
+        bool _prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const override;
+        bool _unfetch( const ResourcePtr & _resource ) const override;
     };
 }

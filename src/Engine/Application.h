@@ -157,9 +157,6 @@ namespace Mengine
         bool getCursorMode() const override;
         void setCursorIcon( const ConstString & _resourceName ) override;
 
-        void showKeyboard() override;
-        void hideKeyboard() override;
-
     public:
         void debugPause( bool _pause ) override;
 

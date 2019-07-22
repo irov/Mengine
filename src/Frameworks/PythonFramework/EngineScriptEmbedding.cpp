@@ -166,6 +166,7 @@ namespace Mengine
             m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>();
             m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>();
             m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>();
+            m_factoryPyGlobalMouseLeaveHandlers = new FactoryPool<PyGlobalMouseLeaveHandler, 32>();
             m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>();
             m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>();
             m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>();
@@ -184,7 +185,8 @@ namespace Mengine
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSceneChangeCallback );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorGridBurnTransparency );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUser );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUser );            
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseLeaveHandlers );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseMoveHandlers );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtons );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtonEnds );
@@ -201,6 +203,7 @@ namespace Mengine
             m_factoryPythonSceneChangeCallback = nullptr;
             m_factoryAffectorGridBurnTransparency = nullptr;
             m_factoryAffectorUser = nullptr;
+            m_factoryPyGlobalMouseLeaveHandlers = nullptr;
             m_factoryPyGlobalMouseMoveHandlers = nullptr;
             m_factoryPyGlobalMouseHandlerButtons = nullptr;
             m_factoryPyGlobalMouseHandlerButtonEnds = nullptr;
@@ -1863,8 +1866,10 @@ namespace Mengine
             }
 
         protected:
-            void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override
+            void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure ) override
             {
+                MENGINE_UNUSED( _pressure );
+
                 mt::vec2f wp;
                 m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, &wp );
 
@@ -2550,7 +2555,7 @@ namespace Mengine
         {
             VectorPickers pickers;
             PICKER_SERVICE()
-                ->pickTrap( _point, pickers );
+                ->pickTrap( _point, 0, 0.f, pickers );
 
             pybind::list pyret( _kernel );
 
@@ -2767,6 +2772,49 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PyGlobalBaseHandler> PyGlobalBaseHandlerPtr;
         //////////////////////////////////////////////////////////////////////////
+        class PyGlobalMouseLeaveHandler
+            : public PyGlobalBaseHandler
+        {
+        protected:
+            void handleMouseLeave( const InputMouseLeaveEvent & _event ) override
+            {
+                mt::vec2f point( _event.x, _event.y );
+
+                mt::vec2f wp;
+                PLAYER_SERVICE()
+                    ->calcGlobalMouseWorldPosition( point, &wp );
+
+                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, m_args );
+
+                if( py_result.is_none() == false )
+                {
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
+                        , m_cb.repr()
+                        , py_result.repr()
+                    );
+                }
+            }
+        };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<PyGlobalMouseLeaveHandler> PyGlobalMouseLeaveHandlerPtr;
+        //////////////////////////////////////////////////////////////////////////
+        FactoryPtr m_factoryPyGlobalMouseLeaveHandlers;
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_addMouseLeaveHandler( const pybind::object & _cb, const pybind::args & _args )
+        {
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
+
+            PyGlobalMouseLeaveHandlerPtr handler = m_factoryPyGlobalMouseLeaveHandlers
+                ->createObject( MENGINE_DOCUMENT_PYBIND );
+
+            handler->initialize( _cb, _args );
+
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
         class PyGlobalMouseMoveHandler
             : public PyGlobalBaseHandler
         {
@@ -2788,7 +2836,7 @@ namespace Mengine
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalMouseMoveHandler %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -3609,6 +3657,7 @@ namespace Mengine
 
         pybind::def_functor_args( _kernel, "removeCurrentScene", nodeScriptMethod, &EngineScriptMethod::s_removeCurrentScene );
 
+        pybind::def_functor_args( _kernel, "addMouseLeaveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseLeaveHandler );
         pybind::def_functor_args( _kernel, "addMouseMoveHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseMoveHandler );
         pybind::def_functor_args( _kernel, "addMouseButtonHandler", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandler );
         pybind::def_functor_args( _kernel, "addMouseButtonHandlerBegin", nodeScriptMethod, &EngineScriptMethod::s_addMouseButtonHandlerBegin );

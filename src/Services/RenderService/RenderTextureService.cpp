@@ -130,7 +130,7 @@ namespace Mengine
         return RenderTextureInterfacePtr( texture );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         uint32_t HWMipmaps = _mipmaps;
         uint32_t HWWidth = _width;
@@ -138,7 +138,7 @@ namespace Mengine
         uint32_t HWChannels = _channels;
         uint32_t HWDepth = _depth;
 
-        PixelFormat HWFormat = _format;
+        EPixelFormat HWFormat = _format;
 
         this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
@@ -160,13 +160,13 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         uint32_t HWWidth = _width;
         uint32_t HWHeight = _height;
         uint32_t HWChannels = _channels;
         uint32_t HWDepth = _depth;
-        PixelFormat HWFormat = _format;
+        EPixelFormat HWFormat = _format;
 
         this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
@@ -373,13 +373,13 @@ namespace Mengine
         return new_texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t RenderTextureService::getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const
+    size_t RenderTextureService::getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format ) const
     {
         uint32_t HWWidth = _width;
         uint32_t HWHeight = _height;
         uint32_t HWChannels = _channels;
         uint32_t HWDepth = _depth;
-        PixelFormat HWFormat = _format;
+        EPixelFormat HWFormat = _format;
 
         this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
@@ -388,7 +388,7 @@ namespace Mengine
         return memoryUse;
     }
     //////////////////////////////////////////////////////////////////////////	
-    void RenderTextureService::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const
+    void RenderTextureService::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, EPixelFormat & _format ) const
     {
         if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )
         {

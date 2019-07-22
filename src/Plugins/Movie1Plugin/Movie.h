@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<VisitorMovieNodeInterface> VisitorMovieNodeInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    enum MovieEventFlag
+    enum EMovieEventFlag
     {
         EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATION_LAST__,
         EVENT_MOVIE_ACTIVATE_INTERNAL,

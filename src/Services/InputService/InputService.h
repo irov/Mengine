@@ -41,8 +41,9 @@ namespace Mengine
         bool isAnyMouseButtonDown() const override;
         bool isMouseButtonDown( uint32_t _button ) const override;
 
-        void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) override;
+        void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point, float _pressure ) override;
         const mt::vec2f & getCursorPosition( uint32_t _touchId ) const override;
+        float getCursorPressure( uint32_t _touchId ) const override;
         bool validCursorPosition( float _x, float _y, float * _vx, float * _vy ) const override;
 
         uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) override;
@@ -65,10 +66,11 @@ namespace Mengine
         void mouseLeaveEvent_( const InputMouseLeaveEvent & _params );
 
     protected:
-        void applyCursorPosition_( uint32_t _touchId, float _x, float _y );
+        void applyCursorPosition_( uint32_t _touchId, float _x, float _y, float _pressure );
 
     private:
         mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH];
+        float m_cursorPressure[MENGINE_INPUT_MAX_TOUCH];
 
         struct InputMousePositionProviderDesc
         {

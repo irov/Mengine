@@ -14,7 +14,7 @@ namespace Mengine
         virtual uint32_t getHeight() const = 0;
         virtual uint32_t getChannels() const = 0;
         virtual uint32_t getDepth() const = 0;
-        virtual PixelFormat getPixelFormat() const = 0;
+        virtual EPixelFormat getPixelFormat() const = 0;
 
     public:
         virtual uint32_t getHWWidth() const = 0;

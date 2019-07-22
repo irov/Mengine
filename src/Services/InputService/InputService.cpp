@@ -27,6 +27,7 @@ namespace Mengine
         for( uint32_t i = 0; i != MENGINE_INPUT_MAX_TOUCH; ++i )
         {
             m_cursorPosition[i] = mt::vec2f( 0.f, 0.f );
+            m_cursorPressure[i] = 0.f;
         }
 
         std::fill( m_keyBuffer, m_keyBuffer + sizeof( m_keyBuffer ), false );
@@ -258,7 +259,7 @@ namespace Mengine
         return inside;
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::applyCursorPosition_( uint32_t _touchId, float _x, float _y )
+    void InputService::applyCursorPosition_( uint32_t _touchId, float _x, float _y, float _pressure )
     {
         if( _touchId >= MENGINE_INPUT_MAX_TOUCH )
         {
@@ -273,7 +274,13 @@ namespace Mengine
             change = true;
         }
 
+        if( mt::equal_f_f( m_cursorPressure[_touchId], _pressure ) == false )
+        {
+            change = true;
+        }
+
         m_cursorPosition[_touchId] = point;
+        m_cursorPressure[_touchId] = _pressure;
 
         if( change == true )
         {
@@ -281,19 +288,24 @@ namespace Mengine
             {
                 const InputMousePositionProviderInterfacePtr & provider = desc.provider;
 
-                provider->onMousePositionChange( _touchId, point );
+                provider->onMousePositionChange( _touchId, point, _pressure );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputService::setCursorPosition( uint32_t _touchId, const mt::vec2f & _point )
+    void InputService::setCursorPosition( uint32_t _touchId, const mt::vec2f & _point, float _pressure )
     {
-        this->applyCursorPosition_( _touchId, _point.x, _point.y );
+        this->applyCursorPosition_( _touchId, _point.x, _point.y, _pressure );
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & InputService::getCursorPosition( uint32_t _touchId ) const
     {
         return m_cursorPosition[_touchId];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float InputService::getCursorPressure( uint32_t _touchId ) const
+    {
+        return m_cursorPressure[_touchId];
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
@@ -370,7 +382,7 @@ namespace Mengine
         m_mouseBuffer[_event.code] = _event.isDown;
         m_mouseBufferSpecial[_event.code] = this->isSpecialDown();
 
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
             ->mouseButtonEvent( _event );
@@ -383,7 +395,7 @@ namespace Mengine
         {
             if( this->isAnyMouseButtonDown() == true )
             {
-                this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
+                this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
                 APPLICATION_SERVICE()
                     ->mouseMove( _event );
@@ -391,7 +403,7 @@ namespace Mengine
         }
         else
         {
-            this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
+            this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
             APPLICATION_SERVICE()
                 ->mouseMove( _event );
@@ -406,7 +418,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mousePositionEvent_( const InputMousePositionEvent & _event )
     {
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
             ->mousePosition( _event );
@@ -414,7 +426,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseEnterEvent_( const InputMouseEnterEvent & _event )
     {
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
             ->mouseEnter( _event );
@@ -422,7 +434,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseLeaveEvent_( const InputMouseLeaveEvent & _event )
     {
-        this->applyCursorPosition_( _event.touchId, _event.x, _event.y );
+        this->applyCursorPosition_( _event.touchId, _event.x, _event.y, _event.pressure );
 
         APPLICATION_SERVICE()
             ->mouseLeave( _event );

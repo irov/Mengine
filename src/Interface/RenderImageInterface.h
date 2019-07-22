@@ -19,7 +19,7 @@ namespace Mengine
         uint32_t height;
         uint32_t channels;
         uint32_t depth;
-        PixelFormat format;
+        EPixelFormat format;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
@@ -66,7 +66,7 @@ namespace Mengine
         virtual uint32_t getHWChannels() const = 0;
         virtual uint32_t getHWDepth() const = 0;
 
-        virtual PixelFormat getHWPixelFormat() const = 0;
+        virtual EPixelFormat getHWPixelFormat() const = 0;
 
     public:
         virtual float getHWWidthInv() const = 0;

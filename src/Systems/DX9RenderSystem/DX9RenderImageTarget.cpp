@@ -103,9 +103,9 @@ namespace Mengine
         return HWHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9RenderImageTarget::getHWPixelFormat() const
+    EPixelFormat DX9RenderImageTarget::getHWPixelFormat() const
     {
-        PixelFormat HWPixelFormat = m_target->getPixelFormat();
+        EPixelFormat HWPixelFormat = m_target->getPixelFormat();
 
         return HWPixelFormat;
     }

@@ -20,7 +20,7 @@ namespace Mengine
         ~DX9RenderImage() override;
 
     public:
-        void initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat );
+        void initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat );
 
     public:
         void bind( uint32_t _stage ) override;
@@ -43,7 +43,7 @@ namespace Mengine
         uint32_t getHWDepth() const override;
         uint32_t getHWMipmaps() const override;
 
-        PixelFormat getHWPixelFormat() const override;
+        EPixelFormat getHWPixelFormat() const override;
 
     protected:
         float getHWWidthInv() const override;
@@ -71,7 +71,7 @@ namespace Mengine
         uint32_t m_hwChannels;
         uint32_t m_hwDepth;
 
-        PixelFormat m_hwPixelFormat;
+        EPixelFormat m_hwPixelFormat;
 
         float m_hwWidthInv;
         float m_hwHeightInv;

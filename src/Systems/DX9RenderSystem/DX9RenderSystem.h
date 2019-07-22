@@ -99,13 +99,13 @@ namespace Mengine
         void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
         // create empty render image
-        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) override;
-        RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc ) override;
+        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) override;
+        RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) override;
 
 
         // create render target image
-        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc ) override;
-        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc ) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc ) override;
 
         RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc ) override;
 
@@ -123,7 +123,7 @@ namespace Mengine
 
         void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 
-        bool supportTextureFormat( PixelFormat _format ) const override;
+        bool supportTextureFormat( EPixelFormat _format ) const override;
         bool supportTextureNonPow2() const override;
 
         uint32_t getMaxCombinedTextureImageUnits() const override;
@@ -182,10 +182,10 @@ namespace Mengine
         //void createSyncTargets_();
 
         bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels
-            , DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture );
+            , DWORD Usage, EPixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture );
 
         DX9RenderImagePtr createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode
-            , uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat, const Char * _doc );
+            , uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const Char * _doc );
 
     protected:
         void onDestroyDX9RenderImage_( DX9RenderImage * _image );

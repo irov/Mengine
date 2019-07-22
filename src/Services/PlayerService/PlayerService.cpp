@@ -596,6 +596,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->handleMouseEnter( _event );
+        }
+
         if( m_arrow != nullptr )
         {
             m_arrow->onAppMouseEnter();
@@ -612,11 +617,16 @@ namespace Mengine
         PICKER_SERVICE()
             ->handleMouseEnter( _event );
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::handleMouseLeave( const InputMouseLeaveEvent & _event )
     {
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->handleMouseLeave( _event );
+        }
+
         if( m_arrow != nullptr )
         {
             m_arrow->onAppMouseLeave();

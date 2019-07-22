@@ -26,7 +26,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTargetTexture::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+    bool DX9RenderTargetTexture::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format )
     {
         m_pD3DDevice = _device;
 
@@ -103,7 +103,7 @@ namespace Mengine
         return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9RenderTargetTexture::getPixelFormat() const
+    EPixelFormat DX9RenderTargetTexture::getPixelFormat() const
     {
         return m_format;
     }

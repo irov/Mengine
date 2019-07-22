@@ -672,17 +672,17 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_HOTSPOT_KEY );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_HOTSPOT_MOUSE_BUTTON );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_HOTSPOT_MOUSE_BUTTON_END );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_HOTSPOT_MOUSE_MOVE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_HOTSPOT_MOUSE_WHEEL );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_HOTSPOT_MOUSE_ENTER );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_HOTSPOT_MOUSE_LEAVE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_HOTSPOT_MOUSE_OVER_DESTROY );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onActivate", EVENT_HOTSPOT_ACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onDeactivate", EVENT_HOTSPOT_DEACTIVATE );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 

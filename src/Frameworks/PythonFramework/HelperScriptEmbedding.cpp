@@ -1165,7 +1165,7 @@ namespace Mengine
             std::time_t ctTime;
             std::time( &ctTime );
 
-            std::tm* sTime = std::localtime( &ctTime );
+            std::tm * sTime = std::localtime( &ctTime );
 
             Stringstream str;
             str << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_hour
@@ -2078,7 +2078,7 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
+        PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2116,7 +2116,7 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
+        PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2153,7 +2153,7 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
+        PyObject * s_getAccountSettingUInt( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2190,7 +2190,7 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
+        PyObject * s_getAccountSettingUInt64( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2227,7 +2227,7 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
+        PyObject * s_getAccountSettingStrings( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2267,7 +2267,7 @@ namespace Mengine
             return l.ret();
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
+        PyObject * s_getAccountSettingFloat( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2304,7 +2304,7 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_getAccountSettingFloatDefault( const ConstString& _accountID, const ConstString & _setting, float _default )
+        float s_getAccountSettingFloatDefault( const ConstString & _accountID, const ConstString & _setting, float _default )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2510,7 +2510,7 @@ namespace Mengine
             return py_value;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_selectAccount( const ConstString& _accountID )
+        void s_selectAccount( const ConstString & _accountID )
         {
             ACCOUNT_SERVICE()
                 ->selectAccount( _accountID );
@@ -2598,7 +2598,7 @@ namespace Mengine
             //	->saveAccountsInfo();
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_deleteAccount( const ConstString& _accountName )
+        void s_deleteAccount( const ConstString & _accountName )
         {
             ACCOUNT_SERVICE()
                 ->deleteAccount( _accountName );
@@ -2807,7 +2807,7 @@ namespace Mengine
             return screen;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasTextByKey( const ConstString& _key )
+        bool s_hasTextByKey( const ConstString & _key )
         {
             bool value = TEXT_SERVICE()
                 ->hasTextEntry( _key, nullptr );
@@ -2815,7 +2815,7 @@ namespace Mengine
             return value;
         }
         //////////////////////////////////////////////////////////////////////////
-        WString s_getTextByKey( const ConstString& _key )
+        WString s_getTextByKey( const ConstString & _key )
         {
             TextEntryInterfacePtr entry;
             if( TEXT_SERVICE()
@@ -2840,7 +2840,7 @@ namespace Mengine
             return unicode;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_getTextCharCountByKey( const ConstString& _key )
+        uint32_t s_getTextCharCountByKey( const ConstString & _key )
         {
             TextEntryInterfacePtr entry;
             if( TEXT_SERVICE()
@@ -3304,14 +3304,20 @@ namespace Mengine
             .def( "KC_MAX_CODE", KC_MAX_CODE )
             ;
 
+        pybind::enum_<EMouseCode>( _kernel, "MouseCode" )
+            .def( "MC_LBUTTON", MC_LBUTTON )
+            .def( "MC_RBUTTON", MC_RBUTTON )
+            .def( "MC_MBUTTON", MC_MBUTTON )
+            ;
+
         pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>());
         pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>());
 
         pybind::registration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
         pybind::registration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
 
-        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
         pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
+        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
 
         pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>());
         pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>());
@@ -3608,7 +3614,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "crashEngine", helperScriptMethod, &HelperScriptMethod::s_crashEngine );
         pybind::def_functor( _kernel, "freezeEngine", helperScriptMethod, &HelperScriptMethod::s_freezeEngine );
         pybind::def_functor( _kernel, "memleakEngine", helperScriptMethod, &HelperScriptMethod::s_memleakEngine );
-        
+
 
         m_implement = helperScriptMethod;
 

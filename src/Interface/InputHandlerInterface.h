@@ -49,7 +49,7 @@ namespace Mengine
         uint32_t touchId;
         float x;
         float y;
-        MouseCode code;
+        EMouseCode code;
         float pressure;
         bool isDown;
         bool isPressed;
@@ -61,7 +61,7 @@ namespace Mengine
 
         float x;
         float y;
-        uint32_t code;
+        EMouseCode code;
         int32_t wheel;
     };
     //////////////////////////////////////////////////////////////////////////

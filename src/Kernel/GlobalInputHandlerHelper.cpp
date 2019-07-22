@@ -134,7 +134,7 @@ namespace Mengine
                 : public GlobalBaseHandler
             {
             public:
-                GlobalMouseButtonHandler( MouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event )
+                GlobalMouseButtonHandler( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event )
                     : m_code( _code )
                     , m_isDown( _isDown )
                     , m_event( _event )
@@ -159,7 +159,7 @@ namespace Mengine
                 }
 
             protected:
-                MouseCode m_code;
+                EMouseCode m_code;
                 bool m_isDown;
 
                 LambdaInputMouseButtonEvent m_event;
@@ -194,6 +194,33 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             typedef IntrusivePtr<GlobalMouseMoveHandler> GlobalMouseMoveHandlerPtr;
             //////////////////////////////////////////////////////////////////////////
+            class GlobalMouseWheelHandler
+                : public GlobalBaseHandler
+            {
+            public:
+                GlobalMouseWheelHandler( const LambdaInputMouseWheelEvent & _event )
+                    : m_event( _event )
+                {
+                }
+
+                ~GlobalMouseWheelHandler() override
+                {
+                }
+
+            protected:
+                bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
+                {
+                    m_event( _event );
+
+                    return false;
+                }
+
+            protected:
+                LambdaInputMouseWheelEvent m_event;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            typedef IntrusivePtr<GlobalMouseMoveHandler> GlobalMouseMoveHandlerPtr;
+            //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
         uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const Char * _doc )
@@ -208,7 +235,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseButtonEvent( MouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const Char * _doc )
+        uint32_t addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const Char * _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
@@ -226,6 +253,18 @@ namespace Mengine
                 ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseMoveHandler>( _event );
+
+            uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const Char * _doc )
+        {
+            const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
+
+            InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<GlobalMouseWheelHandler>( _event );
 
             uint32_t id = globalInputHandle->addGlobalHandler( handler, _doc );
 

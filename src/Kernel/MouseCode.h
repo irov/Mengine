@@ -2,7 +2,7 @@
 
 namespace Mengine
 {
-    enum MouseCode
+    enum EMouseCode
     {
         MC_LBUTTON = 0x00,
         MC_RBUTTON = 0x01,

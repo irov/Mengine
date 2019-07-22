@@ -1045,7 +1045,7 @@ namespace Mengine
                 int32_t wheel = zDelta / WHEEL_DELTA;
 
                 INPUT_SERVICE()
-                    ->pushMouseWheelEvent( point.x, point.y, 0, wheel );
+                    ->pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, wheel );
 
                 handle = true;
                 _result = FALSE;

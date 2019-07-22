@@ -2092,18 +2092,6 @@ namespace Mengine
             ->notifyCursorIconSetup( name, filePath, buffer );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::showKeyboard()
-    {
-        PLATFORM_SERVICE()
-            ->showKeyboard();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::hideKeyboard()
-    {
-        PLATFORM_SERVICE()
-            ->hideKeyboard();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Application::debugPause( bool _pause )
     {
         m_debugPause = _pause;

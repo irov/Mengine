@@ -29,10 +29,13 @@ namespace Mengine
         virtual void moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender ) = 0;
         virtual void moveRelationRenderBack( RenderInterface * _childRender ) = 0;
 
+    public:
+        virtual bool emptyRenderChildren() const = 0;
 
     public:
         typedef Lambda<void( RenderInterface * )> LambdaRender;
         virtual void foreachRenderChildren( const LambdaRender & _lambda ) = 0;
+        virtual void foreachRenderChildrenEnabled( const LambdaRender & _lambda ) = 0;
 
     public:
         virtual void setRenderEnable( bool _enable ) = 0;

@@ -2,7 +2,7 @@
 
 namespace Mengine
 {
-    enum KeyCode
+    enum EKeyCode
     {
         KC_UNASSIGNED = 0x00,
         KC_LBUTTON = 0x01,

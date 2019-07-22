@@ -18,7 +18,7 @@ namespace Mengine
         ~OpenGLRenderImage() override;
 
     public:
-        bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
+        bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
         void finalize();
         
     public:
@@ -45,7 +45,7 @@ namespace Mengine
         uint32_t getHWChannels() const override;
         uint32_t getHWDepth() const override;
 
-        PixelFormat getHWPixelFormat() const override;
+        EPixelFormat getHWPixelFormat() const override;
         
     public:
         float getHWWidthInv() const override;
@@ -74,7 +74,7 @@ namespace Mengine
 
         GLuint m_uid;
         
-        PixelFormat m_hwPixelFormat;
+        EPixelFormat m_hwPixelFormat;
 
         ERenderImageMode m_mode;
 

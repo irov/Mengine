@@ -85,6 +85,9 @@ namespace Mengine
     protected:
         void _setPickerEnable( bool _enable ) override;
 
+    protected:        
+        void _invalidateWorldMatrix() override;
+
     protected:
         bool m_outward;
         bool m_global;

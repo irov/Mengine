@@ -4,7 +4,7 @@
 
 namespace Mengine
 {
-    enum PixelFormat
+    enum EPixelFormat
     {
         PF_UNKNOWN = 0,
 
@@ -100,6 +100,6 @@ namespace Mengine
             return _right < _left ? _right : _left;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format );
+        uint32_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format );
     }
 }

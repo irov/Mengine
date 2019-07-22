@@ -27,8 +27,10 @@ namespace Mengine
         }
 
     protected:
-        void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override
+        void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position, float _pressure ) override
         {
+            MENGINE_UNUSED( _pressure );
+
             if( _touchId != 0 )
             {
                 return;

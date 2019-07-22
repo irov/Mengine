@@ -224,7 +224,7 @@ namespace Mengine
         PLAYER_SERVICE()
             ->handleMouseEnter( _event );
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::handleMouseLeave( const InputMouseLeaveEvent & _event )

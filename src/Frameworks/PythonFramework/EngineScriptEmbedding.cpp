@@ -2619,13 +2619,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_showKeyboard()
         {
-            APPLICATION_SERVICE()
+            PLATFORM_SERVICE()
                 ->showKeyboard();
         }
         //////////////////////////////////////////////////////////////////////////
         void s_hideKeyboard()
         {
-            APPLICATION_SERVICE()
+            PLATFORM_SERVICE()
                 ->hideKeyboard();
         }
         //////////////////////////////////////////////////////////////////////////

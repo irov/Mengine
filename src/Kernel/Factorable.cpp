@@ -47,9 +47,11 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void Factorable::incref()
+    uint32_t Factorable::incref()
     {
         ++m_reference;
+
+        return m_reference;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factorable::decref()

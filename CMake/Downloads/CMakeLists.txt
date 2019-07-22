@@ -45,9 +45,10 @@ GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "openal-soft-1.19.
 GIT_CLONE(python https://github.com/python/cpython.git "v2.7.16")
 GIT_CLONE(python3 https://github.com/python/cpython.git "v3.6.8")
 GIT_CLONE(ozz https://github.com/guillaumeblanc/ozz-animation.git "0.10.0")
-GIT_CLONE(glad https://github.com/Dav1dde/glad.git "v0.1.30")
+GIT_CLONE(glad https://github.com/Dav1dde/glad.git "v0.1.31")
 GIT_CLONE(glfw3 https://github.com/glfw/glfw.git "3.2.1")
 GIT_CLONE(imgui https://github.com/ocornut/imgui.git "v1.69")
 GIT_CLONE(zed_net https://github.com/iOrange/zed_net.git)
 GIT_CLONE(spine https://github.com/EsotericSoftware/spine-runtimes.git "3.7.83")
+GIT_CLONE(GOAP https://github.com/irov/GOAP.git)
 

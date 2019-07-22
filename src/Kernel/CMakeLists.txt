@@ -477,6 +477,8 @@ Core
     GlobalInputHandlerHelper.cpp
     
     KeyCode.h
+    MouseCode.h
+    
     Document.h
     
     Ravingcode.h

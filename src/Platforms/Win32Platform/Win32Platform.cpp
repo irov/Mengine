@@ -972,7 +972,7 @@ namespace Mengine
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
                         INPUT_SERVICE()
-                            ->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
+                            ->pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
                     }
                 }
 
@@ -1060,7 +1060,7 @@ namespace Mengine
                 this->calcCursorPosition_( point );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, true );
+                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
                 _result = FALSE;
@@ -1074,7 +1074,7 @@ namespace Mengine
                     this->calcCursorPosition_( point );
 
                     INPUT_SERVICE()
-                        ->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
+                        ->pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick = false;
@@ -1090,7 +1090,7 @@ namespace Mengine
                 this->calcCursorPosition_( point );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, true );
+                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
                 handle = true;
                 _result = FALSE;
@@ -1103,7 +1103,7 @@ namespace Mengine
                     this->calcCursorPosition_( point );
 
                     INPUT_SERVICE()
-                        ->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, false );
+                        ->pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick = false;
@@ -1119,7 +1119,7 @@ namespace Mengine
                 this->calcCursorPosition_( point );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, true );
+                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
                 _result = FALSE;
@@ -1130,7 +1130,7 @@ namespace Mengine
                 this->calcCursorPosition_( point );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, false );
+                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
 
                 handle = true;
                 _result = FALSE;

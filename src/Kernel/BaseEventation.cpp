@@ -1,5 +1,7 @@
 #include "BaseEventation.h"
 
+#include "Kernel/Assertion.h"
+
 #include <algorithm>
 
 namespace Mengine
@@ -14,34 +16,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    class BaseEventation::FEventReciver
-    {
-    public:
-        FEventReciver( uint32_t _event ) noexcept
-            : m_event( _event )
-        {
-        }
-
-    public:
-        bool operator() ( const EventReceiverDesc & _desc ) const noexcept
-        {
-            return _desc.event == m_event;
-        }
-
-    protected:
-        uint32_t m_event;
-    };
-    //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
-#ifdef MENGINE_DEBUG
-        if( _event >= (sizeof( m_flag ) * 8 - 1) )
-        {
-            throw;
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
 
-        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
+        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        {
+            return _desc.event == _event;
+        } );
 
         if( it_found == m_receivers.end() )
         {
@@ -63,14 +45,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEventReceiver( uint32_t _event )
     {
-#ifdef MENGINE_DEBUG
-        if( _event >= (sizeof( m_flag ) * 8) )
-        {
-            throw;
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
 
-        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
+        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        {
+            return _desc.event == _event;
+        } );
 
         if( it_found == m_receivers.end() )
         {
@@ -84,14 +64,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const
     {
-#ifdef MENGINE_DEBUG
-        if( _event >= (sizeof( m_flag ) * 8) )
-        {
-            throw;
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
 
-        VectorEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
+        VectorEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        {
+            return _desc.event == _event;
+        } );
 
         if( it_found == m_receivers.end() )
         {
@@ -105,12 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::hasEventReceiver( uint32_t _event ) const
     {
-#ifdef MENGINE_DEBUG
-        if( _event >= (sizeof( m_flag ) * 8) )
-        {
-            throw;
-        }
-#endif
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
 
         return (m_flag & (1ULL << _event)) != 0;
     }

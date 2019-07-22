@@ -63,6 +63,13 @@ namespace Mengine
         MENGINE_INLINE uint32_t getCompileReferenceCount() const;
 
     public:
+        typedef Lambda<bool()> LambdaPrefetch;
+        bool prefetch( const LambdaPrefetch & _lambda );
+
+        typedef Lambda<bool()> LambdaUnfetch;
+        bool unfetch( const LambdaUnfetch & _lambda );
+
+    public:
         bool cache();
         void uncache();
 
@@ -75,6 +82,7 @@ namespace Mengine
 
     protected:
         uint32_t m_compileReferenceCount;
+        uint32_t m_prefetchReferenceCount;
 
         ConstString m_locale;
         FileGroupInterfacePtr m_fileGroup;

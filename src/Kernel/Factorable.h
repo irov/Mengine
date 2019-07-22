@@ -31,7 +31,7 @@ namespace Mengine
         void setImmortal( bool _value );
 
     protected:
-        void incref() override;
+        uint32_t incref() override;
         void decref() override;
         uint32_t getrefcount() const override;
 

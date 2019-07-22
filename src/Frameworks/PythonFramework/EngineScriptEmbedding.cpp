@@ -1340,13 +1340,13 @@ namespace Mengine
                 ->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, uint32_t _button, bool _isDown )
+        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
         {
             mt::vec2f pos_screen;
             this->s_calcMouseScreenPosition( _pos, &pos_screen );
 
             INPUT_SERVICE()
-                ->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
+                ->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _code, 0.f, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_platformEvent( const ConstString & _event, const MapWParams & _params )
@@ -2877,11 +2877,11 @@ namespace Mengine
                 PLAYER_SERVICE()
                     ->calcGlobalMouseWorldPosition( point, &wp );
 
-                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.code, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalMouseHandlerButton %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -2923,11 +2923,11 @@ namespace Mengine
                 PLAYER_SERVICE()
                     ->calcGlobalMouseWorldPosition( point, &wp );
 
-                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.code, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalMouseHandlerButtonEnd %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value %s not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -2963,11 +2963,11 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
             bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
             {
-                pybind::object py_result = m_cb.call_args( _event.button, _event.x, _event.y, _event.wheel, m_args );
+                pybind::object py_result = m_cb.call_args( _event.code, _event.x, _event.y, _event.wheel, m_args );
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalMouseHandlerWheel %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value %s not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -3011,11 +3011,11 @@ namespace Mengine
                 PLAYER_SERVICE()
                     ->calcGlobalMouseWorldPosition( point, &wp );
 
-                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
+                pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.code, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalMouseHandlerButtonBegin %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -3056,7 +3056,7 @@ namespace Mengine
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalKeyHandler %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -3097,7 +3097,7 @@ namespace Mengine
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "PyGlobalTextHandler %s return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );

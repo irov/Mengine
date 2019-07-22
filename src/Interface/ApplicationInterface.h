@@ -143,9 +143,6 @@ namespace Mengine
     public:
         virtual uint32_t getDebugMask() const = 0;
 
-        virtual void showKeyboard() = 0;
-        virtual void hideKeyboard() = 0;
-
     public:
         virtual void debugPause( bool _pause ) = 0;
 

@@ -118,10 +118,33 @@ namespace Mengine
         this->addRelationRenderChildrenBack_( childRender );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool BaseRender::emptyRenderChildren() const
+    {
+        return m_renderChildren.empty();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::foreachRenderChildren( const LambdaRender & _lambda )
     {
         for( RenderInterface * child : m_renderChildren )
         {
+            _lambda( child );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::foreachRenderChildrenEnabled( const LambdaRender & _lambda )
+    {
+        if( m_renderEnable == false )
+        {
+            return;
+        }
+
+        for( BaseRender * child : m_renderChildren )
+        {
+            if( child->m_renderEnable == false )
+            {
+                continue;
+            }
+
             _lambda( child );
         }
     }

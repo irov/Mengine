@@ -27,7 +27,7 @@ namespace Mengine
         InputHandlerInterfacePtr removeGlobalHandler( uint32_t _id ) override;
 
     public:
-        uint32_t addGlobalKeyHandler( KeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc ) override;
+        uint32_t addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc ) override;
 
     public:
         bool enableGlobalHandler( uint32_t _id, bool _value ) override;

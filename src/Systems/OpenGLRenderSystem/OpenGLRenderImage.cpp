@@ -38,7 +38,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderImage::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    bool OpenGLRenderImage::initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
         switch( _internalFormat )
         {
@@ -130,7 +130,7 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat OpenGLRenderImage::getHWPixelFormat() const
+    EPixelFormat OpenGLRenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
     }

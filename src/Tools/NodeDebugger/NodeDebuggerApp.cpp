@@ -58,6 +58,8 @@ namespace Mengine
         , mServerPortCopy( 0 )
         , mConnectionStatus( ConnectionStatus::Disconnected )
         , mScene( nullptr )
+        , mScenePickerable( nullptr )
+        , mSceneRenderable( nullptr )
         , mSceneUpdateFreq( 0 )
         , mSceneUpdateTimer( 0.0 )
         , mUpdateSceneOnChange( false )
@@ -68,7 +70,7 @@ namespace Mengine
     {
     }
 
-    bool NodeDebuggerApp::Initialize( const std::string& _address, const uint16_t _port )
+    bool NodeDebuggerApp::Initialize( const String & _address, const uint16_t _port )
     {
         if( 0 != zed_net_init() )
         {
@@ -203,6 +205,18 @@ namespace Mengine
             DestroyNode( mScene );
             mScene = nullptr;
         }
+
+        if( mScenePickerable )
+        {
+            DestroyNode( mScenePickerable );
+            mScenePickerable = nullptr;
+        }
+
+        if( mSceneRenderable )
+        {
+            DestroyNode( mSceneRenderable );
+            mSceneRenderable = nullptr;
+        }
     }
 
     void NodeDebuggerApp::Resize( const int _width, const int _height )
@@ -225,6 +239,18 @@ namespace Mengine
             {
                 DestroyNode( mScene );
                 mScene = nullptr;
+            }
+
+            if( mScenePickerable )
+            {
+                DestroyNode( mScenePickerable );
+                mScenePickerable = nullptr;
+            }
+
+            if( mSceneRenderable )
+            {
+                DestroyNode( mSceneRenderable );
+                mSceneRenderable = nullptr;
             }
 
             mIncomingPackets.resize( 0 );
@@ -353,6 +379,16 @@ namespace Mengine
         {
             ReceiveScene( payloadNode );
         }
+
+        if( typeStr == "Pickerable" )
+        {
+            ReceivePickerable( payloadNode );
+        }
+
+        if( typeStr == "Renderable" )
+        {
+            ReceiveRenderable( payloadNode );
+        }
     }
 
     void NodeDebuggerApp::ReceiveScene( const pugi::xml_node & _xmlContainer )
@@ -370,6 +406,46 @@ namespace Mengine
             mScene->parent = nullptr;
 
             DeserializeNode( xmlNode, mScene );
+
+            mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
+        }
+    }
+
+    void NodeDebuggerApp::ReceivePickerable( const pugi::xml_node & _xmlContainer )
+    {
+        pugi::xml_node xmlNode = _xmlContainer.first_child();
+
+        if( xmlNode )
+        {
+            if( mScenePickerable )
+            {
+                DestroyNode( mScenePickerable );
+            }
+
+            mScenePickerable = new DebuggerNode();
+            mScenePickerable->parent = nullptr;
+
+            DeserializeNode( xmlNode, mScenePickerable );
+
+            mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
+        }
+    }
+
+    void NodeDebuggerApp::ReceiveRenderable( const pugi::xml_node & _xmlContainer )
+    {
+        pugi::xml_node xmlNode = _xmlContainer.first_child();
+
+        if( xmlNode )
+        {
+            if( mSceneRenderable )
+            {
+                DestroyNode( mSceneRenderable );
+            }
+
+            mSceneRenderable = new DebuggerNode();
+            mSceneRenderable->parent = nullptr;
+
+            DeserializeNode( xmlNode, mSceneRenderable );
 
             mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
         }
@@ -777,16 +853,59 @@ namespace Mengine
             }
         }
 
-        if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        static int SceneTagId = 0;
+
+        if( ImGui::CollapsingHeader( "Type:" ) )
         {
-            if( mScene )
+            ImGui::RadioButton( "Full", &SceneTagId, 0 ); ImGui::SameLine();
+            ImGui::RadioButton( "Picker", &SceneTagId, 1 ); ImGui::SameLine();
+            ImGui::RadioButton( "Render", &SceneTagId, 2 );
+        }
+
+        switch( SceneTagId )
+        {
+        case 0:
             {
-                if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
-                    DoNodeElement( mScene );
+                    if( mScene )
+                    {
+                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                        {
+                            DoNodeElement( mScene, "Full" );
+                        }
+                        ImGui::EndChild();
+                    }
                 }
-                ImGui::EndChild();
-            }
+            }break;
+        case 1:
+            {
+                if( ImGui::CollapsingHeader( "Pickerable:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                {
+                    if( mScenePickerable )
+                    {
+                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                        {
+                            DoNodeElement( mScenePickerable, "Pickerable" );
+                        }
+                        ImGui::EndChild();
+                    }
+                }
+            }break;
+        case 2:
+            {
+                if( ImGui::CollapsingHeader( "Renderable:", ImGuiTreeNodeFlags_DefaultOpen ) )
+                {
+                    if( mSceneRenderable )
+                    {
+                        if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
+                        {
+                            DoNodeElement( mSceneRenderable, "Renderable" );
+                        }
+                        ImGui::EndChild();
+                    }
+                }
+            }break;
         }
 
         ImGui::NextColumn();
@@ -883,14 +1002,14 @@ namespace Mengine
         return ss.str();
     }
 
-    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node )
+    void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const String & _tag )
     {
         const ImGuiTreeNodeFlags seletedFlag = (mSelectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
-        std::string treeNodeId = std::to_string( _node->uid );
-        std::string fullLabel = std::string( _node->name.c_str() ) + "##" + treeNodeId;
+        String treeNodeId = _tag + "_" + (Stringstream() << _node->uid).str();
+        String fullLabel = String( _node->name.c_str() ) + "##" + treeNodeId;
 
         ImGuiExt::ImIcon icon;
         ImGuiExt::ImIcon * iconPtr = nullptr;
@@ -920,7 +1039,7 @@ namespace Mengine
         {
             for( DebuggerNode* child : _node->children )
             {
-                DoNodeElement( child );
+                DoNodeElement( child, _tag );
             }
 
             ImGui::TreePop();

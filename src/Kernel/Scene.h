@@ -11,7 +11,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum SceneEventFlag
+    enum ESceneEventFlag
     {
         EVENT_SCENE_APP_MOUSE_LEAVE = __EVENT_ENTITY_LAST__,
         EVENT_SCENE_APP_MOUSE_ENTER,

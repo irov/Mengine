@@ -30,6 +30,9 @@ namespace Mengine
         virtual void moveRelationPickerBack( PickerInterface * _childPicker ) = 0;
 
     public:
+        virtual bool emptyPickerChildren() const = 0;
+
+    public:
         typedef Lambda<void( PickerInterface * )> LambdaPicker;
         virtual void foreachPickerChildren( const LambdaPicker & _lambda ) = 0;
         virtual void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) = 0;

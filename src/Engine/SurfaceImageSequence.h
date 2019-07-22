@@ -11,7 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<class ResourceImageSequence> ResourceImageSequencePtr;
     //////////////////////////////////////////////////////////////////////////
-    enum SurfaceImageSequenceEventFlag
+    enum ESurfaceImageSequenceEventFlag
     {
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_END = __EVENT_ANIMATION_LAST__,
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK,

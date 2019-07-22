@@ -6,7 +6,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum PixelType
+    enum EPixelType
     {
         PVRTC2RGB = 0,
         PVRTC2RGBA,

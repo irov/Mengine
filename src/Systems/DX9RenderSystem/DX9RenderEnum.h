@@ -86,7 +86,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE D3DFORMAT s_toD3DFormat( PixelFormat _format )
+    MENGINE_INLINE D3DFORMAT s_toD3DFormat( EPixelFormat _format )
     {
         switch( _format )
         {

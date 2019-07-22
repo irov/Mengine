@@ -809,7 +809,7 @@ namespace Mengine
         tStage.magFilter = s_toMagFilter( _magnification );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
+    void OpenGLRenderSystem::findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat & _hwFormat, uint32_t & _hwChannels ) const
     {
         switch( _format )
         {
@@ -840,13 +840,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
+    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _depth );
         MENGINE_UNUSED( _doc );
 
         uint32_t hwChannels = 0;
-        PixelFormat hwFormat = PF_UNKNOWN;
+        EPixelFormat hwFormat = PF_UNKNOWN;
         this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
 
         GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
@@ -996,7 +996,7 @@ namespace Mengine
         //m_winContextHeight = _resolution.getHeight();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::supportTextureFormat( PixelFormat _format ) const
+    bool OpenGLRenderSystem::supportTextureFormat( EPixelFormat _format ) const
     {
         return s_toGLInternalFormat( _format ) != 0;
     }
@@ -1085,13 +1085,13 @@ namespace Mengine
         MENGINE_UNUSED( _b );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
+    RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _depth );
         MENGINE_UNUSED( _doc );
 
         uint32_t hwChannels = 0;
-        PixelFormat hwFormat = PF_UNKNOWN;
+        EPixelFormat hwFormat = PF_UNKNOWN;
         this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
 
         GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
@@ -1148,7 +1148,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );
@@ -1159,7 +1159,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _width );
         MENGINE_UNUSED( _height );

@@ -74,7 +74,7 @@ namespace Mengine
         uint32_t image_height = _image->getHWHeight();
         uint32_t image_channels = _image->getHWChannels();
         uint32_t image_depth = _image->getHWDepth();
-        PixelFormat image_format = _image->getHWPixelFormat();
+        EPixelFormat image_format = _image->getHWPixelFormat();
 
         uint32_t HWWidth = Helper::getTexturePOW2( image_width );
         uint32_t HWHeight = Helper::getTexturePOW2( image_height );

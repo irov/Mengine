@@ -45,7 +45,7 @@ namespace Mengine
         uint32_t getHWDepth() const override;
         uint32_t getHWMipmaps() const override;
 
-        PixelFormat getHWPixelFormat() const override;
+        EPixelFormat getHWPixelFormat() const override;
 
     protected:
         float getHWWidthInv() const override;

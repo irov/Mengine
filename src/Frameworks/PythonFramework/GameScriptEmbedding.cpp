@@ -48,7 +48,7 @@ namespace Mengine
                 m_cb.call( _viewport, _aspect );
             }
 
-            bool onGameKey( KeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) override
+            bool onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) override
             {
                 return m_cb.call( (uint32_t)_code, _x, _y, _isDown, _isRepeat );
             }

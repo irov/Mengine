@@ -19,7 +19,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum GameEventFlags
+    enum EGameEventFlags
     {
         EVENT_GAME_FULLSCREEN = 0,
         EVENT_GAME_FIXED_CONTENT_RESOLUTION,
@@ -69,7 +69,7 @@ namespace Mengine
         virtual void onGameFixedDisplayResolution( bool _fixed ) = 0;
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
-        virtual bool onGameKey( KeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) = 0;
+        virtual bool onGameKey( EKeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) = 0;
         virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
         virtual bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
         virtual bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;

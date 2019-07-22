@@ -4,6 +4,8 @@
 
 #include "stdex/allocator.h"
 
+#include "Environment/Windows/WindowsIncluder.h"
+
 static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 {
     Mengine::String result;

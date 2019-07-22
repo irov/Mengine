@@ -16,7 +16,7 @@ add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
 INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/libmath/include
     ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/glad/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE}/include
+    ${THIRDPARTY_DIR}/glad/include
     ${THIRDPARTY_DIR}/glfw3/include
     ${THIRDPARTY_DIR}/pugixml/src
     ${THIRDPARTY_DIR}/zed_net

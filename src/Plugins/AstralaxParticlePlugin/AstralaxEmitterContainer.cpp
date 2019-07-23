@@ -61,6 +61,10 @@ namespace Mengine
 
         m_memory = memory;
 
+        MENGINE_ASSERTION_RETURN( Magic_HasTextures( m_mf ) == false, false, "astralax '%s' incorrect safe 'with textures'"
+            , _fileName.c_str()
+        );
+
         int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );
 
         if( atlasCount > 0 )

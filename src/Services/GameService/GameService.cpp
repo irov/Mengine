@@ -306,10 +306,13 @@ namespace Mengine
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->initializeModules() == false )
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            return false;
+            if( SCRIPT_SERVICE()
+                ->initializeModules() == false )
+            {
+                return false;
+            }
         }
 
         ConstString defaultArrowPrototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );

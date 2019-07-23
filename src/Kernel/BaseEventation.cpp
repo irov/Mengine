@@ -37,7 +37,9 @@ namespace Mengine
         }
         else
         {
-            it_found->receiver = _receiver;
+            EventReceiverDesc & desc = *it_found;
+
+            desc.receiver = _receiver;
         }
 
         return true;

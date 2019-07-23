@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoderResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool SoundDecoderResourcePrefetcher::_prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) const
     {
         Content * content = _resource->getContent();
 
@@ -34,7 +34,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////        
-    bool SoundDecoderResourcePrefetcher::unfetch( const ResourcePtr & _resource )
+    bool SoundDecoderResourcePrefetcher::_unfetch( const ResourcePtr & _resource ) const
     {
         Content * content = _resource->getContent();
 

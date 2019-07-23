@@ -11,6 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource::Resource()
         : m_compileReferenceCount( 0 )
+        , m_prefetchReferenceCount( 0 )
         , m_cache( false )
     {
     }
@@ -88,6 +89,39 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEVELOPMENT_RESOURCE_RELEASE, this );
 #endif
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Resource::prefetch( const LambdaPrefetch & _lambda )
+    {
+        if( m_prefetchReferenceCount == 0 )
+        {
+            if( _lambda() == false )
+            {
+                return false;
+            }
+        }
+
+        ++m_prefetchReferenceCount;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Resource::unfetch( const LambdaUnfetch & _lambda )
+    {
+        if( m_prefetchReferenceCount == 0 )
+        {
+            return false;
+        }
+
+        if( --m_prefetchReferenceCount == 0 )
+        {
+            if( _lambda() == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Resource::cache()

@@ -123,7 +123,7 @@ namespace Mengine
 
     public:
         const mt::vec2f & getTextSize() const;
-        void calcTextViewport( Viewport & _viewport ) const;
+        bool calcTextViewport( Viewport & _viewport ) const;
 
     public:
         uint32_t getCharCount() const;

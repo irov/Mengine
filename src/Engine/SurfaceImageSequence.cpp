@@ -132,7 +132,7 @@ namespace Mengine
 
         uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
-        MENGINE_ASSERTION_RETURN( m_currentFrame >= sequenceCount, false, "'%s' m_frame(%d) >= sequenceCount(%d)"
+        MENGINE_ASSERTION_RETURN( m_currentFrame < sequenceCount, false, "'%s' current frame %d < %d"
             , this->getName().c_str()
             , m_currentFrame
             , sequenceCount

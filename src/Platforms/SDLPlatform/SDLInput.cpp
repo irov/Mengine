@@ -103,7 +103,7 @@ namespace Mengine
                 this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, point );
 
                 INPUT_SERVICE()
-                    ->pushMouseWheelEvent( point.x, point.y, 0, _event.wheel.y );
+                    ->pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, _event.wheel.y );
             }break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -163,26 +163,26 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _event.button.x, _event.button.y, point );
 
-                uint32_t button;
+                EMouseCode code;
 
                 switch( _event.button.button )
                 {
                 case SDL_BUTTON_LEFT:
-                    button = 0;
+                    code = MC_LBUTTON;
                     break;
                 case SDL_BUTTON_RIGHT:
-                    button = 1;
+                    code = MC_RBUTTON;
                     break;
                 case SDL_BUTTON_MIDDLE:
-                    button = 2;
+                    code = MC_MBUTTON;
                     break;
                 default:
-                    button = _event.button.button - 1;
+                    code = static_cast<EMouseCode>(_event.button.button - 1);
                     break;
                 };
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, button, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
+                    ->pushMouseButtonEvent( 0, point.x, point.y, code, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
             }
             break;
         case SDL_FINGERMOTION:
@@ -197,14 +197,14 @@ namespace Mengine
                 uint32_t fingerIndex = this->acquireFingerIndex_( _event.tfinger.fingerId );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, true );
+                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, true );
             }break;
         case SDL_FINGERUP:
             {
                 uint32_t fingerIndex = this->releaseFingerIndex_( _event.tfinger.fingerId );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, false );
+                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, false );
             }
             break;
         }

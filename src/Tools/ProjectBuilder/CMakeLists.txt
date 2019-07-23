@@ -94,11 +94,5 @@ if(MENGINE_PLATFORM_WIN32)
             )
     endif()
 endif()
-    
-foreach(dependency ${APPLICATION_DEPENDENCIES})
-	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
-	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )
-	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} optimized ${dependency} )
-endforeach(dependency ${APPLICATION_DEPENDENCIES})    
 
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${APPLICATION_LIBS} comctl32 Version Shlwapi)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${APPLICATION_LINK_LIBRARIES} comctl32 Version Shlwapi)

@@ -171,7 +171,7 @@ namespace Mengine
 
         if( encode_byte == 0 )
         {
-            LOGGER_ERROR( "ImageConverterDDSToHTF::convert: %s invalid encode"
+            LOGGER_ERROR( "'%s' invalid encode"
                 , m_options.inputFileName.c_str()
             );
 

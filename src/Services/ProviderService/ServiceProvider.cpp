@@ -118,6 +118,7 @@ namespace Mengine
             }
             else
             {
+                desc.service->replaceService();
                 desc.service->finalizeService();
                 desc.service = nullptr;
             }

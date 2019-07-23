@@ -43,7 +43,7 @@ namespace Mengine
     {
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
-            ADD_SCRIPT_EMBEDDING( VideoScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "VideoScriptEmbedding" ), VideoScriptEmbedding );
 
             return true;
         } );
@@ -82,7 +82,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( VideoScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "VideoScriptEmbedding" ) );
         }
 
         PROTOTYPE_SERVICE()

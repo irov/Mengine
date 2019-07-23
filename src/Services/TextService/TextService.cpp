@@ -135,7 +135,7 @@ namespace Mengine
 
                     if( str_value_valid != str_value_end )
                     {
-                        LOGGER_ERROR( "'%s:%s' invalid read text key %s value |%s| invalid utf8 char |%s|"
+                        LOGGER_ERROR( "'%s:%s' invalid read text key '%s' value |%s| invalid utf8 char |%s|"
                             , m_fileGroup->getName().c_str()
                             , m_filePath.c_str()
                             , text_key.c_str()
@@ -649,7 +649,7 @@ namespace Mengine
                 WString ws_text;
                 Helper::utf8ToUnicode( text, ws_text );
 
-                LOGGER_ERROR( "duplicate key found %s with text:"
+                LOGGER_ERROR( "duplicate key found '%s' with text:"
                     , _key.c_str()
                 );
 
@@ -874,7 +874,7 @@ namespace Mengine
             TextFontInterfacePtr font;
             if( this->existFont( m_defaultFontName, &font ) == false )
             {
-                LOGGER_ERROR( "not found default font %s"
+                LOGGER_ERROR( "not found default font '%s'"
                     , m_defaultFontName.c_str()
                 );
 
@@ -898,7 +898,7 @@ namespace Mengine
                 TextFontInterfacePtr font;
                 if( this->existFont( fontName, &font ) == false )
                 {
-                    LOGGER_ERROR( "not found font %s for text %s"
+                    LOGGER_ERROR( "not found font '%s' for text '%s'"
                         , fontName.c_str()
                         , textKey.c_str()
                     );
@@ -912,7 +912,7 @@ namespace Mengine
 
                 if( font->validateText( textKey, value ) == false )
                 {
-                    LOGGER_ERROR( "Text %s fontName %s invalid"
+                    LOGGER_ERROR( "text '%s' font name '%s' invalid"
                         , textKey.c_str()
                         , fontName.c_str()
                     );

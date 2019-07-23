@@ -38,7 +38,7 @@ namespace Mengine
         // send it to user's message proc
         //FreeImage_OutputMessageProc(s_format_id, buffer);
 
-        LOGGER_ERROR( "s_jpegErrorExit %s"
+        LOGGER_ERROR( "%s"
             , buffer
         );
 
@@ -68,7 +68,7 @@ namespace Mengine
         // send it to user's message proc
         //FreeImage_OutputMessageProc(s_format_id, buffer);
 
-        LOGGER_ERROR( "s_jpegOutputMessage %s"
+        LOGGER_ERROR( "%s"
             , buffer
         );
     }
@@ -182,8 +182,7 @@ namespace Mengine
         {
             // If we get here, the JPEG code has signaled an error.
             // We need to clean up the JPEG object and return.
-            LOGGER_ERROR( "ImageEncoderJPEG::_prepareData jmp"
-            );
+            LOGGER_ERROR( "jmp" );
 
             return 0;
         }

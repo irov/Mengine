@@ -114,7 +114,7 @@ namespace Mengine
 
             if( this->makeBin_( _fileGroup, FilePath( c_cache_path_xml ), _filePath ) == false )
             {
-                LOGGER_ERROR( "invlid rebild bin %s from xml %s"
+                LOGGER_ERROR( "invlid rebild bin '%s' from xml '%s'"
                     , _filePath.c_str()
                     , c_cache_path_xml.c_str()
                 );
@@ -387,14 +387,14 @@ namespace Mengine
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder xml2bin for %s:%s"
+        MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder xml2bin for '%s:%s'"
             , _pak->getName().c_str()
             , _pathXml.c_str()
         );
 
         if( decoder->prepareData( nullptr ) == false )
         {
-            LOGGER_ERROR( "invalid initialize decoder xml2bin for %s:%s"
+            LOGGER_ERROR( "invalid initialize decoder xml2bin for '%s:%s'"
                 , _pak->getName().c_str()
                 , _pathXml.c_str()
             );

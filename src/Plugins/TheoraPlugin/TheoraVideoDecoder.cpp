@@ -106,7 +106,7 @@ namespace Mengine
             if( this->read_buffer_data_() == 0 )
             {
                 // кончился файл, на данном этапе это ошибка
-                LOGGER_ERROR( "Theora Codec Error: bad file" );
+                LOGGER_ERROR( "bad file" );
 
                 return false;
             }
@@ -131,7 +131,7 @@ namespace Mengine
                     // закидываем эту страничку в логический видеопоток
                     if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
                     {
-                        LOGGER_ERROR( "Theora Codec Error: bad page in" );
+                        LOGGER_ERROR( "bad page in" );
 
                         return false;
                     }
@@ -155,7 +155,7 @@ namespace Mengine
                 int32_t serialno = ogg_page_serialno( &page );
                 if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
                 {
-                    LOGGER_ERROR( "TheoraCodec Error: error during ogg_stream_init" );
+                    LOGGER_ERROR( "error during ogg_stream_init" );
 
                     return false;
                 }
@@ -163,7 +163,7 @@ namespace Mengine
                 // добавляем страницу в тестовый поток
                 if( ogg_stream_pagein( &oggStreamStateTest, &page ) != 0 )
                 {
-                    LOGGER_ERROR( "TheoraCodec Error: error during ogg_stream_pagein" );
+                    LOGGER_ERROR( "error during ogg_stream_pagein" );
 
                     return false;
                 }
@@ -172,7 +172,7 @@ namespace Mengine
                 ogg_packet packet;
                 if( ogg_stream_packetout( &oggStreamStateTest, &packet ) == -1 )
                 {
-                    LOGGER_ERROR( "TheoraCodec Error: error during ogg_stream_packetout" );
+                    LOGGER_ERROR( "error during ogg_stream_packetout" );
 
                     return false;
                 }
@@ -229,7 +229,7 @@ namespace Mengine
                 if( result < 0 )
                 {
                     // ошибка декодирования, поврежденный поток
-                    LOGGER_ERROR( "TheoraCodec Error: error during ogg_stream_packetout %d"
+                    LOGGER_ERROR( "error during ogg_stream_packetout %d"
                         , result
                     );
 
@@ -247,7 +247,7 @@ namespace Mengine
                 if( result2 < 0 )
                 {
                     // ошибка декодирования, поврежденный поток
-                    LOGGER_ERROR( "TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
+                    LOGGER_ERROR( "error during theora_decode_header (corrupt stream) %d"
                         , result2
                     );
 
@@ -269,7 +269,7 @@ namespace Mengine
                 if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
                 {
                     // опять файл кончился!
-                    LOGGER_ERROR( "TheoraCodec Error: invalid page..."
+                    LOGGER_ERROR( "invalid page..."
                     );
 
                     return false;
@@ -284,7 +284,7 @@ namespace Mengine
                 if( ret == 0 )
                 {
                     // опять файл кончился!
-                    LOGGER_ERROR( "TheoraCodec Error: eof searched. terminate..."
+                    LOGGER_ERROR( "eof searched. terminate..."
                     );
 
                     return false;
@@ -299,7 +299,7 @@ namespace Mengine
         {
             const Char * pixelformat[] = { "OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444" };
 
-            LOGGER_ERROR( "VideoDecoderTheora::_prepareData invalid support pixel format '%s' pls use OC_PF_420"
+            LOGGER_ERROR( "invalid support pixel format '%s' pls use OC_PF_420"
                 , pixelformat[m_theoraInfo.pixelformat]
             );
 
@@ -744,7 +744,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "VideoDecoderTheora::decodeBuffer_ unsupport format" );
+            LOGGER_ERROR( "unsupport format" );
 
             return false;
         }

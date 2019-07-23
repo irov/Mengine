@@ -38,7 +38,7 @@ namespace Mengine
         {
             NodePtr node = *it;
 
-            LOGGER_ERROR( "slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
+            LOGGER_ERROR( "slot '%s:%s' has children '%s:%s'!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
                 , this->getType().c_str()
                 , node->getName().c_str()
@@ -82,7 +82,7 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "slot %s:%s movie %s (please don't change parent it's danger)"
+        LOGGER_ERROR( "slot '%s:%s' movie '%s' (please don't change parent it's danger)"
             , this->getName().c_str()
             , this->getType().c_str()
             , this->getMovieName().c_str()

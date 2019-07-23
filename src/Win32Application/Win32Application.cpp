@@ -134,7 +134,7 @@ namespace Mengine
             if( CONFIG_SERVICE()
                 ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
-                LOGGER_ERROR( "invalid load config %s"
+                LOGGER_ERROR( "invalid load config '%s'"
                     , filePath.c_str()
                 );
 
@@ -342,7 +342,7 @@ namespace Mengine
             LOGGER_SERVICE()
                 ->registerLogger( m_fileLog );
 
-            LOGGER_INFO( "starting log to %s"
+            LOGGER_INFO( "starting log to '%s'"
                 , logFilename.c_str()
             );
         }

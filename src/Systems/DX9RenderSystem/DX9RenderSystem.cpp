@@ -1532,13 +1532,13 @@ namespace Mengine
     {
         DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr, "invalid create attribute %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr, "invalid create attribute '%s'"
             , _name.c_str()
             );
 
         if( attribute->initialize( _name, _elementSize ) == false )
         {
-            LOGGER_ERROR( "invalid initialize attribute %s"
+            LOGGER_ERROR( "invalid initialize attribute '%s'"
                 , _name.c_str()
             );
 
@@ -1588,7 +1588,7 @@ namespace Mengine
     {
         DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
             , _name.c_str()
             );
 

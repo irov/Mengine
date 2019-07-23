@@ -32,7 +32,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_MESSAGE( "resource '%s' group %s can't open sound file '%s:%s'"
+            LOGGER_MESSAGE( "resource '%s' group '%s' can't open sound file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()

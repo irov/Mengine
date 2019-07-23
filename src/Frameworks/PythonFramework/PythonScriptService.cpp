@@ -102,7 +102,7 @@ namespace Mengine
                 MENGINE_UNUSED( _functionName );
                 MENGINE_UNUSED( _className );
 
-                LOGGER_INFO( "pybind call begin %s %s"
+                LOGGER_INFO( "pybind call begin '%s::%s'"
                     , _className
                     , _functionName
                 );
@@ -134,7 +134,7 @@ namespace Mengine
                 }
 #endif
 
-                LOGGER_INFO( "pybind call end %s %s"
+                LOGGER_INFO( "pybind call end '%s::%s'"
                     , _className
                     , _functionName
                 );
@@ -181,7 +181,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call %s::%s args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -330,7 +330,7 @@ namespace Mengine
 
         if( m_moduleFinder->initialize() == false )
         {
-            LOGGER_ERROR( "invalid initialize ScriptModuleFinder"
+            LOGGER_ERROR( "invalid initialize module finder"
             );
 
             return false;

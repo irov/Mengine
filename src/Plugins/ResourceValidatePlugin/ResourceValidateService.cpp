@@ -81,20 +81,6 @@ namespace Mengine
             RESOURCE_SERVICE()
                 ->foreachResources( [this, &successful]( const ResourcePtr & _resource )
             {
-                //#ifndef MENGINE_MASTER_RELEASE
-                //                if( _resource->convert() == false )
-                //                {
-                //                    LOGGER_ERROR( "ResourceValidateService::visitableResources_ %s type [%s] invalid convert"
-                //                        , _resource->getName().c_str()
-                //                        , _resource->getType().c_str()
-                //                    );
-                //
-                //                    successful = false;
-                //
-                //                    return;
-                //                }
-                //#endif
-
                 if( this->visitableResource_( _resource ) == false )
                 {
                     successful = false;

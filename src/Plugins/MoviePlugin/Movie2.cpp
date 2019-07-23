@@ -511,7 +511,7 @@ namespace Mengine
                 ResourceImagePtr resourceImage = RESOURCE_SERVICE()
                     ->getResourceReference( layer.name );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
+                MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image '%s'"
                     , this->getName().c_str()
                     , this->getResourceMovie2()->getName().c_str()
                     , this->getCompositionName().c_str()
@@ -2027,7 +2027,7 @@ namespace Mengine
 
         if( m_resourceMovie2->compile() == false )
         {
-            LOGGER_ERROR( "name '%s' resource %s not compile"
+            LOGGER_ERROR( "name '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceMovie2->getName().c_str()
             );
@@ -2037,7 +2037,7 @@ namespace Mengine
 
         const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( compositionData, false, "name '%s' resource %s not found composition '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( compositionData, false, "name '%s' resource '%s' not found composition '%s'"
             , this->getName().c_str()
             , m_resourceMovie2->getName().c_str()
             , m_compositionName.c_str()

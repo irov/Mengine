@@ -45,7 +45,7 @@ namespace Mengine
 
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
-            ADD_SCRIPT_EMBEDDING( AstralaxScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "AstralaxScriptEmbedding" ), AstralaxScriptEmbedding );
 
             return true;
         } );
@@ -101,7 +101,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( AstralaxScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "AstralaxScriptEmbedding" ) );
         }
 
         PROTOTYPE_SERVICE()

@@ -36,7 +36,7 @@ namespace Mengine
 
         if( container->isValid() == false )
         {
-            LOGGER_ERROR( "resource %s can't valid container '%s'"
+            LOGGER_ERROR( "resource '%s' can't valid container '%s'"
                 , _resource->getName().c_str()
                 , _resource->getFilePath().c_str()
             );

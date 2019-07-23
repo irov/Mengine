@@ -142,7 +142,7 @@ namespace Mengine
                             float size;
                             if( sscanf( value, "%f", &size ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read size '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read size '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -165,7 +165,7 @@ namespace Mengine
                             float ascender = 0.f;
                             if( sscanf( value, "%f", &ascender ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read ascender '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read ascender '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -179,7 +179,7 @@ namespace Mengine
                             float height = 0.f;
                             if( sscanf( value, "%f", &height ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read height '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -193,7 +193,7 @@ namespace Mengine
                             float descender = 0.f;
                             if( sscanf( value, "%f", &descender ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read descender '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read descender '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -216,7 +216,7 @@ namespace Mengine
                             uint32_t width = 0;
                             if( sscanf( value, "%u", &width ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read width '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -232,7 +232,7 @@ namespace Mengine
                             uint32_t height = 0;
                             if( sscanf( value, "%u", &height ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read height '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -261,7 +261,7 @@ namespace Mengine
                         {
                             if( sscanf( value, "%f", &advance ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read width '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -272,7 +272,7 @@ namespace Mengine
                         {
                             if( sscanf( value, "%f %f", &offset.x, &offset.y ) != 2 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read offset '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read offset '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -283,7 +283,7 @@ namespace Mengine
                         {
                             if( sscanf( value, "%f %f %f %f", &rect.x, &rect.y, &rect.z, &rect.w ) != 4 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read rect %s"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read rect '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -305,7 +305,7 @@ namespace Mengine
 
                     if( cp == 0 || err_code != utf8::internal::UTF8_OK )
                     {
-                        LOGGER_ERROR( "glyph %s:%s invalid utf8 id '%s'"
+                        LOGGER_ERROR( "glyph '%s:%s' invalid utf8 id '%s'"
                             , m_pakName->getName().c_str()
                             , m_path.c_str()
                             , id
@@ -334,7 +334,7 @@ namespace Mengine
                         {
                             if( sscanf( value, "%f", &advance ) != 1 )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid read advance '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid read advance '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -351,7 +351,7 @@ namespace Mengine
 
                             if( cp == 0 || err_code != utf8::internal::UTF8_OK )
                             {
-                                LOGGER_ERROR( "glyph %s:%s invalid utf8 code '%s'"
+                                LOGGER_ERROR( "glyph '%s:%s' invalid utf8 code '%s'"
                                     , m_pakName->getName().c_str()
                                     , m_path.c_str()
                                     , value
@@ -364,7 +364,7 @@ namespace Mengine
 
                     if( m_glyphCode == 0 )
                     {
-                        LOGGER_ERROR( "glyph %s:%s invalid kerning m_glyphChar is 0"
+                        LOGGER_ERROR( "glyph '%s:%s' invalid kerning m_glyphChar is 0"
                             , m_pakName->getName().c_str()
                             , m_path.c_str()
                         );
@@ -422,7 +422,7 @@ namespace Mengine
         BitmapGlyphSaxCallback tmsc( this, _pak, _path );
         if( stdex::xml_sax_parse( memory, tmsc ) == false )
         {
-            LOGGER_ERROR( "invalid parse file %s:%s"
+            LOGGER_ERROR( "invalid parse file '%s:%s'"
                 , _pak->getName().c_str()
                 , _path.c_str()
             );
@@ -432,7 +432,7 @@ namespace Mengine
 
         if( tmsc.isValid() == false )
         {
-            LOGGER_ERROR( "invalid glyph format %s:%s"
+            LOGGER_ERROR( "invalid glyph format '%s:%s'"
                 , _pak->getName().c_str()
                 , _path.c_str()
             );

@@ -159,7 +159,7 @@ namespace Mengine
 
         if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
-            LOGGER_ERROR( "error read protocol %s error invalid read size"
+            LOGGER_ERROR( "error read protocol '%s' error invalid read size"
                 , m_options.pathProtocol.c_str()
             );
 
@@ -172,7 +172,7 @@ namespace Mengine
 
         if( xml_protocol.readProtocol( memory_protocol_buffer, protocol_size ) == false )
         {
-            LOGGER_ERROR( "error read protocol %s error:\n%s"
+            LOGGER_ERROR( "error read protocol '%s' error:\n%s"
                 , m_options.pathProtocol.c_str()
                 , xml_protocol.getError().c_str()
             );
@@ -207,7 +207,7 @@ namespace Mengine
         InputStreamInterfacePtr xml_stream = FILE_SERVICE()
             ->openInputFile( m_fileGroupDev, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, 0, "error open xml %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, 0, "error open xml '%s'"
             , m_options.pathXml.c_str()
         );
 
@@ -215,7 +215,7 @@ namespace Mengine
 
         if( xml_size == 0 )
         {
-            LOGGER_ERROR( "error open xml %s (file size == 0)"
+            LOGGER_ERROR( "error open xml '%s' (file size == 0)"
                 , m_options.pathXml.c_str()
             );
 
@@ -296,7 +296,7 @@ namespace Mengine
         size_t bin_size;
         if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, &bin_size ) == false )
         {
-            LOGGER_ERROR( "error convert %s error:\n%s"
+            LOGGER_ERROR( "error convert '%s' error:\n%s"
                 , m_options.pathXml.c_str()
                 , xml_metabuf.getError().c_str()
             );
@@ -307,14 +307,14 @@ namespace Mengine
         MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
             ->compressBuffer( m_archivator, memory_bin_buffer, bin_size, EAC_BEST );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, 0, "error convert %s invalid compress buffer"
+        MENGINE_ASSERTION_MEMORY_PANIC( compress_memory, 0, "error convert '%s' invalid compress buffer"
             , m_options.pathXml.c_str()
         );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE()
             ->openOutputFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, 0, "error create bin %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, 0, "error create bin '%s'"
             , m_options.pathBin.c_str()
         );
 

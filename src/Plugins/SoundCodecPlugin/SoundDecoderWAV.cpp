@@ -42,7 +42,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.ChunkID, "RIFF" ) == false )
         {
-            LOGGER_ERROR( "SoundDecoderWAV::_prepareData invalid chunk id 'RIFF'"
+            LOGGER_ERROR( "invalid chunk id 'RIFF'"
             );
 
             return false;
@@ -54,7 +54,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.Format, "WAVE" ) == false )
         {
-            LOGGER_ERROR( "SoundDecoderWAV::_prepareData invalid format 'WAVE'"
+            LOGGER_ERROR( "invalid format 'WAVE'"
             );
 
             return false;
@@ -64,7 +64,7 @@ namespace Mengine
 
         if( Helper::magicTest4( header.Subchunk1ID, "fmt " ) == false )
         {
-            LOGGER_ERROR( "SoundDecoderWAV::_prepareData invalid subchunk id 'fmt '"
+            LOGGER_ERROR( "invalid subchunk id 'fmt '"
             );
 
             return false;
@@ -76,7 +76,7 @@ namespace Mengine
 
         if( header.AudioFormat != 1 )
         {
-            LOGGER_ERROR( "SoundDecoderWAV::_prepareData invalid AudioFormat %d"
+            LOGGER_ERROR( "invalid AudioFormat %d"
                 , header.AudioFormat
             );
 
@@ -91,7 +91,7 @@ namespace Mengine
 
         if( (header.BitsPerSample != 16) && (header.BitsPerSample != 8) )
         {
-            LOGGER_ERROR( "SoundDecoderWAV::_prepareData invalid bits per sample %d"
+            LOGGER_ERROR( "invalid bits per sample %d"
                 , header.BitsPerSample
             );
 
@@ -103,7 +103,7 @@ namespace Mengine
         size_t chunkDataSize;
         if( this->findChunkData_( chunkDataSize ) == false )
         {
-            LOGGER_ERROR( "SoundDecoderWAV::_prepareData invalid find chunk data"
+            LOGGER_ERROR( "invalid find chunk data"
                 , header.BitsPerSample
             );
 
@@ -156,7 +156,7 @@ namespace Mengine
     {
         if( _timing > m_dataInfo.length && mt::equal_f_f_e( _timing, m_dataInfo.length, 0.01f ) == false )
         {
-            LOGGER_ERROR( "SoundDecoderOGGVorbis::seek timing %f > total %f"
+            LOGGER_ERROR( "timing %f > total %f"
                 , _timing
                 , m_dataInfo.length
             );

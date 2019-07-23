@@ -914,7 +914,7 @@ namespace Mengine
                 {
                     stdex_memory_report_t * report = stdex_allocator_report_info( i );
 
-                    LOGGER_ERROR( "block %s size [%u]"
+                    LOGGER_ERROR( "block '%s' size [%u]"
                         , report->name
                         , report->count
                     );
@@ -2073,7 +2073,7 @@ namespace Mengine
         const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
             ->getResource( _resourceName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( cursorResource, "can't find resource cursor %s"
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( cursorResource, "can't find resource cursor '%s'"
             , _resourceName.c_str()
         );
 

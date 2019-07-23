@@ -22,6 +22,7 @@ namespace Mengine
     Win32AntifreezeMonitor::Win32AntifreezeMonitor()
         : m_refalive( 0 )
         , m_oldrefalive( 0 )
+        , m_workerId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -68,8 +69,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::stop()
     {
-        m_threadJob->removeWorker( m_workerId );        
-        m_threadJob = nullptr;
+        if( m_workerId != 0 )
+        {
+            m_threadJob->removeWorker( m_workerId );
+            m_threadJob = nullptr;
+        }
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), false );

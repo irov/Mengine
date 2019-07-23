@@ -148,7 +148,7 @@ namespace Mengine
 
         if( defaultTextureFilterMipmap > 2 )
         {
-            LOGGER_ERROR( "DefaultTextureFilterMipmap undefined great 2 current '%u'"
+            LOGGER_ERROR( "[DefaultTextureFilterMipmap] undefined great 2 current '%u'"
                 , defaultTextureFilterMipmap
             );
 
@@ -157,7 +157,7 @@ namespace Mengine
 
         if( defaultTextureFilterMagnification > 2 )
         {
-            LOGGER_ERROR( "DefaultTextureFilterMagnification undefined great 2 current '%u'"
+            LOGGER_ERROR( "[DefaultTextureFilterMagnification] undefined great 2 current '%u'"
                 , defaultTextureFilterMagnification
             );
 

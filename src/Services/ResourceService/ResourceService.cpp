@@ -110,7 +110,7 @@ namespace Mengine
 
             if( this->loadResources( _locale, _fileGroup, path, _tags, _ignored ) == false )
             {
-                LOGGER_ERROR( "load '%s:%s' resource invalid load include %s"
+                LOGGER_ERROR( "load '%s:%s' resource invalid load include '%s'"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
                     , path.c_str()
@@ -251,7 +251,7 @@ namespace Mengine
 
             if( this->unloadResources( _locale, _pak, path ) == false )
             {
-                LOGGER_ERROR( "load %s:%s resource invalid load include %s"
+                LOGGER_ERROR( "load '%s:%s' resource invalid load include '%s'"
                     , _pak->getName().c_str()
                     , _path.c_str()
                     , path.c_str()
@@ -273,7 +273,7 @@ namespace Mengine
             {
                 const FileGroupInterfacePtr & resource_fileGroup = has_resource->getFileGroup();
 
-                LOGGER_ERROR( "path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+                LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _path.c_str()
                     , name.c_str()
                     , groupName.c_str()
@@ -289,7 +289,7 @@ namespace Mengine
 
             if( this->removeResource( has_resource ) == false )
             {
-                LOGGER_ERROR( "path '%s' invalid remove resource '%s:%s' name %s type %s"
+                LOGGER_ERROR( "path '%s' invalid remove resource '%s:%s' name '%s' type '%s'"
                     , _path.c_str()
                     , _pak->getName().c_str()
                     , groupName.c_str()

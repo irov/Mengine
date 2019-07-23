@@ -32,7 +32,7 @@ namespace Mengine
     {
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
-            ADD_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ), OzzScriptEmbedding );
 
             return true;
         } );
@@ -74,7 +74,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( OzzScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ) );
         }
 
         PROTOTYPE_SERVICE()

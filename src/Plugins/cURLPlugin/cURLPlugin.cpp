@@ -28,7 +28,7 @@ namespace Mengine
 
         SERVICE_WAIT( Mengine::ScriptServiceInterface, []()
         {
-            ADD_SCRIPT_EMBEDDING( cURLScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), cURLScriptEmbedding );
 
             return true;
         } );
@@ -40,7 +40,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( Mengine::ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( cURLScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );
         }        
 
         SERVICE_FINALIZE( cURLService );

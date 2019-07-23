@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConverterService::registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _factory )
     {
-        LOGGER_INFO( "ConverterService::registerConverter add converter %s"
+        LOGGER_INFO( "add converter '%s'"
             , _type.c_str()
         );
 
@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConverterService::unregisterConverter( const ConstString& _type )
     {
-        LOGGER_INFO( "ConverterService::unregisterConverter remove converter %s"
+        LOGGER_INFO( "remove converter '%s'"
             , _type.c_str()
         );
 
@@ -68,7 +68,7 @@ namespace Mengine
 
         const ConverterFactoryInterfacePtr & factory = it_find->second;
 
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "invalid factory %s is nullptr"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "invalid factory '%s' is nullptr"
             , _type.c_str()
         );
 

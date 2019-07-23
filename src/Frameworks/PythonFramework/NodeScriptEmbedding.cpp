@@ -186,7 +186,7 @@ namespace Mengine
                     String key;
                     if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                     {
-                        LOGGER_ERROR( "textfield_setTextFormatArgs %s invalid get str %s"
+                        LOGGER_ERROR( "'%s' invalid get str '%s'"
                             , _kernel->object_repr( py_string )
                         );
 
@@ -200,7 +200,7 @@ namespace Mengine
                     WString key;
                     if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                     {
-                        LOGGER_ERROR( "textfield_setTextFormatArgs %s invalid get unicode %s"
+                        LOGGER_ERROR( "'%s' invalid get unicode '%s'"
                             , _kernel->object_repr( py_string )
                         );
 
@@ -218,7 +218,7 @@ namespace Mengine
 
                     if( value == nullptr )
                     {
-                        LOGGER_ERROR( "textfield_setTextFormatArgs %s not suport arg %s"
+                        LOGGER_ERROR( "'%s' not suport arg '%s'"
                             , _kernel->object_repr( py_string )
                         );
 
@@ -2110,7 +2110,7 @@ namespace Mengine
 
             if( _node->isActivate() == false )
             {
-                LOGGER_ERROR( "Node.alphaTo node '%s' is not activate"
+                LOGGER_ERROR( "node '%s' is not activate"
                     , _node->getName().c_str()
                 );
 
@@ -2119,7 +2119,7 @@ namespace Mengine
 
             if( _node->isAfterActive() == false )
             {
-                LOGGER_ERROR( "Node.alphaTo node '%s' is not after activate"
+                LOGGER_ERROR( "node '%s' is not after activate"
                     , _node->getName().c_str()
                 );
 
@@ -2159,7 +2159,7 @@ namespace Mengine
 
             if( _node->isActivate() == false )
             {
-                LOGGER_ERROR( "Node.alphaTo node '%s' after color stop is inactivate"
+                LOGGER_ERROR( "node '%s' after color stop is inactivate"
                     , _node->getName().c_str()
                 );
 
@@ -2170,7 +2170,7 @@ namespace Mengine
 
             if( id == 0 )
             {
-                LOGGER_ERROR( "Node.alphaTo node '%s' invalid add affector"
+                LOGGER_ERROR( "node '%s' invalid add affector"
                     , _node->getName().c_str()
                 );
 

@@ -59,7 +59,7 @@ namespace Mengine
 
         if( strstr( version, MAGIC_API ) == nullptr )
         {
-            LOGGER_CRITICAL( "Astralax Magic Particles Version: %s but need %s"
+            LOGGER_CRITICAL( "Astralax Magic Particles Version: '%s' but need '%s'"
                 , version
                 , MAGIC_API
             );

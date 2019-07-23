@@ -262,7 +262,7 @@ namespace Mengine
 
         if( it_found == m_handlers.end() )
         {
-            LOGGER_ERROR( "GlobalHandleSystem::removeGlobalMouseEventable not found %d"
+            LOGGER_ERROR( "not found %d"
                 , _id
             );
 
@@ -407,7 +407,7 @@ namespace Mengine
 
         if( it_found == m_handlers.end() )
         {
-            LOGGER_ERROR( "GlobalHandleSystem::enableGlobalHandler not found %d"
+            LOGGER_ERROR( "not found %d"
                 , _id
             );
 
@@ -435,8 +435,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( m_handlers.empty() == false )
         {
-            LOGGER_ERROR( "GlobalHandleSystem::clear global handlers is not empty:"
-            );
+            LOGGER_ERROR( "global handlers is not empty:" );
 
             for( const GlobalHandlerDesc & desc : m_handlers )
             {

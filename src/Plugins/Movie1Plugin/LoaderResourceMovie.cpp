@@ -337,7 +337,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ResourceMovie: '%s' group '%s' can't setup layer2d '%s' type '%s'"
+                LOGGER_ERROR( "'%s' group '%s' can't setup layer2d '%s' type '%s'"
                     , resource->getName().c_str()
                     , resource->getGroupName().c_str()
                     , layer.source.c_str()

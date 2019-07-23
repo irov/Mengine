@@ -789,7 +789,7 @@ namespace Mengine
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
             ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file %s:%s"
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file '%s:%s'"
             , m_options.fileGroup->getName().c_str()
             , m_options.outputFileName.c_str()
         );
@@ -799,7 +799,7 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
         {
-            LOGGER_ERROR( "invalid write stream %s:%s"
+            LOGGER_ERROR( "invalid write stream '%s:%s'"
                 , m_options.fileGroup->getName().c_str()
                 , m_options.outputFileName.c_str()
             );

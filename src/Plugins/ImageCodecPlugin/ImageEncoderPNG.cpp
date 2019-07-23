@@ -89,7 +89,7 @@ namespace Mengine
 
         if( info_ptr == nullptr )
         {
-            LOGGER_ERROR( "PNG encoder error: Can't create info structure"
+            LOGGER_ERROR( "can't create info structure"
             );
 
             return false;

@@ -53,7 +53,7 @@ namespace Mengine
 
         if( compressSize < 0 )
         {
-            LOGGER_ERROR( "ArchivatorLZ4::compress invalid compress code [%d]"
+            LOGGER_ERROR( "invalid compress code [%d]"
                 , compressSize
             );
 

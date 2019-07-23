@@ -243,7 +243,7 @@ namespace Mengine
             if( SOUND_SERVICE()
                 ->playEmitter( sourceEmitter ) == false )
             {
-                LOGGER_ERROR( "soundPlay: invalid play '%s'"
+                LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
                 );
 
@@ -810,7 +810,7 @@ namespace Mengine
             if( AMPLIFIER_SERVICE()
                 ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
             {
-                LOGGER_ERROR( "AMPLIFIER_SERVICE: playMusic '%s' invalid"
+                LOGGER_ERROR( "invalid play music '%s' "
                     , _resourceMusic.c_str()
                 );
 

@@ -42,7 +42,7 @@ namespace Mengine
 
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
-            ADD_SCRIPT_EMBEDDING( ResourcePrefetcherScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), ResourcePrefetcherScriptEmbedding );
 
             return true;
         } );
@@ -85,7 +85,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( ResourcePrefetcherScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
         }
 
         RESOURCEPREFETCHER_SERVICE()

@@ -18,7 +18,7 @@ namespace Mengine
 
         if( m_options.pitch == 0 )
         {
-            LOGGER_ERROR( "ImageDecoder::setOptions pitch == 0"
+            LOGGER_ERROR( "pitch == 0"
             );
 
             return false;
@@ -26,7 +26,7 @@ namespace Mengine
 
         if( m_options.channels == 0 )
         {
-            LOGGER_ERROR( "ImageDecoder::setOptions channels == 0"
+            LOGGER_ERROR( "channels == 0"
             );
 
             return false;

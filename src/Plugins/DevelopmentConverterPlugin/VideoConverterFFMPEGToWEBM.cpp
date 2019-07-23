@@ -34,26 +34,6 @@ namespace Mengine
         String full_output = pakPath.c_str();
         full_output += m_options.outputFileName.c_str();
 
-        //WString unicode_input;
-        //if( Helper::utf8ToUnicode( full_input, unicode_input ) == false )
-        //{
-        //    LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert input utf8 to unicode %s"
-        //        , full_input.c_str()
-        //    );
-
-        //    return false;
-        //}
-
-        //WString unicode_output;
-        //if( Helper::utf8ToUnicode( full_output, unicode_output ) == false )
-        //{
-        //    LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert output utf8 to unicode %s"
-        //        , full_output.c_str()
-        //    );
-
-        //    return false;
-        //}
-
         String buffer = "-loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + full_output + "\"";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"

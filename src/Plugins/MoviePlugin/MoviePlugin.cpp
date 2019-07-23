@@ -134,7 +134,7 @@ namespace Mengine
 
         SERVICE_WAIT( ScriptServiceInterface, []()
 		{
-			ADD_SCRIPT_EMBEDDING( Movie2ScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ), Movie2ScriptEmbedding );
 
             return true;
 		});
@@ -221,7 +221,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( Movie2ScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ) );
         }
 
         ae_delete_movie_instance( m_movieInstance );

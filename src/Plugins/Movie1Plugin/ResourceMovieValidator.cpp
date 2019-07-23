@@ -83,7 +83,7 @@ namespace Mengine
             uint32_t layer_parent = layer.parent;
             if( std::find_if( layers.begin(), layers.end(), [layer_parent]( const MovieLayer & _layer ) {return _layer.index == layer_parent; } ) == layers.end() )
             {
-                LOGGER_ERROR( "'%s' group '%s' layer %s:%d invalid parent %d"
+                LOGGER_ERROR( "'%s' group '%s' layer '%s' index [%d] invalid parent [%d]"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , layer.name.c_str()

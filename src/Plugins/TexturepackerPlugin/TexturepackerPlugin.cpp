@@ -28,7 +28,7 @@ namespace Mengine
     {
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
-            ADD_SCRIPT_EMBEDDING( TexturepackerScriptEmbedding );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ), TexturepackerScriptEmbedding );
 
             return true;
         } );
@@ -53,7 +53,7 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( TexturepackerScriptEmbedding );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ) );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

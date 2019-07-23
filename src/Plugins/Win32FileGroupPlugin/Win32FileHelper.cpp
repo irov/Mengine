@@ -22,7 +22,7 @@ namespace Mengine
             {
                 DWORD err_code = GetLastError();
 
-                LOGGER_ERROR( "Win32CreateFile invalid create file %ls err %d"
+                LOGGER_ERROR( "invalid create file '%ls' err %d"
                     , pathCorrect
                     , err_code
                 );

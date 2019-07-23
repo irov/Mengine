@@ -143,7 +143,7 @@ namespace Mengine
 
         if( old_parent != new_parent )
         {
-            LOGGER_ERROR( "entity %s:%s script event EVENT_DESTROY replace node to other hierarchy"
+            LOGGER_ERROR( "entity '%s:%s' script event EVENT_DESTROY replace node to other hierarchy"
                 , this->getType().c_str()
                 , this->getName().c_str()
             );

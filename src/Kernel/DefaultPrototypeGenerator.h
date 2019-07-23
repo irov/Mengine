@@ -31,7 +31,7 @@ namespace Mengine
 
             TypePtr object = factory->createObject( _doc );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( object, nullptr, "can't generate %s %s doc '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( object, nullptr, "can't generate '%s::%s' doc '%s'"
                 , this->getCategory().c_str()
                 , this->getPrototype().c_str()
                 , _doc

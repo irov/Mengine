@@ -64,7 +64,7 @@ namespace Mengine
 
         if( function_dllCreatePlugin == nullptr )
         {
-            LOGGER_ERROR( "can't load %s plugin symbol '%s'"
+            LOGGER_ERROR( "can't load '%s' plugin symbol '%s'"
                 , _dynamicLibraryName
                 , symbol
             );

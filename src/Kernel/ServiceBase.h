@@ -55,6 +55,11 @@ namespace Mengine
             this->_finalizeService();
         }
 
+        void replaceService() override
+        {
+            this->_replaceService();
+        }
+
     public:
         bool isAvailableService() const override
         {
@@ -89,6 +94,10 @@ namespace Mengine
             //Empty
         }
 
+        virtual void _replaceService()
+        {
+            //Empty
+        }
 
     protected:
         void stopService() override

@@ -113,7 +113,7 @@ namespace Mengine
                 {
                     if( el.image->compile() == false )
                     {
-                        LOGGER_ERROR( "'%s' image resource %s not compile"
+                        LOGGER_ERROR( "'%s' image resource '%s' not compile"
                             , this->getName().c_str()
                             , el.image->getName().c_str()
                         );

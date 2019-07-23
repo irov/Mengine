@@ -133,7 +133,7 @@ namespace Mengine
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
             ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file %s)"
+        MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file '%s')"
             , m_options.outputFileName.c_str()
             , m_options.fileGroup->getName().c_str()
         );

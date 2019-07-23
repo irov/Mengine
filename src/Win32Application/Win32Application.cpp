@@ -509,7 +509,7 @@ namespace Mengine
         if( TEXT_SERVICE()
             ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
-            LOGGER_WARNING( "not setup title 'APPLICATION_TITLE'"
+            LOGGER_INFO( "not setup title 'APPLICATION_TITLE'"
             );
         }
         else

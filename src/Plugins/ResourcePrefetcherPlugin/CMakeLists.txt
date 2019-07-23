@@ -12,6 +12,9 @@ src
     ResourcePrefetcherService.h
     ResourcePrefetcherService.cpp
     
+    BaseResourcePrefetcher.h
+    BaseResourcePrefetcher.cpp
+    
     DefaultResourcePrefetcher.h
     DefaultResourcePrefetcher.cpp
     DataflowResourcePrefetcher.h

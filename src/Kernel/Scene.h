@@ -3,7 +3,6 @@
 #include "Kernel/Entity.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Layer.h"
-#include "Kernel/DummyPicker.h"
 
 #include "math/vec3.h"
 #include "math/vec4.h"
@@ -31,11 +30,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Scene
         : public Entity
-        , public DummyPicker
     {
         DECLARE_VISITABLE( Entity );
         DECLARE_EVENTABLE_TYPE( SceneEventReceiver );
-        DECLARE_PICKER();
 
     public:
         Scene();
@@ -47,10 +44,6 @@ namespace Mengine
 
     public:
         void onFocus( bool _focus );
-
-    protected:
-        const RenderViewportInterfacePtr & getPickerViewport() const override;
-        const RenderCameraInterfacePtr & getPickerCamera() const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Scene> ScenePtr;

@@ -33,17 +33,15 @@ if(MENGINE_TARGET_IOS)
     add_definitions(-DGLES_SILENCE_DEPRECATION)
 endif()
 
-include_directories( 
-    ${THIRDPARTY_DIR}/SDL2/include
-    ${THIRDPARTY_DIR}/libmath/include
-    )
+include_directories(${THIRDPARTY_DIR}/SDL2/include)
+include_directories(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_LIBRARY()
 
-set_target_properties (${MY_LIB_NAME} PROPERTIES
+set_target_properties(${MY_LIB_NAME} PROPERTIES
     FOLDER Systems
 )
 
 IF(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} OpenGL32.lib)
-ENDIF
+ENDIF()

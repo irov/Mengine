@@ -5,6 +5,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static const uint64_t RECEIVER_MASK_FULL = ~0ULL;
+    //////////////////////////////////////////////////////////////////////////
     class EventReceiverInterface
         : public Interface
     {
@@ -15,6 +17,10 @@ namespace Mengine
     class EventationInterface
         : public Interface
     {
+    public:
+        virtual void setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver ) = 0;
+        virtual const EventReceiverInterfacePtr & getReceiver() const = 0;
+
     public:
         virtual bool addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;
         virtual void removeEventReceiver( uint32_t _event ) = 0;

@@ -119,22 +119,22 @@ public:\
 protected:
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHODR(Event, R)\
-    Helper::hasEventableReceiver( this, Event ) == false ? R : Helper::getThisEventRecieverT( this, Event )
+    Mengine::Helper::hasEventableReceiver( this, Event ) == false ? R : Mengine::Helper::getThisEventRecieverT( this, Event )
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHOD(Event)\
     EVENTABLE_METHODR(Event, MENGINE_UNUSED(0))
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHODR(Self, Event, R)\
-    Self == nullptr ? R : Helper::hasEventableReceiver( Self, Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
+    Self == nullptr ? R : Mengine::Helper::hasEventableReceiver( Self, Event ) == false ? R : Mengine::Helper::getThisEventRecieverT( Self, Event )
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHOD(Self, Event)\
     EVENTABLE_OTHER_METHODR(Self, Event, MENGINE_UNUSED(0))
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_METHODRS(Self, Event, R)\
-    Helper::hasEventableReceiver( Self, Event ) == false ? R : Helper::getThisEventRecieverT( Self, Event )
+    Mengine::Helper::hasEventableReceiver( Self, Event ) == false ? R : Mengine::Helper::getThisEventRecieverT( Self, Event )
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHODRT(Self, Event, R, Type)\
-    Self == nullptr ? R : Helper::hasEventableReceiver( Self, Event ) == false ? R : Helper::getThisEventReciever<Type>( Self, Event )
+    Self == nullptr ? R : Mengine::Helper::hasEventableReceiver( Self, Event ) == false ? R : Mengine::Helper::getThisEventReciever<Type>( Self, Event )
 //////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHODT(Self, Event, Type)\
     EVENTABLE_OTHER_METHODRT(Self, Event, MENGINE_UNUSED(0), Type)

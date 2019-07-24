@@ -134,6 +134,8 @@ ADD_FILTER(
 Entity
 	Entity.cpp
 	Entity.h
+    EntityEventable.cpp
+    EntityEventable.h
 )
 
 ADD_FILTER(

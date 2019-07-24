@@ -16,7 +16,6 @@
 
 #include "PythonScriptModuleLoader.h"
 #include "PythonEntityEventReceiver.h"
-#include "PythonEntityEventation.h"
 
 #include "DataflowPY.h"
 #include "DataflowPYZ.h"
@@ -26,7 +25,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
+#include "Kernel/EntityEventable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/Document.h"
@@ -537,7 +536,7 @@ namespace Mengine
             }
         }
 
-        EventablePtr eventable = Helper::makeFactorableUnique<PythonEntityEventation>();
+        EventablePtr eventable = Helper::makeFactorableUnique<EntityEventable>();
 
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCreate", EVENT_ENTITY_CREATE );
         Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDestroy", EVENT_ENTITY_DESTROY );

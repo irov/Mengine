@@ -1,13 +1,13 @@
-#include "PythonEntityEventation.h"
+#include "EntityEventable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    PythonEntityEventation::PythonEntityEventation()
+    EntityEventable::EntityEventable()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PythonEntityEventation::~PythonEntityEventation()
+    EntityEventable::~EntityEventable()
     {
     }
 }

@@ -33,14 +33,19 @@ src
     ResourceMovieValidator.cpp
     ResourceMovieValidator.h
     
-    MovieScriptEmbedding.cpp
-    MovieScriptEmbedding.h
-    
     DataflowAEK.h
     DataflowAEK.cpp
     MovieFramePack.h
     MovieFramePack.cpp
 )
+
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding
+    MovieScriptEmbedding.cpp
+    MovieScriptEmbedding.h
+    )
+endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 

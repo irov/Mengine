@@ -43,12 +43,14 @@ namespace Mengine
     {
         LOGGER_INFO( "Initializing Particle System ..." );
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "AstralaxScriptEmbedding" ), AstralaxScriptEmbedding );
 
             return true;
         } );
+#endif
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128>>() ) == false )
@@ -99,10 +101,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_finalizeModule()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "AstralaxScriptEmbedding" ) );
         }
+#endif
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );

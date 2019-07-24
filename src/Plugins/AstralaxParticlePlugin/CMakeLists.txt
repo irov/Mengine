@@ -19,9 +19,6 @@ src
     AstralaxService.h
 	AstralaxService.cpp
     
-    AstralaxScriptEmbedding.cpp
-    AstralaxScriptEmbedding.h
-
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
     
@@ -31,6 +28,14 @@ src
     AstralaxParticlePlugin.h
     AstralaxParticlePlugin.def    
 )
+
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding
+    AstralaxScriptEmbedding.cpp
+    AstralaxScriptEmbedding.h    
+    )
+endif()
 
 add_definitions(-DMAGIC_3D)
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

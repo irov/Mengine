@@ -25,11 +25,17 @@ src
     LoaderResourceSpineAtlasTexturepacker.cpp
 
     LoaderResourceSpineSkeleton.h
-    LoaderResourceSpineSkeleton.cpp
-    
+    LoaderResourceSpineSkeleton.cpp    
+)
+
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding    
     SpineScriptEmbedding.h
     SpineScriptEmbedding.cpp
-)
+    )
+endif()
+
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

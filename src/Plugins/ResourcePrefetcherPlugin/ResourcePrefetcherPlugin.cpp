@@ -40,12 +40,14 @@ namespace Mengine
     {
         SERVICE_CREATE( ResourcePrefetcherService );
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), ResourcePrefetcherScriptEmbedding );
 
             return true;
         } );
+#endif
 
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), Helper::makeFactorableUnique<DefaultResourcePrefetcher>() );
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), Helper::makeFactorableUnique<DataflowResourcePrefetcher>() );
@@ -83,10 +85,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherPlugin::_finalizePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
         }
+#endif
 
         RESOURCEPREFETCHER_SERVICE()
             ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );

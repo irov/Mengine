@@ -18,10 +18,15 @@ src
     SamplerOzzAnimation.h
     NodeOzzAnimation.cpp
     NodeOzzAnimation.h
-    
+)
+
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding
     OzzScriptEmbedding.cpp
     OzzScriptEmbedding.h
-)
+    )
+endif()
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/ozz/include )

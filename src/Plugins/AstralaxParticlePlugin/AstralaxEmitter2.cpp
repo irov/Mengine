@@ -483,7 +483,7 @@ namespace Mengine
 
         double time = _time;
 
-        while( time >= rate )
+        while( time >= rate && rate != 0.0 )
         {
             time -= rate;
 

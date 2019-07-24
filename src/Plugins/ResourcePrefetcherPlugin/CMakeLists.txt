@@ -24,11 +24,16 @@ src
     ImageDecoderResourcePrefetcher.h
     ImageDecoderResourcePrefetcher.cpp
     SoundDecoderResourcePrefetcher.h
-    SoundDecoderResourcePrefetcher.cpp
-    
-    ResourcePrefetcherScriptEmbedding.h
-    ResourcePrefetcherScriptEmbedding.cpp
+    SoundDecoderResourcePrefetcher.cpp    
 )
+
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding
+    ResourcePrefetcherScriptEmbedding.cpp
+    ResourcePrefetcherScriptEmbedding.h
+    )
+endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)

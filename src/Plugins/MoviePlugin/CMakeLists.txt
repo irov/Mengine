@@ -33,10 +33,15 @@ src
     ResourceMovie2Validator.h
     Movie2DebuggerBoundingBox.h
     Movie2DebuggerBoundingBox.cpp
-    
+)
+
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding
     Movie2ScriptEmbedding.h
     Movie2ScriptEmbedding.cpp
-)
+    )
+endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 

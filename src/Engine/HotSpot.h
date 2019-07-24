@@ -18,7 +18,7 @@ namespace Mengine
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE( HotSpotEventReceiverInterface );
-        DECLARE_PICKER();
+        DECLARE_PICKERABLE();
 
     public:
         HotSpot();

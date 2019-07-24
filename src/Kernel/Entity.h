@@ -4,6 +4,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/DummyRender.h"
+#include "Kernel/DummyPicker.h"
 
 namespace Mengine
 {
@@ -47,9 +48,11 @@ namespace Mengine
     class Entity
         : public Node
         , public DummyRender
+        , public DummyPicker
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_PICKERABLE();
         DECLARE_EVENTABLE_TYPE( EntityEventReceiver );
 
     public:
@@ -71,6 +74,10 @@ namespace Mengine
     public:
         EventationInterface * getEventation() override;
         const EventationInterface * getEventation() const override;
+
+    protected:
+        const RenderViewportInterfacePtr & getPickerViewport() const override;
+        const RenderCameraInterfacePtr & getPickerCamera() const override;
 
     public:
         void onCreate();

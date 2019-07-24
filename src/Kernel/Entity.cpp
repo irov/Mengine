@@ -68,6 +68,20 @@ namespace Mengine
         return event;
     }
     //////////////////////////////////////////////////////////////////////////
+    const RenderViewportInterfacePtr & Entity::getPickerViewport() const
+    {
+        const RenderViewportInterfacePtr & viewport = this->getRenderViewport();
+
+        return viewport;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderCameraInterfacePtr & Entity::getPickerCamera() const
+    {
+        const RenderCameraInterfacePtr & camera = this->getRenderCamera();
+
+        return camera;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
         EVENTABLE_METHOD( EVENT_ENTITY_PREPARATION )

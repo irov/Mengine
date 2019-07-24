@@ -43,6 +43,6 @@ namespace Mengine
         spSkeletonData * m_skeletonData;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ResourceSpineSkeleton> ResourceSpineSkeletonPtr;
+    typedef IntrusiveResourcePtr<ResourceSpineSkeleton> ResourceSpineSkeletonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

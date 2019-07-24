@@ -13,10 +13,15 @@ src
 	
 	LoaderResourceJSON.cpp
 	LoaderResourceJSON.h
+)
 
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embeddingVJ;
     JSONScriptEmbedding.cpp
     JSONScriptEmbedding.h
-)
+    )
+endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jansson/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)

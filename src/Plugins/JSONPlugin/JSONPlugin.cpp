@@ -11,6 +11,8 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 
+#include "jansson.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( JSON, Mengine::JSONPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -27,12 +29,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONPlugin::_initializePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ), JSONScriptEmbedding );
 
             return true;
         } );
+#endif
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceJSON, 64>>() ) == false )
@@ -47,15 +51,19 @@ namespace Mengine
             return true;
         } );
 
+        json_object_seed( 1 );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONPlugin::_finalizePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL("JSONScriptEmbedding") );
         }
+#endif
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

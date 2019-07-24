@@ -18,6 +18,6 @@ namespace Mengine
         virtual spAtlas * getSpineAtlas() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ResourceSpineAtlas> ResourceSpineAtlasPtr;
+    typedef IntrusiveResourcePtr<ResourceSpineAtlas> ResourceSpineAtlasPtr;
     //////////////////////////////////////////////////////////////////////////
 }

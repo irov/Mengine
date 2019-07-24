@@ -36,12 +36,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SpinePlugin::_initializePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SpineScriptEmbedding" ), SpineScriptEmbedding );
 
             return true;
         } );
+#endif
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceSpineAtlasDefault, 64>>() ) == false )
@@ -81,10 +83,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SpinePlugin::_finalizePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SpineScriptEmbedding" ) );
         }
+#endif
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

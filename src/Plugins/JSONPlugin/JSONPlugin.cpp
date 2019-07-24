@@ -11,6 +11,8 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 
+#include "jansson.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( JSON, Mengine::JSONPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -46,6 +48,8 @@ namespace Mengine
 
             return true;
         } );
+
+        json_object_seed( 1 );
 
         return true;
     }

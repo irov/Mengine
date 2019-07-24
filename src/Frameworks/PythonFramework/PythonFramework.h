@@ -20,5 +20,8 @@ namespace Mengine
     protected:
         bool onFrameworkInitialize() override;
         void onFrameworkFinalize() override;
+
+    protected:
+        bool m_initializeFramework;
     };
 }

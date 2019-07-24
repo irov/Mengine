@@ -22,6 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonFramework::PythonFramework()
+        : m_initializeFramework( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,13 +56,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::onFrameworkInitialize()
     {
+        if( m_initializeFramework == true )
+        {
+            return true;
+        }
+
         ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), GameScriptEmbedding );
+
+        m_initializeFramework = true;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFramework::onFrameworkFinalize()
     {
+        if( m_initializeFramework == false )
+        {
+            return;
+        }
+
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
+
+        m_initializeFramework = false;
     }
 }

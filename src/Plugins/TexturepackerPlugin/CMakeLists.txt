@@ -13,10 +13,15 @@ src
 	
 	LoaderResourceTexturepacker.cpp
 	LoaderResourceTexturepacker.h
+)
 
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding    
     TexturepackerScriptEmbedding.cpp
     TexturepackerScriptEmbedding.h
-)
+    )
+endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jansson/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)

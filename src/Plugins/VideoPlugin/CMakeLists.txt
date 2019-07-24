@@ -17,13 +17,18 @@ src
 	
 	SurfaceVideo.cpp
 	SurfaceVideo.h
-    
-    VideoScriptEmbedding.cpp
-    VideoScriptEmbedding.h
 	
 	ResourceVideoValidator.cpp
 	ResourceVideoValidator.h
 	)
+    
+if(MENGINE_USE_PYTHON_FRAMEWORK)
+ADD_FILTER(
+embedding    
+    VideoScriptEmbedding.cpp
+    VideoScriptEmbedding.h
+    )
+endif()    
     
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 

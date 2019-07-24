@@ -1123,7 +1123,7 @@ namespace Mengine
             const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource %s"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource '%s'"
                 , _name.c_str()
             );
 
@@ -1135,7 +1135,7 @@ namespace Mengine
             const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResourceReference( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource %s"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource '%s'"
                 , _name.c_str()
             );
 
@@ -1381,7 +1381,7 @@ namespace Mengine
             if( FILE_SERVICE()
                 ->hasFileGroup( _fileGroup, &fileGroup ) == false )
             {
-                LOGGER_ERROR( "loadResourcePak invalid found file group %s"
+                LOGGER_ERROR( "invalid found file group '%s'"
                     , _fileGroup.c_str()
                 );
 
@@ -2639,7 +2639,7 @@ namespace Mengine
         {
             if( _cb.is_callable() == false )
             {
-                LOGGER_ERROR( "removeCurrentScene cb '%s' not callable"
+                LOGGER_ERROR( "cb '%s' not callable"
                     , _cb.repr()
                 );
 
@@ -2927,7 +2927,7 @@ namespace Mengine
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "'%s' return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );
@@ -2967,7 +2967,7 @@ namespace Mengine
 
                 if( py_result.is_none() == false )
                 {
-                    LOGGER_ERROR( "'%s' return value %s not None"
+                    LOGGER_ERROR( "'%s' return value '%s' not None"
                         , m_cb.repr()
                         , py_result.repr()
                     );

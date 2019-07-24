@@ -300,7 +300,7 @@ namespace Mengine
 
         textures.emplace( std::make_pair( _fileGroup->getName(), _fileName ), texture_ptr );
 
-        LOGGER_INFO( "cache texture %s:%s"
+        LOGGER_INFO( "cache texture '%s:%s'"
             , _fileGroup->getName().c_str()
             , _fileName.c_str()
         );

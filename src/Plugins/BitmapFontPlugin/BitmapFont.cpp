@@ -37,7 +37,7 @@ namespace Mengine
         FilePath glyphPath;
         if( _config->hasValue( m_name.c_str(), "Glyph", &glyphPath ) == false )
         {
-            LOGGER_ERROR( "invalid font %s don't setup Glyph"
+            LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
                 , m_name.c_str()
             );
 
@@ -58,7 +58,7 @@ namespace Mengine
 
         if( _config->hasValue( m_name.c_str(), "Image", &m_pathFontImage ) == false )
         {
-            LOGGER_ERROR( "invalid font %s dont setup Image"
+            LOGGER_ERROR( "invalid font '%s' dont setup Image"
                 , m_name.c_str()
             );
 

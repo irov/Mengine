@@ -1,4 +1,4 @@
-set( MY_LIB_NAME OpenGLRenderSystem )
+set(MY_LIB_NAME OpenGLRenderSystem)
 
 ADD_FILTER(
 src
@@ -33,35 +33,15 @@ if(MENGINE_TARGET_IOS)
     add_definitions(-DGLES_SILENCE_DEPRECATION)
 endif()
 
-include_directories( 
-    ${THIRDPARTY_DIR}/SDL2/include
-    ${THIRDPARTY_DIR}/libmath/include
-    )
+include_directories(${THIRDPARTY_DIR}/SDL2/include)
+include_directories(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_LIBRARY()
 
-set_target_properties (${MY_LIB_NAME} PROPERTIES
+set_target_properties(${MY_LIB_NAME} PROPERTIES
     FOLDER Systems
 )
 
-SET( APPLICATION_DEPENDENCIES
- ${APPLICATION_DEPENDENCIES}
- ${MY_LIB_NAME} 
-)
-
-SET( APPLICATION_DEPENDENCIES
- ${APPLICATION_DEPENDENCIES}
- PARENT_SCOPE
-)
-
 IF(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
-    SET( APPLICATION_LIBS
-        ${APPLICATION_LIBS}
-        OpenGL32.lib
-    )
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} OpenGL32.lib)
 ENDIF()
-
-SET( APPLICATION_LIBS
-    ${APPLICATION_LIBS}
-    PARENT_SCOPE
-)

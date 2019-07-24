@@ -2560,7 +2560,7 @@ namespace Mengine
 
             if( len == 0 )
             {
-                LOGGER_ERROR( "WinApplication::makeUserPath_: failed to get current directory"
+                LOGGER_ERROR( "failed to get current directory"
                 );
 
                 return 0;

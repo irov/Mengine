@@ -60,7 +60,7 @@ namespace Mengine
 
         if( status != VP8_STATUS_OK )
         {
-            LOGGER_ERROR( "ImageDecoderWEBP::_prepareData invalid WebPGetFeatures %d"
+            LOGGER_ERROR( "invalid WebPGetFeatures %d"
                 , status
             );
 

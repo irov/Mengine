@@ -612,7 +612,7 @@ namespace Mengine
         const ResourcePtr & resourceHIT = RESOURCE_SERVICE()
             ->getResource( m_emitterImageName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, false, "emitter '%s' can't compile emitter hit %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceHIT, false, "emitter '%s' can't compile emitter hit '%s'"
             , this->getName().c_str()
             , m_emitterImageName.c_str()
         );
@@ -631,7 +631,7 @@ namespace Mengine
 
         if( _emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false )
         {
-            LOGGER_ERROR( "emitter %s changeEmitterImage Error image %s"
+            LOGGER_ERROR( "emitter '%s' changeEmitterImage Error image '%s'"
                 , this->getName().c_str()
                 , m_emitterImageName.c_str()
             );

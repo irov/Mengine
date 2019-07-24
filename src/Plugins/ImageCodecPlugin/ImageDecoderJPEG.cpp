@@ -205,37 +205,6 @@ namespace Mengine
         m_dataInfo.height = m_jpegObject.image_height;
         m_dataInfo.quality = s_getQuality( &m_jpegObject );
 
-        //if( m_jpegObject.jpeg_color_space != JCS_RGB )
-        //{
-        //	const char * jcs_err[] =
-        //	{
-        //		"JCS_UNKNOWN",		/* error/unspecified */
-        //		"JCS_GRAYSCALE",		/* monochrome */
-        //		"JCS_RGB",		/* red/green/blue, standard RGB (sRGB) */
-        //		"JCS_YCbCr",		/* Y/Cb/Cr (also known as YUV), standard YCC */
-        //		"JCS_CMYK",		/* C/M/Y/K */
-        //		"JCS_YCCK",		/* Y/Cb/Cr/K */
-        //		"JCS_BG_RGB",		/* big gamut red/green/blue, bg- sRGB */
-        //		"JCS_BG_YCC"		/* big gamut Y/Cb/Cr, bg-sYCC */
-        //	};
-
-        //	LOGGER_ERROR("ImageDecoderJPEG::_prepareData unsupport %s (%d) (only RGB)"
-        //		, jcs_err[m_jpegObject.jpeg_color_space]
-        //		, m_jpegObject.jpeg_color_space				
-        //		);
-
-        //	return false;
-        //}
-        //
-        //if( m_jpegObject.num_components != 3 )
-        //{
-        //	LOGGER_ERROR("ImageDecoderJPEG::_prepareData invalid color components %d"
-        //		, m_jpegObject.num_components
-        //		);
-
-        //	return false;
-        //}
-
         m_dataInfo.channels = RGB_PIXELSIZE;
 
         return true;
@@ -245,7 +214,7 @@ namespace Mengine
     {
         if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
-            LOGGER_ERROR( "ImageDecoderJPEG::decode error, invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
+            LOGGER_ERROR( "invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
                 , _bufferSize
                 , m_options.pitch
                 , m_dataInfo.height
@@ -288,7 +257,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ImageDecoderJPEG::decode DEFAULT m_options.channels %d != %d"
+                LOGGER_ERROR( "DEFAULT options channels %d != %d"
                     , m_options.channels
                     , m_dataInfo.channels
                 );
@@ -306,7 +275,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_ERROR( "ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
+                LOGGER_ERROR( "DF_READ_ALPHA_ONLY options channels %d != 4"
                     , m_options.channels
                 );
 

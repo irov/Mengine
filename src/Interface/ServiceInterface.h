@@ -18,6 +18,7 @@ namespace Mengine
     protected:
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
+        virtual void replaceService() = 0;
 
     public:
         virtual bool isInitializeService() const = 0;

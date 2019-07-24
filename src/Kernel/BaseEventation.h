@@ -40,9 +40,6 @@ namespace Mengine
         VectorEventReceivers m_receivers;
 
         uint64_t m_flag;
-
-    private:
-        class FEventReciver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<BaseEventation> BaseEventPtr;

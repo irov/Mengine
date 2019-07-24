@@ -437,7 +437,7 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _filePath, _streamable, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "Can't open sound file %s:%s"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "can't open sound file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -445,14 +445,14 @@ namespace Mengine
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
             ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "Can't create sound decoder for file %s:%s"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "can't create sound decoder for file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
 
         if( soundDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "Can't initialize sound decoder for file %s:%s"
+            LOGGER_ERROR( "can't initialize sound decoder for file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -467,7 +467,7 @@ namespace Mengine
     {
         if( m_supportStream == false && _streamable == true )
         {
-            LOGGER_WARNING( "unsupport stream sound %s:%s"
+            LOGGER_WARNING( "unsupport stream sound '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -509,7 +509,7 @@ namespace Mengine
             soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, true );
         }
 
-        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "invalid create decoder '%s':'%s' type %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "invalid create decoder '%s':'%s' type '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _codecType.c_str()
@@ -518,7 +518,7 @@ namespace Mengine
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
             ->createSoundBuffer( soundDecoder, _streamable );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "can't create sound buffer for file %s:%s"
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "can't create sound buffer for file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
         );
@@ -1519,7 +1519,7 @@ namespace Mengine
                     continue;
                 }
 
-                LOGGER_ERROR( "sound: %s %s "
+                LOGGER_ERROR( "sound: %s [%s] "
                     , identity->streamable == true ? "streamable" : "instance"
                     , identity->doc.c_str()
                 );

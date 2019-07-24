@@ -10,8 +10,8 @@ static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 {
     Mengine::String result;
 
-    const int inSize = static_cast<int>( wideStr.size() );
-    const int outSize = ::WideCharToMultiByte( CP_UTF8, 0, wideStr.c_str(), inSize, nullptr, 0, nullptr, nullptr );
+    int inSize = static_cast<int>( wideStr.size() );
+    int outSize = ::WideCharToMultiByte( CP_UTF8, 0, wideStr.c_str(), inSize, nullptr, 0, nullptr, nullptr );
 
     if( outSize > 0 )
     {
@@ -24,9 +24,9 @@ static Mengine::String WideToUtf8( const Mengine::WString & wideStr )
 
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-    (void)hInstance;
-    (void)hPrevInstance;
-    (void)nShowCmd;
+    MENGINE_UNUSED( hInstance );
+    MENGINE_UNUSED( hPrevInstance );
+    MENGINE_UNUSED( nShowCmd );
 
     stdex_allocator_initialize();
 

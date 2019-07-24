@@ -35,7 +35,7 @@ namespace Mengine
             if( FILE_SERVICE()
                 ->hasFileGroup( _fileGroupName, &group ) == false )
             {
-                LOGGER_ERROR( "makeFullPath: not found file group '%s'"
+                LOGGER_ERROR( "not found file group '%s'"
                     , _fileGroupName.c_str()
                 );
 

@@ -38,7 +38,7 @@ namespace Mengine
             InputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't open file %s:%s"
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't open file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );
@@ -60,6 +60,10 @@ namespace Mengine
         m_mf = mf;
 
         m_memory = memory;
+
+        MENGINE_ASSERTION_RETURN( Magic_HasTextures( m_mf ) == false, false, "astralax '%s' incorrect safe 'with textures'"
+            , _fileName.c_str()
+        );
 
         int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );
 
@@ -138,7 +142,7 @@ namespace Mengine
             return image;
         }
 
-        LOGGER_ERROR( "not found atlas %s"
+        LOGGER_ERROR( "not found atlas '%s'"
             , _file
         );
 
@@ -189,7 +193,7 @@ namespace Mengine
                 }
                 catch( const std::exception & _ex )
                 {
-                    LOGGER_ERROR( "invalid load emitter %s (catch exception '%s')"
+                    LOGGER_ERROR( "invalid load emitter '%s' (catch exception '%s')"
                         , magicName
                         , _ex.what()
                     );
@@ -199,7 +203,7 @@ namespace Mengine
 
                 if( id == 0 )
                 {
-                    LOGGER_ERROR( "invalid load emitter %s"
+                    LOGGER_ERROR( "invalid load emitter '%s'"
                         , magicName
                     );
 

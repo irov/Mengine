@@ -1100,7 +1100,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
             {
-                LOGGER_ERROR( "not found resource movie %s"
+                LOGGER_ERROR( "not found resource movie '%s'"
                     , resourceMovieName.c_str()
                 );
 

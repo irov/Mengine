@@ -44,7 +44,7 @@ namespace Mengine
             ResourceImagePtr resourceImage = RESOURCE_SERVICE()
                 ->getResourceReference( resourceImageName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "resource %s container %s can't get atlas image %s"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "resource '%s' container '%s' can't get atlas image '%s'"
                 , resource->getName().c_str()
                 , resource->getFilePath().c_str()
                 , resourceImageName.c_str()

@@ -70,12 +70,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_initializePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ), MovieScriptEmbedding );
 
             return true;
 		});
+#endif
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Movie, 128>>() ) == false )
@@ -162,10 +164,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie1Plugin::_finalizePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ) );
         }
+#endif
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );

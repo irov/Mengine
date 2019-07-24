@@ -2356,7 +2356,7 @@ namespace Mengine
 
         uint32_t lastFrame = m_currentFrame;
 
-        while( m_frameTime >= frameDuration )
+        while( m_frameTime >= frameDuration && frameDuration != 0.f )
         {
             m_frameTime -= frameDuration;
 

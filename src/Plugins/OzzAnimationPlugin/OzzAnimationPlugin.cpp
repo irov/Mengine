@@ -30,12 +30,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OzzAnimationPlugin::_initializePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ), OzzScriptEmbedding );
 
             return true;
         } );
+#endif
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceOzzSkeleton, 16>>() ) == false )
@@ -72,10 +74,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzAnimationPlugin::_finalizePlugin()
     {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ) );
         }
+#endif
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ) );

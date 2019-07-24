@@ -109,7 +109,7 @@ namespace Mengine
             ConstString state;
             ConstString name;
             spAnimationState * animationState;
-            float timing;
+            float time;
             float duration;
             float speedFactor;
             bool freeze;

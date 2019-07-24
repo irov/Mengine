@@ -42,7 +42,7 @@ namespace Mengine
             uint32_t width;
             uint32_t height;
 
-            float timing;
+            float time;
         };
 
         typedef Vector<RenderTextureGraveEntry> VectorTextureGrave;

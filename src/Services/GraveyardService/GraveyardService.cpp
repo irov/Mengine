@@ -52,9 +52,9 @@ namespace Mengine
     {
         VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
         {
-            _entry.timing -= _context->time;
+            _entry.time -= _context->time;
 
-            if( _entry.timing > 0.f )
+            if( _entry.time > 0.f )
             {
                 return false;
             }
@@ -109,7 +109,7 @@ namespace Mengine
         entry.width = _texture->getWidth();
         entry.height = _texture->getHeight();
 
-        entry.timing = m_graveyardTime;
+        entry.time = m_graveyardTime;
 
         m_textures.emplace_back( entry );
 

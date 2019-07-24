@@ -8,7 +8,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BaseEventation::BaseEventation() noexcept
-        : m_flag( 0 )
+        : m_receiverMask( 0 )
+        , m_receiversMask( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -16,16 +17,37 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseEventation::setReceiver( uint64_t _receiverMask, const EventReceiverInterfacePtr & _receiver )
+    {
+        m_receiverMask = _receiverMask;
+
+        m_receiver = _receiver;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const EventReceiverInterfacePtr & BaseEventation::getReceiver() const
+    {
+        return m_receiver;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
 
-        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+        if( (m_receiversMask & (1ULL << _event)) != 0 )
         {
-            return _desc.event == _event;
-        } );
+            VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
+            {
+                return _desc.event == _event;
+            } );
 
-        if( it_found == m_receivers.end() )
+            MENGINE_ASSERTION_FATAL( it_found != m_receivers.end() );
+
+            EventReceiverDesc & desc = *it_found;
+
+            desc.receiver = _receiver;
+        }
+        else
         {
             EventReceiverDesc desc;
             desc.event = _event;
@@ -33,13 +55,7 @@ namespace Mengine
 
             m_receivers.emplace_back( desc );
 
-            m_flag |= (1ULL << _event);
-        }
-        else
-        {
-            EventReceiverDesc & desc = *it_found;
-
-            desc.receiver = _receiver;
+            m_receiversMask |= (1ULL << _event);
         }
 
         return true;
@@ -47,7 +63,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEventReceiver( uint32_t _event )
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
 
         VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
@@ -61,12 +78,17 @@ namespace Mengine
 
         m_receivers.erase( it_found );
 
-        m_flag &= ~(1ULL << _event);
+        m_receiversMask &= ~(1ULL << _event);
     }
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
+
+        if( (m_receiverMask & (1ULL << _event)) != 0 )
+        {
+            return m_receiver;
+        }
 
         VectorEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), [_event]( const EventReceiverDesc & _desc )
         {
@@ -85,14 +107,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BaseEventation::hasEventReceiver( uint32_t _event ) const
     {
-        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_flag ) * 8 - 1) );
+        MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
 
-        return (m_flag & (1ULL << _event)) != 0;
+        return ((m_receiverMask | m_receiversMask) & (1ULL << _event)) != 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEvents() noexcept
     {
         m_receivers.clear();
-        m_flag = 0;
+        m_receiversMask = 0;
     }
 }

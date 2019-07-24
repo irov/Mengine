@@ -7,7 +7,7 @@
 
 namespace Mengine
 {
-    class PythonEntityEventation
+    class EntityEventable
         : public Factorable
         , public Eventable
         , public BaseEventation
@@ -15,7 +15,10 @@ namespace Mengine
         DECLARE_EVENTABLE( EntityEventReceiver );
 
     public:
-        PythonEntityEventation();
-        ~PythonEntityEventation() override;
+        EntityEventable();
+        ~EntityEventable() override;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<EntityEventable> EntityEventablePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -92,12 +92,6 @@ EventReceiver
 )
 
 ADD_FILTER(
-EntityEventation
-    PythonEntityEventation.h
-    PythonEntityEventation.cpp
-)
-
-ADD_FILTER(
 ScriptProviderService
     PythonScriptProviderService.h
     PythonScriptProviderService.cpp

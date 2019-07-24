@@ -268,78 +268,85 @@ namespace Mengine
         return m_children;
     }
     //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    struct reinterpret_node_cast_void_t
+    namespace Helper
     {
-        typedef void * type;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    template<class U>
-    struct reinterpret_node_cast_void_t<const U *>
-    {
-        typedef const void * type;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    T reinterpret_node_cast( void * _node )
-    {
-#ifdef MENGINE_DEBUG
-        if( _node == nullptr )
+        namespace Detail
         {
-            return nullptr;
+            template<class T>
+            struct reinterpret_node_cast_void_t
+            {
+                typedef void * type;
+            };
+            //////////////////////////////////////////////////////////////////////////
+            template<class U>
+            struct reinterpret_node_cast_void_t<const U *>
+            {
+                typedef const void * type;
+            };
         }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T reinterpretNodeCast( void * _node )
+        {
+#ifdef MENGINE_DEBUG
+            if( _node == nullptr )
+            {
+                return nullptr;
+            }
 
-        try {
-            if( dynamic_cast<typename reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
+            try
+            {
+                if( dynamic_cast<typename Detail::reinterpret_node_cast_void_t<T>::type>(static_cast<T>(_node)) == nullptr )
+                {
+                    throw;
+                }
+            }
+            catch( const std::exception & )
             {
                 throw;
             }
-        }
-        catch( const std::exception & )
-        {
-            throw;
-        }
 #endif
 
-        return reinterpret_cast<T>(_node);
+            return reinterpret_cast<T>(_node);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticNodeCast( Node * _node )
+        {
+#ifdef MENGINE_DEBUG
+            if( _node == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( dynamic_cast<T>(_node) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            return static_cast<T>(_node);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T staticNodeCast( const Node * _node )
+        {
+#ifdef MENGINE_DEBUG
+            if( _node == nullptr )
+            {
+                return nullptr;
+            }
+
+            if( dynamic_cast<T>(_node) == nullptr )
+            {
+                throw;
+            }
+#endif
+
+            return static_cast<T>(_node);
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    T node_static_cast( Node * _node )
-    {
-#ifdef MENGINE_DEBUG
-        if( _node == nullptr )
-        {
-            return nullptr;
-        }
-
-        if( dynamic_cast<T>(_node) == nullptr )
-        {
-            throw;
-        }
-#endif
-
-        return static_cast<T>(_node);
-    }
-    //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    T node_static_cast( const Node * _node )
-    {
-#ifdef MENGINE_DEBUG
-        if( _node == nullptr )
-        {
-            return nullptr;
-        }
-
-        if( dynamic_cast<T>(_node) == nullptr )
-        {
-            throw;
-        }
-#endif
-
-        return static_cast<T>(_node);
-    }
-	//////////////////////////////////////////////////////////////////////////
 	template<class T>
 	using IntrusiveNodePtr = IntrusivePtr<T, Node>;
 	//////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,7 @@ namespace Mengine
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
-        DECLARE_PICKER();
+        DECLARE_PICKERABLE();
 
     public:
         Interender();

@@ -98,7 +98,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
 
-        MENGINE_INLINE void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, EMouseCode _button, float _pressure, bool _isDown )
+        MENGINE_INLINE void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, EMouseCode _code, float _pressure, bool _isDown )
         {
             float vx;
             float vy;
@@ -113,7 +113,7 @@ namespace Mengine
             ev.button.touchId = _touchId;
             ev.button.x = vx;
             ev.button.y = vy;
-            ev.button.code = _button;
+            ev.button.code = _code;
             ev.button.pressure = _pressure;
             ev.button.isDown = _isDown;
             ev.button.isPressed = true;

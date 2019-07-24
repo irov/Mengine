@@ -21,7 +21,7 @@ namespace Mengine
     {
         DECLARE_VISITABLE( Layer );
         DECLARE_RENDERABLE();
-        DECLARE_PICKER();
+        DECLARE_PICKERABLE();
 
     public:
         Layer2D();

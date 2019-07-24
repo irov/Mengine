@@ -38,6 +38,6 @@ namespace Mengine
         spAtlas * m_atlas;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ResourceSpineAtlasTexturepacker> ResourceSpineAtlasTexturepackerPtr;
+    typedef IntrusiveResourcePtr<ResourceSpineAtlasTexturepacker> ResourceSpineAtlasTexturepackerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

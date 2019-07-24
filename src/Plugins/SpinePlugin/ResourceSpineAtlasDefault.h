@@ -51,6 +51,6 @@ namespace Mengine
         friend const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlasDefault *, const char * );
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ResourceSpineAtlasDefault> ResourceSpineAtlasDefaultPtr;
+    typedef IntrusiveResourcePtr<ResourceSpineAtlasDefault> ResourceSpineAtlasDefaultPtr;
     //////////////////////////////////////////////////////////////////////////
 }

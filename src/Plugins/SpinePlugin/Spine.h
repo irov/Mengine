@@ -24,8 +24,10 @@ namespace Mengine
         , public BaseUpdation
         , public BaseRender
         , public BaseEventation
+        , public UnknownSpine
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_UNKNOWABLE();
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_ANIMATABLE();
@@ -36,30 +38,30 @@ namespace Mengine
         ~Spine() override;
 
     public:
-        void setResourceSpineSkeleton( const ResourceSpineSkeletonPtr & _resourceSpineSkeleton );
-        const ResourceSpineSkeletonPtr & getResourceSpineSkeleton() const;
+        void setResourceSpineSkeleton( const ResourcePtr & _resourceSpineSkeleton ) override;
+        const ResourcePtr & getResourceSpineSkeleton() const override;
 
     public:
-        bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix );
+        bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix ) override;
 
     public:
-        bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
-        bool removeStateAnimation( const ConstString & _state );
+        bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop ) override;
+        bool removeStateAnimation( const ConstString & _state ) override;
 
     public:
-        bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor );
-        float getStateAnimationSpeedFactor( const ConstString & _state ) const;
+        bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor ) override;
+        float getStateAnimationSpeedFactor( const ConstString & _state ) const override;
 
-        bool setStateAnimationTiming( const ConstString & _state, float _timing );
-        float getStateAnimationTiming( const ConstString & _state ) const;
+        bool setStateAnimationTiming( const ConstString & _state, float _timing ) override;
+        float getStateAnimationTiming( const ConstString & _state ) const override;
 
-        bool setStateAnimationFreeze( const ConstString & _state, bool _freeze );
-        bool getStateAnimationFreeze( const ConstString & _state ) const;
+        bool setStateAnimationFreeze( const ConstString & _state, bool _freeze ) override;
+        bool getStateAnimationFreeze( const ConstString & _state ) const override;
 
-        float getStateAnimationDuration( const ConstString & _state ) const;
+        float getStateAnimationDuration( const ConstString & _state ) const override;
 
     public:
-        float getAnimationDuration( const ConstString & _name );
+        float getAnimationDuration( const ConstString & _name ) override;
 
     protected:
         bool _compile() override;
@@ -152,4 +154,7 @@ namespace Mengine
         VectorAnimationEvent m_events;
         VectorAnimationEvent m_eventsAux;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<Spine> SpinePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

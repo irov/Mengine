@@ -29,7 +29,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::setResourceSpineSkeleton( const ResourceSpineSkeletonPtr & _resourceSpineSkeleton )
+    void Spine::setResourceSpineSkeleton( const ResourcePtr & _resourceSpineSkeleton )
     {
         if( m_resourceSpineSkeleton == _resourceSpineSkeleton )
         {
@@ -42,7 +42,7 @@ namespace Mengine
         } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceSpineSkeletonPtr & Spine::getResourceSpineSkeleton() const
+    const ResourcePtr & Spine::getResourceSpineSkeleton() const
     {
         return m_resourceSpineSkeleton;
     }

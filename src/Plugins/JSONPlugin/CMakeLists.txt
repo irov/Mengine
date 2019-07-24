@@ -17,9 +17,9 @@ src
 
 if(MENGINE_USE_PYTHON_FRAMEWORK)
 ADD_FILTER(
-embedding
-    cURLScriptEmbedding.cpp
-    cURLScriptEmbedding.h
+embeddingVJ;
+    JSONScriptEmbedding.cpp
+    JSONScriptEmbedding.h
     )
 endif()
 

@@ -29,7 +29,7 @@ namespace Mengine
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file %s:%s"
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
             , _fileGroup->getName().c_str()
             , _path.c_str()
         );

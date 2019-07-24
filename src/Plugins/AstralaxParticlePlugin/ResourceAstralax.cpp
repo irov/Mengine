@@ -45,7 +45,7 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralax::compile '%s'", this->getName().c_str() ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( container, false, "resource %s can't create container file '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( container, false, "resource '%s' can't create container file '%s'"
             , this->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -97,7 +97,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "resource %s not compile"
+            LOGGER_ERROR( "resource '%s' not compile"
                 , this->getName().c_str()
             );
 

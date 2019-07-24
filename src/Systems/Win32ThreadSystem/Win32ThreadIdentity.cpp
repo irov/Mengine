@@ -64,13 +64,13 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         catch( const std::exception & ex )
         {
-            LOGGER_CRITICAL( "Win32ThreadIdentity std::exception exception '%s'"
+            LOGGER_CRITICAL( "std::exception exception '%s'"
                 , ex.what()
             );
         }
         catch( ... )
         {
-            LOGGER_CRITICAL( "Win32ThreadIdentity unknown exception"
+            LOGGER_CRITICAL( "unknown exception"
             );
         }
 #endif

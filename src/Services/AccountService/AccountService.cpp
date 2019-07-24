@@ -552,7 +552,7 @@ namespace Mengine
         {
             AccountInterfacePtr account = this->newAccount_( accountID );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid create account %s"
+            MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid create account '%s'"
                 , accountID.c_str()
             );
 

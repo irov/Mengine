@@ -20,6 +20,7 @@ namespace Mengine
 
     protected:
         Scriptable * getPickerScriptable() override;
+        Eventable * getPickerEventable() override;
         InputHandlerInterface * getPickerInputHandler() override;
     };
     //////////////////////////////////////////////////////////////////////////

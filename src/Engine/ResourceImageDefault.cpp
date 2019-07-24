@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
     {
-        LOGGER_INFO( "name %s load texture %s"
+        LOGGER_INFO( "name '%s' load texture '%s'"
             , this->getName().c_str()
             , this->getFilePath().c_str()
         );

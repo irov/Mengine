@@ -130,6 +130,11 @@ namespace Mengine
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
+    Eventable * HotSpot::getPickerEventable()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     InputHandlerInterface * HotSpot::getPickerInputHandler()
     {
         return this;

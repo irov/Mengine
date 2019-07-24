@@ -845,7 +845,7 @@ namespace Mengine
 
         if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
         {
-            LOGGER_ERROR( "TTFFont::_compile font '%s' invalid set pixel height '%u'"
+            LOGGER_ERROR( "font '%s' invalid set pixel height '%u'"
                 , m_name.c_str()
                 , m_height
             );

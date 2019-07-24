@@ -1222,7 +1222,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "Error addSetting: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1240,7 +1240,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "Error changeSetting: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1258,7 +1258,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "Error changeSettingBool: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1276,7 +1276,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "changeSettingInt: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1294,7 +1294,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "changeSettingUInt: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1312,7 +1312,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "changeSettingUInt64: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1330,7 +1330,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "changeSettingFloat: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1348,7 +1348,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "Error changeSettingStrings: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1488,7 +1488,7 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "changeAccountSettingBool: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
                 );
@@ -1514,7 +1514,7 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "changeAccountSettingBool: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
                 );
@@ -1541,7 +1541,7 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "changeAccountSettingBool: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
                 );
@@ -1568,7 +1568,7 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "changeAccountSettingBool: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
                 );
@@ -1595,7 +1595,7 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "changeAccountSettingBool: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
                 );
@@ -1622,7 +1622,7 @@ namespace Mengine
 
             if( account->hasSetting( _setting ) == false )
             {
-                LOGGER_ERROR( "changeAccountSettingStrings: account '%s' not found setting '%s'"
+                LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
                     , _setting.c_str()
                 );
@@ -1655,7 +1655,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1672,7 +1672,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1689,7 +1689,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1706,7 +1706,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1723,7 +1723,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1740,7 +1740,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1757,7 +1757,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1774,7 +1774,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1791,7 +1791,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
             {
-                LOGGER_ERROR( "addGlobalSetting: account not found"
+                LOGGER_ERROR( "account not found"
                 );
 
                 return false;
@@ -1808,7 +1808,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "Error hasSetting: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1826,7 +1826,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getCurrentAccountUID: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                 );
 
                 return _kernel->ret_none();
@@ -1843,7 +1843,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSetting: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1861,7 +1861,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingBool: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1879,7 +1879,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingInt: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1897,7 +1897,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingUInt: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1915,7 +1915,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingUInt: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1933,7 +1933,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingFloat: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1951,7 +1951,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingFloat: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -1969,7 +1969,7 @@ namespace Mengine
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
             {
-                LOGGER_ERROR( "getSettingFloat: currentAccount is none [%s]"
+                LOGGER_ERROR( "currentAccount is none [%s]"
                     , _setting.c_str()
                 );
 
@@ -2689,7 +2689,7 @@ namespace Mengine
             String utf8_fileName;
             if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR( "invalid convert filename %s to utf8"
+                LOGGER_ERROR( "invalid convert filename '%s' to utf8"
                     , _fileName.c_str()
                 );
 

@@ -94,7 +94,7 @@ namespace Mengine
 
         if( it_found == m_settings.end() )
         {
-            LOGGER_ERROR( "account %s setting '%s' does not exist. Can't change"
+            LOGGER_ERROR( "account '%s' setting '%s' does not exist. Can't change"
                 , m_id.c_str()
                 , _setting.c_str()
             );

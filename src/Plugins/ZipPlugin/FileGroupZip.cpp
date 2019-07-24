@@ -99,7 +99,7 @@ namespace Mengine
         InputStreamInterfacePtr zipFile = FILE_SERVICE()
             ->openInputFile( m_fileGroup, m_path, false, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( zipFile, false, "can't open input stream for path %s"
+        MENGINE_ASSERTION_MEMORY_PANIC( zipFile, false, "can't open input stream for path '%s'"
             , m_path.c_str()
         );
 
@@ -112,7 +112,7 @@ namespace Mengine
 
         if( zipFile->read( endof_central_dir, 22 ) != 22 )
         {
-            LOGGER_ERROR( "invalid zip format %s"
+            LOGGER_ERROR( "invalid zip format '%s'"
                 , m_path.c_str()
             );
 
@@ -123,7 +123,7 @@ namespace Mengine
 
         if( eocd != 0x06054B50 )
         {
-            LOGGER_ERROR( "bad 'End of Central Dir' signature zip %s"
+            LOGGER_ERROR( "bad 'End of Central Dir' signature zip '%s'"
                 , m_path.c_str()
             );
 

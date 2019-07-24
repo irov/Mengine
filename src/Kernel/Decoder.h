@@ -29,7 +29,7 @@ namespace Mengine
 
             if( m_initialize == true )
             {
-                LOGGER_ERROR( "Decoder::initialize: alredy initialize!"
+                LOGGER_ERROR( "alredy initialize!"
                 );
 
                 return false;
@@ -53,7 +53,7 @@ namespace Mengine
 
             if( m_initialize == false )
             {
-                LOGGER_ERROR( "Decoder::initialize: alredy finalize!"
+                LOGGER_ERROR( "alredy finalize!"
                 );
 
                 return;

@@ -24,7 +24,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonSpineEventReceiver
-            : public PythonAnimatableEventReceiver<SpineEventReceiver>
+            : public PythonAnimatableEventReceiver<SpineEventReceiverInterface>
         {
         public:
             void onSpineEvent( const Char * _eventName, int32_t _eventIntValue, float _eventFloatValue, const Char * _eventStringValue ) override

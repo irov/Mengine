@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Kernel/IntrusivePtr.h"
+
 #include "Config/String.h"
 
 #include "GOAP/Task.h"
-
-#include <stdarg.h>
 
 namespace Mengine
 {
@@ -22,6 +22,6 @@ namespace Mengine
         String m_message;
     };
     //////////////////////////////////////////////////////////////////////////
-    using TaskPrintPtr = GOAP::IntrusivePtr<TaskPrint>;
+    typedef IntrusivePtr<TaskPrint> TaskPrintPtr;
     //////////////////////////////////////////////////////////////////////////
 }

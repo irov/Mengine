@@ -17,10 +17,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ESurfaceSoundEventFlag
     {
+        __EVENT_SURFACE_SOUND_LAST__ = __EVENT_ANIMATION_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class SurfaceSoundEventReceiver
-        : public AnimationEventReceiver
+    class SurfaceSoundEventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     public:
     };
@@ -33,7 +34,7 @@ namespace Mengine
         , public SoundListenerInterface
     {
         DECLARE_ANIMATABLE();
-        DECLARE_EVENTABLE( SurfaceSoundEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         SurfaceSound();

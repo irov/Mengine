@@ -21,7 +21,7 @@ namespace Mengine
         , public BaseEventation
     {
         DECLARE_ANIMATABLE();
-        DECLARE_EVENTABLE( SamplerOzzAnimationEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         SamplerOzzAnimation();

@@ -15,16 +15,19 @@ namespace Mengine
     {
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_END = __EVENT_ANIMATION_LAST__,
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK,
-        __EVENT_SURFACE_IMAGESEQUENCE__
+        __EVENT_SURFACE_IMAGESEQUENCE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class SurfaceImageSequenceEventReceiver
-        : public AnimationEventReceiver
+    class SurfaceImageSequenceEventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     public:
         virtual void onSurfaceImageSequenceFrameEnd( uint32_t _currentFrame ) = 0;
         virtual void onSurfaceImageSequenceFrameTick( uint32_t _currentFrame, uint32_t _frameCount ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( SurfaceImageSequenceEventReceiverInterface, EVENT_SURFACE_IMAGESEQUENCE_FRAME_END );
+    EVENTATION_TYPEID( SurfaceImageSequenceEventReceiverInterface, EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK );
     //////////////////////////////////////////////////////////////////////////
     class SurfaceImageSequence
         : public Surface
@@ -32,7 +35,7 @@ namespace Mengine
         , public BaseAnimation
     {
         DECLARE_ANIMATABLE();
-        DECLARE_EVENTABLE( SurfaceImageSequenceEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         SurfaceImageSequence();

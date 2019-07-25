@@ -32,8 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
-    class Movie2EventReceiver
-        : public AnimationEventReceiver
+    class Movie2EventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     public:
     };
@@ -60,7 +60,7 @@ namespace Mengine
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
-        DECLARE_EVENTABLE( Movie2EventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         Movie2();

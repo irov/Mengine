@@ -23,7 +23,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonMovie2EventReceiver
-            : public PythonAnimatableEventReceiver<Movie2EventReceiver>
+            : public PythonAnimatableEventReceiver<Movie2EventReceiverInterface>
         {
         public:
         };

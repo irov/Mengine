@@ -10,11 +10,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EScriptHolderEventFlag
     {
-        EVENT_KEEP_SCRIPT = 0,
-        EVENT_RELEASE_SCRIPT
+        EVENT_SCRIPT_HOLDER_KEEP = 0,
+        EVENT_SCRIPT_HOLDER_RELEASE,
+        __EVENT_SCRIPT_HOLDER_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class ScriptHolderEventReceiver
+    class ScriptHolderEventReceiverInterface
         : public EventReceiverInterface
     {
     public:
@@ -22,17 +23,21 @@ namespace Mengine
         virtual void onScriptHolderReleaseScript( const pybind::object & _script ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScriptHolderEventReceiver> ScriptHolderEventReceiverPtr;
+    typedef IntrusivePtr<ScriptHolderEventReceiverInterface> ScriptHolderEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( ScriptHolderEventReceiverInterface, EVENT_SCRIPT_HOLDER_KEEP );
+    EVENTATION_TYPEID( ScriptHolderEventReceiverInterface, EVENT_SCRIPT_HOLDER_RELEASE );
     //////////////////////////////////////////////////////////////////////////
     class ScriptHolder
         : public Node
         , public BaseEventation
     {
         DECLARE_VISITABLE( Node );
-        DECLARE_EVENTABLE( ScriptHolderEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         ScriptHolder();
+        ~ScriptHolder() override;
 
     protected:
         bool _activate() override;

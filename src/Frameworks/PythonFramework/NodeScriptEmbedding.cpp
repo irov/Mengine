@@ -608,7 +608,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PythonMeshEventReceiver
             : public PythonEventReceiver
-            , public MeshgetEventReceiver
+            , public MeshgetEventReceiverInterface
             , public Factorable
         {
         public:
@@ -634,7 +634,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PythonScriptHolderEventReceiver
             : public PythonEventReceiver
-            , public ScriptHolderEventReceiver
+            , public ScriptHolderEventReceiverInterface
             , public Factorable
         {
         public:
@@ -656,8 +656,8 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -938,10 +938,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -982,10 +978,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -1032,10 +1024,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -1083,10 +1071,6 @@ namespace Mengine
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -1135,10 +1119,6 @@ namespace Mengine
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             MENGINE_ASSERTION_MEMORY_PANIC( _follow, 0, "invalid create follower" );
 
             if( _node->isActivate() == false )
@@ -1197,10 +1177,6 @@ namespace Mengine
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -1252,10 +1228,6 @@ namespace Mengine
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -1452,10 +1424,6 @@ namespace Mengine
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
-            MENGINE_ASSERTION_FATAL( _time != 0.f, "_time is 0.f\n%s"
-                , MENGINE_DOCUMENT_PYBIND
-            );
-
             if( _node->isActivate() == false )
             {
                 return 0;

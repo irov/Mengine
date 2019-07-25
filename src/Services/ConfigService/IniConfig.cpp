@@ -1,4 +1,4 @@
-#include "INIConfig.h"
+#include "IniConfig.h"
 
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"

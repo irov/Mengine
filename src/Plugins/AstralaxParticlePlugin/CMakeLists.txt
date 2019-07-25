@@ -35,12 +35,13 @@ embedding
     AstralaxScriptEmbedding.cpp
     AstralaxScriptEmbedding.h    
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 add_definitions(-DMAGIC_3D)
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 

@@ -34,11 +34,12 @@ embedding
     SpineScriptEmbedding.h
     SpineScriptEmbedding.cpp
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/spine/spine-c/spine-c/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_SPINE)

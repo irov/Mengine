@@ -4,7 +4,9 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "cURLScriptEmbedding.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( cURLService );

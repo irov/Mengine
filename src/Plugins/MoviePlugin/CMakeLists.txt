@@ -41,15 +41,16 @@ embedding
     Movie2ScriptEmbedding.h
     Movie2ScriptEmbedding.cpp
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmovie/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf/include )
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmovie/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MOVIE)
 

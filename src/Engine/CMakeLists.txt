@@ -226,7 +226,6 @@ Resource\\\\HIT
 	ResourceHIT.h
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 

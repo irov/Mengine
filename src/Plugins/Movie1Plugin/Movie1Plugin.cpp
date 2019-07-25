@@ -10,13 +10,12 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "MovieScriptEmbedding.h"
+#endif
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
-
-#include "Environment/Python/PythonScriptWrapper.h"
-#include "Environment/Python/PythonAnimatableEventReceiver.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotShape.h"

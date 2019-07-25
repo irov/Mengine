@@ -21,10 +21,11 @@ embeddingVJ;
     JSONScriptEmbedding.cpp
     JSONScriptEmbedding.h
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jansson/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 

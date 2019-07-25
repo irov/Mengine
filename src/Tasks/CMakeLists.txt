@@ -34,6 +34,8 @@ Tasks
     TaskAnimatablePause.h
     TaskAnimatableResume.cpp
     TaskAnimatableResume.h
+	TaskAnimatablePlayReceiver.h
+	TaskAnimatablePlayReceiver.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)

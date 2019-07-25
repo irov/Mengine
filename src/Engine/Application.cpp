@@ -110,6 +110,7 @@
 #include "ResourceCursorSystem.h"
 
 #include "ScenePrototypeGenerator.h"
+#include "ArrowPrototypeGenerator.h"
 
 #include "stdex/allocator.h"
 #include "stdex/allocator_report.h"
@@ -181,6 +182,11 @@ namespace Mengine
         }
 
         if( this->registerSceneGenerator_() == false )
+        {
+            return false;
+        }
+
+        if( this->registerArrowGenerator_() == false )
         {
             return false;
         }
@@ -327,14 +333,14 @@ namespace Mengine
         this->unregisterBaseNodeTypes_();
         this->unregisterBaseResourceTypes_();
         this->unregisterSceneGenerator_();
-
+        this->unregisterArrowGenerator_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
         LOGGER_MESSAGE( "Register Object Factory..." );
 
-#	define NODE_FACTORY( Type )\
+#define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
             ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<NodePrototypeGenerator<Type, 128> >() ) == false )\
 		{\
@@ -372,9 +378,9 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
-#	undef NODE_FACTORY
+#undef NODE_FACTORY
 
-#	define SURFACE_FACTORY(Type)\
+#define SURFACE_FACTORY(Type)\
         if( PROTOTYPE_SERVICE()\
             ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, 128>>() ) == false )\
 		{\
@@ -387,7 +393,7 @@ namespace Mengine
         SURFACE_FACTORY( SurfaceTrackMatte );
         SURFACE_FACTORY( SurfaceSolidColor );
 
-#	undef SURFACE_FACTORY
+#undef SURFACE_FACTORY
 
         return true;
     }
@@ -396,7 +402,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "Unregister Object Factory..." );
 
-#	define NODE_FACTORY( Type )\
+#define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\
             ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type) )
 
@@ -431,9 +437,9 @@ namespace Mengine
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
-#	undef NODE_FACTORY
+#undef NODE_FACTORY
 
-#	define SURFACE_FACTORY(Type)\
+#define SURFACE_FACTORY(Type)\
         PROTOTYPE_SERVICE()\
             ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type) )
 
@@ -443,12 +449,12 @@ namespace Mengine
         SURFACE_FACTORY( SurfaceTrackMatte );
         SURFACE_FACTORY( SurfaceSolidColor );
 
-#	undef SURFACE_FACTORY
+#undef SURFACE_FACTORY
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
-        LOGGER_INFO( "Register Scene Manager..." );
+        LOGGER_INFO( "Register Scene Generator..." );
 
         PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>();
 
@@ -463,17 +469,40 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()
     {
-        LOGGER_INFO( "Register Scene Manager..." );
+        LOGGER_INFO( "Unregister Scene Generator..." );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::registerArrowGenerator_()
+    {
+        LOGGER_INFO( "Register Arrow Generator..." );
+
+        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>();
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), generator ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::unregisterArrowGenerator_()
+    {
+        LOGGER_INFO( "Unregister Arrow Generator..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
     {
         LOGGER_INFO( "Register Resource Type..." );
 
-#	define ADD_PROTOTYPE( Type ) \
+#define ADD_PROTOTYPE( Type )\
 		if( PROTOTYPE_SERVICE()\
 			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>() ) == false )\
 		{\
@@ -496,7 +525,7 @@ namespace Mengine
         ADD_PROTOTYPE( ResourceCursorICO );
         ADD_PROTOTYPE( ResourceCursorSystem );
 
-#	undef ADD_PROTOTYPE
+#undef ADD_PROTOTYPE
 
         return true;
     }
@@ -505,7 +534,7 @@ namespace Mengine
     {
         LOGGER_INFO( "Initializing Resource Type..." );
 
-#	define REMOVE_PROTOTYPE( Type ) \
+#define REMOVE_PROTOTYPE( Type )\
 		PROTOTYPE_SERVICE()\
 			->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
 

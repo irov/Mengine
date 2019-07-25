@@ -193,7 +193,7 @@ namespace Mengine
             return true;
         }
 
-#	define MOVIE_FRAME_SETUP( Member1, Member2, Mask )\
+#define MOVIE_FRAME_SETUP( Member1, Member2, Mask )\
 		if( layer.immutable_mask & Mask ) \
 		{ \
 			_frame.Member1 = layer.source.Member1; \
@@ -212,7 +212,7 @@ namespace Mengine
         MOVIE_FRAME_SETUP( opacity, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
         MOVIE_FRAME_SETUP( volume, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
 
-#	undef MOVIE_FRAME_SETUP
+#undef MOVIE_FRAME_SETUP
 
         return true;
     }
@@ -238,7 +238,7 @@ namespace Mengine
             return true;
         }
 
-#	define MOVIE_FRAME_SETUP_F3( Member, Mask )\
+#define MOVIE_FRAME_SETUP_F3( Member, Mask )\
 		if( layer.immutable_mask & Mask ) \
 		{ \
 			_frame.Member = layer.source.Member; \
@@ -256,9 +256,9 @@ namespace Mengine
         //MOVIE_FRAME_SETUP( rotation, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION );
         MOVIE_FRAME_SETUP_F3( scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
 
-#	undef MOVIE_FRAME_SETUP_F3
+#undef MOVIE_FRAME_SETUP_F3
 
-#	define MOVIE_FRAME_SETUP_F1( Member, Mask )\
+#define MOVIE_FRAME_SETUP_F1( Member, Mask )\
 		if( layer.immutable_mask & Mask ) \
 		{ \
 			_frame.Member = layer.source.Member; \

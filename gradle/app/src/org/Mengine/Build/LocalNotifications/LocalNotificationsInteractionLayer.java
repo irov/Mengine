@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationManagerCompat;
 
+import org.Mengine.Build.MengineActivity;
 import org.Mengine.Build.R;
 
 public class LocalNotificationsInteractionLayer {
@@ -34,11 +35,17 @@ public class LocalNotificationsInteractionLayer {
         notificationManager.notify(id, notification);
     }
 
-    public Notification getNotification(String title, String content) {
+    public Notification getNotification(int id, String title, String content) {
+        Intent intent = new Intent(_currentContext, MengineActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("NOTIFICATION_ID", id);
+        PendingIntent pendingIntent = PendingIntent.getActivity(_currentContext, 0, intent, 0);
+
         Notification.Builder builder = new Notification.Builder(_currentContext);
         builder.setContentTitle(title);
         builder.setContentText(content);
         builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentIntent(pendingIntent);
         return builder.build();
     }
 }

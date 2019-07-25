@@ -19,7 +19,8 @@ namespace Mengine
         EVENT_HOTSPOT_MOUSE_LEAVE,
         EVENT_HOTSPOT_MOUSE_OVER_DESTROY,
         EVENT_HOTSPOT_ACTIVATE,
-        EVENT_HOTSPOT_DEACTIVATE
+        EVENT_HOTSPOT_DEACTIVATE,
+        __EVENT_HOTSPOT_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
     class HotSpotEventReceiverInterface
@@ -41,4 +42,20 @@ namespace Mengine
         virtual void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) = 0;
         virtual void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<HotSpotEventReceiverInterface> HotSpotEventReceiverInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_KEY );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_TEXT );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_BUTTON_END );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_WHEEL );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_MOVE );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_ENTER );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_LEAVE );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_MOUSE_OVER_DESTROY );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_ACTIVATE );
+    EVENTATION_TYPEID( HotSpotEventReceiverInterface, EVENT_HOTSPOT_DEACTIVATE );
+    //////////////////////////////////////////////////////////////////////////
 }

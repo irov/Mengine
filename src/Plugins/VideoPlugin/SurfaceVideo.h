@@ -16,8 +16,8 @@ namespace Mengine
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    class SurfaceVideoEventReceiver
-        : public AnimationEventReceiver
+    class SurfaceVideoEventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     };
     //////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace Mengine
     {
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
-        DECLARE_EVENTABLE( SurfaceVideoEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         SurfaceVideo();
@@ -109,4 +109,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceVideo> SurfaceVideoPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

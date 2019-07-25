@@ -12,7 +12,7 @@ namespace Mengine
         , public Eventable
         , public BaseEventation
     {
-        DECLARE_EVENTABLE( EntityEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         EntityEventable();

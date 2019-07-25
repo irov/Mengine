@@ -58,9 +58,10 @@ namespace Mengine
         EVENT_GAME_CLOSE,
         EVENT_GAME_OVER_FILLRATE,
         EVENT_GAME_FRAME_END,
+        __EVENT_GAME_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class GameEventReceiver
+    class GameEventReceiverInterface
         : public EventReceiverInterface
     {
     public:
@@ -102,6 +103,44 @@ namespace Mengine
         virtual void onGameOverFillrate( double _fillrate ) = 0;
         virtual void onGameFrameEnd() = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FULLSCREEN );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FIXED_CONTENT_RESOLUTION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FIXED_DISPLAY_RESOLUTION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_RENDER_VIEWPORT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_VIEWPORT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_KEY );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_TEXT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_BUTTON );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_BUTTON_BEGIN );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_BUTTON_END );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_MOVE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_MOUSE_WHEEL );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_ENTER );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_APP_MOUSE_LEAVE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ON_TIMING_FACTOR );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_PREPARATION );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_RUN );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_INITIALIZE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_INITIALIZE_RENDER_RESOURCES );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FINALIZE_RENDER_RESOURCES );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_ACCOUNT_FINALIZE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FINALIZE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_DESTROY );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FOCUS );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_LOAD_ACCOUNTS );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CREATE_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_DELETE_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_SELECT_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_UNSELECT_ACCOUNT );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CHANGE_SOUND_VOLUME );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CURSOR_MODE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_USER );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_CLOSE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_OVER_FILLRATE );
+    EVENTATION_TYPEID( GameEventReceiverInterface, EVENT_GAME_FRAME_END );
     //////////////////////////////////////////////////////////////////////////
     class GameServiceInterface
         : public ServiceInterface

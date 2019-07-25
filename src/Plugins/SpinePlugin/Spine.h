@@ -31,7 +31,7 @@ namespace Mengine
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
         DECLARE_ANIMATABLE();
-        DECLARE_EVENTABLE( SpineEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         Spine();

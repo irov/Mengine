@@ -192,6 +192,10 @@ PLUGIN_EXPORT( AndroidNativeDevToDev );
 PLUGIN_EXPORT( AndroidNativeLinking );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
+PLUGIN_EXPORT( AndroidNativeLocalNotifications );
+#endif
+
 /////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Bootstrapper, Mengine::Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -453,6 +457,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native..." );
+#endif
+        
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
+        MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native..." );
 #endif
 
 #	undef MENGINE_ADD_PLUGIN

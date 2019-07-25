@@ -1,5 +1,6 @@
 package org.Mengine.Build;
 
+import android.app.Notification;
 import android.content.*;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import com.facebook.appevents.AppEventsLogger;
 import org.Mengine.Build.AdMob.AdMobInteractionLayer;
 import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
+import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -22,24 +24,35 @@ public class MengineActivity extends SDLActivity {
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
     public AdMobInteractionLayer adMobInteractionLayer;
     public DevToDevInteractionLayer devToDevInteractionLayer;
+    public LocalNotificationsInteractionLayer localNotificationsInteractionLayer;
 
     public CallbackManager callbackManager;
 
     private static MengineActivity _instance;
 
     static native void AndroidNativeFacebook_setupFacebookJNI();
+
     static native void AndroidNativeFacebook_onSDKInitialized();
 
     static native void AndroidNativeUnity_setupUnityJNI();
+
     static native void AndroidNativeUnity_onSDKInitialized();
 
     static native void AndroidNativeAdMob_setupAdMobJNI();
+
     static native void AndroidNativeAdMob_onSDKInitialized();
 
     static native void AndroidNativeDevToDev_setupDevToDevJNI();
+
     static native void AndroidNativeDevToDev_onSDKInitialized();
 
     static native void AndroidNativeLinking_setupLinkingJNI();
+
+    static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+
+    static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+
+    static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
 
     @Override
     protected String[] getLibraries() {
@@ -49,8 +62,7 @@ public class MengineActivity extends SDLActivity {
         };
     }
 
-    protected void initPlugins()
-    {
+    protected void initPlugins() {
         AppEventsLogger.activateApp(getApplication());
 
         _instance = this;
@@ -60,6 +72,7 @@ public class MengineActivity extends SDLActivity {
         AndroidNativeAdMob_setupAdMobJNI();
         AndroidNativeDevToDev_setupDevToDevJNI();
         AndroidNativeLinking_setupLinkingJNI();
+        AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
     }
 
     @Override
@@ -81,30 +94,24 @@ public class MengineActivity extends SDLActivity {
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
 
         Log.e(TAG, "MengineActivity.onPause()");
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
 
         Log.e(TAG, "MengineActivity.onResume()");
-        if (_instance != null)
-        {
-            if (_instance.facebookInteractionLayer == null)
-            {
+        if (_instance != null) {
+            if (_instance.facebookInteractionLayer == null) {
                 Log.e(TAG, "_instance != null AND _instance.facebookInteractionLayer == null");
-            }
-            else
-            {
+            } else {
                 Log.e(TAG, "_instance != null AND _instance.facebookInteractionLayer != null");
             }
-        }
-        else
-        {
+        } else {
             Log.e(TAG, "_instance == null -> init plugins");
 
             initPlugins();
@@ -153,7 +160,7 @@ public class MengineActivity extends SDLActivity {
             return false;
         }
     }
- 
+
     public static String facebookGetAccessToken() {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             return _instance.facebookInteractionLayer.getAccessToken();
@@ -161,7 +168,7 @@ public class MengineActivity extends SDLActivity {
             return "";
         }
     }
-    
+
     public static void facebookPerformLogin(String[] readPermissions) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
@@ -321,9 +328,41 @@ public class MengineActivity extends SDLActivity {
     public static void openMail(final String email, final String subject, final String body) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
         _instance.startActivity(Intent.createChooser(intent, ""));
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Local Notifications Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void localNotificationsInitializePlugin() {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_instance != null && _instance.localNotificationsInteractionLayer == null) {
+                    _instance.localNotificationsInteractionLayer = new LocalNotificationsInteractionLayer(_instance);
+                    AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+                    if (_instance.getIntent().hasExtra("NOTIFICATION_ID")) {
+                        AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra("NOTIFICATION_ID", 0));
+                    }
+                }
+            }
+        });
+    }
+
+    public static void scheduleLocalNotification(int id, String title, String content, int delay) {
+        if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
+            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
+            _instance.localNotificationsInteractionLayer.scheduleNotification(notification, id, delay);
+        }
+    }
+
+    public static void instantlyPresentLocalNotification(int id, String title, String content) {
+        if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
+            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
+            _instance.localNotificationsInteractionLayer.instantlyPresentNotification(notification, id);
+        }
     }
 }

@@ -4,6 +4,8 @@ ADD_FILTER(
 Application
 	Application.cpp
 	Application.h
+    ArrowPrototypeGenerator.cpp
+    ArrowPrototypeGenerator.h
     ScenePrototypeGenerator.cpp
     ScenePrototypeGenerator.h
 )

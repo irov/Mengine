@@ -317,20 +317,17 @@ namespace Mengine
 
         ConstString defaultArrowPrototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
 
-        if( defaultArrowPrototype.empty() == false )
-        {
-            ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FUNCTION );
+        ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FUNCTION );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, false, "failed create defaultArrow 'Default'" );
+        MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, false, "failed create defaultArrow 'Default'" );
 
-            ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
+        ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
 
-            defaultArrow->setName( defaultArrowName );
+        defaultArrow->setName( defaultArrowName );
 
-            PLAYER_SERVICE()
-                ->setArrow( defaultArrow );
-        }
+        PLAYER_SERVICE()
+            ->setArrow( defaultArrow );
 
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( EVENT_GAME_INITIALIZE, true )
             ->onGameInitialize();

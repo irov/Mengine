@@ -6,8 +6,8 @@
 
 extern "C"
 {
-#	define XMD_H
-#	undef FAR
+#define XMD_H
+#undef FAR
 
 #include <setjmp.h>
 #include "jinclude.h"

@@ -8,10 +8,11 @@
 
 #include "stdex/thread_guard.h"
 
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
-#	define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE 4096
+#define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE 4096
 #endif
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     class Win32FileInputStream

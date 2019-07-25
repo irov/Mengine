@@ -411,7 +411,7 @@ namespace Mengine
             {
                 const VectorMovieFrameSource & frames = frame.frames;
 
-#	define WRITE_FRAME_SOURCE( Type, Member )\
+#define WRITE_FRAME_SOURCE( Type, Member )\
 												{ \
 					Type value = frames[0].Member; \
 					\

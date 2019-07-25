@@ -52,6 +52,8 @@ public class MengineActivity extends SDLActivity {
 
     static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
 
+    static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
+
     @Override
     protected String[] getLibraries() {
         return new String[]{
@@ -342,6 +344,9 @@ public class MengineActivity extends SDLActivity {
                 if (_instance != null && _instance.localNotificationsInteractionLayer == null) {
                     _instance.localNotificationsInteractionLayer = new LocalNotificationsInteractionLayer(_instance);
                     AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+                    if (_instance.getIntent().hasExtra("NOTIFICATION_ID")) {
+                        AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra("NOTIFICATION_ID", 0));
+                    }
                 }
             }
         });
@@ -349,14 +354,14 @@ public class MengineActivity extends SDLActivity {
 
     public static void scheduleLocalNotification(int id, String title, String content, int delay) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(title, content);
+            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
             _instance.localNotificationsInteractionLayer.scheduleNotification(notification, id, delay);
         }
     }
 
     public static void instantlyPresentLocalNotification(int id, String title, String content) {
         if (_instance != null && _instance.localNotificationsInteractionLayer != null) {
-            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(title, content);
+            Notification notification = _instance.localNotificationsInteractionLayer.getNotification(id, title, content);
             _instance.localNotificationsInteractionLayer.instantlyPresentNotification(notification, id);
         }
     }

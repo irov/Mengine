@@ -50,7 +50,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        LOCAL_NOTIFICATIONS_JAVA_INTERFACE( AndroidNativeLocalNotifications_1onLocalNotificationsPress )( JNIEnv *env, jclass cls, jint _id )
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeLocalNotifications_1onLocalNotificationsPress )( JNIEnv *env, jclass cls, jint _id )
     {
         int id = static_cast<int>(_id);
 

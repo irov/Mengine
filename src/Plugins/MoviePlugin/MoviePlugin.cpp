@@ -14,9 +14,9 @@
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
-#include "Environment/Python/PythonScriptWrapper.h"
-
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "Movie2ScriptEmbedding.h"
+#endif
 
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
@@ -27,8 +27,6 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
-
-#include "Environment/Python/PythonAnimatableEventReceiver.h"
 
 #include "Kernel/Logger.h"
 

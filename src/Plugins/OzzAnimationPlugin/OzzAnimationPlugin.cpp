@@ -8,7 +8,10 @@
 #include "ResourceOzzAnimation.h"
 
 #include "NodeOzzAnimation.h"
+
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "OzzScriptEmbedding.h"
+#endif
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"

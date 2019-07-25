@@ -28,7 +28,9 @@ ADD_FILTER(
 embedding
     cURLScriptEmbedding.cpp
     cURLScriptEmbedding.h
-    )
+    )    
+
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 add_definitions(-DCURL_STATICLIB)
@@ -43,7 +45,6 @@ ENDIF()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_CURL)
 

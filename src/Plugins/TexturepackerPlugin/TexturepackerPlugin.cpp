@@ -5,7 +5,11 @@
 #include "Interface/LoaderServiceInterface.h"
 
 #include "ResourceTexturepacker.h"
+
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "TexturepackerScriptEmbedding.h"
+#endif
+
 #include "LoaderResourceTexturepacker.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"

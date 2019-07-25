@@ -15,7 +15,10 @@
 #include "ImageDecoderResourcePrefetcher.h"
 #include "SoundDecoderResourcePrefetcher.h"
 #include "DefaultResourcePrefetcher.h"
+
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "ResourcePrefetcherScriptEmbedding.h"
+#endif
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"

@@ -5,7 +5,10 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "JSONScriptEmbedding.h"
+#endif
+
 #include "ResourceJSON.h"
 #include "LoaderResourceJSON.h"
 

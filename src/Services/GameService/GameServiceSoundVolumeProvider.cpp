@@ -28,7 +28,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _mute );
 
-        EVENTABLE_OTHER_METHODT( m_eventable, EVENT_GAME_CHANGE_SOUND_VOLUME, GameEventReceiver )
+        EVENTABLE_OTHER_METHODT( m_eventable, EVENT_GAME_CHANGE_SOUND_VOLUME, GameEventReceiverInterface )
             ->onGameChangeSoundVolume( _sound, _music, _voice );
     }
 }

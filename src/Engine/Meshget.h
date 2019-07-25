@@ -28,17 +28,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EMeshgetEventFlag
     {
-        EVENT_MESHGET_UPDATE = 0
+        EVENT_MESHGET_UPDATE = 0,
+        __EVENT_MESHGET_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class MeshgetEventReceiver
+    class MeshgetEventReceiverInterface
         : public EventReceiverInterface
     {
     public:
         virtual void onMeshgetUpdate( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MeshgetEventReceiver> MeshgetEventReceiverPtr;
+    typedef IntrusivePtr<MeshgetEventReceiverInterface> MeshgetEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( MeshgetEventReceiverInterface, EVENT_MESHGET_UPDATE );
     //////////////////////////////////////////////////////////////////////////
     class Meshget
         : public Node
@@ -49,7 +52,7 @@ namespace Mengine
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
-        DECLARE_EVENTABLE( MeshgetEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         Meshget();

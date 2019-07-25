@@ -29,7 +29,7 @@ namespace Mengine
         __EVENT_ENTITY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class EntityEventReceiver
+    class EntityEventReceiverInterface
         : public EventReceiverInterface
     {
     public:
@@ -43,7 +43,16 @@ namespace Mengine
         virtual void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<EntityEventReceiver> EntityEventReceiverPtr;
+    typedef IntrusivePtr<EntityEventReceiverInterface> EntityEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_CREATE );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_DESTROY );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_PREPARATION );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_ACTIVATE );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_PREPARATION_DEACTIVATE );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_DEACTIVATE );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_COMPILE );
+    EVENTATION_TYPEID( EntityEventReceiverInterface, EVENT_ENTITY_RELEASE );
     //////////////////////////////////////////////////////////////////////////
     class Entity
         : public Node
@@ -53,7 +62,6 @@ namespace Mengine
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
         DECLARE_PICKERABLE();
-        DECLARE_EVENTABLE_TYPE( EntityEventReceiver );
 
     public:
         Entity();

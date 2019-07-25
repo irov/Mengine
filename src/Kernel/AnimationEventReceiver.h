@@ -17,7 +17,7 @@ namespace Mengine
         __EVENT_ANIMATION_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class AnimationEventReceiver
+    class AnimationEventReceiverInterface
         : public EventReceiverInterface
     {
     public:
@@ -29,4 +29,13 @@ namespace Mengine
         virtual void onAnimationEnd( uint32_t _enumerator ) = 0;
         virtual void onAnimationInterrupt( uint32_t _enumerator ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_PLAY );
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_RESTART );
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_PAUSE );
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_RESUME );
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_STOP );
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_END );
+    EVENTATION_TYPEID( AnimationEventReceiverInterface, EVENT_ANIMATION_INTERRUPT );
+    //////////////////////////////////////////////////////////////////////////
 }

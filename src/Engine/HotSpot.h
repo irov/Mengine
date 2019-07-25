@@ -17,7 +17,7 @@ namespace Mengine
         , public InputHandlerInterface
     {
         DECLARE_VISITABLE( Node );
-        DECLARE_EVENTABLE( HotSpotEventReceiverInterface );
+        DECLARE_EVENTABLE();
         DECLARE_PICKERABLE();
 
     public:

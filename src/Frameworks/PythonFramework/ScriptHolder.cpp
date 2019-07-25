@@ -9,6 +9,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ScriptHolder::~ScriptHolder()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ScriptHolder::_activate()
     {
         if( Node::_activate() == false )
@@ -16,7 +20,7 @@ namespace Mengine
             return false;
         }
 
-        m_script = EVENTABLE_METHODR( EVENT_KEEP_SCRIPT, pybind::object() )
+        m_script = EVENTABLE_METHODR( EVENT_SCRIPT_HOLDER_KEEP, pybind::object() )
             ->onScriptHolderKeepScript();
 
         bool successful = m_script.is_valid();
@@ -28,7 +32,7 @@ namespace Mengine
     {
         Node::_deactivate();
 
-        EVENTABLE_METHOD( EVENT_RELEASE_SCRIPT )
+        EVENTABLE_METHOD( EVENT_SCRIPT_HOLDER_RELEASE )
             ->onScriptHolderReleaseScript( m_script );
 
         m_script.reset();

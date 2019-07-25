@@ -8,8 +8,8 @@
 namespace Mengine
 {
     class PythonEntityEventReceiver
-        : public PythonEventReceiver
-        , public EntityEventReceiver
+        : public EntityEventReceiverInterface
+        , public PythonEventReceiver
         , public Factorable
     {
     public:

@@ -21,13 +21,13 @@ namespace Mengine
         __EVENT_NODE_OZZ_ANIMATION_LAST__ = __EVENT_ANIMATION_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class SamplerOzzAnimationEventReceiver
-        : public AnimationEventReceiver
+    class SamplerOzzAnimationEventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     public:
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SamplerOzzAnimationEventReceiver> SamplerOzzAnimationEventReceiverPtr;
+    typedef IntrusivePtr<SamplerOzzAnimationEventReceiverInterface> SamplerOzzAnimationEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceOzzAnimationInterface
         : public UnknownInterface

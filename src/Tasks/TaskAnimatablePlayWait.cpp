@@ -1,97 +1,11 @@
 #include "TaskAnimatablePlayWait.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Factorable.h"
-#include "Kernel/FactorableUnique.h"
-#include "Kernel/AnimationEventReceiver.h"
+
+#include "TaskAnimatablePlayReceiver.h"
 
 namespace Mengine
 {
-    namespace Detail
-    {
-        class TaskAnimatablePlayReceiver
-            : public AnimationEventReceiver
-            , public Factorable
-        {
-        public:
-            explicit TaskAnimatablePlayReceiver();
-            ~TaskAnimatablePlayReceiver() override;
-
-        public:
-            void setTask( TaskAnimatablePlayWait * _task );
-
-        protected:
-            void onAnimationPlay( uint32_t _enumerator, float _time ) override;
-            void onAnimationRestart( uint32_t _enumerator, float _time ) override;
-            void onAnimationPause( uint32_t _enumerator ) override;
-            void onAnimationResume( uint32_t _enumerator, float _time ) override;
-            void onAnimationStop( uint32_t _enumerator ) override;
-            void onAnimationEnd( uint32_t _enumerator ) override;
-            void onAnimationInterrupt( uint32_t _enumerator ) override;
-
-        protected:
-            TaskAnimatablePlayWait * m_task;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        using TaskAnimatablePlayReceiverPtr = IntrusivePtr<TaskAnimatablePlayReceiver>;
-        //////////////////////////////////////////////////////////////////////////
-        TaskAnimatablePlayReceiver::TaskAnimatablePlayReceiver()
-        {
-        }
-        //////////////////////////////////////////////////////////////////////////
-        TaskAnimatablePlayReceiver::~TaskAnimatablePlayReceiver()
-        {
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::setTask( TaskAnimatablePlayWait * _task )
-        {
-            m_task = _task;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationPlay( uint32_t _enumerator, float _time )
-        {
-            MENGINE_UNUSED( _enumerator );
-            MENGINE_UNUSED( _time );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationRestart( uint32_t _enumerator, float _time )
-        {
-            MENGINE_UNUSED( _enumerator );
-            MENGINE_UNUSED( _time );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationPause( uint32_t _enumerator )
-        {
-            MENGINE_UNUSED( _enumerator );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationResume( uint32_t _enumerator, float _time )
-        {
-            MENGINE_UNUSED( _enumerator );
-            MENGINE_UNUSED( _time );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationStop( uint32_t _enumerator )
-        {
-            MENGINE_UNUSED( _enumerator );
-
-            m_task->complete();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationEnd( uint32_t _enumerator )
-        {
-            MENGINE_UNUSED( _enumerator );
-
-            m_task->complete();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void TaskAnimatablePlayReceiver::onAnimationInterrupt( uint32_t _enumerator )
-        {
-            MENGINE_UNUSED( _enumerator );
-
-            m_task->complete();
-        }
-    }
     //////////////////////////////////////////////////////////////////////////
     TaskAnimatablePlayWait::TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr& _eventable )
         : m_animatable( _animatable )
@@ -123,7 +37,7 @@ namespace Mengine
             return true;
         }
 
-        Detail::TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<Detail::TaskAnimatablePlayReceiver>();
+        TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>();
         
         eventation->addEventReceiver( EVENT_ANIMATION_END, receiver );
         eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );

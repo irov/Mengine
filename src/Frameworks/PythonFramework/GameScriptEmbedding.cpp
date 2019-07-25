@@ -18,7 +18,7 @@ namespace Mengine
     namespace Detail
     {
         class PythonGameEventReceiver
-            : public GameEventReceiver
+            : public GameEventReceiverInterface
             , public PythonEventReceiver
             , public Factorable
         {

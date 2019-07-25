@@ -20,7 +20,7 @@ namespace Mengine
         : public ServiceBase<GameServiceInterface>
         , public BaseEventation
     {
-        DECLARE_EVENTABLE( GameEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         GameService();

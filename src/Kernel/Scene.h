@@ -15,10 +15,11 @@ namespace Mengine
         EVENT_SCENE_APP_MOUSE_LEAVE = __EVENT_ENTITY_LAST__,
         EVENT_SCENE_APP_MOUSE_ENTER,
         EVENT_SCENE_FOCUS,
+        __EVENT_SCENE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class SceneEventReceiver
-        : public EntityEventReceiver
+    class SceneEventReceiverInterface
+        : public EntityEventReceiverInterface
     {
     public:
         virtual bool onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior ) = 0;
@@ -26,13 +27,16 @@ namespace Mengine
         virtual bool onSceneAppFocus( const EntityBehaviorInterfacePtr & _behavior, bool _focus ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SceneEventReceiver> SceneEventReceiverPtr;
+    typedef IntrusivePtr<SceneEventReceiverInterface> SceneEventReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( SceneEventReceiverInterface, EVENT_SCENE_APP_MOUSE_LEAVE );
+    EVENTATION_TYPEID( SceneEventReceiverInterface, EVENT_SCENE_APP_MOUSE_ENTER );
+    EVENTATION_TYPEID( SceneEventReceiverInterface, EVENT_SCENE_FOCUS );
     //////////////////////////////////////////////////////////////////////////
     class Scene
         : public Entity
     {
         DECLARE_VISITABLE( Entity );
-        DECLARE_EVENTABLE_TYPE( SceneEventReceiver );
 
     public:
         Scene();

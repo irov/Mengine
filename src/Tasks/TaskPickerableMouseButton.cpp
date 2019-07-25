@@ -28,11 +28,6 @@ namespace Mengine
         protected:
             bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
-                if( m_filter == nullptr )
-                {
-                    return true;
-                }
-
                 bool handle = m_filter( _event );
 
                 return handle;
@@ -191,7 +186,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, m_filter ) );
+        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, lambda ) );
 
         return false;
     }

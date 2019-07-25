@@ -70,6 +70,10 @@ if(MENGINE_PLUGIN_ANDROID_NATIVE_LINKING)
     ADD_SUBDIRECTORY(AndroidNativeLinkingPlugin)
 endif()
 
+if(MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS)
+    ADD_SUBDIRECTORY(AndroidNativeLocalNotificationsPlugin)
+endif()
+
 if(MENGINE_PLUGIN_ASTRALAX)
     ADD_SUBDIRECTORY(AstralaxParticlePlugin)
 endif()

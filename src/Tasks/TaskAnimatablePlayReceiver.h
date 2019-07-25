@@ -9,7 +9,7 @@
 namespace Mengine
 {
     class TaskAnimatablePlayReceiver
-        : public AnimationEventReceiver
+        : public AnimationEventReceiverInterface
         , public Factorable
     {
     public:
@@ -32,7 +32,7 @@ namespace Mengine
         GOAP::Task * m_task;
     };
     //////////////////////////////////////////////////////////////////////////
-    using TaskAnimatablePlayReceiverPtr = IntrusivePtr<TaskAnimatablePlayReceiver>;
-
+    typedef IntrusivePtr<TaskAnimatablePlayReceiver> TaskAnimatablePlayReceiverPtr;
+    //////////////////////////////////////////////////////////////////////////
 }
 

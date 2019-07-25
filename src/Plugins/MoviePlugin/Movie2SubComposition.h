@@ -19,7 +19,7 @@ namespace Mengine
     typedef IntrusivePtr<class Movie2SubComposition> Movie2SubCompositionPtr;
     //////////////////////////////////////////////////////////////////////////
     class Movie2SubCompositionEventReceiver
-        : public AnimationEventReceiver
+        : public AnimationEventReceiverInterface
     {
     public:
     };
@@ -34,7 +34,7 @@ namespace Mengine
         , public Scriptable
     {
         DECLARE_ANIMATABLE()
-        DECLARE_EVENTABLE( Movie2SubCompositionEventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         Movie2SubComposition();

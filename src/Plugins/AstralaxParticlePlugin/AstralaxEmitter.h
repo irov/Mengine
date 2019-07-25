@@ -24,10 +24,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum EParticleEmitter2EventFlag
     {
+        __EVENT_PARTICLE_EMITTER2_LAST__ = __EVENT_ANIMATION_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class ParticleEmitter2EventReceiver
-        : public AnimationEventReceiver
+    class ParticleEmitter2EventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     public:
     };
@@ -46,7 +47,7 @@ namespace Mengine
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
         DECLARE_RENDERABLE();
-        DECLARE_EVENTABLE( ParticleEmitter2EventReceiver );
+        DECLARE_EVENTABLE();
 
     public:
         AstralaxEmitter();

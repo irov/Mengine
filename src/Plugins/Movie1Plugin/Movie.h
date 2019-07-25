@@ -41,17 +41,22 @@ namespace Mengine
     {
         EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATION_LAST__,
         EVENT_MOVIE_ACTIVATE_INTERNAL,
-        EVENT_MOVIE_DEACTIVATE_INTERNAL
+        EVENT_MOVIE_DEACTIVATE_INTERNAL,
+        __EVENT_MOVIE_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    class MovieEventReceiver
-        : public AnimationEventReceiver
+    class MovieEventReceiverInterface
+        : public AnimationEventReceiverInterface
     {
     public:
         virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) const = 0;
         virtual NodePtr onMovieActivateInternal( const pybind::object & _internal ) = 0;
         virtual void onMovieDeactivateInternal( const pybind::object & _internal ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_GET_INTERNAL );
+    EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_ACTIVATE_INTERNAL );
+    EVENTATION_TYPEID( MovieEventReceiverInterface, EVENT_MOVIE_DEACTIVATE_INTERNAL );
     //////////////////////////////////////////////////////////////////////////
     class Movie
         : public Node
@@ -63,7 +68,7 @@ namespace Mengine
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
-        DECLARE_EVENTABLE( MovieEventReceiver );
+        DECLARE_EVENTABLE();
         DECLARE_RENDERABLE();
 
     public:

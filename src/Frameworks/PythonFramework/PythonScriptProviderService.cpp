@@ -5,7 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#ifdef MENGINE_WINDOWS_DEBUG
+#if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #   include <crtdbg.h>
 #endif
 

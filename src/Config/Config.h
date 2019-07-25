@@ -61,7 +61,7 @@
 #endif
 
 #ifdef MENGINE_DEBUG
-#   if defined(MENGINE_PLATFORM_WINDOWS)
+#   if defined(MENGINE_PLATFORM_WINDOWS) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #       define MENGINE_WINDOWS_DEBUG
 #   endif
 #endif

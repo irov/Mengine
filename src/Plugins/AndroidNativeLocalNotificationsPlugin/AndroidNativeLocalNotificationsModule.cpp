@@ -11,7 +11,6 @@
 #include "pybind/pybind.hpp"
 
 #include <jni.h>
-#include <vector>
 
 #define LOCAL_NOTIFICATIONS_JAVA_PREFIX org_Mengine_Build_LocalNotifications
 #define LOCAL_NOTIFICATIONS_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(LOCAL_NOTIFICATIONS_JAVA_PREFIX, NotificationPublisher, function)
@@ -145,6 +144,11 @@ namespace Mengine
         (void)_focus;
 
         m_eventation.invoke();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativeLocalNotificationsModule::setEventHandler( const LocalNotificationsEventHandlerPtr & _handler )
+    {
+        m_eventation.setEventHandler( _handler );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeLocalNotificationsModule::addCommand( const LambdaLocalNotificationsEventHandler & _command )

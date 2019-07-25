@@ -35,7 +35,7 @@ embedding
     SpineScriptEmbedding.cpp
     )
     
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 
@@ -43,10 +43,6 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/spine/spine-c/spine-c/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_SPINE)
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Metacode)

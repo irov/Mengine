@@ -53,10 +53,6 @@ endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ASTRALAX)
 
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
-
 if(MENGINE_TOOLCHAIN_MINGW)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
 endif()

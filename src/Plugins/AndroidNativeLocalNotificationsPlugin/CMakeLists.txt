@@ -1,4 +1,4 @@
-set( MY_LIB_NAME AndroidNativeLocalNotificationsPlugin )
+set(MY_LIB_NAME AndroidNativeLocalNotificationsPlugin)
 
 ADD_FILTER(
 src
@@ -9,16 +9,10 @@ src
 	AndroidNativeLocalNotificationsPlugin.cpp
 )
 
-INCLUDE_DIRECTORIES( 
-		${THIRDPARTY_DIR}/pybind/include
-        ${THIRDPARTY_DIR}/libmath/include
-)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS)
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})    
 

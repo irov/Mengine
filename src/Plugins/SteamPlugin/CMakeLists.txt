@@ -9,16 +9,10 @@ src
     ModuleSteam.h
 )
 
-INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/steam/public
-        ${THIRDPARTY_DIR}/libmath/include
-)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/steam/public)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_STEAM)
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
 
 IF(MENGINE_PLATFORM_WIN32)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/steam_api.lib)

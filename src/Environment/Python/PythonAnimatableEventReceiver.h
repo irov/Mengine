@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<class T_AnimatableEventReceiver = AnimationEventReceiver>
+    template<class T_AnimatableEventReceiver = AnimationEventReceiverInterface>
     class PythonAnimatableEventReceiver
         : public PythonEventReceiver
         , public T_AnimatableEventReceiver

@@ -35,6 +35,6 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
     stdex_allocator_finalize();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 //////////////////////////////////////////////////////////////////////////

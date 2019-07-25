@@ -34,5 +34,5 @@ int main( int argc, char *argv[] )
 
     stdex_allocator_finalize();
 
-    return 0;
+    return EXIT_SUCCESS;
 }

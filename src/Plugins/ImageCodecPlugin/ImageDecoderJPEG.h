@@ -4,14 +4,14 @@
 
 extern "C"
 {
-#	define XMD_H
-#	undef FAR
+#define XMD_H
+#undef FAR
 
 #include <setjmp.h>
 #include "jinclude.h"
 #include "jpeglib.h"
 #include "jerror.h"
-#	define JPEG_INTERNALS
+#define JPEG_INTERNALS
 #include "jmorecfg.h"
 }
 

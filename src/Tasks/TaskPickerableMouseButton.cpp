@@ -28,6 +28,11 @@ namespace Mengine
         protected:
             bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
+                if( m_filter == nullptr )
+                {
+                    return true;
+                }
+
                 bool handle = m_filter( _event );
 
                 return handle;

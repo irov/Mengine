@@ -155,7 +155,7 @@ namespace Mengine
                     }
                     else
                     {
-#	define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
+#define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
 										{ \
 						uint8_t value_immutable; \
 						ar << value_immutable; \

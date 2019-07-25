@@ -58,11 +58,13 @@ namespace Mengine
         bool registerBaseNodeTypes_();
         bool registerBaseResourceTypes_();
         bool registerSceneGenerator_();
+        bool registerArrowGenerator_();
 
     protected:
         void unregisterBaseNodeTypes_();
         void unregisterBaseResourceTypes_();
         void unregisterSceneGenerator_();
+        void unregisterArrowGenerator_();
 
     public:
         bool createRenderWindow() override;

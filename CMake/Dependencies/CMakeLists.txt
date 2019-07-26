@@ -185,6 +185,8 @@ if(MENGINE_PLATFORM_WIN32)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/jansson.h ${THIRDPARTY_DIR}/jansson/include/jansson.h COPYONLY)
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/jansson_config.h ${THIRDPARTY_DIR}/jansson/include/jansson_config.h COPYONLY)
 
+		configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jansson/CMakeLists.txt ${THIRDPARTY_DIR}/jansson/CMakeLists.txt COPYONLY)
+
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/jansson )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})  
 endif()

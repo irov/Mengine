@@ -578,12 +578,20 @@ namespace Mengine
             , this->getName().c_str()
         );
 
+        MENGINE_ASSERTION_RETURN_VOID( _node != this, "node '%s' invalid self child node"
+            , this->getName().c_str()
+        );
+
         this->addChild_( m_children.end(), _node, ENCI_BACK );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::addChildFront( const NodePtr & _node )
     {
         MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add front child NULL node"
+            , this->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_RETURN_VOID( _node != this, "node '%s' invalid self child node"
             , this->getName().c_str()
         );
 
@@ -1145,6 +1153,10 @@ namespace Mengine
         MENGINE_ASSERTION_RETURN( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == true, false, "node '%s' not found children '%s'"
             , this->getName().c_str()
             , _node->getName().c_str()
+        );
+
+        MENGINE_ASSERTION_RETURN( _node != this, false, "node '%s' invalid self child node"
+            , this->getName().c_str()
         );
 
         _node->deactivate();

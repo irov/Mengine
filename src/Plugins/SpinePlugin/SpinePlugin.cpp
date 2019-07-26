@@ -5,7 +5,9 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "SpineScriptEmbedding.h"
+#endif
 
 #include "ResourceSpineAtlasDefault.h"
 #include "ResourceSpineAtlasTexturepacker.h"

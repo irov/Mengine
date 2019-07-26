@@ -10,10 +10,6 @@ src
     SDLThreadMutex.cpp
 )
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/SDL2/include )
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
 
-ADD_MENGINE_LIBRARY()
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Systems
-)
+ADD_MENGINE_LIBRARY(Systems)

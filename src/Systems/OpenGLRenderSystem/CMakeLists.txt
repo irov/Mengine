@@ -36,11 +36,7 @@ endif()
 include_directories(${THIRDPARTY_DIR}/SDL2/include)
 include_directories(${THIRDPARTY_DIR}/libmath/include)
 
-ADD_MENGINE_LIBRARY()
-
-set_target_properties(${MY_LIB_NAME} PROPERTIES
-    FOLDER Systems
-)
+ADD_MENGINE_LIBRARY(Systems)
 
 IF(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} OpenGL32.lib)

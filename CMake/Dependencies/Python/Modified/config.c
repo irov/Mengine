@@ -13,13 +13,13 @@ extern "C" {
     extern void init_weakref( void );
     extern void initbinascii( void );
     extern void initzlib( void );
-
-#if defined(WIN32) && !defined(NDEBUG)
     extern void PyMarshal_Init( void );
     extern void initcStringIO( void );
-    extern void init_lsprof( void );
-    extern void initerrno( void );
+
+#if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
     extern void initnt( void );
+    extern void init_lsprof( void );
+    extern void initerrno( void );    
     extern void init_functools( void );
     extern void inittime( void );
 #endif
@@ -37,15 +37,15 @@ extern "C" {
     { "zlib", initzlib },
     { "gc", initgc },
     { "_weakref", init_weakref },
-
-#if defined(WIN32) && !defined(NDEBUG)
     { "cStringIO", initcStringIO },
     { "marshal", PyMarshal_Init },
+
+#if defined(WIN32) && !defined(NDEBUG) && !defined(__MINGW32__)
+    { "nt", initnt },
     { "_lsprof", init_lsprof },
     { "errno", initerrno },
-    { "nt", initnt },
     { "_functools", init_functools },
-    { "time", inittime},
+    { "time", inittime },
 #endif
 
     /* Sentinel */

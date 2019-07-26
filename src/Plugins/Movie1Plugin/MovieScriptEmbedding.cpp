@@ -11,6 +11,7 @@
 
 #include "Movie.h"
 #include "MovieSlot.h"
+#include "MovieEvent.h"
 #include "MovieMesh2D.h"
 
 #include "Kernel/Logger.h"

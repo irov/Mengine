@@ -37,6 +37,7 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
             if( SERVICE_EXIST( ScriptServiceInterface ) == true )
             {
                 const ConstString & prototype = this->getPrototype();
@@ -47,6 +48,7 @@ namespace Mengine
 
                 m_scriptWrapper = scriptWrapper;
             }
+#endif
 
             FactoryPtr factory = Helper::makeFactoryPool<Type, Count>();
 

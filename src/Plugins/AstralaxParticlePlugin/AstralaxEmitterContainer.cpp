@@ -14,6 +14,8 @@
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include <string.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

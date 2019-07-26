@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME SceneService )
+SET(MY_LIB_NAME SceneService)
 
 ADD_FILTER(
 src

@@ -5,6 +5,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -70,6 +71,9 @@ namespace Mengine
 
         if( skeletonData == nullptr )
         {
+            LOGGER_ERROR( "invalid read skeleton data, filePath = '%s'"
+                , filePath.c_str()
+            );
             return false;
         }
 

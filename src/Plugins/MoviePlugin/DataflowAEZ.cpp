@@ -15,6 +15,8 @@
 
 #include "stdex/memorycopy.h"
 
+#include <string.h>
+
 namespace Mengine
 {
     namespace Detail

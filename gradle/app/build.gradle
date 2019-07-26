@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
-
 android {
     signingConfigs {
         config {
@@ -138,6 +137,15 @@ android {
        pickFirst 'lib/x86_64/libc++_shared.so'
        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
    }
+    afterEvaluate {
+        assembleDebug.finalizedBy(crashlyticsUploadSymbolsDebug)
+        assembleRelease.finalizedBy(crashlyticsUploadSymbolsRelease)
+//         a
+    }
+}
+
+crashlytics {
+    enableNdk true
 }
 
 dependencies {
@@ -149,16 +157,17 @@ dependencies {
     implementation 'com.google.android.gms:play-services-base:15.0.1'
     implementation 'com.google.android.gms:play-services-ads:15.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
     implementation project(':unity-ads')
-    implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics-ndk:2.1.0'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
+

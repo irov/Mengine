@@ -30,29 +30,29 @@ public class MengineActivity extends SDLActivity {
 
     private static MengineActivity _instance;
 
-    static native void AndroidNativeFacebook_setupFacebookJNI();
+    private static native void AndroidNativeFacebook_setupFacebookJNI();
 
-    static native void AndroidNativeFacebook_onSDKInitialized();
+    private static native void AndroidNativeFacebook_onSDKInitialized();
 
-    static native void AndroidNativeUnity_setupUnityJNI();
+    private static native void AndroidNativeUnity_setupUnityJNI();
 
-    static native void AndroidNativeUnity_onSDKInitialized();
+    private static native void AndroidNativeUnity_onSDKInitialized();
 
-    static native void AndroidNativeAdMob_setupAdMobJNI();
+    private static native void AndroidNativeAdMob_setupAdMobJNI();
 
-    static native void AndroidNativeAdMob_onSDKInitialized();
+    private static native void AndroidNativeAdMob_onSDKInitialized();
 
-    static native void AndroidNativeDevToDev_setupDevToDevJNI();
+    private static native void AndroidNativeDevToDev_setupDevToDevJNI();
 
-    static native void AndroidNativeDevToDev_onSDKInitialized();
+    private static native void AndroidNativeDevToDev_onSDKInitialized();
 
-    static native void AndroidNativeLinking_setupLinkingJNI();
+    private static native void AndroidNativeLinking_setupLinkingJNI();
 
-    static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
+    private static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
 
-    static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+    private static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
 
-    static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
+    private static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
 
     @Override
     protected String[] getLibraries() {
@@ -326,9 +326,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     public static void openMail(final String email, final String subject, final String body) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+//        Intent intent = new Intent(Intent.ACTION_SEND);
+//        intent.setType("plain/text");
+//        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
+        _instance.startActivity(Intent.createChooser(intent, ""));
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
         _instance.startActivity(Intent.createChooser(intent, ""));

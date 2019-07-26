@@ -38,4 +38,4 @@ Code Guards
 
 License
 -------
-see [LICENSE](https://github.com/irov/Mengine/LICENSE) for more information.
+see [LICENSE](https://raw.githubusercontent.com/irov/Mengine/master/LICENSE) for more information.

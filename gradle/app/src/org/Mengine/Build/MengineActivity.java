@@ -319,9 +319,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     public static void openMail(final String email, final String subject, final String body) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+//        Intent intent = new Intent(Intent.ACTION_SEND);
+//        intent.setType("plain/text");
+//        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(email));
+        _instance.startActivity(Intent.createChooser(intent, ""));
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, body);
         _instance.startActivity(Intent.createChooser(intent, ""));

@@ -38,4 +38,4 @@ Code Guards
 
 License
 -------
-see [LICENSE](https://github.com/irov/libmovie/LICENSE) for more information.
+see [LICENSE](https://github.com/irov/Mengine/LICENSE) for more information.

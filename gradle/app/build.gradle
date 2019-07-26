@@ -137,6 +137,15 @@ android {
        pickFirst 'lib/x86_64/libc++_shared.so'
        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
    }
+    afterEvaluate {
+        assembleDebug.finalizedBy(crashlyticsUploadSymbolsDebug)
+        assembleRelease.finalizedBy(crashlyticsUploadSymbolsRelease)
+//         a
+    }
+}
+
+crashlytics {
+    enableNdk true
 }
 
 dependencies {
@@ -154,9 +163,9 @@ dependencies {
     implementation project(':libraries:SDL2')
     implementation project(':libraries:OpenAL32')
     implementation project(':unity-ads')
-    implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.crashlytics.sdk.android:crashlytics-ndk:2.1.0'
     implementation 'com.google.firebase:firebase-messaging:18.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

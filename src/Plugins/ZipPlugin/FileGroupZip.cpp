@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -11,10 +10,12 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/String.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "zlib.h"
 

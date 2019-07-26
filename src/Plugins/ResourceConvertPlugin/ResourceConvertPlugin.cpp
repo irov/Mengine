@@ -1,6 +1,5 @@
 #include "ResourceConvertPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
@@ -10,6 +9,7 @@
 #include "ResourceConvertServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ResourceConvertService );

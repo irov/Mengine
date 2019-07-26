@@ -1,9 +1,9 @@
 #include "TextChar.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 
 #include "Kernel/String.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include <algorithm>
 

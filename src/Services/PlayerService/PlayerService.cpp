@@ -11,7 +11,6 @@
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -28,7 +27,6 @@
 #include "Config/Stringstream.h"
 
 #include "Kernel/Scene.h"
-
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -37,9 +35,8 @@
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/ThreadTask.h"
-
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Scheduler.h"
-
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"

@@ -1,12 +1,12 @@
 #include "Spine.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "stdex/memorycopy.h"
 

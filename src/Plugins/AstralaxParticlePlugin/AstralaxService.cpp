@@ -1,6 +1,5 @@
 #include "AstralaxService.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -8,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "math/box2.h"
 

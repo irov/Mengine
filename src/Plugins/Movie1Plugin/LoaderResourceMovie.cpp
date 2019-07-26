@@ -1,10 +1,9 @@
 #include "LoaderResourceMovie.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "ResourceMovie.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Metacode/Metacode.h"
 

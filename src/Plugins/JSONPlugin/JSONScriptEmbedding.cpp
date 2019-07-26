@@ -1,7 +1,6 @@
 #include "JSONScriptEmbedding.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
@@ -10,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "pybind/pybind.hpp"
 

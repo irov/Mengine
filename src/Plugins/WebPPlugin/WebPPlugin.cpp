@@ -3,12 +3,12 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "ImageDecoderWEBP.h"
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( WebP, Mengine::WebPPlugin );

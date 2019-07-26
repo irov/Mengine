@@ -2,7 +2,6 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
@@ -25,6 +24,7 @@
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"

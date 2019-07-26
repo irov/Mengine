@@ -7,9 +7,7 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/FilePathHelper.h"
-
-#include "Config/Lambda.h"
+#include "Kernel/LambdaFilePath.h"
 
 namespace Mengine
 {

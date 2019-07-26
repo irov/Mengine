@@ -1,7 +1,6 @@
 #include "DataflowAEK.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Metacode/Metacode.h"
 

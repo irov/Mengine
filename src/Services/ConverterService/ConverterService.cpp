@@ -1,10 +1,12 @@
 #include "ConverterService.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/PathString.h"
+#include "Kernel/FilePathHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterService );

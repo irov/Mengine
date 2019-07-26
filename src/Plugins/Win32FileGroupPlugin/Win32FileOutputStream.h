@@ -6,6 +6,10 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#ifdef MENGINE_DEBUG
+#include "Config/String.h"
+#endif
+
 namespace Mengine
 {
     class Win32FileOutputStream

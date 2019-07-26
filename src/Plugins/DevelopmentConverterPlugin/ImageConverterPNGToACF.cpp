@@ -1,7 +1,6 @@
 #include "ImageConverterPNGToACF.h"
 
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -12,8 +11,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

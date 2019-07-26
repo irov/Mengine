@@ -1,7 +1,6 @@
 #include "XmlToBinDecoder.h"
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -10,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Metacode/Metacode.h"
 

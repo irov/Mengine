@@ -1,7 +1,6 @@
 #include "HotspotImageConverterPNGToHIT.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/PickCodecInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -11,6 +10,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include <algorithm>
 #include <math.h>

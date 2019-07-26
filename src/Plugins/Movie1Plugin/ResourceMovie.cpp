@@ -5,7 +5,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -18,6 +17,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "math/mat4.h"
 

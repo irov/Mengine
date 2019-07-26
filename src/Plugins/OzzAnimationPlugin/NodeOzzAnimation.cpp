@@ -1,6 +1,5 @@
 #include "NodeOzzAnimation.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
@@ -9,6 +8,7 @@
 #include "Kernel/RenderUtils.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "ozz/base/maths/soa_transform.h"
 #include "ozz/base/containers/vector.h"

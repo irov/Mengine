@@ -1,7 +1,7 @@
 #include "OzzAnimationPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "ResourceOzzMesh.h"
 #include "ResourceOzzSkeleton.h"
@@ -13,6 +13,7 @@
 #include "OzzScriptEmbedding.h"
 #endif
 
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/Document.h"

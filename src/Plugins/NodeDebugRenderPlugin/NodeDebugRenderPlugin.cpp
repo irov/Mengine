@@ -1,7 +1,5 @@
 #include "NodeDebugRenderPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "NodeDebugRenderServiceInterface.h"
 
 #include "ArrowDebugRender.h"
@@ -12,6 +10,7 @@
 #include "TextFieldDebugRender.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( NodeDebugRenderService );

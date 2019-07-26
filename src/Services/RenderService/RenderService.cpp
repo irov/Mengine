@@ -1,7 +1,6 @@
 #include "RenderService.h"
 
 #include "Interface/CodecInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -12,6 +11,8 @@
 #include "Kernel/RenderUtils.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "math/convex8.h"
 

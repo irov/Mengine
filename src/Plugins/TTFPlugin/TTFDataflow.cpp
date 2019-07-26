@@ -1,7 +1,5 @@
 #include "TTFDataflow.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "TTFData.h"
 
 #include "Kernel/ThreadMutexScope.h"
@@ -12,6 +10,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

@@ -3,7 +3,6 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/UserdataServiceInterface.h"
@@ -13,6 +12,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include <stdio.h>
 

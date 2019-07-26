@@ -3,11 +3,11 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
 

@@ -1,6 +1,5 @@
 #include "EntityPrototypeGenerator.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
@@ -13,6 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "pybind/pybind.hpp"
 

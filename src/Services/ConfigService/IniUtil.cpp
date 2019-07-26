@@ -4,7 +4,6 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
@@ -12,6 +11,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include <stdio.h>
 #include <string.h>

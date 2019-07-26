@@ -1,12 +1,12 @@
 #include "TextLocalePak.h"
 
 #include "Interface/FileServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "stdex/xml_sax_parser.h"
 

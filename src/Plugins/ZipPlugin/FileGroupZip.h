@@ -4,6 +4,7 @@
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/VectorFilePath.h"
 
 #include "Config/UnorderedMap.h"
 
@@ -74,7 +75,6 @@ namespace Mengine
         typedef UnorderedMap<FilePath, FileInfo, Hashgen<FilePath>> MapFileInfo;
         MapFileInfo m_files;
 
-        typedef Vector<FilePath> VectorFiles;
-        VectorFiles m_indexes;
+        VectorFilePath m_indexes;
     };
 }

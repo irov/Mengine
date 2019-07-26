@@ -2,7 +2,6 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -27,6 +26,7 @@
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/PolygonHelper.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Kernel/Logger.h"
 

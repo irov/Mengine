@@ -4,13 +4,13 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ScriptEmbeddingInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 
@@ -29,6 +29,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
 

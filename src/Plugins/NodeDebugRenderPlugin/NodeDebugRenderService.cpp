@@ -2,7 +2,6 @@
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -18,6 +17,7 @@
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
 

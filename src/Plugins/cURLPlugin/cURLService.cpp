@@ -1,7 +1,6 @@
 #include "cURLService.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -16,6 +15,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
 

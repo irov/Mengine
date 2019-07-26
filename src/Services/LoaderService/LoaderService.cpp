@@ -3,14 +3,16 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "metabuf/Metadata.hpp"
 #include "Metacode/Metacode.h"

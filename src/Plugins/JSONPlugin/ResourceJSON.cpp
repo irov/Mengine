@@ -2,13 +2,13 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "jpp/jpp.hpp"
 

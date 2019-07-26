@@ -4,7 +4,7 @@
 #include "ThreadTaskPrefetch.h"
 
 #include "Kernel/ServiceBase.h"
-
+#include "Kernel/VectorConstString.h"
 #include "Kernel/Factory.h"
 
 #include "Config/Pair.h"
@@ -65,7 +65,7 @@ namespace Mengine
     protected:
         ThreadQueueInterfacePtr m_threadQueue;
 
-        typedef Vector<ConstString> VectorThreads;
+        typedef VectorConstString VectorThreads;
         VectorThreads m_threads;
 
         FactoryPtr m_factoryThreadTaskPrefetchImageDecoder;

@@ -1,12 +1,13 @@
 #include "ShaderConverterTextToPSO.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 namespace Mengine
 {

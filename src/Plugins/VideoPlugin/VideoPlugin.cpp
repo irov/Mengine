@@ -1,10 +1,10 @@
 #include "VideoPlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
@@ -20,6 +20,8 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Video, Mengine::VideoPlugin );

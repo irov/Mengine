@@ -2,10 +2,10 @@
 
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Content.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

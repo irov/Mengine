@@ -2,7 +2,6 @@
 
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -11,6 +10,7 @@
 #include "Kernel/Content.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceConvertService, Mengine::ResourceConvertService );

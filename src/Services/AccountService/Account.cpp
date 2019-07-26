@@ -2,7 +2,6 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
@@ -12,6 +11,8 @@
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
 #include "Kernel/IniHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 namespace Mengine
 {

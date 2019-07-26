@@ -5,7 +5,6 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -17,6 +16,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionResourceType.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Frameworks/PythonFramework/DocumentTraceback.h"
 

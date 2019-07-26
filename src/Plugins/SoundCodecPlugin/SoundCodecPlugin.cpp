@@ -1,10 +1,10 @@
 #include "SoundCodecPlugin.h"
 #include "SoundDecoderWAV.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/DecoderFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SoundCodec, Mengine::SoundCodecPlugin );

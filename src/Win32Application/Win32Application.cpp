@@ -40,6 +40,8 @@
 #include "Kernel/Document.h"
 #include "Kernel/FileLogger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 

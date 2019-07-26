@@ -1,7 +1,6 @@
 #include "MoviePlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -27,7 +26,7 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
-
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Movie2.h"

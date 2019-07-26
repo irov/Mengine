@@ -1,10 +1,10 @@
 #include "Win32ConsoleLoggerPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Win32ConsoleLogger.h"
 

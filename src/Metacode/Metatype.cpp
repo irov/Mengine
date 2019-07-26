@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -96,11 +95,11 @@ namespace Metabuf
 
         if( s != nullptr )
         {
-            LOGGER_ERROR( "archive_read read FilePath '%s' has invalid slash"
+            LOGGER_ERROR( "read FilePath '%s' has invalid slash"
                 , test_value
             );
 
-            MENGINE_THROW_EXCEPTION( "archive_read read FilePath '%s' has invalid slash"
+            MENGINE_THROW_EXCEPTION( "read FilePath '%s' has invalid slash"
                 , test_value
             );
         }

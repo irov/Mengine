@@ -9,6 +9,8 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 
+#include "Config/String.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

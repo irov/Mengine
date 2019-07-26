@@ -3,7 +3,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
@@ -13,6 +12,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );

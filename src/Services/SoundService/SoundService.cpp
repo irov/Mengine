@@ -2,7 +2,6 @@
 
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -15,6 +14,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "math/utils.h"
 

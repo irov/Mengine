@@ -48,6 +48,8 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -127,7 +129,7 @@ namespace Mengine
         PLUGIN_CREATE( SDLFileGroup );
 
         // mount root
-        ConstString c_dir = Helper::stringizeString( "dir" );
+        ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
@@ -141,7 +143,7 @@ namespace Mengine
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        ConstString c_dev = Helper::stringizeString( "dev" );
+        ConstString c_dev = STRINGIZE_STRING_LOCAL( "dev" );
         // mount root
         if( FILE_SERVICE()
             ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )

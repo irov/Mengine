@@ -1,11 +1,11 @@
 #include "TheoraPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "TheoraVideoDecoder.h"
 
 #include "Kernel/DecoderFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Theora, Mengine::TheoraPlugin );

@@ -1,7 +1,6 @@
 #include "Layer2D.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -10,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

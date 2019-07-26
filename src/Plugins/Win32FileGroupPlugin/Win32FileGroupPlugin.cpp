@@ -1,12 +1,13 @@
 #include "Win32FileGroupPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Win32FileGroupDirectory.h"
 

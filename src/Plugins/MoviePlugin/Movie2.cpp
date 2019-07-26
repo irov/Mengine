@@ -1,7 +1,6 @@
 #include "Movie2.h"
 
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
@@ -17,16 +16,16 @@
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Layer.h"
-
 #include "Kernel/NodeHelper.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/ResourceImage.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
+#include "Config/ArrayString.h"
 
 #include "math/quat.h"
 

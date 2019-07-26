@@ -2,7 +2,6 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
@@ -34,6 +33,7 @@
 #include "Kernel/RenderScissor.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"

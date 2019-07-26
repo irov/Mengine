@@ -3,11 +3,11 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

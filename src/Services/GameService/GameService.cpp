@@ -12,7 +12,6 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 
@@ -20,12 +19,12 @@
 #include "GameServiceSoundVolumeProvider.h"
 
 #include "Kernel/Arrow.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );

@@ -1,8 +1,6 @@
 #include "TTFPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -10,6 +8,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "TTFPrototypeGenerator.h"
 #include "TTFDataflow.h"

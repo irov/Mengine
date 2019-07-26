@@ -8,6 +8,7 @@
 #include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 
+#include "Config/Vector.h"
 #include "Config/Map.h"
 
 #include "stdex/intrusive_list.h"

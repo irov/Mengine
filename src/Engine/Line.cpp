@@ -1,7 +1,5 @@
 #include "Line.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "Kernel/Document.h"
 
 namespace Mengine

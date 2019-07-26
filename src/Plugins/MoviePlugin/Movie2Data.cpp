@@ -1,13 +1,13 @@
 #include "Movie2Data.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/MaterialEnumInterface.h"
 
 #include "Kernel/Materialable.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

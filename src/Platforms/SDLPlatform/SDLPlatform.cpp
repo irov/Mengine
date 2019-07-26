@@ -18,11 +18,12 @@
 
 #include "Kernel/FileLogger.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
@@ -270,23 +271,23 @@ namespace Mengine
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
             m_touchpad = false;
-            m_platformName.addTag( Helper::stringizeString( "PC" ) );
+            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
         }
         else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
         {
             m_touchpad = false;
-            m_platformName.addTag( Helper::stringizeString( "MAC" ) );
+            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( strcmp( sdlPlatform, "Android" ) == 0 )
         {
             m_touchpad = true;
-            m_platformName.addTag( Helper::stringizeString( "ANDROID" ) );
+            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
             SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
         }
         else if( strcmp( sdlPlatform, "iOS" ) == 0 )
         {
             m_touchpad = true;
-            m_platformName.addTag( Helper::stringizeString( "IOS" ) );
+            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
             SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
         }
 

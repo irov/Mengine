@@ -8,6 +8,8 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

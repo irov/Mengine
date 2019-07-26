@@ -4,11 +4,11 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -16,6 +16,7 @@
 #include "Kernel/String.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "stdex/xml_sax_parser.h"
 

@@ -1,7 +1,6 @@
 #include "DX9RenderSystem.h"
 
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
@@ -28,7 +27,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 

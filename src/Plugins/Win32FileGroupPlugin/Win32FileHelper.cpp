@@ -2,7 +2,7 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine

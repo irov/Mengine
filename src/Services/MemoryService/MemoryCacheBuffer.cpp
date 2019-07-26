@@ -1,8 +1,10 @@
 #include "MemoryCacheBuffer.h"
 
+#include "Interface/MemoryInterface.h"
+
 #include "MemoryService.h"
 
-#include "Interface/MemoryInterface.h"
+#include "stdex/memorycopy.h"
 
 namespace Mengine
 {

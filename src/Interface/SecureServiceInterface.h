@@ -20,3 +20,7 @@ namespace Mengine
         virtual void unprotectData( void * _buffer, size_t _size ) const = 0;
     };
 }
+//////////////////////////////////////////////////////////////////////////
+#define SECURE_SERVICE()\
+    ((Mengine::SecureServiceInterface*)SERVICE_GET(Mengine::SecureServiceInterface))
+//////////////////////////////////////////////////////////////////////////

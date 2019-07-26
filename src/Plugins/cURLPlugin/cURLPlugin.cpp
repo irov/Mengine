@@ -2,7 +2,8 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
 
 #ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "cURLScriptEmbedding.h"

@@ -8,7 +8,7 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Params.h"
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/LambdaFilePath.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"

@@ -12,7 +12,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
@@ -58,6 +57,8 @@
 #include "Kernel/ImageDecoderArchive.h"
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/String.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Config.h"
 #include "Config/Stringstream.h"

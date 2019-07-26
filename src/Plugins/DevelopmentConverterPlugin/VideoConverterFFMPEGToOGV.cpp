@@ -1,10 +1,10 @@
 #include "VideoConverterFFMPEGToOGV.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

@@ -1,6 +1,6 @@
 #include "DX9RenderVertexAttribute.h"
 
-#include "Interface/StringizeServiceInterface.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"

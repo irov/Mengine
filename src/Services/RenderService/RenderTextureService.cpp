@@ -2,7 +2,6 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -16,6 +15,7 @@
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "stdex/memorycopy.h"
 

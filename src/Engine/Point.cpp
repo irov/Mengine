@@ -1,10 +1,6 @@
 #include "Point.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "Kernel/Document.h"
-
-#include "Config/Config.h"
 
 namespace Mengine
 {

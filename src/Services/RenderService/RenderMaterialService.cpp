@@ -1,6 +1,5 @@
 #include "RenderMaterialService.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
@@ -11,7 +10,7 @@
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 

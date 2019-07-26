@@ -1,10 +1,10 @@
 #include "ScenePrototypeGenerator.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

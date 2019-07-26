@@ -1,7 +1,6 @@
 #include "ResourceTexturepacker.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -10,6 +9,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "jpp/jpp.hpp"
 

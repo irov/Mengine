@@ -1,10 +1,9 @@
 #include "NodeDebuggerPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "NodeDebuggerModule.h"
 
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( NodeDebugger, Mengine::NodeDebuggerPlugin )

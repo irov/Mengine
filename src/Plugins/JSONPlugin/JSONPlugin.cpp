@@ -1,6 +1,5 @@
 #include "JSONPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
@@ -13,6 +12,7 @@
 #include "LoaderResourceJSON.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "jansson.h"
 

@@ -3,7 +3,6 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "ImageDecoderPNG.h"
 #include "ImageDecoderJPEG.h"
@@ -27,6 +26,7 @@
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ImageCodec, Mengine::ImageCodecPlugin );

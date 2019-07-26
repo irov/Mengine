@@ -1,11 +1,11 @@
 #include "LZ4Plugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "ArchivatorLZ4.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( LZ4, Mengine::LZ4Plugin );

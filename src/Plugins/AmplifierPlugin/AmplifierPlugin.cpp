@@ -2,7 +2,8 @@
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/ServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Amplifier );

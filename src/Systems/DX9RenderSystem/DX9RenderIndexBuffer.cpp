@@ -9,6 +9,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

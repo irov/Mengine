@@ -26,6 +26,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TagsHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"

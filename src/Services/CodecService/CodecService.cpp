@@ -1,10 +1,10 @@
 #include "CodecService.h"
 
 #include "Interface/CodecInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

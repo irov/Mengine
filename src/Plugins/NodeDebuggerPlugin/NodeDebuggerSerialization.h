@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "Config/Lambda.h"
 #include "Config/Vector.h"
 #include "Config/String.h"
@@ -12,6 +10,7 @@
 
 #include "Kernel/Color.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/ConstStringHelper.h"
 
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY

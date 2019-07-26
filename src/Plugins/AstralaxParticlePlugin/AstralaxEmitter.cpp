@@ -3,7 +3,6 @@
 #include "AstralaxInterface.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
@@ -15,6 +14,7 @@
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/RenderUtils.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "math/box2.h"
 #include "math/angle.h"

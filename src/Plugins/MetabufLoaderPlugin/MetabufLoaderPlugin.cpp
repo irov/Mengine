@@ -1,7 +1,6 @@
 #include "MetabufLoaderPlugin.h"
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "LoaderResourceCursorICO.h"
@@ -21,6 +20,8 @@
 #include "LoaderResourceWindow.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConstStringHelper.h"
+
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MetabufLoader, Mengine::MetabufLoaderPlugin );

@@ -5,7 +5,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -17,6 +16,8 @@
 #include "Kernel/String.h"
 #include "Kernel/UID.h"
 #include "Kernel/IniHelper.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"

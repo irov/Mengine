@@ -1,6 +1,5 @@
 #include "MovieScriptEmbedding.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -19,9 +18,12 @@
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotShape.h"
+
+#include "Config/ArrayString.h"
 
 #include "pybind/pybind.hpp"
 
@@ -1088,7 +1090,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static pybind::object s_getMovieSlotsPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName )
         {
-            stdex::array_string<128> buffer;
+            ArrayString<128> buffer;
             buffer.append( "Movie" );
             buffer.append( _groupName );
             buffer.append( "_" );
@@ -1127,7 +1129,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static PyObject * s_getMovieSlotPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
         {
-            stdex::array_string<128> buffer;
+            ArrayString<128> buffer;
             buffer.append( "Movie" );
             buffer.append( _groupName );
             buffer.append( "_" );

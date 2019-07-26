@@ -2,7 +2,6 @@
 
 #include "Interface/ApplicationInterface.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/UnicodeSystemInterface.h"

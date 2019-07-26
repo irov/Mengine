@@ -1,7 +1,6 @@
 #include "ImageDecoderACF.h"
 #include "ImageVerifyACF.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Stream.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "stdex/memorycopy.h"
 

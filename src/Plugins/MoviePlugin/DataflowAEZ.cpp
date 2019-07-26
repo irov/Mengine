@@ -1,7 +1,5 @@
 #include "DataflowAEZ.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "Movie2Interface.h"
 
 #include "Movie2Data.h"
@@ -13,6 +11,9 @@
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
+
+#include "stdex/memorycopy.h"
 
 namespace Mengine
 {

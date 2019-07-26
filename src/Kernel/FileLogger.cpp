@@ -4,10 +4,11 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Stringstream.h"
 

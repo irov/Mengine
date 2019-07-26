@@ -1,7 +1,6 @@
 #include "Amplifier.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 
@@ -10,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include <cmath>
 

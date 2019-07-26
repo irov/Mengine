@@ -1,9 +1,9 @@
 #include "TTFData.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

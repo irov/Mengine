@@ -2,7 +2,6 @@
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -16,6 +15,9 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/PathString.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/Vector.h"
 

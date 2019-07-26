@@ -2,12 +2,11 @@
 
 #include "AstralaxInterface.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "AstralaxParticleModule.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AstralaxService );

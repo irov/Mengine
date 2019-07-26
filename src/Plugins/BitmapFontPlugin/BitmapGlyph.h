@@ -5,6 +5,8 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/GlyphCode.h"
 
+#include "Config/Vector.h"
+
 #include "math/vec4.h"
 #include "math/vec2.h"
 

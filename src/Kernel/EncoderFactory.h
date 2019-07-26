@@ -2,11 +2,11 @@
 
 #include "Interface/CodecInterface.h"
 #include "Interface/EncoderFactoryInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

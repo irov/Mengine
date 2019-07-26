@@ -9,6 +9,8 @@
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"
 
+#include "Config/Vector.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

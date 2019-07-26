@@ -1,6 +1,5 @@
 #include "ZipPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -8,6 +7,7 @@
 #include "ArchivatorZip.h"
 
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Zip, Mengine::ZipPlugin )

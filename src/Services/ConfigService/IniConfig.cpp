@@ -5,6 +5,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
+#include "Config/ArrayString.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -51,7 +53,7 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                stdex::array_string<128> platform_section;
+                ArrayString<128> platform_section;
                 platform_section.append( _section );
 
                 const VectorConstString & tags = _platform.getValues();
@@ -87,7 +89,7 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                stdex::array_string<128> platform_section;
+                ArrayString<128> platform_section;
                 platform_section.append( _section );
 
                 const VectorConstString & tags = _platform.getValues();
@@ -186,7 +188,7 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                stdex::array_string<128> platform_section;
+                ArrayString<128> platform_section;
                 platform_section.append( _section );
 
                 const VectorConstString & tags = _platform.getValues();
@@ -218,7 +220,7 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                stdex::array_string<128> platform_section;
+                ArrayString<128> platform_section;
                 platform_section.append( _section );
 
                 const VectorConstString & tags = _platform.getValues();
@@ -250,12 +252,12 @@ namespace Mengine
         {
             for( const IniUtil::IniStore & ini : _stores )
             {
-                stdex::array_string<128> platform_section;
+                ArrayString<128> platform_section;
                 platform_section.append( _section );
 
                 const VectorConstString & tags = _platform.getValues();
 
-                stdex::array_string<128> platform_section_found;
+                ArrayString<128> platform_section_found;
 
                 for( const ConstString & tag : tags )
                 {

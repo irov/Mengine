@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "FactoryPrototypeGenerator.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

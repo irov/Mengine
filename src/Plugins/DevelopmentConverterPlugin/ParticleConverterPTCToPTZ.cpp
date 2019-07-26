@@ -2,7 +2,6 @@
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -12,10 +11,10 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
-
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/ResourceImage.h"
 
 namespace Mengine

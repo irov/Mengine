@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
 #ifdef MENGINE_USE_PYTHON_FRAMEWORK
@@ -21,6 +20,7 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Spine, Mengine::SpinePlugin );

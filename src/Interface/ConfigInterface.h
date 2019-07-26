@@ -6,6 +6,7 @@
 #include "Kernel/Tags.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/VectorFilePath.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/AspectRatioViewports.h"
 #include "Kernel/VectorAspectRatioViewports.h"

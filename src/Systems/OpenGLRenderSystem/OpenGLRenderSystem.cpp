@@ -2,7 +2,6 @@
 #include "OpenGLRenderEnum.h"
 #include "OpenGLRenderError.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "OpenGLRenderExtension.h"
@@ -11,6 +10,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Kernel/Logger.h"
 

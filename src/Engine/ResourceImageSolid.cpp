@@ -2,8 +2,6 @@
 
 #include "Kernel/Logger.h"
 
-#include "Interface/RenderSystemInterface.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

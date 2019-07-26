@@ -1,7 +1,6 @@
 #include "PythonFramework.h"
 
 #include "Interface/ScriptServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 
 #include "ConstsScriptEmbedding.h"
@@ -14,6 +13,7 @@
 #include "SoundScriptEmbedding.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Framework, Mengine::PythonFramework );

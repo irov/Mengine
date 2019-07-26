@@ -354,6 +354,11 @@ Core
     FilePath.cpp
     FilePathHelper.h
     FilePathHelper.cpp
+    VectorFilePath.h
+    LambdaFilePath.h
+    
+    PathHelper.h
+    PathHelper.cpp
     
     FileLogger.cpp
     FileLogger.h
@@ -395,6 +400,8 @@ Core
 	
     ConstString.h
     ConstString.cpp
+    ConstStringHelper.h
+    ConstStringHelper.cpp
 	ConstStringHolder.h
     ConstStringHolder.cpp
 	ConstStringHolderLocalString.h

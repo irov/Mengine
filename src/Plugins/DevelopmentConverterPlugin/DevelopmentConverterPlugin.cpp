@@ -1,7 +1,5 @@
 #include "DevelopmentConverterPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "HotspotImageConverterPNGToHIT.h"
 #include "ParticleConverterPTCToPTZ.h"
 #include "ImageConverterPVRToHTF.h"
@@ -16,7 +14,7 @@
 #include "MovieKeyConverterXMLToAEK.h"
 
 #include "Kernel/Logger.h"
-
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/ConverterFactory.h"
 
 //////////////////////////////////////////////////////////////////////////

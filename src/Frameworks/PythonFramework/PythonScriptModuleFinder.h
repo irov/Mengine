@@ -10,7 +10,9 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/PathString.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/VectorFilePath.h"
 
 #include "pybind/pybind.hpp"
 

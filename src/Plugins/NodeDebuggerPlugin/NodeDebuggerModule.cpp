@@ -2,7 +2,6 @@
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -35,6 +34,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
 

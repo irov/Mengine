@@ -1,30 +1,34 @@
 #pragma once
 
-#include "Config/Lambda.h"
+#include "Config/Typedef.h"
+#include "Config/String.h"
+#include "Config/Vector.h"
 
 #include "Kernel/FilePath.h"
+#include "Kernel/PathString.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const FilePath & )> LambdaFilePath;
-    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        FilePath emptyPath();
-        FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right );
-        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath );
-        FilePath getPathFolder( const FilePath & _fullpath );
-        FilePath unicodeToFilePath( const WString & _unicode );
-        void pathCorrectBackslashW( WChar * _out );
-        void pathCorrectBackslashToW( WChar * _out, const WChar * _in );
-        void pathCorrectForwardslashW( WChar * _path );
-        void pathCorrectForwardslashA( Char * _path );
-        void pathRemoveBackslashW( WChar * _path );
-        bool pathRemoveFileSpecW( WChar * _in );
-        void pathCorrectBackslashA( Char * _out );
-        void pathCorrectBackslashToA( Char * _out, const Char * _in );
-        void pathRemoveBackslashA( Char * _path );
-        bool pathRemoveFileSpecA( Char * _in );
+        FilePath stringizeFilePath( const Char * _value );
+        FilePath stringizeFilePathSize( const Char * _value, FilePath::size_type _size );
+        FilePath stringizeFilePath( const String & _path );
+        FilePath stringizeFilePath( const PathString & _path );
+        FilePath stringizeFilePathLocal( const Char * _value, FilePath::size_type _size );
+        FilePath stringizeFilePathLocal( const PathString & _path );
     }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Literals
+    {
+        //////////////////////////////////////////////////////////////////////////
+        FilePath operator "" _fp( const Char * _value, size_t _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    using namespace Literals;
 }
+//////////////////////////////////////////////////////////////////////////
+#define STRINGIZE_FILEPATH_LOCAL( str )\
+	Helper::stringizeFilePathSize( str, (sizeof(str) - 1) )
+//////////////////////////////////////////////////////////////////////////

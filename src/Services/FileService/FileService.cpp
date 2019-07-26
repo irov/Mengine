@@ -4,7 +4,6 @@
 #include "Kernel/Document.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -12,6 +11,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/String.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileService, Mengine::FileService );

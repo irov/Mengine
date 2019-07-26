@@ -1,13 +1,13 @@
 #include "SurfaceTrackMatte.h"
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

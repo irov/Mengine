@@ -4,6 +4,8 @@
 
 #include "Kernel/ServiceBase.h"
 
+#include "Config/Vector.h"
+
 namespace Mengine
 {
     typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;

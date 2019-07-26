@@ -1,6 +1,5 @@
 #include "SDLFileGroupPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -9,6 +8,8 @@
 #include "SDLFileGroupDirectoryFactory.h"
 
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin)

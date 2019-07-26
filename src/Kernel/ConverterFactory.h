@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Interface/ConverterServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

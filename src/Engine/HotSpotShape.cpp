@@ -1,13 +1,13 @@
 #include "HotSpotShape.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "ResourceShape.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/String.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

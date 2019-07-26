@@ -1,7 +1,6 @@
 #include "TexturepackerScriptEmbedding.h"
 
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
 
@@ -13,6 +12,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "pybind/pybind.hpp"
 

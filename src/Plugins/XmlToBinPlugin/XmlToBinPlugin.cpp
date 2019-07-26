@@ -1,11 +1,10 @@
 #include "XmlToBinPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "XmlToBinDecoder.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/DecoderFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( XmlToBin, Mengine::XmlToBinPlugin )

@@ -1,6 +1,5 @@
 #include "EntityScriptEmbedding.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
@@ -20,6 +19,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "pybind/pybind.hpp"
 

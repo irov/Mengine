@@ -1,9 +1,9 @@
 #include "BitmapFontPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "BitmapGlyphService.h"
 #include "BitmapFontPrototypeGenerator.h"

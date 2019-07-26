@@ -1,7 +1,6 @@
 #include "ResourceMovie2.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
@@ -15,6 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "stdex/memorycopy.h"
 

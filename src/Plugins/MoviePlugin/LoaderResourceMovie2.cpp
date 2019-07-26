@@ -2,6 +2,8 @@
 
 #include "ResourceMovie2.h"
 
+#include "Kernel/FilePathHelper.h"
+
 #include "Metacode/Metacode.h"
 
 namespace Mengine

@@ -2,7 +2,6 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
@@ -12,6 +11,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"

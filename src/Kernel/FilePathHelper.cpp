@@ -1,231 +1,73 @@
 #include "FilePathHelper.h"
 
-#include "Interface/StringizeServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
-#include "Interface/FileServiceInterface.h"
-
-#include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        FilePath emptyPath()
+        FilePath stringizeFilePath( const Char * _value )
         {
-            return FilePath( ConstString::none() );
+            ConstString cstr = Helper::stringizeString( _value );
+
+            return FilePath( cstr );
         }
         //////////////////////////////////////////////////////////////////////////
-        FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right )
+        FilePath stringizeFilePathSize( const Char * _value, FilePath::size_type _size )
         {
-            PathString path;
+            ConstString cstr = Helper::stringizeStringSize( _value, _size );
 
-            path += _left;
-            path += _right;
-
-            ConstString c_path = Helper::stringizeStringSize( path.c_str(), path.size() );
-
-            return FilePath( c_path );
+            return FilePath( cstr );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath )
+        FilePath stringizeFilePath( const String & _path )
         {
-            FileGroupInterfacePtr group;
+            const Char * value_str = _path.c_str();
+            String::size_type value_size = _path.size();
 
-            if( FILE_SERVICE()
-                ->hasFileGroup( _fileGroupName, &group ) == false )
-            {
-                LOGGER_ERROR( "not found file group '%s'"
-                    , _fileGroupName.c_str()
-                );
-
-                return false;
-            }
-
-            const FilePath & groupPath = group->getFolderPath();
-
-            FilePath fullPath = Helper::concatenationFilePath( groupPath, _fileName );
-
-            _fullPath = fullPath;
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        FilePath getPathFolder( const FilePath & _fullpath )
-        {
-            const Char * str_fullpath = _fullpath.c_str();
-
-            const Char * folder_delimiter_1 = strrchr( str_fullpath, '\\' );
-            const Char * folder_delimiter_2 = strrchr( str_fullpath, '/' );
-
-            const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
-
-            if( folder_delimiter == nullptr )
-            {
-                return FilePath( ConstString::none() );
-            }
-
-            FilePath::size_type size_fullpath = (FilePath::size_type)(folder_delimiter - str_fullpath + 1);
-
-            FilePath c_folder = Helper::stringizeFilePathSize( str_fullpath, size_fullpath);
-
-            return c_folder;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        FilePath unicodeToFilePath( const WString & _unicode )
-        {
-            String utf8;
-            if( Helper::unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), utf8 ) == false )
-            {
-                return FilePath( ConstString::none() );
-            }
-
-            FilePath fp = Helper::stringizeFilePath( utf8 );
+            FilePath fp = Helper::stringizeFilePathSize( value_str, (FilePath::size_type)value_size );
 
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashW( WChar * _path )
+        FilePath stringizeFilePath( const PathString & _path )
         {
-            WChar * pch = ::wcschr( _path, L'\\' );
-            while( pch != NULL )
-            {
-                *pch = L'/';
+            const Char * value_str = _path.c_str();
+            PathString::size_type value_size = _path.size();
 
-                pch = ::wcschr( pch, L'\\' );
-            }
+            FilePath fp = Helper::stringizeFilePathSize( value_str, value_size );
+
+            return fp;
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashToA( Char * _out, const Char * _in )
+        FilePath stringizeFilePathLocal( const Char * _value, FilePath::size_type _size )
         {
-            ::strcpy( _out, _in );
+            ConstString cstr = Helper::stringizeStringLocal( _value, _size );
 
-            pathCorrectBackslashA( _out );
+            return FilePath( cstr );
         }
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashToW( WChar * _out, const WChar * _in )
+        FilePath stringizeFilePathLocal( const PathString & _path )
         {
-            ::wcscpy( _out, _in );
+            const Char * value_str = _path.c_str();
+            PathString::size_type value_size = _path.size();
 
-            pathCorrectBackslashW( _out );
+            FilePath fp = Helper::stringizeFilePathLocal( value_str, value_size );
+
+            return fp;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Literals
+    {
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectForwardslashW( WChar * _path )
+        FilePath operator "" _fp( const Char * _value, size_t _size )
         {
-            WChar * pch = ::wcschr( _path, L'/' );
-            while( pch != NULL )
-            {
-                *pch = L'\\';
+            FilePath cstr = Helper::stringizeFilePathSize( _value, (FilePath::size_type)_size );
 
-                pch = ::wcschr( pch, L'/' );
-            }
+            return cstr;
         }
-        //////////////////////////////////////////////////////////////////////////
-        void pathCorrectForwardslashA( Char * _path )
-        {
-            Char * pch = ::strchr( _path, '/' );
-            while( pch != NULL )
-            {
-                *pch = '\\';
-
-                pch = ::strchr( pch, '/' );
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void pathRemoveBackslashW( WChar * _path )
-        {
-            size_t len = ::wcslen( _path );
-
-            WChar * pch = _path + len - 1;
-
-            if( *pch == L'/' )
-            {
-                *pch = L'\0';
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool pathRemoveFileSpecW( WChar * _path )
-        {
-            size_t len = ::wcslen( _path );
-
-            if( len == 0 )
-            {
-                return true;
-            }
-
-            WChar * pch = _path + len - 1;
-
-            if( *pch == L'/' )
-            {
-                return false;
-            }
-
-            pch--;
-
-            while( *pch != L'/' )
-            {
-                pch--;
-            }
-
-            pch++;
-
-            *pch = L'\0';
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslashA( Char * _path )
-        {
-            Char * pch = ::strchr( _path, '\\' );
-            while( pch != NULL )
-            {
-                *pch = '/';
-
-                pch = ::strchr( pch, '\\' );
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void pathRemoveBackslashA( Char * _path )
-        {
-            size_t len = ::strlen( _path );
-
-            Char * pch = _path + len - 1;
-
-            if( *pch == '/' )
-            {
-                *pch = '\0';
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool pathRemoveFileSpecA( Char * _path )
-        {
-            size_t len = ::strlen( _path );
-
-            if( len == 0 )
-            {
-                return true;
-            }
-
-            Char * pch = _path + len - 1;
-
-            if( *pch == '/' )
-            {
-                return false;
-            }
-
-            pch--;
-
-            while( *pch != '/' )
-            {
-                pch--;
-            }
-
-            pch++;
-
-            *pch = '\0';
-
-            return true;
-        }
-
     }
 }

@@ -3,7 +3,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
@@ -13,12 +12,14 @@
 #include "Win32AntifreezeMonitor.h"
 #include "Win32CriticalErrorsMonitor.h"
 
-#include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 

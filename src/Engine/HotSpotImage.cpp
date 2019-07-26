@@ -1,12 +1,12 @@
 #include "HotSpotImage.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/String.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Config/Config.h"
 

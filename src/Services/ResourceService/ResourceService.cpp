@@ -3,7 +3,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
@@ -17,6 +16,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include <algorithm>
 

@@ -10,6 +10,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryWithMutex.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"

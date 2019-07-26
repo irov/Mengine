@@ -1,6 +1,5 @@
 #include "UserdataService.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -8,6 +7,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UserdataService, Mengine::UserdataService );

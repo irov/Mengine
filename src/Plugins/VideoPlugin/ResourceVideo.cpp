@@ -5,12 +5,12 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ConstStringHelper.h"
 
 namespace Mengine
 {

@@ -4,6 +4,11 @@
 
 #include "pybind/pybind.hpp"
 
+namespace pybind
+{
+    class kernel_interface;
+}
+
 namespace Mengine
 {
     class ScriptEmbeddingInterface

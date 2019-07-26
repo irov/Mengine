@@ -17,7 +17,7 @@ namespace Mengine
     {
     public:
         typedef AndroidEventation<LinkingEventHandler> LinkingEventation;
-        typedef typename LinkingEventation::LambdaEventHandler LambdaLinkingEventHandler;
+        typedef LinkingEventation::LambdaEventHandler LambdaLinkingEventHandler;
 
     public:
         AndroidNativeLinkingModule();

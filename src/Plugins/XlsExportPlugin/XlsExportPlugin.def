@@ -1,2 +1,3 @@
 LIBRARY		"XlsExportPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+EXPORTS 	
+	dllCreatePlugin 	@1

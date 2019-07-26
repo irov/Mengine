@@ -21,18 +21,15 @@ embeddingVJ;
     JSONScriptEmbedding.cpp
     JSONScriptEmbedding.h
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jansson/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/jpp/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_JSON)
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
 
 IF(MENGINE_BUILD_TYPE_DEBUG)
     SET(MENGINE_JSON_DEBUG_SUFFIX "_d")

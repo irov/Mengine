@@ -5,6 +5,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -62,7 +63,11 @@ namespace Mengine
 
         spSkeletonJson * skeletonJson = spSkeletonJson_create( atlas );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonJson, false );
+
         spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, skeleton_memory_buffer );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( skeletonData, false );
 
         skeleton_memory = nullptr;
 
@@ -70,6 +75,9 @@ namespace Mengine
 
         if( skeletonData == nullptr )
         {
+            LOGGER_ERROR( "invalid read skeleton data, file path '%s'"
+                , filePath.c_str()
+            );
             return false;
         }
 

@@ -4,15 +4,17 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ScriptServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "ResourceAstralax.h"
 #include "LoaderResourceAstralax.h"
-#include "AstralaxScriptEmbedding.h"
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#include "AstralaxScriptEmbedding.h"
+#endif
 
 #include "AstralaxEmitter.h"
 
@@ -20,9 +22,6 @@
 #include "ResourceAstralaxValidator.h"
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
-
-#include "Environment/Python/PythonAnimatableEventReceiver.h"
-#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"

@@ -12,7 +12,10 @@
 #include "SurfaceVideo.h"
 #include "ResourceVideoValidator.h"
 
+#ifdef MENGINE_USE_PYTHON_FRAMEWORK
 #include "VideoScriptEmbedding.h"
+#endif
+
 #include "LoaderResourceVideo.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"

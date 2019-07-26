@@ -35,12 +35,13 @@ embedding
     AstralaxScriptEmbedding.cpp
     AstralaxScriptEmbedding.h    
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 add_definitions(-DMAGIC_3D)
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 
@@ -51,10 +52,6 @@ else()
 endif()
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ASTRALAX)
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
 
 if(MENGINE_TOOLCHAIN_MINGW)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)

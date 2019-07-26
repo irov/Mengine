@@ -33,17 +33,14 @@ embedding
     ResourcePrefetcherScriptEmbedding.cpp
     ResourcePrefetcherScriptEmbedding.h
     )
+    
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 
-ADD_MENGINE_LIBRARY()
-
-set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Plugins
-)
+ADD_MENGINE_LIBRARY(Plugins)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)

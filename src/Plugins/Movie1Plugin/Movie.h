@@ -17,7 +17,6 @@
 
 #include "ResourceMovie.h"
 #include "MovieNodeExtra.h"
-#include "MovieEvent.h"
 #include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"
 

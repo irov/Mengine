@@ -40,6 +40,10 @@ namespace Mengine
     {
         const DWORD * shader_compile_data = m_memory->getBuffer();
 
+        LOGGER_INFO( "compile pixel shader '%s'"
+            , this->getName().c_str() 
+        );
+
         IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, &m_shader) )
         {
             return false;

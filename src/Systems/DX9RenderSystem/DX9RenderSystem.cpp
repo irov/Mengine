@@ -564,8 +564,6 @@ namespace Mengine
 
         DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_ALPHATESTENABLE, FALSE) );
 
-        LOGGER_WARNING( "initalized successfully!" );
-
         for( const DX9RenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
             if( shader->compile( m_pD3DDevice ) == false )
@@ -595,6 +593,8 @@ namespace Mengine
         }
 
         m_deferredCompilePrograms.clear();
+
+        LOGGER_WARNING( "initalized successfully!" );
 
         return true;
     }
@@ -661,15 +661,17 @@ namespace Mengine
             return nullptr;
         }
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );
-
-        LOGGER_INFO( "texture created %dx%d %d:%d depth %d"
+        LOGGER_INFO( "texture normal created %dx%d %d:%d depth %d"
             , texDesc.Width
             , texDesc.Height
             , texDesc.Format
             , _channels
             , _depth
         );
+
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );        
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, nullptr, "invalid create render texture" );
 
         return dxTexture;
     }
@@ -697,14 +699,17 @@ namespace Mengine
             return nullptr;
         }
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );
-
-        LOGGER_INFO( "texture created %dx%d %d:%d"
+        LOGGER_INFO( "texture dynamic created %dx%d %d:%d depth '%d'"
             , texDesc.Width
             , texDesc.Height
             , texDesc.Format
             , _channels
+            , _depth
         );
+
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, nullptr, "invalid create render texture" );
 
         return dxTexture;
     }
@@ -712,6 +717,8 @@ namespace Mengine
     RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
         DX9RenderTargetTexturePtr target = m_factoryDX9TargetTexture->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( target, nullptr );
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
@@ -738,6 +745,8 @@ namespace Mengine
     RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
         DX9RenderTargetOffscreenPtr target = m_factoryDX9TargetOffscreen->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( target, nullptr );
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
@@ -1775,6 +1784,8 @@ namespace Mengine
         m_textureCount++;
 
         DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage, nullptr );
 
         dx9RenderImage->initialize( m_pD3DDevice, _pD3DTexture, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 

@@ -1,5 +1,6 @@
 #include "DX9RenderVertexAttribute.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "DX9RenderEnum.h"
@@ -59,6 +60,10 @@ namespace Mengine
         }
 
         declaration[declaration_iterator] = D3DDECL_END();
+
+        LOGGER_INFO( "create vertex declaration '%s'"
+            , m_name.c_str() 
+        );
 
         IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &m_vertexDeclaration) )
         {

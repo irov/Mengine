@@ -25,16 +25,14 @@
 
 #include "Config/Stringstream.h"
 
-#ifndef MENGINE_TOOLCHAIN_MINGW
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #endif
 
-#include "DbgHelp.h"
+#include "Environment/Windows/DbgHelp.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(pop) 
-#endif
 #endif
 
 #include <cstdio>
@@ -88,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-#if defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
+#if defined(MENGINE_DEBUG)
         {
             bool developmentMode = HAS_OPTION( "dev" );
             bool roamingMode = HAS_OPTION( "roaming" );
@@ -319,7 +317,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
     {
-#if defined(MENGINE_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
+#if defined(MENGINE_DEBUG)
         if( IsDebuggerPresent() == TRUE )
         {
             return false;

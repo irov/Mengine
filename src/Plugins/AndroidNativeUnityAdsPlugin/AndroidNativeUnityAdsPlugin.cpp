@@ -1,10 +1,9 @@
 #include "AndroidNativeUnityAdsPlugin.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "AndroidNativeUnityAdsModule.h"
 
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativeUnityAds, Mengine::AndroidNativeUnityAdsPlugin )

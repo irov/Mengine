@@ -2,6 +2,8 @@
 
 #include "DX9ErrorHelper.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -46,6 +48,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgram::compile( IDirect3DDevice9 * _pD3DDevice )
     {
+        LOGGER_INFO( "compile program '%s'"
+            , this->getName().c_str() 
+        );
+
         if( m_vertexAttribute->compile( _pD3DDevice ) == false )
         {
             return false;

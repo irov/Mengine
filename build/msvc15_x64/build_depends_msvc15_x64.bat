@@ -21,3 +21,5 @@ set "CONFIGURATION=%1"
 @echo Done
 
 @pause
+
+@pause

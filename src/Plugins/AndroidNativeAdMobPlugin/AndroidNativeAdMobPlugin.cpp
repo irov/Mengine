@@ -2,9 +2,8 @@
 
 #include "AndroidNativeAdMobModule.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativeAdMob, Mengine::AndroidNativeAdMobPlugin )

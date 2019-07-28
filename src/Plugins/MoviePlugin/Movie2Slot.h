@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/DummyRender.h"
+#include "Kernel/DummyPicker.h"
 
 namespace Mengine
 {
@@ -9,9 +10,11 @@ namespace Mengine
     class Movie2Slot
         : public Node
         , public DummyRender
+        , public DummyPicker
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_PICKERABLE();
 
     public:
         Movie2Slot();

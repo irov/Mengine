@@ -17,11 +17,10 @@ set "YEAR=2017"
 @popd
 
 @pushd %~dp0..
-@call make_solution.bat "SOURCE_DIRECTORY=%CD%\..\CMake\Tools_Win32" "SOLUTION_NAME=solution_tools_msvc%VERSION%" "GENERATOR=Visual Studio %VERSION% %YEAR%" "ARCHITECTURE=Win32" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=build_msvc%VERSION%\%CONFIGURATION%"
+@call make_solution.bat "SOLUTION_NAME=solution_tools_msvc%VERSION%" "SOURCE_DIRECTORY=%CD%\..\CMake\Tools_Win32" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "LIBRARY_DIRECTORY=Depends_WIN32"
 @popd
 
 :end
 @echo Done
 
 @pause
-

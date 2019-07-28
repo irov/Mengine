@@ -145,13 +145,13 @@ namespace Mengine
 
     public:
         void removeRelationPicker_();
-        void setRelationPicker_( Node * _parent );
+        void setRelationPickerBack_( Node * _parent );
         void setRelationPickerFront_( Node * _parent );
         void moveChildPickerFront_( const NodePtr & _child );
         void moveChildPickerMiddle_( const NodePtr & _after, const NodePtr & _child );
         void moveChildPickerBack_( const NodePtr & _child );
 
-        PickerInterface * getPickerSiblingPrev( const NodePtr & _after ) const;
+        PickerInterface * getPickerSiblingPrev_( const NodePtr & _after ) const;
 
         typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
         void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );

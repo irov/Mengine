@@ -61,6 +61,11 @@ namespace Mengine
     {
         if( ++m_compileReferenceCount == 1 )
         {
+            LOGGER_INFO( "compile '%s:%s'"
+                , this->getType().c_str()
+                , this->getName().c_str()
+            );
+
             if( Compilable::compile() == false )
             {
                 return false;
@@ -83,6 +88,11 @@ namespace Mengine
 
         if( --m_compileReferenceCount == 0 )
         {
+            LOGGER_INFO( "release '%s:%s'"
+                , this->getType().c_str()
+                , this->getName().c_str()
+            );
+
             Compilable::release();
 
 #ifndef MENGINE_MASTER_RELEASE

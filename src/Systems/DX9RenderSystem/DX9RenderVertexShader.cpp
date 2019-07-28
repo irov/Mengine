@@ -2,6 +2,8 @@
 
 #include "DX9ErrorHelper.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,10 @@ namespace Mengine
     bool DX9RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
         const DWORD * dx_source = m_memory->getBuffer();
+
+        LOGGER_INFO( "compile vertex shader"
+            , this->getName().c_str() 
+        );
 
         IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &m_shader) )
         {

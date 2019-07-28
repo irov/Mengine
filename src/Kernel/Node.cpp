@@ -457,13 +457,13 @@ namespace Mengine
             {
                 this->setRelationTransformation( _parent );
                 this->setRelationRender_( _parent );
-                this->setRelationPicker_( _parent );
+                this->setRelationPickerBack_( _parent );
             }break;
         case ENCI_BACK:
             {
                 this->setRelationTransformation( _parent );
                 this->setRelationRender_( _parent );
-                this->setRelationPicker_( _parent );
+                this->setRelationPickerBack_( _parent );
             }break;
         }        
 
@@ -872,7 +872,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::setRelationPicker_( Node * _parent )
+    void Node::setRelationPickerBack_( Node * _parent )
     {
         PickerInterface * picker = this->getPicker();
 
@@ -885,7 +885,7 @@ namespace Mengine
             {
                 if( newParent != nullptr )
                 {
-                    picker->setRelationPicker( newParent );
+                    picker->setRelationPickerBack( newParent );
                 }
                 else
                 {
@@ -904,7 +904,7 @@ namespace Mengine
                 {
                     this->foreachPickerCloseChildren_( [newParent]( PickerInterface * _childPicker )
                     {
-                        _childPicker->setRelationPicker( newParent );
+                        _childPicker->setRelationPickerBack( newParent );
                     } );
                 }
                 else
@@ -1006,7 +1006,7 @@ namespace Mengine
             }
             else
             {
-                PickerInterface * afterSiblingPicker = this->getPickerSiblingPrev( _after );
+                PickerInterface * afterSiblingPicker = this->getPickerSiblingPrev_( _after );
 
                 if( afterSiblingPicker != nullptr )
                 {
@@ -1056,7 +1056,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    PickerInterface * Node::getPickerSiblingPrev( const NodePtr & _after ) const
+    PickerInterface * Node::getPickerSiblingPrev_( const NodePtr & _after ) const
     {
         NodePtr siblingNode = nullptr;
         PickerInterface * siblingPicker = nullptr;

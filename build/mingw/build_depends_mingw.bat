@@ -10,7 +10,7 @@ set "CONFIGURATION=%1"
 @echo Starting build dependencies mingw %CONFIGURATION% configuration...
 
 @pushd %~dp0..
-@call build_depends.bat "SOLUTION_NAME=build_mingw" "CONFIGURATION=%CONFIGURATION%" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_MinGW" "GENERATOR=MinGW Makefiles"
+@call build_depends.bat "SOLUTION_NAME=dependencies_mingw" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_MinGW" "GENERATOR=MinGW Makefiles" "CONFIGURATION=%CONFIGURATION%"
 @popd
 
 :end

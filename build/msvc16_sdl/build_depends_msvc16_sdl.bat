@@ -7,7 +7,7 @@ if ["%~1"]==[""] (
 
 set "CONFIGURATION=%1"
 
-@echo Starting build dependencies SDL %CONFIGURATION% configuration...
+@echo Starting build dependencies msvc SDL %CONFIGURATION% configuration...
 
 set "VERSION=16"
 set "YEAR=2019"
@@ -17,7 +17,7 @@ set "YEAR=2019"
 @popd
 
 @pushd %~dp0..
-@call build_depends.bat "SOLUTION_NAME=build_msvc%VERSION%_sdl" "CONFIGURATION=%CONFIGURATION%" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_WIN32_SDL" "GENERATOR=Visual Studio %VERSION% %YEAR%" "VERBOSITY=minimal" "ARCHITECTURE=Win32"
+@call build_depends.bat "SOLUTION_NAME=dependencies_msvc%VERSION%_sdl" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_WIN32_SDL" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "VERBOSITY=minimal" "ARCHITECTURE=Win32"
 @popd
 
 :end

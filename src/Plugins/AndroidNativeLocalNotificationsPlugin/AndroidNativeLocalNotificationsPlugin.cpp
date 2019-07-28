@@ -2,9 +2,8 @@
 
 #include "AndroidNativeLocalNotificationsModule.h"
 
-#include "Interface/StringizeServiceInterface.h"
-
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/ConstStringHelper.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativeLocalNotifications, Mengine::AndroidNativeLocalNotificationsPlugin )

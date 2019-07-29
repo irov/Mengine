@@ -50,6 +50,7 @@
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 #include "Kernel/BasePrototypeGenerator.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
@@ -59,6 +60,7 @@
 #include "Kernel/String.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/EntityEventable.h"
 
 #include "Config/Config.h"
 #include "Config/Stringstream.h"
@@ -172,6 +174,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     bool Application::_initializeService()
     {
+        if( this->registerBaseTypes_() == false )
+        {
+            return false;
+        }
+
         if( this->registerBaseNodeTypes_() == false )
         {
             return false;
@@ -337,9 +344,30 @@ namespace Mengine
         this->unregisterArrowGenerator_();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Application::registerBaseTypes_()
+    {
+        LOGGER_MESSAGE( "Register Base Generator..." );
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeFactorableUnique<DefaultPrototypeGenerator<EntityEventable, 128> >() ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::unregisterBaseTypes_()
+    {
+        LOGGER_MESSAGE( "Unregister Base Generator..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
-        LOGGER_MESSAGE( "Register Object Factory..." );
+        LOGGER_MESSAGE( "Register Node Generator..." );
 
 #define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
@@ -401,7 +429,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterBaseNodeTypes_()
     {
-        LOGGER_MESSAGE( "Unregister Object Factory..." );
+        LOGGER_MESSAGE( "Unregister Node Generator..." );
 
 #define NODE_FACTORY( Type )\
         PROTOTYPE_SERVICE()\

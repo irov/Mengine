@@ -55,12 +55,14 @@ namespace Mengine
         bool getNopause() const override;
 
     protected:
+        bool registerBaseTypes_();
         bool registerBaseNodeTypes_();
         bool registerBaseResourceTypes_();
         bool registerSceneGenerator_();
         bool registerArrowGenerator_();
 
     protected:
+        void unregisterBaseTypes_();
         void unregisterBaseNodeTypes_();
         void unregisterBaseResourceTypes_();
         void unregisterSceneGenerator_();

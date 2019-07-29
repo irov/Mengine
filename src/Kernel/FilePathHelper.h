@@ -13,11 +13,12 @@ namespace Mengine
     namespace Helper
     {
         FilePath stringizeFilePath( const Char * _value );
-        FilePath stringizeFilePathSize( const Char * _value, FilePath::size_type _size );
         FilePath stringizeFilePath( const String & _path );
         FilePath stringizeFilePath( const PathString & _path );
+        FilePath stringizeFilePathSize( const Char * _value, FilePath::size_type _size );
         FilePath stringizeFilePathLocal( const Char * _value, FilePath::size_type _size );
         FilePath stringizeFilePathLocal( const PathString & _path );
+        FilePath stringizeFilePathFormat( const Char * _format, ... );
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Literals

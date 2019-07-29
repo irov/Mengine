@@ -11,10 +11,11 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        ConstString stringizeStringSizeHash( const Char * _value, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
-        ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size );
         ConstString stringizeString( const Char * _value );
         ConstString stringizeString( const String & _value );
+        ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size );
+        ConstString stringizeStringSizeHash( const Char * _value, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
+        ConstString stringizeStringFormat( const Char * _format, ... );
         ConstString stringizeStringLocal( const Char * _value, ConstString::size_type _size );
         ConstString stringizeStringHashLocal( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash );
         ConstString stringizeStringHashUnique( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash );

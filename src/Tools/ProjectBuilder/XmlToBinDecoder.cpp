@@ -16,6 +16,8 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Xml2Metabuf.hpp"
 #include "Xml2Metacode.hpp"
@@ -39,7 +41,7 @@ namespace Mengine
         Helper::unicodeToUtf8( _binPath, utf8_binPath );
 
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {

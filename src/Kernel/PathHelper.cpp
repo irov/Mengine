@@ -12,11 +12,6 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        FilePath emptyPath()
-        {
-            return FilePath( ConstString::none() );
-        }
-        //////////////////////////////////////////////////////////////////////////
         FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right )
         {
             PathString path;

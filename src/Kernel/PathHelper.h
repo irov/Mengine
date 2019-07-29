@@ -8,7 +8,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        FilePath emptyPath();
         FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right );
         bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _fileName, FilePath & _fullPath );
         FilePath getPathFolder( const FilePath & _fullpath );

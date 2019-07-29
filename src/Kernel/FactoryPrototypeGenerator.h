@@ -30,6 +30,8 @@ namespace Mengine
         FactoryPtr m_factory;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<FactoryPrototypeGenerator> FactoryPrototypeGeneratorPtr;
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const FactoryPtr & FactoryPrototypeGenerator::getFactory() const
     {
         return m_factory;

@@ -136,12 +136,16 @@ Entity
 	Entity.h
     EntityEventable.cpp
     EntityEventable.h
+    EntityHelper.cpp
+    EntityHelper.h
 )
 
 ADD_FILTER(
 Scene
 	Scene.cpp
 	Scene.h
+    SceneHelper.cpp
+    SceneHelper.h
 )
 
 ADD_FILTER(

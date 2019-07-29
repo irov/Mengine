@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 OPTION(MENGINE_PROJECT_NAME "Mengine build master release" OFF)
+OPTION(MENGINE_BUILD_ONLY_EXECUTABLE_MODULE "Mengine build only executable module" OFF)
 OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" OFF)
 OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 OPTION(MENGINE_USE_PYTHON_FRAMEWORK "Mengine use python framework" ON)

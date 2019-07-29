@@ -25,8 +25,8 @@ namespace Mengine
         ~ResourceSpineAtlasTexturepacker() override;
 
     public:
-        void setResourceTexturepackerName( const ConstString & _resourceTexturepackerName );
-        const ConstString & getResourceTexturepackerName() const;
+        void setResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) override;
+        const ConstString & getResourceTexturepackerName() const override;
 
     public:
         spAtlas * getSpineAtlas() const override;

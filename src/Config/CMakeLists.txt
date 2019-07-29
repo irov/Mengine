@@ -25,6 +25,7 @@ src
     Define.h
 	Config.h
     Export.h
+	Secure.h
 	cmake_dummy.cpp
 )
 

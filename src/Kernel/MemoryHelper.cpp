@@ -71,7 +71,11 @@ namespace Mengine
             InputStreamInterfacePtr stream = FILE_SERVICE()
                 ->openInputFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+            MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid create input file stream '%s:%s' stream [%d] (doc: %s)"
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
+                , _stream
+                , _doc );
 
             MemoryInterfacePtr memory = Helper::createMemoryStream( stream, _doc );
 

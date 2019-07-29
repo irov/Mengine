@@ -5,6 +5,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/SecureServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Ravingcode.h"
@@ -60,9 +61,12 @@ namespace Mengine
 
             if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
             {
-                uint32_t parrot = *(uint32_t *)(memory_buffer + 4);
+                Mengine::HashType sequreHash = SECURE_SERVICE()
+                    ->getSequreHash();
 
-                Helper::ravingcode( parrot, memory_buffer + 8, size - 8, memory_buffer + 8 );
+                uint32_t parrot = (uint32_t)sequreHash;
+
+                Helper::ravingcode( parrot, memory_buffer + 4, size - 4, memory_buffer + 4 );
             }
 
             if( tinyini_load( &_ini.ini, memory_buffer ) == TINYINI_RESULT_FAILURE )

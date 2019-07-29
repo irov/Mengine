@@ -30,6 +30,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/MT19937Randomizer.h"
+#include "Kernel/InputServiceHelper.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageDefault.h"
@@ -1336,8 +1337,7 @@ namespace Mengine
 
             mt::vec2f mp = pos_screen - cp;
 
-            INPUT_SERVICE()
-                ->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
+            Helper::pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, EMouseCode _code, bool _isDown )
@@ -1345,8 +1345,7 @@ namespace Mengine
             mt::vec2f pos_screen;
             this->s_calcMouseScreenPosition( _pos, &pos_screen );
 
-            INPUT_SERVICE()
-                ->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _code, 0.f, _isDown );
+            Helper::pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _code, 0.f, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_platformEvent( const ConstString & _event, const MapWParams & _params )

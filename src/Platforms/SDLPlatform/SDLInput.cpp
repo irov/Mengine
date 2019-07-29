@@ -3,6 +3,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/InputServiceHelper.h"
 
 #include "Config/String.h"
 
@@ -102,8 +103,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, point );
 
-                INPUT_SERVICE()
-                    ->pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, _event.wheel.y );
+                Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, _event.wheel.y );
             }break;
         case SDL_KEYDOWN:
         case SDL_KEYUP:
@@ -126,8 +126,7 @@ namespace Mengine
 
                 m_keyDown[code] = isDown;
 
-                INPUT_SERVICE()
-                    ->pushKeyEvent( point.x, point.y, code, isDown, false );
+                Helper::pushKeyEvent( point.x, point.y, code, isDown, false );
             } break;
         case SDL_TEXTINPUT:
             {
@@ -143,8 +142,7 @@ namespace Mengine
                 UNICODE_SYSTEM()
                     ->utf8ToUnicode( _event.text.text, MENGINE_UNICODE_UNKNOWN_SIZE, text_code, 8, &text_code_size );
 
-                INPUT_SERVICE()
-                    ->pushTextEvent( point.x, point.y, text_code[0] );
+                Helper::pushTextEvent( point.x, point.y, text_code[0] );
             }break;
         case SDL_MOUSEMOTION:
             {
@@ -154,8 +152,7 @@ namespace Mengine
                 mt::vec2f delta;
                 this->calcCursorPosition_( _event.motion.xrel, _event.motion.yrel, delta );
 
-                INPUT_SERVICE()
-                    ->pushMouseMoveEvent( 0, point.x, point.y, delta.x, delta.y, 0.f );
+                Helper::pushMouseMoveEvent( 0, point.x, point.y, delta.x, delta.y, 0.f );
             }break;
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
@@ -181,30 +178,26 @@ namespace Mengine
                     break;
                 };
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, code, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
+                Helper::pushMouseButtonEvent( 0, point.x, point.y, code, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
             }
             break;
         case SDL_FINGERMOTION:
             {
                 uint32_t fingerIndex = this->getFingerIndex_( _event.tfinger.fingerId );
 
-                INPUT_SERVICE()
-                    ->pushMouseMoveEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
+                Helper::pushMouseMoveEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
             }break;
         case SDL_FINGERDOWN:
             {
                 uint32_t fingerIndex = this->acquireFingerIndex_( _event.tfinger.fingerId );
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, true );
+                Helper::pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, true );
             }break;
         case SDL_FINGERUP:
             {
                 uint32_t fingerIndex = this->releaseFingerIndex_( _event.tfinger.fingerId );
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, false );
+                Helper::pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, MC_LBUTTON, _event.tfinger.pressure, false );
             }
             break;
         }

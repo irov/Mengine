@@ -20,6 +20,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/InputServiceHelper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -745,8 +746,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                INPUT_SERVICE()
-                    ->pushKeyEvent( point.x, point.y, code, true, false );
+                Helper::pushKeyEvent( point.x, point.y, code, true, false );
             }break;
         case WM_SYSKEYUP:
             {
@@ -757,8 +757,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                INPUT_SERVICE()
-                    ->pushKeyEvent( point.x, point.y, code, false, false );
+                Helper::pushKeyEvent( point.x, point.y, code, false, false );
             }break;
         case WM_SYSCOMMAND:
             {
@@ -929,8 +928,7 @@ namespace Mengine
                     mt::vec2f point;
                     this->calcCursorPosition_( point );
 
-                    INPUT_SERVICE()
-                        ->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+                    Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
@@ -965,8 +963,7 @@ namespace Mengine
                     ::InvalidateRect( hWnd, NULL, FALSE );
                     ::UpdateWindow( hWnd );
 
-                    INPUT_SERVICE()
-                        ->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+                    Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
                 }
 
                 if( m_clickOutArea == true )
@@ -975,8 +972,7 @@ namespace Mengine
 
                     if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
-                        INPUT_SERVICE()
-                            ->pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                        Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
                     }
                 }
 
@@ -1028,8 +1024,7 @@ namespace Mengine
                 //	, int( point.y * 768.f )
                 //	);
 
-                INPUT_SERVICE()
-                    ->pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
+                Helper::pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
 
                 handle = true;
                 _result = FALSE;
@@ -1043,8 +1038,7 @@ namespace Mengine
 
                 int32_t wheel = zDelta / WHEEL_DELTA;
 
-                INPUT_SERVICE()
-                    ->pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, wheel );
+                Helper::pushMouseWheelEvent( point.x, point.y, MC_LBUTTON, wheel );
 
                 handle = true;
                 _result = FALSE;
@@ -1063,8 +1057,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, true );
 
                 handle = true;
                 _result = FALSE;
@@ -1077,8 +1070,7 @@ namespace Mengine
                     mt::vec2f point;
                     this->calcCursorPosition_( point );
 
-                    INPUT_SERVICE()
-                        ->pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_LBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick = false;
@@ -1093,8 +1085,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, true );
 
                 handle = true;
                 _result = FALSE;
@@ -1106,8 +1097,7 @@ namespace Mengine
                     mt::vec2f point;
                     this->calcCursorPosition_( point );
 
-                    INPUT_SERVICE()
-                        ->pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
+                    Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_RBUTTON, 0.f, false );
                 }
 
                 m_isDoubleClick = false;
@@ -1122,8 +1112,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
+                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, true );
 
                 handle = true;
                 _result = FALSE;
@@ -1133,8 +1122,7 @@ namespace Mengine
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
+                Helper::pushMouseButtonEvent( 0, point.x, point.y, MC_MBUTTON, 0.f, false );
 
                 handle = true;
                 _result = FALSE;
@@ -1148,8 +1136,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                INPUT_SERVICE()
-                    ->pushKeyEvent( point.x, point.y, code, true, false );
+                Helper::pushKeyEvent( point.x, point.y, code, true, false );
 
                 handle = true;
                 _result = FALSE;
@@ -1163,8 +1150,7 @@ namespace Mengine
 
                 EKeyCode code = (EKeyCode)vkc;
 
-                INPUT_SERVICE()
-                    ->pushKeyEvent( point.x, point.y, code, false, false );
+                Helper::pushKeyEvent( point.x, point.y, code, false, false );
 
                 handle = true;
                 _result = FALSE;
@@ -1188,8 +1174,7 @@ namespace Mengine
                     UNICODE_SYSTEM()
                         ->utf8ToUnicode( utf8, MENGINE_UNICODE_UNKNOWN_SIZE, text_code, 2, &text_code_size );
 
-                    INPUT_SERVICE()
-                        ->pushTextEvent( point.x, point.y, text_code[0] );
+                    Helper::pushTextEvent( point.x, point.y, text_code[0] );
 
                     handle = true;
                     _result = FALSE;
@@ -2748,19 +2733,16 @@ namespace Mengine
         mt::vec2f point;
         if( this->calcCursorPosition_( point ) == true )
         {
-            INPUT_SERVICE()
-                ->pushMousePositionEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMousePositionEvent( 0, point.x, point.y, 0.f );
         }
 
         if( m_active == false )
         {
-            INPUT_SERVICE()
-                ->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
         }
         else
         {
-            INPUT_SERVICE()
-                ->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+            Helper::pushMouseEnterEvent( 0, point.x, point.y, 0.f );
         }
 
         if( nopause == false )

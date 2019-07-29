@@ -370,6 +370,9 @@ Core
     FileLogger.cpp
     FileLogger.h
     
+    InputServiceHelper.cpp
+    InputServiceHelper.h
+    
     PixelFormat.h
     PixelFormat.cpp
     

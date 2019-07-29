@@ -17,12 +17,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void* my_jpp_malloc( size_t _size )
     {
-        return Helper::allocateMemory( _size, "ResourceImageTexturepacker" );
+        return Helper::allocateMemory( _size, "ResourceJSON" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void my_jpp_free( void* _ptr )
     {
-        Helper::freeMemory( _ptr, "ResourceImageTexturepacker" );
+        Helper::freeMemory( _ptr, "ResourceJSON" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void my_jpp_error( int32_t _line, int32_t _column, int32_t _position, const char* _source, const char* _text, void* _ud )

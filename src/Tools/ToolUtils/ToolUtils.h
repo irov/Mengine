@@ -23,7 +23,11 @@
 
 #	include <stdint.h>
 
+//////////////////////////////////////////////////////////////////////////
 void message_error( const char * _format, ... );
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size );
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, bool & _value );
 void parse_arg( const std::wstring & _str, uint32_t & _value );
@@ -141,3 +145,4 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path );
 int ForceRemoveDirectory( LPCTSTR dir );
 typedef std::vector<std::wstring> Files;
 bool SelectFile( LPCTSTR dir, Files & _files );
+uint8_t * ReadFileMemory( const WCHAR * _file, const WCHAR * _mode );

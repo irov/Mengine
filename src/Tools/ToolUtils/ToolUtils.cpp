@@ -16,6 +16,24 @@ void message_error( const char * _format, ... )
     printf( str );
 }
 //////////////////////////////////////////////////////////////////////////
+void unicode_to_utf8( char * _utf8, size_t _capacity, const wchar_t * _unicode, size_t _size )
+{
+    DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
+
+    int utf8_size = ::WideCharToMultiByte(
+        CP_UTF8
+        , dwConversionFlags
+        , _unicode
+        , _size
+        , _utf8
+        , _capacity
+        , NULL
+        , NULL
+    );
+
+    _utf8[utf8_size] = 0;
+}
+//////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, bool & _value )
 {
     uint32_t value;
@@ -137,4 +155,24 @@ bool SelectFile( LPCTSTR _dir, Files & _files )
     ::FindClose( hFind );
 
     return true;
+}
+//////////////////////////////////////////////////////////////////////////
+uint8_t * ReadFileMemory( const WCHAR * _file, const WCHAR * _mode )
+{
+    FILE * f = _wfopen( _file, _mode );
+
+    if( f == NULL )
+    {
+        return nullptr;
+    }
+
+    fseek( f, 0, SEEK_END );
+    int f_in_size = ftell( f );
+    rewind( f );
+
+    uint8_t * buff = new uint8_t[f_in_size];
+    fread( buff, f_in_size, 1, f );
+    fclose( f );
+
+    return buff;
 }

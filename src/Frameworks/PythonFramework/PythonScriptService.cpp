@@ -286,7 +286,7 @@ namespace Mengine
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
 #ifdef MENGINE_DEBUG
-        pybind::observer_bind_call * bind_call = new My_observer_bind_call( this );
+        pybind::observer_bind_call * bind_call = Helper::allocateT<My_observer_bind_call>( this );
         m_kernel->set_observer_bind_call( bind_call );
 #endif
 
@@ -382,7 +382,8 @@ namespace Mengine
     {
 #ifdef MENGINE_DEBUG
         My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
-        delete observer_bind_call;
+        Helper::freeT( observer_bind_call );
+
         m_kernel->set_observer_bind_call( nullptr );
 
         m_debugCallFunctions.clear();

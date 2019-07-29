@@ -4,17 +4,17 @@
 
 namespace Mengine
 {
-    class ScenePrototypeGenerator
+    class EntityPrototypeGenerator
         : public BasePrototypeGenerator
     {
     public:
-        ScenePrototypeGenerator();
-        ~ScenePrototypeGenerator() override;
+        EntityPrototypeGenerator();
+        ~EntityPrototypeGenerator() override;
 
     protected:
         FactorablePointer generate( const Char * _doc ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScenePrototypeGenerator, PrototypeGeneratorInterface> ScenePrototypeGeneratorPtr;
+    typedef IntrusivePtr<EntityPrototypeGenerator, PrototypeGeneratorInterface> EntityPrototypeGeneratorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

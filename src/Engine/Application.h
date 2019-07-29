@@ -58,6 +58,7 @@ namespace Mengine
         bool registerBaseTypes_();
         bool registerBaseNodeTypes_();
         bool registerBaseResourceTypes_();
+        bool registerEntityGenerator_();
         bool registerSceneGenerator_();
         bool registerArrowGenerator_();
 
@@ -65,6 +66,7 @@ namespace Mengine
         void unregisterBaseTypes_();
         void unregisterBaseNodeTypes_();
         void unregisterBaseResourceTypes_();
+        void unregisterEntityGenerator_();
         void unregisterSceneGenerator_();
         void unregisterArrowGenerator_();
 

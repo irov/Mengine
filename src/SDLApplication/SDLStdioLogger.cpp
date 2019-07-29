@@ -28,5 +28,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLStdioLogger::flush()
     {
+        std::cout.flush();
     }
-}	// namespace Mengine
+}

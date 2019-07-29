@@ -112,6 +112,7 @@
 #include "ResourceCursorICO.h"
 #include "ResourceCursorSystem.h"
 
+#include "EntityPrototypeGenerator.h"
 #include "ScenePrototypeGenerator.h"
 #include "ArrowPrototypeGenerator.h"
 
@@ -185,6 +186,11 @@ namespace Mengine
         }
 
         if( this->registerBaseResourceTypes_() == false )
+        {
+            return false;
+        }
+
+        if( this->registerEntityGenerator_() == false )
         {
             return false;
         }
@@ -338,8 +344,10 @@ namespace Mengine
         m_locale.clear();
         m_projectCodename.clear();
 
+        this->unregisterBaseTypes_();
         this->unregisterBaseNodeTypes_();
         this->unregisterBaseResourceTypes_();
+        this->registerEntityGenerator_();
         this->unregisterSceneGenerator_();
         this->unregisterArrowGenerator_();
     }
@@ -481,6 +489,21 @@ namespace Mengine
 #undef SURFACE_FACTORY
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Application::registerEntityGenerator_()
+    {
+        LOGGER_INFO( "Register Entity Generator..." );
+
+        EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>();
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), generator ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
         LOGGER_INFO( "Register Scene Generator..." );
@@ -494,6 +517,14 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::unregisterEntityGenerator_()
+    {
+        LOGGER_INFO( "Unregister Entity Generator..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::unregisterSceneGenerator_()

@@ -25,8 +25,8 @@ namespace Mengine
         ~ResourceSpineSkeleton() override;
 
     public:
-        void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas );
-        const ConstString & getResourceSpineAtlasName() const;
+        void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas ) override;
+        const ConstString & getResourceSpineAtlasName() const override;
 
     public:
         spSkeletonData * getSkeletonData() const;

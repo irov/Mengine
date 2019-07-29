@@ -243,6 +243,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_finalizeService()
     {
+        this->setActive_( false );
+
         m_platformTags.clear();
 
         m_cursors.clear();
@@ -251,6 +253,12 @@ namespace Mengine
         {
             m_alreadyRunningMonitor->finalize();
             m_alreadyRunningMonitor = nullptr;
+        }
+
+        if( m_antifreezeMonitor != nullptr )
+        {
+            m_antifreezeMonitor->finalize();
+            m_antifreezeMonitor = nullptr;
         }
 
         if( m_hWnd != NULL )
@@ -266,7 +274,8 @@ namespace Mengine
             if( ::UnregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance ) == FALSE )
             {
                 LOGGER_ERROR( "invalid UnregisterClass '%s'"
-                    , MENGINE_WINDOW_CLASSNAME );
+                    , MENGINE_WINDOW_CLASSNAME
+                );
             }
 
             m_hInstance = NULL;
@@ -403,7 +412,7 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            if( m_antifreezeMonitor->run() == false )
+            if( m_antifreezeMonitor->initialize() == false )
             {
                 return false;
             }
@@ -514,7 +523,11 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            m_antifreezeMonitor->stop();
+            if( m_antifreezeMonitor != nullptr )
+            {
+                m_antifreezeMonitor->finalize();
+                m_antifreezeMonitor = nullptr;
+            }
         }
 
         m_mouseEvent.stop();

@@ -1,6 +1,9 @@
 #include "FilePathHelper.h"
 
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Assertion.h"
+
+#include <stdarg.h>
 
 namespace Mengine
 {
@@ -57,6 +60,30 @@ namespace Mengine
             FilePath fp = Helper::stringizeFilePathLocal( value_str, value_size );
 
             return fp;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        FilePath stringizeFilePathFormat( const Char * _format, ... )
+        {
+            va_list args;
+            va_start( args, _format );
+
+            Char str[MENGINE_MAX_PATH] = { 0 };
+            int size = ::vsnprintf( str, MENGINE_MAX_PATH - 1, _format, args );
+
+            MENGINE_ASSERTION_FATAL( size >= 0, "invalid stringize file format '%s'"
+                , _format
+            );
+
+            va_end( args );
+
+            if( size == 0 )
+            {
+                return FilePath::none();
+            }
+
+            FilePath filePath = Helper::stringizeFilePathSize( str, size );
+
+            return filePath;
         }
     }
     //////////////////////////////////////////////////////////////////////////

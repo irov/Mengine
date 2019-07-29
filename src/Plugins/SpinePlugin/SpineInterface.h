@@ -31,10 +31,21 @@ namespace Mengine
     EVENTATION_TYPEID( SpineEventReceiverInterface, EVENT_SPINE_EVENT );
     EVENTATION_TYPEID( SpineEventReceiverInterface, EVENT_SPINE_STATE_ANIMATION_END );
     //////////////////////////////////////////////////////////////////////////
+    class UnknownResourceSpineAtlasTexturepacker
+        : public UnknownInterface
+    {
+    public:
+        virtual void setResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) = 0;
+        virtual const ConstString & getResourceTexturepackerName() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class UnknownResourceSpineSkeleton
         : public UnknownInterface
     {
     public:
+        virtual void setResourceSpineAtlasName( const ConstString & _resourceSpineAtlas ) = 0;
+        virtual const ConstString & getResourceSpineAtlasName() const = 0;
+
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownSpine

@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"
@@ -16,12 +15,14 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 namespace Mengine
 {
     bool spreadingPngAlpha( pybind::kernel_interface * _kernel, const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {
-        (void)_kernel;
+        MENGINE_UNUSED( _kernel );
 
         LOGGER_INFO( "spreadingPngAlpha\n" );
 

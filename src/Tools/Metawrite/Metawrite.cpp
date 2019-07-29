@@ -19,7 +19,10 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/LoggerBase.h"
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/PathHelper.h"
+
 #include "ToolUtils/ToolUtils.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
@@ -119,15 +122,15 @@ namespace Mengine
         PLUGIN_CREATE( LZ4 );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), Helper::stringizeString( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
 
-        ConstString dev = Helper::stringizeString( "dev" );
+        ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, Helper::emptyPath(), Helper::stringizeString( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

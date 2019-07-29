@@ -19,6 +19,8 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Xml2Metabuf.hpp"
 #include "Xml2Metacode.hpp"

@@ -30,7 +30,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32AntifreezeMonitor::run()
+    bool Win32AntifreezeMonitor::initialize()
     {
         uint32_t seconds = CONFIG_VALUE( "Engine", "AntifreezeMonitorSeconds", 5U );
 
@@ -67,7 +67,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32AntifreezeMonitor::stop()
+    void Win32AntifreezeMonitor::finalize()
     {
         if( m_workerId != 0 )
         {

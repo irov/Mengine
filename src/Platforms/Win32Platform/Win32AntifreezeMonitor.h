@@ -19,8 +19,8 @@ namespace Mengine
         ~Win32AntifreezeMonitor();
 
     public:
-        bool run();
-        void stop();
+        bool initialize();
+        void finalize();
 
         void ping();
 

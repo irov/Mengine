@@ -151,7 +151,6 @@ namespace Mengine
         FactoryPtr m_factoryDynamicLibraries;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
-
         Win32FPSMonitorPtr m_fpsMonitor;
         Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 

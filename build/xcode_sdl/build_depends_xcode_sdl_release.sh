@@ -2,8 +2,8 @@
 
 CONFIGURATION=Release
 
-mkdir -p ../../build_temp/build_xcode_sdl/$CONFIGURATION
-pushd ../../build_temp/build_xcode_sdl/$CONFIGURATION
+mkdir -p ../../solutions/dependencies_xcode_sdl/$CONFIGURATION
+pushd ../../solutions/dependencies_xcode_sdl/$CONFIGURATION
 /Applications/CMake.app/Contents/bin/cmake -G"Xcode" "$PWD/../../../CMake/Depends_Xcode_SDL" -DCMAKE_BUILD_TYPE:STRING='$CONFIGURATION' -DCMAKE_CONFIGURATION_TYPES:STRING='$CONFIGURATION' -DCMAKE_OSX_SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 
 /Applications/CMake.app/Contents/bin/cmake --build ./ --config $CONFIGURATION
 popd

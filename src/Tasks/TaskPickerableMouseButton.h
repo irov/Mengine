@@ -25,7 +25,6 @@ namespace Mengine
         PickerablePtr m_pickerable;
         EMouseCode m_code;
         bool m_isDown;
-        bool m_handle;
 
         LambdaPickerMouseButtonEvent m_filter;
     };

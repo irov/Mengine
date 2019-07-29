@@ -9,7 +9,7 @@
 
 #include "DocumentTraceback.h"
 #include "PythonEntityBehavior.h"
-#include "EntityPrototypeGenerator.h"
+#include "PythonEntityPrototypeGenerator.h"
 
 #include "Kernel/Entity.h"
 #include "Kernel/Scene.h"
@@ -31,12 +31,12 @@ namespace Mengine
     public:
         EntityScriptMethod()
         {
-            m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>();
+            m_factoryEntityPrototypeGenerator = new FactoryPool<PythonEntityPrototypeGenerator, 64>();
         }
 
         ~EntityScriptMethod() override
         {
-            for( const EntityPrototypeGeneratorPtr & generator : m_entityPrototypeGenerators )
+            for( const PythonEntityPrototypeGeneratorPtr & generator : m_entityPrototypeGenerators )
             {
                 const ConstString & category = generator->getCategory();
                 const ConstString & prototype = generator->getPrototype();
@@ -56,7 +56,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
         {
-            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
+            PythonEntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_PYBIND );
 
             generator->setGenerator( _generator );
 
@@ -115,8 +115,8 @@ namespace Mengine
                 , _prototype.c_str()
             );
 
-            EntityPrototypeGeneratorPtr entityGenerator =
-                stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
+            PythonEntityPrototypeGeneratorPtr entityGenerator =
+                stdex::intrusive_static_cast<PythonEntityPrototypeGeneratorPtr>(generator);
 
             const pybind::object & py_type = entityGenerator->getPythonType();
 
@@ -126,7 +126,7 @@ namespace Mengine
     protected:
         FactoryPtr m_factoryEntityPrototypeGenerator;
 
-        typedef Vector<EntityPrototypeGeneratorPtr> VectorEntityPrototypeGenerators;
+        typedef Vector<PythonEntityPrototypeGeneratorPtr> VectorEntityPrototypeGenerators;
         VectorEntityPrototypeGenerators m_entityPrototypeGenerators;
     };
     //////////////////////////////////////////////////////////////////////////

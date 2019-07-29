@@ -14,4 +14,7 @@ namespace Mengine
     protected:
         FactorablePointer generate( const Char * _doc ) override;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ArrowPrototypeGenerator, PrototypeGeneratorInterface> ArrowPrototypeGeneratorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

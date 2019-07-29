@@ -81,8 +81,8 @@ ADD_FILTER(
 Generator
     PythonEntityBehavior.h
     PythonEntityBehavior.cpp    
-	EntityPrototypeGenerator.h
-	EntityPrototypeGenerator.cpp
+	PythonEntityPrototypeGenerator.h
+	PythonEntityPrototypeGenerator.cpp
 )
 
 ADD_FILTER(

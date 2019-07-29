@@ -244,4 +244,4 @@ namespace Mengine
         m_relationPath = _relationPath;
     }
     //////////////////////////////////////////////////////////////////////////
-}   // namespace Mengine
+}

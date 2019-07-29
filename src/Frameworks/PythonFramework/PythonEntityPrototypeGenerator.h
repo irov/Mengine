@@ -11,12 +11,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class EntityPrototypeGenerator
+    class PythonEntityPrototypeGenerator
         : public FactoryPrototypeGenerator
     {
     public:
-        EntityPrototypeGenerator();
-        ~EntityPrototypeGenerator() override;
+        PythonEntityPrototypeGenerator();
+        ~PythonEntityPrototypeGenerator() override;
 
     public:
         void setGenerator( const pybind::object & _generator );
@@ -42,7 +42,7 @@ namespace Mengine
         pybind::object m_type;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
+    typedef IntrusivePtr<PythonEntityPrototypeGenerator> PythonEntityPrototypeGeneratorPtr;
     //////////////////////////////////////////////////////////////////////////
 
 }

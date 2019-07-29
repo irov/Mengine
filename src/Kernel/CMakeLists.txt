@@ -364,6 +364,9 @@ Core
     PathHelper.h
     PathHelper.cpp
     
+    StreamLogger.cpp
+    StreamLogger.h
+        
     FileLogger.cpp
     FileLogger.h
     

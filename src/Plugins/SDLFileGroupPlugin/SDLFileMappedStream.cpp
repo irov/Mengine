@@ -47,4 +47,4 @@ namespace Mengine
 
         return false;
     }
-}	// namespace Mengine
+}

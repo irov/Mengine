@@ -51,6 +51,8 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 
+#include "Config/Stringstream.h"
+
 #include "SDLMessageBoxLogger.h"
 
 #ifdef MENGINE_PLATFORM_ANDROID
@@ -242,10 +244,73 @@ namespace Mengine
             return true;
         }
 
-        m_fileLog = new FactorableUnique<FileLogger>();
+        PlatformDateTime dateTime;
+        PLATFORM_SERVICE()
+            ->getDateTime( &dateTime );
 
-        LOGGER_SERVICE()
-            ->registerLogger( m_fileLog );
+        Stringstream ss_date;
+        ss_date << dateTime.year
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+            << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+        String str_date = ss_date.str();
+
+        WString unicode_date;
+        Helper::utf8ToUnicode( str_date, unicode_date );
+
+        WString unicode_logFilename;
+        unicode_logFilename += L"Game";
+
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool roamingMode = HAS_OPTION( "roaming" );
+        bool noroamingMode = HAS_OPTION( "noroaming" );
+
+        if( developmentMode == true && roamingMode == false || noroamingMode == false )
+        {
+            unicode_logFilename += L"_";
+            unicode_logFilename += unicode_date;
+        }
+
+        unicode_logFilename += L".log";
+
+        String utf8_logFilename;
+        if( Helper::unicodeToUtf8( unicode_logFilename, utf8_logFilename ) == false )
+        {
+            LOGGER_ERROR( "failed log directory '%ls' convert to ut8f"
+                , unicode_logFilename.c_str()
+            );
+
+            return false;
+        }
+
+        FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename );
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>();
+
+        fileLog->setFileGroup( fileGroup );
+        fileLog->setFilePath( logFilename );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( fileLog ) == false )
+        {
+            LOGGER_ERROR( "invalid register file logger '%s'"
+                , logFilename.c_str()
+            );
+        }
+        else
+        {
+            m_fileLog = fileLog;
+
+            LOGGER_INFO( "starting log to '%s'"
+                , logFilename.c_str()
+            );
+        }
 
         return true;
     }

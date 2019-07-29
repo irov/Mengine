@@ -1,4 +1,4 @@
-#include "EntityPrototypeGenerator.h"
+#include "PythonEntityPrototypeGenerator.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
@@ -19,25 +19,25 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    EntityPrototypeGenerator::EntityPrototypeGenerator()
+    PythonEntityPrototypeGenerator::PythonEntityPrototypeGenerator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    EntityPrototypeGenerator::~EntityPrototypeGenerator()
+    PythonEntityPrototypeGenerator::~PythonEntityPrototypeGenerator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void EntityPrototypeGenerator::setGenerator( const pybind::object & _generator )
+    void PythonEntityPrototypeGenerator::setGenerator( const pybind::object & _generator )
     {
         m_generator = _generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::object & EntityPrototypeGenerator::getGenerator() const
+    const pybind::object & PythonEntityPrototypeGenerator::getGenerator() const
     {
         return m_generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool EntityPrototypeGenerator::initialize()
+    bool PythonEntityPrototypeGenerator::initialize()
     {
         if( FactoryPrototypeGenerator::initialize() == false )
         {
@@ -52,7 +52,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void EntityPrototypeGenerator::finalize()
+    void PythonEntityPrototypeGenerator::finalize()
     {
         FactoryPrototypeGenerator::finalize();
 
@@ -60,14 +60,14 @@ namespace Mengine
         m_generator = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactoryPtr EntityPrototypeGenerator::_initializeFactory()
+    FactoryPtr PythonEntityPrototypeGenerator::_initializeFactory()
     {
         FactoryPtr factory = Helper::makeFactoryPool<PythonEntityBehavior, 128>();
 
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::object & EntityPrototypeGenerator::getPythonType()
+    const pybind::object & PythonEntityPrototypeGenerator::getPythonType()
     {
         if( m_type.is_invalid() == false )
         {
@@ -91,7 +91,7 @@ namespace Mengine
         return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer EntityPrototypeGenerator::generate( const Char * _doc )
+    FactorablePointer PythonEntityPrototypeGenerator::generate( const Char * _doc )
     {
         const pybind::object & py_type = this->getPythonType();
 

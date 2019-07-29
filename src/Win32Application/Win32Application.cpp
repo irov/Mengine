@@ -334,15 +334,21 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE()
-            ->openOutputFile( fileGroup, logFilename, MENGINE_DOCUMENT_FUNCTION );
+        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>();
 
-        if( fileLogInterface != nullptr )
+        fileLog->setFileGroup( fileGroup );
+        fileLog->setFilePath( logFilename );
+
+        if( LOGGER_SERVICE()
+            ->registerLogger( fileLog ) == false )
         {
-            m_fileLog = Helper::makeFactorableUnique<FileLogger>();
-
-            LOGGER_SERVICE()
-                ->registerLogger( m_fileLog );
+            LOGGER_ERROR( "invalid register file logger '%s'"
+                , logFilename.c_str()
+            );
+        }
+        else
+        {
+            m_fileLog = fileLog;
 
             LOGGER_INFO( "starting log to '%s'"
                 , logFilename.c_str()
@@ -360,12 +366,14 @@ namespace Mengine
             return true;
         }
 
-        m_loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>();
+        MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>();
 
-        m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
         LOGGER_SERVICE()
-            ->registerLogger( m_loggerMessageBox );
+            ->registerLogger( loggerMessageBox );
+
+        m_loggerMessageBox = loggerMessageBox;
 
         return true;
     }

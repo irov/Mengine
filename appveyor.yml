@@ -74,7 +74,7 @@ build_script:
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
 - pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal & popd
 - echo "Configured Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% -DMENGINE_LIB_DIR:STRING='..\CMake\%CMAKE_DEPENDENCIES_DIR%' & popd
+- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% -DMENGINE_LIB_DIR:STRING='%CMAKE_DEPENDENCIES_DIR%' & popd
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
 - pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake --build . --clean-first -j 4 --config %configuration% -- /verbosity:minimal & popd
 - echo "Complete!"

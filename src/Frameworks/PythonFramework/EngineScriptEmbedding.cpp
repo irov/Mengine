@@ -62,16 +62,12 @@
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
 
-//#include "Light2D.h"
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
 #include "Engine/Point.h"
 #include "Engine/Line.h"
 #include "Kernel/RenderCameraProjection.h"
-//#include "RigidBody3D.h"
-//#include "CapsuleController.h"
-//#include "Skeleton.h"
 
 #include "ScriptHolder.h"
 #include "DocumentTraceback.h"

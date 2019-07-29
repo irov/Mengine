@@ -1,10 +1,10 @@
 #! /bin/bash
 
-mkdir -p ../../build_temp/downloads
-pushd ../../build_temp/downloads
+mkdir -p ../../solutions/downloads
+pushd ../../solutions/downloads
 /Applications/CMake.app/Contents/bin/cmake "$PWD/../../CMake/Downloads"
 popd
 
-pushd ../../build_temp/downloads
+pushd ../../solutions/downloads
 /Applications/CMake.app/Contents/bin/cmake --build ./
 popd

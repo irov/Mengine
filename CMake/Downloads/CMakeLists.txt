@@ -16,7 +16,7 @@ DOWNLOAD_URL_HASH(openssl https://www.npcglib.org/~stathis/downloads/openssl-1.1
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 
-GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "2.2.0")
+GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "3.0.2")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.11")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.3")
 GIT_CLONE(libvorbis https://github.com/xiph/vorbis.git "v1.3.6")

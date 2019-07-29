@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SpineInterface.h"
+
 #include "ResourceSpineAtlas.h"
 
 #include "Kernel/Resource.h"
@@ -13,8 +15,10 @@ namespace Mengine
 {
     class ResourceSpineAtlasTexturepacker
         : public ResourceSpineAtlas
+        , public UnknownResourceSpineAtlasTexturepacker
     {
         DECLARE_VISITABLE( ResourceSpineAtlas );
+        DECLARE_UNKNOWABLE();
 
     public:
         ResourceSpineAtlasTexturepacker();

@@ -37,8 +37,8 @@ namespace Mengine
         SoundScriptMethod()
             : m_affectorMusicID( 0 )
         {
-            m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>();
-            m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>();
+            m_factorySoundAffectorCallback = Helper::makeFactoryPool<SoundAffectorCallback, 4>();
+            m_factoryMusicAffectorCallback = Helper::makeFactoryPool<MusicAffectorCallback, 4>();
         }
 
         ~SoundScriptMethod() override
@@ -868,6 +868,8 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr< SoundScriptMethod> SoundScriptMethodPtr;
+    //////////////////////////////////////////////////////////////////////////
     SoundScriptEmbedding::SoundScriptEmbedding()
     {
     }
@@ -878,7 +880,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        SoundScriptMethod * soundScriptMethod = new FactorableUnique<SoundScriptMethod>();
+        SoundScriptMethodPtr soundScriptMethod = Helper::makeFactorableUnique<SoundScriptMethod>();
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin> >( _kernel, "SoundIdentity" )
             .def( "getId", &SoundIdentityInterface::getId )

@@ -34,12 +34,12 @@ namespace Mengine
 
         m_memoryCacheMutex = memoryCacheMutex;
 
-        m_factoryMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
-        m_factoryMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
-        m_factoryMemoryProxyInput = new FactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
-        m_factoryMemoryInput = new FactoryPool<MemoryInput, 16, FactoryWithMutex>();
-        m_factoryMemoryBuffer = new FactoryPool<MemoryBuffer, 16, FactoryWithMutex>();
-        m_factoryMemoryProxy = new FactoryPool<MemoryProxy, 16, FactoryWithMutex>();
+        m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
+        m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
+        m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
+        m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16, FactoryWithMutex>();
+        m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>();
+        m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>();
 
         m_factoryMemoryBuffer->setMutex( m_memoryCacheMutex );
         m_factoryMemoryProxy->setMutex( m_memoryCacheMutex );

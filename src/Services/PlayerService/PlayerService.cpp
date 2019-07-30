@@ -186,7 +186,7 @@ namespace Mengine
     {
         m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>();
 
-        m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
+        m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>();
 
         SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
@@ -290,6 +290,7 @@ namespace Mengine
         m_affectorableGlobal = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
+
         m_factoryScheduleManager = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

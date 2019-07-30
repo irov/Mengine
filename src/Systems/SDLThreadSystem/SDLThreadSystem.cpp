@@ -25,8 +25,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::_initializeService()
     {
-        m_factoryThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
-        m_factoryThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
+        m_factoryThreadIdentity = Helper::makeFactoryPool<SDLThreadIdentity, 16>();
+        m_factoryThreadMutex = Helper::makeFactoryPool<SDLThreadMutex, 16>();
 
         return true;
     }

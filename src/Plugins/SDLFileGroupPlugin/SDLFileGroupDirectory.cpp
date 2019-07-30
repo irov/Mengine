@@ -44,8 +44,8 @@ namespace Mengine
             return false;
         }
 
-        m_factoryInputStream = new FactoryPool<SDLFileInputStream, 8>();
-        m_factoryOutputStream = new FactoryPool<SDLFileOutputStream, 4>();
+        m_factoryInputStream = Helper::makeFactoryPool<SDLFileInputStream, 8>();
+        m_factoryOutputStream = Helper::makeFactoryPool<SDLFileOutputStream, 4>();
 
         return true;
     }

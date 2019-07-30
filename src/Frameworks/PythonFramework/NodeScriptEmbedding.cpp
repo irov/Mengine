@@ -144,11 +144,11 @@ namespace Mengine
     public:
         NodeScriptMethod()
         {
-            m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 16>();
-            m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 16>();
-            m_factoryPythonScheduleTiming = new FactoryPool<PythonScheduleTiming, 16>();
-            m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 16>();
-            m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>();
+            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 16>();
+            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 16>();
+            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>();
+            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>();
+            m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>();
         }
 
         ~NodeScriptMethod() override
@@ -909,7 +909,7 @@ namespace Mengine
         public:
             FactoryAffectorVelocity2()
             {
-                m_factory = new FactoryPool<AffectorVelocity2, 4>();
+                m_factory = Helper::makeFactoryPool<AffectorVelocity2, 4>();
             }
 
         public:
@@ -1389,7 +1389,7 @@ namespace Mengine
         public:
             FactoryAffectorInterpolateParabolic()
             {
-                m_factory = new FactoryPool<AffectorCreatorInterpolateParabolic, 4>();
+                m_factory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>();
             }
 
         public:
@@ -1613,7 +1613,7 @@ namespace Mengine
         public:
             FactoryAffectorFollowTo()
             {
-                m_factory = new FactoryPool<AffectorCreatorFollowTo, 4>();
+                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>();
             }
 
         public:
@@ -1801,7 +1801,7 @@ namespace Mengine
         public:
             FactoryAffectorFollowToW()
             {
-                m_factory = new FactoryPool<AffectorCreatorFollowToW, 4>();
+                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>();
             }
 
         public:
@@ -2181,6 +2181,8 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
+    //////////////////////////////////////////////////////////////////////////
     NodeScriptEmbedding::NodeScriptEmbedding()
     {
     }
@@ -2259,7 +2261,7 @@ namespace Mengine
 
 #undef SCRIPT_CLASS_WRAPPING
 
-        NodeScriptMethod * nodeScriptMethod = new FactorableUnique<NodeScriptMethod>();
+        NodeScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<NodeScriptMethod>();
 
         pybind::interface_<Mixin>( _kernel, "Mixin", true )
             .def_smart_pointer()

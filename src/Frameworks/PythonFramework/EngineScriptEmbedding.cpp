@@ -156,22 +156,22 @@ namespace Mengine
     public:
         EngineScriptMethod()
         {
-            m_factoryPythonScheduleTiming = new FactoryPool<PythonScheduleTiming, 8>();
-            m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 8>();
-            m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 8>();
-            m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 8>();
-            m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>();
-            m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>();
-            m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>();
-            m_factoryPyGlobalMouseLeaveHandlers = new FactoryPool<PyGlobalMouseLeaveHandler, 32>();
-            m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>();
-            m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>();
-            m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>();
-            m_factoryPyGlobalMouseHandlerWheels = new FactoryPool<PyGlobalMouseHandlerWheel, 32>();
-            m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
-            m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>();
-            m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>();
-            m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();
+            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 8>();
+            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 8>();
+            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 8>();
+            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 8>();
+            m_factoryPythonSceneChangeCallback = Helper::makeFactoryPool<PythonSceneChangeCallback, 8>();
+            m_factoryAffectorGridBurnTransparency = Helper::makeFactoryPool<AffectorGridBurnTransparency, 4>();
+            m_factoryAffectorUser = Helper::makeFactoryPool<AffectorUser, 4>();
+            m_factoryPyGlobalMouseLeaveHandlers = Helper::makeFactoryPool<PyGlobalMouseLeaveHandler, 32>();
+            m_factoryPyGlobalMouseMoveHandlers = Helper::makeFactoryPool<PyGlobalMouseMoveHandler, 32>();
+            m_factoryPyGlobalMouseHandlerButtons = Helper::makeFactoryPool<PyGlobalMouseHandlerButton, 32>();
+            m_factoryPyGlobalMouseHandlerButtonEnds = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonEnd, 32>();
+            m_factoryPyGlobalMouseHandlerWheels = Helper::makeFactoryPool<PyGlobalMouseHandlerWheel, 32>();
+            m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
+            m_factoryPyGlobalKeyHandler = Helper::makeFactoryPool<PyGlobalKeyHandler, 32>();
+            m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>();
+            m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>();
         }
 
         ~EngineScriptMethod() override
@@ -2326,7 +2326,7 @@ namespace Mengine
         public:
             AffectorNodeFollowerCreator()
             {
-                m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>();
+                m_factory = Helper::makeFactoryPool<TAffectorNodeFollowerMethod, 4>();
             }
 
         public:
@@ -3522,6 +3522,8 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<EngineScriptMethod> EngineScriptMethodPtr;
+    //////////////////////////////////////////////////////////////////////////
     EngineScriptEmbedding::EngineScriptEmbedding()
     {
     }
@@ -3532,7 +3534,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EngineScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        EngineScriptMethod * nodeScriptMethod = new FactorableUnique<EngineScriptMethod>();
+        EngineScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<EngineScriptMethod>();
 
         pybind::def_functor_args( _kernel, "createCurrentScene", nodeScriptMethod, &EngineScriptMethod::createCurrentScene );
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );

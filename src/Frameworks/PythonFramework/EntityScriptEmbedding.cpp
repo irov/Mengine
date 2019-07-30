@@ -31,7 +31,7 @@ namespace Mengine
     public:
         EntityScriptMethod()
         {
-            m_factoryEntityPrototypeGenerator = new FactoryPool<PythonEntityPrototypeGenerator, 64>();
+            m_factoryEntityPrototypeGenerator = Helper::makeFactoryPool<PythonEntityPrototypeGenerator, 64>();
         }
 
         ~EntityScriptMethod() override
@@ -129,6 +129,8 @@ namespace Mengine
         typedef Vector<PythonEntityPrototypeGeneratorPtr> VectorEntityPrototypeGenerators;
         VectorEntityPrototypeGenerators m_entityPrototypeGenerators;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<EntityScriptMethod> EntityScriptMethodPtr;
     //////////////////////////////////////////////////////////////////////////
     class superclass_new_Entity
         : public pybind::new_adapter_interface
@@ -279,7 +281,7 @@ namespace Mengine
             .def_constructor( pybind::init<>() )
             ;
 
-        EntityScriptMethod * entityScriptMethod = new FactorableUnique<EntityScriptMethod>();
+        EntityScriptMethodPtr entityScriptMethod = Helper::makeFactorableUnique<EntityScriptMethod>();
 
         pybind::def_functor( _kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
         pybind::def_functor( _kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
@@ -289,9 +291,9 @@ namespace Mengine
 
         m_implement = entityScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Arrow> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), new FactorableUnique<PythonScriptWrapper<Entity> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), new FactorableUnique<PythonScriptWrapper<Scene> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<PythonScriptWrapper<Arrow> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), Helper::makeFactorableUnique<PythonScriptWrapper<Entity> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), Helper::makeFactorableUnique<PythonScriptWrapper<Scene> >( _kernel ) );
 
         return true;
     }

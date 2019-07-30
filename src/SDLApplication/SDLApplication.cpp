@@ -325,9 +325,9 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        m_loggerStdio = new FactorableUnique<AndroidLogger>();
+        m_loggerStdio = Helper::makeFactorableUnique<AndroidLogger>();
 #else
-        m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
+        m_loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>();
 #endif
 
         m_loggerStdio->setVerboseFlag( LM_MESSAGE );
@@ -335,7 +335,7 @@ namespace Mengine
         LOGGER_SERVICE()
             ->registerLogger( m_loggerStdio );
 
-        m_loggerMessageBox = new FactorableUnique<SDLMessageBoxLogger>();
+        m_loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>();
 
         m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 

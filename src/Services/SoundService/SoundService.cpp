@@ -74,8 +74,8 @@ namespace Mengine
             this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f );
         }
 
-        m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
-        m_factorySoundEmitter = new FactoryPool<SoundIdentity, 32>();
+        m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
+        m_factorySoundEmitter = Helper::makeFactoryPool<SoundIdentity, 32>();
 
         return true;
     }

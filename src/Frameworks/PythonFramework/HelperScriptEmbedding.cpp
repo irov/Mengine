@@ -3338,7 +3338,7 @@ namespace Mengine
             .def( "clear", &Tags::clear )
             ;
 
-        HelperScriptMethod * helperScriptMethod = new FactorableUnique<HelperScriptMethod>();
+        HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>();
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );

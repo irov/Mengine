@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowPYZ::initialize()
     {
-        m_factoryScriptCodeData = new FactoryPool<PythonScriptCodeData, 128>();
+        m_factoryScriptCodeData = Helper::makeFactoryPool<PythonScriptCodeData, 128>();
 
         return true;
     }

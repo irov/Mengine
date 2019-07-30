@@ -236,7 +236,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowAEZ::initialize()
     {
-        m_factoryMovieData = new FactoryPool<Movie2Data, 128>();
+        m_factoryMovieData = Helper::makeFactoryPool<Movie2Data, 128>();
 
         return true;
     }

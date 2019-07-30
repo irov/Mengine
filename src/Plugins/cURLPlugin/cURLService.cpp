@@ -73,10 +73,10 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
-        m_factoryTaskGetMessage = new FactoryPool<cURLGetMessageThreadTask, 8>();
-        m_factoryTaskPostMessage = new FactoryPool<cURLPostMessageThreadTask, 8>();
-        m_factoryTaskHeaderData = new FactoryPool<cURLHeaderDataThreadTask, 8>();
-        m_factoryTaskDownloadAsset = new FactoryPool<cURLGetAssetThreadTask, 8>();
+        m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLGetMessageThreadTask, 8>();
+        m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLPostMessageThreadTask, 8>();
+        m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 8>();
+        m_factoryTaskDownloadAsset = Helper::makeFactoryPool<cURLGetAssetThreadTask, 8>();
 
         return true;
     }

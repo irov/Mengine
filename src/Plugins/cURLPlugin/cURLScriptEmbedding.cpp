@@ -235,7 +235,7 @@ namespace Mengine
         pybind::def_functor_args( _kernel, "downloadAsset", this, &cURLScriptEmbedding::downloadAsset );
         pybind::def_functor( _kernel, "cancelRequest", this, &cURLScriptEmbedding::cancelRequest );
 
-        m_factoryPyHttpReceiver = new FactoryPool<Detail::PyCURLReceiver, 32>();
+        m_factoryPyHttpReceiver = Helper::makeFactoryPool<Detail::PyCURLReceiver, 32>();
 
         return true;
     }

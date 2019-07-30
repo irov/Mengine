@@ -343,7 +343,7 @@ namespace Mengine
 
         kernel->set_module_finder( py_moduleFinder.ptr() );
 
-        m_factoryScriptModule = new FactoryPool<PythonScriptModule, 8>();
+        m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>();
 
 #ifdef MENGINE_DEBUG
         pybind::def_functor( m_kernel, "addLogFunction", this, &PythonScriptService::addLogFunction );

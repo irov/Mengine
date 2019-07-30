@@ -56,7 +56,7 @@ namespace Mengine
 
         m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_ );
 
-        m_factoryDecoderRenderImageProvider = new FactoryPool<DecoderRenderImageProvider, 128>();
+        m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>();
 
         return true;
     }

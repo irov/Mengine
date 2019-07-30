@@ -41,8 +41,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::_initializeService()
     {
-        m_factoryTextEntry = new FactoryPool<TextEntry, 128>();
-        m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
+        m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>();
+        m_factoryTextLocalePak = Helper::makeFactoryPool<TextLocalePack, 4>();
 
         return true;
     }

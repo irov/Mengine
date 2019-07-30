@@ -43,7 +43,7 @@ namespace Mengine
         LOGGER_INFO( "Initializing Account manager..."
         );
 
-        m_factoryAccounts = new FactoryPool<Account, 8>();
+        m_factoryAccounts = Helper::makeFactoryPool<Account, 8>();
 
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -76,6 +76,7 @@ namespace Mengine
         m_accounts.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAccounts );
+
         m_factoryAccounts = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

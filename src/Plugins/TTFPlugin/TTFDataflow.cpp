@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFDataflow::initialize()
     {
-        m_factoryTTFData = new FactoryPool<TTFData, 128>();
+        m_factoryTTFData = Helper::makeFactoryPool<TTFData, 128>();
 
         return true;
     }
@@ -56,6 +56,7 @@ namespace Mengine
         m_mutex = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTTFData );
+
         m_factoryTTFData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

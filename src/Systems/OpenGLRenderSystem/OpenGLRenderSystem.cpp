@@ -77,10 +77,10 @@ namespace Mengine
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
 #endif
 
-        m_factoryRenderVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>();
-        m_factoryRenderIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>();
+        m_factoryRenderVertexBuffer = Helper::makeFactoryDefault<OpenGLRenderVertexBuffer>();
+        m_factoryRenderIndexBuffer = Helper::makeFactoryDefault<OpenGLRenderIndexBuffer>();
         m_factoryRenderImage = Helper::makeFactoryPoolWithListener<OpenGLRenderImage, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_ );
-        m_factoryRenderVertexAttribute = new FactoryPool<OpenGLRenderVertexAttribute, 16>();
+        m_factoryRenderVertexAttribute = Helper::makeFactoryPool<OpenGLRenderVertexAttribute, 16>();
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<OpenGLRenderFragmentShader, 16>( this, &OpenGLRenderSystem::onRenderFragmentShaderDestroy_ );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexShader, 16>( this, &OpenGLRenderSystem::onRenderVertexShaderDestroy_ );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_ );

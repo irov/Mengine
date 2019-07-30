@@ -131,7 +131,7 @@ namespace Mengine
             }break;
         }
 
-        m_factoryRenderBatch = new FactoryPool<RenderBatch, 16>();
+        m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>();
 
         m_renderSystem = RENDER_SYSTEM();
 

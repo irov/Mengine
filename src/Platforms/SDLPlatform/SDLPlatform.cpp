@@ -267,7 +267,6 @@ namespace Mengine
         }
 
         const Char * sdlPlatform = SDL_GetPlatform();
-        const int sdlRam = SDL_GetSystemRAM();
 
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
@@ -316,20 +315,83 @@ namespace Mengine
             , sdlPlatform
         );
 
+        LOGGER_MESSAGE( "CPU: %d Count %d CacheLineSize"
+            , SDL_GetCPUCount()
+            , SDL_GetCPUCacheLineSize()
+        );
+
+        LOGGER_MESSAGE( "CPU RDTSC: %d"
+            , SDL_HasRDTSC()
+        );
+
+        LOGGER_MESSAGE( "CPU AltiVec: %d"
+            , SDL_HasAltiVec()
+        );
+
+        LOGGER_MESSAGE( "CPU MMX: %d"
+            , SDL_HasMMX()
+        );
+
+        LOGGER_MESSAGE( "CPU 3DNow: %d"
+            , SDL_Has3DNow()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE: %d"
+            , SDL_HasSSE()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE2: %d"
+            , SDL_HasSSE2()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE3: %d"
+            , SDL_HasSSE3()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE41: %d"
+            , SDL_HasSSE41()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE42: %d"
+            , SDL_HasSSE42()
+        );
+
+        LOGGER_MESSAGE( "CPU AVX: %d"
+            , SDL_HasAVX()
+        );
+
+        LOGGER_MESSAGE( "CPU AVX2: %d"
+            , SDL_HasAVX2()
+        );
+
+        LOGGER_MESSAGE( "CPU AVX512F: %d"
+            , SDL_HasAVX512F()
+        );
+
+        LOGGER_MESSAGE( "CPU NEON: %d"
+            , SDL_HasNEON()
+        );
+
         LOGGER_MESSAGE( "RAM: %d MB"
-            , sdlRam
+            , SDL_GetSystemRAM()
         );
 
         SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_WARN );
 
+#ifdef MENGINE_DEBUG
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_INFO );
+#else
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
+#endif
 
-        m_sdlInput = new FactorableUnique<SDLInput>();
+        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>();
 
-        if( m_sdlInput->initialize() == false )
+        if( sdlInput->initialize() == false )
         {
             return false;
         }
+
+        m_sdlInput = sdlInput;
 
         // Search accelerometer device among joysticks
         int numJoysticks = SDL_NumJoysticks();
@@ -373,7 +435,7 @@ namespace Mengine
             );
         }
 
-        m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>();
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>();
 
         return true;
     }

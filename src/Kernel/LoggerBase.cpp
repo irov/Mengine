@@ -22,9 +22,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerBase::setVerboseLevel( EMessageLevel _level )
+    void LoggerBase::setVerboseLevel( ELoggerLevel _level )
     {
         m_verboseLevel = _level;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ELoggerLevel LoggerBase::getVerboseLevel() const
+    {
+        return m_verboseLevel;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::setVerboseFlag( uint32_t _flag )
@@ -32,7 +37,12 @@ namespace Mengine
         m_verboseFlag = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerBase::validMessage( EMessageLevel _level, uint32_t _flag ) const
+    uint32_t LoggerBase::getVerboseFlag() const
+    {
+        return m_verboseFlag;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerBase::validMessage( ELoggerLevel _level, uint32_t _flag ) const
     {
         if( m_verboseLevel < _level )
         {
@@ -54,5 +64,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::flush()
     {
+        //Empty
     }
 }

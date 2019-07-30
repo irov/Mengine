@@ -1,5 +1,6 @@
 #include "Logger.h"
 
+#include "Interface/LoggerServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Config/String.h"
@@ -17,7 +18,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _file, uint32_t _line )
+    namespace Detail
+    {
+        bool loggerValidMessage( ELoggerLevel _level, uint32_t _flag )
+        {
+            bool result = LOGGER_SERVICE()
+                ->validMessage( _level, _flag );
+
+            return result;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _flag, const Char * _file, uint32_t _line )
         : m_level( _level )
         , m_flag( _flag )
         , m_file( _file )

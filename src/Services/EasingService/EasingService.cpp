@@ -29,10 +29,10 @@ namespace Mengine
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), ConstString::none(), Helper::makeFactorableUnique<EasingLinear>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyLinear" ), Helper::makeFactorableUnique<EasingLinear>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyIn" ), Helper::makeFactorableUnique<EasingIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeOut" ), Helper::makeFactorableUnique<EasingOut>() );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyOut" ), Helper::makeFactorableUnique<EasingOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyInOut" ), Helper::makeFactorableUnique<EasingInOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineIn" ), Helper::makeFactorableUnique<EasingSineIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeSineOut" ), Helper::makeFactorableUnique<EasingSineOut>() );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineOut" ), Helper::makeFactorableUnique<EasingSineOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineInOut" ), Helper::makeFactorableUnique<EasingSineInOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadIn" ), Helper::makeFactorableUnique<EasingQuadIn>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadOut" ), Helper::makeFactorableUnique<EasingQuadOut>() );
@@ -70,10 +70,10 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), ConstString::none() );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyLinear" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyIn" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeOut" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyInOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineIn" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeSineOut" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineInOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadIn" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadOut" ) );

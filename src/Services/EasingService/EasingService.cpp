@@ -32,7 +32,7 @@ namespace Mengine
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeOut" ), new FactorableUnique<EasingOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyInOut" ), new FactorableUnique<EasingInOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineIn" ), new FactorableUnique<EasingSineIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeSineOut" ), new FactorableUnique<EasingSineOut>() );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineOut" ), new FactorableUnique<EasingSineOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineInOut" ), new FactorableUnique<EasingSineInOut>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadIn" ), new FactorableUnique<EasingQuadIn>() );
         VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadOut" ), new FactorableUnique<EasingQuadOut>() );
@@ -73,7 +73,7 @@ namespace Mengine
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyInOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineIn" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easeSineOut" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineInOut" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadIn" ) );
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadOut" ) );

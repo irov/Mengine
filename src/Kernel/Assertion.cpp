@@ -4,6 +4,7 @@
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS

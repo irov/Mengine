@@ -9,6 +9,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #	include "Environment/Windows/WindowsIncluder.h"
@@ -209,7 +210,7 @@ namespace Mengine
         MENGINE_UNUSED( _userdata );
         MENGINE_UNUSED( _category );
 
-        EMessageLevel level = LM_INFO;
+        ELoggerLevel level = LM_INFO;
 
         switch( _priority )
         {

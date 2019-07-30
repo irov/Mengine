@@ -9,10 +9,10 @@ namespace Mengine
         : m_cs( nullptr )
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	SDLThreadMutex::~SDLThreadMutex()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    SDLThreadMutex::~SDLThreadMutex()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadMutex::initialize( const Char * _doc )
     {
@@ -42,9 +42,9 @@ namespace Mengine
         {
             const char * err_str = SDL_GetError();
 
-            LOGGER_ERROR("invalid lock (msg '%s')"
-                         , err_str
-                );
+            LOGGER_ERROR( "invalid lock (msg '%s')"
+                , err_str
+            );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -56,9 +56,9 @@ namespace Mengine
         {
             const char * err_str = SDL_GetError();
 
-            LOGGER_ERROR("invalid unlock (msg '%s')"
-                         , err_str
-                );
+            LOGGER_ERROR( "invalid unlock (msg '%s')"
+                , err_str
+            );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -73,10 +73,10 @@ namespace Mengine
         else if( err == -1 )
         {
             const char * err_msg = SDL_GetError();
-            
-            LOGGER_ERROR("invalid try lock (msg %s)"
+
+            LOGGER_ERROR( "invalid try lock (msg %s)"
                 , err_msg
-                );
+            );
         }
 
         return false;

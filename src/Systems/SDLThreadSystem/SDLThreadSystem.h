@@ -29,7 +29,7 @@ namespace Mengine
 
     public:
         ptrdiff_t getCurrentThreadId() const override;
-    
+
     protected:
         FactoryPtr m_factoryThreadIdentity;
         FactoryPtr m_factoryThreadMutex;

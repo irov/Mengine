@@ -11,7 +11,7 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationTranslateTimeAffector( TaskTransformationTranslateTime * _task, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
+            TaskTransformationTranslateTimeAffector( const TaskTransformationTranslateTimePtr & _task, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
                 : m_task( _task )
                 , m_transformation( _transformation )
                 , m_from( _from )
@@ -67,7 +67,7 @@ namespace Mengine
             }
 
         protected:
-            TaskTransformationTranslateTime * m_task;
+            TaskTransformationTranslateTimePtr m_task;
 
             TransformationPtr m_transformation;
 
@@ -95,7 +95,7 @@ namespace Mengine
     {
         const mt::vec3f & position = m_transformation->getLocalPosition();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( this, m_transformation, position, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( TaskTransformationTranslateTimePtr::from( this ), m_transformation, position, m_to, m_time );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

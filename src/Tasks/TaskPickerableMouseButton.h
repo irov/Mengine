@@ -29,6 +29,6 @@ namespace Mengine
         LambdaPickerMouseButtonEvent m_filter;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskPickerableMouseButton> TaskPickerableMouseButtonPtr;
+    typedef GOAP::IntrusivePtr<TaskPickerableMouseButton> TaskPickerableMouseButtonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

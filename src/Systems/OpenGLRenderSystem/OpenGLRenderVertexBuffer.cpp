@@ -17,9 +17,9 @@ namespace Mengine
         , m_vertexSize( 0 )
         , m_usage( GL_STATIC_DRAW )
         , m_id( 0 )
-        , m_lockOffset(0)
-        , m_lockCount(0)
-        , m_lockMemory(nullptr)
+        , m_lockOffset( 0 )
+        , m_lockCount( 0 )
+        , m_lockMemory( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::initialize( uint32_t _elementSize, EBufferType _bufferType )
-    {   
+    {
         GLuint bufId = 0;
         GLCALL( glGenBuffers, (1, &bufId) );
 
@@ -40,7 +40,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         m_id = bufId;
 
         m_vertexSize = _elementSize;
@@ -64,7 +64,7 @@ namespace Mengine
         m_vertexCount = _vertexCount;
 
         const uint32_t bufferSize = _vertexCount * m_vertexSize;
-        
+
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ARRAY_BUFFER, bufferSize, nullptr, m_usage) );
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, 0) );
@@ -83,7 +83,7 @@ namespace Mengine
         {
             return nullptr;
         }
-                
+
         m_lockOffset = _offset;
         m_lockCount = _count;
 
@@ -97,7 +97,7 @@ namespace Mengine
         memory->newBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
 
         m_lockMemory = memory;
-        
+
         return m_lockMemory;
     }
     //////////////////////////////////////////////////////////////////////////

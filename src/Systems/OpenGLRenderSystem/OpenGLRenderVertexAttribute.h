@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderVertexAttribute
         : public RenderVertexAttributeInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         OpenGLRenderVertexAttribute();
@@ -35,7 +35,7 @@ namespace Mengine
 
     protected:
         void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
-        
+
     protected:
         ConstString m_name;
         uint32_t m_elementSize;

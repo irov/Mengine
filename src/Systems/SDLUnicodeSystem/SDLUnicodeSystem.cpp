@@ -10,7 +10,7 @@ SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const Char * SDL_UCS_types[] = {"UCS-2-INTERNAL", "UCS-4-INTERNAL"};
+    static const Char * SDL_UCS_types[] = { "UCS-2-INTERNAL", "UCS-4-INTERNAL" };
     static const Char * SDL_UCS_wchar_t = SDL_UCS_types[sizeof( WChar ) / 2 - 1];
     //////////////////////////////////////////////////////////////////////////
     SDLUnicodeSystem::SDLUnicodeSystem()
@@ -26,7 +26,7 @@ namespace Mengine
         size_t unicodeSize = (_unicodeSize == MENGINE_UNICODE_UNKNOWN_SIZE) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;
 
         char * sdl_utf8 = SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t
-            , (const char*)_unicode
+            , (const char *)_unicode
             , unicodeSize * sizeof( WChar )
         );
 
@@ -70,7 +70,7 @@ namespace Mengine
     {
         size_t utf8Size = (_utf8Size == MENGINE_UNICODE_UNKNOWN_SIZE) ? strlen( _utf8 ) + 1 : _utf8Size + 1;
 
-        wchar_t * sdl_unicode = (wchar_t*)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8"
+        wchar_t * sdl_unicode = (wchar_t *)SDL_iconv_string( SDL_UCS_wchar_t, "UTF-8"
             , _utf8
             , utf8Size * sizeof( Char )
         );

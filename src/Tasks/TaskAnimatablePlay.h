@@ -21,6 +21,6 @@ namespace Mengine
         AnimatablePtr m_animatable;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskAnimatablePlay> TaskAnimatablePlayPtr;
+    typedef GOAP::IntrusivePtr<TaskAnimatablePlay> TaskAnimatablePlayPtr;
     //////////////////////////////////////////////////////////////////////////
 }

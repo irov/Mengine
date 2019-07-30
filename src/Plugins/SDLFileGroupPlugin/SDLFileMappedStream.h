@@ -8,7 +8,7 @@ namespace Mengine
 {
     class SDLFileMappedStream
         : public FileMappedStreamInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         SDLFileMappedStream();

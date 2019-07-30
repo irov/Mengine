@@ -29,6 +29,6 @@ namespace Mengine
         uint32_t m_id;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskTransformationTranslate> TaskTransformationTranslatePtr;
+    typedef GOAP::IntrusivePtr<TaskTransformationTranslate> TaskTransformationTranslatePtr;
     //////////////////////////////////////////////////////////////////////////
 }

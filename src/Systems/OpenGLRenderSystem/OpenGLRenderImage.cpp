@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderImage::OpenGLRenderImage()
-        : m_uid(0)
+        : m_uid( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_mode( ERIM_NORMAL )
         , m_hwMipmaps( 0 )
@@ -57,7 +57,7 @@ namespace Mengine
                 }
             }break;
         }
-        
+
         GLuint tuid = 0;
         GLCALL( glGenTextures, (1, &tuid) );
 
@@ -271,10 +271,10 @@ namespace Mengine
             , m_lockRect.top
             , m_lockRect.right
             , m_lockRect.bottom
-            );
+        );
 
         bool successful = true;
-        
+
         uint32_t miplevel_hwwidth = m_hwWidth >> _level;
         uint32_t miplevel_hwheight = m_hwHeight >> _level;
 

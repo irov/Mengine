@@ -28,10 +28,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::initialize( const ConstString & _name )
+    bool Scheduler::initialize()
     {
-        m_name = _name;
-
         UpdationInterface * updation = this->getUpdation();
 
         m_updataterId = UPDATE_SERVICE()
@@ -51,6 +49,11 @@ namespace Mengine
             ->removeUpdatater( m_updataterId );
 
         m_updataterId = INVALID_UPDATABLE_ID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Scheduler::setName( const ConstString & _name )
+    {
+        m_name = _name;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Scheduler::getName() const

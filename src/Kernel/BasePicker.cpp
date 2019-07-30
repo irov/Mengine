@@ -138,6 +138,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerEnable( bool _enable )
     {
+        if( m_pickerEnable == _enable )
+        {
+            return;
+        }
+
         m_pickerEnable = _enable;
 
         this->_setPickerEnable( _enable );

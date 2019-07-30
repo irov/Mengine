@@ -66,8 +66,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+    bool FileGroupZip::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, bool _create )
     {
+        MENGINE_UNUSED( _create );
+
         m_name = _name;
         m_fileGroup = _fileGroup;
         m_path = _path;

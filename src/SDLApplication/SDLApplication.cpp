@@ -134,7 +134,7 @@ namespace Mengine
         // mount root
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory"
             );
@@ -224,7 +224,7 @@ namespace Mengine
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount user directory '%s'"
                 , cs_userPath.c_str()
@@ -269,7 +269,7 @@ namespace Mengine
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && roamingMode == false || noroamingMode == false )
+        if( developmentMode == true && (roamingMode == false || noroamingMode == false) )
         {
             unicode_logFilename += L"_";
             unicode_logFilename += unicode_date;

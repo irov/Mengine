@@ -15,16 +15,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidLogger::log( EMessageLevel _level, uint32_t _flag, const Char * _data, size_t _count )
+    void AndroidLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _count )
     {
-		(void)_level;
-        (void)_flag;
-		(void)_count;
+		MENGINE_UNUSED(_level);
+        MENGINE_UNUSED(_flag);
 
         __android_log_print( ANDROID_LOG_ERROR, "Mengine", "%.*s", _count, _data );
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidLogger::flush()
     {
+        //Empty
     }
 }	// namespace Mengine

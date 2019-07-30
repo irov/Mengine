@@ -32,6 +32,7 @@
 #include "Interface/EasingServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"

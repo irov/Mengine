@@ -20,17 +20,20 @@ namespace Mengine
         void finalize() override;
 
     public:
-        void setVerboseLevel( EMessageLevel _level ) override;
+        void setVerboseLevel( ELoggerLevel _level ) override;
+        ELoggerLevel getVerboseLevel() const override;
+
         void setVerboseFlag( uint32_t _flag ) override;
+        uint32_t getVerboseFlag() const override;
 
     public:
-        bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
+        bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;
 
     public:
         void flush() override;
 
     protected:
-        EMessageLevel m_verboseLevel;
+        ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFlag;
     };
 }

@@ -494,7 +494,8 @@ Core
     
     GlobalInputHandlerHelper.h
     GlobalInputHandlerHelper.cpp
-    
+
+    LoggerLevel.h
     KeyCode.h
     MouseCode.h
     

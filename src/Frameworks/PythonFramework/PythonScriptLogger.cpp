@@ -8,8 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonScriptLogger::PythonScriptLogger()
-        : m_level( LM_INFO )
-        , m_softspace( 0 )
+        : m_softspace( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,17 +54,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptLogger::write( const Char * _msg, uint32_t _size )
     {
-        LOGGER_VERBOSE_LEVEL( m_level, "Python", 0 ).logMessage( _msg, _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::setMessageLevel( EMessageLevel _level )
-    {
-        m_level = _level;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EMessageLevel PythonScriptLogger::getMessageLevel() const
-    {
-        return m_level;
+        ELoggerLevel level = this->getVerboseLevel();
+
+        LOGGER_VERBOSE_LEVEL( level, "Python", 0 ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptLogger::setSoftspace( int32_t _softspace )
@@ -76,5 +67,15 @@ namespace Mengine
     int32_t PythonScriptLogger::getSoftspace() const
     {
         return m_softspace;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _size )
+    {
+        MENGINE_UNUSED( _level );
+        MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _data );
+        MENGINE_UNUSED( _size );
+
+        //Empty;
     }
 }

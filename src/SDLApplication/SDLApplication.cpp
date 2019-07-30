@@ -37,6 +37,7 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include <cstdio>
 #include <clocale>

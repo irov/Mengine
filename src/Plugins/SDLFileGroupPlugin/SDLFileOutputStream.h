@@ -10,7 +10,7 @@ namespace Mengine
 {
     class SDLFileOutputStream
         : public FileOutputStreamInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         SDLFileOutputStream();

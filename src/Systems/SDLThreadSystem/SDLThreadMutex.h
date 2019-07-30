@@ -12,11 +12,11 @@ namespace Mengine
 {
     class SDLThreadMutex
         : public ThreadMutexInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         SDLThreadMutex();
-		~SDLThreadMutex() override;
+        ~SDLThreadMutex() override;
 
     public:
         bool initialize( const Char * _doc );
@@ -35,7 +35,7 @@ namespace Mengine
         SDL_mutex * m_cs;
 
 #ifdef MENGINE_DEBUG
-		String m_doc;
+        String m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

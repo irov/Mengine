@@ -229,7 +229,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & FileGroupZip::getCategory() const
+    const FileGroupInterfacePtr & FileGroupZip::getFileGroup() const
     {
         return m_fileGroup;
     }

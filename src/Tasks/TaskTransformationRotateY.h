@@ -29,6 +29,6 @@ namespace Mengine
         AFFECTOR_ID m_id;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskTransformationRotateY> TaskTransformationRotateYPtr;
+    typedef GOAP::IntrusivePtr<TaskTransformationRotateY> TaskTransformationRotateYPtr;
     //////////////////////////////////////////////////////////////////////////
 }

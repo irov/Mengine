@@ -25,6 +25,6 @@ namespace Mengine
         EventablePtr m_eventable;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskAnimatablePlayWait> TaskAnimatablePlayWaitPtr;
+    typedef GOAP::IntrusivePtr<TaskAnimatablePlayWait> TaskAnimatablePlayWaitPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -15,7 +15,7 @@ namespace Mengine
 {
     class SDLThreadIdentity
         : public ThreadIdentityInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         SDLThreadIdentity();
@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         bool initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const Char * _doc );
-        
+
     public:
         void main();
 
@@ -46,7 +46,7 @@ namespace Mengine
 
         SDL_Thread * m_thread;
 
-		SDL_mutex * m_processLock;
+        SDL_mutex * m_processLock;
 
         SDL_cond * m_conditionVariable;
         SDL_mutex * m_conditionLock;
@@ -58,7 +58,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         String m_doc;
 #endif
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLThreadIdentity> SDLThreadIdentityPtr;
     //////////////////////////////////////////////////////////////////////////

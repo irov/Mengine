@@ -32,7 +32,7 @@ namespace Mengine
 
     protected:
         bool draw( const void * _buffer, size_t _size, const Char * _doc ) override;
-        
+
     public:
         void enable() override;
         void disable() override;

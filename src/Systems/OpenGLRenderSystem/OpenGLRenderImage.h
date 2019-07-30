@@ -11,7 +11,7 @@ namespace Mengine
 {
     class OpenGLRenderImage
         : public RenderImageInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         OpenGLRenderImage();
@@ -20,10 +20,10 @@ namespace Mengine
     public:
         bool initialize( ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
         void finalize();
-        
+
     public:
         void bind( uint32_t _stage ) override;
-        
+
     public:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
@@ -31,11 +31,11 @@ namespace Mengine
     public:
         void release();
         bool reload();
-        
+
     public:
-        Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
+        Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( uint32_t _level, bool _successful ) override;
-    
+
     public:
         ERenderImageMode getMode() const override;
 
@@ -46,7 +46,7 @@ namespace Mengine
         uint32_t getHWDepth() const override;
 
         EPixelFormat getHWPixelFormat() const override;
-        
+
     public:
         float getHWWidthInv() const override;
         float getHWHeightInv() const override;
@@ -54,26 +54,26 @@ namespace Mengine
     public:
         void _destroy() override;
 
-    public: 
+    public:
         GLuint getUId() const;
-        
+
         void setMinFilter( GLenum _minFilter );
         GLenum getMinFilter() const;
 
         void setMagFilter( GLenum _magFilter );
         GLenum getMagFilter() const;
-        
+
         void setWrapS( GLenum _wrapS );
         GLenum getWrapS() const;
 
-        void setWrapT( GLenum _wrapT );     
+        void setWrapT( GLenum _wrapT );
         GLenum getWrapT() const;
 
     protected:
         RenderImageProviderInterfacePtr m_renderImageProvider;
 
         GLuint m_uid;
-        
+
         EPixelFormat m_hwPixelFormat;
 
         ERenderImageMode m_mode;

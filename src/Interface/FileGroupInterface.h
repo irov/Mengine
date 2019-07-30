@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         virtual const ConstString & getName() const = 0;
-        virtual const FileGroupInterfacePtr & getCategory() const = 0;
+        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
 
     public:
         virtual bool isPacked() const = 0;

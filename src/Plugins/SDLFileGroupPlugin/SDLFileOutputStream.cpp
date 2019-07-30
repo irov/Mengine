@@ -10,8 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLFileOutputStream::SDLFileOutputStream()
-        : m_rwops(nullptr)
-        , m_size(0)
+        : m_rwops( nullptr )
+        , m_size( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,21 +28,24 @@ namespace Mengine
         Char concatenatePath[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR("SDLFileOutputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
-                );
+            );
 
             return false;
         }
 
-        m_rwops = SDL_RWFromFile(concatenatePath, "wb");
+        m_rwops = SDL_RWFromFile( concatenatePath, "wb" );
 
-        if ( m_rwops == nullptr )
+        if( m_rwops == nullptr )
         {
-            LOGGER_ERROR("SDLFileOutputStream::open %s invalid open"
+            const char * sdl_error = SDL_GetError();
+
+            LOGGER_ERROR( "%s invalid open error '%s'"
                 , concatenatePath
-                );
+                , sdl_error
+            );
 
             return false;
         }
@@ -52,13 +55,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t SDLFileOutputStream::write( const void * _data, size_t _size )
     {
-        const size_t written = SDL_RWwrite(m_rwops, _data, 1, _size);
+        const size_t written = SDL_RWwrite( m_rwops, _data, 1, _size );
 
         if( written != _size )
         {
-            LOGGER_ERROR("invalid %d"
+            const char * sdl_error = SDL_GetError();
+
+            LOGGER_ERROR( "invalid %d error '%s'"
                 , _size
-                );
+                , sdl_error
+            );
 
             return 0;
         }

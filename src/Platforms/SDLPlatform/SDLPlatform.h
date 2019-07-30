@@ -74,7 +74,7 @@ namespace Mengine
         bool getAlwaysFullscreen() const override;
 
         bool setProcessDPIAware() override;
-		bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
+        bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
 
         size_t getCurrentPath( Char * _path ) const override;
         size_t getUserPath( Char * _path ) const override;
@@ -121,7 +121,7 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     public:
-        void getDateTime( PlatformDateTime * _dateTime ) const override;        
+        void getDateTime( PlatformDateTime * _dateTime ) const override;
 
     public:
         bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
@@ -131,7 +131,7 @@ namespace Mengine
         bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const override;
         void sleep( uint32_t _ms ) override;
         bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _code ) override;
-        bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) override;
+        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
         void abort() override;
 
     protected:
@@ -161,7 +161,7 @@ namespace Mengine
         uint32_t m_icon;
         String m_projectTitle;
 
-		uint64_t m_prevTime;
+        uint64_t m_prevTime;
 
         bool m_shouldQuit;
         bool m_running;

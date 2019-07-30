@@ -24,7 +24,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::_initializeService()
-    {	
+    {
         m_factoryThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
         m_factoryThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
 
@@ -46,8 +46,8 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr, "invalid create thread '%s' (doc: %s)"
             , _name.c_str()
-			, _doc
-			);
+            , _doc
+        );
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
@@ -55,10 +55,10 @@ namespace Mengine
 
         if( identity->initialize( _priority, _name, mutex, _doc ) == false )
         {
-            LOGGER_ERROR("invalid initialize thread '%s' (doc: %s)"
+            LOGGER_ERROR( "invalid initialize thread '%s' (doc: %s)"
                 , _name.c_str()
                 , _doc
-                );
+            );
 
             return nullptr;
         }
@@ -73,17 +73,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr SDLThreadSystem::createMutex( const Char * _doc )
     {
-		SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject( _doc );
-        
+        SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject( _doc );
+
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr, "invalid create (doc: '%s')"
-			, _doc
-			);
+            , _doc
+        );
 
         if( mutex->initialize( _doc ) == false )
         {
-            LOGGER_ERROR("invalid initialize (doc: '%s')"
+            LOGGER_ERROR( "invalid initialize (doc: '%s')"
                 , _doc
-                );
+            );
 
             return nullptr;
         }

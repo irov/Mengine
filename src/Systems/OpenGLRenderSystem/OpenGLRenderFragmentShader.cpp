@@ -36,9 +36,9 @@ namespace Mengine
 
         if( shaderId == 0 )
         {
-            LOGGER_ERROR("'%s' invalid create fragment shader"
+            LOGGER_ERROR( "'%s' invalid create fragment shader"
                 , m_name.c_str()
-                );
+            );
 
             return false;
         }
@@ -58,10 +58,10 @@ namespace Mengine
             GLchar errorLog[1024];
             GLCALL( glGetShaderInfoLog, (shaderId, 1023, NULL, errorLog) );
 
-            LOGGER_ERROR("compilation fragment shader '%s' error '%s'"
+            LOGGER_ERROR( "compilation fragment shader '%s' error '%s'"
                 , m_name.c_str()
                 , errorLog
-                );
+            );
 
             return false;
         }
@@ -81,7 +81,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderFragmentShader::attach( GLuint _program )
-    { 
-        GLCALL( glAttachShader, ( _program, m_shaderId ) );
+    {
+        GLCALL( glAttachShader, (_program, m_shaderId) );
     }
 }

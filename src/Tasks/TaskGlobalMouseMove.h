@@ -28,6 +28,6 @@ namespace Mengine
         uint32_t m_id;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskGlobalMouseMove> TaskGlobalMouseMovePtr;
+    typedef GOAP::IntrusivePtr<TaskGlobalMouseMove> TaskGlobalMouseMovePtr;
     //////////////////////////////////////////////////////////////////////////
 }

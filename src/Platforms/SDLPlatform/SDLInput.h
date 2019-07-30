@@ -25,12 +25,12 @@ namespace Mengine
 
     public:
         void handleEvent( const SDL_Event & _event );
-        
+
     public:
         void updateSurfaceResolution( float _width, float _height );
 
     public:
-        void showKeyboard( bool _value ); 
+        void showKeyboard( bool _value );
 
     public:
         bool isKeyDown( EKeyCode _code ) const;
@@ -38,7 +38,7 @@ namespace Mengine
 
     protected:
         void fillKeys_();
-        
+
     protected:
         void calcCursorPosition_( int _mx, int _my, mt::vec2f & _point ) const;
 
@@ -49,7 +49,7 @@ namespace Mengine
 
     protected:
         bool m_keyDown[KC_MAX_CODE];
-       
+
         EKeyCode m_keys[KC_MAX_CODE];
         SDL_Scancode m_codes[SDL_NUM_SCANCODES];
 

@@ -40,6 +40,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "PlayerGlobalInputHandler.h"
 #include "PlayerGlobalAffectorable.h"
@@ -119,7 +120,11 @@ namespace Mengine
     {
         SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( sm->initialize( _name ) == false )
+        MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
+
+        sm->setName( _name );
+
+        if( sm->initialize() == false )
         {
             return nullptr;
         }
@@ -185,7 +190,9 @@ namespace Mengine
 
         SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( scheduleManager->initialize( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) ) == false )
+        scheduleManager->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
+
+        if( scheduleManager->initialize() == false )
         {
             return false;
         }
@@ -194,7 +201,9 @@ namespace Mengine
 
         SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( scheduleManagerGlobal->initialize( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) ) == false )
+        scheduleManagerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
+
+        if( scheduleManagerGlobal->initialize() == false )
         {
             return false;
         }

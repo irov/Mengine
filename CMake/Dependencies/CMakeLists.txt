@@ -446,6 +446,9 @@ endif()
 
 #dependencies openal-soft
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)    
+
     message("================openal-soft================")
     if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
         if(MENGINE_TOOLCHAIN_MSVC)			
@@ -476,12 +479,10 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
         SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
         SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
-        
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)
+        SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openal-soft ${CMAKE_TEMP_DIR}/openal-soft)
-    endif()
+    endif()    
 endif()
 
 

@@ -27,19 +27,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath )
+    bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath, bool _create )
     {
         m_name = _name;
         m_fileGroup = _fileGroup;
         m_folderPath = _folderPath;
 
-        if( this->createDirectory( FilePath::none() ) == false )
+        if( _create == true )
         {
-            LOGGER_ERROR( "invalid create directory '%s'"
-                , _folderPath.c_str()
-            );
+            if( this->createDirectory( FilePath::none() ) == false )
+            {
+                LOGGER_ERROR( "invalid create directory '%s'"
+                    , _folderPath.c_str()
+                );
 
-            return false;
+                return false;
+            }
         }
 
         m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();

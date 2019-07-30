@@ -43,7 +43,7 @@ namespace Mengine
 
                     m_transformation->setLocalPosition( position );
 
-                    return true;
+                    return false;
                 }
 
                 *_used = m_time - m_progress;

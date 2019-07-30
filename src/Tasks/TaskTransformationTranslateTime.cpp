@@ -38,8 +38,12 @@ namespace Mengine
 
                     float t = m_progress / m_time;
 
+                    const EasingInterfacePtr & easing = this->getEasing();
+
+                    float t_easing = easing->easing( t );
+
                     mt::vec3f position;
-                    mt::linerp_v3( position, m_from, m_to, t );
+                    mt::linerp_v3( position, m_from, m_to, t_easing );
 
                     m_transformation->setLocalPosition( position );
 
@@ -78,9 +82,10 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationTranslateTime::TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _time )
+    TaskTransformationTranslateTime::TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time )
         : m_transformation( _transformation )
         , m_affectorable( _affectorable )
+        , m_easing( _easing )
         , m_to( _to )
         , m_time( _time )
         , m_id( 0 )
@@ -96,6 +101,8 @@ namespace Mengine
         const mt::vec3f & position = m_transformation->getLocalPosition();
 
         AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( TaskTransformationTranslateTimePtr::from( this ), m_transformation, position, m_to, m_time );
+
+        affector->setEasing( m_easing );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

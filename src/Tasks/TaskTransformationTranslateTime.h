@@ -11,7 +11,7 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const mt::vec3f & _to, float _time );
+        TaskTransformationTranslateTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const mt::vec3f & _to, float _time );
         ~TaskTransformationTranslateTime() override;
 
     protected:
@@ -22,6 +22,7 @@ namespace Mengine
     protected:
         TransformationPtr m_transformation;
         AffectorablePtr m_affectorable;
+        EasingInterfacePtr m_easing;
 
         mt::vec3f m_to;
         float m_time;

@@ -338,7 +338,7 @@ namespace Mengine
         {
             SDL_Joystick * joystick = SDL_JoystickOpen( deviceIndex );
 
-            if( joystick == false )
+            if( joystick == nullptr )
             {
                 continue;
             }

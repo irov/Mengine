@@ -37,6 +37,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/UID.h"
+#include "Kernel/VectorRenderIndex.h"
 
 #include "Engine/HotSpotShape.h"
 
@@ -3326,6 +3327,12 @@ namespace Mengine
         pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
 
+        pybind::registration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+
+        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
+        pybind::registration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
+
         pybind::struct_<Tags>( _kernel, "Tags" )
             .def_constructor( pybind::init<>() )
             .def_convert( &ScriptMethod::Tags_convert, nullptr )
@@ -3640,5 +3647,11 @@ namespace Mengine
 
         pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(_kernel);
         pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);
+
+        pybind::unregistration_stl_vector_type_cast<RenderIndex, VectorRenderIndex>(_kernel);
+
+        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<mt::vec3f, Vector<mt::vec3f>>(_kernel);
+        pybind::unregistration_stl_vector_type_cast<mt::vec4f, Vector<mt::vec4f>>(_kernel);
     }
 }

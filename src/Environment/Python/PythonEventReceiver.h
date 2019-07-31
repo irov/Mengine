@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/EventationInterface.h"
+
 #include "Kernel/Eventable.h"
 #include "Kernel/Identity.h"
 #include "Kernel/FactorableUnique.h"

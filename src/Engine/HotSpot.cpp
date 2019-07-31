@@ -4,6 +4,7 @@
 
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
+#include "Kernel/EventableHelper.h"
 
 #include "Kernel/Logger.h"
 

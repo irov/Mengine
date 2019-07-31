@@ -1,5 +1,7 @@
 #include "ScriptHolder.h"
 
+#include "Kernel/EventableHelper.h"
+
 #include "pybind/pybind.hpp"
 
 namespace Mengine

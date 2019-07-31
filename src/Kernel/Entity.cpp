@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/EventableHelper.h"
 
 namespace Mengine
 {

@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/EventableHelper.h"
 
 #include <math.h>
 

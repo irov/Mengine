@@ -8,6 +8,7 @@ Mixin\\\\Unknowable
 ADD_FILTER(
 Mixin\\\\Eventable
 	Eventable.h
+    EventableHelper.h
     BaseEventation.h
     BaseEventation.cpp
 )

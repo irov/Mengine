@@ -25,6 +25,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/EventableHelper.h"
 
 #include <string.h>
 

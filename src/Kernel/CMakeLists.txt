@@ -507,6 +507,8 @@ Core
     
     SecureValue.h
     SecureValue.cpp
+    
+    Closure.h
 )
 
 ADD_FILTER(

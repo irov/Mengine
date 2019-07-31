@@ -227,7 +227,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _logger );
 
+        
+
 #ifdef MENGINE_LOGGER_HISTORY
+        MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
+
         for( const Record & record : m_history )
         {
             const Char * record_message_str = record.message.c_str();

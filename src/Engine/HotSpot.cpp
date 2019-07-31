@@ -97,9 +97,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_setPickerEnable( bool _enable )
     {
-        PICKER_SERVICE()
-            ->updateTraps();
-
         if( _enable == true )
         {
             EVENTABLE_METHOD( EVENT_HOTSPOT_ACTIVATE )

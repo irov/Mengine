@@ -18,7 +18,7 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, bool _create ) = 0;
+        virtual bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) = 0;
         virtual void finalize() = 0;
 
     public:

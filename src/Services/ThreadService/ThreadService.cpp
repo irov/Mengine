@@ -283,6 +283,21 @@ namespace Mengine
         }
 
         m_tasks.clear();
+
+        for( const ThreadQueuePtr & queue : m_threadQueues )
+        {
+            queue->finalize();
+        }
+
+        m_threadQueues.clear();
+
+        for( ThreadDesc & desc : m_threads )
+        {
+            desc.identity->join();
+            desc.identity = nullptr;
+        }
+
+        m_threads.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const Char * _doc )

@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Interface/UnknownInterface.h"
-
 #include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef PointerT<UnknownInterface> PointerUnknown;
+    typedef PointerT<class UnknownInterface> PointerUnknown;
     //////////////////////////////////////////////////////////////////////////
     class Unknowable
         : public Mixin

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/EventationInterface.h"
-
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Mixin.h"
@@ -12,6 +10,8 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class EventationInterface;
     //////////////////////////////////////////////////////////////////////////
     class Eventable
         : public Mixin

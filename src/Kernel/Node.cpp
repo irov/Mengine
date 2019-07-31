@@ -1,7 +1,6 @@
 #include "Kernel/Node.h"
 
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/PickerServiceInterface.h"
 
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
@@ -180,6 +179,13 @@ namespace Mengine
         if( this->activate() == false )
         {
             return false;
+        }
+
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            picker->updatePickers();
         }
 
         return true;

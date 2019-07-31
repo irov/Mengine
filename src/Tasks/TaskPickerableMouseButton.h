@@ -2,7 +2,11 @@
 
 #include "Kernel/Pickerable.h"
 
+#include "Interface/InputHandlerInterface.h"
+
 #include "GOAP/Task.h"
+
+#include "Config/Lambda.h"
 
 namespace Mengine
 {   

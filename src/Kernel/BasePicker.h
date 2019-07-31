@@ -33,6 +33,9 @@ namespace Mengine
         void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) override;
 
     public:
+        void updatePickers() override;
+
+    public:
         void setPickerEnable( bool _enable ) override;
         MENGINE_INLINE bool isPickerEnable() const override;
 

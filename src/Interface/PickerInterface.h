@@ -39,6 +39,9 @@ namespace Mengine
         virtual void foreachPickerChildrenEnabled( const LambdaPicker & _lambda ) = 0;
 
     public:
+        virtual void updatePickers() = 0;
+
+    public:
         virtual void setPickerEnable( bool _enable ) = 0;
         virtual bool isPickerEnable() const = 0;
 

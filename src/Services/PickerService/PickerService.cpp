@@ -41,17 +41,12 @@ namespace Mengine
         public:
             void visit( PickerInterface * _picker, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera )
             {
-                PickerStateDesc desc;
-
-                if( _picker->isPickerEnable() == false )
-                {
-                    return;
-                }
-
                 if( m_exclusive == true && _picker->isPickerExclusive() == false )
                 {
                     return;
                 }
+                
+                PickerStateDesc desc;
 
                 desc.picker = _picker;
 
@@ -77,7 +72,10 @@ namespace Mengine
                     desc.camera = _camera;
                 }
 
-                m_states.push_back( desc );
+                if( _picker->isPickerDummy() == false )
+                {
+                    m_states.push_back( desc );
+                }
 
                 RenderViewportInterfacePtr visitViewport = desc.viewport;
                 RenderCameraInterfacePtr visitCamera = desc.camera;
@@ -118,6 +116,7 @@ namespace Mengine
 
         m_viewport = nullptr;
         m_camera = nullptr;
+        m_scissor = nullptr;
 
         m_states.clear();
     }
@@ -201,7 +200,7 @@ namespace Mengine
     {
         if( m_invalidateTraps == true )
         {
-            this->updateTraps();
+            this->updateTraps_();
 
             m_invalidateTraps = false;
         }
@@ -211,16 +210,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PickerService::updateTraps()
+    void PickerService::updateTraps_()
     {
+        uint32_t touchId = 0;
+
         const mt::vec2f & position = INPUT_SERVICE()
-            ->getCursorPosition( 0 );
+            ->getCursorPosition( touchId );
 
         float pressure = INPUT_SERVICE()
-            ->getCursorPressure( 0 );
+            ->getCursorPressure( touchId );
 
         VectorPickerStates statesAux;
-        this->proccesStates_( position.x, position.y, 0, pressure, statesAux );
+        this->proccesStates_( position.x, position.y, touchId, pressure, statesAux );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::invalidateTraps()
@@ -657,12 +658,6 @@ namespace Mengine
 
         Detail::PickerVisitor visitor( _states, false );
         visitor.visit( picker, m_viewport, m_camera );
-
-        VectorPickerStates::iterator it_erase = std::remove_if( _states.begin(), _states.end(), []( const PickerStateDesc & _desc )
-        {
-            return _desc.picker->isPickerDummy();
-        } );
-        _states.erase( it_erase, _states.end() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::proccesStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states )

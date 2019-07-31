@@ -16,6 +16,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PickerInterface.h"
+#include "Interface/AnimationInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 

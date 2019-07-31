@@ -50,8 +50,7 @@ namespace Mengine
     public:
         bool pickTrap( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers & _pickers ) override;
 
-    public:
-        void updateTraps() override;
+    public:        
         void invalidateTraps() override;
 
     public:
@@ -69,7 +68,10 @@ namespace Mengine
         bool handleMouseEnter( const InputMouseEnterEvent & _event ) override;
         void handleMouseLeave( const InputMouseLeaveEvent & _event ) override;
 
-    private:
+    protected:
+        void updateTraps_();
+
+    protected:
         void fillStates_( VectorPickerStates & _states ) const;
         bool proccesStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states );
 

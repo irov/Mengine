@@ -149,7 +149,7 @@ namespace Mengine
         ConstString c_dev = STRINGIZE_STRING_LOCAL( "dev" );
         // mount root
         if( FILE_SERVICE()
-            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory"
             );

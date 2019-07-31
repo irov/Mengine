@@ -274,11 +274,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::removeGlobalScene()
     {
-        if( m_globalScene != nullptr )
+        ScenePtr globalScene = m_globalScene;
+        m_globalScene = nullptr;
+
+        if( globalScene != nullptr )
         {
-            m_globalScene->disable();
-            m_globalScene->onDestroy();
-            m_globalScene = nullptr;
+            globalScene->disable();
+            globalScene->onDestroy();
+            globalScene = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////

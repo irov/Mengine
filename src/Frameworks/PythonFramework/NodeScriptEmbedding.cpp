@@ -681,8 +681,8 @@ namespace Mengine
             Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_HOTSPOT_MOUSE_ENTER );
             Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_HOTSPOT_MOUSE_LEAVE );
             Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_HOTSPOT_MOUSE_OVER_DESTROY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onActivate", EVENT_HOTSPOT_ACTIVATE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onDeactivate", EVENT_HOTSPOT_DEACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleActivate", EVENT_HOTSPOT_ACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleDeactivate", EVENT_HOTSPOT_DEACTIVATE );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -2926,7 +2926,7 @@ namespace Mengine
                 .def( "getExclusive", &HotSpot::getExclusive )
                 .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                 .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
-                .def( "isMousePickerOver", &HotSpot::isPickerPicked )
+                .def( "isMousePickerOver", &HotSpot::isMousePickerOver )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
                 .def_proxy_native_kernel( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
                 ;

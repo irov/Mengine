@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/PickerInterface.h"
-
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Mixin.h"
@@ -12,6 +10,8 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class PickerInterface;
     //////////////////////////////////////////////////////////////////////////
     class Pickerable
         : public Mixin

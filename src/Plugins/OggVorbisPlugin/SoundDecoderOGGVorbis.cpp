@@ -109,15 +109,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, false, "invalid ov_info" );
 
-        if( vorbisInfo->channels != 2 )
-        {
-            LOGGER_ERROR( "invalid channels %d need %d"
-                , vorbisInfo->channels
-                , 2
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_RETURN( vorbisInfo->channels == 2, false, "invalid channels %d need %d"
+            , vorbisInfo->channels
+            , 2
+        );
 
         ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
 

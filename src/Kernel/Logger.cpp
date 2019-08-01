@@ -6,8 +6,9 @@
 #include "Config/String.h"
 #include "Config/StringRegex.h"
 
-#include <ctime>
-#include <cstdio>
+#include "Config/StdIO.h"
+
+#include <time.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
@@ -122,7 +123,7 @@ namespace Mengine
         size += this->makeTimeStamp( str, size );
         size += this->makeFunctionStamp( str, size );
 
-        size += vsnprintf( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
+        size += MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
 
         if( size < 0 )
         {

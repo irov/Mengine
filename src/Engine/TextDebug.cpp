@@ -11,7 +11,7 @@
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/Document.h"
 
-#include <stdarg.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -165,7 +165,7 @@ namespace Mengine
             va_start( args, _format );
 
             Char msg[2048] = { 0 };
-            vsnprintf( msg, 2047, _format, args );
+            MENGINE_VSNPRINTF( msg, 2047, _format, args );
 
             drawTextDebug2( _pos, font, argb, msg );
 

@@ -259,6 +259,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createNullTexture_()
     {
+        LOGGER_INFO( "create null texture" );
+
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
         uint32_t null_height = 2;
@@ -324,6 +326,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createWhitePixelTexture_()
     {
+        LOGGER_INFO( "create white pixel texture" );
+
         uint32_t null_mipmaps = 1;
         uint32_t null_width = 2;
         uint32_t null_height = 2;

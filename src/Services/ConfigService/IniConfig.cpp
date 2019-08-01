@@ -282,9 +282,51 @@ namespace Mengine
                     }
                 }
 
-                if( IniUtil::getIniValue( ini, _section, _key, _value ) == true )
+                if( IniUtil::getIniValue( ini, _section, _key, _value ) == false )
                 {
                     return;
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static void s_calcValuesT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T & _value )
+        {
+            for( const IniUtil::IniStore & ini : _stores )
+            {
+                ArrayString<128> platform_section;
+                platform_section.append( _section );
+
+                const VectorConstString & tags = _platform.getValues();
+
+                ArrayString<128> platform_section_found;
+
+                for( const ConstString & tag : tags )
+                {
+                    platform_section.append( '-' );
+                    platform_section.append( tag );
+
+                    if( IniUtil::hasIniValue( ini, platform_section.c_str(), _key ) == false )
+                    {
+                        continue;
+                    }
+
+                    platform_section_found = platform_section;
+
+                    break;
+                }
+
+                if( platform_section_found.empty() == false )
+                {
+                    if( IniUtil::getIniValues( ini, platform_section_found.c_str(), _key, _value ) == true )
+                    {
+                        continue;
+                    }
+                }
+
+                if( IniUtil::getIniValues( ini, _section, _key, _value ) == true )
+                {
+                    continue;
                 }
             }
         }
@@ -352,22 +394,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void IniConfig::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _values ) const
     {
-        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
+        Helper::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void IniConfig::getValues( const Char * _section, const Char * _key, VectorFilePath & _values ) const
     {
-        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
+        Helper::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void IniConfig::getValues( const Char * _section, const Char * _key, VectorConstString & _values ) const
     {
-        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
+        Helper::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     void IniConfig::getValues( const Char * _section, const Char * _key, VectorString & _values ) const
     {
-        Helper::s_calcValueT( m_stores, m_platformTags, _section, _key, _values );
+        Helper::s_calcValuesT( m_stores, m_platformTags, _section, _key, _values );
     }
     //////////////////////////////////////////////////////////////////////////
     bool IniConfig::hasSection( const Char * _section ) const

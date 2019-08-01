@@ -20,10 +20,6 @@
 #include "Kernel/VectorAspectRatioViewports.h"
 #include "Kernel/Color.h"
 
-#ifndef MENGINE_INI_BUFFER_SIZE 
-#define MENGINE_INI_BUFFER_SIZE 16384U
-#endif
-
 namespace Mengine
 {
     namespace IniUtil
@@ -58,10 +54,10 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values );
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
         //////////////////////////////////////////////////////////////////////////
         bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );        
     }

@@ -48,7 +48,7 @@ namespace Mengine
 #define LOGGER_CRITICAL LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
 #define LOGGER_ERROR LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
 //////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
+#ifdef MENGINE_LOGGER_DEBUG
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_PERFORMANCE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, nullptr, 0 )( __VA_ARGS__ )
 #define LOGGER_STATISTIC( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )( __VA_ARGS__ )

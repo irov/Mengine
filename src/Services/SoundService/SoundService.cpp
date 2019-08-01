@@ -1256,14 +1256,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const
     {
-        if( _identity == nullptr )
-        {
-            LOGGER_ERROR( "identity is nullptr (mixer '%s')"
-                , _mixer.c_str()
-            );
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, 0.f, "identity is nullptr (mixer '%s')"
+            , _mixer.c_str()
+        );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
@@ -1274,13 +1269,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getDuration( const SoundIdentityInterfacePtr & _identity ) const
     {
-        if( _identity == nullptr )
-        {
-            LOGGER_ERROR( "identity is nullptr"
-            );
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, 0.f, "identity is nullptr" );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
@@ -1302,14 +1291,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
     {
-        if( _identity == nullptr )
-        {
-            LOGGER_ERROR( "identity is nullptr (pos '%f')"
-                , _pos
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, false, "identity is nullptr (pos '%f')"
+            , _pos
+        );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 

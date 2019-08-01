@@ -26,6 +26,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -162,7 +163,7 @@ namespace Mengine
             : public LoggerBase
         {
         public:
-            void log( EMessageLevel _level, uint32_t _flag, const char * _data, uint32_t _count ) override
+            void log( ELoggerLevel _level, uint32_t _flag, const char * _data, uint32_t _count ) override
             {
                 (void)_level;
                 (void)_flag;
@@ -216,7 +217,7 @@ namespace Mengine
             ->loadPlugin( "XmlToBinPlugin.dll" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -224,7 +225,7 @@ namespace Mengine
         ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

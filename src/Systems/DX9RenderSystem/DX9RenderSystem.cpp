@@ -594,7 +594,7 @@ namespace Mengine
 
         m_deferredCompilePrograms.clear();
 
-        LOGGER_WARNING( "initalized successfully!" );
+        LOGGER_MESSAGE( "DirectX 9 render initalized successfully!" );
 
         return true;
     }

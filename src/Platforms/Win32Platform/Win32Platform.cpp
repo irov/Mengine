@@ -136,13 +136,15 @@ namespace Mengine
         );
 
         MEMORYSTATUSEX mem_st;
-        GlobalMemoryStatusEx( &mem_st );
-        LOGGER_MESSAGE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
-            , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
-            , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
-            , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
-            , (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
-        );
+        if( GlobalMemoryStatusEx( &mem_st ) == TRUE )
+        {
+            LOGGER_MESSAGE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
+                , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
+                , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
+                , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
+                , (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
+            );
+        }
 
         if( this->setProcessDPIAware() == false )
         {

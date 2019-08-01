@@ -414,7 +414,7 @@ namespace Mengine
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
                     , easing
-                    , callback, [this, _emitter]( float _volume ) { this->___soundFade( _emitter, _volume ); }
+                    , callback, [this, _emitter]( float _volume ){ this->___soundFade( _emitter, _volume ); }
                     , 1.f, 0.f, _time
                 );
 
@@ -451,7 +451,7 @@ namespace Mengine
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
                     , easing
-                    , nullptr, [this, sourceEmitter]( float _value ) { this->___soundFade( sourceEmitter, _value ); }
+                    , nullptr, [this, sourceEmitter]( float _value ){ this->___soundFade( sourceEmitter, _value ); }
                     , 0.f, 1.f, _time
                 );
 
@@ -463,6 +463,72 @@ namespace Mengine
             affectorable->addAffector( affector );
 
             return sourceEmitter;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void soundFadeInTo( const SoundIdentityInterfacePtr & _emitter, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+        {
+            SoundAffectorCallbackPtr callback = createSoundAffectorCallback( _emitter, _cb, _args );
+
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+            float volume = SOUND_SERVICE()
+                ->getSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
+
+            AffectorPtr affector =
+                m_affectorCreatorSound.create( ETA_POSITION
+                    , easing
+                    , callback, [this, _emitter]( float _volume ) { this->___soundFade( _emitter, _volume ); }
+                    , volume, _to, _time
+                );
+
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                ->getGlobalAffectorable();
+
+            affectorable->addAffector( affector );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
+        {
+            SoundIdentityInterfacePtr emitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( emitter, nullptr, "can't get resource '%s'"
+                , _resourceName.c_str()
+            );
+
+            if( SOUND_SERVICE()
+                ->playEmitter( emitter ) == false )
+            {
+                LOGGER_ERROR( "invalid play '%s'"
+                    , _resourceName.c_str()
+                );
+
+                return nullptr;
+            }
+
+            EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( easing, nullptr, "invalid found easing '%s'"
+                , _easingType.c_str()
+            );
+
+            float volume = SOUND_SERVICE()
+                ->getSourceMixerVolume( emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
+
+            AffectorPtr affector =
+                m_affectorCreatorSound.create( ETA_POSITION
+                    , easing
+                    , nullptr, [this, emitter]( float _value ) { this->___soundFade( emitter, _value ); }
+                    , volume, _to, _time
+                );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
+
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                ->getGlobalAffectorable();
+
+            affectorable->addAffector( affector );
+
+            return emitter;
         }
         //////////////////////////////////////////////////////////////////////////
         void soundStop( const SoundIdentityInterfacePtr & _emitter )
@@ -912,6 +978,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "soundSetPosition", soundScriptMethod, &SoundScriptMethod::soundSetPosMs );
         pybind::def_functor_args( _kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
         pybind::def_functor_args( _kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::soundFadeOut );
+        pybind::def_functor_args( _kernel, "soundFadeInTo", soundScriptMethod, &SoundScriptMethod::soundFadeInTo );
+        pybind::def_functor_args( _kernel, "soundFadeOutTo", soundScriptMethod, &SoundScriptMethod::soundFadeOutTo );
 
         pybind::def_functor_args( _kernel, "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
         pybind::def_functor( _kernel, "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );

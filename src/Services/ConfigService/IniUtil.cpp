@@ -61,12 +61,14 @@ namespace Mengine
 
             if( memory_buffer[0] == 'R' && memory_buffer[1] == 'G' && memory_buffer[2] == 'C' && memory_buffer[3] == 'D' )
             {
-                Mengine::HashType sequreHash = SECURE_SERVICE()
+                memory_buffer += 4;
+
+                HashType sequreHash = SECURE_SERVICE()
                     ->getSequreHash();
 
                 uint32_t parrot = (uint32_t)sequreHash;
 
-                Helper::ravingcode( parrot, memory_buffer + 4, size - 4, memory_buffer + 4 );
+                Helper::ravingcode( parrot, memory_buffer, size - 4, memory_buffer );
             }
 
             if( tinyini_load( &_ini.ini, memory_buffer ) == TINYINI_RESULT_FAILURE )
@@ -375,7 +377,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -389,7 +391,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -405,7 +407,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 
@@ -421,7 +423,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values )
+        bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values )
         {
             uint32_t count = tinyini_count_property_values( &_ini.ini, _section, _key );
 

@@ -144,6 +144,7 @@ namespace Mengine
 #	define MENGINE_WEBP_DECODE_RGBA WebPDecodeBGRAInto
 #	define MENGINE_WEBP_DECODE_RGB WebPDecodeBGRInto
 #endif
+        LOGGER_INFO( "decode WEBP" );
 
         if( m_dataInfo.channels == 4 && m_options.channels == 4 )
         {
@@ -170,6 +171,8 @@ namespace Mengine
         {
             return false;
         }
+
+        LOGGER_INFO( "decode WEBP ok" );
 
         return true;
     }

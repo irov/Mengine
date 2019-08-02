@@ -172,6 +172,7 @@ namespace Mengine
 
     public:
         virtual bool loadPersonality() = 0;
+        virtual void removePersonality() = 0;
 
     public:
         virtual void initializeRenderResources() = 0;

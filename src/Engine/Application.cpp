@@ -324,12 +324,6 @@ namespace Mengine
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
 
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
-        {
-            GAME_SERVICE()
-                ->finalizeRenderResources();
-        }
-
         if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
@@ -1279,7 +1273,7 @@ namespace Mengine
             return;
         }
 
-        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setFocus( m_focus );
@@ -1305,7 +1299,7 @@ namespace Mengine
             return;
         }
 
-        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setFocus( !m_freeze );
@@ -1330,19 +1324,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::beginUpdate()
     {
-        if( SERVICE_EXIST( Mengine::ThreadServiceInterface ) == true )
+        if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
                 ->update();
         }
 
-        if( SERVICE_EXIST( Mengine::PrefetcherServiceInterface ) == true )
+        if( SERVICE_EXIST( PrefetcherServiceInterface ) == true )
         {
             PREFETCHER_SERVICE()
                 ->update();
         }
 
-        if( SERVICE_EXIST( Mengine::ModuleServiceInterface ) == true )
+        if( SERVICE_EXIST( ModuleServiceInterface ) == true )
         {
             MODULE_SERVICE()
                 ->update( m_focus );
@@ -1414,13 +1408,13 @@ namespace Mengine
         MODULE_SERVICE()
             ->tick( &applicationContext );
 
-        if( SERVICE_EXIST( Mengine::SoundServiceInterface ) == true )
+        if( SERVICE_EXIST( SoundServiceInterface ) == true )
         {
             SOUND_SERVICE()
                 ->tick( &applicationContext );
         }
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->tick( &applicationContext );
@@ -1462,7 +1456,7 @@ namespace Mengine
     {
         bool needQuit = true;
 
-        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
             needQuit = GAME_SERVICE()
                 ->close();
@@ -1484,7 +1478,7 @@ namespace Mengine
                     ->onTurnStream( false );
             }
 
-            if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
+            if( SERVICE_EXIST( GameServiceInterface ) == true )
             {
                 GAME_SERVICE()
                     ->turnSound( false );
@@ -1842,7 +1836,7 @@ namespace Mengine
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
-        if( SERVICE_EXIST( Mengine::GameServiceInterface ) == true )
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
             GAME_SERVICE()
                 ->setRenderViewport( m_renderViewport, m_contentResolution );

@@ -90,7 +90,7 @@ namespace Mengine
                 s_service = static_cast<T *>(service_ptr);
             }
 
-            MENGINE_ASSERTION( s_service == nullptr || s_service->isInitializeService() == true, "service '%s' not initialized"
+            MENGINE_ASSERTION_FATAL( s_service == nullptr || s_service->isInitializeService() == true, "service '%s' not initialized"
                 , T::getStaticServiceID()
             );
 

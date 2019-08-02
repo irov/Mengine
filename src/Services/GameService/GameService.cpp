@@ -370,6 +370,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void GameService::removePersonality()
+    {
+        EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
+            ->onGameAccountFinalize();
+
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            SCRIPT_SERVICE()
+                ->finalizeModules();
+        }
+
+        EVENTABLE_METHOD( EVENT_GAME_FINALIZE )
+            ->onGameFinalize();
+
+        EVENTABLE_METHOD( EVENT_GAME_DESTROY )
+            ->onGameDestroy();
+
+        this->finalizeRenderResources();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool GameService::_initializeService()
     {
         CONFIG_SECTION( "Params", m_params );
@@ -391,21 +411,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::_finalizeService()
     {
-        EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
-            ->onGameAccountFinalize();
-
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
-        {
-            SCRIPT_SERVICE()
-                ->finalizeModules();
-        }
-
-        EVENTABLE_METHOD( EVENT_GAME_FINALIZE )
-            ->onGameFinalize();
-
-        EVENTABLE_METHOD( EVENT_GAME_DESTROY )
-            ->onGameDestroy();
-
         this->removeEvents();
 
         m_userEventsAdd.clear();
@@ -457,7 +462,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFocus( bool _focus )
     {
-        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFocus( _focus );
@@ -469,7 +474,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFullscreen( const Resolution & _resolution, bool _fullscreen )
     {
-        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFullscreen( _resolution, _fullscreen );
@@ -481,7 +486,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFixedContentResolution( _resolution, _fixed );
@@ -493,7 +498,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
     {
-        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {
             PLAYER_SERVICE()
                 ->onFixedContentResolution( _resolution, _fixed );

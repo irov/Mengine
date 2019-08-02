@@ -700,7 +700,8 @@ namespace Mengine
 
                     if( fullscreen == false )
                     {
-                        APPLICATION_SERVICE()->paint();
+                        APPLICATION_SERVICE()
+                            ->paint();
                     }
                 }
             }break;

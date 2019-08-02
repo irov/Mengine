@@ -40,6 +40,9 @@ namespace Mengine
         bool saveAccounts() override;
 
     public:
+        void stopAccounts() override;
+
+    public:
         void setDefaultAccount( const ConstString & _accountID ) override;
         const ConstString & getDefaultAccountID() const override;
 

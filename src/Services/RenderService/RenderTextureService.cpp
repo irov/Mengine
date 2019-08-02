@@ -7,6 +7,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"
@@ -319,7 +320,7 @@ namespace Mengine
             return RenderTextureInterfacePtr( texture );
         }
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
                 ->resurrectTexture( _fileGroup, _fileName, _doc );
@@ -496,11 +497,7 @@ namespace Mengine
 
             textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
 
-            if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
-            {
-                GRAVEYARD_SERVICE()
-                    ->buryTexture( _texture );
-            }
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
         }
 
         _texture->release();

@@ -21,6 +21,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        void finalizeModules() override;
+
+    public:
         bool registerModule( const ConstString & _moduleName, const ModuleFactoryInterfacePtr & _module ) override;
         void unregisterModule( const ConstString & _moduleName ) override;
 

@@ -231,6 +231,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::_finalizeService()
     {
+        m_renderResourceHandlers.clear();
+
         m_deferredCompileVertexShaders.clear();
         m_deferredCompileFragmentShaders.clear();
         m_deferredCompilePrograms.clear();
@@ -251,6 +253,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9Image );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9ImageTarget );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetOffscreen );
 
@@ -261,9 +264,8 @@ namespace Mengine
         m_factoryRenderProgramVariable = nullptr;
         m_factoryVertexBuffer = nullptr;
         m_factoryIndexBuffer = nullptr;
-
         m_factoryDX9Image = nullptr;
-
+        m_factoryDX9ImageTarget = nullptr;
         m_factoryDX9TargetTexture = nullptr;
         m_factoryDX9TargetOffscreen = nullptr;
     }

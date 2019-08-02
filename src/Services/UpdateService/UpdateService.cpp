@@ -42,6 +42,14 @@ namespace Mengine
         m_proxies.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    void UpdateService::_stopService()
+    {
+        for( UpdatableProxy & proxy : m_proxies )
+        {
+            proxy.updation = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( uint32_t _mode, uint32_t _deep )
     {
         switch( _mode )

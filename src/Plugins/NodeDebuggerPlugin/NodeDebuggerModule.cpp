@@ -98,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
     {
-        if( SERVICE_EXIST( Mengine::SocketSystemInterface ) == false )
+        if( SERVICE_EXIST( SocketSystemInterface ) == false )
         {
             return false;
         }

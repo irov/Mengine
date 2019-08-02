@@ -602,7 +602,7 @@ namespace Mengine
         {
             if( m_loggerMessageBox != nullptr )
             {
-                if( SERVICE_EXIST( Mengine::LoggerServiceInterface ) == true )
+                if( SERVICE_EXIST( LoggerServiceInterface ) == true )
                 {
                     LOGGER_SERVICE()
                         ->unregisterLogger( m_loggerMessageBox );

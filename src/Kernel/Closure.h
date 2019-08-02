@@ -26,7 +26,6 @@ namespace Mengine
             return std::apply( m_method, std::tuple_cat( std::make_tuple( m_ptr ), std::tuple_cat( std::make_tuple( std::forward<Args &&>( _args ) ... ), m_forwards ) ) );
         }
 
-
     protected:
         P * m_ptr;
         M m_method;

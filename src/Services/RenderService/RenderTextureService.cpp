@@ -513,6 +513,9 @@ namespace Mengine
         uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
         RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
+
         texture->initialize( id, _image, _width, _height );
 
         return texture;

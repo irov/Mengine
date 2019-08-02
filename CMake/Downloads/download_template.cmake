@@ -65,7 +65,7 @@ macro(GIT_CLONE NAME REPOSITORY)
     list(LENGTH TAG EXIST_TAG)
     
     if(${EXIST_TAG} GREATER 0)
-        ExternalProject_Add(${NAME}_download PREFIX ${NAME}
+        ExternalProject_Add( "${NAME}_${TAG}_download" PREFIX ${NAME}
             SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
             
             GIT_REPOSITORY ${REPOSITORY}

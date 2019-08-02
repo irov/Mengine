@@ -3,17 +3,19 @@
 #include "Kernel/IntrusivePtr.h"
 
 #include "Config/Lambda.h"
+#include "Config/Tuple.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    template<class P, class M>
+    template<class P, class M, class Forwards>
     class Closure
     {
     public:
-        Closure( P * _ptr, M _method )
+        Closure( P * _ptr, M _method, Forwards && _forwards )
             : m_ptr( _ptr )
             , m_method( _method )
+            , m_forwards( std::forward<Forwards &&>( _forwards ) )
         {
         }
 
@@ -21,22 +23,23 @@ namespace Mengine
         template<class ... Args>
         auto operator () ( Args && ... _args ) const
         {
-            return (m_ptr->*m_method)(std::forward<Args &&>( _args )...);
+            return std::apply( m_method, std::tuple_cat( std::make_tuple( m_ptr ), std::tuple_cat( std::make_tuple( std::forward<Args &&>( _args ) ... ), m_forwards ) ) );
         }
-
 
     protected:
         P * m_ptr;
         M m_method;
+        Forwards m_forwards;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class P, class D, class M>
+    template<class P, class D, class M, class Forwards>
     class ClosurePtr
     {
     public:
-        ClosurePtr( const IntrusivePtr<P, D> & _ptr, M _method )
+        ClosurePtr( const IntrusivePtr<P, D> & _ptr, M _method, Forwards && _forwards )
             : m_ptr( _ptr )
             , m_method( _method )
+            , m_forwards( std::forward<Forwards &&>( _forwards ) )
         {
         }
 
@@ -46,26 +49,27 @@ namespace Mengine
         {
             P * ptr = m_ptr.get();
 
-            return (ptr->*m_method)(std::forward<Args &&>( _args )...);
+            return std::apply( m_method, std::tuple_cat( std::make_tuple( ptr ), std::tuple_cat( std::make_tuple( std::forward<Args &&>( _args ) ... ), m_forwards ) ) );
         }
 
     protected:
         IntrusivePtr<P, D> m_ptr;
         M m_method;
+        Forwards m_forwards;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class P, class M>
-        Closure<P, M> closure( P * _ptr, M _method )
+        template<class P, class M, class ... Forwards>
+        Closure<P, M, Tuple<Forwards ...>> closure( P * _ptr, M _method, Forwards ... _args )
         {
-            return Closure<P, M>( _ptr, _method );
+            return Closure<P, M, Tuple<Forwards ...>>( _ptr, _method, std::make_tuple( std::forward<Forwards &&>( _args ) ... ) );
         }
 
-        template<class P, class D, class M>
-        ClosurePtr<P, D, M> closure( const IntrusivePtr<P, D> & _ptr, M _method )
+        template<class P, class D, class M, class ... Forwards>
+        ClosurePtr<P, D, M, Tuple<Forwards ...>> closure( const IntrusivePtr<P, D> & _ptr, M _method, Forwards ... _args )
         {
-            return ClosurePtr<P, D, M>( _ptr, _method );
+            return ClosurePtr<P, D, M, Tuple<Forwards ...>>( _ptr, _method, std::make_tuple( std::forward<Forwards &&>( _args ) ... ) );
         }
     }
 }

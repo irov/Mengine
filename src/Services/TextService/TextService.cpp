@@ -18,7 +18,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "stdex/xml_sax_parser.h"
+#include "xmlsax/xmlsax.hpp"
 
 #include "utf8.h"
 
@@ -82,12 +82,7 @@ namespace Mengine
         }
 
     public:
-        void callback_begin_node( const char * _node )
-        {
-            MENGINE_UNUSED( _node );
-        }
-
-        void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+        void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
         {
             if( strcmp( _node, "Text" ) != 0 )
             {
@@ -363,11 +358,6 @@ namespace Mengine
             m_textManager->addTextEntry( text_key, text, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
         }
 
-        void callback_end_node( const char * _node )
-        {
-            MENGINE_UNUSED( _node );
-        }
-
     protected:
         TextService * m_textManager;
 
@@ -396,7 +386,21 @@ namespace Mengine
         Char * xml_buff = xml_memory->getBuffer();
 
         TextManagerLoadSaxCallback tmsc( this, _fileGroup, _filePath );
-        if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
+
+        xmlsax_callbacks_t callbacks;
+        callbacks.begin_node = nullptr;
+        callbacks.end_node = nullptr;
+
+        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** _key, const xmlsax_char_t ** _value, void * _userdata )
+        {
+            MENGINE_UNUSED( _userdata );
+
+            TextManagerLoadSaxCallback * tmsc = (TextManagerLoadSaxCallback *)_userdata;
+
+            tmsc->parse( _node, _count, _key, _value );
+        };
+
+        if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
         {
             LOGGER_ERROR( "file '%s:%s' invalid parse pak"
                 , _fileGroup->getName().c_str()
@@ -426,12 +430,7 @@ namespace Mengine
         }
 
     public:
-        void callback_begin_node( const char * _node )
-        {
-            MENGINE_UNUSED( _node );
-        }
-
-        void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+        void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
         {
             if( strcmp( _node, "Text" ) != 0 )
             {
@@ -460,11 +459,6 @@ namespace Mengine
             m_textManager->removeTextEntry( text_key );
         }
 
-        void callback_end_node( const char * _node )
-        {
-            MENGINE_UNUSED( _node );
-        }
-
     protected:
         TextService * m_textManager;
 
@@ -486,7 +480,21 @@ namespace Mengine
         Char * xml_buff = xml_memory->getBuffer();
 
         TextManagerUnloadSaxCallback tmsc( this, _fileGroup, _path );
-        if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
+
+        xmlsax_callbacks_t callbacks;
+        callbacks.begin_node = nullptr;
+        callbacks.end_node = nullptr;
+
+        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** _key, const xmlsax_char_t ** _value, void * _userdata )
+        {
+            MENGINE_UNUSED( _userdata );
+
+            TextManagerUnloadSaxCallback * tmsc = (TextManagerUnloadSaxCallback *)_userdata;
+
+            tmsc->parse( _node, _count, _key, _value );
+        };
+
+        if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
         {
             return false;
         }

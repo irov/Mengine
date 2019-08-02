@@ -50,4 +50,5 @@ GIT_CLONE(zed_net https://github.com/iOrange/zed_net.git)
 GIT_CLONE(spine https://github.com/EsotericSoftware/spine-runtimes.git "3.7.83")
 GIT_CLONE(GOAP https://github.com/irov/GOAP.git)
 GIT_CLONE(SDL2 https://github.com/spurious/SDL-mirror.git "release-2.0.10")
+GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
 

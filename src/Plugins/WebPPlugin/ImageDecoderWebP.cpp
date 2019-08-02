@@ -44,9 +44,9 @@ namespace Mengine
                     , featuresBufferSize
                 );
 
-                m_stream->read( featuresMemory, featuresBufferSize );
+                size_t featuresBufferSizeRead = m_stream->read( featuresMemory, featuresBufferSize );
 
-                status = WebPGetFeatures( featuresMemory, featuresBufferSize, &features );
+                status = WebPGetFeatures( featuresMemory, featuresBufferSizeRead, &features );
 
                 m_stream->seek( 0 );
             } while( status == VP8_STATUS_NOT_ENOUGH_DATA );

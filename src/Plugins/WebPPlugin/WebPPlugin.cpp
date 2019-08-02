@@ -10,6 +10,8 @@
 #include "Kernel/EncoderFactory.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "webp/decode.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( WebP, Mengine::WebPPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -26,6 +28,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool WebPPlugin::_initializePlugin()
     {
+        int version = WebPGetDecoderVersion();
+
+        LOGGER_MESSAGE( "WebP Version: %u.%u.%u"
+            , (version >> 16) & 0xff
+            , (version >> 8) & 0xff
+            , (version >> 0) & 0xff
+        );
+
+        LOGGER_MESSAGE( "WebP ABI Version: %p"
+            , WEBP_DECODER_ABI_VERSION
+        );
+
         Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ) );
 
         CODEC_SERVICE()

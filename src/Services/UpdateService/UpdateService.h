@@ -20,6 +20,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         uint32_t createUpdatater( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) override;

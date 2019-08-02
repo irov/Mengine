@@ -11,6 +11,8 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
+#include "Interface/AccountServiceInterface.h"
+#include "Interface/GameServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -612,13 +614,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
     {
-        SERVICE_FINALIZE( AccountService );
-        SERVICE_FINALIZE( ModuleService );
-
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {
             PLATFORM_SERVICE()
                 ->stopPlatform();
+        }
+
+        ACCOUNT_SERVICE()
+            ->stopAccounts();
+
+        GAME_SERVICE()
+            ->removePersonality();
+
+        if( SERVICE_EXIST( FrameworkInterface ) == true )
+        {
+            FRAMEWORK_SERVICE()
+                ->onFrameworkFinalize();
         }
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
@@ -628,20 +639,23 @@ namespace Mengine
 
         SERVICE_PROVIDER_STOP();
 
+
+        MODULE_SERVICE()
+            ->finalizeModules();
+
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
                 ->stopTasks();
         }
 
-        SERVICE_FINALIZE( SceneService );
         SERVICE_FINALIZE( GameService );
-        SERVICE_FINALIZE( PlayerService );
-        SERVICE_FINALIZE( PickerService );
-        SERVICE_FINALIZE( ChronometerService );
-        SERVICE_FINALIZE( UpdateService );
-        SERVICE_FINALIZE( PrefetcherService );
         SERVICE_FINALIZE( Application );
+
+        SERVICE_FINALIZE( AccountService );
+        SERVICE_FINALIZE( SceneService );
+        SERVICE_FINALIZE( ChronometerService );
+        SERVICE_FINALIZE( PrefetcherService );
         SERVICE_FINALIZE( PackageService );
         SERVICE_FINALIZE( UserdataService );
         SERVICE_FINALIZE( GraveyardService );
@@ -649,15 +663,13 @@ namespace Mengine
         SERVICE_FINALIZE( TextService );
         SERVICE_FINALIZE( DataService );
 
-        if( SERVICE_EXIST( FrameworkInterface ) == true )
-        {
-            FRAMEWORK_SERVICE()
-                ->onFrameworkFinalize();
-        }
-
         PLUGIN_SERVICE()
             ->unloadPlugins();
 
+        SERVICE_FINALIZE( ModuleService );
+        SERVICE_FINALIZE( PlayerService );
+        SERVICE_FINALIZE( PickerService );
+        SERVICE_FINALIZE( UpdateService );
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( CodecService );

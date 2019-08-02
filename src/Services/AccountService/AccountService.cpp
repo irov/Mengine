@@ -63,14 +63,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::_finalizeService()
     {
-        LOGGER_MESSAGE( "save accounts" );
+        m_accountProvider = nullptr;
 
-        ConstString lastAccount = m_currentAccountID;
-        this->unselectCurrentAccount_();
-
-        m_currentAccountID = lastAccount;
-
-        this->saveAccounts();
+        m_fileGroup = nullptr;
+        m_archivator = nullptr;
 
         m_currentAccountID.clear();
         m_accounts.clear();
@@ -78,6 +74,16 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAccounts );
 
         m_factoryAccounts = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AccountService::stopAccounts()
+    {
+        ConstString lastAccount = m_currentAccountID;
+        this->unselectCurrentAccount_();
+
+        m_currentAccountID = lastAccount;
+
+        this->saveAccounts();
     }
     //////////////////////////////////////////////////////////////////////////
     void AccountService::setAccountProvider( const AccountProviderInterfacePtr & _accountProvider )
@@ -649,6 +655,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::saveAccounts()
     {
+        LOGGER_MESSAGE( "save accounts" );
+
         if( m_invalidateAccounts == false )
         {
             return true;

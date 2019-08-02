@@ -447,5 +447,6 @@ namespace Mengine
 #endif
 
         m_handlers.clear();
+        m_handlersAdd.clear();
     }
 }

@@ -26,6 +26,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::_finalizeService()
     {
+        m_moduleFactory.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::finalizeModules()
+    {
         for( const ModuleInterfacePtr & module : m_modules )
         {
             module->finalizeModule();

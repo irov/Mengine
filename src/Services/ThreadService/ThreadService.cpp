@@ -43,7 +43,7 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( Mengine::ThreadSystemInterface ) == false )
+        if( SERVICE_EXIST( ThreadSystemInterface ) == false )
         {
             return false;
         }

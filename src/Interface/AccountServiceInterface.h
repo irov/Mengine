@@ -42,6 +42,9 @@ namespace Mengine
         virtual bool saveAccounts() = 0;
 
     public:
+        virtual void stopAccounts() = 0;
+
+    public:
         virtual void setDefaultAccount( const ConstString & _accountID ) = 0;
         virtual const ConstString & getDefaultAccountID() const = 0;
         virtual bool isCurrentDefaultAccount() const = 0;

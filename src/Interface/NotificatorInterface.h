@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/RenderTextureInterface.h"
+
 #include "Config/Typedef.h"
 #include "Config/Tuple.h"
 #include "Config/Char.h"
@@ -60,6 +62,7 @@ namespace Mengine
     DECLARE_NOTIFICATOR( NOTIFICATOR_RELOAD_LOCALE_POST );
     DECLARE_NOTIFICATOR( NOTIFICATOR_ENGINE_FINALIZE );
     DECLARE_NOTIFICATOR( NOTIFICATOR_ENGINE_ENABLE_PACKAGES );
+    DECLARE_NOTIFICATOR( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, RenderTextureInterface * );
 
 #undef DECLARE_NOTIFICATOR
 }

@@ -246,29 +246,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE );
-
-        if( m_arrow != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_arrow->release();
-
-            m_arrow->setRenderCamera( nullptr );
-            m_arrow->setRenderViewport( nullptr );
-            m_arrow->setRenderScissor( nullptr );
-
-            m_arrow->onDestroy();
-            m_arrow = nullptr;
+            m_globalInputHandler->finalize();
+            m_globalInputHandler = nullptr;
         }
-
-        m_renderViewport = nullptr;
-        m_renderCamera = nullptr;
-        m_renderScissor = nullptr;
-
-        m_renderTarget = nullptr;
-
-        m_globalInputHandler = nullptr;
 
         if( m_scheduleManager != nullptr )
         {
@@ -292,6 +274,56 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
 
         m_factoryScheduleManager = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::_stopService()
+    {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE );
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->release();
+
+            m_arrow->setRenderCamera( nullptr );
+            m_arrow->setRenderViewport( nullptr );
+            m_arrow->setRenderScissor( nullptr );
+
+            m_arrow->onDestroy();
+            m_arrow = nullptr;
+        }
+
+        m_renderViewport = nullptr;
+        m_renderCamera = nullptr;
+        m_renderScissor = nullptr;
+
+        m_renderTarget = nullptr;
+
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->clear();
+        }
+
+        if( m_scheduleManager != nullptr )
+        {
+            m_scheduleManager->removeAll();
+        }
+
+        if( m_scheduleManagerGlobal != nullptr )
+        {
+            m_scheduleManagerGlobal->removeAll();
+        }
+
+        if( m_affectorable != nullptr )
+        {
+            m_affectorable->stopAllAffectors();
+        }
+
+        if( m_affectorableGlobal != nullptr )
+        {
+            m_affectorableGlobal->stopAllAffectors();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::initializeRenderResources()
@@ -709,7 +741,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -761,7 +793,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -799,7 +831,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->setScene( nullptr );
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();

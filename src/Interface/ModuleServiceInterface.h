@@ -16,6 +16,9 @@ namespace Mengine
         SERVICE_DECLARE( "ModuleService" )
 
     public:
+        virtual void finalizeModules() = 0;
+
+    public:
         virtual bool registerModule( const ConstString & _moduleName, const ModuleFactoryInterfacePtr & _factory ) = 0;
         virtual void unregisterModule( const ConstString & _moduleName ) = 0;
 

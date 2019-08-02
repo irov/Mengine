@@ -10,7 +10,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "stdex/xml_sax_parser.h"
+#include "xmlsax/xmlsax.hpp"
 
 #include "utf8.h"
 
@@ -104,14 +104,7 @@ namespace Mengine
             void operator = ( const BitmapGlyphSaxCallback & );
 
         public:
-            void callback_begin_node( const char * _node )
-            {
-                MENGINE_UNUSED( _node );
-
-                //Empty
-            }
-
-            void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+            void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
             {
                 if( strcmp( _node, "font" ) == 0 )
                 {
@@ -375,11 +368,6 @@ namespace Mengine
                 }
             }
 
-            void callback_end_node( const char * _node )
-            {
-                MENGINE_UNUSED( _node );
-            }
-
         public:
             bool isValid() const
             {
@@ -419,7 +407,21 @@ namespace Mengine
         memory[xml_buffer_size] = '\0';
 
         BitmapGlyphSaxCallback tmsc( this, _pak, _path );
-        if( stdex::xml_sax_parse( memory, tmsc ) == false )
+
+        xmlsax_callbacks_t callbacks;
+        callbacks.begin_node = nullptr;
+        callbacks.end_node = nullptr;
+
+        callbacks.node_attributes = []( xmlsax_char_t * _node, uint32_t _count, const xmlsax_char_t ** _key, const xmlsax_char_t ** _value, void * _userdata )
+        {
+            MENGINE_UNUSED( _userdata );
+
+            BitmapGlyphSaxCallback * tmsc = (BitmapGlyphSaxCallback *)_userdata;
+
+            tmsc->parse( _node, _count, _key, _value );
+        };
+
+        if( xmlsax_parse( memory, &callbacks, &tmsc ) == false )
         {
             LOGGER_ERROR( "invalid parse file '%s:%s'"
                 , _pak->getName().c_str()

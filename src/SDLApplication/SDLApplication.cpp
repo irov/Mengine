@@ -216,7 +216,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeUserDirectory_()
     {
-        Char userPath[MENGINE_MAX_PATH];
+        Char userPath[MENGINE_MAX_PATH] = {0};
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 

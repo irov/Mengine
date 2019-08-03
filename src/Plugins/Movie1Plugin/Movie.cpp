@@ -34,6 +34,7 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/EventableHelper.h"
 
 #include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"

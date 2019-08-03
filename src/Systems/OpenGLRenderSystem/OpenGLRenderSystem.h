@@ -25,7 +25,8 @@ namespace Mengine
             , wrapS( 0 )
             , wrapT( 0 )
             , border( 0 )
-        {}
+        {
+        }
 
         OpenGLRenderImage * texture;
 
@@ -69,7 +70,7 @@ namespace Mengine
     public:
         RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc ) override;
         bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
-        
+
     public:
         RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc ) override;
         bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
@@ -140,7 +141,7 @@ namespace Mengine
         void setVSync( bool _vSync ) override;
 
         void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
-        
+
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 
@@ -170,7 +171,7 @@ namespace Mengine
         Resolution m_resolution;
 
         RenderVertexBufferInterfacePtr m_currentVertexBuffer;
-        RenderIndexBufferInterfacePtr m_currentIndexBuffer;        
+        RenderIndexBufferInterfacePtr m_currentIndexBuffer;
 
         typedef Vector<OpenGLRenderVertexShaderPtr> VectorRenderVertexShaders;
         VectorRenderVertexShaders m_deferredCompileVertexShaders;

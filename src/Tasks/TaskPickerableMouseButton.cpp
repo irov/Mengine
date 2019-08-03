@@ -1,8 +1,11 @@
 #include "TaskPickerableMouseButton.h"
 
+#include "Interface/PickerInterface.h"
+
 #include "Engine/HotSpotEventReceiverInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Eventable.h"
 
 namespace Mengine
 {

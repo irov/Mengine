@@ -15,15 +15,16 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class DX9RenderImage> DX9RenderImagePtr;
     typedef IntrusivePtr<class DX9RenderVertexShader> DX9RenderVertexShaderPtr;
     typedef IntrusivePtr<class DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;
     typedef IntrusivePtr<class DX9RenderProgram> DX9RenderProgramPtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderImageTarget;
     class DX9RenderTargetTexture;
     class DX9RenderTargetOffscreen;
-
+    //////////////////////////////////////////////////////////////////////////
     class DX9RenderSystem
         : public ServiceBase<RenderSystemInterface>
     {

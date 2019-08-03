@@ -2,6 +2,7 @@
 #include "Movie2.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/EventableHelper.h"
 
 namespace Mengine
 {

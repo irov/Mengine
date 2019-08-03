@@ -105,7 +105,7 @@ namespace Mengine
 
             if( 0 > result )
             {
-                const char* sdlError = SDL_GetError();
+                const char * sdlError = SDL_GetError();
 
                 LOGGER_ERROR( "seek offset %d size %d get error %s"
                     , m_offset
@@ -136,8 +136,11 @@ namespace Mengine
 
         if( m_rwops == nullptr )
         {
-            LOGGER_ERROR( "invalid open '%s'"
+            const char * sdl_error = SDL_GetError();
+
+            LOGGER_ERROR( "invalid open '%s' error '%s'"
                 , _fullPath
+                , sdl_error
             );
 
             return false;
@@ -255,12 +258,12 @@ namespace Mengine
 
         if( bytesRead == 0 )
         {
-            const Char * sdlError = SDL_GetError();
+            const char * sdl_error = SDL_GetError();
 
-            LOGGER_ERROR( "read %d:%d get error %s"
+            LOGGER_ERROR( "read %d:%d get error '%s'"
                 , _size
                 , m_size
-                , sdlError
+                , sdl_error
             );
 
             return false;
@@ -292,12 +295,12 @@ namespace Mengine
 
             if( 0 > result )
             {
-                const char* sdlError = SDL_GetError();
+                const char * sdl_error = SDL_GetError();
 
                 LOGGER_ERROR( "seek %d:%d get error %s"
                     , _pos
                     , m_size
-                    , sdlError
+                    , sdl_error
                 );
 
                 return false;
@@ -373,8 +376,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::memory( void ** _memory, size_t * _size )
     {
-        (void)_memory;
-        (void)_size;
+        MENGINE_UNUSED( _memory );
+        MENGINE_UNUSED( _size );
 
         return false;
     }

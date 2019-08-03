@@ -39,7 +39,7 @@ namespace Mengine
             m_silent = true;
         }
 
-        EMessageLevel logLevel;
+        ELoggerLevel logLevel;
 
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -98,10 +98,7 @@ namespace Mengine
 
         if( HAS_OPTION( "verbose" ) == true )
         {
-            LOGGER_SERVICE()
-                ->setVerboseLevel( LM_MAX );
-
-            LOGGER_INFO( "Verbose logging mode enabled" );
+            this->setVerboseLevel( LM_MAX );
         }
 
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
@@ -138,12 +135,12 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::setVerboseLevel( EMessageLevel _level )
+    void LoggerService::setVerboseLevel( ELoggerLevel _level )
     {
         m_verboseLevel = _level;
     }
     //////////////////////////////////////////////////////////////////////////
-    EMessageLevel LoggerService::getVerboseLevel() const
+    ELoggerLevel LoggerService::getVerboseLevel() const
     {
         return m_verboseLevel;
     }
@@ -168,7 +165,7 @@ namespace Mengine
         return m_silent;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoggerService::validMessage( EMessageLevel _level, uint32_t _flag ) const
+    bool LoggerService::validMessage( ELoggerLevel _level, uint32_t _flag ) const
     {
         if( m_silent == true )
         {
@@ -193,7 +190,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size )
+    void LoggerService::logMessage( ELoggerLevel _level, uint32_t _flag, const Char * _message, uint32_t _size )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
 
@@ -219,7 +216,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t LoggerService::getCountMessage( EMessageLevel _level )
+    uint32_t LoggerService::getCountMessage( ELoggerLevel _level )
     {
         uint32_t count = m_countMessage[_level];
 
@@ -230,7 +227,11 @@ namespace Mengine
     {
         MENGINE_UNUSED( _logger );
 
+        
+
 #ifdef MENGINE_LOGGER_HISTORY
+        MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
+
         for( const Record & record : m_history )
         {
             const Char * record_message_str = record.message.c_str();

@@ -26,7 +26,7 @@ namespace Mengine
     protected:
         void enable() override;
         void disable() override;
-        
+
     protected:
         bool resize( uint32_t _count ) override;
 

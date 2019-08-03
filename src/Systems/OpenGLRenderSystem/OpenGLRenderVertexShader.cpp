@@ -38,9 +38,9 @@ namespace Mengine
 
         if( shaderId == 0 )
         {
-            LOGGER_ERROR("'%s' invalid create shader"
+            LOGGER_ERROR( "'%s' invalid create shader"
                 , m_name.c_str()
-                );
+            );
 
             return false;
         }
@@ -62,7 +62,7 @@ namespace Mengine
             LOGGER_ERROR( "compilation vertex shader '%s' error '%s'"
                 , m_name.c_str()
                 , errorLog
-                );
+            );
 
             return false;
         }
@@ -82,7 +82,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexShader::attach( GLuint _program )
-    { 
-        GLCALL( glAttachShader, ( _program, m_shaderId ) );
+    {
+        GLCALL( glAttachShader, (_program, m_shaderId) );
     }
 }

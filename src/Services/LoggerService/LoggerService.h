@@ -1,11 +1,10 @@
 #pragma once
 
+#include "Interface/LoggerServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Kernel/Logger.h"
 
 #include "Config/Vector.h"
 #include "Config/String.h"
@@ -24,8 +23,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setVerboseLevel( EMessageLevel _level ) override;
-        EMessageLevel getVerboseLevel() const override;
+        void setVerboseLevel( ELoggerLevel _level ) override;
+        ELoggerLevel getVerboseLevel() const override;
 
     public:
         void setVerboseFlag( uint32_t _flag ) override;
@@ -36,11 +35,11 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
-        bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
+        bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;
 
     public:
-        void logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size ) override;
-        uint32_t getCountMessage( EMessageLevel _level ) override;
+        void logMessage( ELoggerLevel _level, uint32_t _flag, const Char * _message, uint32_t _size ) override;
+        uint32_t getCountMessage( ELoggerLevel _level ) override;
 
     public:
         void writeHistory( const LoggerInterfacePtr & _logger ) const override;
@@ -50,7 +49,7 @@ namespace Mengine
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
     protected:
-        EMessageLevel m_verboseLevel;
+        ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFlag;
         bool m_silent;
 
@@ -64,7 +63,7 @@ namespace Mengine
 #ifdef MENGINE_LOGGER_HISTORY
         struct Record
         {
-            EMessageLevel level;
+            ELoggerLevel level;
             uint32_t flag;
             String message;
         };

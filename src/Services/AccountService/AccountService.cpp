@@ -43,7 +43,7 @@ namespace Mengine
         LOGGER_INFO( "Initializing Account manager..."
         );
 
-        m_factoryAccounts = new FactoryPool<Account, 8>();
+        m_factoryAccounts = Helper::makeFactoryPool<Account, 8>();
 
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -63,20 +63,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AccountService::_finalizeService()
     {
-        LOGGER_MESSAGE( "save accounts" );
+        m_accountProvider = nullptr;
 
+        m_fileGroup = nullptr;
+        m_archivator = nullptr;
+
+        m_currentAccountID.clear();
+        m_accounts.clear();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAccounts );
+
+        m_factoryAccounts = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AccountService::stopAccounts()
+    {
         ConstString lastAccount = m_currentAccountID;
         this->unselectCurrentAccount_();
 
         m_currentAccountID = lastAccount;
 
         this->saveAccounts();
-
-        m_currentAccountID.clear();
-        m_accounts.clear();
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAccounts );
-        m_factoryAccounts = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AccountService::setAccountProvider( const AccountProviderInterfacePtr & _accountProvider )
@@ -648,6 +655,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::saveAccounts()
     {
+        LOGGER_MESSAGE( "save accounts" );
+
         if( m_invalidateAccounts == false )
         {
             return true;

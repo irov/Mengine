@@ -26,6 +26,7 @@ src
 	Config.h
     Export.h
 	Secure.h
+    StdIO.h
 	cmake_dummy.cpp
 )
 

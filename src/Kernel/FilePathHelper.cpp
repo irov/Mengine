@@ -3,7 +3,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
 
-#include <stdarg.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -68,7 +68,7 @@ namespace Mengine
             va_start( args, _format );
 
             Char str[MENGINE_MAX_PATH] = { 0 };
-            int size = ::vsnprintf( str, MENGINE_MAX_PATH - 1, _format, args );
+            int size = MENGINE_VSNPRINTF( str, MENGINE_MAX_PATH - 1, _format, args );
 
             MENGINE_ASSERTION_FATAL( size >= 0, "invalid stringize file format '%s'"
                 , _format

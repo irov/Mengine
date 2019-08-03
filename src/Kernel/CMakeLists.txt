@@ -8,6 +8,7 @@ Mixin\\\\Unknowable
 ADD_FILTER(
 Mixin\\\\Eventable
 	Eventable.h
+    EventableHelper.h
     BaseEventation.h
     BaseEventation.cpp
 )
@@ -494,7 +495,8 @@ Core
     
     GlobalInputHandlerHelper.h
     GlobalInputHandlerHelper.cpp
-    
+
+    LoggerLevel.h
     KeyCode.h
     MouseCode.h
     
@@ -505,6 +507,8 @@ Core
     
     SecureValue.h
     SecureValue.cpp
+    
+    Closure.h
 )
 
 ADD_FILTER(

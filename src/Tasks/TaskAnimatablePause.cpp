@@ -1,5 +1,7 @@
 #include "TaskAnimatablePause.h"
 
+#include "Interface/AnimationInterface.h"
+
 #include "Kernel/Logger.h"
 
 namespace Mengine

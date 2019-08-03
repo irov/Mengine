@@ -44,7 +44,7 @@ namespace Mengine
         case BOP_ADD: return GL_FUNC_ADD;
         case BOP_SUBTRACT: return GL_FUNC_SUBTRACT;
         case BOP_REVSUBTRACT: return GL_FUNC_REVERSE_SUBTRACT;
-                
+
 #ifdef MENGINE_RENDER_OPENGL_ES
         case BOP_MIN: return GL_MIN_EXT;
         case BOP_MAX: return GL_MAX_EXT;
@@ -352,7 +352,7 @@ namespace Mengine
         case BT_STATIC:
             return GL_STATIC_DRAW;
         case BT_STREAM:
-            return GL_STREAM_DRAW;            
+            return GL_STREAM_DRAW;
         case BT_DYNAMIC:
             return GL_DYNAMIC_DRAW;
         }

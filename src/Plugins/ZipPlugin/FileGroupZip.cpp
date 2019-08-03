@@ -177,11 +177,6 @@ namespace Mengine
             uint32_t file_header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
             header_offset += file_header_size;
 
-            if( header.compressedSize == 0 ) // folder
-            {
-                continue;
-            }
-
             FilePath fileName = Helper::stringizeFilePathSize( fileNameBuffer, header.fileNameLen );
 
             if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
@@ -229,7 +224,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & FileGroupZip::getCategory() const
+    const FileGroupInterfacePtr & FileGroupZip::getFileGroup() const
     {
         return m_fileGroup;
     }

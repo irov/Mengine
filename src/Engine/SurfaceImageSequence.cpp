@@ -3,13 +3,13 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
-#include "Kernel/ResourceImage.h"
-
 #include "ResourceImageSequence.h"
 
+#include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/EventableHelper.h"
 
 #include <math.h>
 

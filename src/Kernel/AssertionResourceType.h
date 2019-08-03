@@ -4,7 +4,7 @@
 
 #include "Kernel/Assertion.h"
 
-#ifdef MENGINE_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG
 #   define MENGINE_ASSERTION_RESOURCE_TYPE( ResourceName, ResourceType, Ret, Message, ... )\
     if( RESOURCE_SERVICE()->hasResource(ResourceName, nullptr) == false )\
     {\

@@ -16,6 +16,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PickerInterface.h"
+#include "Interface/AnimationInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -97,7 +98,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const
     {
-        if( SERVICE_EXIST( Mengine::SocketSystemInterface ) == false )
+        if( SERVICE_EXIST( SocketSystemInterface ) == false )
         {
             return false;
         }

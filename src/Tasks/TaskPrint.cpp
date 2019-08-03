@@ -2,7 +2,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <stdio.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -13,7 +13,7 @@ namespace Mengine
         va_start( args, _format );
 
         Char message[2048] = { 0 };
-        int message_size = vsnprintf( message, 2047, _format, args );
+        int message_size = MENGINE_VSNPRINTF( message, 2047, _format, args );
 
         m_message.assign( message, message_size );
 

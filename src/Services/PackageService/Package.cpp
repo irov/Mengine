@@ -125,7 +125,7 @@ namespace Mengine
     {
         FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_mountFileGroup, m_path, m_type, &fileGroup, _doc ) == false )
+            ->mountFileGroup( m_name, m_mountFileGroup, m_path, m_type, &fileGroup, false, _doc ) == false )
         {
             LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
                 , m_name.c_str()

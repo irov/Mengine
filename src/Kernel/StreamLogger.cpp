@@ -43,7 +43,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void StreamLogger::log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
+    void StreamLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );

@@ -236,7 +236,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowAEZ::initialize()
     {
-        m_factoryMovieData = new FactoryPool<Movie2Data, 128>();
+        m_factoryMovieData = Helper::makeFactoryPool<Movie2Data, 128>();
 
         return true;
     }
@@ -273,12 +273,6 @@ namespace Mengine
     bool DataflowAEZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
-
-        if( strcmp( _doc, "Movies2/StartMenu/StartMenu.aez" ) == 0 )
-        {
-            int i = 0;
-            (void)i;
-        }
 
         Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );
 

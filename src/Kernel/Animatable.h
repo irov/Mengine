@@ -2,12 +2,12 @@
 
 #include "Config/Typedef.h"
 
-#include "Interface/AnimationInterface.h"
-
 #include "Kernel/Mixin.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class AnimationInterface;
     //////////////////////////////////////////////////////////////////////////
     class Animatable
         : public Mixin

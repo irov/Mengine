@@ -2,6 +2,8 @@
 
 #include "Interface/GameServiceInterface.h"
 
+#include "Kernel/EventableHelper.h"
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {

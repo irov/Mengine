@@ -7,6 +7,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"
@@ -56,7 +57,7 @@ namespace Mengine
 
         m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_ );
 
-        m_factoryDecoderRenderImageProvider = new FactoryPool<DecoderRenderImageProvider, 128>();
+        m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>();
 
         return true;
     }
@@ -319,7 +320,7 @@ namespace Mengine
             return RenderTextureInterfacePtr( texture );
         }
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
                 ->resurrectTexture( _fileGroup, _fileName, _doc );
@@ -496,11 +497,7 @@ namespace Mengine
 
             textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
 
-            if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
-            {
-                GRAVEYARD_SERVICE()
-                    ->buryTexture( _texture );
-            }
+            NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
         }
 
         _texture->release();
@@ -513,6 +510,9 @@ namespace Mengine
         uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
         RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
+
         texture->initialize( id, _image, _width, _height );
 
         return texture;

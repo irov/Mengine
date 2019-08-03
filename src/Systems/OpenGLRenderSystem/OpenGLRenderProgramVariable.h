@@ -41,10 +41,10 @@ namespace Mengine
         void setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count ) override;
         void setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count ) override;
 
-	public:
-		void updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _size, uint32_t _count ) override;
-		void updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count ) override;
-		void updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count ) override;
+    public:
+        void updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _size, uint32_t _count ) override;
+        void updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count ) override;
+        void updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count ) override;
 
     public:
         bool apply( const RenderProgramInterfacePtr & _program );

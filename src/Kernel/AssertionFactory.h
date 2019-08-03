@@ -10,7 +10,7 @@ namespace Mengine
     }
 }
 
-#ifdef MENGINE_DEBUG
+#ifdef MENGINE_ASSERTION_DEBUG
 #   define MENGINE_ASSERTION_FACTORY_EMPTY(F) Detail::assertionFactoryEmpty(F, MENGINE_CODE_FILE, MENGINE_CODE_LINE)
 #else
 #   define MENGINE_ASSERTION_FACTORY_EMPTY(F)

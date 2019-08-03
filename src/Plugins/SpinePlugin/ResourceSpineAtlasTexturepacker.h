@@ -25,8 +25,7 @@ namespace Mengine
         ~ResourceSpineAtlasTexturepacker() override;
 
     public:
-        void setResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) override;
-        const ConstString & getResourceTexturepackerName() const override;
+        void addResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) override;
 
     public:
         spAtlas * getSpineAtlas() const override;
@@ -36,8 +35,14 @@ namespace Mengine
         void _release() override;
 
     protected:
-        ConstString m_resourceTexturepackerName;
-        ResourcePtr m_resourceTexturepacker;
+        struct TexturepackerDesc
+        {
+            ConstString resourceTexturepackerName;
+            ResourcePtr resourceTexturepacker;
+        };
+
+        typedef Vector<TexturepackerDesc> VectorTexturepackers;
+        VectorTexturepackers m_texturepackers;
 
         spAtlas * m_atlas;
     };

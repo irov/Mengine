@@ -11,6 +11,7 @@
 #include "Interface/ScriptEmbeddingInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 
@@ -273,14 +274,14 @@ namespace Mengine
 
         m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>();
 
-        m_loggerWarning->setMessageLevel( LM_WARNING );
+        m_loggerWarning->setVerboseLevel( LM_WARNING );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
         m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>();
 
-        m_loggerError->setMessageLevel( LM_ERROR );
+        m_loggerError->setVerboseLevel( LM_ERROR );
 
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );
@@ -342,7 +343,7 @@ namespace Mengine
 
         kernel->set_module_finder( py_moduleFinder.ptr() );
 
-        m_factoryScriptModule = new FactoryPool<PythonScriptModule, 8>();
+        m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>();
 
 #ifdef MENGINE_DEBUG
         pybind::def_functor( m_kernel, "addLogFunction", this, &PythonScriptService::addLogFunction );

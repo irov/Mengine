@@ -18,7 +18,7 @@ namespace Mengine
     protected:
         bool initialize() override
         {
-            m_factory = new FactoryPool<T, 8>();
+            m_factory = Helper::makeFactoryPool<T, 8>();
 
             return true;
         }

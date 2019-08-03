@@ -19,8 +19,8 @@ namespace Mengine
         SERVICE_DECLARE( "LoggerService" )
 
     public:
-        virtual void setVerboseLevel( EMessageLevel _level ) = 0;
-        virtual EMessageLevel getVerboseLevel() const = 0;
+        virtual void setVerboseLevel( ELoggerLevel _level ) = 0;
+        virtual ELoggerLevel getVerboseLevel() const = 0;
 
         virtual void setVerboseFlag( uint32_t _flag ) = 0;
         virtual uint32_t getVerboseFlag() const = 0;
@@ -30,11 +30,11 @@ namespace Mengine
         virtual bool isSilent() const = 0;
 
     public:
-        virtual bool validMessage( EMessageLevel _level, uint32_t _flag ) const = 0;
+        virtual bool validMessage( ELoggerLevel _level, uint32_t _flag ) const = 0;
 
     public:
-        virtual void logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size ) = 0;
-        virtual uint32_t getCountMessage( EMessageLevel _level ) = 0;
+        virtual void logMessage( ELoggerLevel _level, uint32_t _flag, const Char * _message, uint32_t _size ) = 0;
+        virtual uint32_t getCountMessage( ELoggerLevel _level ) = 0;
 
     public:
         virtual void writeHistory( const LoggerInterfacePtr & _logger ) const = 0;

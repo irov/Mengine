@@ -12,7 +12,7 @@ namespace Mengine
     class XlsScriptLogger
     {
     public:
-        XlsScriptLogger( EMessageLevel _level );
+        XlsScriptLogger( ELoggerLevel _level );
         virtual ~XlsScriptLogger();
 
     public:
@@ -27,7 +27,7 @@ namespace Mengine
         int32_t getSoftspace() const;
 
     protected:
-        EMessageLevel m_level;
+        ELoggerLevel m_level;
 
         int32_t m_softspace;
     };

@@ -2,7 +2,11 @@
 
 #include "Kernel/Pickerable.h"
 
+#include "Interface/InputHandlerInterface.h"
+
 #include "GOAP/Task.h"
+
+#include "Config/Lambda.h"
 
 namespace Mengine
 {   
@@ -29,6 +33,6 @@ namespace Mengine
         LambdaPickerMouseButtonEvent m_filter;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TaskPickerableMouseButton> TaskPickerableMouseButtonPtr;
+    typedef GOAP::IntrusivePtr<TaskPickerableMouseButton> TaskPickerableMouseButtonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

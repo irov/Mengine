@@ -43,7 +43,7 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( Mengine::ThreadSystemInterface ) == false )
+        if( SERVICE_EXIST( ThreadSystemInterface ) == false )
         {
             return false;
         }
@@ -59,9 +59,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_initializeService()
     {
-        m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
-        m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
-        m_factoryThreadJob = new FactoryPool<ThreadJob, 16>();
+        m_factoryThreadMutexDummy = Helper::makeFactoryPool<ThreadMutexDummy, 16>();
+        m_factoryThreadQueue = Helper::makeFactoryPool<ThreadQueue, 4>();
+        m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>();
 
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
@@ -283,6 +283,21 @@ namespace Mengine
         }
 
         m_tasks.clear();
+
+        for( const ThreadQueuePtr & queue : m_threadQueues )
+        {
+            queue->finalize();
+        }
+
+        m_threadQueues.clear();
+
+        for( ThreadDesc & desc : m_threads )
+        {
+            desc.identity->join();
+            desc.identity = nullptr;
+        }
+
+        m_threads.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const Char * _doc )

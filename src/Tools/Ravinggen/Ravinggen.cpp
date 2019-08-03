@@ -16,7 +16,7 @@
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/SecureServiceInterface.h"
 #include "Interface/PlatformInterface.h"
-
+#include "Interface/LoggerServiceInterface.h"
 
 
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
@@ -97,7 +97,7 @@ namespace Mengine
             }
 
         public:
-            void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override
+            void log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override
             {
                 (void)_level;
                 (void)_flag;
@@ -109,7 +109,7 @@ namespace Mengine
             }
 
         protected:
-            EMessageLevel m_verboseLevel;
+            ELoggerLevel m_verboseLevel;
             uint32_t m_verboseFlag;
         };
 
@@ -140,7 +140,7 @@ namespace Mengine
         PLUGIN_CREATE( LZ4 );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -148,7 +148,7 @@ namespace Mengine
         ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

@@ -1,5 +1,7 @@
 #include "Kernel/BasePicker.h"
 
+#include "Interface/PickerServiceInterface.h"
+
 #include "Kernel/Assertion.h"
 
 #include <algorithm>
@@ -112,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::foreachPickerChildren( const LambdaPicker & _lambda )
     {
-        for( PickerInterface * child : m_pickerChildren )
+        for( BasePicker * child : m_pickerChildren )
         {
             _lambda( child );
         }
@@ -120,11 +122,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::foreachPickerChildrenEnabled( const LambdaPicker & _lambda )
     {
-        if( m_pickerEnable == false )
-        {
-            return;
-        }
-
         for( BasePicker * child : m_pickerChildren )
         {
             if( child->m_pickerEnable == false )
@@ -136,9 +133,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BasePicker::updatePickers()
+    {
+        PICKER_SERVICE()
+            ->update();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BasePicker::setPickerEnable( bool _enable )
     {
+        if( m_pickerEnable == _enable )
+        {
+            return;
+        }
+
         m_pickerEnable = _enable;
+
+        PICKER_SERVICE()
+            ->invalidateTraps();
 
         this->_setPickerEnable( _enable );
     }

@@ -74,8 +74,8 @@ namespace Mengine
             this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f );
         }
 
-        m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
-        m_factorySoundEmitter = new FactoryPool<SoundIdentity, 32>();
+        m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
+        m_factorySoundEmitter = Helper::makeFactoryPool<SoundIdentity, 32>();
 
         return true;
     }
@@ -1256,14 +1256,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const
     {
-        if( _identity == nullptr )
-        {
-            LOGGER_ERROR( "identity is nullptr (mixer '%s')"
-                , _mixer.c_str()
-            );
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, 0.f, "identity is nullptr (mixer '%s')"
+            , _mixer.c_str()
+        );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
@@ -1274,13 +1269,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getDuration( const SoundIdentityInterfacePtr & _identity ) const
     {
-        if( _identity == nullptr )
-        {
-            LOGGER_ERROR( "identity is nullptr"
-            );
-
-            return 0.f;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, 0.f, "identity is nullptr" );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
@@ -1302,14 +1291,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
     {
-        if( _identity == nullptr )
-        {
-            LOGGER_ERROR( "identity is nullptr (pos '%f')"
-                , _pos
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( _identity, false, "identity is nullptr (pos '%f')"
+            , _pos
+        );
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 

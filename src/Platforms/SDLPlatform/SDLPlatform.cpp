@@ -9,6 +9,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
 #	include "Environment/Windows/WindowsIncluder.h"
@@ -64,7 +65,7 @@ namespace Mengine
         , m_accelerometer( nullptr )
         , m_glContext( nullptr )
         , m_sdlInput( nullptr )
-		, m_prevTime( 0 )
+        , m_prevTime( 0 )
         , m_icon( 0 )
         , m_shouldQuit( false )
         , m_running( false )
@@ -209,7 +210,7 @@ namespace Mengine
         MENGINE_UNUSED( _userdata );
         MENGINE_UNUSED( _category );
 
-        EMessageLevel level = LM_INFO;
+        ELoggerLevel level = LM_INFO;
 
         switch( _priority )
         {
@@ -241,9 +242,9 @@ namespace Mengine
             ->logMessage( level, 0, _message, messageLen );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int RemoveMouse_EventFilter( void *userdata, SDL_Event * event )
+    static int RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
     {
-        (void)userdata;
+        MENGINE_UNUSED( userdata );
 
         switch( event->type )
         {
@@ -265,8 +266,7 @@ namespace Mengine
             return false;
         }
 
-        const Char* sdlPlatform = SDL_GetPlatform();
-        const int sdlRam = SDL_GetSystemRAM();
+        const Char * sdlPlatform = SDL_GetPlatform();
 
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
@@ -315,34 +315,97 @@ namespace Mengine
             , sdlPlatform
         );
 
+        LOGGER_MESSAGE( "CPU: %d Count %d CacheLineSize"
+            , SDL_GetCPUCount()
+            , SDL_GetCPUCacheLineSize()
+        );
+
+        LOGGER_MESSAGE( "CPU RDTSC: %d"
+            , SDL_HasRDTSC()
+        );
+
+        LOGGER_MESSAGE( "CPU AltiVec: %d"
+            , SDL_HasAltiVec()
+        );
+
+        LOGGER_MESSAGE( "CPU MMX: %d"
+            , SDL_HasMMX()
+        );
+
+        LOGGER_MESSAGE( "CPU 3DNow: %d"
+            , SDL_Has3DNow()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE: %d"
+            , SDL_HasSSE()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE2: %d"
+            , SDL_HasSSE2()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE3: %d"
+            , SDL_HasSSE3()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE41: %d"
+            , SDL_HasSSE41()
+        );
+
+        LOGGER_MESSAGE( "CPU SSE42: %d"
+            , SDL_HasSSE42()
+        );
+
+        LOGGER_MESSAGE( "CPU AVX: %d"
+            , SDL_HasAVX()
+        );
+
+        LOGGER_MESSAGE( "CPU AVX2: %d"
+            , SDL_HasAVX2()
+        );
+
+        LOGGER_MESSAGE( "CPU AVX512F: %d"
+            , SDL_HasAVX512F()
+        );
+
+        LOGGER_MESSAGE( "CPU NEON: %d"
+            , SDL_HasNEON()
+        );
+
         LOGGER_MESSAGE( "RAM: %d MB"
-            , sdlRam
+            , SDL_GetSystemRAM()
         );
 
         SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_WARN );
 
+#ifdef MENGINE_DEBUG
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_INFO );
+#else
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
+#endif
 
-        m_sdlInput = new FactorableUnique<SDLInput>();
+        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>();
 
-        if( m_sdlInput->initialize() == false )
+        if( sdlInput->initialize() == false )
         {
             return false;
         }
+
+        m_sdlInput = sdlInput;
 
         // Search accelerometer device among joysticks
         int numJoysticks = SDL_NumJoysticks();
 
         for( int deviceIndex = 0; deviceIndex < numJoysticks; deviceIndex++ )
         {
-            SDL_Joystick * joystick = SDL_JoystickOpen(deviceIndex);
+            SDL_Joystick * joystick = SDL_JoystickOpen( deviceIndex );
 
-            if (!joystick)
+            if( joystick == nullptr )
             {
                 continue;
             }
 
-            const Char * joystickName = SDL_JoystickName(joystick);
+            const Char * joystickName = SDL_JoystickName( joystick );
 
             bool isAccelerometer = false;
 
@@ -355,9 +418,9 @@ namespace Mengine
                 isAccelerometer = true;
             }
 
-            if (isAccelerometer)
+            if( isAccelerometer == true )
             {
-                LOGGER_WARNING("Accelerometer found: %s"
+                LOGGER_WARNING( "Accelerometer found: %s"
                     , joystickName
                 );
 
@@ -366,13 +429,13 @@ namespace Mengine
             }
         }
 
-        if ( m_accelerometer == nullptr )
+        if( m_accelerometer == nullptr )
         {
-            LOGGER_WARNING("Accelerometer not found"
+            LOGGER_WARNING( "Accelerometer not found"
             );
         }
 
-        m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>();
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>();
 
         return true;
     }
@@ -395,8 +458,9 @@ namespace Mengine
 
         m_factoryDynamicLibraries = nullptr;
 
-        if (SDL_JoystickGetAttached(m_accelerometer)) {
-            SDL_JoystickClose(m_accelerometer);
+        if( SDL_JoystickGetAttached( m_accelerometer ) )
+        {
+            SDL_JoystickClose( m_accelerometer );
             m_accelerometer = nullptr;
         }
     }
@@ -410,17 +474,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::updatePlatform()
     {
-		m_prevTime = TIME_SYSTEM()
-			->getTimeMilliseconds();
+        m_prevTime = TIME_SYSTEM()
+            ->getTimeMilliseconds();
 
         while( true )
         {
-			uint64_t currentTime = TIME_SYSTEM()
-				->getTimeMilliseconds();
+            uint64_t currentTime = TIME_SYSTEM()
+                ->getTimeMilliseconds();
 
-			float frameTime = (float)(currentTime - m_prevTime);
+            float frameTime = (float)(currentTime - m_prevTime);
 
-			m_prevTime = currentTime;
+            m_prevTime = currentTime;
 
             if( m_pause == true )
             {
@@ -589,7 +653,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr, "can't create dynamic library '%s'"
             , _dynamicLibraryName
-            );
+        );
 
         dynamicLibrary->setName( _dynamicLibraryName );
 
@@ -671,17 +735,17 @@ namespace Mengine
 
         return false;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SDLPlatform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
+    {
         MENGINE_UNUSED( _dumpPath );
         MENGINE_UNUSED( _pExceptionPointers );
         MENGINE_UNUSED( _full );
 
-		MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
-		return false;
-	}
+        return false;
+    }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {
@@ -849,7 +913,7 @@ namespace Mengine
     static bool s_isDirectoryFullpath( const Char * _fullpath )
     {
         struct stat sb;
-        if( stat( _fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) == S_IFDIR )
+        if( stat( _fullpath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) == S_IFDIR )
         {
             return true;
         }
@@ -944,7 +1008,7 @@ namespace Mengine
         strcat( fullPath, pathCorrect );
 
         struct stat sb;
-        if( stat( fullPath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) != S_IFDIR )
+        if( stat( fullPath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
         {
             return true;
         }
@@ -1262,7 +1326,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size )
+    bool SDLPlatform::getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size )
     {
         MENGINE_UNUSED( _path );
         MENGINE_UNUSED( _key );

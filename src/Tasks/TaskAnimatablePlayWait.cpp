@@ -1,5 +1,7 @@
 #include "TaskAnimatablePlayWait.h"
 
+#include "Interface/AnimationInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include "TaskAnimatablePlayReceiver.h"

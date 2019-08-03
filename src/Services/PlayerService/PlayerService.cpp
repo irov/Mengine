@@ -40,6 +40,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "PlayerGlobalInputHandler.h"
 #include "PlayerGlobalAffectorable.h"
@@ -119,7 +120,11 @@ namespace Mengine
     {
         SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( sm->initialize( _name ) == false )
+        MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
+
+        sm->setName( _name );
+
+        if( sm->initialize() == false )
         {
             return nullptr;
         }
@@ -181,11 +186,13 @@ namespace Mengine
     {
         m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>();
 
-        m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
+        m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>();
 
         SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( scheduleManager->initialize( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) ) == false )
+        scheduleManager->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
+
+        if( scheduleManager->initialize() == false )
         {
             return false;
         }
@@ -194,7 +201,9 @@ namespace Mengine
 
         SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( scheduleManagerGlobal->initialize( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) ) == false )
+        scheduleManagerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
+
+        if( scheduleManagerGlobal->initialize() == false )
         {
             return false;
         }
@@ -237,6 +246,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_finalizeService()
     {
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->finalize();
+            m_globalInputHandler = nullptr;
+        }
+
+        if( m_scheduleManager != nullptr )
+        {
+            m_scheduleManager->finalize();
+            m_scheduleManager = nullptr;
+        }
+
+        if( m_scheduleManagerGlobal != nullptr )
+        {
+            m_scheduleManagerGlobal->finalize();
+            m_scheduleManagerGlobal = nullptr;
+        }
+
+        m_schedulers.clear();
+
+        m_randomizer = nullptr;
+
+        m_affectorable = nullptr;
+        m_affectorableGlobal = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
+
+        m_factoryScheduleManager = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::_stopService()
+    {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_INITIALIZE );
@@ -259,29 +300,30 @@ namespace Mengine
 
         m_renderTarget = nullptr;
 
-        m_globalInputHandler = nullptr;
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->clear();
+        }
 
         if( m_scheduleManager != nullptr )
         {
-            m_scheduleManager->finalize();
-            m_scheduleManager = nullptr;
+            m_scheduleManager->removeAll();
         }
 
         if( m_scheduleManagerGlobal != nullptr )
         {
-            m_scheduleManagerGlobal->finalize();
-            m_scheduleManagerGlobal = nullptr;
+            m_scheduleManagerGlobal->removeAll();
         }
 
-        m_schedulers.clear();
+        if( m_affectorable != nullptr )
+        {
+            m_affectorable->stopAllAffectors();
+        }
 
-        m_randomizer = nullptr;
-
-        m_affectorable = nullptr;
-        m_affectorableGlobal = nullptr;
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
-        m_factoryScheduleManager = nullptr;
+        if( m_affectorableGlobal != nullptr )
+        {
+            m_affectorableGlobal->stopAllAffectors();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::initializeRenderResources()
@@ -699,7 +741,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -751,7 +793,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _scene );
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();
@@ -789,7 +831,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->setScene( nullptr );
 
-        if( SERVICE_EXIST( Mengine::GraveyardServiceInterface ) == true )
+        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             GRAVEYARD_SERVICE()
                 ->clearTextures();

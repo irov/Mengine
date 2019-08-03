@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    XlsScriptLogger::XlsScriptLogger( EMessageLevel _level )
+    XlsScriptLogger::XlsScriptLogger( ELoggerLevel _level )
         : m_level( _level )
         , m_softspace( 0 )
     {

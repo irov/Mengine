@@ -501,7 +501,8 @@ endif()
 
 #dependencies libpng
 if(MENGINE_DEPENDENCE_PNG)
-    message("================libpng================")
+    message("================libpng================")    
+    set(PNG_BUILD_ZLIB ON CACHE BOOL "PNG_BUILD_ZLIB" FORCE)
     set(PNG_SHARED OFF CACHE BOOL "PNG_SHARED" FORCE)
     set(PNG_STATIC ON CACHE BOOL "PNG_STATIC" FORCE)
     set(PNG_TESTS OFF CACHE BOOL "PNG_TESTS" FORCE)
@@ -510,7 +511,7 @@ if(MENGINE_DEPENDENCE_PNG)
     set(PNGARG OFF CACHE BOOL "PNGARG" FORCE)
 	SET(CMAKE_SYSTEM_PROCESSOR "arm64")
     set(PNG_HARDWARE_OPTIMIZATIONS ON CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
-    set(ZLIB_LIBRARY ${THIRDPARTY_DIR}/zlib)
+    set(ZLIB_LIBRARY zlib)
     set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/pnglibconf.h ${THIRDPARTY_DIR}/libpng/pnglibconf.h COPYONLY)

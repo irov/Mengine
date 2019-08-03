@@ -5,8 +5,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadTask::ThreadTask()
         : m_run( false )
-        , m_finish( false )
         , m_complete( false )
+        , m_finish( false )
         , m_successful( false )
         , m_cancel( false )
     {

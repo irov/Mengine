@@ -2641,7 +2641,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            FilePath filepath = Helper::stringizeFilePathSize( utf8_fileName.c_str(), utf8_fileName.size() );
+            FilePath filepath = Helper::stringizeFilePath( utf8_fileName );
 
             size_t size;
             if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
@@ -2704,7 +2704,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            FilePath filename = Helper::stringizeFilePathSize( utf8_fileName.c_str(), utf8_fileName.size() );
+            FilePath filename = Helper::stringizeFilePath( utf8_fileName );
 
             MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filename );
 

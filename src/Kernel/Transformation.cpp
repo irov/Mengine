@@ -11,8 +11,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Transformation::Transformation()
         : m_relationTransformation( nullptr )
-        , m_origin( 0.f, 0.f, 0.f )
         , m_position( 0.f, 0.f, 0.f )
+        , m_origin( 0.f, 0.f, 0.f )
         , m_skew( 0.f, 0.f )
         , m_scale( 1.f, 1.f, 1.f )
         , m_orientation( 0.f, 0.f, 0.f )

@@ -1,4 +1,4 @@
-﻿#include "BitmapGlyph.h"
+#include "BitmapGlyph.h"
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryInterface.h"
@@ -19,11 +19,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BitmapGlyph::BitmapGlyph()
         : m_size( 0.f )
-        , m_textureInvWidth( 1.f )
-        , m_textureInvHeight( 1.f )
         , m_height( 0.f )
         , m_ascender( 0.f )
         , m_descender( 0.f )
+        , m_textureInvWidth( 1.f )
+        , m_textureInvHeight( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////

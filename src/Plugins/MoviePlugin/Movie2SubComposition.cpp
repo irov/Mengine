@@ -8,10 +8,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Movie2SubComposition::Movie2SubComposition()
         : m_movie( nullptr )
-        , m_composition( nullptr )
-        , m_subcomposition( nullptr )
         , m_duration( 0.f )
         , m_frameDuration( 0.f )
+        , m_composition( nullptr )
+        , m_subcomposition( nullptr )
         , m_startTime( -1.f )
         , m_enable( true )
     {

@@ -319,6 +319,10 @@ if(MENGINE_DEPENDENCE_FREETYPE)
     set(WITH_BZip2 OFF CACHE BOOL "WITH_BZip2" FORCE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/freetype ${CMAKE_TEMP_DIR}/freetype)
+    
+    if(MENGINE_TARGET_IOS)
+        unset(IOS_PLATFORM CACHE)
+    endif()
 endif()
 
 #dependencies curl

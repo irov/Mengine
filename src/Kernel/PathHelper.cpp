@@ -146,7 +146,7 @@ namespace Mengine
 
             if( len == 0 )
             {
-                return true;
+                return false;
             }
 
             WChar * pch = _path + len - 1;
@@ -160,6 +160,11 @@ namespace Mengine
 
             while( *pch != L'/' )
             {
+                if( pch == _path )
+                {
+                    return false;
+                }
+
                 pch--;
             }
 
@@ -173,6 +178,7 @@ namespace Mengine
         void pathCorrectBackslashA( Char * _path )
         {
             Char * pch = ::strchr( _path, '\\' );
+
             while( pch != NULL )
             {
                 *pch = '/';
@@ -199,7 +205,7 @@ namespace Mengine
 
             if( len == 0 )
             {
-                return true;
+                return false;
             }
 
             Char * pch = _path + len - 1;
@@ -213,6 +219,11 @@ namespace Mengine
 
             while( *pch != '/' )
             {
+                if( pch == _path )
+                {
+                    return false;
+                }
+
                 pch--;
             }
 

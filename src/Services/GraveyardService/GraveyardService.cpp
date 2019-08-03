@@ -3,8 +3,9 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderTextureServiceInterface.h"
-
+#include "Interface/NotificatorInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include <algorithm>
 
@@ -28,11 +29,15 @@ namespace Mengine
     {
         m_graveyardTime = CONFIG_VALUE( "Engine", "GraveyardTime", 1000.f );
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, this, &GraveyardService::onEngineTextureDestroy );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void GraveyardService::_finalizeService()
     {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_TEXTURE_DESTROY );
+
         this->clearTextures();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -80,11 +85,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GraveyardService::buryTexture( RenderTextureInterface * _texture )
     {
-        if( this->isInitializeService() == false )
-        {
-            return false;
-        }
-
         const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
         const FilePath & filePath = _texture->getFileName();
 
@@ -161,5 +161,10 @@ namespace Mengine
         m_textures.pop_back();
 
         return texture;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GraveyardService::onEngineTextureDestroy( RenderTextureInterface * _texture )
+    {
+        this->buryTexture( _texture );
     }
 }

@@ -37,6 +37,7 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/BootstrapperInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include <cstdio>
 #include <clocale>
@@ -133,7 +134,7 @@ namespace Mengine
         // mount root
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory"
             );
@@ -148,7 +149,7 @@ namespace Mengine
         ConstString c_dev = STRINGIZE_STRING_LOCAL( "dev" );
         // mount root
         if( FILE_SERVICE()
-            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory"
             );
@@ -223,7 +224,7 @@ namespace Mengine
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount user directory '%s'"
                 , cs_userPath.c_str()
@@ -268,7 +269,7 @@ namespace Mengine
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
 
-        if( developmentMode == true && roamingMode == false || noroamingMode == false )
+        if( developmentMode == true && (roamingMode == false || noroamingMode == false) )
         {
             unicode_logFilename += L"_";
             unicode_logFilename += unicode_date;
@@ -324,9 +325,9 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        m_loggerStdio = new FactorableUnique<AndroidLogger>();
+        m_loggerStdio = Helper::makeFactorableUnique<AndroidLogger>();
 #else
-        m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
+        m_loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>();
 #endif
 
         m_loggerStdio->setVerboseFlag( LM_MESSAGE );
@@ -334,7 +335,7 @@ namespace Mengine
         LOGGER_SERVICE()
             ->registerLogger( m_loggerStdio );
 
-        m_loggerMessageBox = new FactorableUnique<SDLMessageBoxLogger>();
+        m_loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>();
 
         m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 

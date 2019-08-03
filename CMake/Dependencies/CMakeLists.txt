@@ -1,5 +1,6 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
+OPTION(MENGINE_DEPENDENCE_XMLSAX "xmlsax" ON)
 OPTION(MENGINE_DEPENDENCE_LZ4 "lz4" ON)
 OPTION(MENGINE_DEPENDENCE_OGG "ogg" ON)
 OPTION(MENGINE_DEPENDENCE_VORBIS "vorbis" ON)
@@ -34,6 +35,7 @@ OPTION(MENGINE_DEPENDENCE_GLAD "glad" ON)
 OPTION(MENGINE_DEPENDENCE_GLFW3 "glfw3" ON)
 OPTION(MENGINE_DEPENDENCE_IMGUI "imgui" ON)
 
+MESSAGE("MENGINE_DEPENDENCE_XMLSAX: ${MENGINE_DEPENDENCE_XMLSAX}")
 MESSAGE("MENGINE_DEPENDENCE_LZ4: ${MENGINE_DEPENDENCE_LZ4}")
 MESSAGE("MENGINE_DEPENDENCE_OGG: ${MENGINE_DEPENDENCE_OGG}")
 MESSAGE("MENGINE_DEPENDENCE_VORBIS: ${MENGINE_DEPENDENCE_VORBIS}")
@@ -121,11 +123,24 @@ if(MENGINE_DEPENDENCE_PYTHON)
     ADD_SUBDIRECTORY(Python)
 endif()
 
-#dependencies libwebp
+#dependencies xmlsax
+if(MENGINE_DEPENDENCE_XMLSAX)
+    message("================libpng================")
+    set(XMLSAX_EXTERNAL_BUILD ON CACHE BOOL "XMLSAX_EXTERNAL_BUILD" FORCE)
+    set(XMLSAX_INSTALL OFF CACHE BOOL "XMLSAX_INSTALL" FORCE)
 
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/xmlsax ${CMAKE_TEMP_DIR}/xmlsax)
+endif()
+
+#dependencies libwebp
 if(MENGINE_DEPENDENCE_WEBP)
     message("================libwebp================")
-    set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
+    IF(MENGINE_TARGET_MINGW)
+        set(WEBP_ENABLE_SIMD OFF CACHE BOOL "Enable any SIMD optimization." FORCE)
+    ELSE()
+        set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
+    ENDIF()
+    
     set(WEBP_BUILD_ANIM_UTILS OFF CACHE BOOL "WEBP_BUILD_ANIM_UTILS" FORCE)
     set(WEBP_BUILD_CWEBP OFF CACHE BOOL "Build the cwebp command line tool." FORCE)
     set(WEBP_BUILD_DWEBP OFF CACHE BOOL "Build the dwebp command line tool." FORCE)
@@ -138,11 +153,9 @@ if(MENGINE_DEPENDENCE_WEBP)
     set(WEBP_BUILD_WEBP_JS OFF CACHE BOOL "Emscripten build of webp.js" FORCE)
     set(WEBP_NEAR_LOSSLESS OFF CACHE BOOL "Enable near-lossless encoding" FORCE)
     set(WEBP_ENABLE_SWAP_16BIT_CSP OFF CACHE BOOL "Enable byte swap for 16 bit colorspaces." FORCE)
-    set(ZLIB_LIBRARY ${THIRDPARTY_DIR}/zlib)
-    set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
+    set(WEBP_UNICODE OFF CACHE BOOL "Build Unicode executables." FORCE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libwebp ${CMAKE_TEMP_DIR}/libwebp)
-    add_dependencies(webp zlib)
 endif()
 
 #dependencies spine
@@ -446,6 +459,9 @@ endif()
 
 #dependencies openal-soft
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)    
+
     message("================openal-soft================")
     if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
         if(MENGINE_TOOLCHAIN_MSVC)			
@@ -476,15 +492,10 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
         SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
         SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
-        
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)
+        SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openal-soft ${CMAKE_TEMP_DIR}/openal-soft)
-    endif()
-
-    if(MENGINE_TARGET_ANDROID)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)    
-    endif()
+    endif()    
 endif()
 
 

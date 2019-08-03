@@ -15,6 +15,7 @@
 #include "Kernel/RenderUtils.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/EventableHelper.h"
 
 #include "math/box2.h"
 #include "math/angle.h"
@@ -23,8 +24,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitter::AstralaxEmitter()
-        : m_emitter( nullptr )
-        , m_randomMode( false )
+        : m_randomMode( false )
         , m_renderVertices( nullptr )
         , m_renderVertexCount( 0 )
         , m_renderIndicies( nullptr )

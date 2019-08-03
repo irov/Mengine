@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadQueue::initialize()
     {
-        m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
+        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>();
 
         return true;
     }

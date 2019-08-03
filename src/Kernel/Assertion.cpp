@@ -4,14 +4,14 @@
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
-#include <stdio.h>
-#include <stdarg.h>
+#include "Config/StdIO.h"
 
 #ifndef MENGINE_ASSERTION_MAX_MESSAGE
 #define MENGINE_ASSERTION_MAX_MESSAGE 8192
@@ -47,7 +47,7 @@ namespace Mengine
             va_start( argList, _format );
 
             Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
-            vsnprintf( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
+            MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
 
             va_end( argList );
 
@@ -62,7 +62,7 @@ namespace Mengine
             va_start( argList, _format );
 
             Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
-            vsnprintf( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
+            MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
 
             va_end( argList );
 

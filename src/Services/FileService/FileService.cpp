@@ -65,7 +65,7 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, const Char * _doc )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc )
     {
         LOGGER_INFO( "group '%s' path '%s' type '%s'"
             , _name.c_str()
@@ -93,14 +93,27 @@ namespace Mengine
             , _path.c_str()
         );
 
-        if( fileGroup->initialize( _name, _category, _path ) == false )
+        if( fileGroup->initialize( _name, _fileGroup, _path ) == false )
         {
-            LOGGER_ERROR( "can't initialize FileSystem '%s' for object '%s'"
+            LOGGER_ERROR( "can't initialize fileGroup '%s' for object '%s'"
                 , _name.c_str()
                 , _path.c_str()
             );
 
             return false;
+        }
+
+        if( _create == true )
+        {
+            if( fileGroup->createDirectory( FilePath::none() ) == false )
+            {
+                LOGGER_ERROR( "invalid create fileGroup '%s' directory '%s'"
+                    , _name.c_str()
+                    , _path.c_str()
+                );
+
+                return false;
+            }
         }
 
         if( _name.empty() == true )

@@ -4,7 +4,7 @@
 
 #include "Kernel/Assertion.h"
 
-#include <stdarg.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -40,7 +40,7 @@ namespace Mengine
             va_start( args, _format );
 
             Char str[2048] = { 0 };
-            int size = ::vsnprintf( str, 2047, _format, args );
+            int size = MENGINE_VSNPRINTF( str, 2047, _format, args );
 
             MENGINE_ASSERTION_FATAL( size >= 0, "invalid stringize string format '%s'"
                 , _format

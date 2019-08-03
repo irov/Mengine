@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEDataflow::initialize()
     {
-        m_factoryFEData = new FactoryPool<FEData, 128>();
+        m_factoryFEData = Helper::makeFactoryPool<FEData, 128>();
 
         return true;
     }
@@ -30,6 +30,7 @@ namespace Mengine
     void FEDataflow::finalize()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFEData );
+
         m_factoryFEData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

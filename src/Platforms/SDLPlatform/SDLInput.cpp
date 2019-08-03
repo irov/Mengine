@@ -211,7 +211,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////    
     void SDLInput::showKeyboard( bool _value )
     {
-        (void)_value;
+        MENGINE_UNUSED( _value );
 
         //Empty
     }

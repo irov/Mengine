@@ -77,10 +77,10 @@ namespace Mengine
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
 #endif
 
-        m_factoryRenderVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>();
-        m_factoryRenderIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>();
+        m_factoryRenderVertexBuffer = Helper::makeFactoryDefault<OpenGLRenderVertexBuffer>();
+        m_factoryRenderIndexBuffer = Helper::makeFactoryDefault<OpenGLRenderIndexBuffer>();
         m_factoryRenderImage = Helper::makeFactoryPoolWithListener<OpenGLRenderImage, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_ );
-        m_factoryRenderVertexAttribute = new FactoryPool<OpenGLRenderVertexAttribute, 16>();
+        m_factoryRenderVertexAttribute = Helper::makeFactoryPool<OpenGLRenderVertexAttribute, 16>();
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<OpenGLRenderFragmentShader, 16>( this, &OpenGLRenderSystem::onRenderFragmentShaderDestroy_ );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexShader, 16>( this, &OpenGLRenderSystem::onRenderVertexShaderDestroy_ );
         m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_ );
@@ -153,7 +153,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _bits );
         MENGINE_UNUSED( _fullscreen );
-		MENGINE_UNUSED( _depth );
+        MENGINE_UNUSED( _depth );
         MENGINE_UNUSED( _waitForVSync );
         MENGINE_UNUSED( _FSAAType );
         MENGINE_UNUSED( _FSAAQuality );
@@ -165,10 +165,10 @@ namespace Mengine
         Mengine::initialize_GLEXT();
 #endif
 
-        const char* vendorStr = reinterpret_cast<const char*>(glGetString( GL_VENDOR ));
-        const char* rendererStr = reinterpret_cast<const char*>(glGetString( GL_RENDERER ));
-        const char* versionStr = reinterpret_cast<const char*>(glGetString( GL_VERSION ));
-        const char* extensionsStr = reinterpret_cast<const char*>(glGetString( GL_EXTENSIONS ));
+        const char * vendorStr = reinterpret_cast<const char *>(glGetString( GL_VENDOR ));
+        const char * rendererStr = reinterpret_cast<const char *>(glGetString( GL_RENDERER ));
+        const char * versionStr = reinterpret_cast<const char *>(glGetString( GL_VERSION ));
+        const char * extensionsStr = reinterpret_cast<const char *>(glGetString( GL_EXTENSIONS ));
 
         LOGGER_WARNING( "Vendor      : %s", vendorStr );
         LOGGER_WARNING( "Renderer    : %s", rendererStr );
@@ -185,7 +185,7 @@ namespace Mengine
         m_glMaxCombinedTextureImageUnits = maxCombinedTextureImageUnits;
 
         for( uint32_t i = 0; i < MENGINE_MAX_TEXTURE_STAGES; ++i )
-        {            
+        {
             m_textureStage[i] = TextureStage();
         }
 
@@ -330,7 +330,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc )
     {
-		OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject( _doc );
+        OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject( _doc );
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
@@ -349,7 +349,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderIndexBufferInterfacePtr OpenGLRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc )
     {
-		OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject( _doc );
+        OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject( _doc );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -368,7 +368,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexAttributeInterfacePtr OpenGLRenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const Char * _doc )
     {
-		OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
+        OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
         if( vertexAttribute == nullptr )
         {
@@ -393,9 +393,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr OpenGLRenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-		MENGINE_UNUSED( _compile );
+        MENGINE_UNUSED( _compile );
 
-		OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
+        OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
         if( shader == nullptr )
         {
@@ -439,9 +439,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr OpenGLRenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-		MENGINE_UNUSED( _compile );
+        MENGINE_UNUSED( _compile );
 
-		OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
+        OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
         if( shader == nullptr )
         {
@@ -485,7 +485,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc )
     {
-		OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
+        OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
         if( program == nullptr )
         {
@@ -539,7 +539,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc )
     {
-		OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
+        OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
         if( variable == nullptr )
         {
@@ -572,7 +572,7 @@ namespace Mengine
     void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type,
         uint32_t _baseVertexIndex, uint32_t _minIndex,
         uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
-    {   
+    {
         MENGINE_UNUSED( _baseVertexIndex );
         MENGINE_UNUSED( _minIndex );
         MENGINE_UNUSED( _verticesNum );
@@ -882,7 +882,7 @@ namespace Mengine
             return nullptr;
         }
 
-		OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
+        OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
 
         if( image == nullptr )
         {
@@ -947,7 +947,7 @@ namespace Mengine
                 Detail::get_R_float_from_argb32( _color ),
                 Detail::get_G_float_from_argb32( _color ),
                 Detail::get_B_float_from_argb32( _color ),
-                Detail::get_A_float_from_argb32( _color ) )
+                Detail::get_A_float_from_argb32( _color ))
             );
         }
 
@@ -1024,7 +1024,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowChangeFullscreenPrepare( bool _fullscreen )
     {
-        (void)_fullscreen;
+        MENGINE_UNUSED( _fullscreen );
 
         for( OpenGLRenderImage * image : m_cacheRenderImages )
         {
@@ -1049,7 +1049,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onWindowChangeFullscreen( bool _fullscreen )
     {
-        (void)_fullscreen;
+        MENGINE_UNUSED( _fullscreen );
 
         for( OpenGLRenderImage * image : m_cacheRenderImages )
         {
@@ -1127,7 +1127,7 @@ namespace Mengine
             return nullptr;
         }
 
-		OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject( _doc );
+        OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject( _doc );
 
         if( texture->initialize( ERIM_DYNAMIC
             , 1
@@ -1154,7 +1154,7 @@ namespace Mengine
         MENGINE_UNUSED( _height );
         MENGINE_UNUSED( _channels );
         MENGINE_UNUSED( _format );
-		MENGINE_UNUSED( _doc );
+        MENGINE_UNUSED( _doc );
 
         return nullptr;
     }
@@ -1165,7 +1165,7 @@ namespace Mengine
         MENGINE_UNUSED( _height );
         MENGINE_UNUSED( _channels );
         MENGINE_UNUSED( _format );
-		MENGINE_UNUSED( _doc );
+        MENGINE_UNUSED( _doc );
 
         return nullptr;
     }
@@ -1173,7 +1173,7 @@ namespace Mengine
     RenderImageInterfacePtr OpenGLRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc )
     {
         MENGINE_UNUSED( _renderTarget );
-		MENGINE_UNUSED( _doc );
+        MENGINE_UNUSED( _doc );
 
         return nullptr;
     }
@@ -1235,7 +1235,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable )
     {
-		VectorCacheRenderProgramVariables::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
+        VectorCacheRenderProgramVariables::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
 
         if( it_found == m_cacheRenderProgramVariables.end() )
         {

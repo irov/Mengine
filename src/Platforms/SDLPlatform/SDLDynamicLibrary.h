@@ -28,7 +28,7 @@ namespace Mengine
 
     private:
         String m_name;
-        void* m_instance;
+        void * m_instance;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLDynamicLibrary> SDLDynamicLibraryPtr;

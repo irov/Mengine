@@ -46,6 +46,7 @@ namespace Mengine
 
     public:
         bool loadPersonality() override;
+        void removePersonality() override;
 
     public:
         void setCursorMode( bool _mode ) override;

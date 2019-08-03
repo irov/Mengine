@@ -23,6 +23,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/EventableHelper.h"
 
 #include "Config/Stringstream.h"
 #include "Config/ArrayString.h"

@@ -42,10 +42,11 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual bool initialize( const ConstString & _name ) = 0;
+        virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
     public:
+        virtual void setName( const ConstString & _name ) = 0;
         virtual const ConstString & getName() const = 0;
 
     public:

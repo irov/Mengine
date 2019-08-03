@@ -33,17 +33,6 @@ namespace Mengine
         m_fileGroup = _fileGroup;
         m_folderPath = _folderPath;
 
-        FilePath baseDirectoryPath;
-
-        if( this->createDirectory( baseDirectoryPath ) == false )
-        {
-            LOGGER_ERROR( "invalid create directory '%s'"
-                , _folderPath.c_str()
-            );
-
-            return false;
-        }
-
         m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();
         m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>();
         m_factoryWin32MappedFile = new FactoryPool<Win32FileMappedStream, 4>();
@@ -67,7 +56,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & Win32FileGroupDirectory::getCategory() const
+    const FileGroupInterfacePtr & Win32FileGroupDirectory::getFileGroup() const
     {
         return m_fileGroup;
     }

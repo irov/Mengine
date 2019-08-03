@@ -135,7 +135,7 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorAccumulateLinear()
-                : m_factory( new FactoryPool<AffectorType, 16>() )
+                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
             {
             }
 
@@ -180,8 +180,8 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorInterpolateLinear()
-            {
-                m_factory = new FactoryPool<AffectorType, 16>();
+                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
+            {                
             }
 
             virtual ~NodeAffectorCreatorInterpolateLinear()
@@ -225,8 +225,8 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorInterpolateQuadratic()
-            {
-                m_factory = new FactoryPool<AffectorType, 16>();
+                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
+            {                
             }
 
             virtual ~NodeAffectorCreatorInterpolateQuadratic()
@@ -273,8 +273,8 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorInterpolateBezier()
-            {
-                m_factory = new FactoryPool<AffectorType, 16>();
+                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
+            {                
             }
 
             virtual ~NodeAffectorCreatorInterpolateBezier()

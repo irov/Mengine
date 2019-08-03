@@ -33,7 +33,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderProgram::getName() const
-    { 
+    {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -67,11 +67,11 @@ namespace Mengine
     {
         if( m_samplerCount > MENGINE_MAX_TEXTURE_STAGES )
         {
-            LOGGER_ERROR("program '%s' don't support sampler count %d max %d"
+            LOGGER_ERROR( "program '%s' don't support sampler count %d max %d"
                 , m_name.c_str()
                 , m_samplerCount
                 , MENGINE_MAX_TEXTURE_STAGES
-                );
+            );
 
             return false;
         }
@@ -81,9 +81,9 @@ namespace Mengine
 
         if( programId == 0 )
         {
-            LOGGER_ERROR("invalid create program '%s'"
+            LOGGER_ERROR( "invalid create program '%s'"
                 , m_name.c_str()
-                );
+            );
 
             return false;
         }
@@ -108,10 +108,10 @@ namespace Mengine
             GLchar errorLog[1024] = { 0 };
             GLCALL( glGetProgramInfoLog, (programId, 1023, NULL, errorLog) );
 
-            LOGGER_ERROR("program '%s' linking error '%s'"
+            LOGGER_ERROR( "program '%s' linking error '%s'"
                 , m_name.c_str()
                 , errorLog
-                );
+            );
 
             return false;
         }
@@ -125,7 +125,7 @@ namespace Mengine
             return false;
         }
 
-        const Char * matrix_uniforms[] = {"viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix"};
+        const Char * matrix_uniforms[] = { "viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix" };
 
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
         {
@@ -136,7 +136,7 @@ namespace Mengine
 
             m_matrixLocation[i] = location;
         }
-       
+
         for( uint32_t index = 0; index != m_samplerCount; ++index )
         {
             Char samplerVar[16];
@@ -235,14 +235,14 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::bindTexture( uint32_t _textureInd ) const
-    {   
-        if(_textureInd >= m_samplerCount )
+    {
+        if( _textureInd >= m_samplerCount )
         {
-            LOGGER_ERROR("program '%s' invalid support sampler count %d max %d"
+            LOGGER_ERROR( "program '%s' invalid support sampler count %d max %d"
                 , m_name.c_str()
                 , _textureInd
                 , m_samplerCount
-                );
+            );
 
             return false;
         }

@@ -30,6 +30,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         void setArrow( const ArrowPtr & _arrow ) override;

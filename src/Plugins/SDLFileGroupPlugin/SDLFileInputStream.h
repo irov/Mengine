@@ -14,7 +14,7 @@ namespace Mengine
 {
     class SDLFileInputStream
         : public FileInputStreamInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         SDLFileInputStream();
@@ -22,7 +22,7 @@ namespace Mengine
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming ) override;
-        
+
     public:
         size_t read( void * _buf, size_t _count ) override;
         bool seek( size_t _pos ) override;
@@ -43,8 +43,8 @@ namespace Mengine
         bool read_( void * _buf, size_t _size, size_t & _read );
         bool seek_( size_t _pos );
 
-    protected:        
-        SDL_RWops* m_rwops;
+    protected:
+        SDL_RWops * m_rwops;
 
         size_t m_size;
         size_t m_offset;
@@ -59,8 +59,8 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         FilePath m_relationPath;
-		FilePath m_folderPath;
-		FilePath m_filePath;
+        FilePath m_folderPath;
+        FilePath m_filePath;
 
         bool m_streaming;
 #endif

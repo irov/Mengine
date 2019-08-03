@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         void attach( GLuint _program );
-        
+
     protected:
         ConstString m_name;
 

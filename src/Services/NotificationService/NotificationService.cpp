@@ -27,7 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::_initializeService()
     {
-        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]() {
+        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        {
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
@@ -36,6 +37,11 @@ namespace Mengine
             m_mutex = mutex;
 
             return true;
+        } );
+
+        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        {
+            m_mutex = nullptr;
         } );
 
         return true;
@@ -59,7 +65,7 @@ namespace Mengine
             MENGINE_ASSERTION( observers.empty() == true, "finalized notification service has observers" );
         }
 
-        m_mutex = nullptr;
+        m_mapObserves.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )

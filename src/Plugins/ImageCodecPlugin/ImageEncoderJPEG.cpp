@@ -223,7 +223,7 @@ namespace Mengine
             // Here the array is only one element long, but you could pass
             // more than one scanline at a time if that's more convenient.
             row_pointer[0] = jpeg_buffer + cinfo.next_scanline * pitch;
-            (void)jpeg_write_scanlines( &cinfo, row_pointer, 1 );
+            jpeg_write_scanlines( &cinfo, row_pointer, 1 );
         }
 
         // Step 6: Finish compression

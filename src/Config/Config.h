@@ -65,3 +65,15 @@
 #       define MENGINE_WINDOWS_DEBUG
 #   endif
 #endif
+
+#ifndef MENGINE_ASSERTION_DEBUG
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_ASSERTION_DEBUG
+#   endif
+#endif
+
+#ifndef MENGINE_LOGGER_DEBUG
+#   ifdef MENGINE_DEBUG
+#       define MENGINE_LOGGER_DEBUG
+#   endif
+#endif

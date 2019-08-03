@@ -93,30 +93,30 @@ namespace Mengine
 
         m_pixelVariables[_index] = v;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _size, uint32_t _count )
+    {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = &m_dataFloats[v.offset];
         std::copy( _values, _values + _size * _count, values );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataIntegers[v.offset];
         std::copy( _values, _values + _size * _count, values );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _size, uint32_t _count )
+    {
         ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataBooleans[v.offset];
         std::copy( _values, _values + _size * _count, values );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgramVariable::apply( const RenderProgramInterfacePtr & _program )
     {

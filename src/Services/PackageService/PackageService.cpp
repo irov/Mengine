@@ -32,7 +32,7 @@ namespace Mengine
     {
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
-        m_factoryPackage = new FactoryPool<Package, 8>();
+        m_factoryPackage = Helper::makeFactoryPool<Package, 8>();
 
         return true;
     }

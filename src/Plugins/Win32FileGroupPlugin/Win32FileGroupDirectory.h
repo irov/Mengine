@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         const ConstString & getName() const override;
-        const FileGroupInterfacePtr & getCategory() const override;
+        const FileGroupInterfacePtr & getFileGroup() const override;
 
     public:
         bool isPacked() const override;

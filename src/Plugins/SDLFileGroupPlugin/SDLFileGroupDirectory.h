@@ -20,7 +20,7 @@ namespace Mengine
 
     public:
         const ConstString & getName() const override;
-        const FileGroupInterfacePtr & getCategory() const override;
+        const FileGroupInterfacePtr & getFileGroup() const override;
 
     public:
         bool isPacked() const override;
@@ -42,17 +42,17 @@ namespace Mengine
     public:
         InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc ) override;
         bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size, bool _streaming ) override;
-        
+
     public:
         OutputStreamInterfacePtr createOutputFile( const Char * _doc ) override;
-        bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
+        bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _file ) override;
 
     public:
-        void setRelationPath( const FilePath & _relationPath );        
+        void setRelationPath( const FilePath & _relationPath );
 
-    protected:        
-		ConstString m_name;
-        FileGroupInterfacePtr m_category;
+    protected:
+        ConstString m_name;
+        FileGroupInterfacePtr m_fileGroup;
         FilePath m_folderPath;
         FilePath m_relationPath;
 

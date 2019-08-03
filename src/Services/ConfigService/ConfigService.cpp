@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::_initializeService()
     {
-        m_factoryConfig = new FactoryPool<IniConfig, 16>();
+        m_factoryConfig = Helper::makeFactoryPool<IniConfig, 16>();
 
         m_defaultConfig = m_factoryConfig->createObject( MENGINE_DOCUMENT_FUNCTION );
 

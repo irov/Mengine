@@ -25,10 +25,11 @@ namespace Mengine
         ~Scheduler() override;
 
     public:
-        bool initialize( const ConstString & _name ) override;
+        bool initialize() override;
         void finalize() override;
 
     public:
+        void setName( const ConstString & _name ) override;
         const ConstString & getName() const override;
 
     public:

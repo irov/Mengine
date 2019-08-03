@@ -62,10 +62,10 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
-        m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
-        m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
-        m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>();
-        m_factoryThreadTaskPrefetchStream = new FactoryPool<ThreadTaskPrefetchStream, 16>();
+        m_factoryThreadTaskPrefetchImageDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
+        m_factoryThreadTaskPrefetchSoundDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
+        m_factoryThreadTaskPrefetchDataflow = Helper::makeFactoryPool<ThreadTaskPrefetchDataflow, 16>();
+        m_factoryThreadTaskPrefetchStream = Helper::makeFactoryPool<ThreadTaskPrefetchStream, 16>();
 
         return true;
     }

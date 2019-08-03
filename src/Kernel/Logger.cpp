@@ -1,12 +1,14 @@
 #include "Logger.h"
 
+#include "Interface/LoggerServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Config/String.h"
 #include "Config/StringRegex.h"
 
-#include <ctime>
-#include <cstdio>
+#include "Config/StdIO.h"
+
+#include <time.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
@@ -17,7 +19,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _file, uint32_t _line )
+    namespace Detail
+    {
+        bool loggerValidMessage( ELoggerLevel _level, uint32_t _flag )
+        {
+            bool result = LOGGER_SERVICE()
+                ->validMessage( _level, _flag );
+
+            return result;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _flag, const Char * _file, uint32_t _line )
         : m_level( _level )
         , m_flag( _flag )
         , m_file( _file )
@@ -110,7 +123,7 @@ namespace Mengine
         size += this->makeTimeStamp( str, size );
         size += this->makeFunctionStamp( str, size );
 
-        size += vsnprintf( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
+        size += MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
 
         if( size < 0 )
         {

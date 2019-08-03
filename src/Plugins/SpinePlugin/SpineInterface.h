@@ -35,8 +35,7 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual void setResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) = 0;
-        virtual const ConstString & getResourceTexturepackerName() const = 0;
+        virtual void addResourceTexturepackerName( const ConstString & _resourceTexturepackerName ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class UnknownResourceSpineSkeleton

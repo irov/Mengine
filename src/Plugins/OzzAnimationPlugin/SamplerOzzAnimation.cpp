@@ -2,6 +2,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/EventableHelper.h"
 
 #include "ozz/base/memory/allocator.h"
 #include "ozz/base/maths/soa_transform.h"

@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapGlyphService::_initializeService()
     {
-        m_factoryTextGlyph = new FactoryPool<BitmapGlyph, 8>();
+        m_factoryTextGlyph = Helper::makeFactoryPool<BitmapGlyph, 8>();
 
         return true;
     }

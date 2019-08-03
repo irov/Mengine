@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/ImageCodecInterface.h"
-
 #include "Kernel/ImageEncoder.h"
 
 extern "C"

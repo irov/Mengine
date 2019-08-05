@@ -27,7 +27,7 @@ namespace Mengine
         void removeLine( uint32_t _id );
 
     public:
-        uint32_t addQuadraticBezier( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _p0, uint32_t _quality, float _weight, const Color & _color );
+        uint32_t addQuadraticBezier( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _p0, uint8_t _quality, float _weight, const Color & _color );
         void removeQuadraticBezier( uint32_t _id );
 
     protected:
@@ -58,7 +58,7 @@ namespace Mengine
             mt::vec2f from;
             mt::vec2f to;
             mt::vec2f p[1];
-            uint32_t quality;
+            uint8_t quality;
             float weight;
 
             Color color;

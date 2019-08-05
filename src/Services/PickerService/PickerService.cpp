@@ -7,8 +7,9 @@
 
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
-
+#include "Kernel/VectorAuxScope.h"
 #include "Kernel/Logger.h"
+#include "Kernel/VectorAuxScope.h"
 
 #include <algorithm>
 
@@ -118,7 +119,7 @@ namespace Mengine
         m_camera = nullptr;
         m_scissor = nullptr;
 
-        m_states.clear();
+        MENGINE_ASSERTION_FATAL( m_states.empty() );
     }
     //////////////////////////////////////////////////////////////////////////
     void PickerService::setBlock( bool _value )
@@ -168,7 +169,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::pickTrap( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers & _pickers )
     {
-        //m_statesAux.clear();
         VectorPickerStates statesAux;
         if( this->proccesStates_( _point.x, _point.y, _touchId, _pressure, statesAux ) == false )
         {
@@ -231,7 +231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleKeyEvent( const InputKeyEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, 0, 0.f, m_states ) == false )
         {
@@ -268,7 +268,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleTextEvent( const InputTextEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, 0, 0.f, m_states ) == false )
         {
@@ -305,7 +305,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
@@ -363,7 +363,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
@@ -425,7 +425,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
@@ -490,7 +490,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states ) == false )
         {
@@ -547,7 +547,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         if( this->proccesStates_( _event.x, _event.y, 0, 0.f, m_states ) == false )
         {
@@ -599,7 +599,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::handleMouseEnter( const InputMouseEnterEvent & _event )
     {
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         this->proccesStates_( _event.x, _event.y, _event.touchId, _event.pressure, m_states );
 
@@ -618,7 +618,7 @@ namespace Mengine
             return;
         }
 
-        m_states.clear();
+        MENGINE_VECTOR_AUX( m_states );
 
         this->fillStates_( m_states );
 
@@ -662,6 +662,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::proccesStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states )
     {
+        MENGINE_ASSERTION_FATAL( _states.empty() );
+
         if( m_arrow == nullptr )
         {
             return false;

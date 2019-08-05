@@ -2,6 +2,8 @@
 
 #include "Interface/EasingInterface.h"
 
+#include "Kernel/BezierHelper.h"
+
 #include "math/utils.h"
 
 namespace Mengine
@@ -278,63 +280,6 @@ namespace Mengine
         T m_a;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class T, uint32_t N>
-    constexpr void calculateBezierPosition( T & _out, const T & _begin, const T & _end, const T * _v, float _dt )
-    {
-        uint32_t n = N + 1;
-
-        float t0 = mt::integral_powf( 1.f - _dt, n );
-        float tn = mt::integral_powf( _dt, n );
-
-        _out = t0 * _begin + tn * _end;
-
-        float f_count = mt::factorialf( n );
-
-        for( uint32_t i = 1; i != n; ++i )
-        {
-            float c = f_count / (mt::factorialf( i ) * mt::factorialf( n - i ));
-            float t = mt::integral_powf( _dt, i ) * mt::integral_powf( 1.f - _dt, n - i );
-
-            const T & v = _v[i - 1];
-
-            _out += c * t * v;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    template<class T, class LENGTH>
-    float calculateBezierLength( const T & _begin, const T & _end, uint32_t _count, const T * _v, LENGTH _length )
-    {
-        const uint32_t max_iterator = 10;
-
-        float total_length = 0.f;
-
-        T prevPoint = _begin;
-
-        const float dt = 1.f / float( max_iterator );
-
-        float t = 0.f;
-
-        for( uint32_t i = 1; i != max_iterator; ++i )
-        {
-            t += dt;
-
-            T nextPoint;
-            calculateBezierPosition( nextPoint, _begin, _end, _count, _v, t );
-
-            float length = _length( nextPoint, prevPoint );
-
-            total_length += length;
-
-            prevPoint = nextPoint;
-        }
-
-        float length = _length( _end, prevPoint );
-
-        total_length += length;
-
-        return total_length;
-    }
-    //////////////////////////////////////////////////////////////////////////
     template <typename T, uint32_t N>
     class ValueInterpolatorBezier
         : public ValueInterpolator<T>
@@ -374,7 +319,7 @@ namespace Mengine
 
         void _update( float _dt, T * _out ) override
         {
-            calculateBezierPosition<T, N>( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v, _dt );
+            Helper::calculateBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v, _dt );
         }
 
     protected:

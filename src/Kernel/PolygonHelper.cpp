@@ -430,7 +430,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool triangulate_indices( const Polygon & _polygon, VectorIndices & _result )
+        bool triangulate_indices( const Polygon & _polygon, VectorPolygonIndices & _result )
         {
             /* allocate and initialize list of Vertices in polygon */
             const VectorPoints & polygon_points = _polygon.getPoints();
@@ -499,9 +499,9 @@ namespace Mengine
                     uint32_t b = V[v];
                     uint32_t c = V[w];
 
-                    _result.emplace_back( (VectorIndices::value_type)a );
-                    _result.emplace_back( (VectorIndices::value_type)b );
-                    _result.emplace_back( (VectorIndices::value_type)c );
+                    _result.emplace_back( (VectorPolygonIndices::value_type)a );
+                    _result.emplace_back( (VectorPolygonIndices::value_type)b );
+                    _result.emplace_back( (VectorPolygonIndices::value_type)c );
 
                     for( uint32_t s = v, t = v + 1; t < nv; s++, t++ )
                     {

@@ -27,8 +27,12 @@ namespace Mengine
         void removeLine( uint32_t _id );
 
     public:
-        uint32_t addQuadraticBezier( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _p0, uint8_t _quality, float _weight, const Color & _color );
+        uint32_t addQuadraticBezier( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _p0, bool _profile, uint8_t _quality, float _weight, const Color & _color );
         void removeQuadraticBezier( uint32_t _id );
+
+    public:
+        uint32_t addRect( const mt::vec2f & _p, float _width, float _height, float _weight, const Color & _color );
+        void removeRect( uint32_t _id );
 
     protected:
         void render( const RenderContext * _context ) const override;
@@ -58,6 +62,7 @@ namespace Mengine
             mt::vec2f from;
             mt::vec2f to;
             mt::vec2f p[1];
+            bool profile;
             uint8_t quality;
             float weight;
 
@@ -66,6 +71,20 @@ namespace Mengine
 
         typedef Vector<QuadraticBezierDesc> VectorQuadraticBeziers;
         VectorQuadraticBeziers m_quadraticBeziers;
+
+        struct RectDesc
+        {
+            uint32_t id;
+            mt::vec2f p;
+            float width;
+            float height;
+            float weight;
+
+            Color color;
+        };
+
+        typedef Vector<RectDesc> VectorRects;
+        VectorRects m_rects;
 
         mutable VectorRenderVertex2D m_renderVertex2D;
         mutable VectorRenderIndex m_renderIndices;

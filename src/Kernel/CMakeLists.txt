@@ -476,6 +476,10 @@ Core
     AspectRatioViewports.h
 	VectorAspectRatioViewports.h
     
+    VectorAuxScope.h
+    
+    BezierHelper.h
+    
     Range.h
     
     Hashgen.h

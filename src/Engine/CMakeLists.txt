@@ -75,6 +75,11 @@ Shape\\\\ShapeQuad
 	ShapeQuadFlex.h
 )
 
+ADD_FILTER(
+Shape\\\\Vectorizator
+    Vectorizator.h
+	Vectorizator.cpp
+)
 
 SOURCE_GROUP( Object )
 

@@ -620,7 +620,7 @@ namespace Mengine
 
                     p2t_points.reserve( max_points );
 
-                    VectorIndices shape_indices;
+                    VectorPolygonIndices shape_indices;
 
                     for( const Geolygon & geolygon : output )
                     {
@@ -683,7 +683,7 @@ namespace Mengine
                     }
 
                     Vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();
-                    VectorIndices::size_type shapeIndicesCount = shape_indices.size();
+                    VectorPolygonIndices::size_type shapeIndicesCount = shape_indices.size();
 
                     if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
                     {

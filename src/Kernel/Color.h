@@ -34,13 +34,18 @@ namespace Mengine
         {
         }
 
-        MENGINE_INLINE explicit Color( float _r, float _g, float _b, float _a )
+        MENGINE_INLINE Color( float _r, float _g, float _b, float _a )
             : m_r( _r )
             , m_g( _g )
             , m_b( _b )
             , m_a( _a )
             , m_argb( Detail::COLOR_IDENTITY_VALUE )
             , m_invalidateARGB( Detail::COLOR_INVALIDATE_TRUE )
+        {
+        }
+
+        MENGINE_INLINE Color( float _r, float _g, float _b )
+            : Color( _r, _g, _b, 1.f )
         {
         }
 

@@ -34,6 +34,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
+        m_defaultFileGroup = nullptr;
+
         for( MapFileGroups::reverse_iterator
             it = m_fileGroups.rbegin(),
             it_end = m_fileGroups.rend();

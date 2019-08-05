@@ -58,6 +58,8 @@
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
 
+#include "Engine/Vectorizator.h"
+
 #include "Engine/Gyroscope.h"
 #include "Engine/TextField.h"
 #include "Engine/SoundEmitter.h"
@@ -2224,6 +2226,8 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
+        SCRIPT_CLASS_WRAPPING( Vectorizator );
+
         SCRIPT_CLASS_WRAPPING( Window );
 
         SCRIPT_CLASS_WRAPPING( RenderViewport );
@@ -3011,6 +3015,10 @@ namespace Mengine
                 .def( "setTextureUVScale", &ShapeQuadFlex::setTextureUVScale )
                 .def( "getTextureUVScale", &ShapeQuadFlex::getTextureUVScale )
                 ;
+
+            pybind::interface_<Vectorizator, pybind::bases<Node> >( _kernel, "Vectorizator", false )
+                ;
+            
 
             pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( _kernel, "Landscape2D", false )
                 .def( "setBackParts", &Landscape2D::setBackParts )

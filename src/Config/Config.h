@@ -32,6 +32,7 @@
 #define MENGINE_DEBUG_ATTRIBUTE(X, Y) (Y)
 #endif
 
+#define MENGINE_CONSTEXPR constexpr
 #define MENGINE_INLINE inline
 
 #if defined(WIN32)

@@ -132,7 +132,6 @@
 #include "math/utils.h"
 
 #include "Kernel/Rect.h"
-#include "Kernel/String.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/ValueFollower.h"
 
@@ -3175,78 +3174,6 @@ namespace Mengine
             return viewport;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasGameParam( const ConstString & _paramName )
-        {
-            if( GAME_SERVICE()
-                ->hasParam( _paramName ) == false )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParam( pybind::kernel_interface * _kernel, const ConstString & _paramName )
-        {
-            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
-            if( GAME_SERVICE()
-                ->getParam( _paramName, param_value ) == false )
-            {
-                return _kernel->ret_none();
-            }
-
-            PyObject * py_param = _kernel->unicode_from_utf8( param_value );
-
-            return py_param;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
-        {
-            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
-            if( GAME_SERVICE()
-                ->getParam( _paramName, param_value ) == false )
-            {
-                return _kernel->ret_none();
-            }
-
-            float value;
-            Helper::charsToFloat( param_value, value );
-
-            return pybind::ptr( _kernel, value );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
-        {
-            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
-            if( GAME_SERVICE()
-                ->getParam( _paramName, param_value ) == false )
-            {
-                return _kernel->ret_none();
-            }
-
-            int32_t value;
-            Helper::charsToInt( param_value, value );
-
-            return pybind::ptr( _kernel, value );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getGameParamBool( pybind::kernel_interface * _kernel, const ConstString & _paramName )
-        {
-            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
-            if( GAME_SERVICE()
-                ->getParam( _paramName, param_value ) == false )
-            {
-                return _kernel->ret_none();
-            }
-
-            int32_t value;
-            Helper::charsToInt( param_value, value );
-
-            bool b_value = value != 0;
-
-            return _kernel->ret_bool( b_value );
-        }
-        //////////////////////////////////////////////////////////////////////////
         bool s_openUrlInDefaultBrowser( const WString & _url )
         {
             Char utf8_url[4096];
@@ -3698,12 +3625,6 @@ namespace Mengine
         pybind::def_functor( _kernel, "getGameAspect", nodeScriptMethod, &EngineScriptMethod::s_getGameAspect );
         pybind::def_functor( _kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
 
-        pybind::def_functor_kernel( _kernel, "getGameParam", nodeScriptMethod, &EngineScriptMethod::s_getGameParam );
-        pybind::def_functor_kernel( _kernel, "getGameParamFloat", nodeScriptMethod, &EngineScriptMethod::s_getGameParamFloat );
-        pybind::def_functor_kernel( _kernel, "getGameParamInt", nodeScriptMethod, &EngineScriptMethod::s_getGameParamInt );
-        pybind::def_functor_kernel( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
-
-        pybind::def_functor( _kernel, "hasGameParam", nodeScriptMethod, &EngineScriptMethod::s_hasGameParam );
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
 
         pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );

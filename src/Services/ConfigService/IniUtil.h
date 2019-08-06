@@ -8,7 +8,6 @@
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Params.h"
-#include "Kernel/String.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/FilePath.h"
@@ -16,9 +15,12 @@
 #include "Kernel/Tags.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
-#include "Kernel/AspectRatioViewports.h"
+#include "Kernel/AspectRatioViewport.h"
 #include "Kernel/VectorAspectRatioViewports.h"
 #include "Kernel/Color.h"
+
+#include "Config/String.h"
+#include "Config/VectorString.h"
 
 namespace Mengine
 {

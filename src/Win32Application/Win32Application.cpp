@@ -112,7 +112,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->createConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid open application settings '%s'"
             , applicationPath.c_str()

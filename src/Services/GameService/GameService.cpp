@@ -21,7 +21,6 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-#include "Kernel/String.h"
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -392,8 +391,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameService::_initializeService()
     {
-        CONFIG_SECTION( "Params", m_params );
-
         GameAccountProviderPtr accountProvider = Helper::makeFactorableUnique<GameServiceAccountProvider>();
         accountProvider->setEventable( EventablePtr( this ) );
 
@@ -415,8 +412,6 @@ namespace Mengine
 
         m_userEventsAdd.clear();
         m_userEvents.clear();
-
-        m_params.clear();
 
         m_iconPath.clear();
         m_currentPackName.clear();
@@ -554,37 +549,5 @@ namespace Mengine
 
         EVENTABLE_METHOD( EVENT_GAME_ON_TIMING_FACTOR )
             ->onGameTimingFactor( _timingFactor );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::getParam( const ConstString & _paramName, Char * _param ) const
-    {
-        MapParams::const_iterator it_find = m_params.find( _paramName );
-
-        if( it_find == m_params.end() )
-        {
-            LOGGER_ERROR( "not found param '%s'"
-                , _paramName.c_str()
-            );
-
-            return false;
-        }
-
-        const String & param = it_find->second;
-
-        ::strcpy( _param, param.c_str() );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool GameService::hasParam( const ConstString & _paramName ) const
-    {
-        MapParams::const_iterator it_find = m_params.find( _paramName );
-
-        if( it_find == m_params.end() )
-        {
-            return false;
-        }
-
-        return true;
     }
 }

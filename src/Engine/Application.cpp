@@ -57,12 +57,12 @@
 #include "Kernel/ImageDecoderMemory.h"
 #include "Kernel/ImageDecoderArchive.h"
 #include "Kernel/DecoderFactory.h"
-#include "Kernel/String.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/EntityEventable.h"
 
 #include "Config/Config.h"
+#include "Config/String.h"
 #include "Config/Stringstream.h"
 #include "Config/List.h"
 
@@ -222,7 +222,7 @@ namespace Mengine
         VectorAspectRatioViewports aspectRatioViewports;
         CONFIG_VALUES( "Game", "AspectRatioViewport", aspectRatioViewports );
 
-        for( const AspectRatioViewports & viewports : aspectRatioViewports )
+        for( const AspectRatioViewport & viewports : aspectRatioViewports )
         {
             float aspect = viewports.width / viewports.height;
 

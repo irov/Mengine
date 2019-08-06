@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Kernel/AspectRatioViewports.h"
+#include "Kernel/AspectRatioViewport.h"
 
 #include "Config/Vector.h"
 
 namespace Mengine
 {
-    typedef Vector<AspectRatioViewports> VectorAspectRatioViewports;
+    typedef Vector<AspectRatioViewport> VectorAspectRatioViewports;
 }

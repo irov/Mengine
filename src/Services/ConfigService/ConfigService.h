@@ -3,6 +3,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "IniConfig.h"
+#include "MemoryConfig.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -23,7 +24,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ConfigInterfacePtr createConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
+        ConfigInterfacePtr createMemoryConfig( const Char * _doc ) override;
+
+    public:
+        ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
 
     public:
         bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
@@ -36,6 +40,7 @@ namespace Mengine
 
         INIConfigPtr m_defaultConfig;
 
-        FactoryPtr m_factoryConfig;
+        FactoryPtr m_factoryMemoryConfig;
+        FactoryPtr m_factoryIniConfig;
     };
 }

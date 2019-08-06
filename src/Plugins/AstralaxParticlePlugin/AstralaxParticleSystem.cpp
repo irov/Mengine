@@ -7,7 +7,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "Kernel/String.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 

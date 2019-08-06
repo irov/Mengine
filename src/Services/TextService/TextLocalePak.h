@@ -4,10 +4,10 @@
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/String.h"
 #include "Kernel/FilePath.h"
-
 #include "Kernel/Factorable.h"
+
+#include "Config/String.h"
 
 namespace Mengine
 {

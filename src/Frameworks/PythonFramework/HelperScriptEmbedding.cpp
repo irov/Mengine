@@ -27,6 +27,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/StringHelper.h"
+#include "Kernel/Stringalized.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -54,7 +56,6 @@
 #include "Kernel/VectorResourceImages.h"
 #include "Engine/ResourceCursorICO.h"
 
-#include "Kernel/String.h"
 #include "Kernel/CRC32.h"
 
 #include "math/angle.h"
@@ -2139,7 +2140,7 @@ namespace Mengine
             }
 
             int32_t value;
-            if( Helper::charsToInt( setting_value, value ) == false )
+            if( Helper::stringalized( setting_value, &value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
                     , _accountID.c_str()
@@ -2176,7 +2177,7 @@ namespace Mengine
             }
 
             uint32_t value;
-            if( Helper::charsToUnsigned( setting_value, value ) == false )
+            if( Helper::stringalized( setting_value, &value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
                     , _accountID.c_str()
@@ -2213,7 +2214,7 @@ namespace Mengine
             }
 
             uint64_t value;
-            if( Helper::charsToUnsigned64( setting_value, value ) == false )
+            if( Helper::stringalized( setting_value, &value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
                     , _accountID.c_str()
@@ -2290,7 +2291,7 @@ namespace Mengine
             }
 
             float value;
-            if( Helper::charsToFloat( setting_value, value ) == false )
+            if( Helper::stringalized( setting_value, &value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
                     , _accountID.c_str()
@@ -2332,7 +2333,7 @@ namespace Mengine
             }
 
             float value;
-            if( Helper::charsToFloat( setting_value, value ) == false )
+            if( Helper::stringalized( setting_value, &value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
                     , _accountID.c_str()

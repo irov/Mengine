@@ -10,7 +10,6 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable.h"
-#include "Kernel/String.h"
 
 #include "Config/Typedef.h"
 

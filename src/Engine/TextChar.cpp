@@ -2,8 +2,8 @@
 
 #include "Interface/TextServiceInterface.h"
 
-#include "Kernel/String.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/StringHelper.h"
 
 #include <algorithm>
 

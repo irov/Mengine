@@ -28,9 +28,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::_initializeService()
     {
-        m_factoryConfig = Helper::makeFactoryPool<IniConfig, 16>();
+        m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>();
+        m_factoryIniConfig = Helper::makeFactoryPool<IniConfig, 16>();
 
-        m_defaultConfig = m_factoryConfig->createObject( MENGINE_DOCUMENT_FUNCTION );
+        m_defaultConfig = m_factoryIniConfig->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         SERVICE_WAIT( PlatformInterface, [this]()
         {
@@ -53,12 +54,23 @@ namespace Mengine
         
         m_defaultConfig = nullptr;
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryConfig );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIniConfig );
 
-        m_factoryConfig = nullptr;
+        m_factoryIniConfig = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::createConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    ConfigInterfacePtr ConfigService::createMemoryConfig( const Char * _doc )
+    {
+        MemoryConfigPtr config = m_factoryMemoryConfig->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( config, nullptr );
+
+        config->setPlatformTags( m_platformTags );
+
+        return config;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _filePath, false, _doc );
@@ -67,7 +79,7 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        INIConfigPtr config = m_factoryConfig->createObject( _doc );
+        INIConfigPtr config = m_factoryIniConfig->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, nullptr );
 

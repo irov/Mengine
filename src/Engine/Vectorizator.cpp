@@ -107,7 +107,6 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
 
         return id;
-
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::removeRect( uint32_t _id )

@@ -5,7 +5,6 @@
 #include "ResourceShape.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/String.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 

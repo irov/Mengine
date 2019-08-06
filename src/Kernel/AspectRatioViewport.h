@@ -4,7 +4,7 @@
 
 namespace Mengine
 {
-    struct AspectRatioViewports
+    struct AspectRatioViewport
     {
         float width;
         float height;

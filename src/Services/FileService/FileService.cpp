@@ -9,7 +9,6 @@
 
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/String.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 

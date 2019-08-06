@@ -125,7 +125,6 @@
 #include "math/utils.h"
 
 #include "Kernel/Rect.h"
-#include "Kernel/String.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/ValueFollower.h"
 

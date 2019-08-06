@@ -10,7 +10,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/String.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine

@@ -11,7 +11,6 @@
 #include "Kernel/Document.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/String.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"

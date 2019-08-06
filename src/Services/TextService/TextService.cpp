@@ -13,10 +13,11 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/String.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
+
+#include "Config/String.h"
 
 #include "xmlsax/xmlsax.hpp"
 
@@ -510,7 +511,7 @@ namespace Mengine
     bool TextService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->createConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
             , _filePath.c_str()
@@ -606,7 +607,7 @@ namespace Mengine
     bool TextService::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->createConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
             , _filePath.c_str()

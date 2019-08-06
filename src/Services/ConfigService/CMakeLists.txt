@@ -6,6 +6,8 @@ src
     IniUtil.cpp
     IniConfig.h
     IniConfig.cpp
+    MemoryConfig.h
+    MemoryConfig.cpp
 	ConfigService.h
 	ConfigService.cpp
 )

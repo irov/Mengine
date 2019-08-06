@@ -8,12 +8,13 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/VectorFilePath.h"
 #include "Kernel/Resolution.h"
-#include "Kernel/AspectRatioViewports.h"
+#include "Kernel/AspectRatioViewport.h"
 #include "Kernel/VectorAspectRatioViewports.h"
 #include "Kernel/Color.h"
 #include "Kernel/Params.h"
 
 #include "Config/Typedef.h"
+#include "Config/VectorString.h"
 
 namespace Mengine
 {
@@ -39,6 +40,9 @@ namespace Mengine
         virtual bool hasValue( const Char * _section, const Char * _key, Color * _value ) const = 0;
 
     public:
+        virtual bool hasSection( const Char * _section ) const = 0;
+
+    public:
         virtual bool getValue( const Char * _section, const Char * _key, bool _default ) const = 0;
         virtual int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const = 0;
         virtual uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const = 0;
@@ -59,8 +63,7 @@ namespace Mengine
         virtual void getValues( const Char * _section, const Char * _key, VectorString & _values ) const = 0;
 
     public:
-        virtual bool hasSection( const Char * _section ) const = 0;
-        virtual void getSection( const Char * _section, MapParams & _params ) const = 0;
+        virtual void setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ConfigInterface> ConfigInterfacePtr;

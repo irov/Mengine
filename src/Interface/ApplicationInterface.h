@@ -7,7 +7,7 @@
 #include "Kernel/VectorFilePath.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
-#include "Kernel/AspectRatioViewports.h"
+#include "Kernel/AspectRatioViewport.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/PlatformInterface.h"

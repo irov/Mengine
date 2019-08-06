@@ -1,7 +1,8 @@
-#include "String.h"
+#include "StringHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/Vector.h"
+#include "Config/VectorString.h"
 #include "Config/Stringstream.h"
 
 #include <clocale>
@@ -11,7 +12,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void split( VectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim )
+        void split( VectorString & _outStrings, const String & _str, bool _trimDelims, const String & _delim )
         {
             uint32_t numSplits = 0;
             String::size_type start = 0;
@@ -104,12 +105,12 @@ namespace Mengine
             } while( pos != T::npos );
         }
         //////////////////////////////////////////////////////////////////////////
-        void split2( VectorString & _outStrings, const String& _str, bool _trimDelims, const VectorString & _delims )
+        void split2( VectorString & _outStrings, const String & _str, bool _trimDelims, const VectorString & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
-        void u32split2( VectorU32String & _outStrings, const U32String& _str, bool _trimDelims, const VectorU32String & _delims )
+        void u32split2( VectorU32String & _outStrings, const U32String & _str, bool _trimDelims, const VectorU32String & _delims )
         {
             t_split2( _outStrings, _str, _trimDelims, _delims );
         }
@@ -163,12 +164,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool u32split3( VectorU32String & _outStrings, const U32String& _str, const VectorU32String & _delims )
+        bool u32split3( VectorU32String & _outStrings, const U32String & _str, const VectorU32String & _delims )
         {
             return t_split3( _outStrings, _str, _delims );
         }
         //////////////////////////////////////////////////////////////////////////
-        void wsplit( VectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
+        void wsplit( VectorWString & _outStrings, const WString & _str, bool _trimDelims, const WString & _delims )
         {
             uint32_t numSplits = 0;
             WString::size_type start = 0;
@@ -199,7 +200,7 @@ namespace Mengine
             } while( pos != WString::npos );
         }
         //////////////////////////////////////////////////////////////////////////
-        void join( const String& _delim, const VectorString& _stringArray, String & _outString )
+        void join( const String & _delim, const VectorString & _stringArray, String & _outString )
         {
             if( _stringArray.empty() == true )
             {
@@ -222,7 +223,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void trim( String& str, bool left/* = true*/, bool right/* = true */ )
+        void trim( String & str, bool left/* = true*/, bool right/* = true */ )
         {
             static const String delims = " \t\r";
 
@@ -346,62 +347,6 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         bool stringToFloat( const String & _str, float & _value )
-        {
-            Stringstream ss;
-            ss << _str;
-            ss >> _value;
-
-            if( ss.fail() == true )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool charsToInt( const Char * _str, int32_t & _value )
-        {
-            Stringstream ss;
-            ss << _str;
-            ss >> _value;
-
-            if( ss.fail() == true )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool charsToUnsigned( const Char * _str, uint32_t & _value )
-        {
-            Stringstream ss;
-            ss << _str;
-            ss >> _value;
-
-            if( ss.fail() == true )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool charsToUnsigned64( const Char * _str, uint64_t & _value )
-        {
-            Stringstream ss;
-            ss << _str;
-            ss >> _value;
-
-            if( ss.fail() == true )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool charsToFloat( const Char * _str, float & _value )
         {
             Stringstream ss;
             ss << _str;

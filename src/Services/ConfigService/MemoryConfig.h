@@ -11,22 +11,26 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<IniUtil::IniStore> VectorIniStores;
+    struct RecordDesc
+    {
+        String section;
+        String key;
+        String value;
+    };
     //////////////////////////////////////////////////////////////////////////
-    class IniConfig
+    typedef Vector<RecordDesc> VectorRecords;
+    //////////////////////////////////////////////////////////////////////////
+    class MemoryConfig
         : public ConfigInterface
         , public Factorable
     {
     public:
-        IniConfig();
-        ~IniConfig() override;
+        MemoryConfig();
+        ~MemoryConfig() override;
 
     public:
         void setPlatformTags( const Tags & _platformTags ) override;
         const Tags & getPlatformTags() const override;
-
-    public:
-        bool load( const InputStreamInterfacePtr & _stream );
 
     public:
         bool hasValue( const Char * _section, const Char * _key, bool * _value ) const override;
@@ -41,9 +45,6 @@ namespace Mengine
         bool hasValue( const Char * _section, const Char * _key, Tags * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, Resolution * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, Color * _value ) const override;
-
-    public:
-        bool hasSection( const Char * _section ) const override;
 
     public:
         bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
@@ -68,13 +69,16 @@ namespace Mengine
     public:
         void setValue( const Char * _section, const Char * _key, const Char * _value ) override;
 
+    public:
+        bool hasSection( const Char * _section ) const override;
+
     protected:
         Tags m_platformTags;
 
-        VectorIniStores m_stores;
+        VectorRecords m_records;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<IniConfig, ConfigInterface> INIConfigPtr;
+    typedef IntrusivePtr<MemoryConfig, ConfigInterface> MemoryConfigPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

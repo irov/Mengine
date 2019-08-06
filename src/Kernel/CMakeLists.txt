@@ -387,8 +387,8 @@ Core
     ValueFollowerLinear.h
     ValueFollowerAcceleration.h
     
-    String.h
-	String.cpp
+    StringHelper.h
+	StringHelper.cpp
     
     Tags.h
     Tags.cpp
@@ -473,7 +473,7 @@ Core
     LoggerBase.cpp
     LoggerBase.h
     
-    AspectRatioViewports.h
+    AspectRatioViewport.h
 	VectorAspectRatioViewports.h
     
     VectorAuxScope.h
@@ -511,6 +511,9 @@ Core
     
     SecureValue.h
     SecureValue.cpp
+    
+    Stringalized.h
+    Stringalized.cpp
     
     Closure.h
 )

@@ -2,6 +2,7 @@
 
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -248,48 +249,6 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void s_calcValueT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T & _value )
-        {
-            for( const IniUtil::IniStore & ini : _stores )
-            {
-                ArrayString<128> platform_section;
-                platform_section.append( _section );
-
-                const VectorConstString & tags = _platform.getValues();
-
-                ArrayString<128> platform_section_found;
-
-                for( const ConstString & tag : tags )
-                {
-                    platform_section.append( '-' );
-                    platform_section.append( tag );
-
-                    if( IniUtil::hasIniValue( ini, platform_section.c_str(), _key ) == false )
-                    {
-                        continue;
-                    }
-
-                    platform_section_found = platform_section;
-
-                    break;
-                }
-
-                if( platform_section_found.empty() == false )
-                {
-                    if( IniUtil::getIniValue( ini, platform_section_found.c_str(), _key, _value ) == true )
-                    {
-                        return;
-                    }
-                }
-
-                if( IniUtil::getIniValue( ini, _section, _key, _value ) == false )
-                {
-                    return;
-                }
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        template<class T>
         static void s_calcValuesT( const VectorIniStores & _stores, const Tags & _platform, const Char * _section, const Char * _key, T & _value )
         {
             for( const IniUtil::IniStore & ini : _stores )
@@ -425,11 +384,12 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void IniConfig::getSection( const Char * _section, MapParams & _params ) const
+    void IniConfig::setValue( const Char * _section, const Char * _key, const Char * _value )
     {
-        for( const IniUtil::IniStore & ini : m_stores )
-        {
-            IniUtil::getIniAllSettings( ini, _section, _params );
-        }
+        MENGINE_UNUSED( _section );
+        MENGINE_UNUSED( _key );
+        MENGINE_UNUSED( _value );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
     }
 }

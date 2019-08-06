@@ -14,7 +14,10 @@ namespace Mengine
         SERVICE_DECLARE( "ConfigService" );
 
     public:
-        virtual ConfigInterfacePtr createConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
+        virtual ConfigInterfacePtr createMemoryConfig( const Char * _doc ) = 0;
+
+    public:
+        virtual ConfigInterfacePtr loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
         
     public:
         virtual bool loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
@@ -40,8 +43,5 @@ namespace Mengine
 ////////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUES(  section, key, value )\
 	(CONFIG_SERVICE()->getDefaultConfig()->getValues( section, key, value ))
-////////////////////////////////////////////////////////////////////////////
-#define CONFIG_SECTION( section, params )\
-	(CONFIG_SERVICE()->getDefaultConfig()->getSection( section, params ))
 ////////////////////////////////////////////////////////////////////////////
 

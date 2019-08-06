@@ -6,7 +6,7 @@
 #include "Kernel/Factorable.h"
 
 #ifdef MENGINE_DEBUG
-#include "Kernel/String.h"
+#include "Config/String.h"
 #endif
 
 namespace Mengine

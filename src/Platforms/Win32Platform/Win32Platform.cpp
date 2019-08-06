@@ -21,6 +21,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/Stringalized.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -1321,7 +1322,7 @@ namespace Mengine
         if( option_fps != nullptr )
         {
             float fps;
-            Helper::charsToFloat( option_fps, fps );
+            Helper::stringalized( option_fps, &fps );
 
             activeFrameTimeDefault = 1000.f / fps;
         }

@@ -4,8 +4,8 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Kernel/String.h"
 #include "Kernel/StringFormat.h"
+#include "Kernel/StringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"

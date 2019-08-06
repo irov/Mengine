@@ -3,10 +3,12 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Kernel/String.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Params.h"
+
+#include "Config/String.h"
+#include "Config/VectorString.h"
 
 namespace Mengine
 {

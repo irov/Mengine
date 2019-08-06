@@ -12,7 +12,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-#include "Kernel/String.h"
+#include "Kernel/Stringalized.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 

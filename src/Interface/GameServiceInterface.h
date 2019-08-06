@@ -167,10 +167,6 @@ namespace Mengine
         virtual void setTimeFactor( float _factor ) = 0;
 
     public:
-        virtual bool getParam( const ConstString & _paramName, Char * _param ) const = 0;
-        virtual bool hasParam( const ConstString & _paramName ) const = 0;
-
-    public:
         virtual bool loadPersonality() = 0;
         virtual void removePersonality() = 0;
 

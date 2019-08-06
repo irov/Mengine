@@ -8,11 +8,11 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
-#include "Kernel/String.h"
 #include "Kernel/Stream.h"
 #include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/StringHelper.h"
 
 namespace Mengine
 {
@@ -163,7 +163,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->createConfig( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
 
         if( config == nullptr )
         {

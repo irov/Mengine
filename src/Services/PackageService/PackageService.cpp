@@ -57,7 +57,7 @@ namespace Mengine
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->createConfig( _fileGroup, _resourceIniPath, _doc );
+            ->loadConfig( _fileGroup, _resourceIniPath, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load resource settings '%s'"
             , _resourceIniPath.c_str()

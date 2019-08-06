@@ -12,7 +12,6 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
-#include "Kernel/String.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PathHelper.h"
 

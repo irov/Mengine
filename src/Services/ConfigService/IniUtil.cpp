@@ -431,7 +431,7 @@ namespace Mengine
             {
                 const Char * ini_value = tinyini_get_property_values( &_ini.ini, _section, _key, index );
 
-                AspectRatioViewports arv;
+                AspectRatioViewport arv;
 
                 if( sscanf( ini_value, "%f %f %f %f %f %f"
                     , &arv.width

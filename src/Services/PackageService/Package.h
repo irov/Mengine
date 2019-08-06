@@ -5,8 +5,9 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Kernel/Factorable.h"
-#include "Kernel/String.h"
 #include "Kernel/FilePath.h"
+
+#include "Config/String.h"
 
 namespace Mengine
 {

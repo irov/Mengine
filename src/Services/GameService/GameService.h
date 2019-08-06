@@ -10,7 +10,6 @@
 
 #include "Kernel/BaseEventation.h"
 #include "Kernel/Resolution.h"
-#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -81,10 +80,6 @@ namespace Mengine
         void turnSound( bool _turn ) override;
 
     public:
-        bool getParam( const ConstString & _paramName, Char * _param ) const override;
-        bool hasParam( const ConstString & _paramName ) const override;
-
-    public:
         float getTimeFactor() const override;
         void setTimeFactor( float _timingFactor ) override;
 
@@ -95,8 +90,6 @@ namespace Mengine
         float m_timingFactor;
 
         FilePath m_iconPath;
-
-        MapParams m_params;
 
         struct UserEvent
         {

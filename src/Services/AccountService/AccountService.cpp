@@ -13,11 +13,11 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-#include "Kernel/String.h"
 #include "Kernel/UID.h"
 #include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/StringHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -509,7 +509,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->createConfig( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
 
         if( config == nullptr )
         {

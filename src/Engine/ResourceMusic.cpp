@@ -4,7 +4,6 @@
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/String.h"
 
 namespace Mengine
 {

@@ -35,11 +35,6 @@ namespace Mengine
         bool stringToUnsigned( const String & _str, uint32_t & _value );
         bool stringToFloat( const String & _str, float & _value );
 
-        bool charsToInt( const Char * _str, int32_t & _value );
-        bool charsToUnsigned( const Char * _str, uint32_t & _value );
-        bool charsToUnsigned64( const Char * _str, uint64_t & _value );
-        bool charsToFloat( const Char * _str, float & _value );
-
         bool wstringToInt( const WString & _str, int32_t & _value );
         bool wstringToInt2( const WString & _str, int32_t & _value1, int32_t & _value2, bool _separator );
         bool wstringToInt4( const WString & _str, int32_t & _value1, int32_t & _value2, int32_t & _value3, int32_t & _value4, bool _separator );

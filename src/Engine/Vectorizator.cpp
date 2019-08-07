@@ -127,19 +127,19 @@ namespace Mengine
         mt::perp_v2( _perp, dir_norm );
     }
     //////////////////////////////////////////////////////////////////////////
-    //static void makeBendPerp( mt::vec2f & _perp, const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2 )
-    //{
-    //    mt::vec2f dir0;
-    //    mt::sub_v2_v2( dir0, _p1, _p0 );
+    static void makeBendPerp( mt::vec2f & _perp, const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2 )
+    {
+        mt::vec2f dir0;
+        mt::sub_v2_v2( dir0, _p1, _p0 );
 
-    //    mt::vec2f dir1;
-    //    mt::sub_v2_v2( dir1, _p2, _p1 );
+        mt::vec2f dir1;
+        mt::sub_v2_v2( dir1, _p2, _p1 );
 
-    //    mt::vec2f dir_norm;
-    //    mt::norm_v2_v2( dir_norm, dir0 + dir1 );
+        mt::vec2f dir_norm;
+        mt::norm_v2_v2( dir_norm, dir0 + dir1 );
 
-    //    mt::perp_v2( _perp, dir_norm );
-    //}
+        mt::perp_v2( _perp, dir_norm );
+    }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::updateLocalVertex2D_() const
     {
@@ -150,20 +150,25 @@ namespace Mengine
         Color color;
         this->calcTotalColor( color );
 
-        uint32_t vertexSize = 0; 
-        uint32_t indexSize = 0;
-
-        vertexSize += m_lines.size() * 4;
-        indexSize += m_lines.size() * 6;
+        uint16_t pointSize = 0;
 
         for( const LineDesc & line : m_lines )
         {
+            if( line.edges.empty() == true )
+            {
+                continue;
+            }
+
             for( const LineEdge & edge : line.edges )
             {
-                vertexSize += edge.quality * 2;
-                indexSize += (edge.quality - 1) * 6;
+                pointSize += edge.quality - 1;
             }
+
+            pointSize += 1;
         }
+
+        uint32_t vertexSize = pointSize * 2;
+        uint32_t indexSize = (pointSize - 1) * 6;
 
         m_renderVertex2D.resize( vertexSize );
         m_renderIndices.resize( indexSize );
@@ -173,6 +178,18 @@ namespace Mengine
 
         for( const LineDesc & line : m_lines )
         {
+            struct LinePoints
+            {
+                mt::vec2f pos;
+                float weight;
+                ColorValue_ARGB argb;
+            };
+
+            typedef Vector<LinePoints> VectorLinePoints;
+
+            VectorLinePoints points;
+            points.reserve( pointSize );
+
             uint32_t pointIterator = 0;
 
             for( const LineEdge & edge : line.edges )
@@ -180,174 +197,148 @@ namespace Mengine
                 const mt::vec2f & p0 = line.points[pointIterator++];
                 const mt::vec2f & p1 = line.points[pointIterator];
 
-                float t = 0.f;
-
-                mt::vec2f bp[32];
-                for( uint8_t index = 0; index != edge.quality; ++index )
-                {
-                    Helper::calculateBezierPosition( bp[index], p0, p1, edge.p, t );
-
-                    t += edge.dt;
-                }
-
-                mt::vec2f p0_wm;
-                mt::mul_v2_v2_m4( p0_wm, bp[0], wm );
-
-                mt::vec2f p1_wm;
-                mt::mul_v2_v2_m4( p1_wm, bp[edge.quality - 1], wm );
-
-                mt::vec2f p01_perp;
-                makeLinePerp( p01_perp, p0_wm, p1_wm );
-
                 Color line_color = color * edge.color;
                 uint32_t argb = line_color.getAsARGB();
 
-                m_renderVertex2D[vertexIterator + 0].position.x = p0_wm.x - p01_perp.x * edge.weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = p0_wm.y - p01_perp.y * edge.weight;
+                switch( edge.controls )
+                {
+                case 0:
+                    {
+                        mt::vec2f p0_wm;
+                        mt::mul_v2_v2_m4( p0_wm, p0, wm );
+
+                        LinePoints lp0;
+                        lp0.pos = p0_wm;
+                        lp0.weight = edge.weight;
+                        lp0.argb = argb;
+
+                        points.emplace_back( lp0 );
+                    }break;
+                case 1:
+                    {
+                        float t = 0.f;
+
+                        for( uint8_t index = 0; index != edge.quality - 1; ++index )
+                        {
+                            mt::vec2f bp;
+                            Helper::calculateBezierPosition<mt::vec2f, 1>( bp, p0, p1, edge.p, t );
+
+                            t += edge.dt;
+
+                            mt::vec2f bp_wm;
+                            mt::mul_v2_v2_m4( bp_wm, bp, wm );
+
+                            LinePoints p;
+                            p.pos = bp_wm;
+                            p.weight = edge.weight;
+                            p.argb = argb;
+
+                            points.emplace_back( p );                            
+                        }
+                    }break;
+                }
+            }
+
+            {
+                const mt::vec2f & p1 = line.points[pointIterator];
+
+                mt::vec2f p1_wm;
+                mt::mul_v2_v2_m4( p1_wm, p1, wm );
+
+                LinePoints lp1;
+                lp1.pos = p1_wm;
+                lp1.weight = line.edges.back().weight;
+
+                Color line_color = color * line.edges.back().color;
+                uint32_t argb = line_color.getAsARGB();
+
+                lp1.argb = argb;
+
+                points.emplace_back( lp1 );
+            }
+
+            for( uint16_t index = 0; index != pointSize - 1; ++index )
+            {
+                m_renderIndices[indexIterator + 0] = vertexIterator + index * 2 + 0;
+                m_renderIndices[indexIterator + 1] = vertexIterator + index * 2 + 1;
+                m_renderIndices[indexIterator + 2] = vertexIterator + index * 2 + 2;
+                m_renderIndices[indexIterator + 3] = vertexIterator + index * 2 + 2;
+                m_renderIndices[indexIterator + 4] = vertexIterator + index * 2 + 1;
+                m_renderIndices[indexIterator + 5] = vertexIterator + index * 2 + 3;
+
+                indexIterator += 6;
+            }
+
+            {
+                float weight = points[0].weight;
+                uint32_t argb = points[0].argb;
+
+                const mt::vec2f & p0 = points[0].pos;
+                const mt::vec2f & p1 = points[1].pos;
+
+                mt::vec2f perp;
+                makeLinePerp( perp, p0, p1 );
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x * weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y * weight;
                 m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 0].color = argb;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = p1_wm.x - p01_perp.x * edge.weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = p1_wm.y - p01_perp.y * edge.weight;
+                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x * weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y * weight;
                 m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 1].color = argb;
 
-                m_renderVertex2D[vertexIterator + 2].position.x = p1_wm.x + p01_perp.x * edge.weight;
-                m_renderVertex2D[vertexIterator + 2].position.y = p1_wm.y + p01_perp.y * edge.weight;
-                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 2].color = argb;
+                vertexIterator += 2;
+            }
 
-                m_renderVertex2D[vertexIterator + 3].position.x = p0_wm.x + p01_perp.x * edge.weight;
-                m_renderVertex2D[vertexIterator + 3].position.y = p0_wm.y + p01_perp.y * edge.weight;
-                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 3].color = argb;
+            for( uint16_t index = 1; index != pointSize - 1; ++index )
+            {
+                float weight = points[index + 0].weight;
+                ColorValue_ARGB argb = points[index + 0].argb;
 
-                m_renderIndices[indexIterator + 0] = vertexIterator + 0;
-                m_renderIndices[indexIterator + 1] = vertexIterator + 3;
-                m_renderIndices[indexIterator + 2] = vertexIterator + 1;
-                m_renderIndices[indexIterator + 3] = vertexIterator + 1;
-                m_renderIndices[indexIterator + 4] = vertexIterator + 3;
-                m_renderIndices[indexIterator + 5] = vertexIterator + 2;
+                const mt::vec2f & p0 = points[index - 1].pos;
+                const mt::vec2f & p1 = points[index + 0].pos;
+                const mt::vec2f & p2 = points[index + 1].pos;
 
-                vertexIterator += 4;
-                indexIterator += 6;
+                mt::vec2f perp;
+                makeBendPerp( perp, p0, p1, p2 );
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x * weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y * weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
+            }
+
+            {
+                float weight = points[pointSize - 2].weight;
+                uint32_t argb = points[pointSize - 2].argb;
+
+                const mt::vec2f & p0 = points[pointSize - 2].pos;
+                const mt::vec2f & p1 = points[pointSize - 1].pos;
+
+                mt::vec2f perp;
+                makeLinePerp( perp, p0, p1 );
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x * weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y * weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x * weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y * weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
             }
         }
-
-        //for( const QuadraticBezierDesc & desc : m_quadraticBeziers )
-        //{
-        //    Color bezier_color = color * desc.color;
-        //    uint32_t argb = bezier_color.getAsARGB();
-
-        //    float dt = 1.f / (float)(desc.quality - 1);
-        //    float t = 0.f;
-
-        //    mt::vec2f bp[32];
-        //    for( uint8_t index = 0; index != desc.quality; ++index )
-        //    {
-        //        Helper::calculateBezierPosition( bp[index], desc.from, desc.to, desc.p, t );
-
-        //        t += dt;
-        //    }
-
-        //    for( uint8_t index = 0; index != desc.quality - 1; ++index )
-        //    {
-        //        m_renderIndices[indexIterator + 0] = vertexIterator + index * 2 + 0;
-        //        m_renderIndices[indexIterator + 1] = vertexIterator + index * 2 + 1;
-        //        m_renderIndices[indexIterator + 2] = vertexIterator + index * 2 + 2;
-        //        m_renderIndices[indexIterator + 3] = vertexIterator + index * 2 + 2;
-        //        m_renderIndices[indexIterator + 4] = vertexIterator + index * 2 + 1;
-        //        m_renderIndices[indexIterator + 5] = vertexIterator + index * 2 + 3;
-
-        //        indexIterator += 6;
-        //    }
-
-        //    {
-        //        mt::vec2f fromWM;
-        //        mt::mul_v2_v2_m4( fromWM, bp[0], wm );
-
-        //        mt::vec2f toWM;
-        //        if( desc.profile == true )
-        //        {
-        //            mt::mul_v2_v2_m4( toWM, bp[desc.quality - 1], wm );
-        //        }
-        //        else
-        //        {
-        //            mt::mul_v2_v2_m4( toWM, bp[1], wm );
-        //        }
-
-        //        mt::vec2f perp;
-        //        makeLinePerp( perp, fromWM, toWM );
-
-        //        m_renderVertex2D[vertexIterator + 0].position.x = fromWM.x - perp.x * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 0].position.y = fromWM.y - perp.y * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-        //        m_renderVertex2D[vertexIterator + 0].color = argb;
-
-        //        m_renderVertex2D[vertexIterator + 1].position.x = fromWM.x + perp.x * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 1].position.y = fromWM.y + perp.y * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-        //        m_renderVertex2D[vertexIterator + 1].color = argb;
-
-        //        vertexIterator += 2;
-        //    }
-
-        //    for( uint8_t index = 1; index != desc.quality - 1; ++index )
-        //    {
-        //        mt::vec2f p0;
-        //        mt::mul_v2_v2_m4( p0, bp[index - 1], wm );
-
-        //        mt::vec2f p1;
-        //        mt::mul_v2_v2_m4( p1, bp[index + 0], wm );
-
-        //        mt::vec2f p2;
-        //        mt::mul_v2_v2_m4( p2, bp[index + 1], wm );
-
-        //        mt::vec2f perp;
-        //        makeBendPerp( perp, p0, p1, p2 );
-
-        //        m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-        //        m_renderVertex2D[vertexIterator + 0].color = argb;
-
-        //        m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-        //        m_renderVertex2D[vertexIterator + 1].color = argb;
-
-        //        vertexIterator += 2;
-        //    }
-
-        //    {
-        //        mt::vec2f fromWM;
-        //        if( desc.profile == true )
-        //        {
-        //            mt::mul_v2_v2_m4( fromWM, bp[0], wm );
-        //        }
-        //        else
-        //        {
-        //            mt::mul_v2_v2_m4( fromWM, bp[desc.quality - 2], wm );
-        //        }
-
-        //        mt::vec2f toWM;
-        //        mt::mul_v2_v2_m4( toWM, bp[desc.quality - 1], wm );
-
-        //        mt::vec2f perp;
-        //        makeLinePerp( perp, fromWM, toWM );
-
-        //        m_renderVertex2D[vertexIterator + 0].position.x = toWM.x - perp.x * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 0].position.y = toWM.y - perp.y * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-        //        m_renderVertex2D[vertexIterator + 0].color = argb;
-
-        //        m_renderVertex2D[vertexIterator + 1].position.x = toWM.x + perp.x * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 1].position.y = toWM.y + perp.y * desc.weight;
-        //        m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-        //        m_renderVertex2D[vertexIterator + 1].color = argb;
-
-        //        vertexIterator += 2;
-        //    }
-        //}
     }
 }

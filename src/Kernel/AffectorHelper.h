@@ -22,15 +22,13 @@ namespace Mengine
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 
     public:
-        bool initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, float _time )
+        void initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, float _time )
         {
             this->setSettuper( _lambda );
 
             ValueInterpolatorLinear<T> & interpolator = this->getInterpolator();
 
-            bool successful = interpolator.start( _start, _end, _time );
-
-            return successful;
+            interpolator.start( _start, _end, _time );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -42,15 +40,13 @@ namespace Mengine
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
 
     public:
-        bool initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, const T & _v0, float _time )
+        void initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, const T & _v0, float _time )
         {
             this->setSettuper( _lambda );
 
             ValueInterpolatorQuadratic<T> & interpolator = this->getInterpolator();
 
-            bool successful = interpolator.start( _start, _end, _v0, _time );
-
-            return successful;
+            interpolator.start( _start, _end, _v0, _time );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -64,7 +60,7 @@ namespace Mengine
         typedef Lambda<void( T * )> LambdaPoints;
 
     public:
-        bool initialize( const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _getterPoints, float _time )
+        void initialize( const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _getterPoints, float _time )
         {
             m_settuper = _settuper;
             m_getterFrom = _getterFrom;
@@ -79,9 +75,7 @@ namespace Mengine
 
             ValueInterpolatorBezier<T, N> & interpolator = this->getInterpolator();
 
-            bool successful = interpolator.start( from, to, v, _time );
-
-            return successful;
+            interpolator.start( from, to, v, _time );
         }
 
     protected:
@@ -156,10 +150,7 @@ namespace Mengine
                 affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
-                if( affector->initialize( _lambda, _pos, _dir, _speed ) == false )
-                {
-                    return nullptr;
-                }
+                affector->initialize( _lambda, _pos, _dir, _speed );
 
                 affector->callSettuper( _pos );
 
@@ -201,10 +192,7 @@ namespace Mengine
                 affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
-                if( affector->initialize( _lambda, _start, _end, _time ) == false )
-                {
-                    return nullptr;
-                }
+                affector->initialize( _lambda, _start, _end, _time );
 
                 affector->callSettuper( _start );
 
@@ -246,10 +234,7 @@ namespace Mengine
                 affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
-                if( affector->initialize( _lambda, _start, _end, _v0, _time ) == false )
-                {
-                    return nullptr;
-                }
+                affector->initialize( _lambda, _start, _end, _v0, _time );
 
                 affector->callSettuper( _start );
 
@@ -294,10 +279,7 @@ namespace Mengine
                 affector->setEasing( _easing );
                 affector->setCallback( _cb );
 
-                if( affector->initialize( _settuper, _getterFrom, _getterTo, _points, _time ) == false )
-                {
-                    return nullptr;
-                }
+                affector->initialize( _settuper, _getterFrom, _getterTo, _points, _time );
 
                 T from = _getterFrom();
                 _settuper( from );

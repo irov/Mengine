@@ -3,6 +3,7 @@
 #include "Interface/EasingInterface.h"
 
 #include "Kernel/BezierHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "math/utils.h"
 
@@ -15,6 +16,10 @@ namespace Mengine
         ValueAccumulator()
             : m_started( false )
             , m_time( 0.f )
+        {
+        }
+
+        ~ValueAccumulator()
         {
         }
 
@@ -44,22 +49,17 @@ namespace Mengine
         : public ValueAccumulator<T>
     {
     public:
-        bool start( const T & _pos, const T & _acc, float _speed )
+        void start( const T & _pos, const T & _acc, float _speed )
         {
+            MENGINE_ASSERTION( _speed >= 0.f );
+
             ValueAccumulator<T>::m_started = false;
 
             ValueAccumulator<T>::m_pos = _pos;
             ValueAccumulator<T>::m_delta = _acc * _speed;
             ValueAccumulator<T>::m_time = 0.f;
 
-            if( _speed < mt::constant::eps )
-            {
-                return false;
-            }
-
             ValueAccumulator<T>::m_started = true;
-
-            return true;
         }
 
         bool update( const EasingInterfacePtr & _easing, const UpdateContext * _context, T * _out, float * _used ) override
@@ -108,6 +108,17 @@ namespace Mengine
         }
 
     public:
+        void start( const T & _value1, const T & _value2, float _duration )
+        {
+            m_value1 = _value1;
+            m_value2 = _value2;
+            m_prev = m_value1;
+            m_delta = m_prev - m_value1;
+            m_duration = _duration;
+            m_time = 0.f;
+            m_started = true;
+        }
+
         void stop()
         {
             m_started = false;
@@ -152,6 +163,19 @@ namespace Mengine
             {
                 *_out = m_value2;
                 *_used = 0.f;
+
+                return true;
+            }
+
+            if( m_duration < mt::constant::eps )
+            {
+                *_used = 0.f;
+
+                m_duration = 0.f;
+                m_time = 0.f;
+                *_out = m_value2;
+                m_delta = m_value2 - m_value1;
+                m_started = false;
 
                 return true;
             }
@@ -211,27 +235,6 @@ namespace Mengine
         : public ValueInterpolator<T>
     {
     public:
-        bool start( const T & _value1, const T & _value2, float _time )
-        {
-            ValueInterpolator<T>::m_started = false;
-
-            ValueInterpolator<T>::m_value1 = _value1;
-            ValueInterpolator<T>::m_value2 = _value2;
-            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_duration = _time;
-            ValueInterpolator<T>::m_time = 0.f;
-
-            if( _time < mt::constant::eps )
-            {
-                return false;
-            }
-
-            ValueInterpolator<T>::m_started = true;
-
-            return true;
-        }
-
         void _update( float _dt, T * _out ) override
         {
             *_out = ValueInterpolator<T>::m_value1 + (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1) * _dt;
@@ -243,29 +246,17 @@ namespace Mengine
         : public ValueInterpolator<T>
     {
     public:
-        bool start( const T& _value1, const T& _value2, const T& _v0, float _duration )
+        void start( const T & _value1, const T & _value2, const T & _v0, float _duration )
         {
-            ValueInterpolator<T>::m_started = false;
-
-            ValueInterpolator<T>::m_value1 = _value1;
-            ValueInterpolator<T>::m_value2 = _value2;
-            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_duration = _duration;
-            ValueInterpolator<T>::m_time = 0.f;
+            ValueInterpolator<T>::start( _value1, _value2, _duration );
 
             m_v0 = _v0;
 
-            if( _duration < mt::constant::eps )
+            if( _duration > mt::constant::eps )
             {
-                return false;
+                float invTime = 1.f / ValueInterpolator<T>::m_duration;
+                m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_duration) * 2.f * invTime * invTime;
             }
-
-            ValueInterpolator<T>::m_started = true;
-            float invTime = 1.f / ValueInterpolator<T>::m_duration;
-            m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_duration) * 2.f * invTime * invTime;
-
-            return true;
         }
 
         void _update( float _dt, T * _out ) override
@@ -294,27 +285,11 @@ namespace Mengine
         }
 
     public:
-        bool start( const T& _value1, const T& _value2, const T * _v, float _time )
+        void start( const T & _value1, const T & _value2, const T * _v, float _duration )
         {
-            ValueInterpolator<T>::m_started = false;
-
-            ValueInterpolator<T>::m_value1 = _value1;
-            ValueInterpolator<T>::m_value2 = _value2;
-            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_duration = _time;
-            ValueInterpolator<T>::m_time = 0.f;
-
-            if( _time < 0.00001f )
-            {
-                return false;
-            }
+            ValueInterpolator<T>::start( _value1, _value2, _duration );
 
             this->setV( _v );
-
-            ValueInterpolator<T>::m_started = true;
-
-            return true;
         }
 
         void _update( float _dt, T * _out ) override
@@ -375,27 +350,11 @@ namespace Mengine
         : public ValueInterpolator<T>
     {
     public:
-        bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
+        void start( const T & _value1, const T & _value2, const T & _v0, float _duration )
         {
-            ValueInterpolator<T>::m_started = false;
-
-            ValueInterpolator<T>::m_value1 = _value1;
-            ValueInterpolator<T>::m_value2 = _value2;
-            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_duration = _time;
-            ValueInterpolator<T>::m_time = 0.f;
+            ValueInterpolator<T>::start( _value1, _value2, _duration );
 
             m_v0 = _v0;
-
-            if( _time < 0.00001f )
-            {
-                return false;
-            }
-
-            ValueInterpolator<T>::m_started = true;
-
-            return true;
         }
 
         void step( float _timing, T * _out )

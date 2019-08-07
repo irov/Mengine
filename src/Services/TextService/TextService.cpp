@@ -508,6 +508,31 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    TextFontInterfacePtr TextService::createFont( const ConstString & _fontName, const ConstString & _fontType, const Char * _doc )
+    {
+        TextFontInterfacePtr font = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( font, nullptr, "invalid create font '%s' type '%s' (doc: %s)"
+            , _fontName.c_str()
+            , _fontType.c_str()
+            , _doc
+        );
+
+        font->setName( _fontName );
+        font->setType( _fontType );
+
+        LOGGER_INFO( "add user font '%s' type '%s' (doc: %s)"
+            , _fontName.c_str()
+            , _fontType.c_str()
+            , _doc
+        );
+
+        m_fonts.emplace( _fontName, font );
+
+        return font;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
@@ -534,7 +559,7 @@ namespace Mengine
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FUNCTION );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid initialize '%s:%s' font '%s' not found type '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid create '%s:%s' font '%s' not found type '%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , fontName.c_str()

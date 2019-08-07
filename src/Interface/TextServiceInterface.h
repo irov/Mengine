@@ -17,8 +17,9 @@ namespace Mengine
         virtual bool unloadTextEntry( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
 
     public:
-        virtual bool loadFonts( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
-        virtual bool unloadFonts( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
+        virtual TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const Char * _doc ) = 0;
+        virtual bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) = 0;
+        virtual bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) = 0;
 
     public:
         virtual bool addTextEntry( const ConstString & _key

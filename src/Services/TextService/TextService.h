@@ -37,6 +37,7 @@ namespace Mengine
         bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
 
     public:
+        TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const Char * _doc ) override;
         bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
         bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
 

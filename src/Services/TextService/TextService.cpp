@@ -681,15 +681,9 @@ namespace Mengine
             {
                 const String & text = textEntry_has->getValue();
 
-                WString ws_text;
-                Helper::utf8ToUnicode( text, ws_text );
-
-                LOGGER_ERROR( "duplicate key found '%s' with text:"
+                LOGGER_ERROR( "duplicate key found '%s' with text: %s"
                     , _key.c_str()
-                );
-
-                LOGGER_ERROR( "'%ls'"
-                    , ws_text.c_str()
+                    , text.c_str()
                 );
 
                 return false;

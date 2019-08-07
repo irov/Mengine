@@ -26,6 +26,9 @@ namespace Mengine
         virtual const Tags & getPlatformTags() const = 0;
 
     public:
+        virtual bool existValue( const Char * _section, const Char * _key ) const = 0;
+
+    public:
         virtual bool hasValue( const Char * _section, const Char * _key, bool * _value ) const = 0;
         virtual bool hasValue( const Char * _section, const Char * _key, int32_t * _value ) const = 0;
         virtual bool hasValue( const Char * _section, const Char * _key, uint32_t * _value ) const = 0;

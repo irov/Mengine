@@ -332,7 +332,6 @@ namespace Mengine
         Viewport m_renderViewport;
 
         FactoryPtr m_factoryRenderBatch;
-        FactoryPtr m_factoryRenderPass;
 
         typedef stdex::dynamic_array<RenderObject> ArrayRenderObject;
         ArrayRenderObject m_renderObjects;

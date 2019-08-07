@@ -12,8 +12,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Vectorizator::Vectorizator()
-        : m_enumerator( 0 )
-        , m_invalidateLocalVertex2D( false )
+        : m_invalidateLocalVertex2D( false )
+        , m_lineWeight( 0.f )
+        , m_lineColor( 1.f, 1.f, 1.f, 1.f )
+        , m_curveQuality( 10 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,104 +23,76 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Vectorizator::addLine( const mt::vec2f & _from, const mt::vec2f & _to, float _weight, const Color & _color )
+    void Vectorizator::setLineWeight( float _weight )
     {
-        uint32_t id = ++m_enumerator;
-
+        m_lineWeight = _weight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::setLineColor( const Color & _color )
+    {
+        m_lineColor = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::setCurveQuality( uint8_t _quality )
+    {
+        m_curveQuality = _quality;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::moveTo( const mt::vec2f & _point )
+    {
         LineDesc desc;
-        desc.id = id;
-        desc.from = _from;
-        desc.to = _to;
-        desc.weight = _weight;
-        desc.color = _color;
+        desc.points.emplace_back( _point );
 
         m_lines.emplace_back( desc );
-
-        m_invalidateLocalVertex2D = true;
-
-        return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::removeLine( uint32_t _id )
+    void Vectorizator::lineTo( const mt::vec2f & _point )
     {
-        VectorLines::iterator it_found = std::find_if( m_lines.begin(), m_lines.end(), [_id]( const LineDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
+        LineDesc & desc = m_lines.back();
 
-        MENGINE_ASSERTION( it_found != m_lines.end() );
+        desc.points.emplace_back( _point );
 
-        m_lines.erase( it_found );
+        LineEdge edge;
+        edge.controls = 0;
+        edge.quality = 2;
+        edge.dt = 1.f;
+        edge.weight = m_lineWeight;
+        edge.color = m_lineColor;
 
-        m_invalidateLocalVertex2D = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Vectorizator::addQuadraticBezier( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _p0, bool _profile, uint8_t _quality, float _weight, const Color & _color )
-    {
-        MENGINE_ASSERTION( _quality >= 3 && _quality <= 32 );
-
-        uint32_t id = ++m_enumerator;
-
-        QuadraticBezierDesc desc;
-        desc.id = id;
-        desc.from = _from;
-        desc.to = _to;
-        desc.p[0] = _p0;
-        desc.profile = _profile;
-        desc.quality = _quality;
-        desc.weight = _weight;
-        desc.color = _color;
-
-        m_quadraticBeziers.emplace_back( desc );
-
-        m_invalidateLocalVertex2D = true;
-
-        return id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::removeQuadraticBezier( uint32_t _id )
-    {
-        VectorQuadraticBeziers::iterator it_found = std::find_if( m_quadraticBeziers.begin(), m_quadraticBeziers.end(), [_id]( const QuadraticBezierDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION( it_found != m_quadraticBeziers.end() );
-
-        m_quadraticBeziers.erase( it_found );
+        desc.edges.emplace_back( edge );
 
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Vectorizator::addRect( const mt::vec2f & _p, float _width, float _height, float _weight, const Color & _color )
+    void Vectorizator::quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point )
     {
-        uint32_t id = ++m_enumerator;
+        LineDesc & desc = m_lines.back();
 
+        desc.points.emplace_back( _point );
+
+        LineEdge edge;
+        edge.controls = 1;
+        edge.p[0] = _p0;
+        edge.quality = m_curveQuality;
+        edge.dt = 1.f / (float)(edge.quality - 1);
+        edge.weight = m_lineWeight;
+        edge.color = m_lineColor;
+
+        desc.edges.emplace_back( edge );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::drawRect( const mt::vec2f & _point, float _width, float _height )
+    {
         RectDesc desc;
-        desc.id = id;
-        desc.p = _p;
+        desc.point = _point;
         desc.width = _width;
         desc.height = _height;
-        desc.weight = _weight;
-        desc.color = _color;
+        desc.weight = m_lineWeight;
+        desc.color = m_lineColor;
 
         m_rects.emplace_back( desc );
-
-        m_invalidateLocalVertex2D = true;
-
-        return id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::removeRect( uint32_t _id )
-    {
-        VectorRects::iterator it_found = std::find_if( m_rects.begin(), m_rects.end(), [_id]( const RectDesc & _desc )
-        {
-            return _desc.id == _id;
-        } );
-
-        MENGINE_ASSERTION( it_found != m_rects.end() );
-
-        m_rects.erase( it_found );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -153,19 +127,19 @@ namespace Mengine
         mt::perp_v2( _perp, dir_norm );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void makeBendPerp( mt::vec2f & _perp, const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2 )
-    {
-        mt::vec2f dir0;
-        mt::sub_v2_v2( dir0, _p1, _p0 );
+    //static void makeBendPerp( mt::vec2f & _perp, const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2 )
+    //{
+    //    mt::vec2f dir0;
+    //    mt::sub_v2_v2( dir0, _p1, _p0 );
 
-        mt::vec2f dir1;
-        mt::sub_v2_v2( dir1, _p2, _p1 );
+    //    mt::vec2f dir1;
+    //    mt::sub_v2_v2( dir1, _p2, _p1 );
 
-        mt::vec2f dir_norm;
-        mt::norm_v2_v2( dir_norm, dir0 + dir1 );
+    //    mt::vec2f dir_norm;
+    //    mt::norm_v2_v2( dir_norm, dir0 + dir1 );
 
-        mt::perp_v2( _perp, dir_norm );
-    }
+    //    mt::perp_v2( _perp, dir_norm );
+    //}
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::updateLocalVertex2D_() const
     {
@@ -182,10 +156,13 @@ namespace Mengine
         vertexSize += m_lines.size() * 4;
         indexSize += m_lines.size() * 6;
 
-        for( const QuadraticBezierDesc & desc : m_quadraticBeziers )
+        for( const LineDesc & line : m_lines )
         {
-            vertexSize += desc.quality * 2;
-            indexSize += (desc.quality - 1) * 6;
+            for( const LineEdge & edge : line.edges )
+            {
+                vertexSize += edge.quality * 2;
+                indexSize += (edge.quality - 1) * 6;
+            }
         }
 
         m_renderVertex2D.resize( vertexSize );
@@ -193,165 +170,184 @@ namespace Mengine
 
         uint16_t vertexIterator = 0;
         uint16_t indexIterator = 0;
+
         for( const LineDesc & line : m_lines )
         {
-            mt::vec2f fromWM;
-            mt::mul_v2_v2_m4( fromWM, line.from, wm );
+            uint32_t pointIterator = 0;
 
-            mt::vec2f toWM;
-            mt::mul_v2_v2_m4( toWM, line.to, wm );
-
-            mt::vec2f perp;
-            makeLinePerp( perp, fromWM, toWM );
-
-            Color line_color = color * line.color;
-            uint32_t argb = line_color.getAsARGB();
-
-            m_renderVertex2D[vertexIterator + 0].position.x = fromWM.x - perp.x * line.weight;
-            m_renderVertex2D[vertexIterator + 0].position.y = fromWM.y - perp.y * line.weight;
-            m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 0].color = argb;
-
-            m_renderVertex2D[vertexIterator + 1].position.x = toWM.x - perp.x * line.weight;
-            m_renderVertex2D[vertexIterator + 1].position.y = toWM.y - perp.y * line.weight;
-            m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 1].color = argb;
-
-            m_renderVertex2D[vertexIterator + 2].position.x = toWM.x + perp.x * line.weight;
-            m_renderVertex2D[vertexIterator + 2].position.y = toWM.y + perp.y * line.weight;
-            m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 2].color = argb;
-
-            m_renderVertex2D[vertexIterator + 3].position.x = fromWM.x + perp.x * line.weight;
-            m_renderVertex2D[vertexIterator + 3].position.y = fromWM.y + perp.y * line.weight;
-            m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 3].color = argb;
-
-            m_renderIndices[indexIterator + 0] = vertexIterator + 0;
-            m_renderIndices[indexIterator + 1] = vertexIterator + 3;
-            m_renderIndices[indexIterator + 2] = vertexIterator + 1;
-            m_renderIndices[indexIterator + 3] = vertexIterator + 1;
-            m_renderIndices[indexIterator + 4] = vertexIterator + 3;
-            m_renderIndices[indexIterator + 5] = vertexIterator + 2;
-
-            vertexIterator += 4;
-            indexIterator += 6;
-        }
-
-        for( const QuadraticBezierDesc & desc : m_quadraticBeziers )
-        {
-            Color bezier_color = color * desc.color;
-            uint32_t argb = bezier_color.getAsARGB();
-
-            float dt = 1.f / (float)(desc.quality - 1);
-            float t = 0.f;
-
-            mt::vec2f bp[32];
-            for( uint8_t index = 0; index != desc.quality; ++index )
+            for( const LineEdge & edge : line.edges )
             {
-                Helper::calculateBezierPosition( bp[index], desc.from, desc.to, desc.p, t );
+                const mt::vec2f & p0 = line.points[pointIterator++];
+                const mt::vec2f & p1 = line.points[pointIterator];
 
-                t += dt;
-            }
+                float t = 0.f;
 
-            for( uint8_t index = 0; index != desc.quality - 1; ++index )
-            {
-                m_renderIndices[indexIterator + 0] = vertexIterator + index * 2 + 0;
-                m_renderIndices[indexIterator + 1] = vertexIterator + index * 2 + 1;
-                m_renderIndices[indexIterator + 2] = vertexIterator + index * 2 + 2;
-                m_renderIndices[indexIterator + 3] = vertexIterator + index * 2 + 2;
-                m_renderIndices[indexIterator + 4] = vertexIterator + index * 2 + 1;
-                m_renderIndices[indexIterator + 5] = vertexIterator + index * 2 + 3;
+                mt::vec2f bp[32];
+                for( uint8_t index = 0; index != edge.quality; ++index )
+                {
+                    Helper::calculateBezierPosition( bp[index], p0, p1, edge.p, t );
 
+                    t += edge.dt;
+                }
+
+                mt::vec2f p0_wm;
+                mt::mul_v2_v2_m4( p0_wm, bp[0], wm );
+
+                mt::vec2f p1_wm;
+                mt::mul_v2_v2_m4( p1_wm, bp[edge.quality - 1], wm );
+
+                mt::vec2f p01_perp;
+                makeLinePerp( p01_perp, p0_wm, p1_wm );
+
+                Color line_color = color * edge.color;
+                uint32_t argb = line_color.getAsARGB();
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p0_wm.x - p01_perp.x * edge.weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0_wm.y - p01_perp.y * edge.weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p1_wm.x - p01_perp.x * edge.weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p1_wm.y - p01_perp.y * edge.weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                m_renderVertex2D[vertexIterator + 2].position.x = p1_wm.x + p01_perp.x * edge.weight;
+                m_renderVertex2D[vertexIterator + 2].position.y = p1_wm.y + p01_perp.y * edge.weight;
+                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                m_renderVertex2D[vertexIterator + 3].position.x = p0_wm.x + p01_perp.x * edge.weight;
+                m_renderVertex2D[vertexIterator + 3].position.y = p0_wm.y + p01_perp.y * edge.weight;
+                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 3].color = argb;
+
+                m_renderIndices[indexIterator + 0] = vertexIterator + 0;
+                m_renderIndices[indexIterator + 1] = vertexIterator + 3;
+                m_renderIndices[indexIterator + 2] = vertexIterator + 1;
+                m_renderIndices[indexIterator + 3] = vertexIterator + 1;
+                m_renderIndices[indexIterator + 4] = vertexIterator + 3;
+                m_renderIndices[indexIterator + 5] = vertexIterator + 2;
+
+                vertexIterator += 4;
                 indexIterator += 6;
             }
-
-            {
-                mt::vec2f fromWM;
-                mt::mul_v2_v2_m4( fromWM, bp[0], wm );
-
-                mt::vec2f toWM;
-                if( desc.profile == true )
-                {                    
-                    mt::mul_v2_v2_m4( toWM, bp[desc.quality - 1], wm );
-                }
-                else
-                {
-                    mt::mul_v2_v2_m4( toWM, bp[1], wm );
-                }
-
-                mt::vec2f perp;
-                makeLinePerp( perp, fromWM, toWM );
-
-                m_renderVertex2D[vertexIterator + 0].position.x = fromWM.x - perp.x * desc.weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = fromWM.y - perp.y * desc.weight;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
-
-                m_renderVertex2D[vertexIterator + 1].position.x = fromWM.x + perp.x * desc.weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = fromWM.y + perp.y * desc.weight;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
-
-                vertexIterator += 2;
-            }
-
-            for( uint8_t index = 1; index != desc.quality - 1; ++index )
-            {
-                mt::vec2f p0;
-                mt::mul_v2_v2_m4( p0, bp[index - 1], wm );
-
-                mt::vec2f p1;
-                mt::mul_v2_v2_m4( p1, bp[index + 0], wm );
-
-                mt::vec2f p2;
-                mt::mul_v2_v2_m4( p2, bp[index + 1], wm );
-
-                mt::vec2f perp;
-                makeBendPerp( perp, p0, p1, p2 );
-
-                m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * desc.weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * desc.weight;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
-
-                m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x * desc.weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y * desc.weight;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
-
-                vertexIterator += 2;
-            }
-
-            {
-                mt::vec2f fromWM;
-                if( desc.profile == true )
-                {
-                    mt::mul_v2_v2_m4( fromWM, bp[0], wm );
-                }
-                else
-                {
-                    mt::mul_v2_v2_m4( fromWM, bp[desc.quality - 2], wm );
-                }
-
-                mt::vec2f toWM;                
-                mt::mul_v2_v2_m4( toWM, bp[desc.quality - 1], wm );
-
-                mt::vec2f perp;
-                makeLinePerp( perp, fromWM, toWM );
-
-                m_renderVertex2D[vertexIterator + 0].position.x = toWM.x - perp.x * desc.weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = toWM.y - perp.y * desc.weight;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
-
-                m_renderVertex2D[vertexIterator + 1].position.x = toWM.x + perp.x * desc.weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = toWM.y + perp.y * desc.weight;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
-
-                vertexIterator += 2;
-            }
         }
+
+        //for( const QuadraticBezierDesc & desc : m_quadraticBeziers )
+        //{
+        //    Color bezier_color = color * desc.color;
+        //    uint32_t argb = bezier_color.getAsARGB();
+
+        //    float dt = 1.f / (float)(desc.quality - 1);
+        //    float t = 0.f;
+
+        //    mt::vec2f bp[32];
+        //    for( uint8_t index = 0; index != desc.quality; ++index )
+        //    {
+        //        Helper::calculateBezierPosition( bp[index], desc.from, desc.to, desc.p, t );
+
+        //        t += dt;
+        //    }
+
+        //    for( uint8_t index = 0; index != desc.quality - 1; ++index )
+        //    {
+        //        m_renderIndices[indexIterator + 0] = vertexIterator + index * 2 + 0;
+        //        m_renderIndices[indexIterator + 1] = vertexIterator + index * 2 + 1;
+        //        m_renderIndices[indexIterator + 2] = vertexIterator + index * 2 + 2;
+        //        m_renderIndices[indexIterator + 3] = vertexIterator + index * 2 + 2;
+        //        m_renderIndices[indexIterator + 4] = vertexIterator + index * 2 + 1;
+        //        m_renderIndices[indexIterator + 5] = vertexIterator + index * 2 + 3;
+
+        //        indexIterator += 6;
+        //    }
+
+        //    {
+        //        mt::vec2f fromWM;
+        //        mt::mul_v2_v2_m4( fromWM, bp[0], wm );
+
+        //        mt::vec2f toWM;
+        //        if( desc.profile == true )
+        //        {
+        //            mt::mul_v2_v2_m4( toWM, bp[desc.quality - 1], wm );
+        //        }
+        //        else
+        //        {
+        //            mt::mul_v2_v2_m4( toWM, bp[1], wm );
+        //        }
+
+        //        mt::vec2f perp;
+        //        makeLinePerp( perp, fromWM, toWM );
+
+        //        m_renderVertex2D[vertexIterator + 0].position.x = fromWM.x - perp.x * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 0].position.y = fromWM.y - perp.y * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+        //        m_renderVertex2D[vertexIterator + 0].color = argb;
+
+        //        m_renderVertex2D[vertexIterator + 1].position.x = fromWM.x + perp.x * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 1].position.y = fromWM.y + perp.y * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+        //        m_renderVertex2D[vertexIterator + 1].color = argb;
+
+        //        vertexIterator += 2;
+        //    }
+
+        //    for( uint8_t index = 1; index != desc.quality - 1; ++index )
+        //    {
+        //        mt::vec2f p0;
+        //        mt::mul_v2_v2_m4( p0, bp[index - 1], wm );
+
+        //        mt::vec2f p1;
+        //        mt::mul_v2_v2_m4( p1, bp[index + 0], wm );
+
+        //        mt::vec2f p2;
+        //        mt::mul_v2_v2_m4( p2, bp[index + 1], wm );
+
+        //        mt::vec2f perp;
+        //        makeBendPerp( perp, p0, p1, p2 );
+
+        //        m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+        //        m_renderVertex2D[vertexIterator + 0].color = argb;
+
+        //        m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+        //        m_renderVertex2D[vertexIterator + 1].color = argb;
+
+        //        vertexIterator += 2;
+        //    }
+
+        //    {
+        //        mt::vec2f fromWM;
+        //        if( desc.profile == true )
+        //        {
+        //            mt::mul_v2_v2_m4( fromWM, bp[0], wm );
+        //        }
+        //        else
+        //        {
+        //            mt::mul_v2_v2_m4( fromWM, bp[desc.quality - 2], wm );
+        //        }
+
+        //        mt::vec2f toWM;
+        //        mt::mul_v2_v2_m4( toWM, bp[desc.quality - 1], wm );
+
+        //        mt::vec2f perp;
+        //        makeLinePerp( perp, fromWM, toWM );
+
+        //        m_renderVertex2D[vertexIterator + 0].position.x = toWM.x - perp.x * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 0].position.y = toWM.y - perp.y * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+        //        m_renderVertex2D[vertexIterator + 0].color = argb;
+
+        //        m_renderVertex2D[vertexIterator + 1].position.x = toWM.x + perp.x * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 1].position.y = toWM.y + perp.y * desc.weight;
+        //        m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+        //        m_renderVertex2D[vertexIterator + 1].color = argb;
+
+        //        vertexIterator += 2;
+        //    }
+        //}
     }
 }

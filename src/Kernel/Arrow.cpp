@@ -128,6 +128,7 @@ namespace Mengine
     {
         INPUT_SERVICE()
             ->removeMousePositionProvider( m_inputMousePositionProviderId );
+        m_inputMousePositionProviderId = 0;
 
         Entity::_deactivate();
     }

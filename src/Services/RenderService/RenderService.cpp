@@ -140,19 +140,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_finalizeService()
     {
-        if( m_windowCreated == false )
-        {
-            return;
-        }
-
         for( RenderObject & ro : m_renderObjects )
         {
             IntrusivePtrBase::intrusive_ptr_release( ro.material );
         }
 
+        for( RenderPass * pass : m_renderPasses )
+        {
+            m_poolRenderPass.destroyT( pass );
+        }
+
+        m_indicesQuad.clear();
+        m_indicesLine.clear();
+
         m_renderObjects.clear();
         m_renderBatches.clear();
+        m_poolRenderPass.clear();
         m_renderPasses.clear();
+
+        m_debugRenderObjects.clear();
         m_debugRenderVertices.clear();
         m_debugRenderIndices.clear();
 
@@ -164,14 +170,13 @@ namespace Mengine
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
         m_currentProgramVariable = nullptr;
+        m_defaultProgramVariable = nullptr;
         m_currentProgram = nullptr;
 
         m_currentRenderViewport = nullptr;
         m_currentRenderCamera = nullptr;
         m_currentRenderTransformation = nullptr;
         m_currentRenderScissor = nullptr;
-
-        m_poolRenderPass.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
 

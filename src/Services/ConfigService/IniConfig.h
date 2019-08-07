@@ -29,6 +29,9 @@ namespace Mengine
         bool load( const InputStreamInterfacePtr & _stream );
 
     public:
+        bool existValue( const Char * _section, const Char * _key ) const override;
+
+    public:
         bool hasValue( const Char * _section, const Char * _key, bool * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, int32_t * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, uint32_t * _value ) const override;

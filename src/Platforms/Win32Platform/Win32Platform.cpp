@@ -522,6 +522,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::stopPlatform()
     {
+        LOGGER_MESSAGE( "stop platform" );
+
         bool developmentMode = HAS_OPTION( "dev" );
 
         if( developmentMode == true )
@@ -658,17 +660,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LRESULT Win32Platform::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
     {
+        //LOGGER_WARNING( "wndProc [%x:%x] %x %x %x\n", m_hWnd, hWnd, uMsg, wParam, lParam );
+
         if( m_hWnd != hWnd )
         {
             LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 
             return result;
         }
-        //print "wndProc"
-        //  if( uMsg != 0x200 && uMsg != 0x84 && uMsg != 0x20 )
-        //  {
-        //printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
-        //  }
 
         switch( uMsg )
         {
@@ -1272,15 +1271,17 @@ namespace Mengine
         DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
         //DWORD exStyle = 0;
 
-        m_hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
+        HWND hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
             , NULL, NULL, m_hInstance, (LPVOID)this );
 
-        if( m_hWnd == NULL )
+        if( hWnd == NULL )
         {
             return false;
         }
+
+        m_hWnd = hWnd;
 
         //RegisterTouchWindow( m_hWnd, 0 );
 

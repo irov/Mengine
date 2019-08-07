@@ -19,6 +19,9 @@ namespace Mengine
         : m_verboseLevel( LM_ERROR )
         , m_verboseFlag( 0 )
         , m_silent( false )
+#ifdef MENGINE_LOGGER_HISTORY
+        , m_historically( true )
+#endif
     {
         for( uint32_t i = 0; i != LM_MAX; ++i )
         {
@@ -135,6 +138,14 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    void LoggerService::_stopService()
+    {        
+#ifdef MENGINE_LOGGER_HISTORY
+        m_historically = false;
+        m_history.clear();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( ELoggerLevel _level )
     {
         m_verboseLevel = _level;
@@ -207,12 +218,15 @@ namespace Mengine
         }
 
 #ifdef MENGINE_LOGGER_HISTORY
-        Record history;
-        history.level = _level;
-        history.flag = _flag;
-        history.message.assign( _message, _size );
+        if( m_historically == true )
+        {
+            Record history;
+            history.level = _level;
+            history.flag = _flag;
+            history.message.assign( _message, _size );
 
-        m_history.emplace_back( history );
+            m_history.emplace_back( history );
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

@@ -23,16 +23,17 @@ namespace Mengine
         ~Vectorizator() override;
 
     public:
-        uint32_t addLine( const mt::vec2f & _from, const mt::vec2f & _to, float _weight, const Color & _color );
-        void removeLine( uint32_t _id );
+        void setLineWeight( float _weight );
+        void setLineColor( const Color & _color );
+        void setCurveQuality( uint8_t _quality );
 
     public:
-        uint32_t addQuadraticBezier( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _p0, bool _profile, uint8_t _quality, float _weight, const Color & _color );
-        void removeQuadraticBezier( uint32_t _id );
+        void moveTo( const mt::vec2f & _point );
+        void lineTo( const mt::vec2f & _point );
+        void quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point );
 
     public:
-        uint32_t addRect( const mt::vec2f & _p, float _width, float _height, float _weight, const Color & _color );
-        void removeRect( uint32_t _id );
+        void drawRect( const mt::vec2f & _point, float _width, float _height );
 
     protected:
         void render( const RenderContext * _context ) const override;
@@ -41,41 +42,39 @@ namespace Mengine
         void updateLocalVertex2D_() const;
 
     protected:
-        uint32_t m_enumerator;
+        float m_lineWeight;
+        Color m_lineColor;
+
+        uint8_t m_curveQuality;
+
+        typedef Vector<mt::vec2f> VectorPoints;
+
+        struct LineEdge
+        {
+            uint32_t controls;
+            mt::vec2f p[3];
+
+            uint8_t quality;
+            float dt;
+
+            float weight;
+            Color color;
+        };
+
+        typedef Vector<LineEdge> VectorLineEdge;
 
         struct LineDesc
         {
-            uint32_t id;
-            mt::vec2f from;
-            mt::vec2f to;
-            float weight;
-
-            Color color;
+            VectorPoints points;
+            VectorLineEdge edges;
         };
 
         typedef Vector<LineDesc> VectorLines;
         VectorLines m_lines;
 
-        struct QuadraticBezierDesc
-        {
-            uint32_t id;
-            mt::vec2f from;
-            mt::vec2f to;
-            mt::vec2f p[1];
-            bool profile;
-            uint8_t quality;
-            float weight;
-
-            Color color;
-        };
-
-        typedef Vector<QuadraticBezierDesc> VectorQuadraticBeziers;
-        VectorQuadraticBeziers m_quadraticBeziers;
-
         struct RectDesc
         {
-            uint32_t id;
-            mt::vec2f p;
+            mt::vec2f point;
             float width;
             float height;
             float weight;

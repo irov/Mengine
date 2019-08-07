@@ -9,10 +9,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     template<class P, class M, class Forwards>
-    class Closure
+    class Delegate
     {
     public:
-        Closure( P * _ptr, M _method, Forwards && _forwards )
+        Delegate( P * _ptr, M _method, Forwards && _forwards )
             : m_ptr( _ptr )
             , m_method( _method )
             , m_forwards( std::forward<Forwards &&>( _forwards ) )
@@ -33,10 +33,10 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     template<class P, class D, class M, class Forwards>
-    class ClosurePtr
+    class DelegatePtr
     {
     public:
-        ClosurePtr( const IntrusivePtr<P, D> & _ptr, M _method, Forwards && _forwards )
+        DelegatePtr( const IntrusivePtr<P, D> & _ptr, M _method, Forwards && _forwards )
             : m_ptr( _ptr )
             , m_method( _method )
             , m_forwards( std::forward<Forwards &&>( _forwards ) )
@@ -61,15 +61,15 @@ namespace Mengine
     namespace Helper
     {
         template<class P, class M, class ... Forwards>
-        Closure<P, M, Tuple<Forwards ...>> closure( P * _ptr, M _method, Forwards ... _args )
+        Delegate<P, M, Tuple<Forwards ...>> delegate( P * _ptr, M _method, Forwards ... _args )
         {
-            return Closure<P, M, Tuple<Forwards ...>>( _ptr, _method, std::make_tuple( std::forward<Forwards &&>( _args ) ... ) );
+            return Delegate<P, M, Tuple<Forwards ...>>( _ptr, _method, std::make_tuple( std::forward<Forwards &&>( _args ) ... ) );
         }
 
         template<class P, class D, class M, class ... Forwards>
-        ClosurePtr<P, D, M, Tuple<Forwards ...>> closure( const IntrusivePtr<P, D> & _ptr, M _method, Forwards ... _args )
+        DelegatePtr<P, D, M, Tuple<Forwards ...>> delegate( const IntrusivePtr<P, D> & _ptr, M _method, Forwards ... _args )
         {
-            return ClosurePtr<P, D, M, Tuple<Forwards ...>>( _ptr, _method, std::make_tuple( std::forward<Forwards &&>( _args ) ... ) );
+            return DelegatePtr<P, D, M, Tuple<Forwards ...>>( _ptr, _method, std::make_tuple( std::forward<Forwards &&>( _args ) ... ) );
         }
     }
 }

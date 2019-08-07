@@ -515,7 +515,7 @@ Core
     Stringalized.h
     Stringalized.cpp
     
-    Closure.h
+    Delegate.h
 )
 
 ADD_FILTER(

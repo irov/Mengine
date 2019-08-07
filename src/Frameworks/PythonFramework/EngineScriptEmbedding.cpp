@@ -25,6 +25,7 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -181,7 +182,7 @@ namespace Mengine
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSceneChangeCallback );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorGridBurnTransparency );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUser );            
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUser );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseLeaveHandlers );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseMoveHandlers );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalMouseHandlerButtons );
@@ -351,7 +352,7 @@ namespace Mengine
             py_timing->initialize( _timing, _args );
 
             PythonScheduleEventPtr py_event;
-            
+
             if( _event.is_none() == false )
             {
                 py_event = m_factoryPythonScheduleEvent->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -831,7 +832,7 @@ namespace Mengine
                 PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>();
                 behavior->setScriptObject( py_scene );
 
-                scene->setBehavior( behavior );                
+                scene->setBehavior( behavior );
             }
 
             scene->onCreate();
@@ -868,7 +869,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC_VOID( arrow, "Error: can't setup arrow '%s'"
                 , _prototype.c_str()
-                );
+            );
 
             PLAYER_SERVICE()
                 ->setArrow( arrow );
@@ -963,7 +964,7 @@ namespace Mengine
             return size;
         }
         //////////////////////////////////////////////////////////////////////////
-        const mt::vec2f& s_getCamera2DPosition()
+        const mt::vec2f & s_getCamera2DPosition()
         {
             const RenderViewportInterfacePtr & rv = PLAYER_SERVICE()
                 ->getRenderViewport();
@@ -1042,14 +1043,14 @@ namespace Mengine
                 ->quit();
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourcePtr s_createResource( const ConstString& _type )
+        ResourcePtr s_createResource( const ConstString & _type )
         {
             ResourcePtr resource = RESOURCE_SERVICE()
                 ->generateResource( _type, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid create resource '%s'"
                 , _type.c_str()
-                );
+            );
 
             return resource;
         }
@@ -1197,7 +1198,7 @@ namespace Mengine
                 ->endScene();
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
+        void s_writeImageToFile( const ConstString & _resource, const FilePath & _fileName )
         {
             LOGGER_WARNING( "write image to file '%s' path '%s'"
                 , _resource.c_str()
@@ -1226,7 +1227,7 @@ namespace Mengine
                 ->setParticleEnable( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
+        ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString & _pakName, const FilePath & _fileName, const mt::vec2f & _maxSize )
         {
             mt::vec2f maxSize;
 
@@ -3174,6 +3175,74 @@ namespace Mengine
             return viewport;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool s_hasGameParam( const ConstString & _paramName )
+        {
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            bool result = config->existValue( "Params", _paramName.c_str() );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_getGameParam( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+        {
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            const Char * param_value;
+            if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+            {
+                return _kernel->ret_none();
+            }
+
+            PyObject * py_param = _kernel->unicode_from_utf8( param_value );
+
+            return py_param;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+        {
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            float param_value;
+            if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+            {
+                return _kernel->ret_none();
+            }
+
+            return pybind::ptr( _kernel, param_value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+        {
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            int32_t param_value;
+            if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+            {
+                return _kernel->ret_none();
+            }
+
+            return pybind::ptr( _kernel, param_value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PyObject * s_getGameParamBool( pybind::kernel_interface * _kernel, const ConstString & _paramName )
+        {
+            const ConfigInterfacePtr & config = CONFIG_SERVICE()
+                ->getDefaultConfig();
+
+            bool param_value;
+            if( config->hasValue( "Params", _paramName.c_str(), &param_value ) == false )
+            {
+                return _kernel->ret_none();
+            }
+
+            return _kernel->ret_bool( param_value );
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool s_openUrlInDefaultBrowser( const WString & _url )
         {
             Char utf8_url[4096];
@@ -3216,7 +3285,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( Resource* _resource ) override
+            void accept( Resource * _resource ) override
             {
                 if( _resource->isCompile() == false )
                 {
@@ -3264,7 +3333,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( Resource* _resource ) override
+            void accept( Resource * _resource ) override
             {
                 m_cb.call( _resource );
             }
@@ -3393,7 +3462,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( Resource* _resource ) override
+            void accept( Resource * _resource ) override
             {
                 PyObject * py_obj = m_scope->create_holder( (void *)_resource );
 
@@ -3625,6 +3694,12 @@ namespace Mengine
         pybind::def_functor( _kernel, "getGameAspect", nodeScriptMethod, &EngineScriptMethod::s_getGameAspect );
         pybind::def_functor( _kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
 
+        pybind::def_functor( _kernel, "hasGameParam", nodeScriptMethod, &EngineScriptMethod::s_hasGameParam );
+        pybind::def_functor_kernel( _kernel, "getGameParam", nodeScriptMethod, &EngineScriptMethod::s_getGameParam );
+        pybind::def_functor_kernel( _kernel, "getGameParamFloat", nodeScriptMethod, &EngineScriptMethod::s_getGameParamFloat );
+        pybind::def_functor_kernel( _kernel, "getGameParamInt", nodeScriptMethod, &EngineScriptMethod::s_getGameParamInt );
+        pybind::def_functor_kernel( _kernel, "getGameParamBool", nodeScriptMethod, &EngineScriptMethod::s_getGameParamBool );
+        
         pybind::def_functor( _kernel, "openUrlInDefaultBrowser", nodeScriptMethod, &EngineScriptMethod::s_openUrlInDefaultBrowser );
 
         pybind::def_functor( _kernel, "getDefaultResourceFontName", nodeScriptMethod, &EngineScriptMethod::s_getDefaultResourceFontName );

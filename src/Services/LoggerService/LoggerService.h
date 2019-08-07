@@ -21,6 +21,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         void setVerboseLevel( ELoggerLevel _level ) override;
@@ -67,6 +68,8 @@ namespace Mengine
             uint32_t flag;
             String message;
         };
+
+        bool m_historically;
 
         typedef Vector<Record> VectorHistory;
         VectorHistory m_history;

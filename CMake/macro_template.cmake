@@ -185,9 +185,18 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
         ADD_MENGINE_LIBRARY()
     ENDIF()
     
-    set_target_properties (${MY_LIB_NAME} PROPERTIES
-        FOLDER Plugins
-    )
+    set(FILTER_FOLDER ${ARGN})
+    list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
+    
+    if(${EXIST_FILTER_FOLDER} GREATER 0)
+        set_target_properties (${MY_LIB_NAME} PROPERTIES
+            FOLDER ${FILTER_FOLDER}
+        )
+    else()
+        set_target_properties (${MY_LIB_NAME} PROPERTIES
+            FOLDER Plugins
+        )
+    endif()
 ENDMACRO()
 
 if(APPLE)

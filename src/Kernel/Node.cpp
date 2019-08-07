@@ -580,11 +580,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
-        MENGINE_ASSERTION_RETURN_VOID( _node != nullptr, "node '%s' invalid add child NULL node"
+        MENGINE_ASSERTION( _node != nullptr, "node '%s' invalid add child NULL node"
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION_RETURN_VOID( _node != this, "node '%s' invalid self child node"
+        MENGINE_ASSERTION( _node != this, "node '%s' invalid self child node"
             , this->getName().c_str()
         );
 
@@ -597,7 +597,7 @@ namespace Mengine
             , this->getName().c_str()
         );
 
-        MENGINE_ASSERTION_RETURN_VOID( _node != this, "node '%s' invalid self child node"
+        MENGINE_ASSERTION( _node != this, "node '%s' invalid self child node"
             , this->getName().c_str()
         );
 

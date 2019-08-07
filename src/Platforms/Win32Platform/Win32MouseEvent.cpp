@@ -22,6 +22,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32MouseEvent::verify()
     {
+        if( m_hWnd == NULL )
+        {
+            return;
+        }
+
         POINT pt;
         ::GetCursorPos( &pt );
 
@@ -39,6 +44,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32MouseEvent::update()
     {
+        if( m_hWnd == NULL )
+        {
+            return;
+        }
+
         if( m_uTimer != 0 )
         {
             return;
@@ -54,10 +64,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32MouseEvent::stop()
     {
+        if( m_hWnd == NULL )
+        {
+            return;
+        }
+
         if( m_uTimer != 0 )
         {
             ::KillTimer( m_hWnd, m_uTimer );
             m_uTimer = 0;
         }
+
+        m_hWnd = NULL;
     }
 }

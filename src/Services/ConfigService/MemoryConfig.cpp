@@ -58,12 +58,12 @@ namespace Mengine
         }        
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool s_hasValueT( const VectorRecords & _records, const Tags & _platform, const Char * _section, const Char * _key, T * _value )
+        static bool s_hasValueT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T * _value )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );
 
-            const VectorConstString & tags = _platform.getValues();
+            const VectorConstString & tags = _tags.getValues();
 
             for( const ConstString & tag : tags )
             {
@@ -103,11 +103,11 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static T s_getValueT( const VectorRecords & _records, const Tags & _platform, const Char * _section, const Char * _key, T _default )
+        static T s_getValueT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T _default )
         {
             T value;
 
-            if( s_hasValueT( _records, _platform, _section, _key, &value ) == false )
+            if( s_hasValueT( _records, _tags, _section, _key, &value ) == false )
             {
                 return _default;
             }
@@ -116,12 +116,12 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static void s_calcValuesT( const VectorRecords & _records, const Tags & _platform, const Char * _section, const Char * _key, Vector<T> & _values )
+        static void s_calcValuesT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, Vector<T> & _values )
         {
             ArrayString<128> platform_section;
             platform_section.append( _section );
 
-            const VectorConstString & tags = _platform.getValues();
+            const VectorConstString & tags = _tags.getValues();
 
             VectorRecordRefs record_refs;
 
@@ -169,7 +169,37 @@ namespace Mengine
     const Tags & MemoryConfig::getPlatformTags() const
     {
         return m_platformTags;
-    }    
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MemoryConfig::existValue( const Char * _section, const Char * _key ) const
+    {
+        ArrayString<128> platform_section;
+        platform_section.append( _section );
+
+        const VectorConstString & tags = m_platformTags.getValues();
+
+        for( const ConstString & tag : tags )
+        {
+            platform_section.append( '-' );
+            platform_section.append( tag );
+
+            const RecordDesc * tag_record;
+            if( Detail::s_getRecord( m_records, platform_section.c_str(), _key, &tag_record ) == false )
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        const RecordDesc * record;
+        if( Detail::s_getRecord( m_records, _section, _key, &record ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool MemoryConfig::hasValue( const Char * _section, const Char * _key, bool * _value ) const
     {

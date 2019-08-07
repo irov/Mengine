@@ -49,6 +49,9 @@ namespace Mengine
             ->removeUpdatater( m_updataterId );
 
         m_updataterId = INVALID_UPDATABLE_ID;
+
+        m_schedules.clear();
+        m_schedulesAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::setName( const ConstString & _name )
@@ -189,12 +192,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::removeAll()
     {
-        for( ScheduleEventDesc & event : m_schedules )
+        ListSchedules schedules = std::move( m_schedules );
+
+        for( ScheduleEventDesc & event : schedules )
         {
             this->removeSchedule_( event );
         }
 
-        ListSchedules schedulesAdd = m_schedulesAdd;
+        ListSchedules schedulesAdd = std::move( m_schedulesAdd );
 
         for( ScheduleEventDesc & event : schedulesAdd )
         {

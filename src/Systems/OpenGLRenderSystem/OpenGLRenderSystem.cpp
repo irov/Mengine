@@ -10,6 +10,8 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "Kernel/Logger.h"
@@ -124,6 +126,7 @@ namespace Mengine
         m_factoryRenderVertexBuffer = nullptr;
         m_factoryRenderIndexBuffer = nullptr;
         m_factoryRenderImage = nullptr;
+        m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderProgram = nullptr;
@@ -133,6 +136,7 @@ namespace Mengine
         m_cacheRenderVertexShaders.clear();
         m_cacheRenderFragmentShaders.clear();
         m_cacheRenderPrograms.clear();
+        m_cacheRenderProgramVariables.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderPlatform OpenGLRenderSystem::getRenderPlatformType() const
@@ -332,6 +336,10 @@ namespace Mengine
     {
         OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid create render vertex buffer (doc: %s)"
+            , _doc
+        );
+
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
             return nullptr;
@@ -350,6 +358,10 @@ namespace Mengine
     RenderIndexBufferInterfacePtr OpenGLRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc )
     {
         OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid create render index buffer (doc: %s)"
+            , _doc
+        );
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -370,14 +382,9 @@ namespace Mengine
     {
         OpenGLRenderVertexAttributePtr vertexAttribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-        if( vertexAttribute == nullptr )
-        {
-            LOGGER_ERROR( "invalid create vertex attribute '%s'"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, nullptr, "invalid create vertex attribute '%s'"
+            , _name.c_str()
+        );
 
         if( vertexAttribute->initialize( _name, _elementSize ) == false )
         {
@@ -397,14 +404,9 @@ namespace Mengine
 
         OpenGLRenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
-        if( shader == nullptr )
-        {
-            LOGGER_ERROR( "invalid create shader '%s'"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
+            , _name.c_str()
+        );
 
         if( shader->initialize( _name, _memory ) == false )
         {
@@ -443,14 +445,9 @@ namespace Mengine
 
         OpenGLRenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-        if( shader == nullptr )
-        {
-            LOGGER_ERROR( "invalid create shader '%s'"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
+            , _name.c_str()
+        );
 
         if( shader->initialize( _name, _memory ) == false )
         {
@@ -487,14 +484,9 @@ namespace Mengine
     {
         OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
-        if( program == nullptr )
-        {
-            LOGGER_ERROR( "invalid create program '%s'"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr, "invalid create program '%s'"
+            , _name.c_str()
+        );
 
         if( program->initialize( _name, _vertex, _fragment, _vertexAttribute, _samplerCount ) == false )
         {
@@ -535,24 +527,19 @@ namespace Mengine
     void OpenGLRenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
     {
         MENGINE_UNUSED( _program );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc )
     {
         OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        if( variable == nullptr )
-        {
-            LOGGER_ERROR( "invalid create program variable"
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr, "invalid create program variable" );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
-            LOGGER_ERROR( "invalid initialize program variable"
-            );
+            LOGGER_ERROR( "invalid initialize program variable" );
 
             return nullptr;
         }
@@ -843,7 +830,6 @@ namespace Mengine
     RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _depth );
-        MENGINE_UNUSED( _doc );
 
         uint32_t hwChannels = 0;
         EPixelFormat hwFormat = PF_UNKNOWN;
@@ -851,46 +837,25 @@ namespace Mengine
 
         GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
 
-        if( textureInternalFormat == 0 )
-        {
-            LOGGER_ERROR( "invalid get GL Texture Internal format for PF %d"
-                , hwFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( textureInternalFormat != 0, nullptr, "invalid get GL Texture Internal format for PF %d"
+            , hwFormat
+        );
 
         GLint textureColorFormat = s_toGLColorFormat( hwFormat );
 
-        if( textureColorFormat == 0 )
-        {
-            LOGGER_ERROR( "invalid get GL Texture Color format for PF %d"
-                , hwFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( textureColorFormat != 0, nullptr, "invalid get GL Texture Color format for PF %d"
+            , hwFormat
+        );
 
         GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
-        if( textureColorDataType == 0 )
-        {
-            LOGGER_ERROR( "invalid get GL Color Data Type for PF %d"
-                , hwFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( textureColorDataType != 0, nullptr, "invalid get GL Color Data Type for PF %d"
+            , hwFormat
+        );
 
         OpenGLRenderImagePtr image = m_factoryRenderImage->createObject( _doc );
 
-        if( image == nullptr )
-        {
-            LOGGER_ERROR( "invalid create"
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "invalid create" );
 
         if( image->initialize( ERIM_NORMAL
             , _mipmaps
@@ -985,15 +950,6 @@ namespace Mengine
         MENGINE_UNUSED( _fullscreen );
 
         m_resolution = _resolution;
-
-        //m_windowContext->setFullscreenMode( _resolution.getWidth(), _resolution.getHeight(), _fullscreen );
-        //glViewport( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
-        //glViewport( 0, 0, _resolution.getHeight(), _resolution.getWidth() );
-        //glScissor( 0, 0, _resolution.getWidth(), _resolution.getHeight() );
-        //m_winWidth = _resolution.getWidth();
-        //m_winHeight = _resolution.getHeight();
-        //m_winContextWidth = _resolution.getWidth();
-        //m_winContextHeight = _resolution.getHeight();
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::supportTextureFormat( EPixelFormat _format ) const
@@ -1003,7 +959,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::supportTextureNonPow2() const
     {
-        //return true;
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1075,7 +1030,8 @@ namespace Mengine
     void OpenGLRenderSystem::setVSync( bool _vSync )
     {
         MENGINE_UNUSED( _vSync );
-        //m_windowContext->setVSync( _vSync );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
@@ -1083,6 +1039,8 @@ namespace Mengine
         MENGINE_UNUSED( _r );
         MENGINE_UNUSED( _g );
         MENGINE_UNUSED( _b );
+
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
@@ -1096,36 +1054,21 @@ namespace Mengine
 
         GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
 
-        if( textureInternalFormat == 0 )
-        {
-            LOGGER_ERROR( "invalid get GL Texture Internal format for PF %d"
-                , hwFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( textureInternalFormat != 0, nullptr, "invalid get GL Texture Internal format for PF %d"
+            , hwFormat
+        );
 
         GLint textureColorFormat = s_toGLColorFormat( hwFormat );
 
-        if( textureColorFormat == 0 )
-        {
-            LOGGER_ERROR( "invalid get GL Texture Color format for PF %d"
-                , hwFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( textureColorFormat != 0, nullptr, "invalid get GL Texture Color format for PF %d"
+            , hwFormat
+        );
 
         GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
-        if( textureColorDataType == 0 )
-        {
-            LOGGER_ERROR( "invalid get GL Color Data Type for PF %d"
-                , hwFormat
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( textureColorDataType != 0, nullptr, "invalid get GL Color Data Type for PF %d"
+            , hwFormat
+        );
 
         OpenGLRenderImagePtr texture = m_factoryRenderImage->createObject( _doc );
 
@@ -1156,6 +1099,8 @@ namespace Mengine
         MENGINE_UNUSED( _format );
         MENGINE_UNUSED( _doc );
 
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1167,6 +1112,8 @@ namespace Mengine
         MENGINE_UNUSED( _format );
         MENGINE_UNUSED( _doc );
 
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1174,6 +1121,8 @@ namespace Mengine
     {
         MENGINE_UNUSED( _renderTarget );
         MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return nullptr;
     }

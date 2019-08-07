@@ -54,8 +54,10 @@ namespace Mengine
         
         m_defaultConfig = nullptr;
 
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryConfig );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIniConfig );
 
+        m_factoryMemoryConfig = nullptr;
         m_factoryIniConfig = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

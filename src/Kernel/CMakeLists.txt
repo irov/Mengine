@@ -515,6 +515,7 @@ Core
     Stringalized.h
     Stringalized.cpp
     
+    Event.h
     Delegate.h
 )
 

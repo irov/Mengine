@@ -11,7 +11,7 @@ android {
         versionName "1.0"
 
         ndk {
-            abiFilters 'armeabi-v7a'
+            abiFilters "arm64-v8a", "armeabi-v7a"
         }
     }
     buildTypes {
@@ -23,7 +23,6 @@ android {
                     cppFlags "-std=c++17 -frtti -fexceptions -g -D_DEBUG"
                     arguments "-DANDROID_PLATFORM=android-18",
                             "-DANDROID_ARM_NEON=TRUE",
-                            "-DANDROID_ABI=armeabi-v7a",
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DCMAKE_BUILD_TYPE:STRING=Debug",
@@ -52,7 +51,6 @@ android {
                     cppFlags "-std=c++17 -frtti -fexceptions -O3 -DNDEBUG"
                     arguments "-DANDROID_PLATFORM=android-18",
                             "-DANDROID_ARM_NEON=TRUE",
-                            "-DANDROID_ABI=armeabi-v7a",
                             "-DANDROID_STL=c++_shared",
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DCMAKE_BUILD_TYPE:STRING=Release",

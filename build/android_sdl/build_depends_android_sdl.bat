@@ -24,7 +24,6 @@ set BUILD_TEMP_DIR="%CD%\..\..\solutions\dependencies_android_sdl"
 %CMAKE_EXE% -G "Android Gradle - Ninja" ^
     -DANDROID_PLATFORM=android-18 ^
     -DANDROID_ARM_NEON=TRUE ^
-    -DANDROID_ABI=armeabi-v7a ^
     -DANDROID_STL=c++_shared ^
     -DANDROID_TOOLCHAIN=clang ^
     -DCMAKE_BUILD_TYPE=%CONFIGURATION% ^

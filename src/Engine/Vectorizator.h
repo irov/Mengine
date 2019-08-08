@@ -31,6 +31,7 @@ namespace Mengine
         void moveTo( const mt::vec2f & _point );
         void lineTo( const mt::vec2f & _point );
         void quadraticCurveTo( const mt::vec2f & _p0, const mt::vec2f & _point );
+        void bezierCurveTo( const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _point );
 
     public:
         void drawRect( const mt::vec2f & _point, float _width, float _height );

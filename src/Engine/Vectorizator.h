@@ -26,6 +26,7 @@ namespace Mengine
         void setLineWeight( float _weight );
         void setLineColor( const Color & _color );
         void setCurveQuality( uint8_t _quality );
+        void setEllipseQuality( uint8_t _quality );
 
     public:
         void moveTo( const mt::vec2f & _point );
@@ -38,8 +39,15 @@ namespace Mengine
         void drawCircle( const mt::vec2f & _point, float _radius );
         void drawEllipse( const mt::vec2f & _point, float _width, float _height );
 
+    public:
+        void clear();
+
     protected:
         void render( const RenderContext * _context ) const override;
+
+    protected:
+        void _invalidateWorldMatrix() override;
+        void _invalidateColor() override;
 
     protected:
         void updateLocalVertex2D_() const;
@@ -49,6 +57,7 @@ namespace Mengine
         Color m_lineColor;
 
         uint8_t m_curveQuality;
+        uint8_t m_ellipseQuality;
 
         typedef Vector<mt::vec2f> VectorPoints;
 
@@ -93,6 +102,8 @@ namespace Mengine
             mt::vec2f point;
             float width;
             float height;
+
+            uint8_t quality;
 
             float weight;
             Color color;

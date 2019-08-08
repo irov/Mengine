@@ -479,6 +479,7 @@ Core
     VectorAuxScope.h
     
     BezierHelper.h
+    ParabolicHelper.h
     
     Range.h
     

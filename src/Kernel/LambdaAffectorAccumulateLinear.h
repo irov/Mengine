@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/LambdaAffectorInterpolate.h"
+#include "Kernel/ValueInterpolator.h"
 
 namespace Mengine
 {

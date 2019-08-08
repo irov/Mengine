@@ -35,6 +35,8 @@ namespace Mengine
 
     public:
         void drawRect( const mt::vec2f & _point, float _width, float _height );
+        void drawCircle( const mt::vec2f & _point, float _radius );
+        void drawEllipse( const mt::vec2f & _point, float _width, float _height );
 
     protected:
         void render( const RenderContext * _context ) const override;
@@ -78,13 +80,26 @@ namespace Mengine
             mt::vec2f point;
             float width;
             float height;
-            float weight;
 
+            float weight;
             Color color;
         };
 
         typedef Vector<RectDesc> VectorRects;
         VectorRects m_rects;
+
+        struct EllipseDesc
+        {
+            mt::vec2f point;
+            float width;
+            float height;
+
+            float weight;
+            Color color;
+        };
+
+        typedef Vector<EllipseDesc> VectorEllipses;
+        VectorEllipses m_ellipses;
 
         mutable VectorRenderVertex2D m_renderVertex2D;
         mutable VectorRenderIndex m_renderIndices;

@@ -119,6 +119,25 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::drawCircle( const mt::vec2f & _point, float _radius )
+    {
+        this->drawEllipse( _point, _radius, _radius );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::drawEllipse( const mt::vec2f & _point, float _width, float _height )
+    {
+        EllipseDesc desc;
+        desc.point = _point;
+        desc.width = _width;
+        desc.height = _height;
+        desc.weight = m_lineWeight;
+        desc.color = m_lineColor;
+
+        m_ellipses.emplace_back( desc );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Vectorizator::render( const RenderContext * _context ) const
     {
         if( m_invalidateLocalVertex2D == true )
@@ -187,6 +206,11 @@ namespace Mengine
 
         vertexSize += rects_count * 8;
         indexSize += rects_count * 24;
+
+        VectorEllipses::size_type ellipses_count = m_ellipses.size();
+
+        vertexSize += ellipses_count * 64;
+        indexSize += ellipses_count * 384;
 
         m_renderVertex2D.resize( vertexSize );
         m_renderIndices.resize( indexSize );
@@ -479,6 +503,54 @@ namespace Mengine
             m_renderVertex2D[vertexIterator + 1].color = argb;
 
             vertexIterator += 2;
+        }
+
+        for( const EllipseDesc & ellipse : m_ellipses )
+        {
+            Color line_color = color * ellipse.color;
+            uint32_t argb = line_color.getAsARGB();
+
+            for( uint16_t index = 0; index != 32; ++index )
+            {
+                m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % 64;
+                m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % 64;
+                m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % 64;
+                m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % 64;
+                m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % 64;
+                m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % 64;
+
+                indexIterator += 6;
+            }
+
+            const float dt = mt::constant::two_pi / 32.f;
+
+            float t = 0.f;
+
+            for( uint32_t index = 0; index != 32; ++index )
+            {
+                float ct = MT_cosf( t );
+                float st = MT_sinf( t );
+
+                float x0 = (ellipse.width + ellipse.weight * 0.5f) * ct;
+                float y0 = (ellipse.height + ellipse.weight * 0.5f) * st;
+
+                float x1 = (ellipse.width - ellipse.weight * 0.5f) * ct;
+                float y1 = (ellipse.height - ellipse.weight * 0.5f) * st;
+
+                m_renderVertex2D[vertexIterator + 0].position.x = ellipse.point.x + x0;
+                m_renderVertex2D[vertexIterator + 0].position.y = ellipse.point.y + y0;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = ellipse.point.x + x1;
+                m_renderVertex2D[vertexIterator + 1].position.y = ellipse.point.y + y1;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
+
+                t += dt;
+            }
         }
     }
 }

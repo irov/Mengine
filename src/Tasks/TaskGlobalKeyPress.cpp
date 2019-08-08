@@ -21,11 +21,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskGlobalKeyPress::_onRun()
     {
-        auto lambda = [this]( const InputKeyEvent & _event ) -> bool
+        auto lambda = [this]( const InputKeyEvent & _event )
         {
-            if( this->m_filter != nullptr )
+            if( m_filter != nullptr )
             {
-                if( this->m_filter( _event ) == true )
+                if( m_filter( _event ) == true )
                 {
                     this->complete();
                 }

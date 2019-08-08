@@ -16,6 +16,8 @@ Tasks
     TaskGlobalMouseWheel.h
     TaskGlobalMouseWheel.h
     TaskGlobalMouseWheel.cpp
+	TaskGlobalKeyPress.h
+	TaskGlobalKeyPress.cpp
     TaskTransformationRotateY.cpp
     TaskTransformationRotateY.h
     TaskTransformationRotateYTime.cpp

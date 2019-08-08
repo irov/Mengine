@@ -328,7 +328,7 @@ endif()
 #dependencies curl
 if(MENGINE_DEPENDENCE_CURL)
     message("================curl================")
-    if(NOT MENGINE_TOOLCHAIN_GRADLE)
+    if(TRUE OR NOT MENGINE_TOOLCHAIN_GRADLE)
     	set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
         if(MENGINE_TOOLCHAIN_MSVC)
             set(CURL_STATIC_CRT ON CACHE BOOL "Set to ON to build libcurl with static CRT on Windows (/MT)." FORCE)

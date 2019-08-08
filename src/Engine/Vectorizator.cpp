@@ -204,15 +204,13 @@ namespace Mengine
     {
         m_invalidateLocalVertex2D = false;
 
-        const mt::mat4f & wm = this->getWorldMatrix();
-
         Color color;
         this->calcTotalColor( color );
 
         uint32_t vertexSize = 0;
         uint32_t indexSize = 0;
 
-        uint16_t pointSize = 0;
+        uint16_t point_count = 0;
 
         for( const LineDesc & line : m_lines )
         {
@@ -223,14 +221,14 @@ namespace Mengine
 
             for( const LineEdge & edge : line.edges )
             {
-                pointSize += edge.quality - 1;
+                point_count += edge.quality - 1;
             }
 
-            pointSize += 1;
+            point_count += 1;
         }
 
-        vertexSize += pointSize * 2;
-        indexSize += (pointSize - 1) * 6;
+        vertexSize += point_count * 2;
+        indexSize += (point_count - 1) * 6;
 
         VectorRects::size_type rects_count = m_rects.size();
 
@@ -251,6 +249,11 @@ namespace Mengine
 
         for( const LineDesc & line : m_lines )
         {
+            if( line.edges.empty() == true )
+            {
+                continue;
+            }
+
             struct LinePoints
             {
                 mt::vec2f pos;
@@ -261,7 +264,6 @@ namespace Mengine
             typedef Vector<LinePoints> VectorLinePoints;
 
             VectorLinePoints points;
-            points.reserve( pointSize );
 
             uint32_t pointIterator = 0;
 
@@ -277,11 +279,8 @@ namespace Mengine
                 {
                 case 0:
                     {
-                        mt::vec2f p0_wm;
-                        mt::mul_v2_v2_m4( p0_wm, p0, wm );
-
                         LinePoints lp0;
-                        lp0.pos = p0_wm;
+                        lp0.pos = p0;
                         lp0.weight = edge.weight;
                         lp0.argb = argb;
 
@@ -298,11 +297,8 @@ namespace Mengine
 
                             t += edge.dt;
 
-                            mt::vec2f bp_wm;
-                            mt::mul_v2_v2_m4( bp_wm, bp, wm );
-
                             LinePoints p;
-                            p.pos = bp_wm;
+                            p.pos = bp;
                             p.weight = edge.weight;
                             p.argb = argb;
 
@@ -320,11 +316,8 @@ namespace Mengine
 
                             t += edge.dt;
 
-                            mt::vec2f bp_wm;
-                            mt::mul_v2_v2_m4( bp_wm, bp, wm );
-
                             LinePoints p;
-                            p.pos = bp_wm;
+                            p.pos = bp;
                             p.weight = edge.weight;
                             p.argb = argb;
 
@@ -337,11 +330,8 @@ namespace Mengine
             {
                 const mt::vec2f & p1 = line.points[pointIterator];
 
-                mt::vec2f p1_wm;
-                mt::mul_v2_v2_m4( p1_wm, p1, wm );
-
                 LinePoints lp1;
-                lp1.pos = p1_wm;
+                lp1.pos = p1;
                 lp1.weight = line.edges.back().weight;
 
                 Color line_color = color * line.edges.back().color;
@@ -351,6 +341,8 @@ namespace Mengine
 
                 points.emplace_back( lp1 );
             }
+
+            VectorLinePoints::size_type pointSize = points.size();
 
             for( uint16_t index = 0; index != pointSize - 1; ++index )
             {
@@ -584,6 +576,16 @@ namespace Mengine
 
                 t += dt;
             }
+        }
+
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        for( RenderVertex2D & vertex : m_renderVertex2D )
+        {
+            mt::vec3f pwm;
+            mt::mul_v3_v3_m4( pwm, vertex.position, wm );
+
+            vertex.position = pwm;
         }
     }
 }

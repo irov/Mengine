@@ -6,6 +6,8 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Document.h"
 
+#include "math/line2.h"
+
 #include <algorithm>
 
 namespace Mengine
@@ -15,7 +17,7 @@ namespace Mengine
         : m_invalidateLocalVertex2D( false )
         , m_lineWeight( 0.f )
         , m_lineColor( 1.f, 1.f, 1.f, 1.f )
-        , m_curveQuality( 10 )
+        , m_curveQuality( 20 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -116,7 +118,7 @@ namespace Mengine
         this->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to )
+    static void makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to, float _weight )
     {
         mt::vec2f dir;
         mt::sub_v2_v2( dir, _to, _from );
@@ -125,20 +127,8 @@ namespace Mengine
         mt::norm_v2_v2( dir_norm, dir );
 
         mt::perp_v2( _perp, dir_norm );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void makeBendPerp( mt::vec2f & _perp, const mt::vec2f & _p0, const mt::vec2f & _p1, const mt::vec2f & _p2 )
-    {
-        mt::vec2f dir0;
-        mt::sub_v2_v2( dir0, _p1, _p0 );
 
-        mt::vec2f dir1;
-        mt::sub_v2_v2( dir1, _p2, _p1 );
-
-        mt::vec2f dir_norm;
-        mt::norm_v2_v2( dir_norm, dir0 + dir1 );
-
-        mt::perp_v2( _perp, dir_norm );
+        _perp *= _weight;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::updateLocalVertex2D_() const
@@ -277,15 +267,15 @@ namespace Mengine
                 const mt::vec2f & p1 = points[1].pos;
 
                 mt::vec2f perp;
-                makeLinePerp( perp, p0, p1 );
+                makeLinePerp( perp, p0, p1, weight * 0.5f );
 
-                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x * weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y * weight;
+                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y;
                 m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 0].color = argb;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x * weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y * weight;
+                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x;
+                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y;
                 m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 1].color = argb;
 
@@ -301,16 +291,43 @@ namespace Mengine
                 const mt::vec2f & p1 = points[index + 0].pos;
                 const mt::vec2f & p2 = points[index + 1].pos;
 
-                mt::vec2f perp;
-                makeBendPerp( perp, p0, p1, p2 );
+                mt::vec2f perp01;
+                makeLinePerp( perp01, p0, p1, weight * 0.5f );
 
-                m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * weight;
+                mt::vec2f perp12;
+                makeLinePerp( perp12, p1, p2, weight * 0.5f );
+
+                mt::line2f line01l;
+                mt::line_from_two_point_v2( line01l, p0 - perp01, p1 - perp01 );
+
+                mt::line2f line12l;
+                mt::line_from_two_point_v2( line12l, p1 - perp12, p2 - perp12 );
+
+                mt::vec2f pl;
+                if( mt::line_intersect_v2( line01l, line12l, pl ) == false )
+                {
+                    pl = p1 - perp01;
+                }
+
+                mt::line2f line01r;
+                mt::line_from_two_point_v2( line01r, p0 + perp01, p1 + perp01 );
+
+                mt::line2f line12r;
+                mt::line_from_two_point_v2( line12r, p1 + perp12, p2 + perp12 );
+
+                mt::vec2f pr;
+                if( mt::line_intersect_v2( line01r, line12r, pr ) == false )
+                {
+                    pr = p1 + perp01;
+                }
+
+                m_renderVertex2D[vertexIterator + 0].position.x = pl.x;
+                m_renderVertex2D[vertexIterator + 0].position.y = pl.y;
                 m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 0].color = argb;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x * weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y * weight;
+                m_renderVertex2D[vertexIterator + 1].position.x = pr.x;
+                m_renderVertex2D[vertexIterator + 1].position.y = pr.y;
                 m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 1].color = argb;
 
@@ -325,15 +342,15 @@ namespace Mengine
                 const mt::vec2f & p1 = points[pointSize - 1].pos;
 
                 mt::vec2f perp;
-                makeLinePerp( perp, p0, p1 );
+                makeLinePerp( perp, p0, p1, weight * 0.5f );
 
-                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x * weight;
-                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y * weight;
+                m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x;
+                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y;
                 m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 0].color = argb;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x * weight;
-                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y * weight;
+                m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x;
+                m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y;
                 m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
                 m_renderVertex2D[vertexIterator + 1].color = argb;
 

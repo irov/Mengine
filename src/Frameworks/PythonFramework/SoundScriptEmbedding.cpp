@@ -161,7 +161,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
         {
-            MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSound *, nullptr, "createSoundSource resource '%s' type does not match 'ResourceSound'"
+            MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSound *, nullptr, "resource '%s' type does not match 'ResourceSound'"
                 , _resourceName.c_str()
             );
 

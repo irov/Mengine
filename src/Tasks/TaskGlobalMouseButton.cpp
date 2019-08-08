@@ -21,9 +21,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskGlobalMouseButton::_onRun()
     {
-        auto lambda = [this]( const InputMouseButtonEvent & _event ) -> bool
+        auto lambda = [this]( const InputMouseButtonEvent & _event )
         {
-            if( this->m_filter != nullptr )
+            if( m_filter != nullptr )
             {
                 if( m_filter( _event ) == true )
                 {

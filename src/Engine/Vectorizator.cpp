@@ -18,6 +18,7 @@ namespace Mengine
         , m_lineWeight( 0.f )
         , m_lineColor( 1.f, 1.f, 1.f, 1.f )
         , m_curveQuality( 20 )
+        , m_ellipseQuality( 32 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,6 +39,11 @@ namespace Mengine
     void Vectorizator::setCurveQuality( uint8_t _quality )
     {
         m_curveQuality = _quality;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::setEllipseQuality( uint8_t _quality )
+    {
+        m_ellipseQuality = _quality;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::moveTo( const mt::vec2f & _point )
@@ -130,10 +136,20 @@ namespace Mengine
         desc.point = _point;
         desc.width = _width;
         desc.height = _height;
+        desc.quality = m_ellipseQuality;
         desc.weight = m_lineWeight;
         desc.color = m_lineColor;
 
         m_ellipses.emplace_back( desc );
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::clear()
+    {
+        m_lines.clear();
+        m_rects.clear();
+        m_ellipses.clear();
 
         m_invalidateLocalVertex2D = true;
     }
@@ -155,6 +171,20 @@ namespace Mengine
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
         
         this->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
+
+        m_invalidateLocalVertex2D = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::_invalidateColor()
+    {
+        BaseRender::_invalidateColor();
+
+        m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     static void makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to, float _weight )
@@ -207,10 +237,11 @@ namespace Mengine
         vertexSize += rects_count * 8;
         indexSize += rects_count * 24;
 
-        VectorEllipses::size_type ellipses_count = m_ellipses.size();
-
-        vertexSize += ellipses_count * 64;
-        indexSize += ellipses_count * 384;
+        for( const EllipseDesc & desc : m_ellipses )
+        {
+            vertexSize += desc.quality * 2;
+            indexSize += desc.quality * 6;
+        }
 
         m_renderVertex2D.resize( vertexSize );
         m_renderIndices.resize( indexSize );
@@ -510,23 +541,25 @@ namespace Mengine
             Color line_color = color * ellipse.color;
             uint32_t argb = line_color.getAsARGB();
 
-            for( uint16_t index = 0; index != 32; ++index )
+            uint32_t ellipse_quality2 = ellipse.quality * 2;
+
+            for( uint16_t index = 0; index != ellipse.quality; ++index )
             {
-                m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % 64;
-                m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % 64;
-                m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % 64;
-                m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % 64;
-                m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % 64;
-                m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % 64;
+                m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % ellipse_quality2;
+                m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % ellipse_quality2;
+                m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % ellipse_quality2;
+                m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % ellipse_quality2;
+                m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % ellipse_quality2;
+                m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % ellipse_quality2;
 
                 indexIterator += 6;
             }
 
-            const float dt = mt::constant::two_pi / 32.f;
+            const float dt = mt::constant::two_pi / float( ellipse.quality );
 
             float t = 0.f;
 
-            for( uint32_t index = 0; index != 32; ++index )
+            for( uint32_t index = 0; index != ellipse.quality; ++index )
             {
                 float ct = MT_cosf( t );
                 float st = MT_sinf( t );

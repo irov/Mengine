@@ -992,59 +992,68 @@ Include/unicodeobject.h). */
 /* Define if i>>j for signed int i does not extend the sign bit when i < 0 */
 /* #undef SIGNED_RIGHT_SHIFT_ZERO_FILLS */
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 /* The size of `double', as computed by sizeof. */
-#define SIZEOF_DOUBLE 8
+#define SIZEOF_DOUBLE __SIZEOF_DOUBLE__
 
 /* The size of `float', as computed by sizeof. */
-#define SIZEOF_FLOAT 4
+#define SIZEOF_FLOAT __SIZEOF_FLOAT__
 
 /* The size of `fpos_t', as computed by sizeof. */
-#define SIZEOF_FPOS_T 4
+#define SIZEOF_FPOS_T __SIZEOF_SIZE_T__
 
 /* The size of `int', as computed by sizeof. */
-#define SIZEOF_INT 4
+#define SIZEOF_INT __SIZEOF_INT__
 
 /* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
+#define SIZEOF_LONG __SIZEOF_LONG__
 
 /* The size of `long double', as computed by sizeof. */
-#define SIZEOF_LONG_DOUBLE 8
+#define SIZEOF_LONG_DOUBLE __SIZEOF_LONG_DOUBLE__
 
 /* The size of `long long', as computed by sizeof. */
-#define SIZEOF_LONG_LONG 8
+#define SIZEOF_LONG_LONG __SIZEOF_LONG_LONG__
 
 /* The size of `off_t', as computed by sizeof. */
-#define SIZEOF_OFF_T 4
+#define SIZEOF_OFF_T __SIZEOF_SIZE_T__
 
 /* The size of `pid_t', as computed by sizeof. */
-#define SIZEOF_PID_T 4
+#define SIZEOF_PID_T __SIZEOF_INT__
 
 /* The size of `pthread_t', as computed by sizeof. */
-#define SIZEOF_PTHREAD_T 4
+#define SIZEOF_PTHREAD_T __SIZEOF_SIZE_T__
 
 /* The size of `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
+#define SIZEOF_SHORT __SIZEOF_SHORT__
 
 /* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 4
+#define SIZEOF_SIZE_T __SIZEOF_SIZE_T__
 
 /* The size of `time_t', as computed by sizeof. */
-#define SIZEOF_TIME_T 4
+#define SIZEOF_TIME_T __SIZEOF_SIZE_T__
 
 /* The size of `uintptr_t', as computed by sizeof. */
-#define SIZEOF_UINTPTR_T 4
+#define SIZEOF_UINTPTR_T 8
 
 /* The size of `void *', as computed by sizeof. */
-#define SIZEOF_VOID_P 4
+#define SIZEOF_VOID_P __SIZEOF_POINTER__
 
 /* The size of `wchar_t', as computed by sizeof. */
-#define SIZEOF_WCHAR_T 4
+#define SIZEOF_WCHAR_T __SIZEOF_WCHAR_T__
 
 /* The size of `_Bool', as computed by sizeof. */
 #define SIZEOF__BOOL 1
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
+
+/* This must be set to 64 on some systems to enable large file support. */
+#define _FILE_OFFSET_BITS 64
+
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 /* Define if you can safely include both <sys/select.h> and <sys/time.h>
 (which you can't on SCO ODT 3.0). */
@@ -1146,9 +1155,6 @@ significant byte first (like Motorola and SPARC, unlike Intel). */
 
 /* Define on Darwin to activate all library features */
 #define _DARWIN_C_SOURCE 1
-
-/* This must be set to 64 on some systems to enable large file support. */
-#define _FILE_OFFSET_BITS 64
 
 /* Define on Linux to activate all library features */
 #define _GNU_SOURCE 1

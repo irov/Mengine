@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionResourceType.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include <cmath>
@@ -86,18 +87,22 @@ namespace Mengine
         AmplifierMusicCallbackInterfacePtr m_callback;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::playMusic( const ConstString & _resourceMusic, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
+    bool Amplifier::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {
+        MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceMusic *, false, "resource '%s' type does not match 'ResourceMusic'"
+            , _resourceName.c_str()
+        );
+
         if( m_play == true )
         {
             this->stopMusic();
         }
 
         ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
-            ->getResourceReference( _resourceMusic );
+            ->getResourceReference( _resourceName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceMusic, false, "can't found resource '%s'"
-            , _resourceMusic.c_str()
+            , _resourceName.c_str()
         );
 
         const FileGroupInterfacePtr & fileGroup = resourceMusic->getFileGroup();
@@ -128,7 +133,7 @@ namespace Mengine
 
         SoundIdentityInterfacePtr soundEmitter = SOUND_SERVICE()
             ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true
-                , MENGINE_DOCUMENT( "resource '%s'", _resourceMusic.c_str() ) );
+                , MENGINE_DOCUMENT( "resource '%s'", _resourceName.c_str() ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundEmitter, false, "can't create sound source '%s'"
             , filePath.c_str()

@@ -80,7 +80,7 @@ namespace Mengine
         stdex_free( address, "ArchivatorZip" );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int32_t my_uncompress( Bytef *dest, uLong *destLen, const Bytef *source, uLong sourceLen )
+    static int32_t my_uncompress( Bytef * dest, uLong * destLen, const Bytef * source, uLong sourceLen )
     {
         z_stream stream;
         int32_t err;
@@ -91,7 +91,7 @@ namespace Mengine
         if( (uLong)stream.avail_in != sourceLen ) return Z_BUF_ERROR;
 
         stream.next_out = dest;
-        stream.avail_out = (uInt)*destLen;
+        stream.avail_out = (uInt)* destLen;
         if( (uLong)stream.avail_out != *destLen ) return Z_BUF_ERROR;
 
         stream.zalloc = (alloc_func)my_alloc_func;

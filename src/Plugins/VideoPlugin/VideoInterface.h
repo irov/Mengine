@@ -58,7 +58,8 @@ namespace Mengine
             , alpha( false )
             , mock( false )
             , noSeek( false )
-        {}
+        {
+        }
 
         EPixelFormat pixelFormat;
 
@@ -74,7 +75,7 @@ namespace Mengine
         : public DecoderInterface
     {
     public:
-        virtual const VideoCodecDataInfo* getCodecDataInfo() const override = 0;
+        virtual const VideoCodecDataInfo * getCodecDataInfo() const override = 0;
 
     public:
         virtual void setPitch( size_t _pitch ) = 0;

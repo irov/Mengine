@@ -90,7 +90,7 @@ namespace Mengine
         m_factoryDecoderRenderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
+    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
         const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
 
@@ -280,7 +280,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
+    void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const RenderTextureInterfacePtr & _texture )
     {
         _texture->setFileGroup( _fileGroup );
         _texture->setFileName( _fileName );
@@ -295,7 +295,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName, const Char * _doc )
     {
         const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
 

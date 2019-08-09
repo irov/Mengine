@@ -42,7 +42,7 @@ namespace Mengine
         const DWORD * dx_source = m_memory->getBuffer();
 
         LOGGER_INFO( "compile vertex shader '%s'"
-            , this->getName().c_str() 
+            , this->getName().c_str()
         );
 
         IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &m_shader) )

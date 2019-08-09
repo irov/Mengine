@@ -15,8 +15,8 @@ namespace Mengine
         DECLARE_VISITABLE( Resource );
 
     public:
-        virtual bool testPoint( const mt::vec2f& _point, float _minAlpha ) const = 0;
-        virtual bool testRadius( const mt::vec2f& _point, float _radius, float _minAlpha ) const = 0;
+        virtual bool testPoint( const mt::vec2f & _point, float _minAlpha ) const = 0;
+        virtual bool testRadius( const mt::vec2f & _point, float _radius, float _minAlpha ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceTestPick> ResourceTestPickPtr;

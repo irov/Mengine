@@ -42,9 +42,9 @@ namespace Mengine
 
     public:
         bool initialize( uint32_t _sleep, const Char * _doc );
-        
+
     public:
-        uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
+        uint32_t addWorker( const ThreadWorkerInterfacePtr & _worker );
         bool removeWorker( uint32_t _id );
         bool pauseWorker( uint32_t _id );
         bool resumeWorker( uint32_t _id );

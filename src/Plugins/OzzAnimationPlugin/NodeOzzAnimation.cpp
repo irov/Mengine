@@ -62,7 +62,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resource]() {this->m_resourceImage = _resource; } );
+        this->recompile( [this, _resource]()
+        {
+            this->m_resourceImage = _resource;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & NodeOzzAnimation::getResourceOzzImage() const
@@ -77,7 +80,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resource]() {this->m_resourceSkeleton = _resource; } );
+        this->recompile( [this, _resource]()
+        {
+            this->m_resourceSkeleton = _resource;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & NodeOzzAnimation::getResourceOzzSkeleton() const
@@ -92,7 +98,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resource]() {this->m_resourceMesh = _resource; } );
+        this->recompile( [this, _resource]()
+        {
+            this->m_resourceMesh = _resource;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & NodeOzzAnimation::getResourceOzzMesh() const
@@ -172,7 +181,7 @@ namespace Mengine
             return false;
         }
 
-        ozz::memory::Allocator* allocator = ozz::memory::default_allocator();
+        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
         const ozz::animation::Skeleton & skeleton = m_resourceSkeleton->getOzzSkeleton();
 
@@ -188,7 +197,7 @@ namespace Mengine
         m_blendedLocals = allocator->AllocateRange<ozz::math::SoaTransform>( num_soa_joints );
 
         // Finds the "Spine1" joint in the joint hierarchy.
-        const ozz::Range<const char* const> & joint_names = skeleton.joint_names();
+        const ozz::Range<const char * const> & joint_names = skeleton.joint_names();
 
         for( int32_t i = 0; i < num_joints; ++i )
         {
@@ -219,7 +228,7 @@ namespace Mengine
             const int32_t joint_id = it.joints[i];
 
             // Updates upper body animation sampler joint weights.
-            ozz::math::SimdFloat4& weight_setting = m_upperBodyJointWeights[joint_id / 4];
+            ozz::math::SimdFloat4 & weight_setting = m_upperBodyJointWeights[joint_id / 4];
 
             weight_setting = ozz::math::SetI( weight_setting, joint_id % 4, upper_body_joint_weight_setting );
         }
@@ -273,7 +282,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeOzzAnimation::_release()
     {
-        ozz::memory::Allocator* allocator = ozz::memory::default_allocator();
+        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
         allocator->Deallocate( m_models );
         allocator->Deallocate( m_skinningMatrices );
@@ -348,7 +357,8 @@ namespace Mengine
         ltm_job.output = m_models;
 
         // Run ltm job.
-        if( !ltm_job.Run() ) {
+        if( !ltm_job.Run() )
+        {
             return;
         }
 
@@ -422,7 +432,7 @@ namespace Mengine
 
             // Setup output positions, coming from the rendering output mesh buffers.
             // We need to offset the buffer every loop.
-            skinning_job.out_positions.begin = reinterpret_cast<float*>(
+            skinning_job.out_positions.begin = reinterpret_cast<float *>(
                 ozz::PointerStride( vbo_map, ozz_positions_offset + processed_vertex_count *
                     ozz_vertex_stride ));
             skinning_job.out_positions.end = ozz::PointerStride(
@@ -479,12 +489,12 @@ namespace Mengine
             {
                 const uint8_t * part_colors_buffer = reinterpret_cast<const uint8_t *>(&part.colors[0]);
                 for( uint8_t
-                    *it = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
-                    *it_end = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
+                    * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
+                    *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
                     it != it_end;
                     it += ozz_vertex_stride )
                 {
-                    uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t*>(it);
+                    uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
 
                     Helper::multiplyColorBuffer( color, vbo_colors_buffer, part_colors_buffer );
 
@@ -496,12 +506,12 @@ namespace Mengine
                 ColorValue_ARGB argb = color.getAsARGB();
 
                 for( uint8_t
-                    *it = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
-                    *it_end = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
+                    * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,
+                    *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_colors_offset;
                     it != it_end;
                     it += ozz_vertex_stride )
                 {
-                    uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t*>(it);
+                    uint8_t * vbo_colors_buffer = reinterpret_cast<uint8_t *>(it);
 
                     memcpy( vbo_colors_buffer, &argb, ozz_colors_size );
                 }
@@ -509,12 +519,12 @@ namespace Mengine
 
             const uint8_t * part_uvs_buffer = reinterpret_cast<const uint8_t *>(&part.uvs[0]);
             for( uint8_t
-                *it = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_uvs_offset,
-                *it_end = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_uvs_offset;
+                * it = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_uvs_offset,
+                *it_end = reinterpret_cast<uint8_t *>(vbo_map) + processed_vertex_count * ozz_vertex_stride + part_vertex_count * ozz_vertex_stride + ozz_uvs_offset;
                 it != it_end;
                 it += ozz_vertex_stride )
             {
-                uint8_t * vbo_uvs_buffer = reinterpret_cast<uint8_t*>(it);
+                uint8_t * vbo_uvs_buffer = reinterpret_cast<uint8_t *>(it);
 
                 memcpy( vbo_uvs_buffer, part_uvs_buffer, ozz_uvs_size );
 
@@ -543,7 +553,7 @@ namespace Mengine
             uint32_t color;
             mt::vec2f uv;
         };
-            
+
         m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FUNCTION );
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;

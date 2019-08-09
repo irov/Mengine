@@ -159,7 +159,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::hasFileGroup( const ConstString& _name, FileGroupInterfacePtr * _fileGroup ) const
+    bool FileService::hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * _fileGroup ) const
     {
         MapFileGroups::const_iterator it_find = m_fileGroups.find( _name );
 

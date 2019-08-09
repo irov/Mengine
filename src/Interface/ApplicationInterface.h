@@ -49,8 +49,8 @@ namespace Mengine
         virtual bool keyEvent( const InputKeyEvent & _event ) = 0;
         virtual bool textEvent( const InputTextEvent & _event ) = 0;
 
-        virtual bool mouseButtonEvent( const InputMouseButtonEvent& _event ) = 0;
-        virtual bool mouseMove( const InputMouseMoveEvent& _event ) = 0;
+        virtual bool mouseButtonEvent( const InputMouseButtonEvent & _event ) = 0;
+        virtual bool mouseMove( const InputMouseMoveEvent & _event ) = 0;
         virtual bool mouseWheel( const InputMouseWheelEvent & _event ) = 0;
         virtual void mousePosition( const InputMousePositionEvent & _event ) = 0;
         virtual void mouseEnter( const InputMouseEnterEvent & _event ) = 0;

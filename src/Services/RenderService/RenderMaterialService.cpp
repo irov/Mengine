@@ -210,7 +210,7 @@ namespace Mengine
         m_factoryMaterial = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialService::loadMaterials( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName )
+    bool RenderMaterialService::loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
@@ -498,7 +498,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialService::unloadMaterials( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName )
+    bool RenderMaterialService::unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
@@ -842,7 +842,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stage, nullptr, "invalid get stage for material '%s'"
             , m_defaultStageNames[_materialId].c_str()
-            );
+        );
 
         const ConstString & materialName = m_defaultStageNames[_materialId];
 

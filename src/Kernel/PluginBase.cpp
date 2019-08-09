@@ -68,7 +68,7 @@ namespace Mengine
 
             return true;
         }
-        
+
         if( m_dynamicLoad == true )
         {
             SERVICE_WAIT( ThreadServiceInterface, [this]()
@@ -120,7 +120,7 @@ namespace Mengine
                 ->unregisterModule( moduleFactory );
         }
 
-        m_moduleFactories.clear();        
+        m_moduleFactories.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::isInitializePlugin() const

@@ -93,7 +93,10 @@ namespace Mengine
 
         this->correctUVTexture();
 
-        if( this->recompile( [this, _imagePath]() { this->setFilePath( _imagePath ); } ) == false )
+        if( this->recompile( [this, _imagePath]()
+        {
+            this->setFilePath( _imagePath );
+        } ) == false )
         {
             return false;
         }

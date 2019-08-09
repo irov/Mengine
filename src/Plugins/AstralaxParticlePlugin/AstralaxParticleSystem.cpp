@@ -94,7 +94,7 @@ namespace Mengine
         m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
     {
         AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
@@ -407,7 +407,7 @@ namespace Mengine
             {
                 ss << std::endl;
 
-                MAGIC_TEXTURE_STATES* s = m->states + i;
+                MAGIC_TEXTURE_STATES * s = m->states + i;
 
                 if( s->argument_rgb1 == MAGIC_TEXARG_TEXTURE ||
                     s->argument_alpha1 == MAGIC_TEXARG_TEXTURE ||
@@ -635,7 +635,7 @@ namespace Mengine
             {
                 ss << std::endl;
 
-                MAGIC_TEXTURE_STATES* s = m->states + i;
+                MAGIC_TEXTURE_STATES * s = m->states + i;
 
                 if( s->argument_rgb1 == MAGIC_TEXARG_TEXTURE ||
                     s->argument_alpha1 == MAGIC_TEXARG_TEXTURE ||

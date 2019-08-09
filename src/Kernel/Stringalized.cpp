@@ -86,7 +86,7 @@ namespace Mengine
         bool stringalized( const Char * _string, const Char ** _value )
         {
             *_value = _string;
-            
+
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -112,11 +112,11 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, Tags * _value )
-        {   
+        {
             const Char * it_tag = nullptr;
 
-            for( const Char 
-                *it = _string,
+            for( const Char
+                * it = _string,
                 *it_end = _string + strlen( _string );
                 it != it_end;
                 ++it )

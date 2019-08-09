@@ -191,7 +191,7 @@ namespace Mengine
 
         m_interrupt = false;
         m_playTime = _time;
-        
+
         bool old_play = m_play;
         m_play = true;
 
@@ -212,7 +212,7 @@ namespace Mengine
 
                 return 0;
             }
-        }        
+        }
 
         return id;
     }

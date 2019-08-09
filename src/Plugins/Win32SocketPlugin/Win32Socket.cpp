@@ -25,7 +25,7 @@ namespace Mengine
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
 
-        addrinfo *addrinfo;
+        addrinfo * addrinfo;
         INT getaddrinfo_result = ::getaddrinfo( _info.ip, _info.port, &hints, &addrinfo );
 
         if( getaddrinfo_result != 0 )
@@ -156,19 +156,19 @@ namespace Mengine
             return 0;
         }
 
-        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char*>(_data), static_cast<int>(_numBytes), 0 );
+        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char *>(_data), static_cast<int>(_numBytes), 0 );
 
         return numBytesSent;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::receive( void* _data, size_t _maxBytes )
+    int32_t Win32Socket::receive( void * _data, size_t _maxBytes )
     {
         if( m_socket == INVALID_SOCKET )
         {
             return 0;
         }
 
-        const int32_t numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>(_data), static_cast<int32_t>(_maxBytes), 0 );
+        const int32_t numBytesReceived = ::recv( m_socket, reinterpret_cast<char *>(_data), static_cast<int32_t>(_maxBytes), 0 );
 
         return numBytesReceived;
     }

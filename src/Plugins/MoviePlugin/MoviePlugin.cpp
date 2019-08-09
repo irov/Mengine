@@ -131,11 +131,11 @@ namespace Mengine
 
 #ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
-		{
+        {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ), Movie2ScriptEmbedding );
 
             return true;
-		});
+        } );
 #endif
 
         if( PROTOTYPE_SERVICE()

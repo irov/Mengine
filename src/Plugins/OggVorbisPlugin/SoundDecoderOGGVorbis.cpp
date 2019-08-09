@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
+    static size_t s_readOgg( void * _ptr, size_t _size, size_t _nmemb, void * _datasource )
     {
         InputStreamInterface * stream = static_cast<InputStreamInterface *>(_datasource);
         size_t count = stream->read( _ptr, _size * _nmemb );
@@ -16,7 +16,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int32_t s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
+    static int32_t s_seekOgg( void * _datasource, ogg_int64_t _offset, int _whence )
     {
         InputStreamInterface * stream = static_cast<InputStreamInterface *>(_datasource);
         ogg_int64_t offset = _offset;
@@ -105,7 +105,7 @@ namespace Mengine
 
         m_oggVorbisFileInitialize = true;
 
-        vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
+        vorbis_info * vorbisInfo = ov_info( &m_oggVorbisFile, -1 );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, false, "invalid ov_info" );
 

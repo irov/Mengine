@@ -21,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DecoderRenderImageLoader::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
+    bool DecoderRenderImageLoader::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
     {
         ImageDecoderInterfacePtr decoder;
         if( PREFETCHER_SERVICE()
@@ -56,7 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageDesc DecoderRenderImageLoader::getImageDesc() const
     {
-        const ImageCodecDataInfo* dataInfo = m_decoder->getCodecDataInfo();
+        const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
         RenderImageDesc desc;
         desc.mipmaps = dataInfo->mipmaps;
@@ -122,7 +122,7 @@ namespace Mengine
             return false;
         }
 
-        const ImageCodecDataInfo* dataInfo = m_decoder->getCodecDataInfo();
+        const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
         // copy pixels on the edge for better image quality
         if( dataInfo->width != mipmap_width )
@@ -151,7 +151,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName ) const
+    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName ) const
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );

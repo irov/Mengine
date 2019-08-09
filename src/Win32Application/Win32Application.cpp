@@ -116,7 +116,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid open application settings '%s'"
             , applicationPath.c_str()
-        );        
+        );
 
         config->getValues( "Game", "Path", m_configPaths );
         config->getValues( "Config", "Path", m_configPaths );
@@ -200,7 +200,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeUserDirectory_()
     {
-        Char userPath[MENGINE_MAX_PATH] = {0};
+        Char userPath[MENGINE_MAX_PATH] = { 0 };
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
@@ -382,7 +382,7 @@ namespace Mengine
     bool Win32Application::initialize()
     {
         ::setlocale( LC_ALL, MENGINE_SETLOCALE );
-        
+
         ServiceProviderInterface * serviceProvider;
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
         {
@@ -473,7 +473,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "initialize Game..." );
-        
+
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
@@ -624,6 +624,6 @@ namespace Mengine
 
         SERVICE_FINALIZE( Bootstrapper );
 
-        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );        
+        SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }
 }

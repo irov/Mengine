@@ -66,7 +66,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
 
-        Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & ) {
+        Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
+        {
             uint32_t exitCode;
             PLATFORM_SERVICE()
                 ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
@@ -140,7 +141,7 @@ namespace Mengine
                 {
                     if( !m_outgoingPackets.empty() )
                     {
-                        for( const auto& p : m_outgoingPackets )
+                        for( const auto & p : m_outgoingPackets )
                         {
                             m_socket->send( p.payload.data(), p.payload.size() );
                         }
@@ -189,7 +190,7 @@ namespace Mengine
                     ThreadMutexScope mutexLock( m_dataMutex );
 
                     // check if we have enough data to form a packet
-                    PacketHeader* hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
+                    PacketHeader * hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
                     while( hdr != nullptr && hdr->compressedSize <= (m_receivedData.size() - sizeof( PacketHeader )) )
                     {
                         // received garbage - nothing fancy, just disconnect
@@ -1120,7 +1121,7 @@ namespace Mengine
 
         if( !_str.empty() && _str[0] != '-' )
         {
-            const Char* ptr = _str.c_str();
+            const Char * ptr = _str.c_str();
 
             uint32_t uid = 0;
             while( *ptr )

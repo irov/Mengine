@@ -25,7 +25,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const Char * _doc ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroupName, const FilePath & _fileName, const Char * _doc ) override;
 
     public:
         uint32_t getMaxParticlesCount() const override;

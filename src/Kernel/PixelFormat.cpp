@@ -65,7 +65,7 @@ namespace Mengine
                     widthBlocks = widthBlocks > 2 ? widthBlocks : 2;
                     heightBlocks = heightBlocks > 2 ? heightBlocks : 2;
 
-                    uint32_t size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
+                    uint32_t size = widthBlocks * heightBlocks * ((blockSize * bpp) / 8);
 
                     return size;
                 }break;

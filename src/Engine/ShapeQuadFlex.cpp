@@ -101,7 +101,7 @@ namespace Mengine
         return m_flipY;
     }
     ///////////////////////////////////////////////////////////////////////////
-    void ShapeQuadFlex::setPercentVisibility( const mt::vec4f& _percent )
+    void ShapeQuadFlex::setPercentVisibility( const mt::vec4f & _percent )
     {
         if( m_percentVisibility == _percent )
         {

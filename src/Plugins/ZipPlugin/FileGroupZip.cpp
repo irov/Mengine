@@ -556,7 +556,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file )
+    bool FileGroupZip::openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _file )
     {
         MENGINE_UNUSED( _fileName );
         MENGINE_UNUSED( _file );

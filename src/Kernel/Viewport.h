@@ -22,15 +22,15 @@ namespace Mengine
         bool equalViewport( const Viewport & _vp ) const;
 
         bool testPoint( const mt::vec2f & _point ) const;
-        bool testBBox( const mt::box2f& _bbox ) const;
+        bool testBBox( const mt::box2f & _bbox ) const;
         bool testRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const;
 
-        bool existBBox( const mt::box2f& _bbox ) const;
+        bool existBBox( const mt::box2f & _bbox ) const;
         bool existRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const;
 
-        bool intersectBBox( const mt::box2f& _bbox ) const;
+        bool intersectBBox( const mt::box2f & _bbox ) const;
 
-        float getIntersectionSquareBBox( const mt::box2f& _bbox ) const;
+        float getIntersectionSquareBBox( const mt::box2f & _bbox ) const;
         float getSquare() const;
 
         void toBBox( mt::box2f & _box ) const;

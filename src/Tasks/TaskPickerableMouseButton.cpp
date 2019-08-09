@@ -179,7 +179,7 @@ namespace Mengine
             }
 
             this->complete();
-            
+
             return handle;
         };
 

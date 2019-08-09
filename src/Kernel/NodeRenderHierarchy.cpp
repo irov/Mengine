@@ -212,10 +212,10 @@ namespace Mengine
             const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
 
             if( viewport != nullptr )
-            { 
+            {
                 _context->viewport = viewport;
             }
-            
+
             const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _node.get() );
 
             if( camera != nullptr )

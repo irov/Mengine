@@ -93,6 +93,6 @@ namespace Mengine
                 ->stringizeUnique( _value, (ConstString::size_type)_size, _hash, constString );
 
             return constString;
-        }        
+        }
     }
 }

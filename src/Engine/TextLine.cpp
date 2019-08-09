@@ -33,7 +33,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            GlyphCode glyphChar = (GlyphCode)*it;
+            GlyphCode glyphChar = (GlyphCode)* it;
 
             U32String::const_iterator it_kerning = it;
             std::advance( it_kerning, 1 );

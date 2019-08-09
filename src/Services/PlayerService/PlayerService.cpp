@@ -228,7 +228,7 @@ namespace Mengine
         }
 
         m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
-        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();               
+        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );

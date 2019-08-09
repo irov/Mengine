@@ -32,7 +32,7 @@ namespace Mengine
         {
             const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
 
-            mt::vec2f p3 = (_screenDeltha)* 2.f - mt::vec2f( 1.f, 1.f );
+            mt::vec2f p3 = (_screenDeltha) * 2.f - mt::vec2f( 1.f, 1.f );
             p3.y = -p3.y;
 
             mt::vec2f p_pm_deltha;

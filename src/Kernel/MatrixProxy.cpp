@@ -24,7 +24,7 @@ namespace Mengine
         m_invalidateLocalMatrix = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MatrixProxy::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation ) const
+    void MatrixProxy::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
     {
         MENGINE_UNUSED( _transformationFlag );
         MENGINE_UNUSED( _position );

@@ -196,7 +196,7 @@ namespace Mengine
         uint32_t argb = color.getAsARGB();
 
         for( RenderVertex2D
-            *it = m_verticesWM,
+            * it = m_verticesWM,
             *it_end = m_verticesWM + m_vertexCount;
             it != it_end;
             ++it )

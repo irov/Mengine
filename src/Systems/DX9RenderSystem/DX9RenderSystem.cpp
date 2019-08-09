@@ -43,7 +43,7 @@ SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IDirect3D9* (WINAPI *PDIRECT3DCREATE9)(UINT);
+    typedef IDirect3D9 * (WINAPI * PDIRECT3DCREATE9)(UINT);
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::DX9RenderSystem()
         : m_pD3D( nullptr )
@@ -69,7 +69,7 @@ namespace Mengine
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_totalWVPInvMatrix );        
+        mt::ident_m4( m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::~DX9RenderSystem()
@@ -307,10 +307,10 @@ namespace Mengine
             , D3DFMT_D24X8
             , D3DFMT_D16
             , D3DFMT_D15S1
-            , (D3DFORMAT)0 
+            , (D3DFORMAT)0
         };
 
-        const D3DFORMAT *pFormatList = DepthFormats;
+        const D3DFORMAT * pFormatList = DepthFormats;
 
         while( *pFormatList )
         {
@@ -671,7 +671,7 @@ namespace Mengine
             , _depth
         );
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );        
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dxTexture, nullptr, "invalid create render texture" );
 
@@ -1121,7 +1121,7 @@ namespace Mengine
         }
 
         D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>(static_cast<DWORD>(D3DTS_TEXTURE0) + _stage);
-        IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX*)_matrix.buff()) )
+        IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX *)_matrix.buff()) )
         {
             return;
         }
@@ -1251,7 +1251,7 @@ namespace Mengine
 
                 return;
             }
-        
+
             ULONG ref = m_pD3DDevice->Release();
             MENGINE_UNUSED( ref );
 
@@ -1544,7 +1544,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr, "invalid create attribute '%s'"
             , _name.c_str()
-            );
+        );
 
         if( attribute->initialize( _name, _elementSize ) == false )
         {
@@ -1564,7 +1564,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
             , _name.c_str()
-            );
+        );
 
         if( shader->initialize( _name, _memory, _compile ) == false )
         {
@@ -1600,7 +1600,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr, "invalid create shader '%s'"
             , _name.c_str()
-            );
+        );
 
         if( shader->initialize( _name, _memory, _compile ) == false )
         {
@@ -1638,7 +1638,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr, "invalid create program '%s'"
             , _name.c_str()
-            );
+        );
 
         if( program->initialize( _name, _vertex, _fragment, _vertexAttribute ) == false )
         {
@@ -1696,7 +1696,7 @@ namespace Mengine
         DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr, "invalid create program variable"
-            );
+        );
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
@@ -1755,7 +1755,7 @@ namespace Mengine
     void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
-        
+
         DWORD Flags = D3DCLEAR_TARGET;
 
         if( m_depth == true )

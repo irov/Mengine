@@ -58,7 +58,7 @@ namespace Mengine
     protected:
         const RenderViewportInterfacePtr & getPickerViewport() const override;
         const RenderCameraInterfacePtr & getPickerCamera() const override;
-        
+
     protected:
         void addRelationPickerChildrenBack_( BasePicker * _childPicker );
         void addRelationPickerChildrenFront_( BasePicker * _childPicker );

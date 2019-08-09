@@ -55,7 +55,7 @@ namespace Mengine
 
                 _refs.emplace_back( &record );
             }
-        }        
+        }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         static bool s_hasValueT( const VectorRecords & _records, const Tags & _tags, const Char * _section, const Char * _key, T * _value )

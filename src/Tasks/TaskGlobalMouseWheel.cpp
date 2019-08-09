@@ -23,7 +23,7 @@ namespace Mengine
         {
             if( m_filter( _event ) == false )
             {
-                return;                
+                return;
             }
 
             this->complete();
@@ -37,7 +37,7 @@ namespace Mengine
 
             return true;
         }
-        
+
         m_id = id;
 
         return false;

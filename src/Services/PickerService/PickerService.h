@@ -20,7 +20,7 @@ namespace Mengine
     typedef Vector<PickerStateDesc> VectorPickerStates;
     //////////////////////////////////////////////////////////////////////////
     class PickerService
-        : public ServiceBase<PickerServiceInterface>        
+        : public ServiceBase<PickerServiceInterface>
     {
     public:
         PickerService();
@@ -50,7 +50,7 @@ namespace Mengine
     public:
         bool pickTrap( const mt::vec2f & _point, uint32_t _touchId, float _pressure, VectorPickers & _pickers ) override;
 
-    public:        
+    public:
         void invalidateTraps() override;
 
     public:

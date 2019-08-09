@@ -70,20 +70,23 @@ namespace Mengine
                 TextLineChunk c;
                 c.value = _in.substr( new_begin, new_end - new_begin );
 
-				Char buffer_name[256] = {0};
+                Char buffer_name[256] = { 0 };
 
-				Char* buffer_name_iterator = buffer_name;
-				for (U32String::value_type v : name)
-				{
-					*buffer_name_iterator++ = (Char)v;
-				}
+                Char * buffer_name_iterator = buffer_name;
+                for( U32String::value_type v : name )
+                {
+                    *buffer_name_iterator++ = (Char)v;
+                }
 
-                ConstString c_FontName = Helper::stringizeString(buffer_name);
+                ConstString c_FontName = Helper::stringizeString( buffer_name );
 
                 const TextFontInterfacePtr & font = TEXT_SERVICE()
                     ->getFont( c_FontName );
 
-                VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts.begin(), _cacheFonts.end(), [&font]( const CacheFont & cache ) { return cache.font == font; } );
+                VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts.begin(), _cacheFonts.end(), [&font]( const CacheFont & cache )
+                {
+                    return cache.font == font;
+                } );
 
                 if( it_found != _cacheFonts.end() )
                 {

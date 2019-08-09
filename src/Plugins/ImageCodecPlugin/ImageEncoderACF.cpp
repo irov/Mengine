@@ -30,7 +30,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
+    size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo )
     {
         MENGINE_UNUSED( _size );
 

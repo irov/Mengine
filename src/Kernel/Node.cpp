@@ -37,7 +37,8 @@ namespace Mengine
     {
         this->release();
 
-        this->destroyChildren( []( const NodePtr & ) {} );
+        this->destroyChildren( []( const NodePtr & )
+        {} );
 
         this->unwrap();
     }
@@ -471,7 +472,7 @@ namespace Mengine
                 this->setRelationRender_( _parent );
                 this->setRelationPickerBack_( _parent );
             }break;
-        }        
+        }
 
         UpdationInterface * updation = this->getUpdation();
 

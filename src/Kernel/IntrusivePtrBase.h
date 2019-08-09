@@ -28,7 +28,7 @@ namespace Mengine
         MENGINE_INLINE static void intrusive_ptr_add_ref( IntrusivePtrBase * _ptr ) noexcept;
         MENGINE_INLINE static void intrusive_ptr_dec_ref( IntrusivePtrBase * _ptr ) noexcept;
         MENGINE_INLINE static uint32_t intrusive_ptr_get_ref( const IntrusivePtrBase * _ptr ) noexcept;
-        
+
         template<class T>
         MENGINE_INLINE static void intrusive_ptr_setup( T *& _ptr, T * _other );
 

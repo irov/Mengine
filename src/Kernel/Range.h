@@ -9,7 +9,8 @@ namespace Mengine
         Range( T * _begin, T * _end )
             : m_begin( _begin )
             , m_end( _end )
-        {}
+        {
+        }
 
     public:
         T * begin()

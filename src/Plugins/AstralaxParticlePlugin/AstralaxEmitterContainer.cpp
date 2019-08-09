@@ -30,7 +30,7 @@ namespace Mengine
         MENGINE_ASSERTION( m_mf == 0, "astralax container is not finalized" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator )
+    bool AstralaxEmitterContainer::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator )
     {
         MemoryInterfacePtr memory;
         if( PREFETCHER_SERVICE()

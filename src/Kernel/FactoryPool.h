@@ -30,7 +30,7 @@ namespace Mengine
 
         void _destroyObject( Factorable * _node ) override
         {
-            Type * ptr = static_cast<Type*>(_node);
+            Type * ptr = static_cast<Type *>(_node);
 
             m_pool.destroyT( ptr );
         }

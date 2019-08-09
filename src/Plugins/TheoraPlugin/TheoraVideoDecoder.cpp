@@ -445,9 +445,9 @@ namespace Mengine
             int32_t y_height = _yuvBuffer.y_height >> 1;
             int32_t y_width = _yuvBuffer.y_width >> 1;
 
-            uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
-            uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
-            uint8_t * vSrc = (uint8_t*)_yuvBuffer.v;
+            uint8_t * ySrc = (uint8_t *)_yuvBuffer.y;
+            uint8_t * uSrc = (uint8_t *)_yuvBuffer.u;
+            uint8_t * vSrc = (uint8_t *)_yuvBuffer.v;
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
             //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
@@ -532,9 +532,9 @@ namespace Mengine
             int32_t y_height = _yuvBuffer.y_height >> 1;
             int32_t y_width = _yuvBuffer.y_width >> 1;
 
-            uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
-            uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
-            uint8_t * vSrc = (uint8_t*)_yuvBuffer.v;
+            uint8_t * ySrc = (uint8_t *)_yuvBuffer.y;
+            uint8_t * uSrc = (uint8_t *)_yuvBuffer.u;
+            uint8_t * vSrc = (uint8_t *)_yuvBuffer.v;
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
             //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
@@ -616,9 +616,9 @@ namespace Mengine
             int32_t y_height = _yuvBuffer.y_height >> 1;
             int32_t y_width = _yuvBuffer.y_width >> 1;
 
-            uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
-            uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
-            uint8_t * vSrc = (uint8_t*)_yuvBuffer.v;
+            uint8_t * ySrc = (uint8_t *)_yuvBuffer.y;
+            uint8_t * uSrc = (uint8_t *)_yuvBuffer.u;
+            uint8_t * vSrc = (uint8_t *)_yuvBuffer.v;
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
             //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
@@ -830,7 +830,7 @@ namespace Mengine
         ogg_packet packet;
 
         for( ;; )
-        {		
+        {
             for( ;; )
             {
                 int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );

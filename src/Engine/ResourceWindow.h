@@ -35,7 +35,7 @@ namespace Mengine
         const ConstString & getElementResourceImageName( uint32_t _type ) const;
 
         void setElementOffset( uint32_t _type, const mt::vec2f & _offset );
-        const mt::vec2f &  getElementOffset( uint32_t _type ) const;
+        const mt::vec2f & getElementOffset( uint32_t _type ) const;
 
     public:
         const ResourceImagePtr & getElementResourceImage( uint32_t _type ) const;

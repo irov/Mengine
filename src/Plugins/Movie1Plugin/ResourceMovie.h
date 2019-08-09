@@ -233,7 +233,7 @@ namespace Mengine
 
     public:
         bool hasOffsetPoint() const;
-        void setOffsetPoint( const mt::vec3f &  _offsetPoint );
+        void setOffsetPoint( const mt::vec3f & _offsetPoint );
         const mt::vec3f & getOffsetPoint() const;
 
     public:

@@ -119,7 +119,7 @@ namespace Mengine
                 return false;
             }
 
-            fe_effect* ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
+            fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
 
             if( ttfFEEffect == nullptr )
             {
@@ -424,7 +424,10 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph ) { return _glyph.ch == _code; } );
+        VectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        {
+            return _glyph.ch == _code;
+        } );
 
         if( it_found != glyphs.end() )
         {
@@ -690,7 +693,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            FT_ULong ttf_code = (FT_ULong)*it;
+            FT_ULong ttf_code = (FT_ULong)* it;
 
             FT_UInt glyph_index = FT_Get_Char_Index( face, ttf_code );
 
@@ -739,7 +742,10 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph ) { return _glyph.ch == _code; } );
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        {
+            return _glyph.ch == _code;
+        } );
 
         if( it_found == glyphs.end() )
         {
@@ -754,7 +760,10 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph ) { return _glyph.ch == _code; } );
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph )
+        {
+            return _glyph.ch == _code;
+        } );
 
         if( it_found == glyphs.end() )
         {

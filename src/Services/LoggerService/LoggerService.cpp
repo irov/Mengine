@@ -139,7 +139,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::_stopService()
-    {        
+    {
 #ifdef MENGINE_LOGGER_HISTORY
         m_historically = false;
         m_history.clear();
@@ -241,7 +241,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _logger );
 
-        
+
 
 #ifdef MENGINE_LOGGER_HISTORY
         MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );

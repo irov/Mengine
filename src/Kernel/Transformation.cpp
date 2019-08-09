@@ -88,19 +88,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Transformation::invalidateWorldMatrix()
     {
-		if( m_invalidateWorldMatrix == true )
-		{
-			return;
-		}
-         
-		m_invalidateWorldMatrix = true;
+        if( m_invalidateWorldMatrix == true )
+        {
+            return;
+        }
 
-		for( Transformation * child : m_relationChildren )
-		{
-			child->invalidateWorldMatrix();
-		}
-        
-		this->_invalidateWorldMatrix();
+        m_invalidateWorldMatrix = true;
+
+        for( Transformation * child : m_relationChildren )
+        {
+            child->invalidateWorldMatrix();
+        }
+
+        this->_invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::_invalidateWorldMatrix()
@@ -326,7 +326,7 @@ namespace Mengine
         return (m_transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION) == TRANSFORMATION_INVALIDATE_ORIENTATION;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setTransformation( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation )
+    void Transformation::setTransformation( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )
     {
         m_position = _position;
         m_origin = _origin;
@@ -381,7 +381,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::getTransformation( uint8_t & _transformationFlag, mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec2f& _skew, mt::vec3f& _orientation ) const
+    void Transformation::getTransformation( uint8_t & _transformationFlag, mt::vec3f & _position, mt::vec3f & _origin, mt::vec3f & _scale, mt::vec2f & _skew, mt::vec3f & _orientation ) const
     {
         _transformationFlag = m_transformationFlag;
         _position = m_position;
@@ -391,7 +391,7 @@ namespace Mengine
         _orientation = m_orientation;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation ) const
+    void Transformation::calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const
     {
         mt::mat4f localMatrix;
         Transformation::makeLocalMatrix_( localMatrix, _transformationFlag, _position, _origin, _scale, _skew, _orientation );
@@ -567,7 +567,7 @@ namespace Mengine
         this->makeLocalMatrix_( m_localMatrix, m_transformationFlag, m_position, m_origin, m_scale, m_skew, m_orientation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation )
+    void Transformation::makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )
     {
         switch( _transformationFlag )
         {
@@ -735,7 +735,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::setWorldPosition( const mt::vec3f & _pos )
-    {        
+    {
         if( m_relationTransformation != nullptr )
         {
             const mt::mat4f & rwm = m_relationTransformation->getWorldMatrix();
@@ -760,7 +760,7 @@ namespace Mengine
             this->translate( pp2 );
         }
         else
-        { 
+        {
             const mt::mat4f & lm = this->getLocalMatrix();
 
             mt::mat4f lm_inv;
@@ -785,7 +785,7 @@ namespace Mengine
         return wp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setLocalOrigin( const mt::vec3f& _origin )
+    void Transformation::setLocalOrigin( const mt::vec3f & _origin )
     {
         if( mt::cmp_v3_v3( m_origin, _origin ) == true )
         {
@@ -806,7 +806,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setLocalScale( const mt::vec3f& _scale )
+    void Transformation::setLocalScale( const mt::vec3f & _scale )
     {
         if( mt::cmp_v3_v3( m_scale, _scale ) == true )
         {
@@ -827,7 +827,7 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setLocalSkew( const mt::vec2f& _skew )
+    void Transformation::setLocalSkew( const mt::vec2f & _skew )
     {
         if( mt::cmp_v2_v2( m_skew, _skew ) == true )
         {

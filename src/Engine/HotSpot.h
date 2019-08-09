@@ -57,7 +57,7 @@ namespace Mengine
         void _freeze( bool _value ) override;
 
     protected:
-        bool pick( const mt::vec2f& _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
+        bool pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) const override;
 
     public:
         Scriptable * getPickerScriptable() override;
@@ -86,7 +86,7 @@ namespace Mengine
     protected:
         void _setPickerEnable( bool _enable ) override;
 
-    protected:        
+    protected:
         void _invalidateWorldMatrix() override;
 
     protected:

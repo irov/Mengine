@@ -110,7 +110,7 @@ namespace Mengine
             }
 
             MemoryBufferInterfacePtr binaryBuffer = MEMORY_SERVICE()
-				->createMemoryCacheBuffer( _doc );
+                ->createMemoryCacheBuffer( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "invalid create memory cache"
                 , binary_size
@@ -126,7 +126,7 @@ namespace Mengine
             if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress doc '%s'"
-					, _doc
+                    , _doc
                 );
 
                 return nullptr;
@@ -380,7 +380,7 @@ namespace Mengine
             }
 
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
-				->createMemoryBuffer( _doc );
+                ->createMemoryBuffer( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%d' (binary)"
                 , binary_size
@@ -472,7 +472,7 @@ namespace Mengine
             }
 
             MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
-				->createMemoryCacheBuffer( _doc );
+                ->createMemoryCacheBuffer( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, nullptr, "invalid get memory '%d' (binary)"
                 , binary_size

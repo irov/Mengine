@@ -75,23 +75,23 @@ namespace Mengine
     class GeneratorMethodObserverCallable;
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class C, class ... P>
-    class GeneratorMethodObserverCallable<ID, void (C::*)(P...)>
-        : public MethodObserverCallable<ID, C, void (C::*)(P...), P ...>
+    class GeneratorMethodObserverCallable<ID, void (C:: *)(P...)>
+        : public MethodObserverCallable<ID, C, void (C:: *)(P...), P ...>
     {
     public:
-        GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) )
-            : MethodObserverCallable<ID, C, void (C::*)(P...), P ...>( _self, _method )
+        GeneratorMethodObserverCallable( C * _self, void (C:: * _method)(P...) )
+            : MethodObserverCallable<ID, C, void (C:: *)(P...), P ...>( _self, _method )
         {
         }
     };
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class C, class ... P>
-    class GeneratorMethodObserverCallable<ID, void (C::*)(P...) const>
-        : public MethodObserverCallable<ID, C, void (C::*)(P...) const, P ...>
+    class GeneratorMethodObserverCallable<ID, void (C:: *)(P...) const>
+        : public MethodObserverCallable<ID, C, void (C:: *)(P...) const, P ...>
     {
     public:
-        GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) const )
-            : MethodObserverCallable<ID, C, void (C::*)(P...) const, P ...>( _self, _method )
+        GeneratorMethodObserverCallable( C * _self, void (C:: * _method)(P...) const )
+            : MethodObserverCallable<ID, C, void (C:: *)(P...) const, P ...>( _self, _method )
         {
         }
     };

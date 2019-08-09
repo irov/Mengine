@@ -24,7 +24,7 @@ namespace Mengine
                 : hash( 0 )
             {
             }
-                
+
 
             hash_type hash;
             key_type key;
@@ -169,7 +169,7 @@ namespace Mengine
                 }
 
                 record->element = nullptr;
-                record->key = key_type();                
+                record->key = key_type();
             }
 
             m_size = 0;
@@ -235,7 +235,7 @@ namespace Mengine
             const_iterator operator ++ ( int )
             {
                 const_iterator tmp = *this;
-                ++*this;
+                ++ * this;
 
                 return tmp;
             }

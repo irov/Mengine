@@ -33,7 +33,7 @@ namespace Mengine
 
         if( fxcPath == STRINGIZE_FILEPATH_LOCAL( "REGISTER" ) )
         {
-            Char WindowsKitsInstallationFolder[256] = {0};
+            Char WindowsKitsInstallationFolder[256] = { 0 };
             if( PLATFORM_SERVICE()
                 ->getLocalMachineRegValue( "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots", "KitsRoot10", WindowsKitsInstallationFolder, 256 ) == false )
             {
@@ -46,7 +46,7 @@ namespace Mengine
             bool successful = false;
             PLATFORM_SERVICE()
                 ->findFiles( "", WindowsKitsInstallationFolder, "x64\\fxc.exe", [&fxcPath, &successful]( const FilePath & _fp )
-            { 
+            {
                 fxcPath = _fp;
                 successful = true;
 
@@ -66,7 +66,7 @@ namespace Mengine
 
         String full_output = pakPath.c_str();
         full_output += m_options.outputFileName.c_str();
-        
+
         String buffer = "/nologo /T ps_2_0 /O3 /Fo \"" + full_output + "\" \"" + full_input + "\"";
 
         LOGGER_MESSAGE( "converting file '%s' to '%s'\n%s"

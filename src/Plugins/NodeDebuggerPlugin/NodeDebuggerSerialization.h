@@ -29,8 +29,8 @@ namespace Mengine
 
     MENGINE_INLINE void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
     {
-        const uint8_t* begin = reinterpret_cast<const uint8_t*>(&_hdr);
-        const uint8_t* end = begin + sizeof( PacketHeader );
+        const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
+        const uint8_t * end = begin + sizeof( PacketHeader );
         _payload.insert( _payload.begin(), begin, end );
     }
 
@@ -162,7 +162,7 @@ namespace Mengine
         }
 
         template <typename T>
-        bool deserializeNodePropImpl( const Char* _propType, const Char* _propName,
+        bool deserializeNodePropImpl( const Char * _propType, const Char * _propName,
             const pugi::xml_node & _xmlParentNode,
             const Lambda<void( const T & )> & _lambda )
         {
@@ -203,49 +203,73 @@ namespace Mengine
         template<>
         struct prop_type_name<bool>
         {
-            static const Char * get_value() { return "bool"; }
+            static const Char * get_value()
+            {
+                return "bool";
+            }
         };
 
         template<>
         struct prop_type_name<uint32_t>
         {
-            static const Char * get_value() { return "uint32_t"; }
+            static const Char * get_value()
+            {
+                return "uint32_t";
+            }
         };
 
         template<>
         struct prop_type_name<float>
         {
-            static const Char * get_value() { return "float"; }
+            static const Char * get_value()
+            {
+                return "float";
+            }
         };
 
         template<>
         struct prop_type_name<mt::vec2f>
         {
-            static const Char * get_value() { return "mt::vec2f"; }
+            static const Char * get_value()
+            {
+                return "mt::vec2f";
+            }
         };
 
         template<>
         struct prop_type_name<mt::vec3f>
         {
-            static const Char * get_value() { return "mt::vec3f"; }
+            static const Char * get_value()
+            {
+                return "mt::vec3f";
+            }
         };
 
         template<>
         struct prop_type_name<Color>
         {
-            static const Char * get_value() { return "Color"; }
+            static const Char * get_value()
+            {
+                return "Color";
+            }
         };
 
         template<>
         struct prop_type_name<String>
         {
-            static const Char * get_value() { return "String"; }
+            static const Char * get_value()
+            {
+                return "String";
+            }
         };
 
         template<>
         struct prop_type_name<ConstString>
         {
-            static const Char * get_value() { return "String"; }
+            static const Char * get_value()
+            {
+                return "String";
+            }
         };
     }
 
@@ -274,24 +298,24 @@ namespace Mengine
     {
     public:
         MyXMLWriter() = delete;
-        MyXMLWriter( const MyXMLWriter& ) = delete;
+        MyXMLWriter( const MyXMLWriter & ) = delete;
         ~MyXMLWriter() = default;
 
-        MyXMLWriter( Vector<uint8_t>& _buffer )
+        MyXMLWriter( Vector<uint8_t> & _buffer )
             : m_buffer( _buffer )
         {
         }
 
-        void write( const void* _data, size_t _size ) override
+        void write( const void * _data, size_t _size ) override
         {
-            const uint8_t* ptr = reinterpret_cast<const uint8_t*>(_data);
+            const uint8_t * ptr = reinterpret_cast<const uint8_t *>(_data);
             m_buffer.insert( m_buffer.end(), ptr, ptr + _size );
 
             m_debug.append( (const char *)_data, _size );
         }
 
     private:
-        Vector<uint8_t>& m_buffer;
+        Vector<uint8_t> & m_buffer;
 
         String m_debug;
     };

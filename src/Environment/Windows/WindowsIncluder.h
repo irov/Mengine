@@ -3,11 +3,11 @@
 #include "Config/Config.h"
 
 #ifndef MENGINE_WINDOWS_VERSION
-    #ifdef MENGINE_TOOLCHAIN_MINGW
-        #define MENGINE_WINDOWS_VERSION 0x0501
-    #else
-        #define MENGINE_WINDOWS_VERSION 0x0600
-    #endif
+#ifdef MENGINE_TOOLCHAIN_MINGW
+#define MENGINE_WINDOWS_VERSION 0x0501
+#else
+#define MENGINE_WINDOWS_VERSION 0x0600
+#endif
 #endif
 
 #ifdef WINVER

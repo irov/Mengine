@@ -46,7 +46,7 @@ namespace Mengine
     {
         Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr, "invalid create identity");
+        MENGINE_ASSERTION_MEMORY_PANIC( identity, nullptr, "invalid create identity" );
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 

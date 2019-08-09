@@ -11,7 +11,7 @@
 #include "Kernel/Factory.h"
 
 namespace Mengine
-{    
+{
     class ConfigService
         : public ServiceBase<ConfigServiceInterface>
     {

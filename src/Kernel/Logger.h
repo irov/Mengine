@@ -29,7 +29,7 @@ namespace Mengine
         void logMessage( const Char * _msg, uint32_t _size ) const;
 
     protected:
-        int32_t makeTimeStamp( Char * _buffer, int32_t _offset  ) const;
+        int32_t makeTimeStamp( Char * _buffer, int32_t _offset ) const;
         int32_t makeFunctionStamp( Char * _buffer, int32_t _offset ) const;
 
     protected:

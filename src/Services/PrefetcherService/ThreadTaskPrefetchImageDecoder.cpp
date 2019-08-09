@@ -77,7 +77,7 @@ namespace Mengine
             , this->getFileGroup()->getName().c_str()
             , this->getFilePath().c_str()
         );
-          
+
         size_t stream_size = m_stream->size();
 
         void * memory = memoryInput->newBuffer( stream_size, MENGINE_DOCUMENT_FUNCTION );

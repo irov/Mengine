@@ -5,7 +5,7 @@
 #include "Kernel/Animatable.h"
 
 namespace Mengine
-{    
+{
     class TaskAnimatablePlay
         : public GOAP::Task
     {

@@ -376,7 +376,7 @@ namespace Mengine
         uvs[7] = mt::vec2f( 1.f, 1.f );
         uvs[8] = mt::vec2f( 1.f, m_clientSize.y / m_edge[8].initialSize.y );
 
-        const mt::mat4f& worldMatrix = this->getWorldMatrix();
+        const mt::mat4f & worldMatrix = this->getWorldMatrix();
 
         for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
         {
@@ -428,7 +428,7 @@ namespace Mengine
         uint32_t argb = color.getAsARGB();
 
         for( RenderVertex2D
-            *it = _vertices,
+            * it = _vertices,
             *it_end = _vertices + ResourceWindow_Count * 4;
             it != it_end;
             ++it )
@@ -439,7 +439,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void Window::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVertices();
 
@@ -465,7 +465,7 @@ namespace Mengine
         this->invalidateVertices();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::setClientSizeClip( const mt::vec2f& _clientSize )
+    void Window::setClientSizeClip( const mt::vec2f & _clientSize )
     {
         if( this->hasBackground() == false )
         {
@@ -493,7 +493,7 @@ namespace Mengine
         this->setClientSize( clSize );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::setClientSize( const mt::vec2f& _clientSize )
+    void Window::setClientSize( const mt::vec2f & _clientSize )
     {
         m_clientSize = _clientSize;
 
@@ -540,7 +540,7 @@ namespace Mengine
         return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::setClientSizeInTiles( const mt::vec2f& _tiles )
+    void Window::setClientSizeInTiles( const mt::vec2f & _tiles )
     {
         if( this->isCompile() == false )
         {
@@ -571,7 +571,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceWindow]() {m_resourceWindow = _resourceWindow; } );
+        this->recompile( [this, _resourceWindow]()
+        {
+            m_resourceWindow = _resourceWindow;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceWindowPtr & Window::getResourceWindow() const

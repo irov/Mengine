@@ -95,13 +95,13 @@ namespace Mengine
             , minorVersion
         );
 
-        RET_OPENAL_CALL( const ALCchar*, defaultDeviceSprcifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
+        RET_OPENAL_CALL( const ALCchar *, defaultDeviceSprcifier, alcGetString, (m_device, ALC_DEVICE_SPECIFIER) );
 
         LOGGER_MESSAGE( "OpenAL default device specifier [%s]"
             , defaultDeviceSprcifier
         );
 
-        RET_OPENAL_CALL( const ALCchar*, captureDeviceSpecifier, alcGetString, (m_device, ALC_CAPTURE_DEVICE_SPECIFIER) );
+        RET_OPENAL_CALL( const ALCchar *, captureDeviceSpecifier, alcGetString, (m_device, ALC_CAPTURE_DEVICE_SPECIFIER) );
 
         LOGGER_MESSAGE( "OpenAL capture device specifier [%s]"
             , captureDeviceSpecifier

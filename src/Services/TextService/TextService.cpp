@@ -501,9 +501,15 @@ namespace Mengine
         }
 
         m_packs.erase(
-            std::remove_if( m_packs.begin(), m_packs.end(), [&_fileGroup]( const TextLocalePackPtr & _pack ) {if( _pack->getFileGroup() != _fileGroup ) { return false; }return true; } )
+            std::remove_if( m_packs.begin(), m_packs.end(), [&_fileGroup]( const TextLocalePackPtr & _pack )
+        {
+            if( _pack->getFileGroup() != _fileGroup )
+            {
+                return false;
+            }return true;
+        } )
             , m_packs.end()
-        );
+            );
 
         return true;
     }
@@ -660,7 +666,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::addTextEntry( const ConstString& _key
+    bool TextService::addTextEntry( const ConstString & _key
         , const String & _text
         , const ConstString & _font
         , const Color & _colorFont
@@ -706,7 +712,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::removeTextEntry( const ConstString& _key )
+    bool TextService::removeTextEntry( const ConstString & _key )
     {
         if( m_texts.erase( _key ) == nullptr )
         {
@@ -744,7 +750,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString& _key ) const
+    const TextEntryInterfacePtr & TextService::getTextEntry( const ConstString & _key ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 
@@ -755,7 +761,7 @@ namespace Mengine
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::hasTextEntry( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
+    bool TextService::hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const
     {
         const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
 
@@ -797,7 +803,7 @@ namespace Mengine
         return font;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::setTextAlias( const ConstString & _environment, const ConstString& _alias, const ConstString& _key )
+    void TextService::setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key )
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
 
@@ -806,14 +812,14 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_TEXT_ALIAS, _environment, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::removeTextAlias( const ConstString & _environment, const ConstString& _alias )
+    void TextService::removeTextAlias( const ConstString & _environment, const ConstString & _alias )
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
 
         m_aliases.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::hasTextAlias( const ConstString & _environment, const ConstString& _alias ) const
+    bool TextService::hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
 

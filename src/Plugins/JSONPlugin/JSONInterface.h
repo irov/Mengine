@@ -10,6 +10,6 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual const jpp::object& getJSON() const = 0;
+        virtual const jpp::object & getJSON() const = 0;
     };
 }

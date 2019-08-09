@@ -103,7 +103,7 @@ namespace Mengine
             float width;
             float height;
 
-            float weight;  
+            float weight;
             float soft;
             Color color;
         };

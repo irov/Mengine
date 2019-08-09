@@ -45,9 +45,9 @@ namespace Mengine
             , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
         void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
-        
+
     public:
-        bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;        
+        bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 
     public:
         void setProjectionMatrix( const mt::mat4f & _projection ) override;

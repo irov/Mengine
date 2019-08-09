@@ -54,7 +54,7 @@ namespace Mengine
             return true;
         } );
 #endif
-        
+
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceVideo, 128>>() ) == false )
@@ -80,7 +80,7 @@ namespace Mengine
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<LoaderResourceVideo>() );
 
             return true;
-        } );               
+        } );
 
         return true;
     }

@@ -10,7 +10,7 @@
 #include "Kernel/FilePath.h"
 
 namespace Mengine
-{    
+{
     class GraveyardServiceInterface
         : public ServiceInterface
     {
@@ -24,7 +24,7 @@ namespace Mengine
 
     public:
         virtual bool buryTexture( RenderTextureInterface * _texture ) = 0;
-        virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _path, const Char * _doc ) = 0;
+        virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const Char * _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

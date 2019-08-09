@@ -5,21 +5,21 @@
 
 namespace Mengine
 {
-	class SecureValue
-	{
-	public:
-		SecureValue();
-		~SecureValue();
+    class SecureValue
+    {
+    public:
+        SecureValue();
+        ~SecureValue();
 
-	public:
-		void setUnprotectedValue( uint32_t _value );
-		bool getUnprotectedValue( uint32_t * _value ) const;
+    public:
+        void setUnprotectedValue( uint32_t _value );
+        bool getUnprotectedValue( uint32_t * _value ) const;
 
-		bool addSecureValue( const SecureValue & _value );
+        bool addSecureValue( const SecureValue & _value );
 
-	public:
-		uint32_t m_value;
-		uint32_t m_hash;
-		Char m_buffer[17];
-	};
+    public:
+        uint32_t m_value;
+        uint32_t m_hash;
+        Char m_buffer[17];
+    };
 }

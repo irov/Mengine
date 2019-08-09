@@ -46,7 +46,7 @@ namespace Mengine
                 {
                     return;
                 }
-                
+
                 PickerStateDesc desc;
 
                 desc.picker = _picker;

@@ -37,7 +37,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS* pExceptionPointers )
+    static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS * pExceptionPointers )
     {
         LOGGER_ERROR( "Exception catch" );
 

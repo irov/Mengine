@@ -20,8 +20,8 @@ namespace Mengine
         ~OpenALSoundSource() override;
 
     public:
-        void setSoundSystem( OpenALSoundSystem* _soundSystem );
-        OpenALSoundSystem* getSoundSystem() const;
+        void setSoundSystem( OpenALSoundSystem * _soundSystem );
+        OpenALSoundSystem * getSoundSystem() const;
 
     public:
         bool play() override;

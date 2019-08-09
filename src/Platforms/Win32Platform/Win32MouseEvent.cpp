@@ -32,7 +32,7 @@ namespace Mengine
 
         RECT rect;
         ::GetWindowRect( m_hWnd, &rect );
-        
+
         if( !::PtInRect( &rect, pt ) )
         {
             ::KillTimer( m_hWnd, m_uTimer );

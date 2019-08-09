@@ -632,7 +632,7 @@ namespace Mengine
             if( mesh.vertexOffset != 0 )
             {
                 for( RenderIndex
-                    *it = _indices + mesh.indexOffset,
+                    * it = _indices + mesh.indexOffset,
                     *it_end = _indices + mesh.indexOffset + mesh.indexCount;
                     it != it_end;
                     ++it )

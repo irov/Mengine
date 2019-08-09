@@ -496,7 +496,7 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    const Color& TextField::getFontColor() const
+    const Color & TextField::getFontColor() const
     {
         return m_colorFont;
     }
@@ -1347,7 +1347,7 @@ namespace Mengine
                 }break;
             case ETFVA_NONE:
             case ETFVA_TOP:
-                {                    
+                {
                     offset = fontHeight - fontHeight * layoutCountf + layoutCount1f * _lineOffset;
                 }break;
             }
@@ -1445,7 +1445,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString& TextField::getTextID() const
+    const ConstString & TextField::getTextID() const
     {
         return m_textId;
     }

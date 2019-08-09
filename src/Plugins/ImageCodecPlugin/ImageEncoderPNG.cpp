@@ -26,18 +26,18 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void	s_writeProc( png_structp _png_ptr, uint8_t *data, png_size_t size )
+    static void	s_writeProc( png_structp _png_ptr, uint8_t * data, png_size_t size )
     {
         png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-        OutputStreamInterface* stream = static_cast<OutputStreamInterface*>(io_ptr);
+        OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
 
-        stream->write( (char*)data, size );
+        stream->write( (char *)data, size );
     }
     //////////////////////////////////////////////////////////////////////////
     static void	s_flushProc( png_structp _png_ptr )
     {
         png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-        OutputStreamInterface* stream = static_cast<OutputStreamInterface*>(io_ptr);
+        OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
 
         stream->flush();
     }
@@ -105,11 +105,11 @@ namespace Mengine
         png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
+    size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo )
     {
         MENGINE_UNUSED( _size );
 
-        const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>(_bufferDataInfo);
+        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
 
         int32_t color_type;
         if( dataInfo->channels == 1 )

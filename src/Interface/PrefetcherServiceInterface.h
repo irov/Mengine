@@ -43,7 +43,7 @@ namespace Mengine
         virtual bool getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _data ) = 0;
 
     public:
-        virtual bool unfetch( const FileGroupInterfacePtr & _fileGroup, const FilePath& _filePath ) = 0;
+        virtual bool unfetch( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
         virtual void visitPrefetches( const VisitorPtr & _visitor ) const = 0;

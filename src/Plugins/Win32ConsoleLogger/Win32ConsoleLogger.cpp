@@ -13,7 +13,7 @@
 
 #include <iostream>
 
-typedef BOOL( WINAPI *PATTACHCONSOLE )(DWORD);
+typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
 
 namespace Mengine
 {

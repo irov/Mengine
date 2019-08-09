@@ -31,9 +31,9 @@ namespace Mengine
         AccountInterfacePtr createGlobalAccount() override;
 
     public:
-        bool hasAccount( const ConstString& _accountID ) const override;
-        void deleteAccount( const ConstString& _accountID ) override;
-        bool selectAccount( const ConstString& _accountID ) override;
+        bool hasAccount( const ConstString & _accountID ) const override;
+        void deleteAccount( const ConstString & _accountID ) override;
+        bool selectAccount( const ConstString & _accountID ) override;
 
     public:
         bool loadAccounts() override;
@@ -63,17 +63,17 @@ namespace Mengine
         const ConstString & getCurrentAccountID() const override;
 
     public:
-        const AccountInterfacePtr & getAccount( const ConstString& _accountID ) const override;
+        const AccountInterfacePtr & getAccount( const ConstString & _accountID ) const override;
 
         void visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const override;
 
     protected:
         bool loadAccount_( const AccountInterfacePtr & _account );
-        AccountInterfacePtr createAccount_( const ConstString& _accountID );
-        AccountInterfacePtr createGlobalAccount_( const ConstString& _accountID );
+        AccountInterfacePtr createAccount_( const ConstString & _accountID );
+        AccountInterfacePtr createGlobalAccount_( const ConstString & _accountID );
 
     protected:
-        AccountInterfacePtr newAccount_( const ConstString& _accountID );
+        AccountInterfacePtr newAccount_( const ConstString & _accountID );
 
     protected:
         void unselectCurrentAccount_();

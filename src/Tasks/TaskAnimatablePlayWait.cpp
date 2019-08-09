@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskAnimatablePlayWait::TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr& _eventable )
+    TaskAnimatablePlayWait::TaskAnimatablePlayWait( const AnimatablePtr & _animatable, const EventablePtr & _eventable )
         : m_animatable( _animatable )
         , m_eventable( _eventable )
     {
@@ -40,7 +40,7 @@ namespace Mengine
         }
 
         TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>();
-        
+
         eventation->addEventReceiver( EVENT_ANIMATION_END, receiver );
         eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );
         eventation->addEventReceiver( EVENT_ANIMATION_INTERRUPT, receiver );

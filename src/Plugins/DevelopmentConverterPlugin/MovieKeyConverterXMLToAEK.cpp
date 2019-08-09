@@ -625,7 +625,7 @@ namespace Mengine
                     for( const Geolygon & geolygon : output )
                     {
                         //p2t::CDT take only std::vector
-                        std::vector<p2t::Point*> p2t_polygon;
+                        std::vector<p2t::Point *> p2t_polygon;
 
                         const Polygon & outer = geolygon.getOuter();
 
@@ -644,7 +644,7 @@ namespace Mengine
                         for( const Polygon & inner : inners )
                         {
                             //cdt::AddHole take only std::vector
-                            std::vector<p2t::Point*> p2t_hole;
+                            std::vector<p2t::Point *> p2t_hole;
 
                             for( const mt::vec2f & v : inner )
                             {
@@ -660,7 +660,7 @@ namespace Mengine
                         cdt->Triangulate();
 
                         //cdt::GetTriangles return std::vector
-                        std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
+                        std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
 
                         for( p2t::Triangle * tr : triangles )
                         {
@@ -795,7 +795,7 @@ namespace Mengine
             , m_options.fileGroup->getName().c_str()
             , m_options.outputFileName.c_str()
         );
-        
+
         const void * buffer_memory = &_buffer[0];
         size_t buffer_size = _buffer.size();
 

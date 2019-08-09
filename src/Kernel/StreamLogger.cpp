@@ -23,7 +23,7 @@ namespace Mengine
     const OutputStreamInterfacePtr & StreamLogger::getStream() const
     {
         return m_stream;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool StreamLogger::initialize()
     {

@@ -17,7 +17,7 @@ namespace Mengine
         bool _initialize() override;
 
     public:
-        size_t encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo ) override;
+        size_t encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo ) override;
 
     protected:
         ArchivatorInterfacePtr m_archivator;

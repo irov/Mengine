@@ -44,7 +44,7 @@ namespace Mengine
 
         MENGINE_INLINE void setUVTextureImage( const mt::uv4f & _uv );
         MENGINE_INLINE const mt::uv4f & getUVTextureImage() const;
-        
+
         MENGINE_INLINE void setUVTextureAlpha( const mt::uv4f & _uv );
         MENGINE_INLINE const mt::uv4f & getUVTextureAlpha() const;
 

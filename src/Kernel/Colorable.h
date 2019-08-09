@@ -13,13 +13,13 @@ namespace Mengine
         ~Colorable() override;
 
     public:
-        void setPersonalColor( const Color& _color );
+        void setPersonalColor( const Color & _color );
         MENGINE_INLINE const Color & getPersonalColor() const;
 
         void setPersonalAlpha( float _alpha );
         MENGINE_INLINE float getPersonalAlpha() const;
 
-        void setLocalColor( const Color& _color );
+        void setLocalColor( const Color & _color );
         MENGINE_INLINE const Color & getLocalColor() const;
 
         void setLocalColorR( float _value );
@@ -49,10 +49,10 @@ namespace Mengine
         MENGINE_INLINE bool isInvalidateColor() const;
 
     protected:
-        const Color& updateRelationColor( const Color& _parentColor ) const;
+        const Color & updateRelationColor( const Color & _parentColor ) const;
 
     protected:
-        virtual void _setPersonalColor( const Color& _color );
+        virtual void _setPersonalColor( const Color & _color );
         virtual void _setPersonalAlpha( float _alpha );
 
         virtual void _invalidateColor();
@@ -115,7 +115,7 @@ namespace Mengine
         return alpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const Color& Colorable::getLocalColor() const
+    MENGINE_INLINE const Color & Colorable::getLocalColor() const
     {
         return m_localColor;
     }

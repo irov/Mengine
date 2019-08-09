@@ -173,7 +173,7 @@ namespace Mengine
         return mt::is_intersect( _min, _max, begin, end );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Viewport::testBBox( const mt::box2f& _bbox ) const
+    bool Viewport::testBBox( const mt::box2f & _bbox ) const
     {
         return this->testRectangle( _bbox.minimum, _bbox.maximum );
     }
@@ -183,7 +183,7 @@ namespace Mengine
         return mt::is_exist( _min, _max, begin, end );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Viewport::existBBox( const mt::box2f& _bbox ) const
+    bool Viewport::existBBox( const mt::box2f & _bbox ) const
     {
         return this->existRectangle( _bbox.minimum, _bbox.maximum );
     }
@@ -193,14 +193,14 @@ namespace Mengine
         mt::set_box_from_min_max( _box, begin, end );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Viewport::intersectBBox( const mt::box2f& _bbox ) const
+    bool Viewport::intersectBBox( const mt::box2f & _bbox ) const
     {
         bool result = mt::is_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Viewport::getIntersectionSquareBBox( const mt::box2f& _bbox ) const
+    float Viewport::getIntersectionSquareBBox( const mt::box2f & _bbox ) const
     {
         if( mt::is_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end ) == false )
         {
@@ -213,7 +213,7 @@ namespace Mengine
         float sy[4] = { _bbox.minimum.y, _bbox.maximum.y, this->begin.y, this->end.y };
         std::sort( sy, sy + 4 );
 
-        float s = (sx[2] - sx[1])*(sy[2] - sy[1]);
+        float s = (sx[2] - sx[1]) * (sy[2] - sy[1]);
 
         return s;
     }

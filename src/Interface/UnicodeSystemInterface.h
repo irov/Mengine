@@ -121,9 +121,9 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        MENGINE_INLINE bool utf8ToUnicode( const Char* _utf8, WString& _unicode )
+        MENGINE_INLINE bool utf8ToUnicode( const Char * _utf8, WString & _unicode )
         {
-            UnicodeSystemInterface* unicodeService = UNICODE_SYSTEM();
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
             size_t unicodeSize;
             if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNICODE_UNKNOWN_SIZE, nullptr, 0, &unicodeSize ) == false )

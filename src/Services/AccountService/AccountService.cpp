@@ -128,7 +128,7 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount_( const ConstString& _accountID )
+    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountID )
     {
 #ifdef MENGINE_DEBUG
         MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
@@ -175,7 +175,7 @@ namespace Mengine
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////	
-    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString& _accountID )
+    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountID )
     {
         MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -228,7 +228,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::newAccount_( const ConstString& _accountID )
+    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountID )
     {
         PathString accountString;
         accountString.append( _accountID );
@@ -260,7 +260,7 @@ namespace Mengine
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountService::hasAccount( const ConstString& _accountID ) const
+    bool AccountService::hasAccount( const ConstString & _accountID ) const
     {
         MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
 
@@ -272,7 +272,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::deleteAccount( const ConstString& _accountID )
+    void AccountService::deleteAccount( const ConstString & _accountID )
     {
         MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -305,7 +305,7 @@ namespace Mengine
         m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountService::selectAccount( const ConstString& _accountID )
+    bool AccountService::selectAccount( const ConstString & _accountID )
     {
         MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -352,7 +352,7 @@ namespace Mengine
         return m_currentAccountID;
     }
     //////////////////////////////////////////////////////////////////////////
-    const AccountInterfacePtr & AccountService::getAccount( const ConstString& _accountID ) const
+    const AccountInterfacePtr & AccountService::getAccount( const ConstString & _accountID ) const
     {
         MapAccounts::const_iterator it_found = m_accounts.find( _accountID );
 

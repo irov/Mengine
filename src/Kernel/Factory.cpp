@@ -37,7 +37,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer Factory::createObject( const Char * _doc )
     {
-		MENGINE_UNUSED( _doc );
+        MENGINE_UNUSED( _doc );
 
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 
@@ -50,7 +50,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
-			NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, this, object, _doc );
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, this, object, _doc );
         }
 #endif
 

@@ -29,7 +29,7 @@ namespace Mengine
         LOGGER_MESSAGE( "%s"
             , m_message.c_str()
         );
-            
+
         return true;
     }
 }

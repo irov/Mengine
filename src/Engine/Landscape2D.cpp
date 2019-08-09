@@ -149,7 +149,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Landscape2D::setBackParts( const VectorResourceImages & _images, uint32_t _countX, uint32_t _countY, float _width, float _height )
     {
-        this->recompile( [this, _images]() {m_images = _images; } );
+        this->recompile( [this, _images]()
+        {
+            m_images = _images;
+        } );
 
         m_elementCountX = _countX;
         m_elementCountY = _countY;

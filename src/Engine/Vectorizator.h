@@ -24,9 +24,19 @@ namespace Mengine
 
     public:
         void setLineWeight( float _weight );
+        float getLineWeight() const;
+
+        void setLineSoft( float _soft );
+        float getLineSoft() const;
+
         void setLineColor( const Color & _color );
+        const Color & getLineColor() const;
+
         void setCurveQuality( uint8_t _quality );
+        uint8_t getCurveQuality() const;
+
         void setEllipseQuality( uint8_t _quality );
+        uint8_t getEllipseQuality() const;
 
     public:
         void moveTo( const mt::vec2f & _point );
@@ -54,6 +64,7 @@ namespace Mengine
 
     protected:
         float m_lineWeight;
+        float m_lineSoft;
         Color m_lineColor;
 
         uint8_t m_curveQuality;
@@ -79,6 +90,8 @@ namespace Mengine
         {
             VectorPoints points;
             VectorLineEdge edges;
+
+            float soft;
         };
 
         typedef Vector<LineDesc> VectorLines;
@@ -90,7 +103,8 @@ namespace Mengine
             float width;
             float height;
 
-            float weight;
+            float weight;  
+            float soft;
             Color color;
         };
 
@@ -106,6 +120,7 @@ namespace Mengine
             uint8_t quality;
 
             float weight;
+            float soft;
             Color color;
         };
 

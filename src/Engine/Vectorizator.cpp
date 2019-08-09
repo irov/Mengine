@@ -15,7 +15,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Vectorizator::Vectorizator()
         : m_invalidateLocalVertex2D( false )
-        , m_lineWeight( 0.f )
+        , m_lineWeight( 2.f )
+        , m_lineSoft( 1.f )
         , m_lineColor( 1.f, 1.f, 1.f, 1.f )
         , m_curveQuality( 20 )
         , m_ellipseQuality( 32 )
@@ -31,9 +32,29 @@ namespace Mengine
         m_lineWeight = _weight;
     }
     //////////////////////////////////////////////////////////////////////////
+    float Vectorizator::getLineWeight() const
+    {
+        return m_lineWeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::setLineSoft( float _soft )
+    {
+        m_lineSoft = _soft;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Vectorizator::getLineSoft() const
+    {
+        return m_lineSoft;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setLineColor( const Color & _color )
     {
         m_lineColor = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Color & Vectorizator::getLineColor() const
+    {
+        return m_lineColor;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setCurveQuality( uint8_t _quality )
@@ -41,15 +62,26 @@ namespace Mengine
         m_curveQuality = _quality;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint8_t Vectorizator::getCurveQuality() const
+    {
+        return m_curveQuality;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setEllipseQuality( uint8_t _quality )
     {
         m_ellipseQuality = _quality;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t Vectorizator::getEllipseQuality() const
+    {
+        return m_ellipseQuality;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::moveTo( const mt::vec2f & _point )
     {
         LineDesc desc;
         desc.points.emplace_back( _point );
+        desc.soft = m_lineSoft;
 
         m_lines.emplace_back( desc );
     }
@@ -118,6 +150,7 @@ namespace Mengine
         desc.width = _width;
         desc.height = _height;
         desc.weight = m_lineWeight;
+        desc.soft = m_lineSoft;
         desc.color = m_lineColor;
 
         m_rects.emplace_back( desc );
@@ -138,6 +171,7 @@ namespace Mengine
         desc.height = _height;
         desc.quality = m_ellipseQuality;
         desc.weight = m_lineWeight;
+        desc.soft = m_lineSoft;
         desc.color = m_lineColor;
 
         m_ellipses.emplace_back( desc );
@@ -162,7 +196,7 @@ namespace Mengine
         }
 
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-            ->getMaterial3( EM_COLOR_SOLID, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
+            ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
         VectorRenderVertex2D::value_type * vertexData = m_renderVertex2D.data();
         VectorRenderVertex2D::size_type vertexSize = m_renderVertex2D.size();
@@ -187,7 +221,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to, float _weight )
+    static void makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to )
     {
         mt::vec2f dir;
         mt::sub_v2_v2( dir, _to, _from );
@@ -196,8 +230,6 @@ namespace Mengine
         mt::norm_v2_v2( dir_norm, dir );
 
         mt::perp_v2( _perp, dir_norm );
-
-        _perp *= _weight;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::updateLocalVertex2D_() const
@@ -210,8 +242,6 @@ namespace Mengine
         uint32_t vertexSize = 0;
         uint32_t indexSize = 0;
 
-        uint16_t point_count = 0;
-
         for( const LineDesc & line : m_lines )
         {
             if( line.edges.empty() == true )
@@ -219,26 +249,53 @@ namespace Mengine
                 continue;
             }
 
+            uint16_t point_count = 0;
+
             for( const LineEdge & edge : line.edges )
             {
                 point_count += edge.quality - 1;
             }
 
             point_count += 1;
+
+            if( line.soft > 0.f )
+            {
+                vertexSize += point_count * 4;
+                indexSize += (point_count - 1) * 18;
+            }
+            else
+            {
+                vertexSize += point_count * 2;
+                indexSize += (point_count - 1) * 6;
+            }
         }
 
-        vertexSize += point_count * 2;
-        indexSize += (point_count - 1) * 6;
-
-        VectorRects::size_type rects_count = m_rects.size();
-
-        vertexSize += rects_count * 8;
-        indexSize += rects_count * 24;
+        for( const RectDesc & desc : m_rects )
+        {
+            if( desc.soft > 0.f )
+            {
+                vertexSize += 16;
+                indexSize += 72;
+            }
+            else
+            {
+                vertexSize += 8;
+                indexSize += 24;
+            }
+        }
 
         for( const EllipseDesc & desc : m_ellipses )
         {
-            vertexSize += desc.quality * 2;
-            indexSize += desc.quality * 6;
+            if( desc.soft > 0.f )
+            {
+                vertexSize += desc.quality * 4;
+                indexSize += desc.quality * 18;
+            }
+            else
+            {
+                vertexSize += desc.quality * 2;
+                indexSize += desc.quality * 6;
+            }
         }
 
         m_renderVertex2D.resize( vertexSize );
@@ -344,16 +401,51 @@ namespace Mengine
 
             VectorLinePoints::size_type pointSize = points.size();
 
-            for( uint16_t index = 0; index != pointSize - 1; ++index )
+            if( line.soft > 0.f )
             {
-                m_renderIndices[indexIterator + 0] = vertexIterator + index * 2 + 0;
-                m_renderIndices[indexIterator + 1] = vertexIterator + index * 2 + 1;
-                m_renderIndices[indexIterator + 2] = vertexIterator + index * 2 + 2;
-                m_renderIndices[indexIterator + 3] = vertexIterator + index * 2 + 2;
-                m_renderIndices[indexIterator + 4] = vertexIterator + index * 2 + 1;
-                m_renderIndices[indexIterator + 5] = vertexIterator + index * 2 + 3;
+                for( uint16_t index = 0; index != pointSize - 1; ++index )
+                {
+                    m_renderIndices[indexIterator + 0] = vertexIterator + index * 4 + 0;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + index * 4 + 1;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + index * 4 + 4;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + index * 4 + 4;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + index * 4 + 1;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + index * 4 + 5;
 
-                indexIterator += 6;
+                    indexIterator += 6;
+
+                    m_renderIndices[indexIterator + 0] = vertexIterator + index * 4 + 1;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + index * 4 + 2;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + index * 4 + 5;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + index * 4 + 5;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + index * 4 + 2;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + index * 4 + 6;
+
+                    indexIterator += 6;
+
+                    m_renderIndices[indexIterator + 0] = vertexIterator + index * 4 + 2;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + index * 4 + 3;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + index * 4 + 6;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + index * 4 + 6;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + index * 4 + 3;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + index * 4 + 7;
+
+                    indexIterator += 6;
+                }
+            }
+            else
+            {
+                for( uint16_t index = 0; index != pointSize - 1; ++index )
+                {
+                    m_renderIndices[indexIterator + 0] = vertexIterator + index * 2 + 0;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + index * 2 + 1;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + index * 2 + 2;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + index * 2 + 2;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + index * 2 + 1;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + index * 2 + 3;
+
+                    indexIterator += 6;
+                }
             }
 
             {
@@ -364,19 +456,50 @@ namespace Mengine
                 const mt::vec2f & p1 = points[1].pos;
 
                 mt::vec2f perp;
-                makeLinePerp( perp, p0, p1, weight * 0.5f );
+                makeLinePerp( perp, p0, p1 );
 
-                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x;
-                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
+                float line_weight = weight * 0.5f;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x;
-                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
+                if( line.soft > 0.f )
+                {
+                    float line_weight_soft = (weight - line.soft * 2.f) * 0.5f;
 
-                vertexIterator += 2;
+                    m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = p0.x - perp.x * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 1].position.y = p0.y - perp.y * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 2].position.x = p0.x + perp.x * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 2].position.y = p0.y + perp.y * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 3].position.x = p0.x + perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 3].position.y = p0.y + perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
+
+                    vertexIterator += 4;
+                }
+                else
+                {
+                    m_renderVertex2D[vertexIterator + 0].position.x = p0.x - perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.y = p0.y - perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = p0.x + perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 1].position.y = p0.y + perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    vertexIterator += 2;
+                }
             }
 
             for( uint16_t index = 1; index != pointSize - 1; ++index )
@@ -388,47 +511,102 @@ namespace Mengine
                 const mt::vec2f & p1 = points[index + 0].pos;
                 const mt::vec2f & p2 = points[index + 1].pos;
 
+                float line_weight = weight * 0.5f;
+
                 mt::vec2f perp01;
-                makeLinePerp( perp01, p0, p1, weight * 0.5f );
+                makeLinePerp( perp01, p0, p1 );
 
                 mt::vec2f perp12;
-                makeLinePerp( perp12, p1, p2, weight * 0.5f );
+                makeLinePerp( perp12, p1, p2 );
 
                 mt::line2f line01l;
-                mt::line_from_two_point_v2( line01l, p0 - perp01, p1 - perp01 );
+                mt::line_from_two_point_v2( line01l, p0 - perp01 * line_weight, p1 - perp01 * line_weight );
 
                 mt::line2f line12l;
-                mt::line_from_two_point_v2( line12l, p1 - perp12, p2 - perp12 );
+                mt::line_from_two_point_v2( line12l, p1 - perp12 * line_weight, p2 - perp12 * line_weight );
 
                 mt::vec2f pl;
                 if( mt::line_intersect_v2( line01l, line12l, pl ) == false )
                 {
-                    pl = p1 - perp01;
+                    pl = p1 - perp01 * line_weight;
                 }
 
                 mt::line2f line01r;
-                mt::line_from_two_point_v2( line01r, p0 + perp01, p1 + perp01 );
+                mt::line_from_two_point_v2( line01r, p0 + perp01 * line_weight, p1 + perp01 * line_weight );
 
                 mt::line2f line12r;
-                mt::line_from_two_point_v2( line12r, p1 + perp12, p2 + perp12 );
+                mt::line_from_two_point_v2( line12r, p1 + perp12 * line_weight, p2 + perp12 * line_weight );
 
                 mt::vec2f pr;
                 if( mt::line_intersect_v2( line01r, line12r, pr ) == false )
                 {
-                    pr = p1 + perp01;
+                    pr = p1 + perp01 * line_weight;
                 }
 
-                m_renderVertex2D[vertexIterator + 0].position.x = pl.x;
-                m_renderVertex2D[vertexIterator + 0].position.y = pl.y;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
+                if( line.soft > 0.f )
+                {
+                    float line_weight_soft = (weight - line.soft * 2.f) * 0.5f;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = pr.x;
-                m_renderVertex2D[vertexIterator + 1].position.y = pr.y;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
+                    mt::line2f line01l_soft;
+                    mt::line_from_two_point_v2( line01l_soft, p0 - perp01 * line_weight_soft, p1 - perp01 * line_weight_soft );
 
-                vertexIterator += 2;
+                    mt::line2f line12l_soft;
+                    mt::line_from_two_point_v2( line12l_soft, p1 - perp12 * line_weight_soft, p2 - perp12 * line_weight_soft );
+
+                    mt::vec2f pl_soft;
+                    if( mt::line_intersect_v2( line01l_soft, line12l_soft, pl_soft ) == false )
+                    {
+                        pl_soft = p1 - perp01 * line_weight_soft;
+                    }
+
+                    mt::line2f line01r_soft;
+                    mt::line_from_two_point_v2( line01r_soft, p0 + perp01 * line_weight_soft, p1 + perp01 * line_weight_soft );
+
+                    mt::line2f line12r_soft;
+                    mt::line_from_two_point_v2( line12r_soft, p1 + perp12 * line_weight_soft, p2 + perp12 * line_weight_soft );
+
+                    mt::vec2f pr_soft;
+                    if( mt::line_intersect_v2( line01r_soft, line12r_soft, pr_soft ) == false )
+                    {
+                        pr_soft = p1 + perp01 * line_weight_soft;
+                    }
+
+                    m_renderVertex2D[vertexIterator + 0].position.x = pl.x;
+                    m_renderVertex2D[vertexIterator + 0].position.y = pl.y;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = pl_soft.x;
+                    m_renderVertex2D[vertexIterator + 1].position.y = pl_soft.y;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 2].position.x = pr_soft.x;
+                    m_renderVertex2D[vertexIterator + 2].position.y = pr_soft.y;
+                    m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 3].position.x = pr.x;
+                    m_renderVertex2D[vertexIterator + 3].position.y = pr.y;
+                    m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
+
+                    vertexIterator += 4;
+                }
+                else
+                {
+                    m_renderVertex2D[vertexIterator + 0].position.x = pl.x;
+                    m_renderVertex2D[vertexIterator + 0].position.y = pl.y;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = pr.x;
+                    m_renderVertex2D[vertexIterator + 1].position.y = pr.y;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    vertexIterator += 2;
+                }
             }
 
             {
@@ -439,19 +617,50 @@ namespace Mengine
                 const mt::vec2f & p1 = points[pointSize - 1].pos;
 
                 mt::vec2f perp;
-                makeLinePerp( perp, p0, p1, weight * 0.5f );
+                makeLinePerp( perp, p0, p1 );
 
-                m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x;
-                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
+                float line_weight = weight * 0.5f;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x;
-                m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
+                if( line.soft > 0.f )
+                {
+                    float line_weight_soft = (weight - line.soft * 2.f) * 0.5f;
 
-                vertexIterator += 2;
+                    m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = p1.x - perp.x * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 1].position.y = p1.y - perp.y * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 2].position.x = p1.x + perp.x * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 2].position.y = p1.y + perp.y * line_weight_soft;
+                    m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 3].position.x = p1.x + perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 3].position.y = p1.y + perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
+
+                    vertexIterator += 4;
+                }
+                else
+                {
+                    m_renderVertex2D[vertexIterator + 0].position.x = p1.x - perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.y = p1.y - perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = p1.x + perp.x * line_weight;
+                    m_renderVertex2D[vertexIterator + 1].position.y = p1.y + perp.y * line_weight;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    vertexIterator += 2;
+                }                
             }
         }
 
@@ -460,16 +669,51 @@ namespace Mengine
             Color line_color = color * rect.color;
             uint32_t argb = line_color.getAsARGB();
 
-            for( uint16_t index = 0; index != 4; ++index )
+            if( rect.soft > 0.f )
             {
-                m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % 8;
-                m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % 8;
-                m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % 8;
-                m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % 8;
-                m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % 8;
-                m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % 8;
+                for( uint16_t index = 0; index != 4; ++index )
+                {
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 4 + 0) % 16;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 4 + 1) % 16;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 4 + 4) % 16;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 4 + 4) % 16;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 4 + 1) % 16;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 4 + 5) % 16;
 
-                indexIterator += 6;
+                    indexIterator += 6;
+
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 4 + 1) % 16;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 4 + 2) % 16;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 4 + 5) % 16;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 4 + 5) % 16;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 4 + 2) % 16;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 4 + 6) % 16;
+
+                    indexIterator += 6;
+
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 4 + 2) % 16;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 4 + 3) % 16;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 4 + 6) % 16;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 4 + 6) % 16;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 4 + 3) % 16;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 4 + 7) % 16;
+
+                    indexIterator += 6;
+                }
+            }
+            else
+            {
+                for( uint16_t index = 0; index != 4; ++index )
+                {
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % 8;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % 8;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % 8;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % 8;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % 8;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % 8;
+
+                    indexIterator += 6;
+                }
             }
             
             mt::vec2f p0 = rect.point + mt::vec2f( 0.f, 0.f );
@@ -479,53 +723,148 @@ namespace Mengine
 
             float sqrt2_weight = mt::constant::sqrt2 * rect.weight * 0.5f;
 
-            m_renderVertex2D[vertexIterator + 0].position.x = p0.x - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.y = p0.y - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 0].color = argb;
+            if( rect.soft > 0.f )
+            {
+                float sqrt2_weight_soft = mt::constant::sqrt2 * (rect.weight - rect.soft * 2.f) * 0.5f;
 
-            m_renderVertex2D[vertexIterator + 1].position.x = p0.x + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.y = p0.y + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 1].color = argb;
+                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
 
-            vertexIterator += 2;
+                m_renderVertex2D[vertexIterator + 1].position.x = p0.x - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.y = p0.y - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
 
-            m_renderVertex2D[vertexIterator + 0].position.x = p1.x + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.y = p1.y - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 0].color = argb;
+                m_renderVertex2D[vertexIterator + 2].position.x = p0.x + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.y = p0.y + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 2].color = argb;
 
-            m_renderVertex2D[vertexIterator + 1].position.x = p1.x - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.y = p1.y + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 1].color = argb;
+                m_renderVertex2D[vertexIterator + 3].position.x = p0.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.y = p0.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
 
-            vertexIterator += 2;
+                vertexIterator += 4;
 
-            m_renderVertex2D[vertexIterator + 0].position.x = p2.x + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.y = p2.y + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 0].color = argb;
+                m_renderVertex2D[vertexIterator + 0].position.x = p1.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
 
-            m_renderVertex2D[vertexIterator + 1].position.x = p2.x - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.y = p2.y - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 1].color = argb;
+                m_renderVertex2D[vertexIterator + 1].position.x = p1.x + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.y = p1.y - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
 
-            vertexIterator += 2;
+                m_renderVertex2D[vertexIterator + 2].position.x = p1.x - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.y = p1.y + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 2].color = argb;
 
-            m_renderVertex2D[vertexIterator + 0].position.x = p3.x - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.y = p3.y + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 0].color = argb;
+                m_renderVertex2D[vertexIterator + 3].position.x = p1.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.y = p1.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
 
-            m_renderVertex2D[vertexIterator + 1].position.x = p3.x + sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.y = p3.y - sqrt2_weight;
-            m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-            m_renderVertex2D[vertexIterator + 1].color = argb;
+                vertexIterator += 4;
 
-            vertexIterator += 2;
+                m_renderVertex2D[vertexIterator + 0].position.x = p2.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p2.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p2.x + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.y = p2.y + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                m_renderVertex2D[vertexIterator + 2].position.x = p2.x - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.y = p2.y - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                m_renderVertex2D[vertexIterator + 3].position.x = p2.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.y = p2.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
+
+                vertexIterator += 4;
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p3.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p3.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p3.x - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.y = p3.y + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                m_renderVertex2D[vertexIterator + 2].position.x = p3.x + sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.y = p3.y - sqrt2_weight_soft;
+                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                m_renderVertex2D[vertexIterator + 3].position.x = p3.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.y = p3.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
+
+                vertexIterator += 4;
+            }
+            else
+            {
+                m_renderVertex2D[vertexIterator + 0].position.x = p0.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p0.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p0.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p1.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p1.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p1.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p1.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p2.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p2.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p2.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p2.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p3.x - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.y = p3.y + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p3.x + sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.y = p3.y - sqrt2_weight;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                vertexIterator += 2;
+            }
         }
 
         for( const EllipseDesc & ellipse : m_ellipses )
@@ -533,21 +872,60 @@ namespace Mengine
             Color line_color = color * ellipse.color;
             uint32_t argb = line_color.getAsARGB();
 
-            uint32_t ellipse_quality2 = ellipse.quality * 2;
-
-            for( uint16_t index = 0; index != ellipse.quality; ++index )
+            if( ellipse.soft > 0 )
             {
-                m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % ellipse_quality2;
-                m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % ellipse_quality2;
-                m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % ellipse_quality2;
-                m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % ellipse_quality2;
-                m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % ellipse_quality2;
-                m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % ellipse_quality2;
+                uint32_t ellipse_quality2 = ellipse.quality * 4;
 
-                indexIterator += 6;
+                for( uint16_t index = 0; index != ellipse.quality; ++index )
+                {
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 4 + 0) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 4 + 1) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 4 + 4) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 4 + 4) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 4 + 1) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 4 + 5) % ellipse_quality2;
+
+                    indexIterator += 6;
+
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 4 + 1) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 4 + 2) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 4 + 5) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 4 + 5) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 4 + 2) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 4 + 6) % ellipse_quality2;
+
+                    indexIterator += 6;
+
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 4 + 2) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 4 + 3) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 4 + 6) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 4 + 6) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 4 + 3) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 4 + 7) % ellipse_quality2;
+
+                    indexIterator += 6;
+                }
+            }
+            else
+            {
+                uint32_t ellipse_quality2 = ellipse.quality * 2;
+
+                for( uint16_t index = 0; index != ellipse.quality; ++index )
+                {
+                    m_renderIndices[indexIterator + 0] = vertexIterator + (index * 2 + 0) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 1] = vertexIterator + (index * 2 + 1) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 2] = vertexIterator + (index * 2 + 2) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 3] = vertexIterator + (index * 2 + 2) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 4] = vertexIterator + (index * 2 + 1) % ellipse_quality2;
+                    m_renderIndices[indexIterator + 5] = vertexIterator + (index * 2 + 3) % ellipse_quality2;
+
+                    indexIterator += 6;
+                }
             }
 
-            const float dt = mt::constant::two_pi / float( ellipse.quality );
+            float line_weight = ellipse.weight * 0.5f;
+
+            float dt = mt::constant::two_pi / float( ellipse.quality );
 
             float t = 0.f;
 
@@ -556,23 +934,58 @@ namespace Mengine
                 float ct = MT_cosf( t );
                 float st = MT_sinf( t );
 
-                float x0 = (ellipse.width + ellipse.weight * 0.5f) * ct;
-                float y0 = (ellipse.height + ellipse.weight * 0.5f) * st;
+                float x0 = (ellipse.width + line_weight) * ct;
+                float y0 = (ellipse.height + line_weight) * st;
 
-                float x1 = (ellipse.width - ellipse.weight * 0.5f) * ct;
-                float y1 = (ellipse.height - ellipse.weight * 0.5f) * st;
+                float x1 = (ellipse.width - line_weight) * ct;
+                float y1 = (ellipse.height - line_weight) * st;
 
-                m_renderVertex2D[vertexIterator + 0].position.x = ellipse.point.x + x0;
-                m_renderVertex2D[vertexIterator + 0].position.y = ellipse.point.y + y0;
-                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 0].color = argb;
+                if( ellipse.soft > 0.f )
+                {
+                    float line_weight_soft = (ellipse.weight - ellipse.soft * 2.f) * 0.5f;
 
-                m_renderVertex2D[vertexIterator + 1].position.x = ellipse.point.x + x1;
-                m_renderVertex2D[vertexIterator + 1].position.y = ellipse.point.y + y1;
-                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
-                m_renderVertex2D[vertexIterator + 1].color = argb;
+                    float x0_soft = (ellipse.width + line_weight_soft) * ct;
+                    float y0_soft = (ellipse.height + line_weight_soft) * st;
 
-                vertexIterator += 2;
+                    float x1_soft = (ellipse.width - line_weight_soft) * ct;
+                    float y1_soft = (ellipse.height - line_weight_soft) * st;
+
+                    m_renderVertex2D[vertexIterator + 0].position.x = ellipse.point.x + x0;
+                    m_renderVertex2D[vertexIterator + 0].position.y = ellipse.point.y + y0;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb & 0x00ffffff;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = ellipse.point.x + x0_soft;
+                    m_renderVertex2D[vertexIterator + 1].position.y = ellipse.point.y + y0_soft;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 2].position.x = ellipse.point.x + x1_soft;
+                    m_renderVertex2D[vertexIterator + 2].position.y = ellipse.point.y + y1_soft;
+                    m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 2].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 3].position.x = ellipse.point.x + x1;
+                    m_renderVertex2D[vertexIterator + 3].position.y = ellipse.point.y + y1;
+                    m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 3].color = argb & 0x00ffffff;
+
+                    vertexIterator += 4;
+                }
+                else
+                {
+                    m_renderVertex2D[vertexIterator + 0].position.x = ellipse.point.x + x0;
+                    m_renderVertex2D[vertexIterator + 0].position.y = ellipse.point.y + y0;
+                    m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 0].color = argb;
+
+                    m_renderVertex2D[vertexIterator + 1].position.x = ellipse.point.x + x1;
+                    m_renderVertex2D[vertexIterator + 1].position.y = ellipse.point.y + y1;
+                    m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                    m_renderVertex2D[vertexIterator + 1].color = argb;
+
+                    vertexIterator += 2;
+                }
 
                 t += dt;
             }

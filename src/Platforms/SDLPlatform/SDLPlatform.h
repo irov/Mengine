@@ -99,6 +99,7 @@ namespace Mengine
 
     public:
         size_t getShortPathName( const Char * _path, Char * _short, size_t _len ) const override;
+        size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const override;
 
     public:
         void getMaxClientResolution( Resolution & _resolution ) const override;

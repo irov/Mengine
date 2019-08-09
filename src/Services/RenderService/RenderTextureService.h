@@ -4,19 +4,12 @@
 #include "Interface/ImageCodecInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/ConstString.h"
-
+#include "Kernel/Hashtable.h"
 #include "Kernel/Factory.h"
 
 #include "Config/Pair.h"
-#include "Config/Map.h"
 
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_TEXTURE_MANAGER_HASH_SIZE
-#define MENGINE_TEXTURE_MANAGER_HASH_SIZE 4099
-#endif
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     class RenderTextureService
@@ -62,8 +55,8 @@ namespace Mengine
 
     protected:
         typedef Pair<ConstString, FilePath> MapRenderTextureKey;
-        typedef Map<MapRenderTextureKey, RenderTextureInterface *> MapRenderTextureEntry;
-        MapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
+        typedef Hashtable<MapRenderTextureKey, RenderTextureInterface *> MapRenderTextureEntry;
+        MapRenderTextureEntry m_textures;
 
         FactoryPtr m_factoryRenderTexture;
         FactoryPtr m_factoryDecoderRenderImageProvider;
@@ -72,9 +65,5 @@ namespace Mengine
         bool m_supportL8;
         bool m_supportR8G8B8;
         bool m_supportNonPow2;
-
-    private:
-        MapRenderTextureEntry & getHashEntry_( const ConstString & _fileName );
-        const MapRenderTextureEntry & getHashEntry_( const ConstString & _fileName ) const;
     };
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdex/stl_allocator.h"
-
 #include <utility>
 
 namespace Mengine

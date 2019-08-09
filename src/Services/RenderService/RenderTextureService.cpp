@@ -59,28 +59,29 @@ namespace Mengine
 
         m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>();
 
+        uint32_t TextureHashTableSize = CONFIG_VALUE( "Engine", "TextureHashTableSize", 1024 * 8 );
+
+        m_textures.reserve( TextureHashTableSize );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::_finalizeService()
     {
-        for( uint32_t i = 0; i != MENGINE_TEXTURE_MANAGER_HASH_SIZE; ++i )
+        for( MapRenderTextureEntry::const_iterator
+            it = m_textures.begin(),
+            it_end = m_textures.end();
+            it != it_end;
+            ++it )
         {
-            MapRenderTextureEntry & textures = m_textures[i];
+            const MapRenderTextureEntry::value_type & value = *it;
 
-            for( MapRenderTextureEntry::iterator
-                it = textures.begin(),
-                it_end = textures.end();
-                it != it_end;
-                ++it )
-            {
-                RenderTextureInterface * texture = it->second;
+            RenderTextureInterface * texture = value.element;
 
-                texture->release();
-            }
-
-            textures.clear();
+            texture->release();
         }
+
+        m_textures.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTexture );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDecoderRenderImageProvider );
@@ -91,11 +92,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::hasTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
-        const MapRenderTextureEntry & textures = this->getHashEntry_( _fileName );
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
 
-        MapRenderTextureEntry::const_iterator it_found = textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
-
-        if( it_found == textures.end() )
+        if( texture == nullptr )
         {
             if( _texture != nullptr )
             {
@@ -104,8 +103,6 @@ namespace Mengine
 
             return false;
         }
-
-        const RenderTextureInterface * texture = it_found->second;
 
         if( _texture != nullptr )
         {
@@ -117,16 +114,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) const
     {
-        const MapRenderTextureEntry & textures = this->getHashEntry_( _fileName );
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
 
-        MapRenderTextureEntry::const_iterator it_found = textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
-
-        if( it_found == textures.end() )
+        if( texture == nullptr )
         {
-            return RenderTextureInterfacePtr::none();
+            return nullptr;
         }
-
-        const RenderTextureInterface * texture = it_found->second;
 
         return RenderTextureInterfacePtr( texture );
     }
@@ -273,20 +266,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::visitTexture( const LambdaRenderTexture & _lambda ) const
     {
-        for( uint32_t i = 0; i != MENGINE_TEXTURE_MANAGER_HASH_SIZE; ++i )
+        for( MapRenderTextureEntry::const_iterator
+            it = m_textures.begin(),
+            it_end = m_textures.end();
+            it != it_end;
+            ++it )
         {
-            const MapRenderTextureEntry & textures = m_textures[i];
+            const MapRenderTextureEntry::value_type & value = *it;
 
-            for( MapRenderTextureEntry::const_iterator
-                it = textures.begin(),
-                it_end = textures.end();
-                it != it_end;
-                ++it )
-            {
-                const RenderTextureInterface * texture = it->second;
+            const RenderTextureInterface * texture = value.element;
 
-                _lambda( RenderTextureInterfacePtr( texture ) );
-            }
+            _lambda( RenderTextureInterfacePtr( texture ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -295,11 +285,9 @@ namespace Mengine
         _texture->setFileGroup( _fileGroup );
         _texture->setFileName( _fileName );
 
-        MapRenderTextureEntry & textures = this->getHashEntry_( _fileName );
-
         RenderTextureInterface * texture_ptr = _texture.get();
 
-        textures.emplace( std::make_pair( _fileGroup->getName(), _fileName ), texture_ptr );
+        m_textures.emplace( std::make_pair( _fileGroup->getName(), _fileName ), texture_ptr );
 
         LOGGER_INFO( "cache texture '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -309,14 +297,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName, const Char * _doc )
     {
-        const MapRenderTextureEntry & textures = this->getHashEntry_( _fileName );
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
 
-        MapRenderTextureEntry::const_iterator it_found = textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
-
-        if( it_found != textures.end() )
+        if( texture != nullptr )
         {
-            const RenderTextureInterface * texture = it_found->second;
-
             return RenderTextureInterfacePtr( texture );
         }
 
@@ -493,9 +477,7 @@ namespace Mengine
 
         if( fileName.empty() == false )
         {
-            MapRenderTextureEntry & textures = this->getHashEntry_( fileName );
-
-            textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
+            m_textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
         }
@@ -516,23 +498,5 @@ namespace Mengine
         texture->initialize( id, _image, _width, _height );
 
         return texture;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderTextureService::MapRenderTextureEntry & RenderTextureService::getHashEntry_( const ConstString & _fileName )
-    {
-        ConstString::hash_type hash = _fileName.hash();
-        uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
-        MapRenderTextureEntry & textures = m_textures[table];
-
-        return textures;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderTextureService::MapRenderTextureEntry & RenderTextureService::getHashEntry_( const ConstString & _fileName ) const
-    {
-        ConstString::hash_type hash = _fileName.hash();
-        uint32_t table = (uint32_t)hash % MENGINE_TEXTURE_MANAGER_HASH_SIZE;
-        const MapRenderTextureEntry & textures = m_textures[table];
-
-        return textures;
     }
 }

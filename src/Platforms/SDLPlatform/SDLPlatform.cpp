@@ -192,6 +192,14 @@ namespace Mengine
         return pathSize;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t SDLPlatform::getSystemFontPath( const Char * _fontName, Char * _fontPath ) const
+    {
+        MENGINE_UNUSED( _fontName );
+        MENGINE_UNUSED( _fontPath );
+
+        return ~0U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::getMaxClientResolution( Resolution & _resolution ) const
     {
         SDL_Rect rect;

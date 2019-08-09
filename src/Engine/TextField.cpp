@@ -192,7 +192,7 @@ namespace Mengine
                 }break;
             case EMB_MULTIPLY:
                 {
-                    materialId = EM_TEXTURE_BLEND;
+                    materialId = EM_TEXTURE_MULTIPLY;
                 }break;
             default:
                 break;
@@ -1572,7 +1572,7 @@ namespace Mengine
             return false;
         }
 
-        _cacheText = font->prepareText( fmt );
+        _cacheText = font->prepareText( fmt.c_str(), fmt.size() );
 
         return true;
     }

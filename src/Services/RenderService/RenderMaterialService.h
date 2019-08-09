@@ -108,7 +108,7 @@ namespace Mengine
         ETextureFilter m_defaultTextureFilterMagnification;
         ETextureFilter m_defaultTextureFilterMinification;
 
-        typedef Map<ConstString, const RenderMaterialStage *> MapRenderStage;
+        typedef Hashtable<ConstString, const RenderMaterialStage *> MapRenderStage;
         MapRenderStage m_materialStageIndexer;
 
         RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];

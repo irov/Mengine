@@ -721,11 +721,11 @@ namespace Mengine
             mt::vec2f p2 = rect.point + mt::vec2f( rect.width, rect.height );
             mt::vec2f p3 = rect.point + mt::vec2f( 0.f, rect.height );
 
-            float sqrt2_weight = mt::constant::sqrt2 * rect.weight * 0.5f;
+            float sqrt2_weight = rect.weight * 0.5f;
 
             if( rect.soft > 0.f )
             {
-                float sqrt2_weight_soft = mt::constant::sqrt2 * (rect.weight - rect.soft * 2.f) * 0.5f;
+                float sqrt2_weight_soft = (rect.weight - rect.soft * 2.f) * 0.5f;
 
                 m_renderVertex2D[vertexIterator + 0].position.x = p0.x - sqrt2_weight;
                 m_renderVertex2D[vertexIterator + 0].position.y = p0.y - sqrt2_weight;

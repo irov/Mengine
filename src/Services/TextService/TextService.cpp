@@ -551,6 +551,18 @@ namespace Mengine
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", fonts );
 
+#ifndef MENGINE_MASTER_RELEASE
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        if( developmentMode == true )
+        {
+            VectorConstString devfonts;
+            config->getValues( "GAME_FONTS", "FontDev", devfonts );
+
+            fonts.insert( fonts.end(), devfonts.begin(), devfonts.end() );
+        }
+#endif
+
         for( const ConstString & fontName : fonts )
         {
             MENGINE_ASSERTION_RETURN( config->hasSection( fontName.c_str() ) == true, false, "invalid '%s:%s' section for FONT '%s'"
@@ -594,7 +606,6 @@ namespace Mengine
 
             m_fonts.emplace( fontName, font );
         }
-
 
 #ifndef MENGINE_MASTER_RELEASE
         bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
@@ -646,6 +657,18 @@ namespace Mengine
 
         VectorConstString fonts;
         config->getValues( "GAME_FONTS", "Font", fonts );
+
+#ifndef MENGINE_MASTER_RELEASE
+        bool developmentMode = HAS_OPTION( "dev" );
+
+        if( developmentMode == true )
+        {
+            VectorConstString devfonts;
+            config->getValues( "GAME_FONTS", "FontDev", devfonts );
+
+            fonts.insert( fonts.end(), devfonts.begin(), devfonts.end() );
+        }
+#endif
 
         for( const ConstString & fontName : fonts )
         {

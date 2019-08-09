@@ -41,9 +41,9 @@ namespace Mengine
             return false;
         }
 
-        m_hInstance = ::LoadLibrary( unicode_name );
+        HINSTANCE hInstance = ::LoadLibrary( unicode_name );
 
-        if( m_hInstance == NULL )
+        if( hInstance == NULL )
         {
             DWORD le = GetLastError();
 
@@ -54,6 +54,8 @@ namespace Mengine
 
             return false;
         }
+
+        m_hInstance = hInstance;
 
         return true;
     }

@@ -2,6 +2,8 @@
 
 #include "Kernel/HashType.h"
 
+#include "Config/Pair.h"
+
 namespace Mengine
 {
     template<class C>
@@ -22,6 +24,15 @@ namespace Mengine
         HashType operator()( uint64_t _value ) const
         {
             return (HashType)_value;
+        }
+    };
+
+    template<class K, class V>
+    struct Hashgen<Pair<K, V>>
+    {
+        HashType operator()( const Pair<K, V> & _value ) const
+        {
+            return Hashgen<K>()(_value.first) + Hashgen<V>()(_value.second);
         }
     };
 }

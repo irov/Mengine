@@ -29,7 +29,7 @@ namespace Mengine
         void _setLocalHide( bool _value ) override;
 
     protected:
-        void _setPersonalColor( const Color& _color ) override;
+        void _setPersonalColor( const Color & _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 
     protected:

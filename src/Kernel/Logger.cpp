@@ -154,7 +154,7 @@ namespace Mengine
         str[size + 1] = 0;
 
         this->logMessage( str, size + 1 );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessage( const Char * _msg, uint32_t _size ) const
     {

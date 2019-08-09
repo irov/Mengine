@@ -110,7 +110,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchImageDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
     {
         if( this->isAvailableService() == false )
         {
@@ -183,7 +183,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
     {
         if( this->isAvailableService() == false )
         {
@@ -229,7 +229,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder )
+    bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder )
     {
         if( this->isAvailableService() == false )
         {
@@ -256,12 +256,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, false, "'%s':'%s' invalide dataflow is nullptr"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
-            );
+        );
 
         if( this->isAvailableService() == false )
         {
@@ -283,7 +283,7 @@ namespace Mengine
             ++receiver->refcount;
 
             _observer->onPrefetchAlreadyExist();
-            
+
             return true;
         }
 
@@ -308,7 +308,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////			
-    bool PrefetcherService::getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
+    bool PrefetcherService::getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
         if( this->isAvailableService() == false )
         {
@@ -335,7 +335,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////			
-    bool PrefetcherService::popData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
+    bool PrefetcherService::popData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
         if( this->isAvailableService() == false )
         {
@@ -438,7 +438,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath& _filePath )
+    bool PrefetcherService::unfetch( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         MapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
@@ -480,7 +480,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::hasPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
+    bool PrefetcherService::hasPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
     {
         MapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
@@ -496,7 +496,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
+    bool PrefetcherService::getPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
     {
         PrefetchReceiver * receiver;
         if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == false )
@@ -519,7 +519,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * _prefetch )
+    bool PrefetcherService::popPrefetch_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ThreadTaskPrefetchPtr * _prefetch )
     {
         MapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 

@@ -30,5 +30,5 @@ namespace Mengine
 
         PLATFORM_SERVICE()
             ->abort();
-    }    
+    }
 }

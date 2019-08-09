@@ -118,7 +118,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _filePath]() { this->setFilePath( _filePath ); } );
+        this->recompile( [this, _filePath]()
+        {
+            this->setFilePath( _filePath );
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::testPoint( const mt::vec2f & _point, float _minAlpha ) const
@@ -153,7 +156,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceHIT::testRadius( const mt::vec2f& _point, float _radius, float _minAlpha ) const
+    bool ResourceHIT::testRadius( const mt::vec2f & _point, float _radius, float _minAlpha ) const
     {
         float fi = _point.x;
         float fj = _point.y;

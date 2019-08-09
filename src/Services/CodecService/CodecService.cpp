@@ -63,7 +63,7 @@ namespace Mengine
         return decoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterfacePtr CodecService::createEncoder( const ConstString& _type, const Char * _doc )
+    EncoderInterfacePtr CodecService::createEncoder( const ConstString & _type, const Char * _doc )
     {
         EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 

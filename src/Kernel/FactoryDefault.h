@@ -26,7 +26,7 @@ namespace Mengine
 
         void _destroyObject( Factorable * _obj ) override
         {
-            Helper::freeT<Type>( static_cast<Type*>(_obj) );
+            Helper::freeT<Type>( static_cast<Type *>(_obj) );
         }
     };
     //////////////////////////////////////////////////////////////////////////

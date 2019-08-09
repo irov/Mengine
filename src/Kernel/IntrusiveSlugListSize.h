@@ -7,7 +7,7 @@
 #include "stdex/intrusive_slug_list_size_ptr.h"
 
 namespace Mengine
-{ 
+{
     template<class T, class D = void>
     class IntrusiveSlugListSize
         : public stdex::intrusive_slug_list_size_ptr<T, D, IntrusivePtr, IntrusivePtrBase, IntrusiveSlugHead>

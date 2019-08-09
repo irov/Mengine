@@ -96,7 +96,7 @@ namespace Mengine
 
     protected:
         uint32_t m_enumerator;
-        
+
         typedef Vector<EventDesc> VectorEvents;
         VectorEvents m_events;
     };

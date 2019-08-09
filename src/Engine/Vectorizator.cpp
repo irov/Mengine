@@ -203,7 +203,7 @@ namespace Mengine
 
         VectorRenderIndex::value_type * indexData = m_renderIndices.data();
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
-        
+
         this->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -359,7 +359,7 @@ namespace Mengine
                             p.weight = edge.weight;
                             p.argb = argb;
 
-                            points.emplace_back( p );                            
+                            points.emplace_back( p );
                         }
                     }break;
                 case 2:
@@ -660,7 +660,7 @@ namespace Mengine
                     m_renderVertex2D[vertexIterator + 1].color = argb;
 
                     vertexIterator += 2;
-                }                
+                }
             }
         }
 
@@ -715,7 +715,7 @@ namespace Mengine
                     indexIterator += 6;
                 }
             }
-            
+
             mt::vec2f p0 = rect.point + mt::vec2f( 0.f, 0.f );
             mt::vec2f p1 = rect.point + mt::vec2f( rect.width, 0.f );
             mt::vec2f p2 = rect.point + mt::vec2f( rect.width, rect.height );

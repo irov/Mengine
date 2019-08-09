@@ -14,7 +14,7 @@ namespace Mengine
     protected:
         void render( const RenderContext * _context, Node * _node ) override
         {
-            T * t = Helper::staticNodeCast<T *>(_node);
+            T * t = Helper::staticNodeCast<T *>( _node );
 
             this->_render( _context, t );
         }

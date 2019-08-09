@@ -14,7 +14,7 @@ namespace Mengine
         {
         public:
             TaskTransformationRotateYAffector( TaskTransformationRotateY * _task, const TransformationPtr & _transformation, float _from, float _to, float _speed )
-                : m_task(_task)
+                : m_task( _task )
                 , m_transformation( _transformation )
                 , m_from( _from )
                 , m_to( _to )
@@ -33,7 +33,7 @@ namespace Mengine
                 float time = _context->time;
 
                 float deltha = m_to - m_from;
-                
+
                 float add = deltha * m_speed * time;
 
                 if( m_progress + add < m_to )
@@ -110,7 +110,7 @@ namespace Mengine
         {
             return true;
         }
-        
+
         m_id = id;
 
         return false;

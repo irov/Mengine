@@ -90,7 +90,7 @@ namespace Mengine
             return false;
         }
 
-        const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
+        const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
         ImageCodecOptions optionsAlpha;
 

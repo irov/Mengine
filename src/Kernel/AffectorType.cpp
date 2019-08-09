@@ -3,7 +3,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const Char* s_affectorToString[] =
+    static const Char * s_affectorToString[] =
     {
         "ETA_POSITION",
         "ETA_ANGLE",

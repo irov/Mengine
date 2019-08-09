@@ -138,7 +138,7 @@ namespace Mengine
             }
 
         public:
-            AffectorPtr create( EAffectorType _type 
+            AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaType & _lambda
@@ -172,7 +172,7 @@ namespace Mengine
         public:
             NodeAffectorCreatorInterpolateLinear()
                 : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
-            {                
+            {
             }
 
             virtual ~NodeAffectorCreatorInterpolateLinear()
@@ -214,7 +214,7 @@ namespace Mengine
         public:
             NodeAffectorCreatorInterpolateQuadratic()
                 : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
-            {                
+            {
             }
 
             virtual ~NodeAffectorCreatorInterpolateQuadratic()
@@ -259,7 +259,7 @@ namespace Mengine
         public:
             NodeAffectorCreatorInterpolateBezier()
                 : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
-            {                
+            {
             }
 
             virtual ~NodeAffectorCreatorInterpolateBezier()

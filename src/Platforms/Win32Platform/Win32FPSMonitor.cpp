@@ -5,7 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static DWORD WINAPI s_threadFrameSignal( LPVOID lpParameter )
     {
-        Win32FPSMonitor* monitor = reinterpret_cast<Win32FPSMonitor*>(lpParameter);
+        Win32FPSMonitor * monitor = reinterpret_cast<Win32FPSMonitor *>(lpParameter);
 
         DWORD ret = monitor->threadFrameSignal();
 

@@ -27,8 +27,8 @@ namespace Mengine
         void setFlipY( bool _flipY );
         bool getFlipY() const;
 
-        void setPercentVisibility( const mt::vec4f& _percent );
-        const mt::vec4f& getPercentVisibility() const;
+        void setPercentVisibility( const mt::vec4f & _percent );
+        const mt::vec4f & getPercentVisibility() const;
 
         void setTextureUVOffset( const mt::vec2f & _offset );
         const mt::vec2f & getTextureUVOffset() const;

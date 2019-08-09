@@ -36,18 +36,18 @@ namespace Mengine
             , bool _isOverride ) = 0;
 
     public:
-        virtual bool hasTextEntry( const ConstString& _key, TextEntryInterfacePtr * _entry ) const = 0;
-        virtual const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const = 0;
+        virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const = 0;
+        virtual const TextEntryInterfacePtr & getTextEntry( const ConstString & _key ) const = 0;
 
     public:
         virtual bool existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const = 0;
         virtual const TextFontInterfacePtr & getFont( const ConstString & _name ) const = 0;
 
     public:
-        virtual void setTextAlias( const ConstString & _environment, const ConstString& _alias, const ConstString& _key ) = 0;
-        virtual void removeTextAlias( const ConstString & _environment, const ConstString& _alias ) = 0;
-        virtual bool hasTextAlias( const ConstString & _environment, const ConstString& _alias ) const = 0;
-        virtual const ConstString & getTextAlias( const ConstString & _environment, const ConstString& _alias ) const = 0;
+        virtual void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) = 0;
+        virtual void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) = 0;
+        virtual bool hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const = 0;
+        virtual const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const = 0;
 
     public:
         virtual void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) = 0;

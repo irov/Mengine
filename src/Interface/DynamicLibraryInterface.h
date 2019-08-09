@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef bool( *TPluginCreate )(ServiceProviderInterface * _serviceProvider, PluginInterface ** _plugin, bool _dynamic);
+    typedef bool(*TPluginCreate)(ServiceProviderInterface * _serviceProvider, PluginInterface ** _plugin, bool _dynamic);
     //////////////////////////////////////////////////////////////////////////
     typedef void * (*TDynamicLibraryFunction)(void *);
     //////////////////////////////////////////////////////////////////////////

@@ -26,7 +26,7 @@ namespace Mengine
 
             return true;
         }
-        
+
         animation->resume( 0.f );
 
         return true;

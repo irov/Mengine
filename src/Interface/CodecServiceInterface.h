@@ -23,7 +23,7 @@ namespace Mengine
         virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const Char * _doc ) = 0;
 
         template<class T>
-        T createDecoderT( const ConstString& _type, const Char * _doc )
+        T createDecoderT( const ConstString & _type, const Char * _doc )
         {
             DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
 
@@ -48,7 +48,7 @@ namespace Mengine
         virtual EncoderInterfacePtr createEncoder( const ConstString & _type, const Char * _doc ) = 0;
 
         template<class T>
-        T createEncoderT( const ConstString& _type, const Char * _doc )
+        T createEncoderT( const ConstString & _type, const Char * _doc )
         {
             EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
 

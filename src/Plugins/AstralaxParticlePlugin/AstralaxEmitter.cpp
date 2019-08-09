@@ -480,7 +480,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceParticle]() {m_resourceParticle = stdex::intrusive_static_cast<ResourceAstralaxPtr>(_resourceParticle); } );
+        this->recompile( [this, _resourceParticle]()
+        {
+            m_resourceParticle = stdex::intrusive_static_cast<ResourceAstralaxPtr>(_resourceParticle);
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & AstralaxEmitter::getResourceParticle() const
@@ -718,7 +721,7 @@ namespace Mengine
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
+    void AstralaxEmitter::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const mt::box2f & bb = m_emitter->getBoundingBox();
 

@@ -33,7 +33,7 @@ namespace Mengine
         uint32_t getIcon() const override;
 
         void setProjectTitle( const Char * _projectTitle ) override;
-		size_t getProjectTitle( Char * _projectTitle ) const override;
+        size_t getProjectTitle( Char * _projectTitle ) const override;
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
@@ -121,7 +121,7 @@ namespace Mengine
 
     protected:
         void sleep( uint32_t _ms ) override;
-        bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) override;
+        bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
         bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) override;
         void abort() override;
 

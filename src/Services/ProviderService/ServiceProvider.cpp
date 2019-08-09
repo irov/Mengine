@@ -433,7 +433,7 @@ namespace Mengine
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_MAX_WAIT; ++index )
         {
             WaitDesc & desc = m_waits[index];
-                        
+
             desc.lambda = nullptr;
             desc.name[0] = '\0';
         }

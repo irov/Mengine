@@ -59,8 +59,8 @@ namespace Mengine
     protected:
         void keyEvent_( const InputKeyEvent & _params );
         void textEvent_( const InputTextEvent & _params );
-        void mouseButtonEvent_( const InputMouseButtonEvent& _params );
-        void mouseMoveEvent_( const InputMouseMoveEvent& _params );
+        void mouseButtonEvent_( const InputMouseButtonEvent & _params );
+        void mouseMoveEvent_( const InputMouseMoveEvent & _params );
         void mouseWheelEvent_( const InputMouseWheelEvent & _params );
         void mousePositionEvent_( const InputMousePositionEvent & _params );
         void mouseEnterEvent_( const InputMouseEnterEvent & _params );

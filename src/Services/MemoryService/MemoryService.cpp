@@ -154,7 +154,7 @@ namespace Mengine
             buffer.doc = _doc;
 #endif
 
-            *_memory = buffer.memory;
+            * _memory = buffer.memory;
 
             return buffer.id;
         }
@@ -172,7 +172,7 @@ namespace Mengine
                 , _size
             );
 
-            buffer.memory = memory;            
+            buffer.memory = memory;
             buffer.size = _size;
             buffer.lock = true;
 
@@ -180,7 +180,7 @@ namespace Mengine
             buffer.doc = _doc;
 #endif
 
-            *_memory = buffer.memory;
+            * _memory = buffer.memory;
 
             return buffer.id;
         }

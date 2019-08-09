@@ -131,7 +131,7 @@ namespace Mengine
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual bool getLocalMachineRegValue( const Char* _path, const Char* _key, Char* _value, size_t _size ) = 0;
+        virtual bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) = 0;
 
     public:
         virtual bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _exitCode ) = 0;

@@ -172,7 +172,8 @@ namespace Mengine
         }
 
         this->removeFromParent();
-        this->destroyChildren( []( const NodePtr & ) {} );        
+        this->destroyChildren( []( const NodePtr & )
+        {} );
 
         this->unwrap();
     }

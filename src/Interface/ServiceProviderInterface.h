@@ -20,8 +20,12 @@ namespace Mengine
     class ServiceProviderInterface
     {
     public:
-        ServiceProviderInterface() noexcept {};
-        virtual ~ServiceProviderInterface() {};
+        ServiceProviderInterface() noexcept
+        {
+        };
+        virtual ~ServiceProviderInterface()
+        {
+        };
 
     public:
         virtual bool existService( const Char * _name ) const = 0;

@@ -862,7 +862,10 @@ namespace Mengine
                 VisitorPlayerFactoryManager pfmv( STRINGIZE_STRING_LOCAL( "Node" ), ss );
 
                 PROTOTYPE_SERVICE()
-                    ->foreachGenerators( [&pfmv]( const PrototypeGeneratorInterfacePtr & _generator ) {pfmv.visit( _generator ); } );
+                    ->foreachGenerators( [&pfmv]( const PrototypeGeneratorInterfacePtr & _generator )
+                {
+                    pfmv.visit( _generator );
+                } );
 
                 const String & str = ss.str();
 
@@ -1027,7 +1030,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::mouseButtonEvent( const InputMouseButtonEvent& _event )
+    bool Application::mouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         if( m_inputMouseButtonEventBlock == true )
         {
@@ -1046,7 +1049,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::mouseMove( const InputMouseMoveEvent& _event )
+    bool Application::mouseMove( const InputMouseMoveEvent & _event )
     {
         float vx;
         float vy;

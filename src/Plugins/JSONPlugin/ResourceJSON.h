@@ -22,7 +22,7 @@ namespace Mengine
         ~ResourceJSON() override;
 
     public:
-        const jpp::object& getJSON() const override;
+        const jpp::object & getJSON() const override;
 
     protected:
         bool _compile() override;

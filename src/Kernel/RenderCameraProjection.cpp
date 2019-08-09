@@ -160,7 +160,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::_updateProjectionMatrix() const
-    {        
+    {
         Viewport projectViewport;
         this->makeViewport_( projectViewport );
 

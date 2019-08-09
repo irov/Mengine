@@ -65,7 +65,7 @@ namespace Mengine
         bool available = CONFIG_VALUE( "Engine", "Movie1PluginAvailable", true );
 
         return available;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_initializePlugin()
     {
@@ -75,7 +75,7 @@ namespace Mengine
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MovieScriptEmbedding" ), MovieScriptEmbedding );
 
             return true;
-		});
+        } );
 #endif
 
         if( PROTOTYPE_SERVICE()

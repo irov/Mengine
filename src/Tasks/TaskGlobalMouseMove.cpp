@@ -28,7 +28,7 @@ namespace Mengine
 
             this->complete();
         };
-                
+
         uint32_t id = Helper::addGlobalMouseMoveEvent( lambda, MENGINE_DOCUMENT_FUNCTION );
 
         if( id == 0 )

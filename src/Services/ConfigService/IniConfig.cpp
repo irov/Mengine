@@ -225,7 +225,7 @@ namespace Mengine
         m_stores.emplace_back( store );
 
         return true;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool IniConfig::existValue( const Char * _section, const Char * _key ) const
     {

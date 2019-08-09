@@ -5,7 +5,7 @@
 #include "GOAP/Task.h"
 
 namespace Mengine
-{    
+{
     class TaskAnimatableResume
         : public GOAP::Task
     {

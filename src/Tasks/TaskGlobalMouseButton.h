@@ -23,7 +23,7 @@ namespace Mengine
     protected:
         bool _onRun() override;
         void _onFinally() override;
-        
+
     protected:
         EMouseCode m_code;
         bool m_isDown;

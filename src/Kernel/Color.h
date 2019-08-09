@@ -132,7 +132,7 @@ namespace Mengine
             return *this;
         }
 
-        MENGINE_INLINE Color operator + ( const Color& _color ) const
+        MENGINE_INLINE Color operator + ( const Color & _color ) const
         {
             float r = m_r + _color.m_r;
             float g = m_g + _color.m_g;

@@ -28,7 +28,7 @@ namespace Mengine
         void _destroy() override;
 
     protected:
-        void _setPersonalColor( const Color& _color ) override;
+        void _setPersonalColor( const Color & _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 
     protected:

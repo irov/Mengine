@@ -42,7 +42,7 @@ namespace Mengine
         EACRG11S,
     };
     //////////////////////////////////////////////////////////////////////////
-    
+
     static const uint32_t PVRTEX_MIPMAP = (1 << 8); // has mip map levels
     static const uint32_t PVRTEX_TWIDDLE = (1 << 9); // is twiddled
     static const uint32_t PVRTEX_BUMPMAP = (1 << 10); // has normals encoded for a bump map

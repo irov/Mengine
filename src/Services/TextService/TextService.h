@@ -43,14 +43,14 @@ namespace Mengine
 
     public:
         bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
-        const TextEntryInterfacePtr & getTextEntry( const ConstString& _key ) const override;
+        const TextEntryInterfacePtr & getTextEntry( const ConstString & _key ) const override;
 
     public:
         bool existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const override;
         const TextFontInterfacePtr & getFont( const ConstString & _name ) const override;
 
     public:
-        void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString& _key ) override;
+        void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) override;
         void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) override;
         bool hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
         const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
@@ -70,7 +70,7 @@ namespace Mengine
         const ConstString & getDefaultFontName() const override;
 
     public:
-        bool addTextEntry( const ConstString& _key
+        bool addTextEntry( const ConstString & _key
             , const String & _text
             , const ConstString & _font
             , const Color & _colorFont
@@ -83,7 +83,7 @@ namespace Mengine
             , uint32_t _params
             , bool _isOverride ) override;
 
-        bool removeTextEntry( const ConstString& _key );
+        bool removeTextEntry( const ConstString & _key );
 
     public:
         bool directFontCompile( const ConstString & _name ) override;

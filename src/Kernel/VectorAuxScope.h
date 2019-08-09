@@ -27,7 +27,7 @@ namespace Mengine
         protected:
             ScopeType & m_scope;
         };
-    }    
+    }
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_VECTOR_AUX_I(Vector, Line) Helper::VectorAuxScope<decltype(Vector)::value_type> scope_##Line( Vector ) 

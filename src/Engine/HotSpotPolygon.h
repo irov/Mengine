@@ -3,7 +3,7 @@
 #include "HotSpot.h"
 
 namespace Mengine
-{    
+{
     class HotSpotPolygon
         : public HotSpot
     {

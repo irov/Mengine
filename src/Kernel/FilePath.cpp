@@ -8,5 +8,5 @@ namespace Mengine
         static FilePath s_none;
 
         return s_none;
-    }    
+    }
 }

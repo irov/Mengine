@@ -126,7 +126,7 @@ namespace Mengine
 
             uint32_t value_uint32;
             if( ::sscanf( op.value, "%u", &value_uint32 ) != 1 )
-            { 
+            {
                 LOGGER_ERROR( "option '%s' not sscanf value '%s'"
                     , _key
                     , op.value

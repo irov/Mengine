@@ -12,12 +12,12 @@ namespace Mengine
     class MemoryAllocator
     {
     public:
-        void * operator new ( size_t _size )
+        void * operator new (size_t _size)
         {
             return stdex_malloc( _size, Typename<T>::value );
         }
 
-        void operator delete ( void * _ptr, size_t _size )
+        void operator delete (void * _ptr, size_t _size)
         {
             MENGINE_UNUSED( _size );
 
@@ -45,9 +45,9 @@ namespace Mengine
             size_t memory_size = sizeof( T );
             void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
 
-            new ( memory_buffer )T( std::forward<Args>( _args ) ... );
+            new (memory_buffer)T( std::forward<Args>( _args ) ... );
 
-            return reinterpret_cast<T *>( memory_buffer );
+            return reinterpret_cast<T *>(memory_buffer);
         }
 
         template<class T>
@@ -64,7 +64,7 @@ namespace Mengine
             size_t memory_size = sizeof( T ) * _count;
             void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
 
-            return reinterpret_cast<T *>( memory_buffer );
+            return reinterpret_cast<T *>(memory_buffer);
         }
 
         template<class T>
@@ -73,7 +73,7 @@ namespace Mengine
             size_t memory_size = sizeof( T ) * _count;
             void * memory_buffer = stdex_realloc( _buffer, memory_size, Typename<T>::value );
 
-            return reinterpret_cast<T *>( memory_buffer );
+            return reinterpret_cast<T *>(memory_buffer);
         }
 
         template<class T>

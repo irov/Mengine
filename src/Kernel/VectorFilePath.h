@@ -5,6 +5,6 @@
 #include "Config/Vector.h"
 
 namespace Mengine
-{    
+{
     typedef Vector<FilePath> VectorFilePath;
 }

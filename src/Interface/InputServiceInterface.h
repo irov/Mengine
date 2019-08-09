@@ -73,7 +73,7 @@ namespace Mengine
         virtual void onFocus( bool _focus ) = 0;
 
     public:
-        virtual void pushEvent( const InputUnionEvent & _event ) = 0;        
+        virtual void pushEvent( const InputUnionEvent & _event ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

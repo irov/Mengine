@@ -51,7 +51,7 @@ namespace Mengine
         this->setHide( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSlot::_setPersonalColor( const Color& _color )
+    void MovieSlot::_setPersonalColor( const Color & _color )
     {
         this->setLocalColor( _color );
     }

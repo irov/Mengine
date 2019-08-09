@@ -61,6 +61,6 @@ namespace Mengine
         bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorFilePath & _values );
         bool getIniValues( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );        
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );
     }
 }

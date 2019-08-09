@@ -41,7 +41,8 @@ namespace Mengine
     static const uint32_t DDCF_VOLUME = 0x00200000;
     //////////////////////////////////////////////////////////////////////////
 #pragma pack( push, 1 )
-    struct DDS_PIXELFORMAT {
+    struct DDS_PIXELFORMAT
+    {
         uint32_t dwSize;
         uint32_t dwFlags;
         uint32_t dwFourCC;
@@ -52,7 +53,8 @@ namespace Mengine
         uint32_t dwABitMask;
     };
 
-    typedef struct {
+    typedef struct
+    {
         uint32_t           dwSize;
         uint32_t           dwFlags;
         uint32_t           dwHeight;

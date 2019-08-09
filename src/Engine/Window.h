@@ -24,9 +24,9 @@ namespace Mengine
         ~Window() override;
 
     public:
-        void setClientSize( const mt::vec2f& _clientSize );
-        void setClientSizeClip( const mt::vec2f& _clientSize );
-        void setClientSizeInTiles( const mt::vec2f& _tiles );
+        void setClientSize( const mt::vec2f & _clientSize );
+        void setClientSizeClip( const mt::vec2f & _clientSize );
+        void setClientSizeInTiles( const mt::vec2f & _tiles );
 
         const mt::vec2f & getClientSize() const;
 
@@ -42,7 +42,7 @@ namespace Mengine
     protected:
         bool _compile() override;
         void _release() override;
-        void _updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
+        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
         void _invalidateWorldMatrix() override;
         void _invalidateColor() override;
 

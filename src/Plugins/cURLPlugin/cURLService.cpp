@@ -48,7 +48,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid initialize curl '%s' [%d]"
                 , curl_easy_strerror( code )
-                , code                
+                , code
             );
 
             return false;

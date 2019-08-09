@@ -33,7 +33,7 @@ namespace Mengine
         m_soundSystem = _soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    OpenALSoundSystem* OpenALSoundSource::getSoundSystem() const
+    OpenALSoundSystem * OpenALSoundSource::getSoundSystem() const
     {
         return m_soundSystem;
     }

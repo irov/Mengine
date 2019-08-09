@@ -62,7 +62,7 @@ namespace Mengine
         declaration[declaration_iterator] = D3DDECL_END();
 
         LOGGER_INFO( "create vertex declaration '%s'"
-            , m_name.c_str() 
+            , m_name.c_str()
         );
 
         IF_DXCALL( m_pD3DDevice, CreateVertexDeclaration, (declaration, &m_vertexDeclaration) )

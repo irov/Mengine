@@ -127,7 +127,10 @@ namespace Mengine
     bool Scheduler::exist( uint32_t _id ) const
     {
         ListSchedules::const_iterator it_find =
-            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event ) { return _event.id == _id; } );
+            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event )
+        {
+            return _event.id == _id;
+        } );
 
         if( it_find != m_schedules.end() )
         {
@@ -135,7 +138,10 @@ namespace Mengine
         }
 
         ListSchedules::const_iterator it_find_add =
-            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event ) { return _event.id == _id; } );
+            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event )
+        {
+            return _event.id == _id;
+        } );
 
         if( it_find_add != m_schedulesAdd.end() )
         {
@@ -258,7 +264,10 @@ namespace Mengine
         m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
         m_schedulesAdd.clear();
 
-        ListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), []( const ScheduleEventDesc & _event ) { return _event.dead; } );
+        ListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), []( const ScheduleEventDesc & _event )
+        {
+            return _event.dead;
+        } );
         m_schedules.erase( it_erase, m_schedules.end() );
 
         for( ScheduleEventDesc & desc : m_schedules )
@@ -465,7 +474,10 @@ namespace Mengine
     bool Scheduler::findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc )
     {
         ListSchedules::iterator it_find =
-            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event ) { return _event.id == _id; } );
+            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event )
+        {
+            return _event.id == _id;
+        } );
 
         if( it_find != m_schedules.end() )
         {
@@ -475,7 +487,10 @@ namespace Mengine
         }
 
         ListSchedules::iterator it_find_add =
-            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event ) { return _event.id == _id; } );
+            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event )
+        {
+            return _event.id == _id;
+        } );
 
         if( it_find_add != m_schedulesAdd.end() )
         {
@@ -490,7 +505,10 @@ namespace Mengine
     bool Scheduler::findScheduleEvent_( uint32_t _id, const ScheduleEventDesc *& _desc ) const
     {
         ListSchedules::const_iterator it_find =
-            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event ) { return _event.id == _id; } );
+            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event )
+        {
+            return _event.id == _id;
+        } );
 
         if( it_find != m_schedules.end() )
         {
@@ -500,7 +518,10 @@ namespace Mengine
         }
 
         ListSchedules::const_iterator it_find_add =
-            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event ) { return _event.id == _id; } );
+            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event )
+        {
+            return _event.id == _id;
+        } );
 
         if( it_find_add != m_schedulesAdd.end() )
         {

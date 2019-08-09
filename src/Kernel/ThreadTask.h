@@ -35,7 +35,7 @@ namespace Mengine
         bool run( const ThreadMutexInterfacePtr & _mutex ) override;
         bool cancel() override;
         bool update() override;
-		void finally() override;
+        void finally() override;
 
     public:
         void join() override;
@@ -47,7 +47,7 @@ namespace Mengine
     protected:
         virtual bool _onRun();
         virtual void _onCancel();
-		virtual void _onFinally();
+        virtual void _onFinally();
         virtual void _onUpdate();
         virtual void _onJoin();
 

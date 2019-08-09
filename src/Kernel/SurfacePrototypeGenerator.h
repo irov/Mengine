@@ -12,7 +12,7 @@ namespace Mengine
         : public ScriptablePrototypeGenerator<Type, Count>
     {
     protected:
-		FactorablePointer generate( const Char * _doc ) override
+        FactorablePointer generate( const Char * _doc ) override
         {
             const FactoryPtr & factory = this->getFactory();
 

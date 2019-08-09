@@ -54,5 +54,5 @@ namespace Mengine
                 targetRender->render( _context );
             }
         }
-    }    
+    }
 }

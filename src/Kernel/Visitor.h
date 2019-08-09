@@ -9,7 +9,9 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual ~Visitor() {}
+        virtual ~Visitor()
+        {
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Visitor> VisitorPtr;

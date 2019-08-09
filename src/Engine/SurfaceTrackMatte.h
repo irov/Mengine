@@ -65,8 +65,8 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-       ResourceImagePtr m_resourceImage;
-       ResourceImagePtr m_resourceTrackMatteImage;
+        ResourceImagePtr m_resourceImage;
+        ResourceImagePtr m_resourceTrackMatteImage;
 
         RenderProgramVariableInterfacePtr m_programVariable;
 

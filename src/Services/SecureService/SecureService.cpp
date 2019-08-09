@@ -56,7 +56,7 @@ namespace Mengine
             int8_t tail_buffer[8] = { 0 };
             int64_t tail64;
         };
-        
+
         ::memcpy( tail_buffer, (int8_t *)_buffer + head, tail );
 
         tail64 ^= m_secureHash;

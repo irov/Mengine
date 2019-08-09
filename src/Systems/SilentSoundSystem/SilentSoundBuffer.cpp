@@ -42,7 +42,7 @@ namespace Mengine
     {
         m_soundDecoder = _soundDecoder;
 
-        const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
+        const SoundCodecDataInfo * dataInfo = m_soundDecoder->getCodecDataInfo();
 
         m_frequency = dataInfo->frequency;
         m_channels = dataInfo->channels;

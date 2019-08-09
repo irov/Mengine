@@ -24,6 +24,6 @@ namespace Mengine
             PickerInterface * picker_parent = Helper::getNodePickerInheritance( parent );
 
             return picker_parent;
-        }        
+        }
     }
 }

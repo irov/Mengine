@@ -23,7 +23,7 @@ namespace Mengine
         virtual void stringizeInternal( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
         virtual void stringizeUnique( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
         virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
-    };    
+    };
 }
 //////////////////////////////////////////////////////////////////////////
 #define STRINGIZE_SERVICE()\

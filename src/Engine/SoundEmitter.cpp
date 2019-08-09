@@ -23,7 +23,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _surfaceSound]() {m_surfaceSound = _surfaceSound; } );
+        this->recompile( [this, _surfaceSound]()
+        {
+            m_surfaceSound = _surfaceSound;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const SurfaceSoundPtr & SoundEmitter::getSurfaceSound() const

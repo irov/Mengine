@@ -28,7 +28,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceTestPick]() {m_resourceTestPick = _resourceTestPick; } );
+        this->recompile( [this, _resourceTestPick]()
+        {
+            m_resourceTestPick = _resourceTestPick;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceTestPickPtr & HotSpotImage::getResourceTestPick() const
@@ -88,7 +91,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceTestPick, false, "'%s' resource is null"
             , this->getName().c_str()
         );
-          
+
         if( m_resourceTestPick->compile() == false )
         {
             LOGGER_ERROR( "'%s' can't compile HIT resource '%s'"

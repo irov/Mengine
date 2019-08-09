@@ -379,7 +379,7 @@ namespace Mengine
                     {
                         continue;
                     }
-                     
+
                     desc_task.identity = desc_thread.identity;
                     desc_task.progress = true;
                     break;

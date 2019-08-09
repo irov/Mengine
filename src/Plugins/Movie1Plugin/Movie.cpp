@@ -590,7 +590,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie )
+    bool Movie::hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -852,7 +852,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr* _movie )
+    bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * _movie )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -2598,7 +2598,7 @@ namespace Mengine
         this->setHide( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_setPersonalColor( const Color& _color )
+    void Movie::_setPersonalColor( const Color & _color )
     {
         this->setLocalColor( _color );
     }

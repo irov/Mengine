@@ -149,7 +149,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieInternalObject::_setPersonalColor( const Color& _color )
+    void MovieInternalObject::_setPersonalColor( const Color & _color )
     {
         this->setLocalColor( _color );
     }

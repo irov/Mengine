@@ -51,7 +51,7 @@ namespace Mengine
     void ConfigService::_finalizeService()
     {
         m_platformTags.clear();
-        
+
         m_defaultConfig = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryConfig );

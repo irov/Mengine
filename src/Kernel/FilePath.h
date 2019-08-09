@@ -29,5 +29,5 @@ namespace Mengine
         {
             return _value.hash();
         }
-    };    
+    };
 }

@@ -15,11 +15,11 @@ namespace Mengine
         : public ScriptablePrototypeGenerator<Type, Count>
     {
     protected:
-		FactorablePointer generate( const Char * _doc ) override
+        FactorablePointer generate( const Char * _doc ) override
         {
             const FactoryPtr & factory = this->getFactory();
 
-			NodePtr node = factory->createObject( _doc );
+            NodePtr node = factory->createObject( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr, "can't generate '%s' '%s' doc '%s'"
                 , this->getCategory().c_str()

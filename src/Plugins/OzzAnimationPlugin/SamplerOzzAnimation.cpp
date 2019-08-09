@@ -94,7 +94,7 @@ namespace Mengine
         int32_t num_soa_joints = skeleton.num_soa_joints();
         int32_t num_joints = skeleton.num_joints();
 
-        ozz::memory::Allocator* allocator = ozz::memory::default_allocator();
+        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
         m_locals = allocator->AllocateRange<ozz::math::SoaTransform>( num_soa_joints );
         m_cache = allocator->New<ozz::animation::SamplingCache>( num_joints );
@@ -106,7 +106,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_release()
     {
-        ozz::memory::Allocator* allocator = ozz::memory::default_allocator();
+        ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
         allocator->Deallocate( m_locals );
         allocator->Delete( m_cache );

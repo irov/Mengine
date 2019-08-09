@@ -54,7 +54,7 @@ namespace Mengine
         struct CacheBufferMemory
         {
             CacheBufferID id;
-            void * memory;            
+            void * memory;
             size_t size;
             bool lock;
 

@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetch::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer )
+    void ThreadTaskPrefetch::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer )
     {
         m_fileGroup = _fileGroup;
         m_filePath = _fileName;

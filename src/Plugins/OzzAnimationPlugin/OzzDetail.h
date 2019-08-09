@@ -24,23 +24,38 @@ namespace Mengine
         {
             typedef Vector<float> VectorPositions;
             VectorPositions positions;
-            enum { kPositionsCpnts = 3 };  // x, y, z components
+            enum
+            {
+                kPositionsCpnts = 3
+            };  // x, y, z components
 
             typedef Vector<float> VectorNormals;
             VectorNormals normals;
-            enum { kNormalsCpnts = 3 };  // x, y, z components
+            enum
+            {
+                kNormalsCpnts = 3
+            };  // x, y, z components
 
             typedef Vector<float> VectorTangents;
             VectorTangents tangents;
-            enum { kTangentsCpnts = 4 };  // x, y, z, right or left handed.
+            enum
+            {
+                kTangentsCpnts = 4
+            };  // x, y, z, right or left handed.
 
             typedef Vector<float> VectorUVs;
             VectorUVs uvs;  // u, v components
-            enum { kUVsCpnts = 2 };
+            enum
+            {
+                kUVsCpnts = 2
+            };
 
             typedef Vector<uint8_t> VectorColors;
             VectorColors colors;
-            enum { kColorsCpnts = 4 };  // r, g, b, a components
+            enum
+            {
+                kColorsCpnts = 4
+            };  // r, g, b, a components
 
             typedef Vector<uint16_t> VectorJointIndices;
             VectorJointIndices joint_indices;  // Stride equals influences_count

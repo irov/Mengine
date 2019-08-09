@@ -460,7 +460,7 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native..." );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native..." );
 #endif
@@ -681,7 +681,7 @@ namespace Mengine
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( RenderSystem );
-        SERVICE_FINALIZE( ConfigService );        
+        SERVICE_FINALIZE( ConfigService );
         SERVICE_FINALIZE( ArchiveService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( ThreadService );

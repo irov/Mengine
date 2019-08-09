@@ -30,7 +30,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
+    size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo )
     {
         MENGINE_UNUSED( _size );
 
@@ -42,7 +42,7 @@ namespace Mengine
             return 0;
         }
 
-        const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo*>(_bufferDataInfo);
+        const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo *>(_bufferDataInfo);
 
         m_stream->write( &dataInfo->width, sizeof( dataInfo->width ) );
         m_stream->write( &dataInfo->height, sizeof( dataInfo->height ) );

@@ -315,7 +315,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not registered resource type '%s'"
             , _type.c_str()
-        );           
+        );
 
         if( resource->initialize() == false )
         {
@@ -411,7 +411,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResource( const ConstString& _name, ResourcePtr * _resource ) const
+    bool ResourceService::hasResource( const ConstString & _name, ResourcePtr * _resource ) const
     {
         const ResourcePtr & resource = m_resources.find( _name );
 
@@ -428,7 +428,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::hasResourceWithType( const ConstString& _name, const ConstString& _type ) const
+    bool ResourceService::hasResourceWithType( const ConstString & _name, const ConstString & _type ) const
     {
         const ResourcePtr & resource = m_resources.find( _name );
 
@@ -447,7 +447,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ResourceService::getResource( const ConstString& _name ) const
+    const ResourcePtr & ResourceService::getResource( const ConstString & _name ) const
     {
         MENGINE_ASSERTION_MAIN_THREAD_GUARD();
 

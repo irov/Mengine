@@ -66,7 +66,7 @@ namespace Mengine
             }
 #endif
 
-            *_resource = stdex::intrusive_static_cast<T>(resource);
+            * _resource = stdex::intrusive_static_cast<T>(resource);
 
             return true;
         }

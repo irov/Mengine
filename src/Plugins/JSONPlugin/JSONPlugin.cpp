@@ -64,7 +64,7 @@ namespace Mengine
 #ifdef MENGINE_USE_PYTHON_FRAMEWORK
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL("JSONScriptEmbedding") );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ) );
         }
 #endif
 

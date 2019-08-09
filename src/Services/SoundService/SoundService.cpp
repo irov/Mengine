@@ -432,7 +432,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
+    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _filePath, _streamable, MENGINE_DOCUMENT_FUNCTION );
@@ -463,7 +463,7 @@ namespace Mengine
         return soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
+    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -1485,7 +1485,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::checkMaxSoundPlay_() const
     {
-        uint32_t playCount = (uint32_t)std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->state == ESS_PLAY; } );
+        uint32_t playCount = (uint32_t)std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity )
+        {
+            return _Identity->state == ESS_PLAY;
+        } );
 
         uint32_t MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
 

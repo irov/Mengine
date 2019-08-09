@@ -5,7 +5,7 @@
 #include "GOAP/Task.h"
 
 namespace Mengine
-{    
+{
     class TaskAnimatablePause
         : public GOAP::Task
     {

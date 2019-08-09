@@ -25,7 +25,7 @@ namespace Mengine
             return true;
         }
 
-		NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderCamera::notifyChangeWindowResolution );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderCamera::notifyChangeWindowResolution );
 
         this->invalidateViewMatrix_();
         this->invalidateProjectionMatrix_();

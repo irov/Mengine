@@ -253,9 +253,9 @@ namespace Mengine
 
         xml_metabuf.initialize();
 
-        xml_metabuf.addSerializator( "wstring", &s_write_wstring, (void*)nullptr );
-        xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void*)nullptr );
-        xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void*)nullptr );
+        xml_metabuf.addSerializator( "wstring", &s_write_wstring, (void *)nullptr );
+        xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void *)nullptr );
+        xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void *)nullptr );
 
         MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );

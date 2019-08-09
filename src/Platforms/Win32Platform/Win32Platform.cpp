@@ -372,7 +372,7 @@ namespace Mengine
             return false;
         }
 
-        
+
         MINIDUMP_EXCEPTION_INFORMATION exinfo;
 
         exinfo.ThreadId = ::GetCurrentThreadId();

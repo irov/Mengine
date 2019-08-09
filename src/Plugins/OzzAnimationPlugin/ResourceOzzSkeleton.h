@@ -14,7 +14,7 @@ namespace Mengine
         , public Content
         , public UnknownResourceOzzSkeletonInterface
     {
-        DECLARE_VISITABLE(Resource);
+        DECLARE_VISITABLE( Resource );
         DECLARE_UNKNOWABLE();
         DECLARE_CONTENTABLE();
 

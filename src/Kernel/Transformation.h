@@ -87,10 +87,10 @@ namespace Mengine
         bool isIdentityPosition() const;
 
     public:
-        void setLocalOrigin( const mt::vec3f& _origin );
+        void setLocalOrigin( const mt::vec3f & _origin );
         MENGINE_INLINE const mt::vec3f & getLocalOrigin() const;
 
-        void setLocalScale( const mt::vec3f& _scale );
+        void setLocalScale( const mt::vec3f & _scale );
         MENGINE_INLINE const mt::vec3f & getLocalScale() const;
 
         void setLocalSkew( const mt::vec2f & _skew );
@@ -121,14 +121,14 @@ namespace Mengine
         mt::vec3f getAxisUp() const;
 
     public:
-        void setTransformation( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation );
-        void getTransformation( uint8_t & _transformationFlag, mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f& _scale, mt::vec2f & _skew, mt::vec3f& _orientation ) const;
+        void setTransformation( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation );
+        void getTransformation( uint8_t & _transformationFlag, mt::vec3f & _position, mt::vec3f & _origin, mt::vec3f & _scale, mt::vec2f & _skew, mt::vec3f & _orientation ) const;
 
     public:
         void resetTransformation();
 
     public:
-        virtual void calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation ) const;
+        virtual void calcWorldMatrix( mt::mat4f & _wm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation ) const;
 
     public:
         void translate( const mt::vec3f & _delta );
@@ -150,7 +150,7 @@ namespace Mengine
         virtual void updateWorldMatrix() const;
 
     protected:
-        static void makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation );
+        static void makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation );
 
     protected:
         Transformation * m_relationTransformation;
@@ -185,12 +185,12 @@ namespace Mengine
         return m_position;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const mt::vec3f& Transformation::getLocalOrigin() const
+    MENGINE_INLINE const mt::vec3f & Transformation::getLocalOrigin() const
     {
         return m_origin;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const mt::vec3f& Transformation::getLocalScale() const
+    MENGINE_INLINE const mt::vec3f & Transformation::getLocalScale() const
     {
         return m_scale;
     }

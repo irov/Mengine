@@ -31,7 +31,7 @@ namespace Mengine
 
     public:
         bool buryTexture( RenderTextureInterface * _texture ) override;
-        RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
+        RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
 
     protected:
         void onEngineTextureDestroy( RenderTextureInterface * _texture );

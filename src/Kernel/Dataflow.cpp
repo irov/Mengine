@@ -52,7 +52,7 @@ namespace Mengine
             }
 
             InputStreamInterfacePtr stream = FILE_SERVICE()
-				->openInputFile( _fileGroup, _filePath, false, _doc );
+                ->openInputFile( _fileGroup, _filePath, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "dataflow invalid open file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()

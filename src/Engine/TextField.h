@@ -49,8 +49,8 @@ namespace Mengine
         bool getWrap() const;
 
     public:
-        void setTextID( const ConstString& _key );
-        const ConstString& getTextID() const;
+        void setTextID( const ConstString & _key );
+        const ConstString & getTextID() const;
         void removeTextID();
 
         const ConstString & getTextEntryID() const;
@@ -157,7 +157,7 @@ namespace Mengine
 
         MENGINE_INLINE const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
 
-        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D& _vertexData ) const;
+        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D & _vertexData ) const;
 
     protected:
         void invalidateTextLines() const;

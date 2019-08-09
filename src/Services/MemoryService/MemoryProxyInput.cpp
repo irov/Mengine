@@ -23,7 +23,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        m_data = static_cast<uint8_t*>(_memory) + _offset;
+        m_data = static_cast<uint8_t *>(_memory) + _offset;
         m_size = _size;
 
         m_pos = m_data;

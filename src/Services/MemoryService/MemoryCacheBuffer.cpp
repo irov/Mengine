@@ -58,7 +58,7 @@ namespace Mengine
 
         m_data = memory;
         m_size = _size;
-        
+
 #ifdef MENGINE_DEBUG
         m_doc = _doc;
 #endif

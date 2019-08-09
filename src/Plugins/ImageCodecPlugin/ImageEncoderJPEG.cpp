@@ -163,11 +163,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ImageEncoderJPEG::encode( const void * _buffer, size_t _size, const CodecDataInfo* _dataInfo )
+    size_t ImageEncoderJPEG::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
     {
         MENGINE_UNUSED( _size );
 
-        const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>(_dataInfo);
+        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
 
         EncoderJPEGErrorManager errorMgr;
 

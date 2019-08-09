@@ -53,7 +53,10 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _surface]() {m_surface = _surface; } );
+        this->recompile( [this, _surface]()
+        {
+            m_surface = _surface;
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     const SurfacePtr & Meshget::getSurface() const

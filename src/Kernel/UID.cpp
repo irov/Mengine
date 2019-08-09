@@ -30,7 +30,10 @@ namespace Mengine
 
             std::uniform_int_distribution<uint32_t> dist( 0, sizeof( char_array ) - 1 );
 
-            std::generate_n( _uid, _length, [&dist, &rng]() {uint32_t e = dist( rng ); return char_array[e]; } );
+            std::generate_n( _uid, _length, [&dist, &rng]()
+            {
+                uint32_t e = dist( rng ); return char_array[e];
+            } );
         }
     }
 }

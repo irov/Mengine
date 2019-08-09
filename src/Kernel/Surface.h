@@ -62,7 +62,7 @@ namespace Mengine
 
     protected:
         virtual void _activate();
-        virtual void _deactivate();        
+        virtual void _deactivate();
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Surface> SurfacePtr;

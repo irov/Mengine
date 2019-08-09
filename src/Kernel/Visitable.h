@@ -21,7 +21,7 @@ namespace Mengine
 
             Visitor * visitor_ptr = _visitor.get();
 
-            TConcreteVisitor * ptr = dynamic_cast<TConcreteVisitor*>(visitor_ptr);
+            TConcreteVisitor * ptr = dynamic_cast<TConcreteVisitor *>(visitor_ptr);
 
             if( ptr == nullptr )
             {
@@ -40,7 +40,7 @@ namespace Mengine
 
             Visitor * visitor_ptr = _visitor.get();
 
-            TConcreteVisitorR * ptr = dynamic_cast<TConcreteVisitorR*>(visitor_ptr);
+            TConcreteVisitorR * ptr = dynamic_cast<TConcreteVisitorR *>(visitor_ptr);
 
             if( ptr == nullptr )
             {

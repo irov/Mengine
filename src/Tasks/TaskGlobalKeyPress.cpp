@@ -37,7 +37,7 @@ namespace Mengine
 
             return false;
         };
-        
+
         uint32_t id = Helper::addGlobalKeyHandler( m_code, m_isDown, lambda, MENGINE_DOCUMENT_FUNCTION );
 
         if( id == 0 )
@@ -48,7 +48,7 @@ namespace Mengine
         }
 
         m_id = id;
-        
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////

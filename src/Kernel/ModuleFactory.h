@@ -27,7 +27,7 @@ namespace Mengine
     public:
         ModuleInterfacePtr createModule( const ConstString & _name, const Char * _doc ) override
         {
-			IntrusivePtr<T> module = m_factory->createObject( _doc );
+            IntrusivePtr<T> module = m_factory->createObject( _doc );
 
             module->setName( _name );
 

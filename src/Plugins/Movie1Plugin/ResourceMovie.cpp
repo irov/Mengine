@@ -174,7 +174,7 @@ namespace Mengine
         return m_hasOffsetPoint;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie::setOffsetPoint( const mt::vec3f &  _offsetPoint )
+    void ResourceMovie::setOffsetPoint( const mt::vec3f & _offsetPoint )
     {
         m_offsetPoint = _offsetPoint;
 

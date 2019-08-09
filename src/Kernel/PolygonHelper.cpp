@@ -52,17 +52,18 @@ namespace boost
             template<>
             struct dimension<mt::vec2f>
                 : boost::mpl::int_<2>
-            {};
+            {
+            };
 
             template<size_t Dimension>
             struct access<mt::vec2f, Dimension >
             {
-                static float get( mt::vec2f const& p )
+                static float get( mt::vec2f const & p )
                 {
                     return p.template get<Dimension>();
                 }
 
-                static void set( mt::vec2f & p, float const& value )
+                static void set( mt::vec2f & p, float const & value )
                 {
                     p.template set<Dimension>( value );
                 }
@@ -118,7 +119,7 @@ namespace Mengine
                 float Cx = _points[Vw].x;
                 float Cy = _points[Vw].y;
 
-                float wtf = (Bx - Ax)*(Cy - Ay) - (By - Ay)*(Cx - Ax);
+                float wtf = (Bx - Ax) * (Cy - Ay) - (By - Ay) * (Cx - Ax);
 
                 if( wtf < mt::constant::eps )
                 {
@@ -307,8 +308,8 @@ namespace Mengine
 
                 centroid_area += a;
 
-                centroid_point.x += (x0 + x1)*a;
-                centroid_point.y += (y0 + y1)*a;
+                centroid_point.x += (x0 + x1) * a;
+                centroid_point.y += (y0 + y1) * a;
             }
 
             // Do last vertex separately to avoid performing an expensive
@@ -323,8 +324,8 @@ namespace Mengine
 
                 centroid_area += a;
 
-                centroid_point.x += (x0 + x1)*a;
-                centroid_point.y += (y0 + y1)*a;
+                centroid_point.x += (x0 + x1) * a;
+                centroid_point.y += (y0 + y1) * a;
             }
 
             centroid_area *= 0.5f;
@@ -350,7 +351,7 @@ namespace Mengine
                 return false;
             }
 
-            uint32_t *V = Helper::allocateArrayT<uint32_t>( polygon_size );  /* we want a counter-clockwise polygon in V */
+            uint32_t * V = Helper::allocateArrayT<uint32_t>( polygon_size );  /* we want a counter-clockwise polygon in V */
 
             float polygon_area = _polygon.area();
 

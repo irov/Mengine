@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    void DecoderRenderImageProvider::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
+    void DecoderRenderImageProvider::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
     {
         m_fileGroup = _fileGroup;
         m_fileName = _fileName;

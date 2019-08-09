@@ -33,7 +33,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::unregisterConverter( const ConstString& _type )
+    bool ConverterService::unregisterConverter( const ConstString & _type )
     {
         LOGGER_INFO( "remove converter '%s'"
             , _type.c_str()

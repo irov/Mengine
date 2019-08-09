@@ -88,15 +88,15 @@ namespace Mengine
         bool visitMovieLayer( const ConstString & _type, const VisitorMovieNodeInterfacePtr & _visitor );
 
     public:
-        bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie );
-        bool hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie );
+        bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie );
+        bool hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr * _node, MoviePtr * _movie );
 
     public:
-        bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr* _movie );
+        bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr * _movie );
         bool hasMovieLayer( const ConstString & _name ) const;
 
     public:
-        bool getMovieScissor( const ConstString & _name, RenderScissorPtr* _scissor );
+        bool getMovieScissor( const ConstString & _name, RenderScissorPtr * _scissor );
         bool hasMovieScissor( const ConstString & _name );
 
     public:
@@ -150,7 +150,7 @@ namespace Mengine
 
     protected:
         void _setLocalHide( bool _value ) override;
-        void _setPersonalColor( const Color& _color ) override;
+        void _setPersonalColor( const Color & _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 
     protected:
@@ -254,7 +254,8 @@ namespace Mengine
                 : visible( false )
                 , enable( true )
                 , child( false )
-            {}
+            {
+            }
 
             NodePtr node;
             RenderInterfacePtr render;

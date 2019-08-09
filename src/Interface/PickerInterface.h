@@ -61,7 +61,7 @@ namespace Mengine
     public:
         virtual Scriptable * getPickerScriptable() = 0;
         virtual Eventable * getPickerEventable() = 0;
-        
+
         virtual InputHandlerInterface * getPickerInputHandler() = 0;
 
 

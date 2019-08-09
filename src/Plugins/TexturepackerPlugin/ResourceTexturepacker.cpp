@@ -19,6 +19,8 @@ namespace Mengine
     ResourceTexturepacker::ResourceTexturepacker()
         : m_atlasWidth( 0 )
         , m_atlasHeight( 0 )
+        , m_atlasWidthInv( 0.f )
+        , m_atlasHeightInv( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////

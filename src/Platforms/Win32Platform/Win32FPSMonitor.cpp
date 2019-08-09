@@ -13,13 +13,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Win32FPSMonitor::Win32FPSMonitor()
-        : m_hFrameSignalEvent( INVALID_HANDLE_VALUE )
-        , m_hDestroySignalEvent( INVALID_HANDLE_VALUE )
-        , m_hFrameSignalThread( INVALID_HANDLE_VALUE )
-        , m_running( true )
+        : m_running( true )
         , m_active( false )
         , m_frameTime( 100 )
         , m_threadId( 0 )
+        , m_hFrameSignalEvent( INVALID_HANDLE_VALUE )
+        , m_hDestroySignalEvent( INVALID_HANDLE_VALUE )
+        , m_hFrameSignalThread( INVALID_HANDLE_VALUE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -32,12 +32,14 @@ namespace Mengine
         m_hFrameSignalEvent = ::CreateEvent( NULL, FALSE, FALSE, NULL );
         m_hDestroySignalEvent = ::CreateEvent( NULL, FALSE, FALSE, NULL );
 
-        m_hFrameSignalThread = ::CreateThread( NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &m_threadId );
+        HANDLE hFrameSignalThread = ::CreateThread( NULL, 0, &s_threadFrameSignal, (LPVOID)this, 0, &m_threadId );
 
-        if( m_hFrameSignalThread == 0 )
+        if( hFrameSignalThread == 0 )
         {
             return false;
         }
+
+        m_hFrameSignalThread = hFrameSignalThread;
 
         ::SetThreadPriority( m_hFrameSignalThread, THREAD_PRIORITY_TIME_CRITICAL );
 
@@ -94,7 +96,7 @@ namespace Mengine
         {
             if( m_active == true )
             {
-                unsigned long ms_frameTiming = (unsigned long)m_frameTime;
+                DWORD ms_frameTiming = (DWORD)m_frameTime;
                 ::Sleep( ms_frameTiming );
                 ::SetEvent( m_hFrameSignalEvent );
             }

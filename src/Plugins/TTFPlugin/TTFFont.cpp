@@ -6,12 +6,15 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "TTFDataInterface.h"
 #include "FEDataInterface.h"
 
 #include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -52,20 +55,52 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
     {
-        m_fileGroup = _fileGroup;
-
         if( this->initializeBase_( _config ) == false )
         {
             return false;
         }
 
-        if( _config->hasValue( m_name.c_str(), "Path", &m_ttfPath ) == false )
+        if( _config->getValue( m_name.c_str(), "System", false ) == false )
         {
-            LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
-                , m_name.c_str()
-            );
+            if( _config->hasValue( m_name.c_str(), "Path", &m_ttfPath ) == false )
+            {
+                LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
+                    , m_name.c_str()
+                );
 
-            return false;
+                return false;
+            }
+
+            m_ttfFileGroup = _fileGroup;
+        }
+        else
+        {
+            const Char * ttfName = nullptr;
+            if( _config->hasValue( m_name.c_str(), "Name", &ttfName ) == false )
+            {
+                LOGGER_ERROR( "invalid font '%s' don't setup Name"
+                    , m_name.c_str()
+                );
+
+                return false;
+            }
+
+            Char utf8_ttfPath[MENGINE_MAX_PATH] = { '\0' };
+            if( PLATFORM_SERVICE()
+                ->getSystemFontPath( ttfName, utf8_ttfPath ) == ~0U )
+            {
+                LOGGER_ERROR( "invalid font '%s' don't found '%s' path"
+                    , m_name.c_str()
+                    , ttfName
+                );
+
+                return false;
+            }
+
+            m_ttfPath = Helper::stringizeFilePath( utf8_ttfPath );
+
+            m_ttfFileGroup = FILE_SERVICE()
+                ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
         }
 
         if( _config->hasValue( m_name.c_str(), "Height", &m_height ) == false )
@@ -87,6 +122,8 @@ namespace Mengine
 
                 return false;
             }
+
+            m_ttfFEFileGroup = _fileGroup;
         }
 
         _config->hasValue( m_name.c_str(), "FESample", &m_FESample );
@@ -105,7 +142,7 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
+            FEDataInterfacePtr data = Helper::getDataflow( m_ttfFEFileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
             if( data == nullptr )
             {
@@ -136,7 +173,7 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
+            FEDataInterfacePtr data = Helper::getDataflow( m_ttfFEFileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( data, false );
 
@@ -179,7 +216,7 @@ namespace Mengine
 
         DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
-        TTFDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FUNCTION );
+        TTFDataInterfacePtr data = Helper::getDataflow( m_ttfFileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, false );
 
@@ -243,7 +280,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
 
             if( PREFETCHER_SERVICE()
-                ->prefetchData( m_fileGroup, m_ttfFEPath, dataflow, _observer ) == false )
+                ->prefetchData( m_ttfFEFileGroup, m_ttfFEPath, dataflow, _observer ) == false )
             {
                 return false;
             }
@@ -255,7 +292,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
 
             if( PREFETCHER_SERVICE()
-                ->prefetchData( m_fileGroup, m_ttfPath, dataflow, _observer ) == false )
+                ->prefetchData( m_ttfFileGroup, m_ttfPath, dataflow, _observer ) == false )
             {
                 return false;
             }
@@ -269,14 +306,14 @@ namespace Mengine
         if( m_ttfFEPath.empty() == false )
         {
             if( PREFETCHER_SERVICE()
-                ->unfetch( m_fileGroup, m_ttfFEPath ) == false )
+                ->unfetch( m_ttfFEFileGroup, m_ttfFEPath ) == false )
             {
                 return false;
             }
         }
 
         if( PREFETCHER_SERVICE()
-            ->unfetch( m_fileGroup, m_ttfPath ) == false )
+            ->unfetch( m_ttfFileGroup, m_ttfPath ) == false )
         {
             return false;
         }
@@ -657,7 +694,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_fileGroup, m_ttfPath, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_ttfFileGroup, m_ttfPath, false, MENGINE_DOCUMENT_FUNCTION );
 
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();

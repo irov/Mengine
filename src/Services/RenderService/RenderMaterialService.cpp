@@ -704,9 +704,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * RenderMaterialService::getMaterialStage( const ConstString & _materialName ) const
     {
-        MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
+        const RenderMaterialStage * stage = m_materialStageIndexer.find( _materialName );
 
-        if( it_found == m_materialStageIndexer.end() )
+        if( stage == nullptr )
         {
             LOGGER_ERROR( "stage '%s' not found"
                 , _materialName.c_str()
@@ -714,8 +714,6 @@ namespace Mengine
 
             return nullptr;
         }
-
-        const RenderMaterialStage * stage = it_found->second;
 
         return stage;
     }
@@ -755,9 +753,9 @@ namespace Mengine
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures, const Char * _doc )
     {
-        MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
+        const RenderMaterialStage * stage = m_materialStageIndexer.find( _materialName );
 
-        if( it_found == m_materialStageIndexer.end() )
+        if( stage == nullptr )
         {
             LOGGER_ERROR( "stage '%s' not found"
                 , _materialName.c_str()
@@ -765,8 +763,6 @@ namespace Mengine
 
             return nullptr;
         }
-
-        const RenderMaterialStage * stage = it_found->second;
 
 #ifdef MENGINE_DEBUG
         for( uint32_t i = 0; i != _textureCount; ++i )
@@ -931,16 +927,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialStage * RenderMaterialService::createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage )
     {
-        MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _name );
-
-        if( it_found != m_materialStageIndexer.end() )
-        {
-            LOGGER_ERROR( "'%s' is already created"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+        MENGINE_ASSERTION( m_materialStageIndexer.find( _name ) == nullptr, nullptr, "'%s' is already created"
+            , _name.c_str()
+        );
 
         const RenderMaterialStage * cache_stage = this->cacheStage( _stage );
 

@@ -96,6 +96,7 @@ namespace Mengine
 
     public:
         virtual size_t getShortPathName( const Char * _path, Char * _short, size_t _len ) const = 0;
+        virtual size_t getSystemFontPath( const Char * _fontName, Char * _fontPath ) const = 0;
 
     public:
         virtual void getMaxClientResolution( Resolution & _resolution ) const = 0;

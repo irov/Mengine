@@ -591,6 +591,102 @@ namespace Mengine
         return (size_t)len;
     }
     //////////////////////////////////////////////////////////////////////////
+    size_t Win32Platform::getSystemFontPath( const Char * _fontName, Char * _fontPath ) const
+    {   
+        WChar unicode_fontName[MAX_PATH];
+        if( Helper::utf8ToUnicode( _fontName, unicode_fontName, MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "invalid convert fontName '%s' to unicode"
+                , _fontName 
+            );
+
+            return ~0U;
+        }
+
+        const LPWSTR fontRegistryPath = L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+
+        HKEY hKey;
+        LONG result;
+        result = ::RegOpenKeyEx( HKEY_LOCAL_MACHINE, fontRegistryPath, 0, KEY_READ, &hKey );
+
+        if( result != ERROR_SUCCESS )
+        {
+            _fontPath[0] = '\0';
+
+            return ~0U;
+        }
+
+        DWORD maxValueNameSize;
+        DWORD maxValueDataSize;
+        result = ::RegQueryInfoKey( hKey, 0, 0, 0, 0, 0, 0, 0, &maxValueNameSize, &maxValueDataSize, 0, 0 );
+
+        if( result != ERROR_SUCCESS )
+        {
+            _fontPath[0] = '\0';
+
+            return ~0U;
+        }
+
+        DWORD valueIndex = 0;
+
+        WChar unicode_fontPath[MENGINE_MAX_PATH] = { '\0' };
+
+        do
+        {
+            DWORD valueDataSize = maxValueDataSize;
+            DWORD valueNameSize = maxValueNameSize;
+
+            DWORD valueType;
+            WCHAR valueName[MAX_PATH];
+            BYTE valueData[MAX_PATH * 2];
+
+            result = ::RegEnumValue( hKey, valueIndex, valueName, &valueNameSize, 0, &valueType, valueData, &valueDataSize );
+
+            valueIndex++;
+
+            if( result != ERROR_SUCCESS || valueType != REG_SZ )
+            {
+                continue;
+            }
+
+            // Found a match
+            if( ::_wcsicmp( unicode_fontName, valueName ) == 0 )
+            {
+                ::memcpy( unicode_fontPath, valueData, valueDataSize ); 
+
+                break;
+            }
+        } while( result != ERROR_NO_MORE_ITEMS );
+
+        ::RegCloseKey( hKey );
+
+        if( ::wcslen( unicode_fontPath ) == 0 )
+        {
+            _fontPath[0] = '\0';
+
+            return ~0U;
+        }
+
+        WCHAR winDir[MAX_PATH];
+        ::GetWindowsDirectory( winDir, MAX_PATH );
+
+        WCHAR fullDir[MAX_PATH];
+        ::wsprintf( fullDir, L"%s\\Fonts\\%s"
+            , winDir
+            , unicode_fontPath
+        );
+
+        size_t utf8_size;
+        if( Helper::unicodeToUtf8( fullDir, _fontPath, MENGINE_MAX_PATH, &utf8_size ) == false )
+        {
+            _fontPath[0] = '\0';
+
+            return ~0U;
+        }
+
+        return utf8_size;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Platform::getMaxClientResolution( Resolution & _resolution ) const
     {
         RECT workArea;
@@ -2424,11 +2520,20 @@ namespace Mengine
 
                 DWORD dwBytesRead;
                 DWORD nNumberOfBytesToRead = MENGINE_MIN( tempFileSize, 4096 );
-                ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
+                BOOL successful = ::ReadFile( hReadTempFile, tempFileBuffer, nNumberOfBytesToRead, &dwBytesRead, NULL );
 
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("%s"
-                    , tempFileBuffer
-                    );
+                if( successful == TRUE )
+                {
+                    LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("%s"
+                        , tempFileBuffer
+                        );
+                }
+                else
+                {
+                    LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("invalid read file '%ls'"
+                        , tempFileNameBuffer
+                        );
+                }
 
                 CloseHandle( hReadTempFile );
             }

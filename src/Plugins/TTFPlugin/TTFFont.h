@@ -82,7 +82,7 @@ namespace Mengine
         FT_Library m_ftlibrary;
         TTFDataInterfacePtr m_dataTTF;
 
-        FileGroupInterfacePtr m_fileGroup;
+        FileGroupInterfacePtr m_ttfFileGroup;
         FilePath m_ttfPath;
 
         uint32_t m_height;
@@ -96,7 +96,9 @@ namespace Mengine
 
         uint32_t m_ttfLayoutCount;
 
+        FileGroupInterfacePtr m_ttfFEFileGroup;
         FilePath m_ttfFEPath;
+
         ConstString m_ttfFEName;
 
         FEDataInterfacePtr m_dataFE;

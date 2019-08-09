@@ -182,7 +182,7 @@ namespace Mengine
             return false;
         }
 
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         // mount root		
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
@@ -193,7 +193,7 @@ namespace Mengine
 
             return false;
         }
-#   endif
+#endif
 
         return true;
     }

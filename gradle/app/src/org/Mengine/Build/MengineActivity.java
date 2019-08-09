@@ -343,9 +343,11 @@ public class MengineActivity extends SDLActivity {
         ThreadUtil.performOnMainThread(new Runnable() {
             @Override
             public void run() {
-                if (_instance != null && _instance.localNotificationsInteractionLayer == null) {
-                    _instance.localNotificationsInteractionLayer = new LocalNotificationsInteractionLayer(_instance);
-                    AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+                if (_instance != null) {
+                    if (_instance.localNotificationsInteractionLayer == null) {
+                        _instance.localNotificationsInteractionLayer = new LocalNotificationsInteractionLayer(_instance);
+                        AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
+                    }
                     if (_instance.getIntent().hasExtra("NOTIFICATION_ID")) {
                         AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra("NOTIFICATION_ID", 0));
                     }

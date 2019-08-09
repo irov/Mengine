@@ -145,7 +145,10 @@ namespace Mengine
                 {
                     if( start != 0 )
                     {
-                        _outStrings.emplace_back( _str.substr( start ) );
+                        if( start != _str.size() )
+                        {
+                            _outStrings.emplace_back( _str.substr( start ) );
+                        }
 
                         return true;
                     }

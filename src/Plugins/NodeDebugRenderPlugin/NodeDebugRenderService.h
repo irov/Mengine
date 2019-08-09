@@ -18,6 +18,7 @@ namespace Mengine
         ~NodeDebugRenderService() override;
 
     public:
+        bool _availableService() const override;
         void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;

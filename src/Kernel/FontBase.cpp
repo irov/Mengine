@@ -224,12 +224,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    U32String FontBase::prepareText( const String & _text )
+    U32String FontBase::prepareText( const Char * _text, size_t _size )
     {
         U32String result;
 
-        const Char * text_str = _text.c_str();
-        size_t text_len = _text.size();
+        const Char * text_str = _text;
+        size_t text_len = _size;
 
         for( const Char
             * text_it = text_str,

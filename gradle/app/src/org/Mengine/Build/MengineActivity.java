@@ -13,6 +13,7 @@ import org.Mengine.Build.AdMob.AdMobInteractionLayer;
 import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.Mengine.Build.LocalNotifications.LocalNotificationsInteractionLayer;
+import org.Mengine.Build.LocalNotifications.NotificationPublisher;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
@@ -82,6 +83,10 @@ public class MengineActivity extends SDLActivity {
         Log.e(TAG, "MengineActivity.onCreate()");
 
         initPlugins();
+
+        if (_instance.getIntent().hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+            AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
+        }
     }
 
     @Override
@@ -118,6 +123,14 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        if (intent.hasExtra(NotificationPublisher.NOTIFICATION_ID)) {
+            AndroidNativeLocalNotifications_onLocalNotificationsPress(intent.getIntExtra(NotificationPublisher.NOTIFICATION_ID, 0));
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -347,9 +360,6 @@ public class MengineActivity extends SDLActivity {
                     if (_instance.localNotificationsInteractionLayer == null) {
                         _instance.localNotificationsInteractionLayer = new LocalNotificationsInteractionLayer(_instance);
                         AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
-                    }
-                    if (_instance.getIntent().hasExtra("NOTIFICATION_ID")) {
-                        AndroidNativeLocalNotifications_onLocalNotificationsPress(_instance.getIntent().getIntExtra("NOTIFICATION_ID", 0));
                     }
                 }
             }

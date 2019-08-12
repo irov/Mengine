@@ -54,9 +54,9 @@ public class LocalNotificationsInteractionLayer {
 
     public Notification getNotification(int id, String title, String content) {
         Intent intent = new Intent(_currentContext, MengineActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra("NOTIFICATION_ID", id);
-        PendingIntent pendingIntent = PendingIntent.getActivity(_currentContext, 0, intent, 0);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.putExtra(NotificationPublisher.NOTIFICATION_ID, id);
+        PendingIntent pendingIntent = PendingIntent.getActivity(_currentContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification.Builder builder = new Notification.Builder(_currentContext);
         builder.setContentTitle(title);

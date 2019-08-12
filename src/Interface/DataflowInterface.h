@@ -10,7 +10,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class DataflowInterface
         : public Interface
     {
@@ -32,5 +31,3 @@ namespace Mengine
     typedef IntrusivePtr<DataflowInterface> DataflowInterfacePtr;
     //////////////////////////////////////////////////////////////////////////	
 }
-
-

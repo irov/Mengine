@@ -5,7 +5,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class SocketSystemInterface
         : public ServiceInterface
     {

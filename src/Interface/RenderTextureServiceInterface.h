@@ -41,7 +41,8 @@ namespace Mengine
         typedef Lambda<void( const RenderTextureInterfacePtr & )> LambdaRenderTexture;
         virtual void visitTexture( const LambdaRenderTexture & _lambda ) const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define RENDERTEXTURE_SERVICE()\
     ((Mengine::RenderTextureServiceInterface*)SERVICE_GET(Mengine::RenderTextureServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////

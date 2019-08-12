@@ -5,7 +5,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class MemoryServiceInterface
         : public ServiceInterface
     {
@@ -29,4 +28,3 @@ namespace Mengine
 #define MEMORY_SERVICE()\
 	((Mengine::MemoryServiceInterface *)SERVICE_GET(Mengine::MemoryServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-

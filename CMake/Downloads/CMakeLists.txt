@@ -11,7 +11,8 @@ include(download_template.cmake)
 
 DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.7z SHA256 ae2bb1b35d1f238e72e3f819b42336f4bd27c9ed2092aab5d87818ccb0c9161a)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
-DOWNLOAD_URL(openssl https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.1a/only_android_openssl-1.1.1a.zip)
+DOWNLOAD_URL_HASH(openssl https://www.npcglib.org/~stathis/downloads/openssl-1.1.0f-vs2017.7z MD5 b6f8903afb8c61d3c4b93d439142e3b1)
+DOWNLOAD_URL(openssl_android https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.1a/only_android_openssl-1.1.1a.zip)
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 

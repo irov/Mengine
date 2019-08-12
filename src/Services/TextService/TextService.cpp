@@ -93,7 +93,8 @@ namespace Mengine
             ConstString text_key;
 
 
-            String text;
+            Char text_str_value[4096] = { 0 };
+            size_t text_str_size = 0;
             ConstString fontName;
 
             float charOffset = 0.f;
@@ -120,8 +121,6 @@ namespace Mengine
                 if( strcmp( str_key, "Key" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
-
-                    //text_key = Helper::stringizeStringExternal( str_value, (size_t)-1 );
                 }
                 else if( strcmp( str_key, "Value" ) == 0 )
                 {
@@ -140,16 +139,18 @@ namespace Mengine
                             , str_value_valid
                         );
 
-                        String str( str_value, str_value_size );
-                        utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( text ) );
+                        const Char * text_str_end = utf8::replace_invalid( str_value + 0, str_value + str_value_size, text_str_value );
+
+                        text_str_size = text_str_end - text_str_value;
 
                         LOGGER_ERROR( "replace to |%s|"
-                            , text.c_str()
+                            , text_str_value
                         );
                     }
                     else
                     {
-                        text = String( str_value, str_value_size );
+                        ::strcpy( text_str_value, str_value );
+                        text_str_size = str_value_size;
                     }
                 }
                 else if( strcmp( str_key, "Font" ) == 0 )
@@ -347,7 +348,7 @@ namespace Mengine
                 }
             }
 
-            if( text.empty() == true && isEmpty == false )
+            if( text_str_size == 0 && isEmpty == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid text key '%s' value is empty"
                     , m_fileGroup->getName().c_str()
@@ -356,7 +357,7 @@ namespace Mengine
                 );
             }
 
-            m_textManager->addTextEntry( text_key, text, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
+            m_textManager->addTextEntry( text_key, text_str_value, text_str_size, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
         }
 
     protected:
@@ -690,7 +691,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::addTextEntry( const ConstString & _key
-        , const String & _text
+        , const Char * _text
+        , const size_t _size
         , const ConstString & _font
         , const Color & _colorFont
         , float _lineOffset
@@ -708,24 +710,25 @@ namespace Mengine
         {
             if( _isOverride == false )
             {
-                const String & text = textEntry_has->getValue();
+                size_t text_size;
+                const Char * text = textEntry_has->getValue( &text_size );
 
                 LOGGER_ERROR( "duplicate key found '%s' with text: %s"
                     , _key.c_str()
-                    , text.c_str()
+                    , text
                 );
 
                 return false;
             }
 
-            textEntry_has->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
+            textEntry_has->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
             return true;
         }
 
         TextEntryPtr textEntry = m_factoryTextEntry->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+        if( textEntry->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
         {
             return false;
         }
@@ -966,9 +969,10 @@ namespace Mengine
                     continue;
                 }
 
-                const String & value = text->getValue();
+                size_t text_size;
+                const Char * text_value = text->getValue( &text_size );
 
-                if( font->validateText( textKey, value ) == false )
+                if( font->validateText( textKey, text_value, text_size ) == false )
                 {
                     LOGGER_ERROR( "text '%s' font name '%s' invalid"
                         , textKey.c_str()

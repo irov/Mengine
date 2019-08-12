@@ -29,6 +29,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -431,17 +432,18 @@ namespace Mengine
             return String( uid, _length );
         }
         //////////////////////////////////////////////////////////////////////////
-        String s_getTextFromID( const ConstString & _textId )
+        const Char * s_getTextFromID( const ConstString & _textId )
         {
             const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
                 ->getTextEntry( _textId );
 
             if( textEntry == nullptr )
             {
-                return String();
+                return "";
             }
 
-            const String & value = textEntry->getValue();
+            size_t value_size;
+            const Char * value = textEntry->getValue( &value_size );
 
             return value;
         }
@@ -2829,21 +2831,22 @@ namespace Mengine
                 );
             }
 
-            const String & text = entry->getValue();
+            size_t text_size;
+            const Char * text = entry->getValue( &text_size );
 
             WString unicode;
-            if( Helper::utf8ToUnicode( text, unicode ) == false )
+            if( Helper::utf8ToUnicodeSize( text, text_size, unicode ) == false )
             {
                 pybind::throw_exception( "invalid text key '%s' convert '%s' to unicode"
                     , _key.c_str()
-                    , text.c_str()
+                    , text
                 );
             }
 
             return unicode;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_getTextCharCountByKey( const ConstString & _key )
+        size_t s_getTextCharCountByKey( const ConstString & _key )
         {
             TextEntryInterfacePtr entry;
             if( TEXT_SERVICE()
@@ -2854,11 +2857,10 @@ namespace Mengine
                 );
             }
 
-            const String & text = entry->getValue();
+            size_t text_size;
+            entry->getValue( &text_size );
 
-            uint32_t count = (uint32_t)text.size();
-
-            return count;
+            return text_size;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setVSync( bool _vSync )

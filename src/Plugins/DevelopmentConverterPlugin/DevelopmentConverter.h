@@ -21,7 +21,7 @@ namespace Mengine
         virtual bool _initialize() = 0;
 
     public:
-        const String & getConvertExt() const override;
+        const ConstString & getConvertExt() const override;
 
     public:
         void setOptions( ConverterOptions * _options ) override;
@@ -34,6 +34,6 @@ namespace Mengine
 
         ConverterOptions m_options;
 
-        String m_convertExt;
+        ConstString m_convertExt;
     };
 }

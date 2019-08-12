@@ -28,7 +28,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::_initialize()
     {
-        m_convertExt = ".hit";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".hit" );
 
         return true;
     }

@@ -19,7 +19,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool SoundConverterFFMPEGToOGG::_initialize()
     {
-        m_convertExt = ".ogg";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".ogg" );
 
         return true;
     }

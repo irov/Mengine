@@ -32,7 +32,7 @@ namespace Mengine
         void setIcon( uint32_t _icon ) override;
         uint32_t getIcon() const override;
 
-        void setProjectTitle( const Char * _projectTitle ) override;
+        void setProjectTitle( const Char * _projectTitle, size_t _projectTitleSize ) override;
         size_t getProjectTitle( Char * _projectTitle ) const override;
 
     public:

@@ -6,7 +6,6 @@
 
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -51,6 +50,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/Stringstream.h"
 
@@ -471,7 +471,8 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->setIcon( 0 );
 
-        String projectTitle;
+        const Char * projectTitle = "";
+        size_t projectTitleLen = 0;
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
@@ -482,11 +483,11 @@ namespace Mengine
         }
         else
         {
-            projectTitle = entry->getValue();
+            projectTitle = entry->getValue( &projectTitleLen );
         }
 
         PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle.c_str() );
+            ->setProjectTitle( projectTitle, projectTitleLen );
 
         const Resolution & windowResolution = APPLICATION_SERVICE()
             ->getCurrentResolution();

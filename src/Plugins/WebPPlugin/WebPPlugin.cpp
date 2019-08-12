@@ -43,7 +43,7 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "webp", STRINGIZE_STRING_LOCAL( "webpImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "webp" ), STRINGIZE_STRING_LOCAL( "webpImage" ) );
 
         return true;
     }

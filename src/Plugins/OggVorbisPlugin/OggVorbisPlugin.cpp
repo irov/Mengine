@@ -27,7 +27,7 @@ namespace Mengine
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "ogvSound" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "ogg", STRINGIZE_STRING_LOCAL( "oggSound" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogg" ), STRINGIZE_STRING_LOCAL( "oggSound" ) );
 
         return true;
     }

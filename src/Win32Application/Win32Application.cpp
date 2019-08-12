@@ -43,6 +43,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -514,7 +515,8 @@ namespace Mengine
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 
-        String projectTitle;
+        const Char * projectTitle = nullptr;
+        size_t projectTitleLen = 0;
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
@@ -524,12 +526,12 @@ namespace Mengine
             );
         }
         else
-        {
-            projectTitle = entry->getValue();
+        {   
+            projectTitle = entry->getValue( &projectTitleLen );
         }
 
         PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle.c_str() );
+            ->setProjectTitle( projectTitle, projectTitleLen );
 
         Resolution windowResolution;
         APPLICATION_SERVICE()

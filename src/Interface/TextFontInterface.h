@@ -11,7 +11,6 @@
 #include "Kernel/GlyphChar.h"
 #include "Kernel/Color.h"
 
-#include "Config/String.h"
 #include "Config/VectorString.h"
 
 #include "math/vec4.h"
@@ -78,7 +77,7 @@ namespace Mengine
         virtual void setCharOffset( float _charOffset ) = 0;
 
     public:
-        virtual bool validateText( const ConstString & _key, const String & _text ) const = 0;
+        virtual bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const = 0;
         virtual U32String prepareText( const Char * _text, size_t _size ) = 0;
         virtual bool prepareGlyph( const U32String & _code ) = 0;
 

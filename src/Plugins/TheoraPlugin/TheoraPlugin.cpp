@@ -31,10 +31,10 @@ namespace Mengine
         Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "ogv", STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogv" ), STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "ogva", STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogva" ), STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
         return true;
     }

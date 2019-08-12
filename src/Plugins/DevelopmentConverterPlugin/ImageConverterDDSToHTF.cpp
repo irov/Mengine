@@ -28,7 +28,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ImageConverterDDSToHTF::_initialize()
     {
-        m_convertExt = ".htf";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".htf" );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );

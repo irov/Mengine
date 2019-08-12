@@ -3,7 +3,6 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 
 #include "DX9RenderEnum.h"
@@ -28,6 +27,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 

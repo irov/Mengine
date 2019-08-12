@@ -481,6 +481,9 @@ Core
     BezierHelper.h
     ParabolicHelper.h
     
+    UnicodeHelper.h
+    UnicodeHelper.cpp
+    
     Range.h
     
     Hashgen.h

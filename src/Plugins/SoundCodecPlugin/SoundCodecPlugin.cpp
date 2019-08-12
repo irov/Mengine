@@ -25,7 +25,7 @@ namespace Mengine
         Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "wav", STRINGIZE_STRING_LOCAL( "wavSound" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "wav" ), STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
         return true;
     }

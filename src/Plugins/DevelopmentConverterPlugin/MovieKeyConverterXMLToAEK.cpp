@@ -53,7 +53,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::_initialize()
     {
-        m_convertExt = ".aek";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".aek" );
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 

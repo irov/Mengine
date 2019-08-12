@@ -28,7 +28,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ImageConverterPNGToACF::_initialize()
     {
-        m_convertExt = ".acf";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".acf" );
 
         return true;
     }

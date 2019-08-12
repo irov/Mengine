@@ -6,6 +6,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 namespace Mengine
 {

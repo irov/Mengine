@@ -117,7 +117,7 @@ namespace Mengine
 
         cache_path.cut_before_last_of( '.' );
 
-        const String & ext = converter->getConvertExt();
+        const ConstString & ext = converter->getConvertExt();
         cache_path += ext;
 
         options.outputFileName = Helper::stringizeFilePath( cache_path );

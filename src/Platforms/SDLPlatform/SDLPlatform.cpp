@@ -28,6 +28,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -572,9 +573,9 @@ namespace Mengine
         return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::setProjectTitle( const Char * _projectTitle )
+    void SDLPlatform::setProjectTitle( const Char * _projectTitle, size_t _projectTitleLen )
     {
-        m_projectTitle = _projectTitle;
+        m_projectTitle.assign( _projectTitle, _projectTitleLen );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getProjectTitle( Char * _projectTitle ) const

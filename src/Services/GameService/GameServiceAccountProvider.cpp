@@ -1,6 +1,6 @@
 #include "GameServiceAccountProvider.h"
 
-#include "Interface/GameServiceInterface.h"
+#include "Interface/GameEventReceiverInterface.h"
 
 #include "Kernel/EventableHelper.h"
 

@@ -52,6 +52,7 @@ src
 	ConverterFactoryInterface.h
 	ConverterServiceInterface.h
 	StringizeServiceInterface.h
+    GameEventReceiverInterface.h
     GameServiceInterface.h
     PlayerServiceInterface.h
     SchedulerInterface.h

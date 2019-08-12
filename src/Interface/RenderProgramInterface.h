@@ -9,7 +9,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class RenderProgramInterface
         : public Mixin
     {

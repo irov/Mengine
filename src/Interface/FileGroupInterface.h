@@ -54,5 +54,3 @@ namespace Mengine
     typedef IntrusivePtr<FileGroupInterface> FileGroupInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
-
-

@@ -20,9 +20,10 @@ namespace Mengine
         };
     };
 }
-
+//////////////////////////////////////////////////////////////////////////
 #define DECLARE_MAGICABLE(Magic)\
 public:\
     uint32_t getMagicNumber() const override{ return GET_MAGIC_NUMBER( Magic ); }\
     uint32_t getMagicVersion() const override{ return GET_MAGIC_VERSION( Magic ); }\
 protected:
+//////////////////////////////////////////////////////////////////////////

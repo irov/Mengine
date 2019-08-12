@@ -4,6 +4,5 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef PointerT<IntrusivePtr<class Mixin> > MixinPointer;
+    typedef PointerT<IntrusivePtr<class Mixin>> MixinPointer;
 }

@@ -121,6 +121,7 @@ namespace Mengine
 
         config->getValues( "Game", "Path", m_configPaths );
         config->getValues( "Config", "Path", m_configPaths );
+        config->getValues( "Credential", "Path", m_configPaths );
         config->getValues( "Resource", "Path", m_resourceConfigPaths );
 
         return true;

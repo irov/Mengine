@@ -20,7 +20,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextEntry::initialize( const ConstString & _key
-        , const String & _text
+        , const Char * _text
+        , size_t _size
         , const ConstString & _fontName
         , const Color & _colorFont
         , float _lineOffset
@@ -32,7 +33,7 @@ namespace Mengine
         , uint32_t _params )
     {
         m_key = _key;
-        m_text = _text;
+        m_text.assign( _text, _size );
 
         m_fontName = _fontName;
 
@@ -57,9 +58,13 @@ namespace Mengine
         return m_key;
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & TextEntry::getValue() const
+    const Char * TextEntry::getValue( size_t * _size ) const
     {
-        return m_text;
+        *_size = (size_t)m_text.size();
+
+        const Char * text_str = m_text.c_str();
+
+        return text_str;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextEntry::getFontName() const

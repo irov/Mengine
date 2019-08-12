@@ -2,10 +2,10 @@
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 
 #include "Win32FileHelper.h"
 
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"

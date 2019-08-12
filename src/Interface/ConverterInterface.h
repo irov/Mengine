@@ -20,8 +20,6 @@ namespace Mengine
 
         FilePath inputFileName;
         FilePath outputFileName;
-
-        String params;
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface
@@ -34,7 +32,7 @@ namespace Mengine
         virtual void setOptions( ConverterOptions * _options ) = 0;
 
     public:
-        virtual const String & getConvertExt() const = 0;
+        virtual const ConstString & getConvertExt() const = 0;
 
     public:
         virtual bool validateVersion( const InputStreamInterfacePtr & _stream ) const = 0;

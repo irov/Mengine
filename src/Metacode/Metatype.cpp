@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Metacache.h"

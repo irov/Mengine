@@ -3,7 +3,6 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
@@ -12,6 +11,7 @@
 #include "Win32AntifreezeMonitor.h"
 #include "Win32CriticalErrorsMonitor.h"
 
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -556,9 +556,9 @@ namespace Mengine
         return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::setProjectTitle( const Char * _projectTitle )
-    {
-        Helper::utf8ToUnicode( _projectTitle, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+    void Win32Platform::setProjectTitle( const Char * _projectTitle, size_t _projectTitleSize )
+    {        
+        Helper::utf8ToUnicodeSize( _projectTitle, _projectTitleSize, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
@@ -1282,9 +1282,7 @@ namespace Mengine
                     this->calcCursorPosition_( point );
 
                     WChar text_code[2];
-                    size_t text_code_size;
-                    UNICODE_SYSTEM()
-                        ->utf8ToUnicode( utf8, MENGINE_UNICODE_UNKNOWN_SIZE, text_code, 2, &text_code_size );
+                    Helper::utf8ToUnicode( utf8, text_code, 2 );
 
                     Helper::pushTextEvent( point.x, point.y, text_code[0] );
 

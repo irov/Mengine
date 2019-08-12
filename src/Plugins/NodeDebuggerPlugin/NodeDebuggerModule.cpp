@@ -615,9 +615,10 @@ namespace Mengine
         {
             serializeNodeProp( true, "HasText", xmlNode );
 
-            const String & textValue = textEntry->getValue();
+            size_t textSize;
+            const Char * textValue = textEntry->getValue( &textSize );
 
-            serializeNodeProp( textValue, "Format", xmlNode );
+            serializeNodeProp( String( textValue, textSize ), "Format", xmlNode );
 
             VectorString textFormatArgs = _textField->getTextFormatArgs();
 
@@ -625,7 +626,7 @@ namespace Mengine
                 ->getTextAliasArguments( textAliasEnvironment, textID, textFormatArgs );
 
             String fmt;
-            Helper::getStringFormat( fmt, textValue, textFormatArgs );
+            Helper::getStringFormat( fmt, textValue, textSize, textFormatArgs );
 
             serializeNodeProp( fmt, "Text", xmlNode );
 

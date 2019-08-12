@@ -19,7 +19,6 @@
 #include "Interface/SchedulerInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/AccountInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -32,6 +31,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageDefault.h"
@@ -1565,7 +1565,7 @@ namespace Mengine
                 return false;
             }
 
-            if( font->validateText( ConstString::none(), _text ) == false )
+            if( font->validateText( ConstString::none(), _text.c_str(), _text.size() ) == false )
             {
                 return false;
             }

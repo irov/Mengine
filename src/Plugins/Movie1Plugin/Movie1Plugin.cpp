@@ -136,7 +136,7 @@ namespace Mengine
         VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ), dataflowAEK );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {

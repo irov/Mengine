@@ -55,31 +55,31 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "png", STRINGIZE_STRING_LOCAL( "pngImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "png" ), STRINGIZE_STRING_LOCAL( "pngImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "PNG", STRINGIZE_STRING_LOCAL( "pngImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "PNG" ), STRINGIZE_STRING_LOCAL( "pngImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "jpg", STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "jpeg", STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpeg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "pvr", STRINGIZE_STRING_LOCAL( "pvrImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "dds", STRINGIZE_STRING_LOCAL( "ddsImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dds" ), STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "etc", STRINGIZE_STRING_LOCAL( "etcImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "htf", STRINGIZE_STRING_LOCAL( "htfImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "acf", STRINGIZE_STRING_LOCAL( "acfImage" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         Helper::registerEncoder<ImageEncoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
         Helper::registerEncoder<ImageEncoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
@@ -92,7 +92,7 @@ namespace Mengine
         Helper::registerEncoder<PickEncoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );
+            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "hit" ), STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         return true;
     }

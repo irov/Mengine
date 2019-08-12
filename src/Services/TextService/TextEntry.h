@@ -19,7 +19,8 @@ namespace Mengine
 
     public:
         bool initialize( const ConstString & _key
-            , const String & _text
+            , const Char * _text
+            , size_t _size
             , const ConstString & _font
             , const Color & _colorFont
             , float _lineOffset
@@ -32,7 +33,7 @@ namespace Mengine
 
     public:
         const ConstString & getKey() const override;
-        const String & getValue() const override;
+        const Char * getValue( size_t * _size ) const override;
 
     public:
         const ConstString & getFontName() const override;

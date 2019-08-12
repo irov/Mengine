@@ -5,6 +5,8 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
     namespace Helper

@@ -11,8 +11,6 @@
 #include "Kernel/Magic.h"
 #include "Kernel/Mixin.h"
 
-#include "Config/String.h"
-
 #ifndef MENGINE_ACCOUNT_SETTING_MAXVALUE
 #define MENGINE_ACCOUNT_SETTING_MAXVALUE 1024
 #endif

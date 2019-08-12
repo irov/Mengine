@@ -30,7 +30,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ParticleConverterPTCToPTZ::_initialize()
     {
-        m_convertExt = ".ptz";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".ptz" );
 
         ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 

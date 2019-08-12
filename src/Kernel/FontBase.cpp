@@ -131,12 +131,12 @@ namespace Mengine
         return m_charOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::validateText( const ConstString & _key, const String & _text ) const
+    bool FontBase::validateText( const ConstString & _key, const Char * _text, size_t _size ) const
     {
         U32String ttf_codes;
 
-        const Char * text_str = _text.c_str();
-        size_t text_len = _text.size();
+        const Char * text_str = _text;
+        size_t text_len = _size;
 
         for( const Char
             * text_it = text_str,

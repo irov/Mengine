@@ -9,8 +9,6 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 
-#include "Config/String.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -70,7 +68,7 @@ namespace Mengine
         }
 
     public:
-        virtual bool registerCodecExt( const String & _ext, const ConstString & _codecType ) = 0;
+        virtual bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) = 0;
         virtual const ConstString & findCodecType( const FilePath & _path ) const = 0;
     };
 }

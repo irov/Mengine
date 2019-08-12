@@ -9,12 +9,12 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        uint32_t getStringFormatExpectedArgs( const String & _format )
+        uint32_t getStringFormatExpectedArgs( const Char * _format, size_t _size )
         {
             uint32_t num_argumetns = 0;
 
-            String::size_type format_size = _format.size();
-            for( String::size_type index = 0; index < format_size; ++index )
+            size_t format_size = _size;
+            for( size_t index = 0; index < format_size; ++index )
             {
                 const Char ch = _format[index];
 
@@ -49,12 +49,12 @@ namespace Mengine
             return num_argumetns;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getStringFormat( String & _out, const String & _format, const VectorString & _arguments )
+        bool getStringFormat( String & _out, const Char * _format, size_t _size, const VectorString & _arguments )
         {
             uint32_t num_argumetns = 0;
 
-            String::size_type format_size = _format.size();
-            for( String::size_type index = 0; index < format_size; ++index )
+            size_t format_size = _size;
+            for( size_t index = 0; index < format_size; ++index )
             {
                 const Char ch = _format[index];
 

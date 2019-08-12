@@ -7,7 +7,6 @@
 #include "Kernel/GlyphChar.h"
 #include "Kernel/Color.h"
 
-#include "Config/String.h"
 #include "Config/VectorString.h"
 
 namespace Mengine
@@ -34,7 +33,7 @@ namespace Mengine
     {
     public:
         virtual const ConstString & getKey() const = 0;
-        virtual const String & getValue() const = 0;
+        virtual const Char * getValue( size_t * _size ) const = 0;
 
     public:
         virtual const ConstString & getFontName() const = 0;

@@ -19,7 +19,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToWEBM::_initialize()
     {
-        m_convertExt = ".webm";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".webm" );
 
         return true;
     }

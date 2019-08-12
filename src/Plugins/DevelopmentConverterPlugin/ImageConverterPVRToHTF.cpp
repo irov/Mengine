@@ -28,7 +28,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ImageConverterPVRToHTF::_initialize()
     {
-        m_convertExt = ".htf";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".htf" );
 
         return true;
     }

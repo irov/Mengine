@@ -23,7 +23,8 @@ namespace Mengine
 
     public:
         virtual bool addTextEntry( const ConstString & _key
-            , const String & _text
+            , const Char * _text
+            , size_t _size
             , const ConstString & _font
             , const Color & _colorFont
             , float _lineOffset

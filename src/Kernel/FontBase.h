@@ -56,7 +56,7 @@ namespace Mengine
         uint32_t getFontParams() const override;
 
     public:
-        bool validateText( const ConstString & _key, const String & _text ) const override;
+        bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const override;
         U32String prepareText( const Char * _text, size_t _size ) override;
         bool prepareGlyph( const U32String & _text ) override;
 

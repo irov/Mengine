@@ -19,7 +19,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToOGVA::_initialize()
     {
-        m_convertExt = ".ogva";
+        m_convertExt = STRINGIZE_STRING_LOCAL( ".ogva" );
 
         return true;
     }

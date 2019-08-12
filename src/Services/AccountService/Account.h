@@ -4,11 +4,10 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Config/Typedef.h"
-
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
+#include "Config/String.h"
 #include "Config/Map.h"
 
 namespace Mengine

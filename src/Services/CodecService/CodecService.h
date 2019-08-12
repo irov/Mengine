@@ -25,11 +25,11 @@ namespace Mengine
         EncoderInterfacePtr createEncoder( const ConstString & _type, const Char * _doc ) override;
 
     public:
-        bool registerCodecExt( const String & _ext, const ConstString & _codecType ) override;
+        bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) override;
         const ConstString & findCodecType( const FilePath & _path ) const override;
 
     protected:
-        typedef Map<String, ConstString> MapCodecExts;
+        typedef Map<ConstString, ConstString> MapCodecExts;
         MapCodecExts m_codecExts;
     };
 }

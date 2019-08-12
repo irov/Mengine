@@ -1519,11 +1519,12 @@ namespace Mengine
             , m_textId.c_str()
         );
 
-        const String & textValue = textEntry->getValue();
+        size_t textSize;
+        const Char * textValue = textEntry->getValue( &textSize );
 
         try
         {
-            uint32_t expected_args = Helper::getStringFormatExpectedArgs( textValue );
+            uint32_t expected_args = Helper::getStringFormatExpectedArgs( textValue, textSize );
 
             return expected_args;
         }
@@ -1555,13 +1556,14 @@ namespace Mengine
             return false;
         }
 
-        const String & textValue = textEntry->getValue();
+        size_t textSize;
+        const Char * textValue = textEntry->getValue( &textSize );
 
         TEXT_SERVICE()
             ->getTextAliasArguments( m_aliasEnvironment, m_textId, m_textFormatArgs );
 
         String fmt;
-        if( Helper::getStringFormat( fmt, textValue, m_textFormatArgs ) == false )
+        if( Helper::getStringFormat( fmt, textValue, textSize, m_textFormatArgs ) == false )
         {
             LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
                 , this->getName().c_str()

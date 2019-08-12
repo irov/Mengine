@@ -7,6 +7,7 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"

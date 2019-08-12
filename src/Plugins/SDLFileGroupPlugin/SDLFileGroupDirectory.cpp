@@ -14,6 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PathHelper.h"
+#include "Kernel/PathString.h"
 
 #include "SDL_rwops.h"
 

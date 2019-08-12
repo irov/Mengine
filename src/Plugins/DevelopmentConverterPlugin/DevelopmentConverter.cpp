@@ -30,7 +30,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & DevelopmentConverter::getConvertExt() const
+    const ConstString & DevelopmentConverter::getConvertExt() const
     {
         return m_convertExt;
     }

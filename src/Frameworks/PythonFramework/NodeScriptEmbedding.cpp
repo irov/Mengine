@@ -14,7 +14,6 @@
 #include "Interface/SchedulerInterface.h"
 #include "Interface/TextFontInterface.h"
 #include "Interface/AccountInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Reference.h"
@@ -25,6 +24,7 @@
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"

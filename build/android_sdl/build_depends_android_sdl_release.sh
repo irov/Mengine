@@ -1,4 +1,4 @@
-BUILD_TYPE=Debug
+BUILD_TYPE=Release
 
 echo Starting dependencies build $BUILD_TYPE configuration...
 

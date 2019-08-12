@@ -39,8 +39,8 @@ namespace Mengine
         bool initializeLocalNotifications();
         
     public:
-        bool scheduleLocalNotification( int _id, const WString & _title, const WString & _content, int _delay );
-        bool instantlyPresentLocalNotification( int _id, const WString & _title, const WString & _content );
+        bool scheduleLocalNotification( int _id, const String & _title, const String & _content, int _delay );
+        bool instantlyPresentLocalNotification( int _id, const String & _title, const String & _content );
 
     protected:        
         LocalNotificationsEventation m_eventation;

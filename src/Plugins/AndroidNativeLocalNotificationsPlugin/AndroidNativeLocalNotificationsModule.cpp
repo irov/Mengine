@@ -12,9 +12,6 @@
 
 #include <jni.h>
 
-#define LOCAL_NOTIFICATIONS_JAVA_PREFIX org_Mengine_Build_LocalNotifications
-#define LOCAL_NOTIFICATIONS_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(LOCAL_NOTIFICATIONS_JAVA_PREFIX, NotificationPublisher, function)
-
 static jclass mActivityClass;
 static jmethodID jmethodID_localNotificationsInitializePlugin;
 static jmethodID jmethodID_scheduleLocalNotification;
@@ -165,25 +162,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeLocalNotificationsModule::scheduleLocalNotification( int _id, const WString & _title, const WString & _content, int _delay )
+    bool AndroidNativeLocalNotificationsModule::scheduleLocalNotification( int _id, const String & _title, const String & _content, int _delay )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         jint jid = static_cast<jint>(_id);
-        const wchar_t * title_str = _title.c_str();
-        size_t titleLength = _title.length();
-        jchar* title_jchar = (jchar*)malloc((titleLength + 1)*sizeof(jchar));
-        for (int i = 0; i < titleLength; i++)
-            title_jchar[i] = (jchar) title_str[i];
-        title_jchar[titleLength] = 0;
-        jstring jtitle = env->NewString( title_jchar, titleLength );
-        const wchar_t * content_str = _content.c_str();
-        size_t contentLength = _content.length();
-        jchar* content_jchar = (jchar*)malloc((contentLength + 1)*sizeof(jchar));
-        for (int i = 0; i < contentLength; i++)
-            content_jchar[i] = (jchar) content_str[i];
-        content_jchar[contentLength] = 0;
-        jstring jcontent = env->NewString( content_jchar, contentLength );
+
+        const Char * title_str = _title.c_str();
+        jstring jtitle = env->NewStringUTF( title_str );
+
+        const Char * content_str = _content.c_str();
+        jstring jcontent = env->NewStringUTF( content_str );
+
         jint jdelay = static_cast<jint>(_delay);
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_scheduleLocalNotification, jid, jtitle, jcontent, jdelay );
@@ -194,25 +184,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeLocalNotificationsModule::instantlyPresentLocalNotification( int _id, const WString & _title, const WString & _content )
+    bool AndroidNativeLocalNotificationsModule::instantlyPresentLocalNotification( int _id, const String & _title, const String & _content )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         jint jid = static_cast<jint>(_id);
-        const wchar_t * title_str = _title.c_str();
-        size_t titleLength = _title.length();
-        jchar* title_jchar = (jchar*)malloc((titleLength + 1)*sizeof(jchar));
-        for (int i = 0; i < titleLength; i++)
-            title_jchar[i] = (jchar) title_str[i];
-        title_jchar[titleLength] = 0;
-        jstring jtitle = env->NewString( title_jchar, titleLength );
-        const wchar_t * content_str = _content.c_str();
-        size_t contentLength = _content.length();
-        jchar* content_jchar = (jchar*)malloc((contentLength + 1)*sizeof(jchar));
-        for (int i = 0; i < contentLength; i++)
-            content_jchar[i] = (jchar) content_str[i];
-        content_jchar[contentLength] = 0;
-        jstring jcontent = env->NewString( content_jchar, contentLength );
+
+        const Char * title_str = _title.c_str();
+        jstring jtitle = env->NewStringUTF( title_str );
+
+        const Char * content_str = _content.c_str();
+        jstring jcontent = env->NewStringUTF( content_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_instantlyPresentLocalNotification, jid, jtitle, jcontent );
 

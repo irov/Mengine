@@ -5,8 +5,7 @@
 #include "math/utils.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     template <typename T>
     class ValueFollower
     {

@@ -8,11 +8,9 @@
 #include "Kernel/ConstString.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     namespace Helper
-    {
-        //////////////////////////////////////////////////////////////////////////
+    {        
         MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const Char * _doc );
         MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _doc );
         MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const Char * _doc );

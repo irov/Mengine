@@ -27,7 +27,7 @@ namespace Mengine
         T * m_begin;
         T * m_end;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         template<class T>
@@ -36,4 +36,5 @@ namespace Mengine
             return Range<T>( _ptr, _ptr + _size );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
 }

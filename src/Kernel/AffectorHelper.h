@@ -8,7 +8,9 @@
 #include "Kernel/AffectorCallbackInterface.h"
 #include "Kernel/Factory.h"
 #include "Kernel/FactoryPool.h"
-#include "Kernel/ValueInterpolator.h"
+#include "Kernel/ValueInterpolatorLinear.h"
+#include "Kernel/ValueInterpolatorQuadratic.h"
+#include "Kernel/ValueInterpolatorBezier.h"
 #include "Kernel/Document.h"
 
 namespace Mengine

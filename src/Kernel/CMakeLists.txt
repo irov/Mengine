@@ -383,6 +383,12 @@ Core
     MemoryHelper.cpp
 	
     ValueInterpolator.h
+    ValueInterpolatorLinear.h
+    ValueInterpolatorQuadratic.h
+    ValueInterpolatorBezier.h
+    ValueInterpolatorParabolic.h
+    ValueAccumulator.h
+    ValueAccumulateLinear.h
     ValueFollower.h
     ValueFollowerLinear.h
     ValueFollowerAcceleration.h
@@ -427,8 +433,6 @@ Core
     RenderUtils.h
 	RenderUtils.cpp
     
-    OutputStreamWriter.h
-        
     ThreadMutexDummy.h
     ThreadMutexDummy.cpp
     

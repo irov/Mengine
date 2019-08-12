@@ -6,13 +6,14 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef uint32_t ColorValue_ARGB;
-
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a );
     }
-
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         const uint32_t COLOR_INVALIDATE_IDENTITY = 0;
@@ -20,7 +21,7 @@ namespace Mengine
         const uint32_t COLOR_INVALIDATE_TRUE = 2;
         const uint32_t COLOR_IDENTITY_VALUE = 0xFFFFFFFF;
     }
-
+    //////////////////////////////////////////////////////////////////////////
     class Color
     {
     public:

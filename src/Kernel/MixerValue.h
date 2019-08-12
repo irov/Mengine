@@ -18,9 +18,6 @@ namespace Mengine
         void setSpeed( float _speed );
         float getSpeed() const;
 
-        void setDefault( float _default );
-        float getDefault() const;
-
     public:
         void setValue( const ConstString & _type, float _value, float _from, bool _force );
         float getValue( const ConstString & _type ) const;

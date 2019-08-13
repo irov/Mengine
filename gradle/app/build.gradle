@@ -19,7 +19,7 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         if (findProperty("ANDROID_APP_ID")) {
             applicationId ANDROID_APP_ID
@@ -45,7 +45,12 @@ android {
             versionCode 4
             versionName "4"
         }
-        
+        if (findProperty("ANDROID_APP_NAME")) {
+            manifestPlaceholders = [app_name_gradle:ANDROID_APP_NAME]
+        } else {
+            manifestPlaceholders = [app_name_gradle:"Dunge"]
+        }
+//               a
         print 'ANDROID_APP_CODE_VERSION = '
         println versionCode
         
@@ -54,7 +59,7 @@ android {
             abiFilters "arm64-v8a", "armeabi-v7a"
         }
         signingConfig signingConfigs.config
-        targetSdkVersion 26
+        targetSdkVersion 28
     }
     buildTypes {
         debug {

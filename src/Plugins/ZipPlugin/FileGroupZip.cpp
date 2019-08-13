@@ -421,6 +421,8 @@ namespace Mengine
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryInput( _doc );
 
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////

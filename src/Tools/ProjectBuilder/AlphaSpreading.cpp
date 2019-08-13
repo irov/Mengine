@@ -17,6 +17,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/UnicodeHelper.h"
 
 namespace Mengine
 {

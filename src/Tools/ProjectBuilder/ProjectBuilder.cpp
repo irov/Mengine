@@ -41,6 +41,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/Vector.h"
 
@@ -235,6 +236,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const WString & _params )
     {
+        MENGINE_UNUSED( _params );
+
         String utf8_fromPath;
         Helper::unicodeToUtf8( _fromPath, utf8_fromPath );
 
@@ -244,9 +247,6 @@ namespace Mengine
         String utf8_convertType;
         Helper::unicodeToUtf8( _convertType, utf8_convertType );
 
-        String utf8_params;
-        Helper::unicodeToUtf8( _params, utf8_params );
-
         ConverterOptions options;
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -255,7 +255,6 @@ namespace Mengine
         options.fileGroup = fileGroup;
         options.inputFileName = Helper::stringizeFilePath( utf8_fromPath );
         options.outputFileName = Helper::stringizeFilePath( utf8_toPath );
-        options.params = utf8_params;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
@@ -16,7 +17,7 @@ namespace Mengine
     typedef uint32_t HttpRequestID;
     //////////////////////////////////////////////////////////////////////////
     class cURLReceiverInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;

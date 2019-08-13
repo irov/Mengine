@@ -38,6 +38,14 @@ Tasks
     TaskAnimatableResume.h
 	TaskAnimatablePlayReceiver.h
 	TaskAnimatablePlayReceiver.cpp
+    TaskHttpBase.h
+    TaskHttpBase.cpp
+    TaskHttpGet.h
+    TaskHttpGet.cpp
+    TaskHttpPost.h
+    TaskHttpPost.cpp
+    TaskHttpHeaderData.h
+    TaskHttpHeaderData.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)

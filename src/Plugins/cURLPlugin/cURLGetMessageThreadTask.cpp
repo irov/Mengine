@@ -2,6 +2,8 @@
 
 #include "Interface/ConfigServiceInterface.h"
 
+#include "cURLErrorHelper.h"
+
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -24,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetMessageThreadTask::_onCURL( CURL * _curl )
     {
-        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
 
         this->setupWriteResponse( _curl );
 

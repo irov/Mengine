@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest 
+<manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.Mengine.Build"
     android:installLocation="preferExternal">
-    
+
     <!-- OpenGL ES 2.0 -->
     <uses-feature android:glEsVersion="0x00020000"/>
-    
+
     <!-- Touchscreen support -->
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false"/>
-        
+
     <uses-permission android:name="android.permission.INTERNET" /> <!--used for http requests-->
     <uses-permission android:name="android.permission.WAKE_LOCK" /><!--used for http requests (downloading files)-->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/><!--used for Proxy detection, could be disabled-->          
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/><!--used for Proxy detection, could be disabled-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /><!-- Allow writing to external storage -->
 
-    <application        
-        android:label="@string/app_name"
+    <application
+        android:label="${app_name_gradle}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:hardwareAccelerated="true">
@@ -31,7 +31,9 @@
 
         <activity android:name="MengineActivity"
                   android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                  android:label="@string/app_name"
+                  android:clearTaskOnLaunch="true"
+                  android:launchMode="singleTop"
+                  android:label="${app_name_gradle}"
                   android:keepScreenOn="true"
                   android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
                   android:screenOrientation="portrait">
@@ -48,7 +50,7 @@
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
+            android:label="${app_name_gradle}" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">

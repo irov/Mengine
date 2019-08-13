@@ -15,6 +15,7 @@
 #include "FEDataflow.h"
 
 #include "fe/fe.h"
+#include "stdex/allocator_report.h"
 
 //////////////////////////////////////////////////////////////////////////
 void * _fe_alloc( size_t size )
@@ -124,6 +125,11 @@ namespace Mengine
 
         FT_Done_FreeType( m_ftlibrary );
         m_ftlibrary = nullptr;
+
+        uint32_t report_count = stdex_get_allocator_report_count( "fe" );
+        MENGINE_ASSERTION( report_count == 0, "FE memleak [%d]"
+            , report_count
+        );
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFPlugin::_destroyPlugin()

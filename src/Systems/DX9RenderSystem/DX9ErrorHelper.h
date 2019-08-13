@@ -17,7 +17,7 @@ namespace Mengine
         DX9ErrorHelper( const Char * _file, uint32_t _line, const Char * _method );
 
     public:
-        bool operator == ( HRESULT _hr );
+        bool operator == ( HRESULT _hr ) const;
 
     protected:
         const Char * m_file;

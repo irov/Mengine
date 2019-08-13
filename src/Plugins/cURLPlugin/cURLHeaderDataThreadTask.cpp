@@ -2,6 +2,8 @@
 
 #include "Interface/ConfigServiceInterface.h"
 
+#include "cURLErrorHelper.h"
+
 #include "Kernel/Logger.h"
 
 #include "Config/Stringstream.h"
@@ -10,6 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     cURLHeaderDataThreadTask::cURLHeaderDataThreadTask()
+        : m_curl_header_list( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -29,11 +32,10 @@ namespace Mengine
     void cURLHeaderDataThreadTask::_onCURL( CURL * _curl )
     {
         /* specify URL to get */
-        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1) );
 
-        curl_easy_setopt( _curl, CURLOPT_POST, 1 );
-
-        struct curl_slist * curl_header_list = NULL;
+        struct curl_slist * curl_header_list = nullptr;
 
         if( m_headers.empty() == false )
         {
@@ -42,10 +44,13 @@ namespace Mengine
                 curl_header_list = curl_slist_append( curl_header_list, header.c_str() );
             }
 
-            curl_easy_setopt( _curl, CURLOPT_HTTPHEADER, curl_header_list );
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPHEADER, curl_header_list) );
+
+            m_curl_header_list = curl_header_list;
         }
 
-        curl_easy_setopt( _curl, CURLOPT_POSTFIELDS, m_data.c_str() );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, m_data.c_str()) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)m_data.size()) );
 
         this->setupWriteResponse( _curl );
 
@@ -65,6 +70,17 @@ namespace Mengine
                 , m_url.c_str()
                 , header_str.c_str()
             );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLHeaderDataThreadTask::_onCURLCleanup( CURL * _curl )
+    {
+        MENGINE_UNUSED( _curl );
+
+        if( m_curl_header_list != nullptr )
+        {
+            curl_slist_free_all( m_curl_header_list );
+            m_curl_header_list = nullptr;
         }
     }
 }

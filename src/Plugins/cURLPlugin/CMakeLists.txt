@@ -21,6 +21,9 @@ src
     cURLHeaderDataThreadTask.h
     cURLPostMessageThreadTask.cpp
     cURLPostMessageThreadTask.h
+    
+    cURLErrorHelper.cpp
+    cURLErrorHelper.h
 	)
     
 if(MENGINE_USE_PYTHON_FRAMEWORK)

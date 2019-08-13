@@ -78,3 +78,4 @@ namespace Mengine
 	{\
 		extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic );\
 	}
+//////////////////////////////////////////////////////////////////////////

@@ -2,6 +2,8 @@
 
 #include "Interface/ConfigServiceInterface.h"
 
+#include "cURLErrorHelper.h"
+
 #include "Kernel/Logger.h"
 
 #include "Config/Stringstream.h"
@@ -10,6 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     cURLPostMessageThreadTask::cURLPostMessageThreadTask()
+        : m_curl_formpost( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,31 +31,36 @@ namespace Mengine
     void cURLPostMessageThreadTask::_onCURL( CURL * _curl )
     {
         /* specify URL to get */
-        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1L) );
 
-        curl_easy_setopt( _curl, CURLOPT_POST, 1 );
 
         struct curl_httppost * lastptr = nullptr;
-        curl_httppost * formpost = nullptr;
+        struct curl_httppost * formpost = nullptr;
 
-        for( MapParams::const_iterator
-            it = m_params.begin(),
-            it_end = m_params.end();
-            it != it_end;
-            ++it )
+        for( auto && [key, value] : m_params )
         {
-            const ConstString & key = it->first;
-            const String & value = it->second;
-
             /* Fill in the  field */
-            curl_formadd( &formpost,
+            CURLFORMcode code_formadd = curl_formadd( &formpost,
                 &lastptr,
                 CURLFORM_COPYNAME, key.c_str(),
                 CURLFORM_COPYCONTENTS, value.c_str(),
                 CURLFORM_END );
+
+            if( code_formadd != CURL_FORMADD_OK )
+            {
+                LOGGER_ERROR( "url '%s' param '%s' value '%s' get formadd error [%d]"
+                    , m_url.c_str()
+                    , key.c_str()
+                    , value.c_str()
+                    , code_formadd
+                );
+            }
         }
 
-        curl_easy_setopt( _curl, CURLOPT_HTTPPOST, formpost );
+        m_curl_formpost = formpost;
+
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPPOST, formpost) );
 
         /* send all data to this function  */
         this->setupWriteResponse( _curl );
@@ -61,13 +69,9 @@ namespace Mengine
         {
             Stringstream ss;
 
-            for( MapParams::const_iterator
-                it = m_params.begin(),
-                it_end = m_params.end();
-                it != it_end;
-                ++it )
+            for( auto && [key, value] : m_params )
             {
-                ss << it->first.c_str() << ": " << it->second;
+                ss << key.c_str() << ": " << value;
                 ss << std::endl;
             }
 
@@ -77,6 +81,17 @@ namespace Mengine
                 , m_url.c_str()
                 , params_str.c_str()
             );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLPostMessageThreadTask::_onCURLCleanup( CURL * _curl )
+    {
+        MENGINE_UNUSED( _curl );
+
+        if( m_curl_formpost != nullptr )
+        {
+            ::curl_formfree( m_curl_formpost );
+            m_curl_formpost = nullptr;
         }
     }
 }

@@ -17,10 +17,13 @@ namespace Mengine
 
     protected:
         void _onCURL( CURL * _curl ) override;
+        void _onCURLCleanup( CURL * _curl ) override;
 
     protected:
         String m_url;
         MapParams m_params;
+
+        struct curl_httppost * m_curl_formpost;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLPostMessageThreadTask> cURLPostMessageThreadTaskPtr;

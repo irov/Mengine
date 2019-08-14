@@ -17,6 +17,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace Mengine
 {
@@ -267,7 +268,7 @@ namespace Mengine
 
             uint32_t tmp_value;
 
-            if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
+            if( sscanf( ini_value, "%" PRIu32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -287,7 +288,7 @@ namespace Mengine
             }
 
             int32_t tmp_value;
-            if( sscanf( ini_value, "%d", &tmp_value ) != 1 )
+            if( sscanf( ini_value, "%" PRId32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -307,7 +308,7 @@ namespace Mengine
             }
 
             uint32_t tmp_value;
-            if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
+            if( sscanf( ini_value, "%" PRIu32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -327,7 +328,7 @@ namespace Mengine
             }
 
             uint64_t tmp_value;
-            if( sscanf( ini_value, "%llu", &tmp_value ) != 1 )
+            if( sscanf( ini_value, "%" PRIu64, &tmp_value ) != 1 )
             {
                 return false;
             }

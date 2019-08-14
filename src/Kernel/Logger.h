@@ -22,6 +22,10 @@ namespace Mengine
         ~LoggerOperator();
 
     public:
+        LoggerOperator & setNewline( bool _newline );
+        bool getNewline() const;
+
+    public:
         const LoggerOperator & operator()( const Char * _format, ... ) const;
 
     public:
@@ -38,6 +42,8 @@ namespace Mengine
 
         const Char * m_file;
         uint32_t m_line;
+
+        bool m_newline;
     };
 }
 //////////////////////////////////////////////////////////////////////////
@@ -54,6 +60,7 @@ namespace Mengine
 #define LOGGER_STATISTIC( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )( __VA_ARGS__ )
 #define LOGGER_WARNING( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
 #define LOGGER_MESSAGE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, nullptr, 0 )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_WN( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, nullptr, 0 ).setNewline(false)( __VA_ARGS__ )
 #define LOGGER_INFO( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
 #else
@@ -62,6 +69,7 @@ namespace Mengine
 #define LOGGER_STATISTIC( ... )
 #define LOGGER_WARNING( ... )
 #define LOGGER_MESSAGE( ... )
+#define LOGGER_MESSAGE_WN( ... )
 #define LOGGER_INFO( ... )
 //////////////////////////////////////////////////////////////////////////
 #endif

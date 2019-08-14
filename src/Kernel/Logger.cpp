@@ -35,11 +35,24 @@ namespace Mengine
         , m_flag( _flag )
         , m_file( _file )
         , m_line( _line )
+        , m_newline( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     LoggerOperator::~LoggerOperator()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerOperator & LoggerOperator::setNewline( bool _newline )
+    {
+        m_newline = _newline;
+
+        return *this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerOperator::getNewline() const
+    {
+        return m_newline;
     }
     //////////////////////////////////////////////////////////////////////////
     const LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... ) const
@@ -118,7 +131,7 @@ namespace Mengine
     {
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
 
-        int size = 0;
+        int32_t size = 0;
 
         size += this->makeTimeStamp( str, size );
         size += this->makeFunctionStamp( str, size );
@@ -130,7 +143,7 @@ namespace Mengine
             const Char msg[] = "invalid message :(\n";
             this->logMessage( msg, sizeof( msg ) );
 
-            size = sprintf( str, "%s", _format );
+            size = ::sprintf( str, "%s", _format );
 
             if( size < 0 )
             {
@@ -138,22 +151,36 @@ namespace Mengine
             }
 
             str[size] = '\n';
-            str[size + 1] = 0;
+            str[size + 1] = '\0';
 
             this->logMessage( _format, size + 1 );
 
             return;
         }
 
-        if( size > MENGINE_LOGGER_MAX_MESSAGE - 2 )
+        if( m_newline == true )
         {
-            size = MENGINE_LOGGER_MAX_MESSAGE - 2;
+            if( size > MENGINE_LOGGER_MAX_MESSAGE - 2 )
+            {
+                size = MENGINE_LOGGER_MAX_MESSAGE - 2;
+            }
+
+            str[size + 0] = '\n';
+            str[size + 1] = '\0';
+
+            this->logMessage( str, size + 1 );
         }
+        else
+        {
+            if( size > MENGINE_LOGGER_MAX_MESSAGE - 1 )
+            {
+                size = MENGINE_LOGGER_MAX_MESSAGE - 1;
+            }
 
-        str[size + 0] = '\n';
-        str[size + 1] = 0;
+            str[size + 0] = '\0';
 
-        this->logMessage( str, size + 1 );
+            this->logMessage( str, size );
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessage( const Char * _msg, uint32_t _size ) const

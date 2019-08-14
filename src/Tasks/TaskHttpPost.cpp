@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskHttpPost::TaskHttpPost( const String & _url, const MapParams & _params, int32_t _timeout, const LambdacURLReceiver & _lambda )
+    TaskHttpPost::TaskHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const LambdacURLReceiver & _lambda )
         : TaskHttpBase( _url, _timeout, _lambda )
         , m_params( _params )
     {

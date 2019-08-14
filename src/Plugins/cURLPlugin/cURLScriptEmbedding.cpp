@@ -91,8 +91,14 @@ namespace Mengine
 
         receiver->initialize( _cb, _args );
 
+        cURLPostParams params;
+        for( auto && [key, value] : _params )
+        {
+            params.emplace_back( cURLPostParam{ key.c_str(), value } );
+        }
+
         HttpRequestID id = CURL_SERVICE()
-            ->postMessage( _url, _params, _timeout, receiver );
+            ->postMessage( _url, params, _timeout, receiver );
 
         return id;
     }

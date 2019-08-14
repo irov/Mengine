@@ -4,6 +4,7 @@
 
 #include "Kernel/PluginBase.h"
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -19,9 +20,12 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        bool loadJSON( const InputStreamInterfacePtr & _stream, jpp::object * _json, const Char * _doc ) const override;
-        bool createJSON( const MemoryInterfacePtr & _memory, jpp::object * _json, const Char * _doc ) const override;
-        bool createJSONBuffer( const void * _buffer, size_t _size, jpp::object * _json, const Char * _doc ) const override;
+        JSONStorageInterfacePtr loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const override;
+        JSONStorageInterfacePtr createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const override;
+        JSONStorageInterfacePtr createJSONBuffer( const void * _buffer, size_t _size, const Char * _doc ) const override;
+
+    protected:
+        FactoryPtr m_factoryJSONStorage;
     };
 }
 

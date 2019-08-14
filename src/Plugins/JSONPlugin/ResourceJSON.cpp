@@ -25,7 +25,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const jpp::object & ResourceJSON::getJSON() const
     {
-        return m_json;
+        const jpp::object & json = m_storage->getJSON();
+
+        return json;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceJSON::_compile()
@@ -38,9 +40,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 
-        jpp::object json;
-        if( JSON_SERVICE()
-            ->loadJSON( stream, &json, MENGINE_DOCUMENT_FUNCTION ) == false )
+        JSONStorageInterfacePtr storage = JSON_SERVICE()
+            ->loadJSON( stream, MENGINE_DOCUMENT_FUNCTION );
+        
+        if( storage == nullptr )
         {
             LOGGER_ERROR( "invalid load json '%s'"
                 , filePath.c_str()
@@ -49,13 +52,13 @@ namespace Mengine
             return false;
         }
 
-        m_json = json;
+        m_storage = storage;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceJSON::_release()
     {
-        m_json = jpp::detail::invalid;
+        m_storage = nullptr;
     }
 }

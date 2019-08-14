@@ -4,6 +4,7 @@
 #include "Kernel/FilePathHelper.h"
 
 #include <string.h>
+#include <inttypes.h>
 
 namespace Mengine
 {
@@ -13,7 +14,7 @@ namespace Mengine
         bool stringalized( const Char * _string, bool * _value )
         {
             uint32_t tmp_value;
-            if( ::sscanf( _string, "%u", &tmp_value ) != 1 )
+            if( ::sscanf( _string, "%" SCNu32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -25,7 +26,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int32_t * _value )
         {
-            if( ::sscanf( _string, "%d", _value ) != 1 )
+            if( ::sscanf( _string, "%" SCNd32, _value ) != 1 )
             {
                 return false;
             }
@@ -35,7 +36,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint32_t * _value )
         {
-            if( ::sscanf( _string, "%u", _value ) != 1 )
+            if( ::sscanf( _string, "%" SCNu32, _value ) != 1 )
             {
                 return false;
             }
@@ -45,7 +46,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int64_t * _value )
         {
-            if( ::sscanf( _string, "%lld", _value ) != 1 )
+            if( ::sscanf( _string, "%" SCNd64, _value ) != 1 )
             {
                 return false;
             }
@@ -55,7 +56,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint64_t * _value )
         {
-            if( ::sscanf( _string, "%llu", _value ) != 1 )
+            if( ::sscanf( _string, "%" SCNu64, _value ) != 1 )
             {
                 return false;
             }

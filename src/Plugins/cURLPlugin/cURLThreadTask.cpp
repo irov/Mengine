@@ -9,6 +9,52 @@
 
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static int cURL_trace( CURL * handle, curl_infotype type,
+            char * data, size_t size,
+            void * userp )
+        {
+            MENGINE_UNUSED( userp );
+            MENGINE_UNUSED( handle );
+
+            const Char * text;
+
+            switch( type )
+            {
+            case CURLINFO_TEXT:
+                LOGGER_MESSAGE_WN( "== Info: %s", data );
+            case CURLINFO_HEADER_OUT:
+                text = "=> Send header";
+                break;
+            case CURLINFO_DATA_OUT:
+                text = "=> Send data";
+                break;
+            case CURLINFO_SSL_DATA_OUT:
+                text = "=> Send SSL data";
+                break;
+            case CURLINFO_HEADER_IN:
+                text = "<= Recv header";
+                break;
+            case CURLINFO_DATA_IN:
+                text = "<= Recv data";
+                break;
+            case CURLINFO_SSL_DATA_IN:
+                text = "<= Recv SSL data";
+                break;
+            default:
+                return 0;
+            }
+
+            LOGGER_MESSAGE( "%s, %10.10lu bytes (0x%8.8lx)",
+                text, (uint64_t)size, (uint64_t)size );
+
+            LOGGER_MESSAGE( "%.*s", size, data );
+
+            return 0;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     cURLThreadTask::cURLThreadTask()
         : m_id( 0 )
@@ -69,10 +115,22 @@ namespace Mengine
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT, m_timeout) );
         }
 
-        CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, false) );
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
+
 
         char errorbuf[CURL_ERROR_SIZE] = { '\0' };
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_ERRORBUFFER, errorbuf) );
+
+        if( CONFIG_VALUE( "HTTP", "Verbose", false ) == true )
+        {
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_VERBOSE, 1) );
+        }
+
+        if( CONFIG_VALUE( "HTTP", "Trace", false ) == true )
+        {            
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGFUNCTION, &Detail::cURL_trace) );
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_DEBUGDATA, nullptr) );
+        }
 
         CURLcode status = curl_easy_perform( curl );
 

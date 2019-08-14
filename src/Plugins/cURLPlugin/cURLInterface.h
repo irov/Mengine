@@ -6,7 +6,6 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/Params.h"
 
 #include "Config/String.h"
 #include "Config/VectorString.h"
@@ -15,6 +14,14 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef uint32_t HttpRequestID;
+    //////////////////////////////////////////////////////////////////////////
+    struct cURLPostParam
+    {
+        String key;
+        String value;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<cURLPostParam> cURLPostParams;
     //////////////////////////////////////////////////////////////////////////
     class cURLReceiverInterface
         : public Interface
@@ -32,7 +39,7 @@ namespace Mengine
 
     public:
         virtual HttpRequestID getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID postMessage( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
         virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:

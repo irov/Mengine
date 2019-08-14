@@ -31,17 +31,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLHeaderDataThreadTask::_onCURL( CURL * _curl )
     {
-        /* specify URL to get */
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1) );
-
         struct curl_slist * curl_header_list = nullptr;
 
         if( m_headers.empty() == false )
         {
             for( const String & header : m_headers )
             {
-                curl_header_list = curl_slist_append( curl_header_list, header.c_str() );
+                const Char * header_buffer = header.c_str();
+
+                curl_header_list = curl_slist_append( curl_header_list, header_buffer );
             }
 
             CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPHEADER, curl_header_list) );
@@ -49,8 +47,14 @@ namespace Mengine
             m_curl_header_list = curl_header_list;
         }
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, m_data.c_str()) );
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)m_data.size()) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
+
+        const String::value_type * data_buffer = m_data.c_str();
+        String::size_type data_size = m_data.size();
+
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );
 
         this->setupWriteResponse( _curl );
 

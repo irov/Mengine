@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLPostMessageThreadTask::initialize( const String & _url, const MapParams & _params )
+    bool cURLPostMessageThreadTask::initialize( const String & _url, const cURLPostParams & _params )
     {
         m_url = _url;
         m_params = _params;

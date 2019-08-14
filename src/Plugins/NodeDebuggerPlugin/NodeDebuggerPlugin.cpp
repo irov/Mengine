@@ -31,7 +31,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerPlugin::_destroy()
+    void NodeDebuggerPlugin::_destroyPlugin()
     {
     }
 }

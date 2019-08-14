@@ -14,8 +14,8 @@
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "jansson.h"
-
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( JSONService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( JSON, Mengine::JSONPlugin );
 //////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONPlugin::_initializePlugin()
     {
+        SERVICE_CREATE( JSONService );
+
 #ifdef MENGINE_USE_PYTHON_FRAMEWORK
         SERVICE_WAIT( ScriptServiceInterface, []()
         {
@@ -54,8 +56,6 @@ namespace Mengine
             return true;
         } );
 
-        json_object_seed( 1 );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -75,5 +75,12 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+
+        SERVICE_FINALIZE( JSONService );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JSONPlugin::_destroyPlugin()
+    {
+        SERVICE_DESTROY( JSONService );
     }
 }

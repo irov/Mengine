@@ -20,9 +20,7 @@ namespace Mengine
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
-
-    protected:
-        void _destroy() override;
+        void _destroyPlugin() override;
     };
 }
 

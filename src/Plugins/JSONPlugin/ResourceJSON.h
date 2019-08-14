@@ -7,7 +7,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ResourceJSON
         : public Resource
         , public Content

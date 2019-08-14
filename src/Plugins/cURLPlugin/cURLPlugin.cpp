@@ -53,7 +53,7 @@ namespace Mengine
         SERVICE_FINALIZE( cURLService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLPlugin::_destroy()
+    void cURLPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( cURLService );
     }

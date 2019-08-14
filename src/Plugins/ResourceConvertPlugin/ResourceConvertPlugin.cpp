@@ -39,7 +39,7 @@ namespace Mengine
         SERVICE_FINALIZE( ResourceConvertService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceConvertPlugin::_destroy()
+    void ResourceConvertPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( ResourceConvertService );
     }

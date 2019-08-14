@@ -1,8 +1,12 @@
 #include "JSONService.h"
 
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
+
+#include "JSONStorage.h"
 
 #include "jansson.h"
 
@@ -80,11 +84,17 @@ namespace Mengine
     {
         json_object_seed( 1 );
 
+        m_factoryJSONStorage = Helper::makeFactoryPool<JSONStorage, 16>();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void JSONService::_finalizeService()
     {
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryJSONStorage );
+
+        m_factoryJSONStorage = nullptr;
+
 #ifdef STDEX_ALLOCATOR_REPORT_ENABLE
         uint32_t report_count = stdex_get_allocator_report_count( "json" );
         MENGINE_ASSERTION( report_count == 0, "json memleak [%d]"
@@ -93,31 +103,29 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONService::loadJSON( const InputStreamInterfacePtr & _stream, jpp::object * _json, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const
     {
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        bool successful = this->createJSON( memory, _json, _doc );
+        JSONStorageInterfacePtr storage = this->createJSON( memory, _doc );
 
-        return successful;
+        return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONService::createJSON( const MemoryInterfacePtr & _memory, jpp::object * _json, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const
     {
         const void * memory_buffer = _memory->getBuffer();
         size_t memory_size = _memory->getSize();
 
-        bool successful = this->createJSONBuffer( memory_buffer, memory_size, _json, _doc );
+        JSONStorageInterfacePtr storage = this->createJSONBuffer( memory_buffer, memory_size, _doc );
 
-        return successful;
+        return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONService::createJSONBuffer( const void * _buffer, size_t _size, jpp::object * _json, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::createJSONBuffer( const void * _buffer, size_t _size, const Char * _doc ) const
     {
-        MENGINE_UNUSED( _doc );
-
         Detail::my_json_load_data_t jd;
         jd.buffer = static_cast<const uint8_t *>(_buffer);
         jd.carriage = 0;
@@ -130,9 +138,13 @@ namespace Mengine
             return false;
         }
 
-        *_json = json;
+        JSONStoragePtr storage = m_factoryJSONStorage->createObject( _doc );
 
-        return true;
+        MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr, "invalid create json storage" );
+        
+        storage->setJSON( json );
+
+        return storage;
     }
 }
 

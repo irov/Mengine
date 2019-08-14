@@ -7,6 +7,9 @@ src
 	JSONPlugin.h
 	JSONPlugin.cpp
     JSONPlugin.def
+
+    JSONStorage.cpp
+    JSONStorage.h
     
     JSONService.cpp
     JSONService.h

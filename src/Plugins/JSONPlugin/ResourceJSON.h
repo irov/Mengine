@@ -28,7 +28,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        jpp::object m_json;
+        JSONStorageInterfacePtr m_storage;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceJSON> ResourceJSONPtr;

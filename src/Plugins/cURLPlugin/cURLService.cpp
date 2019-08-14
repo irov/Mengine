@@ -94,7 +94,7 @@ namespace Mengine
         ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( threadQueue, "invalid create task queue" );
+        MENGINE_ASSERTION_MEMORY_PANIC( threadQueue, false, "invalid create task queue" );
 
         m_threadQueue = threadQueue;
 

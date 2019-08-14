@@ -10,6 +10,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    class JSONStorageInterface
+        : public Interface
+    {
+    public:
+        virtual const jpp::object & getJSON() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<JSONStorageInterface> JSONStorageInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class UnknownResourceJSONInterface
         : public UnknownInterface
     {
@@ -23,9 +32,9 @@ namespace Mengine
         SERVICE_DECLARE( "JSONService" );
 
     public:
-        virtual bool loadJSON( const InputStreamInterfacePtr & _stream, jpp::object * _json, const Char * _doc ) const = 0;
-        virtual bool createJSON( const MemoryInterfacePtr & _memory, jpp::object * _json, const Char * _doc ) const = 0;
-        virtual bool createJSONBuffer( const void * _buffer, size_t _size, jpp::object * _json, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr createJSONBuffer( const void * _buffer, size_t _size, const Char * _doc ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

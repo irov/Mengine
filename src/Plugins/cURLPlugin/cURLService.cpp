@@ -134,10 +134,12 @@ namespace Mengine
 
         curl_global_cleanup();
 
+#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
         uint32_t report_count = stdex_get_allocator_report_count( "curl" );
         MENGINE_ASSERTION( report_count == 0, "cURL memleak [%d]"
             , report_count
         );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_stopService()

@@ -8,6 +8,9 @@ src
 	JSONPlugin.cpp
     JSONPlugin.def
     
+    JSONService.cpp
+    JSONService.h
+    
     ResourceJSON.cpp
     ResourceJSON.h
 	
@@ -17,7 +20,7 @@ src
 
 if(MENGINE_USE_PYTHON_FRAMEWORK)
 ADD_FILTER(
-embeddingVJ;
+embedding
     JSONScriptEmbedding.cpp
     JSONScriptEmbedding.h
     )

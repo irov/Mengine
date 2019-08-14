@@ -261,7 +261,7 @@ namespace Mengine
 
         if( converter == nullptr )
         {
-            LOGGER_ERROR( "convertPVRToHTF can't create convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR( "can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
                 , options.inputFileName.c_str()
                 , options.outputFileName.c_str()
@@ -274,7 +274,7 @@ namespace Mengine
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR( "convertPVRToHTF can't convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
                 , options.inputFileName.c_str()
                 , options.outputFileName.c_str()
@@ -381,7 +381,7 @@ namespace Mengine
 
         if( image->load( c_path ) == false )
         {
-            LOGGER_ERROR( "isUselessAlphaInImageFile %ls invalid load"
+            LOGGER_ERROR( "invalid load '%ls'"
                 , _path
             );
 
@@ -494,12 +494,12 @@ namespace Mengine
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
-    WString pathSHA1( const wchar_t * _path )
+    WString pathSHA1( const WChar * _path )
     {
         String utf8_path;
         if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
         {
-            return NULL;
+            return WString();
         }
 
         FilePath c_path = Helper::stringizeFilePath( utf8_path );
@@ -512,12 +512,12 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "pathSHA1 %ls invalid open '%s'"
+            LOGGER_ERROR( "'%ls' invalid open '%s'"
                 , _path
                 , c_path.c_str()
             );
 
-            return L"";
+            return WString();
         }
 
         size_t size = stream->size();

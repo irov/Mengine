@@ -99,13 +99,29 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
-        const void * memory_buffer = memory->getBuffer();
-        size_t memory_size = memory->getSize();
+        bool successful = this->createJSON( memory, _json, _doc );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONService::createJSON( const MemoryInterfacePtr & _memory, jpp::object * _json, const Char * _doc ) const
+    {
+        const void * memory_buffer = _memory->getBuffer();
+        size_t memory_size = _memory->getSize();
+
+        bool successful = this->createJSONBuffer( memory_buffer, memory_size, _json, _doc );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool JSONService::createJSONBuffer( const void * _buffer, size_t _size, jpp::object * _json, const Char * _doc ) const
+    {
+        MENGINE_UNUSED( _doc );
 
         Detail::my_json_load_data_t jd;
-        jd.buffer = static_cast<const uint8_t *>(memory_buffer);
+        jd.buffer = static_cast<const uint8_t *>(_buffer);
         jd.carriage = 0;
-        jd.capacity = memory_size;
+        jd.capacity = _size;
 
         jpp::object json = jpp::load( &Detail::my_jpp_load_callback, &Detail::my_jpp_malloc, &Detail::my_jpp_free, &Detail::my_jpp_error, &jd );
 

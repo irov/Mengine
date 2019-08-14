@@ -3,6 +3,7 @@
 #include "Interface/UnknownInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
+#include "Interface/MemoryInterface.h"
 
 #include "jpp/jpp.hpp"
 
@@ -23,6 +24,8 @@ namespace Mengine
 
     public:
         virtual bool loadJSON( const InputStreamInterfacePtr & _stream, jpp::object * _json, const Char * _doc ) const = 0;
+        virtual bool createJSON( const MemoryInterfacePtr & _memory, jpp::object * _json, const Char * _doc ) const = 0;
+        virtual bool createJSONBuffer( const void * _buffer, size_t _size, jpp::object * _json, const Char * _doc ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

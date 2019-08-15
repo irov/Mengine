@@ -21,7 +21,7 @@ namespace Mengine
         ~ResourceJSON() override;
 
     public:
-        const jpp::object & getJSON() const override;
+        const JSONStorageInterfacePtr & getJSONStorage() const override;
 
     protected:
         bool _compile() override;

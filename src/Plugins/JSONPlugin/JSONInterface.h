@@ -23,7 +23,7 @@ namespace Mengine
         : public UnknownInterface
     {
     public:
-        virtual const jpp::object & getJSON() const = 0;
+        virtual const JSONStorageInterfacePtr & getJSONStorage() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class JSONServiceInterface

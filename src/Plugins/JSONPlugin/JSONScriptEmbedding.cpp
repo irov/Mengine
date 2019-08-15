@@ -90,7 +90,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static pybind::object s_getJSON( pybind::kernel_interface * _kernel, ResourceJSON * _resource )
         {
-            const jpp::object & root = _resource->getJSON();
+            const JSONStorageInterfacePtr & storage = _resource->getJSONStorage();
+
+            const jpp::object & root = storage->getJSON();
             
             pybind::object ob = jpp2pybind( _kernel, root );
 

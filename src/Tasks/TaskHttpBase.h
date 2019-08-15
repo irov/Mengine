@@ -10,7 +10,7 @@ namespace Mengine
     uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful
     ************************************************************************/
     /////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const GOAP::SourcePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdacURLReceiver;
+    typedef Lambda<void( const GOAP::SourcePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdacURLReceiver;
     //////////////////////////////////////////////////////////////////////////
     class TaskHttpBase
         : public GOAP::Task

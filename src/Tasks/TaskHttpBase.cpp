@@ -31,14 +31,13 @@ namespace Mengine
             bool skip = m_task->isSkip();
             source->setSkip( skip );
 
-            if( m_lambda( source, _status, _error, _response, _code, _successful ) == true )
+            m_lambda( source, _status, _error, _response, _code, _successful );
+            
+            if( m_task->injectSource( source ) == false )
             {
-                if( m_task->injectSource( source ) == false )
-                {
-                    LOGGER_ERROR( "invalid inject source" );
-                }
+                LOGGER_ERROR( "TaskHttpBase invalid inject source" );
             }
-
+            
             m_task->requestComplete_( _id );
         }
 

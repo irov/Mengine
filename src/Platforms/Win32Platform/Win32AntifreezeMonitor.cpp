@@ -101,6 +101,12 @@ namespace Mengine
             return true;
         }
 
+        if( PLATFORM_SERVICE()
+            ->isDebuggerPresent() == true )
+        {
+            return true;
+        }
+
         Char userPath[MENGINE_MAX_PATH] = { 0 };
         PLATFORM_SERVICE()
             ->getUserPath( userPath );

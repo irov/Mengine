@@ -328,6 +328,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::isDebuggerPresent() const
+    {
+        if( IsDebuggerPresent() == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
     {
 #if defined(MENGINE_DEBUG)

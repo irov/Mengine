@@ -23,11 +23,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const jpp::object & ResourceJSON::getJSON() const
+    const JSONStorageInterfacePtr & ResourceJSON::getJSONStorage() const
     {
-        const jpp::object & json = m_storage->getJSON();
-
-        return json;
+        return m_storage;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceJSON::_compile()

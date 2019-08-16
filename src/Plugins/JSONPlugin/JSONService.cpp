@@ -103,6 +103,17 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    JSONStorageInterfacePtr JSONService::createStorage( const jpp::object & _json, const Char * _doc ) const
+    {
+        JSONStoragePtr storage = m_factoryJSONStorage->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr, "invalid create json storage" );
+
+        storage->setJSON( _json );
+
+        return storage;
+    }
+    //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const
     {
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
@@ -138,11 +149,7 @@ namespace Mengine
             return false;
         }
 
-        JSONStoragePtr storage = m_factoryJSONStorage->createObject( _doc );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr, "invalid create json storage" );
-        
-        storage->setJSON( json );
+        JSONStoragePtr storage = this->createStorage( json, _doc );
 
         return storage;
     }

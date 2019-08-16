@@ -1031,7 +1031,7 @@ namespace Mengine
         {
         case WM_TIMER:
             {
-                if( wParam == UTIMER_MOUSE_EVENT )
+                if( wParam == MENGINE_UTIMER_MOUSE_EVENT )
                 {
                     m_mouseEvent.verify();
                 }

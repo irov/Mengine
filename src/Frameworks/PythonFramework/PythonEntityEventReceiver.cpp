@@ -54,9 +54,9 @@ namespace Mengine
         Detail::callBehavior( m_cb, _behavior );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonEntityEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node )
+    void PythonEntityEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
-        Detail::callBehavior( m_cb, _behavior, _node );
+        Detail::callBehavior( m_cb, _behavior, _entity );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonEntityEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )

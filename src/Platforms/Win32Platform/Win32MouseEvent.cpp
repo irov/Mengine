@@ -1,5 +1,7 @@
 #include "Win32MouseEvent.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -23,6 +25,11 @@ namespace Mengine
     void Win32MouseEvent::verify()
     {
         if( m_hWnd == NULL )
+        {
+            return;
+        }
+
+        if( m_uTimer == 0 )
         {
             return;
         }
@@ -54,7 +61,9 @@ namespace Mengine
             return;
         }
 
-        m_uTimer = ::SetTimer( m_hWnd, UTIMER_MOUSE_EVENT, 20, NULL );
+        UINT uElapse = 20 > USER_TIMER_MINIMUM ? 20 : USER_TIMER_MINIMUM;
+
+        m_uTimer = ::SetTimer( m_hWnd, MENGINE_UTIMER_MOUSE_EVENT, uElapse, NULL );
 
         if( m_uTimer == 0 )
         {

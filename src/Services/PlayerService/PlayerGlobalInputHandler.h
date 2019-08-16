@@ -34,7 +34,6 @@ namespace Mengine
 
     public:
         void update() override;
-        void clear() override;
 
     public:
         bool handleKeyEvent( const InputKeyEvent & _event ) override;

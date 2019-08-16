@@ -425,9 +425,12 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            if( m_antifreezeMonitor->initialize() == false )
+            if( CONFIG_VALUE( "Platform", "AntifreezeMonitor", true ) == true )
             {
-                return false;
+                if( m_antifreezeMonitor->initialize() == false )
+                {
+                    return false;
+                }
             }
         }
 

@@ -51,6 +51,7 @@ namespace Mengine
         , m_shouldRecreateServer( false )
         , m_shouldUpdateScene( false )
         , m_workerId( 0 )
+        , m_globalKeyHandlerF2( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -66,7 +67,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
 
-        Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
+        m_globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
             uint32_t exitCode;
             PLATFORM_SERVICE()
@@ -95,6 +96,11 @@ namespace Mengine
 
             m_threadJob = nullptr;
         }
+
+        const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+            ->getGlobalInputHandler();
+
+        globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF2 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_availableModule() const

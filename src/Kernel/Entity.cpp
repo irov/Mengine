@@ -143,22 +143,21 @@ namespace Mengine
             ->onEntityDestroy( m_behavior );
 
         m_behavior = nullptr;
+        m_behaviorEventable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_destroy()
     {
         this->release();
-
+        
         Node * old_parent = this->getParent();
 
-        if( m_behavior != nullptr )
-        {
-            EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
-                ->onEntityDestroy( m_behavior );
+        EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
+            ->onEntityDestroy( m_behavior );
 
-            m_behavior = nullptr;
-        }
-
+        m_behavior = nullptr;
+        m_behaviorEventable = nullptr;
+        
         Node * new_parent = this->getParent();
 
         if( old_parent != new_parent )

@@ -33,7 +33,7 @@ namespace Mengine
         : public EventReceiverInterface
     {
     public:
-        virtual void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node ) = 0;
+        virtual void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity ) = 0;
         virtual void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;

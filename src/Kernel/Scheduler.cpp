@@ -32,13 +32,15 @@ namespace Mengine
     {
         UpdationInterface * updation = this->getUpdation();
 
-        m_updataterId = UPDATE_SERVICE()
+        uint32_t updataterId = UPDATE_SERVICE()
             ->createUpdatater( 3U, 0U, UpdationInterfacePtr( updation ) );
 
-        if( m_updataterId == INVALID_UPDATABLE_ID )
+        if( updataterId == INVALID_UPDATABLE_ID )
         {
             return false;
         }
+
+        m_updataterId = updataterId;
 
         return true;
     }

@@ -112,7 +112,7 @@ namespace Mengine
 
         if( m_timeout != -1 )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT, m_timeout) );
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT_MS, m_timeout) );
         }
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );

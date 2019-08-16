@@ -4,7 +4,7 @@
 
 #define UWM_MOUSE_LEAVE (WM_USER+1)
 
-#define UTIMER_MOUSE_EVENT 1
+#define MENGINE_UTIMER_MOUSE_EVENT 1001
 
 namespace Mengine
 {

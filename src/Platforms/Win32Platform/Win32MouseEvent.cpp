@@ -61,7 +61,7 @@ namespace Mengine
             return;
         }
 
-        UINT uElapse = 20 > USER_TIMER_MINIMUM ? 20 : USER_TIMER_MINIMUM;
+        UINT uElapse = 20;
 
         m_uTimer = ::SetTimer( m_hWnd, MENGINE_UTIMER_MOUSE_EVENT, uElapse, NULL );
 

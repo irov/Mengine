@@ -616,7 +616,7 @@ namespace Mengine
             return ~0U;
         }
 
-        const LPWSTR fontRegistryPath = L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+        const WChar * fontRegistryPath = L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 
         HKEY hKey;
         LONG result;

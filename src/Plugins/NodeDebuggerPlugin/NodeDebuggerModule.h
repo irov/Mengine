@@ -105,6 +105,8 @@ namespace Mengine
         void notifyRemoveSceneDestroy();
 
     protected:
+        uint32_t m_globalKeyHandlerF2;
+
         ScenePtr m_scene;
         SocketInterfacePtr m_socket;
         AtomicBool m_shouldRecreateServer;

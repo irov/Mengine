@@ -65,6 +65,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::initializeService( FServiceProviderGenerator _generator, bool _safe, const Char * _doc, const Char * _file, uint32_t _line )
     {
+        if( m_servicesCount == MENGINE_SERVICE_PROVIDER_COUNT )
+        {
+            MENGINE_THROW_EXCEPTION_FL( _file, _line )("overflow service count doc '%s'"
+                , _doc
+                );
+
+            return false;
+        }
+
         ServiceInterfacePtr service = this->generateService_( _generator );
 
         if( service == nullptr )

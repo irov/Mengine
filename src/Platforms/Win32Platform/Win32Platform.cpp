@@ -425,9 +425,12 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            if( m_antifreezeMonitor->initialize() == false )
+            if( CONFIG_VALUE( "Platform", "AntifreezeMonitor", true ) == true )
             {
-                return false;
+                if( m_antifreezeMonitor->initialize() == false )
+                {
+                    return false;
+                }
             }
         }
 
@@ -1031,7 +1034,7 @@ namespace Mengine
         {
         case WM_TIMER:
             {
-                if( wParam == UTIMER_MOUSE_EVENT )
+                if( wParam == MENGINE_UTIMER_MOUSE_EVENT )
                 {
                     m_mouseEvent.verify();
                 }

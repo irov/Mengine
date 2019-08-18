@@ -300,11 +300,6 @@ namespace Mengine
 
         m_renderTarget = nullptr;
 
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->clear();
-        }
-
         if( m_scheduleManager != nullptr )
         {
             m_scheduleManager->removeAll();
@@ -822,8 +817,6 @@ namespace Mengine
 
         m_scheduleManager->removeAll();
         m_affectorable->stopAllAffectors();
-
-        m_globalInputHandler->clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRemoveSceneDestroy()

@@ -29,6 +29,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::finalize()
     {
+        m_handlers.erase( std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
+        {
+            return _handle.dead;
+        } ), m_handlers.end() );
+
+        m_handlersAdd.erase( std::remove_if( m_handlersAdd.begin(), m_handlersAdd.end(), []( const GlobalHandlerDesc & _handle )
+        {
+            return _handle.dead;
+        } ), m_handlersAdd.end() );
+
         MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has hadlers" );
         MENGINE_ASSERTION( m_handlersAdd.empty() == true, "finalized player global input has add hadlers" );
 
@@ -433,35 +443,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::update()
     {
-        VectorGlobalHandler::iterator it_mouse_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
+        m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
+        m_handlersAdd.clear();
+
+        VectorGlobalHandler::iterator it_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
         {
             return _handle.dead;
         } );
-        m_handlers.erase( it_mouse_erase, m_handlers.end() );
-
-        m_handlers.insert( m_handlers.begin(), m_handlersAdd.begin(), m_handlersAdd.end() );
-        m_handlersAdd.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerGlobalInputHandler::clear()
-    {
-        this->update();
-
-#ifdef MENGINE_DEBUG
-        if( m_handlers.empty() == false )
-        {
-            LOGGER_ERROR( "global handlers is not empty:" );
-
-            for( const GlobalHandlerDesc & desc : m_handlers )
-            {
-                LOGGER_ERROR( "%s"
-                    , desc.doc.c_str()
-                );
-            }
-        }
-#endif
-
-        m_handlers.clear();
-        m_handlersAdd.clear();
+        m_handlers.erase( it_erase, m_handlers.end() );
     }
 }

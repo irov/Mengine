@@ -23,8 +23,10 @@
 
 #include "utf8.h"
 
-#include <stdio.h>
 #include <algorithm>
+
+#include <stdio.h>
+#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TextService, Mengine::TextService );

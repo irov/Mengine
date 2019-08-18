@@ -56,7 +56,14 @@ namespace Mengine
     {
         FactoryPrototypeGenerator::finalize();
 
-        m_eventable = nullptr;
+        if( m_eventable != nullptr )
+        {
+            EventationInterface * eventation = m_eventable->getEventation();
+            eventation->removeEvents();
+
+            m_eventable = nullptr;
+        }
+
         m_generator = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

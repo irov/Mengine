@@ -23,7 +23,7 @@ namespace Mengine
         void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) override;
         void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override;
-        void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node ) override;
+        void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity ) override;
         void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) override;
     };
 }

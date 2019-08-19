@@ -155,7 +155,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::destroyThread( const ConstString & _threadName, bool _wait )
+    bool ThreadService::destroyThread( const ConstString & _threadName )
     {
         for( VectorThreadDescs::iterator
             it = m_threads.begin(),
@@ -170,16 +170,9 @@ namespace Mengine
                 continue;
             }
 
-            if( _wait == true )
-            {
-                td.identity->removeTask();
-                td.identity->join();
-            }
-            else
-            {
-                td.identity->detach();
-            }
-
+            td.identity->removeTask();
+            td.identity->join();
+            
             m_threads.erase( it );
 
             return true;

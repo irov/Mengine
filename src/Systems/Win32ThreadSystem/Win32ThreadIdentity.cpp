@@ -93,6 +93,7 @@ namespace Mengine
 
         m_mutex = _mutex;
 
+        ::InitializeCriticalSection( &m_taskLock );
         ::InitializeCriticalSection( &m_processLock );
 
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
@@ -167,16 +168,18 @@ namespace Mengine
             }
 
             ::EnterCriticalSection( &m_processLock );
-            ThreadTaskInterface * task = m_task;
-            m_task = nullptr;
 
-            if( task != nullptr && m_exit == false )
+            if( m_task != nullptr && m_exit == false )
             {
                 ThreadMutexInterface * mutex = m_mutex.get();
 
                 mutex->lock();
-                task->main();
+                m_task->main();
                 mutex->unlock();
+
+                ::EnterCriticalSection( &m_taskLock );
+                m_task = nullptr;
+                ::LeaveCriticalSection( &m_taskLock );
             }
 
             ::LeaveCriticalSection( &m_processLock );
@@ -201,10 +204,16 @@ namespace Mengine
         {
             if( _task->run( m_mutex ) == true )
             {
+                ::EnterCriticalSection( &m_taskLock );
                 m_task = _task;
+                ::LeaveCriticalSection( &m_taskLock );
             }
             else
             {
+                ::EnterCriticalSection( &m_taskLock );
+                m_task = nullptr;
+                ::LeaveCriticalSection( &m_taskLock );
+
                 LOGGER_ERROR( "invalid run"
                 );
             }
@@ -228,6 +237,13 @@ namespace Mengine
             return;
         }
 
+        ::EnterCriticalSection( &m_taskLock );
+        if( m_task != nullptr )
+        {
+            m_task->cancel();
+        }
+        ::LeaveCriticalSection( &m_taskLock );
+
         ::EnterCriticalSection( &m_processLock );
         m_task = nullptr;
         ::LeaveCriticalSection( &m_processLock );
@@ -250,38 +266,13 @@ namespace Mengine
         ::CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;
 
+        ::DeleteCriticalSection( &m_taskLock );
         ::DeleteCriticalSection( &m_processLock );
 
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
         ::DeleteCriticalSection( &m_conditionLock );
 #endif
 
-        m_mutex = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadIdentity::detach()
-    {
-        if( m_exit == true )
-        {
-            return;
-        }
-
-        m_exit = true;
-
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
-        ::WakeConditionVariable( &m_conditionVariable );
-#endif
-
-        ::CloseHandle( m_thread );
-        m_thread = INVALID_HANDLE_VALUE;
-
-        ::DeleteCriticalSection( &m_processLock );
-
-#if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
-        ::DeleteCriticalSection( &m_conditionLock );
-#endif
-
-        m_task = nullptr;
         m_mutex = nullptr;
     }
 }

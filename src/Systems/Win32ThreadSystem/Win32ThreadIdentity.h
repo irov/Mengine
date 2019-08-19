@@ -34,7 +34,6 @@ namespace Mengine
 
     public:
         void join() override;
-        void detach() override;
 
     protected:
         ConstString m_name;
@@ -44,6 +43,7 @@ namespace Mengine
         HANDLE m_thread;
 
         CRITICAL_SECTION m_processLock;
+        CRITICAL_SECTION m_taskLock;
 
 #if MENGINE_WINDOWS_VERSION >= _WIN32_WINNT_LONGHORN
         CRITICAL_SECTION m_conditionLock;

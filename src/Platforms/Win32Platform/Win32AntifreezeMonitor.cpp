@@ -76,7 +76,7 @@ namespace Mengine
         }
 
         THREAD_SERVICE()
-            ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), false );
+            ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()

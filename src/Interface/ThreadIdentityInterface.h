@@ -17,7 +17,6 @@ namespace Mengine
 
     public:
         virtual void join() = 0;
-        virtual void detach() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;

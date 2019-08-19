@@ -7,6 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
         : m_thread( nullptr )
+        , m_taskLock( nullptr )
         , m_processLock( nullptr )
         , m_conditionVariable( nullptr )
         , m_conditionLock( nullptr )
@@ -142,6 +143,10 @@ namespace Mengine
                 m_task->main();
                 m_mutex->unlock();
                 m_task = nullptr;
+
+                SDL_LockMutex( m_taskLock );
+                m_task = nullptr;
+                SDL_UnlockMutex( m_taskLock );
             }
 
             SDL_UnlockMutex( m_processLock );
@@ -168,7 +173,9 @@ namespace Mengine
         {
             if( _task->run( m_mutex ) == true )
             {
+                SDL_LockMutex( m_taskLock );
                 m_task = _task;
+                SDL_UnlockMutex( m_taskLock );
             }
             else
             {
@@ -193,6 +200,13 @@ namespace Mengine
             return;
         }
 
+        SDL_LockMutex( m_taskLock );
+        if( m_task != nullptr )
+        {
+            m_task->cancel();
+        }
+        SDL_UnlockMutex( m_taskLock );
+
         SDL_LockMutex( m_processLock );
         m_task = nullptr;
         SDL_UnlockMutex( m_processLock );
@@ -214,34 +228,13 @@ namespace Mengine
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "invalid join thread error code - '%s'"
+            LOGGER_ERROR( "invalid join thread error code - '%d'"
                 , status
             );
         }
 
-        SDL_DestroyMutex( m_processLock );
-        m_processLock = nullptr;
-
-        SDL_DestroyCond( m_conditionVariable );
-        m_conditionVariable = nullptr;
-
-        SDL_DestroyMutex( m_conditionLock );
-        m_conditionLock = nullptr;
-
-        m_thread = nullptr;
-        m_mutex = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLThreadIdentity::detach()
-    {
-        if( m_exit == true )
-        {
-            return;
-        }
-
-        m_exit = true;
-
-        SDL_CondSignal( m_conditionVariable );
+        SDL_DestroyMutex( m_taskLock );
+        m_taskLock = nullptr;
 
         SDL_DestroyMutex( m_processLock );
         m_processLock = nullptr;

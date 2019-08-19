@@ -155,7 +155,7 @@ namespace Mengine
         for( const ConstString & threadName : m_threads )
         {
             THREAD_SERVICE()
-                ->destroyThread( threadName, true );
+                ->destroyThread( threadName );
         }
 
         m_threads.clear();

@@ -141,11 +141,22 @@ MACRO(ADD_MENGINE_LIBRARY)
     
     set(FILTER_FOLDER ${ARGN})
     list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
-    
-    if(${EXIST_FILTER_FOLDER} GREATER 0)
-        set_target_properties (${MY_LIB_NAME} PROPERTIES
-            FOLDER ${FILTER_FOLDER}
-        )    
+    if(MENGINE_USE_SUBFOLDER)
+        if(${EXIST_FILTER_FOLDER} GREATER 0)
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}
+            )
+        endif()
+    else()
+        if(${EXIST_FILTER_FOLDER} GREATER 0)
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${FILTER_FOLDER}
+            )
+        endif()
     endif()
     
     SET(APPLICATION_LINK_LIBRARIES ${APPLICATION_LINK_LIBRARIES} ${MY_LIB_NAME} PARENT_SCOPE)
@@ -168,13 +179,29 @@ MACRO(ADD_MENGINE_SHARED)
     set(FILTER_FOLDER ${ARGN})
     list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
     
-    if(${EXIST_FILTER_FOLDER} GREATER 0)
-        set_target_properties (${MY_LIB_NAME} PROPERTIES
-            FOLDER ${FILTER_FOLDER}
-        )    
-    endif()    
+    if(MENGINE_USE_SUBFOLDER)
+        if(${EXIST_FILTER_FOLDER} GREATER 0)
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                    FOLDER ${MENGINE_SUBFOLDER_NAME}
+                )
+        endif()
+    else()
+        if(${EXIST_FILTER_FOLDER} GREATER 0)
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${FILTER_FOLDER}
+            )
+        endif()
+    endif()
     
     SET(APPLICATION_DEPENDENCIES ${APPLICATION_DEPENDENCIES} ${MY_LIB_NAME} PARENT_SCOPE)
+ENDMACRO()
+
+MACRO(ADD_MENGINE_EXECUTABLE)
+    ADD_EXECUTABLE(${MY_LIB_NAME} WIN32 ${SRC_FILES})
 ENDMACRO()
 
 MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
@@ -188,14 +215,26 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
     set(FILTER_FOLDER ${ARGN})
     list(LENGTH FILTER_FOLDER EXIST_FILTER_FOLDER)
     
-    if(${EXIST_FILTER_FOLDER} GREATER 0)
-        set_target_properties (${MY_LIB_NAME} PROPERTIES
-            FOLDER ${FILTER_FOLDER}
-        )
+    if(MENGINE_USE_SUBFOLDER)
+        if(${EXIST_FILTER_FOLDER} GREATER 0)
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${MENGINE_SUBFOLDER_NAME}/Plugins
+            )
+        endif()
     else()
-        set_target_properties (${MY_LIB_NAME} PROPERTIES
-            FOLDER Plugins
-        )
+        if(${EXIST_FILTER_FOLDER} GREATER 0)
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER ${FILTER_FOLDER}
+            )
+        else()
+            set_target_properties (${MY_LIB_NAME} PROPERTIES
+                FOLDER Plugins
+            )
+        endif()
     endif()
 ENDMACRO()
 

@@ -352,7 +352,7 @@ namespace Mengine
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_MESSAGE( "Successful %s", Info );}}
 
-#ifdef MENGINE_EXTERNAL_FRAMEWORK
+#ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
         MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework..." );
 #endif
 

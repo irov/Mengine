@@ -14,6 +14,9 @@ namespace Mengine
         MENGINE_INLINE uint32_t getWidth() const;
         MENGINE_INLINE uint32_t getHeight() const;
 
+        MENGINE_INLINE float getWidthF() const;
+        MENGINE_INLINE float getHeightF() const;
+
     public:
         bool full( uint32_t _width, uint32_t _height ) const;
 
@@ -32,5 +35,19 @@ namespace Mengine
     MENGINE_INLINE uint32_t Rect::getHeight() const
     {
         return this->bottom - this->top;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE float Rect::getWidthF() const
+    {
+        uint32_t width = this->getWidth();
+
+        return (float)width;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE float Rect::getHeightF() const
+    {
+        uint32_t height = this->getHeight();
+
+        return (float)height;
     }
 }

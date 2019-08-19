@@ -30,7 +30,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( NodeDebugRenderService );
+        if( SERVICE_CREATE_SAFE( NodeDebugRenderService ) == false )
+        {
+            return true;
+        }
 
         NODEDEBUGRENDER_SERVICE()
             ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>() );
@@ -55,6 +58,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderPlugin::_finalizePlugin()
     {
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == false )
+        {
+            return;
+        }
+
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ) );
 

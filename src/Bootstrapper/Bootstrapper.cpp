@@ -587,6 +587,16 @@ namespace Mengine
             for( const ConstString & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
+                    ->hasModule( moduleName ) == false )
+                {
+                    LOGGER_ERROR( "not exist dev module '%s'"
+                        , moduleName.c_str()
+                    );
+
+                    continue;
+                }
+
+                if( MODULE_SERVICE()
                     ->runModule( moduleName, MENGINE_DOCUMENT_FUNCTION ) == false )
                 {
                     LOGGER_ERROR( "failed to run dev module '%s'"

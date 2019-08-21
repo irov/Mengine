@@ -51,6 +51,22 @@ namespace Mengine
         m_moduleFactory.erase( _moduleName );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::hasModule( const ConstString & _moduleName ) const
+    {
+        VectorModules::const_iterator it_found =
+            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
+        {
+            return _module->getName() == _moduleName;
+        } );
+
+        if( it_found == m_modules.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ModuleService::runModule( const ConstString & _moduleName, const Char * _doc )
     {
         if( this->findModule_( _moduleName ) != nullptr )

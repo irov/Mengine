@@ -87,6 +87,9 @@ namespace Mengine
         void premultiplyRGB();
 
     public:
+        void clear();
+
+    public:
         void setAsARGB( ColorValue_ARGB _val );
         MENGINE_INLINE ColorValue_ARGB getAsARGB() const;
 

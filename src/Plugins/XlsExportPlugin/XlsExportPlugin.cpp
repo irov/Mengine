@@ -42,14 +42,14 @@ namespace Mengine
         //Py_NoSiteFlag = 1;
 
         WChar currentPath[MENGINE_MAX_PATH];
-        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
+        DWORD len = ::GetCurrentDirectory( MENGINE_MAX_PATH, currentPath );
 
         if( len == 0 )
         {
             return false;
         }
 
-        currentPath[len] = L'/';
+        currentPath[len + 0] = L'/';
         currentPath[len + 1] = L'\0';
 
         WChar exportPath[MENGINE_MAX_PATH];

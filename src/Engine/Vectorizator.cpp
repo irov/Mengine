@@ -335,7 +335,7 @@ namespace Mengine
             struct LinePoints
             {
                 mt::vec2f pos;
-                float weight;
+                float width;
                 ColorValue_ARGB argb;
             };
 
@@ -359,7 +359,7 @@ namespace Mengine
                     {
                         LinePoints lp0;
                         lp0.pos = p0;
-                        lp0.weight = edge.lineWeight;
+                        lp0.width = edge.lineWeight;
                         lp0.argb = argb;
 
                         points.emplace_back( lp0 );
@@ -377,7 +377,7 @@ namespace Mengine
 
                             LinePoints p;
                             p.pos = bp;
-                            p.weight = edge.lineWeight;
+                            p.width = edge.lineWeight;
                             p.argb = argb;
 
                             points.emplace_back( p );
@@ -396,7 +396,7 @@ namespace Mengine
 
                             LinePoints p;
                             p.pos = bp;
-                            p.weight = edge.lineWeight;
+                            p.width = edge.lineWeight;
                             p.argb = argb;
 
                             points.emplace_back( p );
@@ -410,7 +410,7 @@ namespace Mengine
 
                 LinePoints lp1;
                 lp1.pos = p1;
-                lp1.weight = line.edges.back().lineWeight;
+                lp1.width = line.edges.back().lineWeight;
 
                 Color line_color = color * line.edges.back().lineColor;
                 uint32_t argb = line_color.getAsARGB();
@@ -470,7 +470,7 @@ namespace Mengine
             }
 
             {
-                float weight = points[0].weight;
+                float weight = points[0].width;
                 uint32_t argb = points[0].argb;
 
                 const mt::vec2f & p0 = points[0].pos;
@@ -525,7 +525,7 @@ namespace Mengine
 
             for( uint16_t index = 1; index != pointSize - 1; ++index )
             {
-                float weight = points[index + 0].weight;
+                float weight = points[index + 0].width;
                 ColorValue_ARGB argb = points[index + 0].argb;
 
                 const mt::vec2f & p0 = points[index - 1].pos;
@@ -631,7 +631,7 @@ namespace Mengine
             }
 
             {
-                float weight = points[pointSize - 2].weight;
+                float weight = points[pointSize - 2].width;
                 uint32_t argb = points[pointSize - 2].argb;
 
                 const mt::vec2f & p0 = points[pointSize - 2].pos;

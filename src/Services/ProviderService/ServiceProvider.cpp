@@ -102,16 +102,11 @@ namespace Mengine
 
         const Char * name = service->getServiceID();
 
-        if( strlen( name ) + 1 > MENGINE_SERVICE_PROVIDER_NAME_SIZE )
-        {
-            MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid service name '%s' max size '%d' > '%d'"
-                , name
-                , strlen( name + 1 )
-                , MENGINE_SERVICE_PROVIDER_NAME_SIZE
-                );
-
-            return false;
-        }
+        MENGINE_ASSERTION( strlen( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+            , name
+            , strlen( name )
+            , MENGINE_SERVICE_PROVIDER_NAME_SIZE
+        );
 
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
         {
@@ -252,6 +247,11 @@ namespace Mengine
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
         MENGINE_ASSERTION( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT );
+        MENGINE_ASSERTION( strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+            , _name
+            , strlen( _name )
+            , MENGINE_SERVICE_PROVIDER_NAME_SIZE
+            );
 
         DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
 
@@ -262,6 +262,11 @@ namespace Mengine
     bool ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
     {
         MENGINE_ASSERTION( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
+        MENGINE_ASSERTION( strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+            , _name
+            , strlen( _name )
+            , MENGINE_SERVICE_PROVIDER_NAME_SIZE
+        );
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
@@ -296,6 +301,11 @@ namespace Mengine
     bool ServiceProvider::leaveService( const Char * _name, const LambdaLeaveService & _lambda )
     {
         MENGINE_ASSERTION( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
+        MENGINE_ASSERTION( strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+            , _name
+            , strlen( _name )
+            , MENGINE_SERVICE_PROVIDER_NAME_SIZE
+        );
 
         LeaveDesc & desc = m_leaving[m_leaveCount++];
 

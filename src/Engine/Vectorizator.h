@@ -23,8 +23,8 @@ namespace Mengine
         ~Vectorizator() override;
 
     public:
-        void setLineWeight( float _weight );
-        float getLineWeight() const;
+        void setLineWidth( float _width );
+        float getLineWidth() const;
 
         void setLineSoft( float _soft );
         float getLineSoft() const;
@@ -37,6 +37,10 @@ namespace Mengine
 
         void setEllipseQuality( uint8_t _quality );
         uint8_t getEllipseQuality() const;
+
+    public:
+        void beginFill( const Color & _color );
+        void endFill();
 
     public:
         void moveTo( const mt::vec2f & _point );
@@ -63,9 +67,11 @@ namespace Mengine
         void updateLocalVertex2D_() const;
 
     protected:
-        float m_lineWeight;
+        float m_lineWidth;
         float m_lineSoft;
         Color m_lineColor;
+        Color m_fillColor;
+        bool m_filling;
 
         uint8_t m_curveQuality;
         uint8_t m_ellipseQuality;
@@ -80,8 +86,8 @@ namespace Mengine
             uint8_t quality;
             float dt;
 
-            float weight;
-            Color color;
+            float lineWeight;
+            Color lineColor;
         };
 
         typedef Vector<LineEdge> VectorLineEdge;
@@ -103,9 +109,12 @@ namespace Mengine
             float width;
             float height;
 
-            float weight;
-            float soft;
-            Color color;
+            float lineWidth;
+            float lineSoft;
+            Color lineColor;
+
+            Color fillColor;
+            bool filling;
         };
 
         typedef Vector<RectDesc> VectorRects;
@@ -119,9 +128,12 @@ namespace Mengine
 
             uint8_t quality;
 
-            float weight;
-            float soft;
-            Color color;
+            float lineWidth;
+            float lineSoft;
+            Color lineColor;
+                        
+            Color fillColor;
+            bool filling;
         };
 
         typedef Vector<EllipseDesc> VectorEllipses;

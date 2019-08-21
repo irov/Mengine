@@ -28,7 +28,7 @@ namespace Mengine
         void unregisterModule( const ConstString & _moduleName ) override;
 
     public:
-        bool hasModule( const ConstString & _moduleName ) override;
+        bool hasModule( const ConstString & _moduleName ) const override;
         bool runModule( const ConstString & _moduleName, const Char * _doc ) override;
         bool stopModule( const ConstString & _moduleName ) override;
 

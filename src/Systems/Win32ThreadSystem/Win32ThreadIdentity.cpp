@@ -169,13 +169,14 @@ namespace Mengine
 
             ::EnterCriticalSection( &m_processLock );
 
-            if( m_task != nullptr && m_exit == false )
+            if( m_task != nullptr )
             {
-                ThreadMutexInterface * mutex = m_mutex.get();
-
-                mutex->lock();
-                m_task->main();
-                mutex->unlock();
+                if( m_exit == false )
+                {
+                    m_mutex->lock();
+                    m_task->main();
+                    m_mutex->unlock();
+                }
 
                 ::EnterCriticalSection( &m_taskLock );
                 m_task = nullptr;

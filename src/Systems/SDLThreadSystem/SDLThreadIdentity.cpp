@@ -137,12 +137,14 @@ namespace Mengine
 
             SDL_LockMutex( m_processLock );
 
-            if( m_task != nullptr && m_exit == false )
+            if( m_task != nullptr )
             {
-                m_mutex->lock();
-                m_task->main();
-                m_mutex->unlock();
-                m_task = nullptr;
+                if( m_exit == false )
+                {
+                    m_mutex->lock();
+                    m_task->main();
+                    m_mutex->unlock();
+                }
 
                 SDL_LockMutex( m_taskLock );
                 m_task = nullptr;

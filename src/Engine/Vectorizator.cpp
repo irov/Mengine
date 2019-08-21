@@ -899,7 +899,7 @@ namespace Mengine
                 indexIterator += 6;
 
                 Color fill_color = color * rect.fillColor;
-                uint32_t fill_argb = line_color.getAsARGB();
+                uint32_t fill_argb = fill_color.getAsARGB();
 
                 m_renderVertex2D[vertexIterator + 0].position.x = p0.x;
                 m_renderVertex2D[vertexIterator + 0].position.y = p0.y;

@@ -26,7 +26,6 @@ namespace Mengine
 
     public:
         virtual void update() = 0;
-        virtual void clear() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GlobalInputHandlerInterface> GlobalInputHandlerInterfacePtr;

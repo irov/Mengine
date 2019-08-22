@@ -23,7 +23,7 @@ namespace Mengine
 
     public:
         virtual bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) = 0;
-        virtual bool destroyThread( const ConstString & _threadName, bool _wait ) = 0;
+        virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
         virtual bool hasThread( const ConstString & _name ) const = 0;

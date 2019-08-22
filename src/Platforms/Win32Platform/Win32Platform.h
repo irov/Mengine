@@ -130,6 +130,7 @@ namespace Mengine
         bool setProcessDPIAware() override;
 
     public:
+        bool isDebuggerPresent() const override;
         bool createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full ) override;
 
     public:

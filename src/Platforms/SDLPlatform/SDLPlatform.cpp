@@ -745,6 +745,11 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::isDebuggerPresent() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
     {
         MENGINE_UNUSED( _dumpPath );

@@ -70,6 +70,16 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Color::clear()
+    {
+        m_r = 1.f;
+        m_g = 1.f;
+        m_b = 1.f;
+        m_a = 1.f;
+        m_argb = Detail::COLOR_IDENTITY_VALUE;
+        m_invalidateARGB = Detail::COLOR_INVALIDATE_IDENTITY;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Color::setRGB( float _r, float _g, float _b )
     {
         m_r = _r;

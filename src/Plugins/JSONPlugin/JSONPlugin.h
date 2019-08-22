@@ -8,7 +8,7 @@ namespace Mengine
         : public PluginBase
     {
     public:
-        PLUGIN_DECLARE( "JSONPython" )
+        PLUGIN_DECLARE( "JSONPlugin" )
 
     public:
         JSONPlugin();
@@ -17,6 +17,7 @@ namespace Mengine
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
+        void _destroyPlugin() override;
     };
 }
 

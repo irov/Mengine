@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Vectorizator::Vectorizator()
         : m_invalidateLocalVertex2D( false )
-        , m_lineWeight( 2.f )
+        , m_lineWidth( 2.f )
         , m_lineSoft( 1.f )
         , m_lineColor( 1.f, 1.f, 1.f, 1.f )
         , m_curveQuality( 20 )
@@ -27,14 +27,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::setLineWeight( float _weight )
+    void Vectorizator::setLineWidth( float _width )
     {
-        m_lineWeight = _weight;
+        m_lineWidth = _width;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Vectorizator::getLineWeight() const
+    float Vectorizator::getLineWidth() const
     {
-        return m_lineWeight;
+        return m_lineWidth;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setLineSoft( float _soft )
@@ -77,6 +77,17 @@ namespace Mengine
         return m_ellipseQuality;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::beginFill( const Color & _color )
+    {
+        m_filling = true;
+        m_fillColor = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::endFill()
+    {
+        m_filling = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Vectorizator::moveTo( const mt::vec2f & _point )
     {
         LineDesc desc;
@@ -96,8 +107,8 @@ namespace Mengine
         edge.controls = 0;
         edge.quality = 2;
         edge.dt = 1.f;
-        edge.weight = m_lineWeight;
-        edge.color = m_lineColor;
+        edge.lineWeight = m_lineWidth;
+        edge.lineColor = m_lineColor;
 
         desc.edges.emplace_back( edge );
 
@@ -115,8 +126,8 @@ namespace Mengine
         edge.p[0] = _p0;
         edge.quality = m_curveQuality;
         edge.dt = 1.f / (float)(edge.quality - 1);
-        edge.weight = m_lineWeight;
-        edge.color = m_lineColor;
+        edge.lineWeight = m_lineWidth;
+        edge.lineColor = m_lineColor;
 
         desc.edges.emplace_back( edge );
 
@@ -135,8 +146,8 @@ namespace Mengine
         edge.p[1] = _p1;
         edge.quality = m_curveQuality;
         edge.dt = 1.f / (float)(edge.quality - 1);
-        edge.weight = m_lineWeight;
-        edge.color = m_lineColor;
+        edge.lineWeight = m_lineWidth;
+        edge.lineColor = m_lineColor;
 
         desc.edges.emplace_back( edge );
 
@@ -149,9 +160,11 @@ namespace Mengine
         desc.point = _point;
         desc.width = _width;
         desc.height = _height;
-        desc.weight = m_lineWeight;
-        desc.soft = m_lineSoft;
-        desc.color = m_lineColor;
+        desc.lineWidth = m_lineWidth;
+        desc.lineSoft = m_lineSoft;
+        desc.lineColor = m_lineColor;        
+        desc.fillColor = m_fillColor;
+        desc.filling = m_filling;
 
         m_rects.emplace_back( desc );
 
@@ -170,9 +183,11 @@ namespace Mengine
         desc.width = _width;
         desc.height = _height;
         desc.quality = m_ellipseQuality;
-        desc.weight = m_lineWeight;
-        desc.soft = m_lineSoft;
-        desc.color = m_lineColor;
+        desc.lineWidth = m_lineWidth;
+        desc.lineSoft = m_lineSoft;
+        desc.lineColor = m_lineColor;
+        desc.fillColor = m_fillColor;
+        desc.filling = m_filling;
 
         m_ellipses.emplace_back( desc );
 
@@ -272,7 +287,7 @@ namespace Mengine
 
         for( const RectDesc & desc : m_rects )
         {
-            if( desc.soft > 0.f )
+            if( desc.lineSoft > 0.f )
             {
                 vertexSize += 16;
                 indexSize += 72;
@@ -282,11 +297,17 @@ namespace Mengine
                 vertexSize += 8;
                 indexSize += 24;
             }
+
+            if( desc.filling == true )
+            {
+                vertexSize += 4;
+                indexSize += 6;
+            }
         }
 
         for( const EllipseDesc & desc : m_ellipses )
         {
-            if( desc.soft > 0.f )
+            if( desc.lineSoft > 0.f )
             {
                 vertexSize += desc.quality * 4;
                 indexSize += desc.quality * 18;
@@ -314,7 +335,7 @@ namespace Mengine
             struct LinePoints
             {
                 mt::vec2f pos;
-                float weight;
+                float width;
                 ColorValue_ARGB argb;
             };
 
@@ -329,7 +350,7 @@ namespace Mengine
                 const mt::vec2f & p0 = line.points[pointIterator++];
                 const mt::vec2f & p1 = line.points[pointIterator];
 
-                Color line_color = color * edge.color;
+                Color line_color = color * edge.lineColor;
                 uint32_t argb = line_color.getAsARGB();
 
                 switch( edge.controls )
@@ -338,7 +359,7 @@ namespace Mengine
                     {
                         LinePoints lp0;
                         lp0.pos = p0;
-                        lp0.weight = edge.weight;
+                        lp0.width = edge.lineWeight;
                         lp0.argb = argb;
 
                         points.emplace_back( lp0 );
@@ -356,7 +377,7 @@ namespace Mengine
 
                             LinePoints p;
                             p.pos = bp;
-                            p.weight = edge.weight;
+                            p.width = edge.lineWeight;
                             p.argb = argb;
 
                             points.emplace_back( p );
@@ -375,7 +396,7 @@ namespace Mengine
 
                             LinePoints p;
                             p.pos = bp;
-                            p.weight = edge.weight;
+                            p.width = edge.lineWeight;
                             p.argb = argb;
 
                             points.emplace_back( p );
@@ -389,9 +410,9 @@ namespace Mengine
 
                 LinePoints lp1;
                 lp1.pos = p1;
-                lp1.weight = line.edges.back().weight;
+                lp1.width = line.edges.back().lineWeight;
 
-                Color line_color = color * line.edges.back().color;
+                Color line_color = color * line.edges.back().lineColor;
                 uint32_t argb = line_color.getAsARGB();
 
                 lp1.argb = argb;
@@ -449,7 +470,7 @@ namespace Mengine
             }
 
             {
-                float weight = points[0].weight;
+                float weight = points[0].width;
                 uint32_t argb = points[0].argb;
 
                 const mt::vec2f & p0 = points[0].pos;
@@ -504,7 +525,7 @@ namespace Mengine
 
             for( uint16_t index = 1; index != pointSize - 1; ++index )
             {
-                float weight = points[index + 0].weight;
+                float weight = points[index + 0].width;
                 ColorValue_ARGB argb = points[index + 0].argb;
 
                 const mt::vec2f & p0 = points[index - 1].pos;
@@ -610,7 +631,7 @@ namespace Mengine
             }
 
             {
-                float weight = points[pointSize - 2].weight;
+                float weight = points[pointSize - 2].width;
                 uint32_t argb = points[pointSize - 2].argb;
 
                 const mt::vec2f & p0 = points[pointSize - 2].pos;
@@ -666,10 +687,10 @@ namespace Mengine
 
         for( const RectDesc & rect : m_rects )
         {
-            Color line_color = color * rect.color;
+            Color line_color = color * rect.lineColor;
             uint32_t argb = line_color.getAsARGB();
 
-            if( rect.soft > 0.f )
+            if( rect.lineSoft > 0.f )
             {
                 for( uint16_t index = 0; index != 4; ++index )
                 {
@@ -721,11 +742,11 @@ namespace Mengine
             mt::vec2f p2 = rect.point + mt::vec2f( rect.width, rect.height );
             mt::vec2f p3 = rect.point + mt::vec2f( 0.f, rect.height );
 
-            float sqrt2_weight = rect.weight * 0.5f;
+            float sqrt2_weight = rect.lineWidth * 0.5f;
 
-            if( rect.soft > 0.f )
+            if( rect.lineSoft > 0.f )
             {
-                float sqrt2_weight_soft = (rect.weight - rect.soft * 2.f) * 0.5f;
+                float sqrt2_weight_soft = (rect.lineWidth - rect.lineSoft * 2.f) * 0.5f;
 
                 m_renderVertex2D[vertexIterator + 0].position.x = p0.x - sqrt2_weight;
                 m_renderVertex2D[vertexIterator + 0].position.y = p0.y - sqrt2_weight;
@@ -865,14 +886,51 @@ namespace Mengine
 
                 vertexIterator += 2;
             }
+
+            if( rect.filling == true )
+            {
+                m_renderIndices[indexIterator + 0] = vertexIterator + 0;
+                m_renderIndices[indexIterator + 1] = vertexIterator + 1;
+                m_renderIndices[indexIterator + 2] = vertexIterator + 3;
+                m_renderIndices[indexIterator + 3] = vertexIterator + 3;
+                m_renderIndices[indexIterator + 4] = vertexIterator + 1;
+                m_renderIndices[indexIterator + 5] = vertexIterator + 2;
+
+                indexIterator += 6;
+
+                Color fill_color = color * rect.fillColor;
+                uint32_t fill_argb = fill_color.getAsARGB();
+
+                m_renderVertex2D[vertexIterator + 0].position.x = p0.x;
+                m_renderVertex2D[vertexIterator + 0].position.y = p0.y;
+                m_renderVertex2D[vertexIterator + 0].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 0].color = fill_argb;
+
+                m_renderVertex2D[vertexIterator + 1].position.x = p1.x;
+                m_renderVertex2D[vertexIterator + 1].position.y = p1.y;
+                m_renderVertex2D[vertexIterator + 1].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 1].color = fill_argb;
+
+                m_renderVertex2D[vertexIterator + 2].position.x = p2.x;
+                m_renderVertex2D[vertexIterator + 2].position.y = p2.y;
+                m_renderVertex2D[vertexIterator + 2].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 2].color = fill_argb;
+
+                m_renderVertex2D[vertexIterator + 3].position.x = p3.x;
+                m_renderVertex2D[vertexIterator + 3].position.y = p3.y;
+                m_renderVertex2D[vertexIterator + 3].position.z = 0.f;
+                m_renderVertex2D[vertexIterator + 3].color = fill_argb;
+
+                vertexIterator += 4;
+            }
         }
 
         for( const EllipseDesc & ellipse : m_ellipses )
         {
-            Color line_color = color * ellipse.color;
+            Color line_color = color * ellipse.lineColor;
             uint32_t argb = line_color.getAsARGB();
 
-            if( ellipse.soft > 0 )
+            if( ellipse.lineSoft > 0 )
             {
                 uint32_t ellipse_quality2 = ellipse.quality * 4;
 
@@ -923,7 +981,7 @@ namespace Mengine
                 }
             }
 
-            float line_weight = ellipse.weight * 0.5f;
+            float line_weight = ellipse.lineWidth * 0.5f;
 
             float dt = mt::constant::two_pi / float( ellipse.quality );
 
@@ -940,9 +998,9 @@ namespace Mengine
                 float x1 = (ellipse.width - line_weight) * ct;
                 float y1 = (ellipse.height - line_weight) * st;
 
-                if( ellipse.soft > 0.f )
+                if( ellipse.lineSoft > 0.f )
                 {
-                    float line_weight_soft = (ellipse.weight - ellipse.soft * 2.f) * 0.5f;
+                    float line_weight_soft = (ellipse.lineWidth - ellipse.lineSoft * 2.f) * 0.5f;
 
                     float x0_soft = (ellipse.width + line_weight_soft) * ct;
                     float y0_soft = (ellipse.height + line_weight_soft) * st;

@@ -17,11 +17,14 @@ namespace Mengine
 
     protected:
         void _onCURL( CURL * _curl ) override;
+        void _onCURLCleanup( CURL * _curl ) override;
 
     protected:
         String m_url;
         VectorString m_headers;
         String m_data;
+
+        struct curl_slist * m_curl_header_list;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLHeaderDataThreadTask> cURLHeaderDataThreadTaskPtr;

@@ -33,7 +33,6 @@ namespace Mengine
 
     public:
         void join() override;
-        void detach() override;
 
     public:
         int32_t getPriority() const;
@@ -46,6 +45,7 @@ namespace Mengine
 
         SDL_Thread * m_thread;
 
+        SDL_mutex * m_taskLock;
         SDL_mutex * m_processLock;
 
         SDL_cond * m_conditionVariable;

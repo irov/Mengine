@@ -88,9 +88,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
+        bool developmentMode = HAS_OPTION( "dev" );
+
 #if defined(MENGINE_DEBUG)
         {
-            bool developmentMode = HAS_OPTION( "dev" );
             bool roamingMode = HAS_OPTION( "roaming" );
             bool noroamingMode = HAS_OPTION( "noroaming" );
 
@@ -237,7 +238,10 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>();
+        if( developmentMode == true )
+        {
+            m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>();
+        }
 
         m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>();
 
@@ -251,18 +255,6 @@ namespace Mengine
         m_platformTags.clear();
 
         m_cursors.clear();
-
-        if( m_alreadyRunningMonitor != nullptr )
-        {
-            m_alreadyRunningMonitor->finalize();
-            m_alreadyRunningMonitor = nullptr;
-        }
-
-        if( m_antifreezeMonitor != nullptr )
-        {
-            m_antifreezeMonitor->finalize();
-            m_antifreezeMonitor = nullptr;
-        }
 
         if( m_hWnd != NULL )
         {
@@ -324,6 +316,16 @@ namespace Mengine
         }
 
         ::FreeLibrary( hUser32 );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::isDebuggerPresent() const
+    {
+        if( IsDebuggerPresent() == FALSE )
+        {
+            return false;
+        }
 
         return true;
     }
@@ -411,13 +413,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {
-        bool developmentMode = HAS_OPTION( "dev" );
-
-        if( developmentMode == true )
+        if( m_antifreezeMonitor != nullptr )
         {
-            if( m_antifreezeMonitor->initialize() == false )
+            if( CONFIG_VALUE( "Platform", "AntifreezeMonitor", true ) == true )
             {
-                return false;
+                if( m_antifreezeMonitor->initialize() == false )
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                m_antifreezeMonitor = nullptr;
             }
         }
 
@@ -431,8 +438,6 @@ namespace Mengine
         m_prevTime = TIME_SYSTEM()
             ->getTimeMilliseconds();
 
-        bool developmentMode = HAS_OPTION( "dev" );
-
         {
             while( m_close == false )
             {
@@ -443,7 +448,7 @@ namespace Mengine
 
                 m_prevTime = currentTime;
 
-                if( developmentMode == true )
+                if( m_antifreezeMonitor != nullptr )
                 {
                     m_antifreezeMonitor->ping();
                 }
@@ -524,15 +529,16 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "stop platform" );
 
-        bool developmentMode = HAS_OPTION( "dev" );
-
-        if( developmentMode == true )
+        if( m_antifreezeMonitor != nullptr )
         {
-            if( m_antifreezeMonitor != nullptr )
-            {
-                m_antifreezeMonitor->finalize();
-                m_antifreezeMonitor = nullptr;
-            }
+            m_antifreezeMonitor->finalize();
+            m_antifreezeMonitor = nullptr;
+        }
+
+        if( m_alreadyRunningMonitor != nullptr )
+        {
+            m_alreadyRunningMonitor->finalize();
+            m_alreadyRunningMonitor = nullptr;
         }
 
         m_mouseEvent.stop();
@@ -603,7 +609,7 @@ namespace Mengine
             return ~0U;
         }
 
-        const LPWSTR fontRegistryPath = L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+        const WChar * fontRegistryPath = L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 
         HKEY hKey;
         LONG result;
@@ -1021,7 +1027,7 @@ namespace Mengine
         {
         case WM_TIMER:
             {
-                if( wParam == UTIMER_MOUSE_EVENT )
+                if( wParam == MENGINE_UTIMER_MOUSE_EVENT )
                 {
                     m_mouseEvent.verify();
                 }

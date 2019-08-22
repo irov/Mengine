@@ -102,7 +102,9 @@ endif()
 
 if(MENGINE_DEPENDENCE_ZLIB)
     message("================zlib================")
-    ADD_SUBDIRECTORY(zlib)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
+    
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
 endif()
 
 
@@ -125,7 +127,7 @@ endif()
 
 #dependencies xmlsax
 if(MENGINE_DEPENDENCE_XMLSAX)
-    message("================libpng================")
+    message("================xmlsax================")
     set(XMLSAX_EXTERNAL_BUILD ON CACHE BOOL "XMLSAX_EXTERNAL_BUILD" FORCE)
     set(XMLSAX_INSTALL OFF CACHE BOOL "XMLSAX_INSTALL" FORCE)
 

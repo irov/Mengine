@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/Params.h"
 
 #include "Config/String.h"
 #include "Config/VectorString.h"
@@ -15,8 +15,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef uint32_t HttpRequestID;
     //////////////////////////////////////////////////////////////////////////
+    struct cURLPostParam
+    {
+        String key;
+        String value;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<cURLPostParam> cURLPostParams;
+    //////////////////////////////////////////////////////////////////////////
     class cURLReceiverInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
@@ -31,7 +39,7 @@ namespace Mengine
 
     public:
         virtual HttpRequestID getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID postMessage( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
         virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:

@@ -7,8 +7,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Colorable::Colorable()
         : m_invalidateRelationColor( false )
-        , m_localTransparent( false )
         , m_personalTransparent( false )
+        , m_localTransparent( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -240,8 +240,26 @@ namespace Mengine
                 s_thread_mainWorker( desc );
             }
 
-            THREAD_SERVICE()
-                ->sleep( m_sleep );
+            if( m_sleep <= 100 )
+            {
+                THREAD_SERVICE()
+                    ->sleep( m_sleep );
+            }
+            else
+            {
+                uint32_t sleep_partition = 100;
+
+                for( uint32_t sleep = 0; sleep <= m_sleep; sleep += sleep_partition )
+                {
+                    if( this->isCancel() == true )
+                    {
+                        break;
+                    }
+
+                    THREAD_SERVICE()
+                        ->sleep( sleep_partition );
+                }
+            }
         }
 
         return true;

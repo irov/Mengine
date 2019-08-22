@@ -117,7 +117,7 @@ namespace Mengine
         if( m_supportStream == true )
         {
             THREAD_SERVICE()
-                ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), true );
+                ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ) );
         }
 
         m_soundVolumeProviders.clear();

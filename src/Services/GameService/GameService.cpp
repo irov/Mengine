@@ -248,7 +248,7 @@ namespace Mengine
         const Resolution & contentResolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
-        double sreenFillrate = debugInfo.fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
+        double sreenFillrate = debugInfo.fillrate / double( (uint64_t)contentResolution.getWidth() * (uint64_t)contentResolution.getHeight() );
 
         if( sreenFillrate > limitFillrate )
         {

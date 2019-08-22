@@ -32,6 +32,7 @@ namespace Mengine
 
     protected:
         virtual void _onCURL( CURL * _curl ) = 0;
+        virtual void _onCURLCleanup( CURL * _curl );
 
     protected:
         void setupWriteResponse( CURL * _curl );

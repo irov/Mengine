@@ -1,4 +1,6 @@
 *.iml
+**/.cxx
+**/.transforms
 .idea
 .gradle
 /local.properties

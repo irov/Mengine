@@ -33,7 +33,7 @@ namespace Mengine
         SERVICE_FINALIZE( Amplifier );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AmplifierPlugin::_destroy()
+    void AmplifierPlugin::_destroyPlugin()
     {
         SERVICE_DESTROY( Amplifier );
     }

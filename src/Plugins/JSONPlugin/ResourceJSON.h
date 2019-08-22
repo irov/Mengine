@@ -7,7 +7,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class ResourceJSON
         : public Resource
         , public Content
@@ -22,14 +21,14 @@ namespace Mengine
         ~ResourceJSON() override;
 
     public:
-        const jpp::object & getJSON() const override;
+        const JSONStorageInterfacePtr & getJSONStorage() const override;
 
     protected:
         bool _compile() override;
         void _release() override;
 
     protected:
-        jpp::object m_json;
+        JSONStorageInterfacePtr m_storage;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceJSON> ResourceJSONPtr;

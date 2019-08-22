@@ -12,14 +12,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9ErrorHelper::operator == ( HRESULT _hr )
+    bool DX9ErrorHelper::operator == ( HRESULT _hr ) const
     {
         if( _hr == S_OK )
         {
             return false;
         }
 
-        LOGGER_ERROR( "file '%s' line %d DX call '%s' get error '%p'"
+        LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("[DX9] file '%s' line %d call '%s' get error '%p'"
             , m_file
             , m_line
             , m_method

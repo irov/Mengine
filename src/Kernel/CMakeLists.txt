@@ -303,7 +303,7 @@ Randomizer
 )
 
 ADD_FILTER(
-Core
+Assertion
     Assertion.h
     Assertion.cpp
     AssertionFactory.h
@@ -314,7 +314,10 @@ Core
     AssertionMainThreadGuard.h
     AssertionVocabulary.h
     AssertionVocabulary.cpp
-    
+)
+
+ADD_FILTER(
+Core    
     Pool.h
 
     CRC32.h

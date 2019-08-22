@@ -55,6 +55,51 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
+    class ConstPointerT
+    {
+    public:
+        ConstPointerT( std::nullptr_t )
+            : m_pointer( nullptr )
+        {
+        }
+
+        ConstPointerT( const T * _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        ConstPointerT( const ConstPointerT & _pointer )
+            : m_pointer( _pointer.m_pointer )
+        {
+        }
+
+    public:
+        ConstPointerT & operator = ( const ConstPointerT & _pointer )
+        {
+            this->m_pointer = _pointer.m_pointer;
+
+            return *this;
+        }
+
+    public:
+        operator const T * () const
+        {
+            return m_pointer;
+        }
+
+        template<class U>
+        operator const U * () const
+        {
+            const U * t = static_cast<const U *>(m_pointer);
+
+            return t;
+        }
+
+    protected:
+        const T * m_pointer;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
     class PointerT<IntrusivePtr<T> >
     {
     public:
@@ -149,6 +194,7 @@ namespace Mengine
         IntrusivePtr<T> m_pointer;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef ConstPointerT<void> ConstPointer;
     typedef PointerT<void> Pointer;
     //////////////////////////////////////////////////////////////////////////
 }

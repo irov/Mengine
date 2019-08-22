@@ -162,6 +162,10 @@ PLUGIN_EXPORT( NodeDebugger );
 PLUGIN_EXPORT( OzzAnimation );
 #endif
 
+#ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
+PLUGIN_EXPORT( MENGINE_EXTERNAL_FRAMEWORK_NAME );
+#endif
+
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
 PLUGIN_EXPORT( PythonFramework );
 #endif
@@ -347,6 +351,10 @@ namespace Mengine
 		if(	PLUGIN_CREATE(Name) == false ){\
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_MESSAGE( "Successful %s", Info );}}
+
+#ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
+        MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework..." );
+#endif
 
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
         MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin PythonFramework..." );
@@ -578,6 +586,16 @@ namespace Mengine
 
             for( const ConstString & moduleName : devModules )
             {
+                if( MODULE_SERVICE()
+                    ->hasModule( moduleName ) == false )
+                {
+                    LOGGER_ERROR( "not exist dev module '%s'"
+                        , moduleName.c_str()
+                    );
+
+                    continue;
+                }
+
                 if( MODULE_SERVICE()
                     ->runModule( moduleName, MENGINE_DOCUMENT_FUNCTION ) == false )
                 {

@@ -20,19 +20,9 @@ namespace Mengine
         m_width = _width;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Resolution::getWidth() const
-    {
-        return m_width;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Resolution::setHeight( uint32_t _height )
     {
         m_height = _height;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Resolution::getHeight() const
-    {
-        return m_height;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Resolution::operator == ( const Resolution & _resolution ) const
@@ -42,22 +32,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Resolution::getAspectRatio() const
     {
-        float drx = float( m_width );
-        float dry = float( m_height );
-        float aspect = drx / dry;
+        float width = this->getWidthF();
+        float height = this->getHeightF();
+
+        float aspect = width / height;
         return aspect;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resolution::calcSize( mt::vec2f & _size ) const
     {
-        _size.x = float( m_width );
-        _size.y = float( m_height );
+        float width = this->getWidthF();
+        float height = this->getHeightF();
+
+        _size.x = width;
+        _size.y = height;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resolution::calcInvSize( mt::vec2f & _size ) const
     {
-        _size.x = 1.f / float( m_width );
-        _size.y = 1.f / float( m_height );
+        float width = this->getWidthF();
+        float height = this->getHeightF();
+
+        _size.x = 1.f / width;
+        _size.y = 1.f / height;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resolution::calcScale( const Resolution & _resolution, mt::vec2f & _scale ) const

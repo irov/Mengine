@@ -117,9 +117,11 @@ namespace Mengine
         const RenderTextureInterfacePtr & atlasTexture = m_resourceImage->getTexture();
         const RenderTextureInterfacePtr & atlasTextureAlpha = m_resourceImage->getTextureAlpha();
 
-        UnknownResourceJSONInterface * resourceJsonInterface = m_resourceJSON->getUnknown();
+        UnknownResourceJSONInterface * unknownResourceJSON = m_resourceJSON->getUnknown();
 
-        const jpp::object & root = resourceJsonInterface->getJSON();
+        const JSONStorageInterfacePtr & storage = unknownResourceJSON->getJSONStorage();
+
+        const jpp::object & root = storage->getJSON();
 
         if( root == jpp::detail::invalid )
         {

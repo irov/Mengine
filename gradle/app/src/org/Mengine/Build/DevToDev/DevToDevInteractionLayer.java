@@ -6,6 +6,11 @@ import com.devtodev.core.DevToDev;
 import com.devtodev.core.data.consts.AccrualType;
 import com.devtodev.core.data.metrics.aggregated.events.CustomEventParams;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
+
 /**
  * Created by sweatcoin7 on 7/13/18.
  */
@@ -47,7 +52,44 @@ public class DevToDevInteractionLayer {
         DevToDev.inAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
     }
 
-    public void onSimpleCustomEvent(String eventName, CustomEventParams eventParam) {
-        DevToDev.customEvent(eventName, eventParam);
+    public void onSimpleCustomEvent(String eventName, String intJSON, String floatJSON, String stringJSON) {
+        CustomEventParams customEventParams = new CustomEventParams();
+        if (!intJSON.isEmpty()) {
+            try {
+                final JSONObject obj = new JSONObject(intJSON);
+                final Iterator<String> iterator =  obj.keys();
+                while(iterator.hasNext()){
+                    final String key = iterator.next();
+                    customEventParams.putInteger(key, obj.getInt(key));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!floatJSON.isEmpty()) {
+            try {
+                final JSONObject obj = new JSONObject(floatJSON);
+                final Iterator<String> iterator =  obj.keys();
+                while(iterator.hasNext()){
+                    final String key = iterator.next();
+                    customEventParams.putDouble(key, obj.getDouble(key));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!stringJSON.isEmpty()) {
+            try {
+                final JSONObject obj = new JSONObject(stringJSON);
+                final Iterator<String> iterator =  obj.keys();
+                while(iterator.hasNext()){
+                    final String key = iterator.next();
+                    customEventParams.putString(key, obj.getString(key));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        DevToDev.customEvent(eventName, customEventParams);
     }
 }

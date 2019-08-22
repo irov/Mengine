@@ -61,7 +61,7 @@ public class LocalNotificationsInteractionLayer {
         Notification.Builder builder = new Notification.Builder(_currentContext);
         builder.setContentTitle(title);
         builder.setContentText(content);
-        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setSmallIcon(R.mipmap.ic_notification);
         builder.setDefaults(Notification.DEFAULT_ALL);
         builder.setContentIntent(pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

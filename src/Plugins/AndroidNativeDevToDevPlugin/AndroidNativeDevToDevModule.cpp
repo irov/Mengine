@@ -40,7 +40,7 @@ extern "C"
         jmethodID_onCurrencyAccrual = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnCurrencyAccrual", "(Ljava/lang/String;II)V" );
         jmethodID_onRealPayment = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnRealPayment", "(Ljava/lang/String;FLjava/lang/String;Ljava/lang/String;)V" );
         jmethodID_onInAppPurchase = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnInAppPurchase", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)V" );
-        jmethodID_onSimpleCustomEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;)V" );
+        jmethodID_onSimpleCustomEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -258,16 +258,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevModule::onSimpleCustomEvent( const String & _eventName )
+    bool AndroidNativeDevToDevModule::onSimpleCustomEvent( const String & _eventName, const String & _intJSON, const String & _floatJSON, const String & _stringJSON )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
         const Char * eventName_str = _eventName.c_str();
         jstring jeventName = env->NewStringUTF( eventName_str );
+        const Char * intJSON_str = _intJSON.c_str();
+        jstring jintJSON = env->NewStringUTF( intJSON_str );
+        const Char * floatJSON_str = _floatJSON.c_str();
+        jstring jfloatJSON = env->NewStringUTF( floatJSON_str );
+        const Char * stringJSON_str = _stringJSON.c_str();
+        jstring jstringJSON = env->NewStringUTF( stringJSON_str );
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_onSimpleCustomEvent, jeventName );
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_onSimpleCustomEvent, jeventName, jintJSON, jfloatJSON, jstringJSON );
 
         env->DeleteLocalRef( jeventName );
+        env->DeleteLocalRef( jintJSON );
+        env->DeleteLocalRef( jfloatJSON );
+        env->DeleteLocalRef( jstringJSON );
 
         return true;
     }

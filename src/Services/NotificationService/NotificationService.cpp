@@ -147,7 +147,11 @@ namespace Mengine
         {
             for( const ObserverQueue & q : m_add )
             {
+#ifdef MENGINE_DEBUG
                 this->addObserver_( q.id, q.observer, q.callable, q.doc.c_str() );
+#else
+                this->addObserver_( q.id, q.observer, q.callable, nullptr );
+#endif
             }
 
             m_add.clear();

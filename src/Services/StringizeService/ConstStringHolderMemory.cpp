@@ -21,9 +21,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderMemory::setValue( const Char * _value, ConstStringHolder::size_type _size, hash_type _hash )
+    void ConstStringHolderMemory::setValue( const ConstStringHolder::value_type * _value, ConstStringHolder::size_type _size, hash_type _hash )
     {
-        m_buff = Helper::allocateArrayT<Char>( _size + 1 );
+        m_buff = Helper::allocateArrayT<ConstStringHolder::value_type>( _size + 1 );
         stdex::memorycopy( m_buff, 0, _value, _size );
         m_buff[_size] = '\0';
 

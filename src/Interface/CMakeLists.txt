@@ -47,6 +47,7 @@ src
     BootstrapperInterface.h
     SecureServiceInterface.h
     ThreadWorkerInterface.h
+    DateTimeProviderInterface.h
 
 	ConverterInterface.h
 	ConverterFactoryInterface.h

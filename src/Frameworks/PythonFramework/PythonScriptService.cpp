@@ -425,6 +425,20 @@ namespace Mengine
         m_kernel->remove_scope<PythonScriptLogger>();
         m_kernel->remove_scope<PythonScriptModuleFinder>();
 
+        IntrusiveListConstStringHolderPythonString::iterator it_holder = m_holders.begin();
+
+        for( ; it_holder != m_holders.end(); )
+        {
+            IntrusiveListConstStringHolderPythonString::iterator it_erase = it_holder;
+
+            ConstStringHolderPythonString * holder = *it_holder;
+            ++it_holder;
+
+            m_holders.erase( it_erase );
+
+            m_poolPythonString.destroyT( holder );
+        }
+
         m_bootstrapperModules.clear();
 
         m_prototypies.clear();
@@ -809,6 +823,8 @@ namespace Mengine
 
         STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr );
+
+        m_holders.push_back( holder );
 
         return true;
     }

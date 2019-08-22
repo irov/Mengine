@@ -290,9 +290,11 @@ namespace Mengine
             return true;
         }
 
+        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+            ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
         PlatformDateTime dateTime;
-        PLATFORM_SERVICE()
-            ->getDateTime( &dateTime );
+        dateTimeProvider->getDateTime( &dateTime );
 
         Stringstream ss_date;
         ss_date << dateTime.year

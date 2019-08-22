@@ -50,9 +50,10 @@ namespace Mengine
 #define LOGGER_VERBOSE_LEVEL( LEVEL, FILE, LINE )\
 	if( Mengine::Detail::loggerValidMessage(LEVEL, 0) == false) {} else Mengine::LoggerOperator(LEVEL, 0, (FILE), (LINE))
 //////////////////////////////////////////////////////////////////////////
-#define LOGGER_FATAL LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
-#define LOGGER_CRITICAL LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
-#define LOGGER_ERROR LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
+#define LOGGER_FATAL( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_FATAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#define LOGGER_CRITICAL( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_CRITICAL, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#define LOGGER_ERROR( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )( __VA_ARGS__ )
+#define LOGGER_MESSAGE_RELEASE( ... ) LOGGER_VERBOSE_LEVEL( Mengine::LM_MESSAGE, nullptr, 0 )( __VA_ARGS__ )
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_LOGGER_DEBUG
 //////////////////////////////////////////////////////////////////////////

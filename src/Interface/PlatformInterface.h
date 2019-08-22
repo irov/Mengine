@@ -13,6 +13,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/DynamicLibraryInterface.h"
+#include "Interface/DateTimeProviderInterface.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -20,17 +21,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct PlatformDateTime
-    {
-        uint32_t year;
-        uint32_t month;
-        uint32_t day;
-        uint32_t hour;
-        uint32_t minute;
-        uint32_t second;
-        uint32_t milliseconds;
-    };
     //////////////////////////////////////////////////////////////////////////
     class PlatformInterface
         : public ServiceInterface
@@ -120,7 +110,7 @@ namespace Mengine
         virtual uint64_t getFileTime( const Char * _path ) const = 0;
 
     public:
-        virtual void getDateTime( PlatformDateTime * _dateTime ) const = 0;
+        virtual DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) = 0;
 
     public:
         virtual bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;

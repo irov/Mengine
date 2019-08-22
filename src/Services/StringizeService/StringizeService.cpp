@@ -51,7 +51,7 @@ namespace Mengine
 
         for( uint32_t i = 0; i != MENGINE_STRINGIZE_HOLDER_COUNT; ++i )
         {
-            IntrusiveListConstStringHolder & holdres = m_holdres[i];
+            IntrusiveListConstStringHolder & holdres = m_holders[i];
 
             holdres.clear();
         }

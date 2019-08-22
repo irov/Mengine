@@ -3,6 +3,7 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/DateTimeProviderInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -36,6 +37,10 @@ namespace Mengine
         bool isSilent() const override;
 
     public:
+        int32_t makeTimeStamp( Char * _buffer, int32_t _offset, size_t _capacity ) const override;
+        int32_t makeFunctionStamp( const Char * _file, uint32_t _line, Char * _buffer, int32_t _offset, size_t _capacity ) const override;
+
+    public:
         bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;
 
     public:
@@ -50,6 +55,8 @@ namespace Mengine
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
     protected:
+        DateTimeProviderInterfacePtr m_dateTimeProvider;
+
         ELoggerLevel m_verboseLevel;
         uint32_t m_verboseFlag;
         bool m_silent;

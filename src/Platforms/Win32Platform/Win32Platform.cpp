@@ -8,6 +8,7 @@
 #include "Interface/TimeSystemInterface.h"
 
 #include "Win32DynamicLibrary.h"
+#include "Win32DateTimeProvider.h"
 #include "Win32AntifreezeMonitor.h"
 #include "Win32CriticalErrorsMonitor.h"
 
@@ -88,78 +89,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::_initializeService()
     {
-        bool developmentMode = HAS_OPTION( "dev" );
-
-#if defined(MENGINE_DEBUG)
-        {
-            bool roamingMode = HAS_OPTION( "roaming" );
-            bool noroamingMode = HAS_OPTION( "noroaming" );
-
-            if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
-            {
-                Char userPath[MENGINE_MAX_PATH] = { 0 };
-                this->getUserPath( userPath );
-
-                String dumpPath;
-                dumpPath += userPath;
-                dumpPath += "Dump";
-                dumpPath += "_";
-
-                PlatformDateTime dateTime;
-                this->getDateTime( &dateTime );
-
-                Stringstream ss_date;
-                ss_date << dateTime.year
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
-                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
-
-                String str_date = ss_date.str();
-
-                dumpPath += str_date;
-                dumpPath += ".dmp";
-
-                Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
-            }
-        }
-#endif
-
-        SYSTEMTIME tm;
-        GetLocalTime( &tm );
-        LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
-            , tm.wDay
-            , tm.wMonth
-            , tm.wYear
-            , tm.wHour
-            , tm.wMinute
-            , tm.wSecond
-        );
-
-        MEMORYSTATUSEX mem_st;
-        if( GlobalMemoryStatusEx( &mem_st ) == TRUE )
-        {
-            LOGGER_MESSAGE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
-                , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
-                , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
-                , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
-                , (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
-            );
-        }
-
-        if( this->setProcessDPIAware() == false )
-        {
-            LOGGER_ERROR( "Application not setup Process DPI Aware"
-            );
-        }
-
         m_hInstance = GetModuleHandle( NULL );
-
-        constexpr HashType hash = Helper::makeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1) );
-        Helper::stringizeStringSizeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1), hash );
-
-        STRINGIZE_STRING_LOCAL( "IDC_ARROW" );
 
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = LoadCursor( NULL, IDC_ARROW );
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = LoadCursor( NULL, IDC_UPARROW );
@@ -238,19 +168,22 @@ namespace Mengine
             m_touchpad = true;
         }
 
+        bool developmentMode = HAS_OPTION( "dev" );
+
         if( developmentMode == true )
         {
             m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>();
         }
 
-        m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>();
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>();
+        m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::_finalizeService()
     {
-        this->setActive_( false );
+        m_active = false;
 
         m_platformTags.clear();
 
@@ -283,8 +216,85 @@ namespace Mengine
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDateTimeProviders );
 
         m_factoryDynamicLibraries = nullptr;
+        m_factoryDateTimeProviders = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::_runService()
+    {   
+#if defined(MENGINE_DEBUG)
+        {
+            bool developmentMode = HAS_OPTION( "dev" );
+
+            bool roamingMode = HAS_OPTION( "roaming" );
+            bool noroamingMode = HAS_OPTION( "noroaming" );
+
+            if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
+            {
+                Char userPath[MENGINE_MAX_PATH] = { 0 };
+                this->getUserPath( userPath );
+
+                String dumpPath;
+                dumpPath += userPath;
+                dumpPath += "Dump";
+                dumpPath += "_";
+
+                DateTimeProviderInterfacePtr dateTimeProvider = 
+                    this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
+                PlatformDateTime dateTime;
+                dateTimeProvider->getDateTime( &dateTime );
+
+                Stringstream ss_date;
+                ss_date << dateTime.year
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << (dateTime.month)
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.day
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+                    << "_" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
+
+                String str_date = ss_date.str();
+
+                dumpPath += str_date;
+                dumpPath += ".dmp";
+
+                Win32CriticalErrorsMonitor::run( dumpPath.c_str() );
+            }
+        }
+#endif
+
+        DateTimeProviderInterfacePtr dateTimeProvider =
+            this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
+        PlatformDateTime dateTime;
+        dateTimeProvider->getDateTime( &dateTime );
+
+        LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
+            , dateTime.day
+            , dateTime.month
+            , dateTime.year
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+        );
+
+        MEMORYSTATUSEX mem_st;
+        if( GlobalMemoryStatusEx( &mem_st ) == TRUE )
+        {
+            LOGGER_MESSAGE( "Memory: %uK total, %uK free, %uK Page file total, %uK Page file free"
+                , (uint32_t)(mem_st.ullTotalPhys / 1024UL)
+                , (uint32_t)(mem_st.ullAvailPhys / 1024UL)
+                , (uint32_t)(mem_st.ullTotalPageFile / 1024UL)
+                , (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
+            );
+        }
+
+        if( this->setProcessDPIAware() == false )
+        {
+            LOGGER_ERROR( "Application not setup Process DPI Aware" );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::setProcessDPIAware()
@@ -332,6 +342,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createProcessDump( const Char * _dumpPath, void * _pExceptionPointers, bool _full )
     {
+        MENGINE_UNUSED( _dumpPath );
+        MENGINE_UNUSED( _pExceptionPointers );
+        MENGINE_UNUSED( _full );
+
 #if defined(MENGINE_DEBUG)
         if( IsDebuggerPresent() == TRUE )
         {
@@ -1953,6 +1967,8 @@ namespace Mengine
         {
             DWORD err = GetLastError();
 
+            MENGINE_UNUSED( err );
+
             LOGGER_WARNING( "file '%ls' error '%d'"
                 , fullPath
                 , err
@@ -2147,23 +2163,13 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::getDateTime( PlatformDateTime * _dateTime ) const
+    DateTimeProviderInterfacePtr Win32Platform::createDateTimeProvider( const Char * _doc )
     {
-        if( _dateTime == nullptr )
-        {
-            return;
-        }
+        Win32DateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
 
-        SYSTEMTIME time;
-        ::GetLocalTime( &time );
+        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, nullptr );
 
-        _dateTime->year = time.wYear;
-        _dateTime->month = time.wMonth;
-        _dateTime->day = time.wDay;
-        _dateTime->hour = time.wHour;
-        _dateTime->minute = time.wMinute;
-        _dateTime->second = time.wSecond;
-        _dateTime->milliseconds = time.wMilliseconds;
+        return dateTimeProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )

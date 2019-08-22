@@ -11,6 +11,7 @@ namespace Mengine
     static void s_handlerError( png_structp _png_ptr, const char * _error )
     {
         MENGINE_UNUSED( _png_ptr );
+        MENGINE_UNUSED( _error );
 
         LOGGER_ERROR( "%s"
             , _error
@@ -20,6 +21,7 @@ namespace Mengine
     static void s_handlerWarning( png_structp _png_ptr, const char * _error )
     {
         MENGINE_UNUSED( _png_ptr );
+        MENGINE_UNUSED( _error );
 
         LOGGER_WARNING( "%s"
             , _error

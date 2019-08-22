@@ -43,4 +43,13 @@ namespace Mengine
             this->setup( "", 0, 0 );
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolderPythonString::removePythonObject()
+    {
+        if( m_kernel != nullptr )
+        {
+            m_kernel->decref( m_value );
+            m_value = nullptr;
+        }
+    }
 }

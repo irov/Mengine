@@ -17,8 +17,6 @@ import org.Mengine.Build.LocalNotifications.NotificationPublisher;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
-import com.devtodev.core.data.metrics.aggregated.events.CustomEventParams;
-
 
 public class MengineActivity extends SDLActivity {
     private static final String TAG = "MENGINE";
@@ -326,9 +324,9 @@ public class MengineActivity extends SDLActivity {
         }
     }
 
-    public static void devtodevOnSimpleCustomEvent(String eventName, CustomEventParams eventParam) {
+    public static void devtodevOnSimpleCustomEvent(String eventName, String intJSON, String floatJSON, String stringJSON) {
         if (_instance != null && _instance.devToDevInteractionLayer != null) {
-            _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName, eventParam);
+            _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName, intJSON, floatJSON, stringJSON);
         }
     }
 

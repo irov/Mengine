@@ -309,7 +309,7 @@ namespace Mengine
     StringizeService::IntrusiveListConstStringHolder & StringizeService::getList_( ConstStringHolder::hash_type _hash )
     {
         uint32_t branch = (uint32_t)_hash % MENGINE_STRINGIZE_HOLDER_COUNT;
-        IntrusiveListConstStringHolder & list = m_holdres[branch];
+        IntrusiveListConstStringHolder & list = m_holders[branch];
 
         return list;
     }

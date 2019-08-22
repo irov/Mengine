@@ -114,6 +114,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseEventation::removeEvents() noexcept
     {
+        m_receiver = nullptr;
+
         m_receivers.clear();
         m_receiversMask = 0;
     }

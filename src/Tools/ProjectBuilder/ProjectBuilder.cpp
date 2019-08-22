@@ -41,6 +41,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/UnicodeHelper.h"
 
 #include "Config/Vector.h"
 
@@ -235,6 +236,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const WString & _params )
     {
+        MENGINE_UNUSED( _params );
+
         String utf8_fromPath;
         Helper::unicodeToUtf8( _fromPath, utf8_fromPath );
 
@@ -244,9 +247,6 @@ namespace Mengine
         String utf8_convertType;
         Helper::unicodeToUtf8( _convertType, utf8_convertType );
 
-        String utf8_params;
-        Helper::unicodeToUtf8( _params, utf8_params );
-
         ConverterOptions options;
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -255,14 +255,13 @@ namespace Mengine
         options.fileGroup = fileGroup;
         options.inputFileName = Helper::stringizeFilePath( utf8_fromPath );
         options.outputFileName = Helper::stringizeFilePath( utf8_toPath );
-        options.params = utf8_params;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );
 
         if( converter == nullptr )
         {
-            LOGGER_ERROR( "convertPVRToHTF can't create convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR( "can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
                 , options.inputFileName.c_str()
                 , options.outputFileName.c_str()
@@ -275,7 +274,7 @@ namespace Mengine
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR( "convertPVRToHTF can't convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
                 , options.inputFileName.c_str()
                 , options.outputFileName.c_str()
@@ -382,7 +381,7 @@ namespace Mengine
 
         if( image->load( c_path ) == false )
         {
-            LOGGER_ERROR( "isUselessAlphaInImageFile %ls invalid load"
+            LOGGER_ERROR( "invalid load '%ls'"
                 , _path
             );
 
@@ -495,12 +494,12 @@ namespace Mengine
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
-    WString pathSHA1( const wchar_t * _path )
+    WString pathSHA1( const WChar * _path )
     {
         String utf8_path;
         if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
         {
-            return NULL;
+            return WString();
         }
 
         FilePath c_path = Helper::stringizeFilePath( utf8_path );
@@ -513,12 +512,12 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "pathSHA1 %ls invalid open '%s'"
+            LOGGER_ERROR( "'%ls' invalid open '%s'"
                 , _path
                 , c_path.c_str()
             );
 
-            return L"";
+            return WString();
         }
 
         size_t size = stream->size();

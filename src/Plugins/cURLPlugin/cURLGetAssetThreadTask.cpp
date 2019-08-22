@@ -3,6 +3,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
+#include "cURLErrorHelper.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -80,29 +82,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onCURL( CURL * _curl )
     {
-        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
 
         if( m_login.empty() == false || m_password.empty() == false )
         {
-            curl_easy_setopt( _curl, CURLOPT_USERNAME, m_login.c_str() );
-            curl_easy_setopt( _curl, CURLOPT_PASSWORD, m_password.c_str() );
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, m_login.c_str()) );
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_PASSWORD, m_password.c_str()) );
         }
 
         /* send all data to this function  */
-        curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &WriteMemoryCallback );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &WriteMemoryCallback) );
 
         /* we pass our 'chunk' struct to the callback function */
         OutputStreamInterface * stream_ptr = m_stream.get();
-        curl_easy_setopt( _curl, CURLOPT_WRITEDATA, (void *)stream_ptr );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)stream_ptr) );
 
-        curl_easy_setopt( _curl, CURLOPT_XFERINFOFUNCTION, &XFERInfoCallback );
-        curl_easy_setopt( _curl, CURLOPT_XFERINFODATA, (void *)this );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_XFERINFOFUNCTION, &XFERInfoCallback) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_XFERINFODATA, (void *)this) );
 
         /* some servers don't like requests that are made without a user-agent
         field, so we provide one */
         //curl_easy_setopt( _curl, CURLOPT_USERAGENT, "libcurl-agent/1.0" );
 
-        curl_easy_setopt( _curl, CURLOPT_NOPROGRESS, 0L );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_NOPROGRESS, 0L) );
 
         if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {

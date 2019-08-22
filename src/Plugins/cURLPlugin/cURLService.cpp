@@ -20,12 +20,42 @@
 #include "Config/Stringstream.h"
 
 #include "curl/curl.h"
+#include "stdex/allocator_report.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( cURLService, Mengine::cURLService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static void * stdex_curl_malloc_callback( size_t size )
+    {
+        return ::stdex_malloc( size, "curl" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void stdex_curl_free_callback( void * ptr )
+    {
+        ::stdex_free( ptr, "curl" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * stdex_curl_realloc_callback( void * ptr, size_t size )
+    {
+        return ::stdex_realloc( ptr, size, "curl" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static char * stdex_curl_strdup_callback( const char * str )
+    {
+        size_t len = strlen( str ) + 1;
+        void * m = ::stdex_malloc( len, "curl" );
+        if( m == nullptr )
+            return nullptr;
+        return (char *)memcpy( m, str, len );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void * stdex_curl_calloc_callback( size_t nmemb, size_t size )
+    { 
+        return ::stdex_calloc( nmemb, size, "curl" );
+    }
     //////////////////////////////////////////////////////////////////////////
     cURLService::cURLService()
     {
@@ -42,7 +72,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLService::_initializeService()
     {
-        CURLcode code = curl_global_init( CURL_GLOBAL_ALL );
+        CURLcode code = curl_global_init_mem( CURL_GLOBAL_ALL
+            , &stdex_curl_malloc_callback
+            , &stdex_curl_free_callback
+            , &stdex_curl_realloc_callback
+            , &stdex_curl_strdup_callback
+            , &stdex_curl_calloc_callback );
 
         if( code != CURLE_OK )
         {
@@ -56,8 +91,12 @@ namespace Mengine
 
         uint32_t cURLServiceThreadCount = CONFIG_VALUE( "cURLService", "ThreadCount", 4 );
 
-        m_threadQueue = THREAD_SERVICE()
+        ThreadQueueInterfacePtr threadQueue = THREAD_SERVICE()
             ->createTaskQueue( 1, MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( threadQueue, false, "invalid create task queue" );
+
+        m_threadQueue = threadQueue;
 
         for( uint32_t index = 0; index != cURLServiceThreadCount; ++index )
         {
@@ -94,6 +133,13 @@ namespace Mengine
         m_factoryTaskGetMessage = nullptr;
 
         curl_global_cleanup();
+
+#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
+        uint32_t report_count = stdex_get_allocator_report_count( "curl" );
+        MENGINE_ASSERTION( report_count == 0, "cURL memleak [%d]"
+            , report_count
+        );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_stopService()
@@ -109,7 +155,7 @@ namespace Mengine
         for( const ConstString & threadName : m_threads )
         {
             THREAD_SERVICE()
-                ->destroyThread( threadName, true );
+                ->destroyThread( threadName );
         }
 
         m_threads.clear();
@@ -155,7 +201,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::postMessage( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
         if( this->isStopService() == true )
         {

@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) override;
-        bool destroyThread( const ConstString & _threadName, bool _wait ) override;
+        bool destroyThread( const ConstString & _threadName ) override;
 
     public:
         bool hasThread( const ConstString & _name ) const override;

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.devtodev.core.DevToDev;
 import com.devtodev.core.data.consts.AccrualType;
+import com.devtodev.core.data.metrics.aggregated.events.CustomEventParams;
 
 /**
  * Created by sweatcoin7 on 7/13/18.
@@ -46,7 +47,7 @@ public class DevToDevInteractionLayer {
         DevToDev.inAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
     }
 
-    public void onSimpleCustomEvent(String eventName) {
-        DevToDev.customEvent(eventName);
+    public void onSimpleCustomEvent(String eventName, CustomEventParams eventParam) {
+        DevToDev.customEvent(eventName, eventParam);
     }
 }

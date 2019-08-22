@@ -14,8 +14,5 @@ namespace Mengine
     protected:
         bool _initializeModule() override;
         void _finalizeModule() override;
-
-    protected:
-        void _destroy() override;
     };
 }

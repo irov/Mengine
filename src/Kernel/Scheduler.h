@@ -99,17 +99,17 @@ namespace Mengine
             bool iterate_invalide;
         };
 
-        typedef Vector<ScheduleEventDesc> ListSchedules;
-        ListSchedules m_schedules;
-        ListSchedules m_schedulesAdd;
+        typedef Vector<ScheduleEventDesc> VectorSchedules;
+        VectorSchedules m_schedulesAdd;
+        VectorSchedules m_schedules;
 
         bool m_freezeAll;
         bool m_update;
 
     protected:
         bool removeSchedule_( ScheduleEventDesc & _event );
-        bool findScheduleEvent_( uint32_t _id, const ScheduleEventDesc *& _desc ) const;
-        bool findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc );
+        bool findScheduleEvent_( uint32_t _id, const ScheduleEventDesc ** _desc ) const;
+        bool findScheduleEvent_( uint32_t _id, ScheduleEventDesc ** _desc );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Scheduler> SchedulerPtr;

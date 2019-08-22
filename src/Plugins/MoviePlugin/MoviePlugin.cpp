@@ -37,6 +37,8 @@
 #include "ResourceMovie2Validator.h"
 #include "Movie2DebuggerBoundingBox.h"
 
+#include "stdex/allocator_report.h"
+
 #include <stdlib.h>
 #include <stdarg.h>
 
@@ -50,9 +52,7 @@ namespace Mengine
     {
         AE_UNUSED( _userdata );
 
-        return stdex_malloc( _size, "Movie" );
-        //return new uint8_t[_size];
-        //return malloc( _size );
+        return stdex_malloc( _size, "movie" );
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
@@ -61,27 +61,21 @@ namespace Mengine
 
         size_t total = _size * _count;
 
-        return stdex_malloc( total, "Movie" );
-        //return new uint8_t[total];
-        //return malloc( total );
+        return stdex_malloc( total, "movie" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
     {
         AE_UNUSED( _userdata );
 
-        stdex_free( (void *)_ptr, "Movie" );
-        //delete[] _ptr;
-        //free( (void *)_ptr );
+        stdex_free( (void *)_ptr, "movie" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
     {
         AE_UNUSED( _userdata );
 
-        stdex_free( (void *)_ptr, "Movie" );
-        //delete[] _ptr;
-        //free( (void *)_ptr );
+        stdex_free( (void *)_ptr, "movie" );
     }
     //////////////////////////////////////////////////////////////////////////
     static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
@@ -266,5 +260,12 @@ namespace Mengine
         }
 
         VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
+
+#ifdef STDEX_ALLOCATOR_REPORT_ENABLE
+        uint32_t report_count = stdex_get_allocator_report_count( "movie" );
+        MENGINE_ASSERTION( report_count == 0, "Movie memleak [%d]"
+            , report_count
+        );
+#endif
     }
 }

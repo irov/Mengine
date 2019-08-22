@@ -76,7 +76,7 @@ namespace Mengine
         }
 
         THREAD_SERVICE()
-            ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), false );
+            ->destroyThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32AntifreezeMonitor::ping()
@@ -97,6 +97,12 @@ namespace Mengine
         }
 
         if( oldrefalive != m_refalive )
+        {
+            return true;
+        }
+
+        if( PLATFORM_SERVICE()
+            ->isDebuggerPresent() == true )
         {
             return true;
         }

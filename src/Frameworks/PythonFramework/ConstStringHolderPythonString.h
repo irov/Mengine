@@ -18,7 +18,6 @@ namespace Mengine
 
     public:
         void setPythonObject( pybind::kernel_interface * _kernel, PyObject * _value );
-        void removePythonObject();
 
     protected:
         pybind::kernel_interface * m_kernel;

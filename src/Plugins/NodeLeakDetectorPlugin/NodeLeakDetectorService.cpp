@@ -41,6 +41,9 @@ namespace Mengine
 
         this->getNodeLeak( 0, []( const Factory * _factory, const Factorable *, const Char * _doc )
         {
+            MENGINE_UNUSED( _factory );
+            MENGINE_UNUSED( _doc );
+
             LOGGER_STATISTIC( "leak '%s' doc: %s"
                 , _factory->getName()
                 , _doc

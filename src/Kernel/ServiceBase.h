@@ -60,6 +60,11 @@ namespace Mengine
             this->_replaceService();
         }
 
+        void runService() override
+        {
+            this->_runService();
+        }
+
     public:
         bool isAvailableService() const override
         {
@@ -95,6 +100,11 @@ namespace Mengine
         }
 
         virtual void _replaceService()
+        {
+            //Empty
+        }
+
+        virtual void _runService()
         {
             //Empty
         }

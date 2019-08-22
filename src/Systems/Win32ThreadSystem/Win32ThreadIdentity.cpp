@@ -28,7 +28,7 @@ namespace Mengine
             info.szName = threadName;
             info.dwThreadID = dwThreadID;
             info.dwFlags = 0;
-#pragma warning(push)  
+#pragma warning(push)
 #pragma warning(disable: 6320 6322)  
             __try
             {

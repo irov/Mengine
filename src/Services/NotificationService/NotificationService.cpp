@@ -52,24 +52,30 @@ namespace Mengine
         m_add.clear();
         m_remove.clear();
 
-        for( MapObservers::const_iterator
-            it = m_mapObserves.begin(),
-            it_end = m_mapObserves.end();
-            it != it_end;
-            ++it )
+        uint32_t index = 0;
+        for( VectorObservers & observers : m_mapObserves )
         {
-            const VectorObservers & observers = it->second;
+#ifdef MENGINE_DEBUG
+            for( const ObserverDesc & desc : observers )
+            {
+                LOGGER_MESSAGE( "Notification '%s' not clear"
+                    , desc.doc.c_str()
+                );
+            }
+#endif
 
-            MENGINE_UNUSED( observers );
+            MENGINE_ASSERTION( observers.empty() == true, "finalized notification '%d' has observers", index );
 
-            MENGINE_ASSERTION( observers.empty() == true, "finalized notification service has observers" );
+            observers.clear();
+
+            ++index;
         }
-
-        m_mapObserves.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
+    void NotificationService::addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
     {
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         if( m_visiting != 0 )
@@ -79,16 +85,22 @@ namespace Mengine
             desc.observer = _observer;
             desc.callable = _callable;
 
+#ifdef MENGINE_DEBUG
+            desc.doc = _doc;
+#endif
+
             m_add.emplace_back( desc );
 
             return;
         }
 
-        this->addObserver_( _id, _observer, _callable );
+        this->addObserver_( _id, _observer, _callable, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::removeObserver( uint32_t _id, const ObservablePtr & _observer )
     {
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         if( m_visiting != 0 )
@@ -107,16 +119,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::visitObservers( uint32_t _id, const LambdaObserver & _lambda )
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+        MENGINE_ASSERTION_FATAL_RETURN( _id < MENGINE_NOTIFICATOR_MAX_COUNT, false );
 
-        MapObservers::const_iterator it_find = m_mapObserves.find( _id );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );        
 
-        if( it_find == m_mapObserves.end() )
-        {
-            return true;
-        }
-
-        const VectorObservers & observers = it_find->second;
+        const VectorObservers & observers = m_mapObserves[_id];
 
         bool successful = true;
 
@@ -140,7 +147,7 @@ namespace Mengine
         {
             for( const ObserverQueue & q : m_add )
             {
-                this->addObserver_( q.id, q.observer, q.callable );
+                this->addObserver_( q.id, q.observer, q.callable, q.doc.c_str() );
             }
 
             m_add.clear();
@@ -156,36 +163,32 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
+    void NotificationService::addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
     {
-        MapObservers::iterator it_find = m_mapObserves.find( _id );
+        MENGINE_UNUSED( _doc );
 
-        if( it_find == m_mapObserves.end() )
-        {
-            VectorObservers new_observers;
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
-            it_find = m_mapObserves.emplace( _id, new_observers ).first;
-        }
-
-        VectorObservers & observers = it_find->second;
+        VectorObservers & observers = m_mapObserves[_id];
 
         ObserverDesc desc;
         desc.observer = _observer;
         desc.callable = _callable;
+        
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
 
         observers.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::removeObserver_( uint32_t _id, const ObservablePtr & _observer )
     {
-        MapObservers::iterator it_find = m_mapObserves.find( _id );
+        MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
-        if( it_find == m_mapObserves.end() )
-        {
-            return;
-        }
+        VectorObservers & observers = m_mapObserves[_id];
 
-        VectorObservers & observers = it_find->second;
+        MENGINE_ASSERTION( observers.empty() == false );
 
         for( ObserverDesc & desc : observers )
         {

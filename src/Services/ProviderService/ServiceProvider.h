@@ -99,5 +99,9 @@ namespace Mengine
         WaitDesc m_waits[MENGINE_SERVICE_PROVIDER_MAX_WAIT];
 
         uint32_t m_waitsCount;
+
+#ifdef MENGINE_DEBUG
+        const Char * m_initializeServiceName;
+#endif
     };
 }

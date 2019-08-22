@@ -40,6 +40,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _runService() override;
 
     public:
         bool runPlatform()	override;
@@ -124,7 +125,7 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     public:
-        void getDateTime( PlatformDateTime * _dateTime ) const override;
+        DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
 
     public:
         bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
@@ -156,6 +157,7 @@ namespace Mengine
         SDL_Joystick * m_accelerometer;
 
         FactoryPtr m_factoryDynamicLibraries;
+        FactoryPtr m_factoryDateTimeProviders;
 
         SDL_GLContext m_glContext;
 

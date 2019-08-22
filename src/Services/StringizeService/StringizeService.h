@@ -46,7 +46,7 @@ namespace Mengine
         PoolConstStringHolderMemory m_poolHolderStringMemory;
 
         typedef stdex::intrusive_list<ConstStringHolder> IntrusiveListConstStringHolder;
-        IntrusiveListConstStringHolder m_holdres[MENGINE_STRINGIZE_HOLDER_COUNT];
+        IntrusiveListConstStringHolder m_holders[MENGINE_STRINGIZE_HOLDER_COUNT];
 
         struct InternalHolder
         {

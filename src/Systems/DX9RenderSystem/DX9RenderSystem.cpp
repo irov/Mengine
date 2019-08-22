@@ -212,13 +212,13 @@ namespace Mengine
 
         m_renderPlatformName = STRINGIZE_STRING_LOCAL( "DX9" );
 
-        m_factoryRenderVertexAttribute = new FactoryPool<DX9RenderVertexAttribute, 8>();
-        m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>();
-        m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>();
-        m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>();
-        m_factoryRenderProgramVariable = new FactoryPool<DX9RenderProgramVariable, 64>();
-        m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>();
-        m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
+        m_factoryRenderVertexAttribute = Helper::makeFactoryPool<DX9RenderVertexAttribute, 8>();
+        m_factoryRenderVertexShader = Helper::makeFactoryPool<DX9RenderVertexShader, 16>();
+        m_factoryRenderFragmentShader = Helper::makeFactoryPool<DX9RenderFragmentShader, 16>();
+        m_factoryRenderProgram = Helper::makeFactoryPool<DX9RenderProgram, 16>();
+        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>();
+        m_factoryVertexBuffer = Helper::makeFactoryPool<DX9RenderVertexBuffer, 8>();
+        m_factoryIndexBuffer = Helper::makeFactoryPool<DX9RenderIndexBuffer, 8>();
 
         m_factoryDX9Image = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
         m_factoryDX9ImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_ );

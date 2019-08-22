@@ -27,8 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadSystem::_initializeService()
     {
-        m_factoryWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
-        m_factoryWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
+        m_factoryWin32ThreadIdentity = Helper::makeFactoryPool<Win32ThreadIdentity, 16>();
+        m_factoryWin32ThreadMutex = Helper::makeFactoryPool<Win32ThreadMutex, 16>();
 
         return true;
     }

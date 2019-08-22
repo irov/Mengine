@@ -34,11 +34,11 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void stringize( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
+        void stringize( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
 
     public:
-        void stringizeInternal( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
-        void stringizeUnique( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
+        void stringizeInternal( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
+        void stringizeUnique( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
         bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
 
     protected:
@@ -48,18 +48,21 @@ namespace Mengine
         typedef stdex::intrusive_list<ConstStringHolder> IntrusiveListConstStringHolder;
         IntrusiveListConstStringHolder m_holders[MENGINE_STRINGIZE_HOLDER_COUNT];
 
+        typedef stdex::intrusive_list<ConstStringHolderMemory> IntrusiveListConstStringHolderMemory;
+        IntrusiveListConstStringHolderMemory m_holdersMemory;
+
         struct InternalHolder
         {
-            const Char * str;
+            const ConstStringHolder::value_type * str;
             const ConstStringHolder * holder;
         };
 
         InternalHolder m_internals[MENGINE_STRINGIZE_INTERNAL_COUNT][8];
 
     protected:
-        ConstStringHolder * testHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
-        ConstStringHolder * stringizeHolderUnique_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
-        ConstStringHolder * stringizeHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
+        ConstStringHolder * testHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
+        ConstStringHolder * stringizeHolderUnique_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
+        ConstStringHolder * stringizeHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
         void addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash );
         IntrusiveListConstStringHolder & getList_( ConstStringHolder::hash_type _hash );
     };

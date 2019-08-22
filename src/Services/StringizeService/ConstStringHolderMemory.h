@@ -8,15 +8,16 @@ namespace Mengine
 {
     class ConstStringHolderMemory
         : public ConstStringHolder
+        , public stdex::intrusive_linked<ConstStringHolderMemory>
     {
     public:
         ConstStringHolderMemory();
         ~ConstStringHolderMemory() override;
 
     public:
-        void setValue( const Char * _value, ConstStringHolder::size_type _size, hash_type _hash );
+        void setValue( const ConstStringHolder::value_type * _value, ConstStringHolder::size_type _size, hash_type _hash );
 
     protected:
-        Char * m_buff;
+        ConstStringHolder::value_type * m_buff;
     };
 }

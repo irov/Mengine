@@ -118,7 +118,7 @@ namespace Mengine
         PoolConstStringHolderPythonString m_poolPythonString;
 
         typedef stdex::intrusive_list<ConstStringHolderPythonString> IntrusiveListConstStringHolderPythonString;
-        IntrusiveListConstStringHolderPythonString m_holders;
+        IntrusiveListConstStringHolderPythonString m_holdersPythonString;
 
         FactoryPtr m_factoryScriptModule;
 

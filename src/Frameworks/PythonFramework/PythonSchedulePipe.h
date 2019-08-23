@@ -7,10 +7,9 @@
 #include "pybind/pybind.hpp"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class PythonSchedulePipe
-        : public SchedulePipeInterface
+        : public SchedulerPipeInterface
         , public Factorable
     {
     public:
@@ -21,7 +20,7 @@ namespace Mengine
         void initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        float onSchedulePipe( uint32_t _id, uint32_t _index ) override;
+        float onSchedulerPipe( uint32_t _id, uint32_t _index ) override;
 
     protected:
         pybind::object m_cb;

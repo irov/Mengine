@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonScheduleEvent
-        : public ScheduleEventInterface
+        : public SchedulerEventInterface
         , public Factorable
     {
     public:
@@ -21,8 +21,8 @@ namespace Mengine
         void initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onScheduleComplete( uint32_t _id ) override;
-        void onScheduleStop( uint32_t _id ) override;
+        void onSchedulerComplete( uint32_t _id ) override;
+        void onSchedulerStop( uint32_t _id ) override;
 
     protected:
         pybind::object m_cb;

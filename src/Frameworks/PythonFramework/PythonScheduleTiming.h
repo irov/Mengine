@@ -10,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonScheduleTiming
-        : public ScheduleTimingInterface
+        : public SchedulerTimingInterface
         , public Factorable
     {
     public:
@@ -21,7 +21,7 @@ namespace Mengine
         void initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onScheduleTiming( uint32_t _id, uint32_t _iterate, float _delay ) override;
+        void onSchedulerTiming( uint32_t _id, uint32_t _iterate, float _delay ) override;
 
     protected:
         pybind::object m_cb;

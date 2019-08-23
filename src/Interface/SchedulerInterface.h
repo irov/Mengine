@@ -10,33 +10,33 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ScheduleEventInterface
+    class SchedulerEventInterface
         : public Interface
     {
     public:
-        virtual void onScheduleComplete( uint32_t _id ) = 0;
-        virtual void onScheduleStop( uint32_t _id ) = 0;
+        virtual void onSchedulerComplete( uint32_t _id ) = 0;
+        virtual void onSchedulerStop( uint32_t _id ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScheduleEventInterface> ScheduleEventInterfacePtr;
+    typedef IntrusivePtr<SchedulerEventInterface> SchedulerEventInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class ScheduleTimingInterface
+    class SchedulerTimingInterface
         : public Interface
     {
     public:
-        virtual void onScheduleTiming( uint32_t _id, uint32_t _iterate, float _time ) = 0;
+        virtual void onSchedulerTiming( uint32_t _id, uint32_t _iterate, float _time ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScheduleTimingInterface> ScheduleTimingInterfacePtr;
+    typedef IntrusivePtr<SchedulerTimingInterface> SchedulerTimingInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class SchedulePipeInterface
+    class SchedulerPipeInterface
         : public Interface
     {
     public:
-        virtual float onSchedulePipe( uint32_t _id, uint32_t _index ) = 0;
+        virtual float onSchedulerPipe( uint32_t _id, uint32_t _index ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SchedulePipeInterface> SchedulePipeInterfacePtr;
+    typedef IntrusivePtr<SchedulerPipeInterface> SchedulerPipeInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulerInterface
         : public Interface
@@ -50,10 +50,10 @@ namespace Mengine
         virtual const ConstString & getName() const = 0;
 
     public:
-        virtual uint32_t event( float _delay, const ScheduleEventInterfacePtr & _event ) = 0;
+        virtual uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event ) = 0;
 
     public:
-        virtual uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimingInterfacePtr & _timing, const ScheduleEventInterfacePtr & _event ) = 0;
+        virtual uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event ) = 0;
 
     public:
         virtual bool refresh( uint32_t _id ) = 0;

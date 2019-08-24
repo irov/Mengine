@@ -927,7 +927,14 @@ namespace Mengine
     static bool s_isDirectoryFullpath( const Char * _fullpath )
     {
         struct stat sb;
-        if( stat( _fullpath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) == S_IFDIR )
+        int err = stat( _fullpath, &sb );
+        
+        if( err != 0 )
+        {
+            return false;
+        }
+        
+        if( (sb.st_mode & S_IFMT) == S_IFDIR )
         {
             return true;
         }

@@ -6,12 +6,12 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
-        : m_thread( nullptr )
+        : m_priority( 0 )
+        , m_thread( nullptr )
         , m_taskLock( nullptr )
         , m_processLock( nullptr )
         , m_conditionVariable( nullptr )
-        , m_conditionLock( nullptr )
-        , m_priority( 0 )
+        , m_conditionLock( nullptr )    
         , m_task( nullptr )
         , m_exit( false )
     {

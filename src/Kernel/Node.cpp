@@ -19,13 +19,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Node::Node()
-        : m_active( false )
+        : m_uniqueIdentity( 0 )
+        , m_parent( nullptr )
+        , m_active( false )
         , m_deactivating( false )
         , m_afterActive( false )
         , m_enable( true )
         , m_freeze( false )
-        , m_uniqueIdentity( 0 )
-        , m_parent( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -868,7 +868,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_createDurectoryFullpath( const Char * _fullpath )
     {
-#if defined(MENGINE_PLATFORM_MACOS)
+#if defined(MENGINE_PLATFORM_IOS)
+        int status = mkdir( _fullpath, 0700 );
+
+        if( status != 0 )
+        {
+            LOGGER_WARNING( "'%s' alredy exists"
+                , _fullpath
+            );
+
+            return false;
+        }
+
+#elif defined(MENGINE_PLATFORM_MACOS)
         int status = mkdir( _fullpath, 0700 );
 
         if( status != 0 )

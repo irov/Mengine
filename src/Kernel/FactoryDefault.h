@@ -35,7 +35,9 @@ namespace Mengine
         template<class T>
         FactoryPtr makeFactoryDefault()
         {
-            return FactoryPtr( new FactoryDefault<T>() );
+            Factory * factory = new FactoryDefault<T>();
+
+            return FactoryPtr( factory );
         }
     }
 }

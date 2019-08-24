@@ -33,10 +33,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        uint32_t event( float _delay, const ScheduleEventInterfacePtr & _event ) override;
+        uint32_t event( float _delay, const SchedulerEventInterfacePtr & _event ) override;
 
     public:
-        uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimingInterfacePtr & _timing, const ScheduleEventInterfacePtr & _event ) override;
+        uint32_t timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timing, const SchedulerEventInterfacePtr & _event ) override;
 
     public:
         bool refresh( uint32_t _id ) override;
@@ -74,42 +74,42 @@ namespace Mengine
         float m_speedFactor;
         float m_time;
 
-        enum ESchduleType
+        enum ESchdulerType
         {
             EST_EVENT,
             EST_TIMING
         };
 
-        struct ScheduleEventDesc
+        struct SchedulerEventDesc
         {
             uint32_t id;
 
-            ScheduleEventInterfacePtr event;
-            ScheduleTimingInterfacePtr timer;
-            SchedulePipeInterfacePtr pipe;
+            SchedulerEventInterfacePtr event;
+            SchedulerTimingInterfacePtr timer;
+            SchedulerPipeInterfacePtr pipe;
 
             float delay;
             float time_delay;
 
             uint32_t iterate;
 
-            ESchduleType type;
+            ESchdulerType type;
             bool dead;
             bool freeze;
             bool iterate_invalide;
         };
 
-        typedef Vector<ScheduleEventDesc> VectorSchedules;
-        VectorSchedules m_schedulesAdd;
-        VectorSchedules m_schedules;
+        typedef Vector<SchedulerEventDesc> VectorSchedulers;
+        VectorSchedulers m_schedulersAdd;
+        VectorSchedulers m_schedulers;
 
         bool m_freezeAll;
         bool m_update;
 
     protected:
-        bool removeSchedule_( ScheduleEventDesc & _event );
-        bool findScheduleEvent_( uint32_t _id, const ScheduleEventDesc ** _desc ) const;
-        bool findScheduleEvent_( uint32_t _id, ScheduleEventDesc ** _desc );
+        bool removeScheduler_( SchedulerEventDesc & _event );
+        bool findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** _desc ) const;
+        bool findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** _desc );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Scheduler> SchedulerPtr;

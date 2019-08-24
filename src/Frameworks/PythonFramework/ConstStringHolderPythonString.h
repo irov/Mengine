@@ -10,6 +10,7 @@ namespace Mengine
 {
     class ConstStringHolderPythonString
         : public ConstStringHolder
+        , public stdex::intrusive_linked<ConstStringHolderPythonString>
     {
     public:
         ConstStringHolderPythonString();

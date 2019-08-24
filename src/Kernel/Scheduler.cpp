@@ -52,26 +52,26 @@ namespace Mengine
 
         m_updataterId = INVALID_UPDATABLE_ID;
 
-        m_schedules.erase( std::remove_if( m_schedules.begin(), m_schedules.end(), []( const ScheduleEventDesc & _desc )
+        m_schedulers.erase( std::remove_if( m_schedulers.begin(), m_schedulers.end(), []( const SchedulerEventDesc & _desc )
         {
             return _desc.dead;
-        } ), m_schedules.end() );
+        } ), m_schedulers.end() );
 
-        m_schedulesAdd.erase( std::remove_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), []( const ScheduleEventDesc & _desc )
+        m_schedulersAdd.erase( std::remove_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), []( const SchedulerEventDesc & _desc )
         {
             return _desc.dead;
-        } ), m_schedulesAdd.end() );
+        } ), m_schedulersAdd.end() );
 
-        MENGINE_ASSERTION( m_schedules.empty() == true, "finalized scheduler '%s' has event"
+        MENGINE_ASSERTION( m_schedulers.empty() == true, "finalized scheduler '%s' has event"
             , this->getName().c_str() 
         );
 
-        MENGINE_ASSERTION( m_schedulesAdd.empty() == true, "finalized scheduler '%s' has add event"
+        MENGINE_ASSERTION( m_schedulersAdd.empty() == true, "finalized scheduler '%s' has add event"
             , this->getName().c_str()
         );
 
-        m_schedules.clear();
-        m_schedulesAdd.clear();
+        m_schedulers.clear();
+        m_schedulersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::setName( const ConstString & _name )
@@ -84,7 +84,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Scheduler::event( float _delay, const ScheduleEventInterfacePtr & _event )
+    uint32_t Scheduler::event( float _delay, const SchedulerEventInterfacePtr & _event )
     {
         MENGINE_ASSERTION( _event != nullptr, "scheduler '%s' event delay '%f' is nullptr"
             , this->getName().c_str()
@@ -93,7 +93,7 @@ namespace Mengine
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
-        ScheduleEventDesc desc;
+        SchedulerEventDesc desc;
 
         desc.id = new_id;
 
@@ -112,16 +112,16 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalide = true;
 
-        m_schedulesAdd.emplace_back( desc );
+        m_schedulersAdd.emplace_back( desc );
 
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Scheduler::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimingInterfacePtr & _timer, const ScheduleEventInterfacePtr & _event )
+    uint32_t Scheduler::timing( const SchedulerPipeInterfacePtr & _pipe, const SchedulerTimingInterfacePtr & _timer, const SchedulerEventInterfacePtr & _event )
     {
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
-        ScheduleEventDesc desc;
+        SchedulerEventDesc desc;
 
         desc.id = new_id;
 
@@ -139,31 +139,31 @@ namespace Mengine
         desc.freeze = false;
         desc.iterate_invalide = true;
 
-        m_schedulesAdd.emplace_back( desc );
+        m_schedulersAdd.emplace_back( desc );
 
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::exist( uint32_t _id ) const
     {
-        VectorSchedules::const_iterator it_find =
-            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event )
+        VectorSchedulers::const_iterator it_find =
+            std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
         {
             return _event.id == _id;
         } );
 
-        if( it_find != m_schedules.end() )
+        if( it_find != m_schedulers.end() )
         {
             return true;
         }
 
-        VectorSchedules::const_iterator it_find_add =
-            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event )
+        VectorSchedulers::const_iterator it_find_add =
+            std::find_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), [_id]( const SchedulerEventDesc & _event )
         {
             return _event.id == _id;
         } );
 
-        if( it_find_add != m_schedulesAdd.end() )
+        if( it_find_add != m_schedulersAdd.end() )
         {
             return true;
         }
@@ -173,9 +173,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::refresh( uint32_t _id )
     {
-        ScheduleEventDesc * desc;
+        SchedulerEventDesc * desc;
 
-        if( this->findScheduleEvent_( _id, &desc ) == false )
+        if( this->findSchedulerEvent_( _id, &desc ) == false )
         {
             LOGGER_ERROR( "not found shedule '%d'"
                 , _id
@@ -193,9 +193,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::remove( uint32_t _id )
     {
-        ScheduleEventDesc * desc;
+        SchedulerEventDesc * desc;
 
-        if( this->findScheduleEvent_( _id, &desc ) == false )
+        if( this->findSchedulerEvent_( _id, &desc ) == false )
         {
             LOGGER_ERROR( "not found shedule '%d'"
                 , _id
@@ -204,7 +204,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->removeSchedule_( *desc ) == false )
+        if( this->removeScheduler_( *desc ) == false )
         {
             LOGGER_ERROR( "not alredy remove or complete '%d'"
                 , _id
@@ -218,28 +218,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scheduler::removeAll()
     {
-        if( m_schedules.empty() == false )
+        if( m_schedulers.empty() == false )
         {
-            VectorSchedules schedules = std::move( m_schedules );
+            VectorSchedulers schedules = std::move( m_schedulers );
 
-            for( ScheduleEventDesc & event : schedules )
+            for( SchedulerEventDesc & event : schedules )
             {
-                this->removeSchedule_( event );
+                this->removeScheduler_( event );
             }
         }
 
-        if( m_schedulesAdd.empty() == false )
+        if( m_schedulersAdd.empty() == false )
         {
-            VectorSchedules schedulesAdd = std::move( m_schedulesAdd );
+            VectorSchedulers schedulesAdd = std::move( m_schedulersAdd );
 
-            for( ScheduleEventDesc & event : schedulesAdd )
+            for( SchedulerEventDesc & event : schedulesAdd )
             {
-                this->removeSchedule_( event );
+                this->removeScheduler_( event );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::removeSchedule_( ScheduleEventDesc & _event )
+    bool Scheduler::removeScheduler_( SchedulerEventDesc & _event )
     {
         if( _event.dead == true )
         {
@@ -252,21 +252,21 @@ namespace Mengine
         {
         case EST_EVENT:
             {
-                ScheduleEventInterfacePtr event = _event.event;
+                SchedulerEventInterfacePtr event = _event.event;
                 _event.event = nullptr;
 
-                event->onScheduleStop( _event.id );
+                event->onSchedulerStop( _event.id );
             }break;
         case EST_TIMING:
             {
-                ScheduleEventInterfacePtr event = _event.event;
+                SchedulerEventInterfacePtr event = _event.event;
                 _event.event = nullptr;
                 _event.timer = nullptr;
                 _event.pipe = nullptr;
 
                 if( event != nullptr )
                 {
-                    event->onScheduleStop( _event.id );
+                    event->onSchedulerStop( _event.id );
                 }
             }break;
         }
@@ -287,19 +287,19 @@ namespace Mengine
 
         m_update = true;
 
-        if( m_schedulesAdd.empty() == false )
+        if( m_schedulersAdd.empty() == false )
         {
-            m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
-            m_schedulesAdd.clear();
+            m_schedulers.insert( m_schedulers.end(), m_schedulersAdd.begin(), m_schedulersAdd.end() );
+            m_schedulersAdd.clear();
         }
 
-        VectorSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), []( const ScheduleEventDesc & _event )
+        VectorSchedulers::iterator it_erase = std::remove_if( m_schedulers.begin(), m_schedulers.end(), []( const SchedulerEventDesc & _event )
         {
             return _event.dead;
         } );
-        m_schedules.erase( it_erase, m_schedules.end() );
+        m_schedulers.erase( it_erase, m_schedulers.end() );
 
-        for( ScheduleEventDesc & desc : m_schedules )
+        for( SchedulerEventDesc & desc : m_schedulers )
         {
             if( desc.dead == true )
             {
@@ -333,9 +333,9 @@ namespace Mengine
 
                     if( desc.event != nullptr )
                     {
-                        ScheduleEventInterfacePtr event = desc.event;
+                        SchedulerEventInterfacePtr event = desc.event;
 
-                        event->onScheduleComplete( desc.id );
+                        event->onSchedulerComplete( desc.id );
                     }
 
                     TIMELINE_SERVICE()
@@ -349,7 +349,7 @@ namespace Mengine
                     {
                         if( desc.iterate_invalide == true )
                         {
-                            float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
+                            float delay = desc.pipe->onSchedulerPipe( desc.id, desc.iterate );
 
                             if( delay < 0.f )
                             {
@@ -357,9 +357,9 @@ namespace Mengine
 
                                 if( desc.event != nullptr )
                                 {
-                                    ScheduleEventInterfacePtr event = desc.event;
+                                    SchedulerEventInterfacePtr event = desc.event;
 
-                                    event->onScheduleComplete( desc.id );
+                                    event->onSchedulerComplete( desc.id );
                                 }
 
                                 break;
@@ -388,7 +388,7 @@ namespace Mengine
                         TIMELINE_SERVICE()
                             ->beginOffset( timeOffset );
 
-                        desc.timer->onScheduleTiming( desc.id, iterate, desc.delay );
+                        desc.timer->onSchedulerTiming( desc.id, iterate, desc.delay );
 
                         TIMELINE_SERVICE()
                             ->endOffset();
@@ -407,9 +407,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::freeze( uint32_t _id, bool _freeze )
     {
-        ScheduleEventDesc * event;
+        SchedulerEventDesc * event;
 
-        if( this->findScheduleEvent_( _id, &event ) == false )
+        if( this->findSchedulerEvent_( _id, &event ) == false )
         {
             LOGGER_ERROR( "not found shedule '%d'"
                 , _id
@@ -425,9 +425,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Scheduler::isFreeze( uint32_t _id ) const
     {
-        const ScheduleEventDesc * event;
+        const SchedulerEventDesc * event;
 
-        if( this->findScheduleEvent_( _id, &event ) == false )
+        if( this->findSchedulerEvent_( _id, &event ) == false )
         {
             LOGGER_ERROR( "not found shedule '%d'"
                 , _id
@@ -451,9 +451,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Scheduler::getTimePassed( uint32_t _id ) const
     {
-        const ScheduleEventDesc * event;
+        const SchedulerEventDesc * event;
 
-        if( this->findScheduleEvent_( _id, &event ) == false )
+        if( this->findSchedulerEvent_( _id, &event ) == false )
         {
             LOGGER_ERROR( "not found shedule '%d'"
                 , _id
@@ -469,9 +469,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Scheduler::getTimeLeft( uint32_t _id ) const
     {
-        const ScheduleEventDesc * event;
+        const SchedulerEventDesc * event;
 
-        if( this->findScheduleEvent_( _id, &event ) == false )
+        if( this->findSchedulerEvent_( _id, &event ) == false )
         {
             LOGGER_ERROR( "not found shedule '%d'"
                 , _id
@@ -500,32 +500,32 @@ namespace Mengine
         return m_time;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::findScheduleEvent_( uint32_t _id, ScheduleEventDesc ** _desc )
+    bool Scheduler::findSchedulerEvent_( uint32_t _id, SchedulerEventDesc ** _desc )
     {
-        VectorSchedules::iterator it_find =
-            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event )
+        VectorSchedulers::iterator it_find =
+            std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
         {
             return _event.id == _id;
         } );
 
-        if( it_find != m_schedules.end() )
+        if( it_find != m_schedulers.end() )
         {
-            ScheduleEventDesc & desc = *it_find;
+            SchedulerEventDesc & desc = *it_find;
 
             *_desc = &desc;
 
             return true;
         }
 
-        VectorSchedules::iterator it_find_add =
-            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event )
+        VectorSchedulers::iterator it_find_add =
+            std::find_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), [_id]( const SchedulerEventDesc & _event )
         {
             return _event.id == _id;
         } );
 
-        if( it_find_add != m_schedulesAdd.end() )
+        if( it_find_add != m_schedulersAdd.end() )
         {
-            ScheduleEventDesc & desc = *it_find_add;
+            SchedulerEventDesc & desc = *it_find_add;
 
             *_desc = &desc;
 
@@ -535,32 +535,32 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Scheduler::findScheduleEvent_( uint32_t _id, const ScheduleEventDesc ** _desc ) const
+    bool Scheduler::findSchedulerEvent_( uint32_t _id, const SchedulerEventDesc ** _desc ) const
     {
-        VectorSchedules::const_iterator it_find =
-            std::find_if( m_schedules.begin(), m_schedules.end(), [_id]( const ScheduleEventDesc & _event )
+        VectorSchedulers::const_iterator it_find =
+            std::find_if( m_schedulers.begin(), m_schedulers.end(), [_id]( const SchedulerEventDesc & _event )
         {
             return _event.id == _id;
         } );
 
-        if( it_find != m_schedules.end() )
+        if( it_find != m_schedulers.end() )
         {
-            const ScheduleEventDesc & desc = *it_find;
+            const SchedulerEventDesc & desc = *it_find;
 
             *_desc = &desc;
 
             return true;
         }
 
-        VectorSchedules::const_iterator it_find_add =
-            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), [_id]( const ScheduleEventDesc & _event )
+        VectorSchedulers::const_iterator it_find_add =
+            std::find_if( m_schedulersAdd.begin(), m_schedulersAdd.end(), [_id]( const SchedulerEventDesc & _event )
         {
             return _event.id == _id;
         } );
 
-        if( it_find_add != m_schedulesAdd.end() )
+        if( it_find_add != m_schedulersAdd.end() )
         {
-            const ScheduleEventDesc & desc = *it_find_add;
+            const SchedulerEventDesc & desc = *it_find_add;
 
             *_desc = &desc;
 

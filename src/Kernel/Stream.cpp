@@ -89,6 +89,8 @@ namespace Mengine
 
             size_t read_data = _stream->read( compress_memory, compress_size );
 
+            MENGINE_UNUSED( read_data );
+
             MENGINE_ASSERTION_RETURN( read_data == (size_t)compress_size, nullptr, "invalid read data '%d' need '%d'"
                 , read_data
                 , compress_size

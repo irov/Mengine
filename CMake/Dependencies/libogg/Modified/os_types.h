@@ -17,7 +17,7 @@
 #ifndef _OS_TYPES_H
 #define _OS_TYPES_H
 
-#   include <stdex/allocator.h>
+#include "stdex/allocator.h"
 
  /* make it easy on the folks that want to compile the libs with a
     different malloc than stdlib */

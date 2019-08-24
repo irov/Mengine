@@ -15,9 +15,11 @@ namespace Mengine
         static int cURL_trace( CURL * handle, curl_infotype type,
             char * data, size_t size,
             void * userp )
-        {
-            MENGINE_UNUSED( userp );
+        {            
             MENGINE_UNUSED( handle );
+            MENGINE_UNUSED( data );
+            MENGINE_UNUSED( size );
+            MENGINE_UNUSED( userp );
 
             const Char * text;
 

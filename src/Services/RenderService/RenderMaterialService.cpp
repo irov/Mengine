@@ -464,8 +464,6 @@ namespace Mengine
                 , name.c_str()
             );
 
-            m_materialStageIndexer.emplace( name, cache_stage );
-
             MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( name );
 
             if( it_stage_found != m_defaultStagesEnum.end() )
@@ -936,6 +934,8 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, nullptr, "'%s' invalid cache"
             , _name.c_str()
         );
+
+        m_materialStageIndexer.emplace( _name, cache_stage );
 
         return cache_stage;
     }

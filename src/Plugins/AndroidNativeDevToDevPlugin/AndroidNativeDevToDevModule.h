@@ -46,7 +46,7 @@ namespace Mengine
         bool onCurrencyAccrual( const String & _currencyName, int _currencyAmount, int _accrualType );
         bool onRealPayment( const String & _paymentId, float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode );
         bool onInAppPurchase( const String & _purchaseId, const String & _purchaseType, int _purchaseAmount, int _purchasePrice, const String & _purchaseCurrency );
-        bool onSimpleCustomEvent( const String & _eventName );
+        bool onSimpleCustomEvent( const String & _eventName, const String & _intJSON, const String & _floatJSON, const String & _stringJSON  );
 
     protected:
         DevToDevEventation m_eventation;

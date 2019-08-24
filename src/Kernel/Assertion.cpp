@@ -58,6 +58,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _format, ... )
         {
+            if( _level == ASSERTION_LEVEL_CRITICAL )
+            {
+                volatile unsigned int * p = nullptr; 
+                *p = 0xBADC0DE;
+
+                return;
+            }
+
             va_list argList;
             va_start( argList, _format );
 

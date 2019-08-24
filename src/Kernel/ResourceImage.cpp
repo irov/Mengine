@@ -37,11 +37,9 @@ namespace Mengine
     {
         if( m_texture != nullptr )
         {
-            const FilePath & filePath = m_texture->getFileName();
-
             LOGGER_INFO( "'%s' release texture '%s'"
                 , this->getName().c_str()
-                , filePath.c_str()
+                , m_texture->getFileName().c_str()
             );
 
             m_texture = nullptr;
@@ -49,11 +47,9 @@ namespace Mengine
 
         if( m_textureAlpha != nullptr )
         {
-            const FilePath & filePath = m_textureAlpha->getFileName();
-
             LOGGER_INFO( "'%s' release texture alpha '%s'"
                 , this->getName().c_str()
-                , filePath.c_str()
+                , m_textureAlpha->getFileName().c_str()
             );
 
             m_textureAlpha = nullptr;

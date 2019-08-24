@@ -528,6 +528,8 @@ Core
     
     Event.h
     Delegate.h
+    
+    DateTime.h
 )
 
 ADD_FILTER(

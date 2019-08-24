@@ -2,10 +2,14 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Document.h"
+
+#include "Config/String.h"
+#include "Config/StringRegex.h"
 
 #include <algorithm>
 
@@ -121,6 +125,23 @@ namespace Mengine
             m_threadMutex = nullptr;
         } );
 
+        SERVICE_WAIT( Mengine::PlatformInterface, [this]()
+        {
+            DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, false );
+
+            m_dateTimeProvider = dateTimeProvider;
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( Mengine::PlatformInterface, [this]()
+        {
+            m_dateTimeProvider = nullptr;
+        } );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -174,6 +195,65 @@ namespace Mengine
     bool LoggerService::isSilent() const
     {
         return m_silent;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t LoggerService::makeTimeStamp( Char * _buffer, int32_t _offset, size_t _capacity ) const
+    {
+        if( m_dateTimeProvider == nullptr )
+        {
+            return 0;
+        }
+
+        PlatformDateTime dateTime;
+        m_dateTimeProvider->getDateTime( &dateTime );
+
+        int size = snprintf( _buffer + _offset, _capacity - _offset, "[%02u:%02u:%02u:%04u] "
+            , dateTime.hour
+            , dateTime.minute
+            , dateTime.second
+            , dateTime.milliseconds
+        );
+
+        return size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t LoggerService::makeFunctionStamp( const Char * _file, uint32_t _line, Char * _buffer, int32_t _offset, size_t _capacity ) const
+    {
+        if( _file == nullptr )
+        {
+            return 0;
+        }
+
+        String str_function = _file;
+
+        StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
+
+        StringMatchResults match_lambda_remove;
+        while( std::regex_search( str_function, match_lambda_remove, regex_lambda_remove ) == true )
+        {
+            const std::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
+            const std::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
+
+            str_function = String( lambda_remove_prefix.first, lambda_remove_prefix.second ) + String( lambda_remove_suffix.first, lambda_remove_suffix.second );
+        }
+
+        StringRegex regex_engine_remove( "Mengine::" );
+
+        StringMatchResults match_engine_remove;
+        if( std::regex_search( str_function, match_engine_remove, regex_engine_remove ) == true )
+        {
+            const std::sub_match<String::const_iterator> & engine_remove_prefix = match_engine_remove.prefix();
+            const std::sub_match<String::const_iterator> & engine_remove_suffix = match_engine_remove.suffix();
+
+            str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
+        }
+
+        int32_t size = snprintf( _buffer + _offset, _capacity - _offset, "%s[%u] "
+            , str_function.c_str()
+            , _line
+        );
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::validMessage( ELoggerLevel _level, uint32_t _flag ) const

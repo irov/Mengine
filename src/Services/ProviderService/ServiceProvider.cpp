@@ -17,6 +17,9 @@ namespace Mengine
         , m_dependenciesCount( 0 )
         , m_leaveCount( 0 )
         , m_waitsCount( 0 )
+#ifdef MENGINE_DEBUG
+        , m_initializeServiceName( nullptr )
+#endif
     {
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
         {
@@ -88,11 +91,20 @@ namespace Mengine
             return false;
         }
 
+        const Char * name = service->getServiceID();
+
+#ifdef MENGINE_DEBUG
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr );
+
+        m_initializeServiceName = name;
+#endif
+
         if( service->initializeService() == false )
         {
             if( _safe == false )
             {
-                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid initialize service doc '%s'"
+                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid initialize service '%s' doc '%s'"
+                    , name
                     , _doc
                     );
             }
@@ -100,7 +112,9 @@ namespace Mengine
             return false;
         }
 
-        const Char * name = service->getServiceID();
+#ifdef MENGINE_DEBUG
+        m_initializeServiceName = nullptr;
+#endif
 
         MENGINE_ASSERTION( strlen( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
             , name
@@ -140,6 +154,8 @@ namespace Mengine
 
                 return false;
             }
+
+            service->runService();
 
             return true;
         }
@@ -371,6 +387,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::existService( const Char * _name ) const
     {
+#ifdef MENGINE_DEBUG
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
+#endif
+
         for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             const ServiceDesc & desc = m_services[index];

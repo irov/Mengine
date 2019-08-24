@@ -33,9 +33,9 @@ namespace Mengine
         m_fileGroup = _fileGroup;
         m_folderPath = _folderPath;
 
-        m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();
-        m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>();
-        m_factoryWin32MappedFile = new FactoryPool<Win32FileMappedStream, 4>();
+        m_factoryInputStream = Helper::makeFactoryPool<Win32FileInputStream, 8>();
+        m_factoryOutputStream = Helper::makeFactoryPool<Win32FileOutputStream, 4>();
+        m_factoryWin32MappedFile = Helper::makeFactoryPool<Win32FileMappedStream, 4>();
 
         return true;
     }

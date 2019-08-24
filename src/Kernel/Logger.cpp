@@ -1,14 +1,8 @@
 #include "Logger.h"
 
 #include "Interface/LoggerServiceInterface.h"
-#include "Interface/PlatformInterface.h"
-
-#include "Config/String.h"
-#include "Config/StringRegex.h"
 
 #include "Config/StdIO.h"
-
-#include <time.h>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_LOGGER_MAX_MESSAGE
@@ -67,74 +61,17 @@ namespace Mengine
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t LoggerOperator::makeTimeStamp( Char * _buffer, int32_t _offset ) const
-    {
-        if( SERVICE_IS_INITIALIZE( PlatformInterface ) == false )
-        {
-            return 0;
-        }
-
-        PlatformDateTime dateTime;
-        PLATFORM_SERVICE()
-            ->getDateTime( &dateTime );
-
-        int size = snprintf( _buffer + _offset, MENGINE_LOGGER_MAX_MESSAGE - _offset, "[%02u:%02u:%02u:%04u] "
-            , dateTime.hour
-            , dateTime.minute
-            , dateTime.second
-            , dateTime.milliseconds
-        );
-
-        return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    int32_t LoggerOperator::makeFunctionStamp( Char * _buffer, int32_t _offset ) const
-    {
-        if( m_file == nullptr )
-        {
-            return 0;
-        }
-
-        String str_function = m_file;
-
-        StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
-
-        StringMatchResults match_lambda_remove;
-        while( std::regex_search( str_function, match_lambda_remove, regex_lambda_remove ) == true )
-        {
-            const std::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
-            const std::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
-
-            str_function = String( lambda_remove_prefix.first, lambda_remove_prefix.second ) + String( lambda_remove_suffix.first, lambda_remove_suffix.second );
-        }
-
-        StringRegex regex_engine_remove( "Mengine::" );
-
-        StringMatchResults match_engine_remove;
-        if( std::regex_search( str_function, match_engine_remove, regex_engine_remove ) == true )
-        {
-            const std::sub_match<String::const_iterator> & engine_remove_prefix = match_engine_remove.prefix();
-            const std::sub_match<String::const_iterator> & engine_remove_suffix = match_engine_remove.suffix();
-
-            str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
-        }
-
-        int32_t size = snprintf( _buffer + _offset, MENGINE_LOGGER_MAX_MESSAGE - _offset, "%s[%u] "
-            , str_function.c_str()
-            , m_line
-        );
-
-        return size;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessageArgs( const Char * _format, va_list _args ) const
     {
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
 
         int32_t size = 0;
 
-        size += this->makeTimeStamp( str, size );
-        size += this->makeFunctionStamp( str, size );
+        size += LOGGER_SERVICE()
+            ->makeTimeStamp( str, size, MENGINE_LOGGER_MAX_MESSAGE );
+
+        size += LOGGER_SERVICE()
+            ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE );
 
         size += MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
 

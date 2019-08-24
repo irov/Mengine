@@ -3,6 +3,7 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
+#include "Kernel/HashType.h"
 #include "Kernel/Factorable.h"
 
 #include "stdex/intrusive_linked.h"
@@ -22,7 +23,7 @@ namespace Mengine
 
     public:
         typedef uint32_t size_type;
-        typedef int64_t hash_type;
+        typedef HashType hash_type;
         typedef Char value_type;
 
     public:

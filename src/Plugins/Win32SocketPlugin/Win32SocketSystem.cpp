@@ -31,7 +31,7 @@ namespace Mengine
             return false;
         }
 
-        m_factoryWin32Socket = new FactoryPool<Win32Socket, 16>();
+        m_factoryWin32Socket = Helper::makeFactoryPool<Win32Socket, 16>();
 
         return true;
     }

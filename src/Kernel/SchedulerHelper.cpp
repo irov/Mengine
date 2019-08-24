@@ -11,7 +11,7 @@ namespace Mengine
         {
             //////////////////////////////////////////////////////////////////////////
             class HelperScheduleEvent
-                : public ScheduleEventInterface
+                : public SchedulerEventInterface
                 , public Factorable
             {
             public:
@@ -25,12 +25,12 @@ namespace Mengine
                 }
 
             protected:
-                void onScheduleComplete( uint32_t _id ) override
+                void onSchedulerComplete( uint32_t _id ) override
                 {
                     m_event( _id, true );
                 }
 
-                void onScheduleStop( uint32_t _id ) override
+                void onSchedulerStop( uint32_t _id ) override
                 {
                     m_event( _id, false );
                 }
@@ -40,7 +40,7 @@ namespace Mengine
             };
             //////////////////////////////////////////////////////////////////////////
             class HelperSchedulePipe
-                : public SchedulePipeInterface
+                : public SchedulerPipeInterface
                 , public Factorable
             {
             public:
@@ -54,7 +54,7 @@ namespace Mengine
                 }
 
             protected:
-                float onSchedulePipe( uint32_t _id, uint32_t _index ) override
+                float onSchedulerPipe( uint32_t _id, uint32_t _index ) override
                 {
                     float delay = m_pipe( _id, _index );
 
@@ -66,7 +66,7 @@ namespace Mengine
             };
             //////////////////////////////////////////////////////////////////////////
             class HelperScheduleTiming
-                : public ScheduleTimingInterface
+                : public SchedulerTimingInterface
                 , public Factorable
             {
             public:
@@ -80,7 +80,7 @@ namespace Mengine
                 }
 
             protected:
-                void onScheduleTiming( uint32_t _id, uint32_t _iterate, float _time ) override
+                void onSchedulerTiming( uint32_t _id, uint32_t _iterate, float _time ) override
                 {
                     m_timing( _id, _iterate, _time );
                 }
@@ -92,7 +92,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t schedulerEvent( const SchedulerInterfacePtr & _scheduler, float _delay, const LambdaScheduleEvent & _event )
         {
-            ScheduleEventInterfacePtr event = Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _event );
+            SchedulerEventInterfacePtr event = Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _event );
 
             uint32_t id = _scheduler->event( _delay, event );
 
@@ -101,9 +101,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t schedulerTiming( const SchedulerInterfacePtr & _scheduler, const LambdaSchedulePipe & _pipe, const LambdaScheduleTiming & _timing, const LambdaScheduleEvent & _event )
         {
-            SchedulePipeInterfacePtr pipe = Helper::makeFactorableUnique<Detail::HelperSchedulePipe>( _pipe );
-            ScheduleTimingInterfacePtr timing = Helper::makeFactorableUnique<Detail::HelperScheduleTiming>( _timing );
-            ScheduleEventInterfacePtr event = _event != nullptr ? Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _event ) : nullptr;
+            SchedulerPipeInterfacePtr pipe = Helper::makeFactorableUnique<Detail::HelperSchedulePipe>( _pipe );
+            SchedulerTimingInterfacePtr timing = Helper::makeFactorableUnique<Detail::HelperScheduleTiming>( _timing );
+            SchedulerEventInterfacePtr event = _event != nullptr ? Helper::makeFactorableUnique<Detail::HelperScheduleEvent>( _event ) : nullptr;
 
             uint32_t id = _scheduler->timing( pipe, timing, event );
 

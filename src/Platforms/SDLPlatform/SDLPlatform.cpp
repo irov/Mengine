@@ -16,6 +16,7 @@
 #endif
 
 #include "SDLDynamicLibrary.h"
+#include "SDLDateTimeProvider.h"
 
 #include "Kernel/FileLogger.h"
 #include "Kernel/FilePath.h"
@@ -271,7 +272,6 @@ namespace Mengine
     {
         if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 )
         {
-            LOGGER_CRITICAL( "SDL initialization failed" );
             return false;
         }
 
@@ -305,8 +305,36 @@ namespace Mengine
             m_touchpad = true;
         }
 
+        SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
+
+#ifdef MENGINE_DEBUG
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_INFO );
+#else
+        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
+#endif
+
+        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>();
+
+        if( sdlInput->initialize() == false )
+        {
+            return false;
+        }
+
+        m_sdlInput = sdlInput;
+
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>();
+        m_factoryDateTimeProviders = Helper::makeFactoryPool<SDLDateTimeProvider, 8>();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::_runService()
+    {
+        DateTimeProviderInterfacePtr dateTimeProvider = 
+            this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
         PlatformDateTime dateTime;
-        this->getDateTime( &dateTime );
+        dateTimeProvider->getDateTime( &dateTime );
 
         LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
             , dateTime.day
@@ -321,7 +349,7 @@ namespace Mengine
         );
 
         LOGGER_MESSAGE( "Platform: %s"
-            , sdlPlatform
+            , SDL_GetPlatform()
         );
 
         LOGGER_MESSAGE( "CPU: %d Count %d CacheLineSize"
@@ -385,23 +413,6 @@ namespace Mengine
             , SDL_GetSystemRAM()
         );
 
-        SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
-
-#ifdef MENGINE_DEBUG
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_INFO );
-#else
-        SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
-#endif
-
-        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>();
-
-        if( sdlInput->initialize() == false )
-        {
-            return false;
-        }
-
-        m_sdlInput = sdlInput;
-
         // Search accelerometer device among joysticks
         int numJoysticks = SDL_NumJoysticks();
 
@@ -429,7 +440,7 @@ namespace Mengine
 
             if( isAccelerometer == true )
             {
-                LOGGER_WARNING( "Accelerometer found: %s"
+                LOGGER_MESSAGE_RELEASE( "Accelerometer found: %s"
                     , joystickName
                 );
 
@@ -440,13 +451,9 @@ namespace Mengine
 
         if( m_accelerometer == nullptr )
         {
-            LOGGER_WARNING( "Accelerometer not found"
+            LOGGER_MESSAGE_RELEASE( "Accelerometer not found"
             );
         }
-
-        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>();
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::_finalizeService()
@@ -463,15 +470,20 @@ namespace Mengine
 
         m_platformName.clear();
 
+        if( m_accelerometer != nullptr )
+        {
+            if( SDL_JoystickGetAttached( m_accelerometer ) )
+            {
+                SDL_JoystickClose( m_accelerometer );
+                m_accelerometer = nullptr;
+            }
+        }
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDateTimeProviders );
 
         m_factoryDynamicLibraries = nullptr;
-
-        if( SDL_JoystickGetAttached( m_accelerometer ) )
-        {
-            SDL_JoystickClose( m_accelerometer );
-            m_accelerometer = nullptr;
-        }
+        m_factoryDateTimeProviders = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::runPlatform()
@@ -1278,23 +1290,13 @@ namespace Mengine
 #endif		
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::getDateTime( PlatformDateTime * _dateTime ) const
+    DateTimeProviderInterfacePtr SDLPlatform::createDateTimeProvider( const Char * _doc )
     {
-        if( _dateTime == nullptr )
-        {
-            return;
-        }
+        SDLDateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
 
-        std::time_t ctTime = std::time( nullptr );
-        std::tm * sTime = std::localtime( &ctTime );
+        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, nullptr );
 
-        _dateTime->year = 1900 + sTime->tm_year;
-        _dateTime->month = sTime->tm_mon + 1;
-        _dateTime->day = sTime->tm_mday;
-        _dateTime->hour = sTime->tm_hour;
-        _dateTime->minute = sTime->tm_min;
-        _dateTime->second = sTime->tm_sec;
-        _dateTime->milliseconds = SDL_GetTicks();
+        return dateTimeProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )

@@ -27,8 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::finalize()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, this, &ResourceUselessCompileChecker::notifyChangeScenePrepareEnable );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, this, &ResourceUselessCompileChecker::notifyChangeSceneEnableFinally );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY );
+
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY );
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyChangeScenePrepareEnable( const ScenePtr & _scene )

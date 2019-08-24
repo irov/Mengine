@@ -6,6 +6,8 @@ src
     SDLPlatform.cpp
     SDLDynamicLibrary.h
     SDLDynamicLibrary.cpp
+    SDLDateTimeProvider.h
+    SDLDateTimeProvider.cpp
     SDLInput.h
     SDLInput.cpp   
 )

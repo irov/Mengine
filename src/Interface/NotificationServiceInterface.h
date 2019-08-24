@@ -12,6 +12,7 @@
 #include "Kernel/Observable.h"
 #include "Kernel/Exception.h"
 #include "Kernel/IntrusivePtr.h"
+#include "Kernel/Document.h"
 
 #include <type_traits>
 
@@ -102,16 +103,16 @@ namespace Mengine
         SERVICE_DECLARE( "NotificationService" )
 
     public:
-        virtual void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) = 0;
+        virtual void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) = 0;
         virtual void removeObserver( uint32_t _id, const ObservablePtr & _observer ) = 0;
 
     public:
         template<uint32_t ID, class C, class M>
-        void addObserverMethod( C * _self, M _method )
+        void addObserverMethod( C * _self, M _method, const Char * _doc )
         {
             ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
 
-            this->addObserver( ID, ObservablePtr( _self ), callable );
+            this->addObserver( ID, ObservablePtr( _self ), callable, _doc );
         }
 
     public:
@@ -149,7 +150,7 @@ namespace Mengine
     ((Mengine::NotificationServiceInterface*)SERVICE_GET(Mengine::NotificationServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method )\
-    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method )
+    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method, MENGINE_DOCUMENT_FUNCTION )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )

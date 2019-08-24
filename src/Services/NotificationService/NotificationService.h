@@ -6,7 +6,10 @@
 #include "Kernel/ServiceBase.h"
 
 #include "Config/Vector.h"
-#include "Config/Map.h"
+
+#ifdef MENGINE_DEBUG
+#include "Config/String.h"
+#endif
 
 namespace Mengine
 {
@@ -22,14 +25,14 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;
+        void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) override;
         void removeObserver( uint32_t _id, const ObservablePtr & _observer ) override;
 
     public:
         bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
     public:
-        void addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable );
+        void addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc );
         void removeObserver_( uint32_t _id, const ObservablePtr & _observer );
 
     protected:
@@ -37,17 +40,23 @@ namespace Mengine
         {
             ObservablePtr observer;
             ObserverCallableInterfacePtr callable;
+
+#ifdef MENGINE_DEBUG
+            String doc;
+#endif
         };
 
         typedef Vector<ObserverDesc> VectorObservers;
-        typedef Map<uint32_t, VectorObservers> MapObservers;
-        MapObservers m_mapObserves;
+        VectorObservers m_mapObserves[MENGINE_NOTIFICATOR_MAX_COUNT];
 
         struct ObserverQueue
         {
             uint32_t id;
             ObservablePtr observer;
             ObserverCallableInterfacePtr callable;
+#ifdef MENGINE_DEBUG
+            String doc;
+#endif
         };
 
         typedef Vector<ObserverQueue> VectorObserverQueues;

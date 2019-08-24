@@ -7,7 +7,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class TaskDelay::TaskDelayScheduleEvent
-        : public ScheduleEventInterface
+        : public SchedulerEventInterface
         , public Mengine::Factorable
     {
     public:
@@ -21,12 +21,12 @@ namespace Mengine
         }
 
     protected:
-        void onScheduleComplete( uint32_t _id ) override
+        void onSchedulerComplete( uint32_t _id ) override
         {
             m_task->schedulerComplete( _id );
         }
 
-        void onScheduleStop( uint32_t _id ) override
+        void onSchedulerStop( uint32_t _id ) override
         {
             m_task->schedulerComplete( _id );
         }
@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskDelay::_onRun()
     {
-        ScheduleEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::TaskDelayScheduleEvent>( this );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::TaskDelayScheduleEvent>( this );
 
         uint32_t id = m_scheduler->event( m_time, ev );
 

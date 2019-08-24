@@ -343,11 +343,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxParticleSystem::getResourceImage( int32_t _index ) const
     {
-        VectorAtlasDesc::size_type atlases_size = m_atlases.size();
-
-        MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < atlases_size, ResourceImagePtr::none(), "index %d but size is %d"
+        MENGINE_ASSERTION_RETURN( (VectorAtlasDesc::size_type)_index < m_atlases.size(), ResourceImagePtr::none(), "index %d but size is %d"
             , _index
-            , atlases_size
+            , m_atlases.size()
         );
 
         const ResourceImagePtr & resourceImage = m_atlases[_index];

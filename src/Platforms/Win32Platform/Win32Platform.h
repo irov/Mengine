@@ -22,6 +22,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _runService() override;
 
     public:
         bool runPlatform() override;
@@ -108,7 +109,7 @@ namespace Mengine
         uint64_t getFileTime( const Char * _path ) const override;
 
     public:
-        void getDateTime( PlatformDateTime * _dateTime ) const override;
+        DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
 
     public:
         bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
@@ -151,6 +152,7 @@ namespace Mengine
         HWND m_hWnd;
 
         FactoryPtr m_factoryDynamicLibraries;
+        FactoryPtr m_factoryDateTimeProviders;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
         Win32FPSMonitorPtr m_fpsMonitor;

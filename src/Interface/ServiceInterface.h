@@ -19,6 +19,7 @@ namespace Mengine
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
         virtual void replaceService() = 0;
+        virtual void runService() = 0;
 
     public:
         virtual bool isInitializeService() const = 0;
@@ -38,42 +39,40 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        //////////////////////////////////////////////////////////////////////////
-        template<class T>
-        T * getService( const Char * _file, uint32_t _line )
+        namespace Detail
         {
-            MENGINE_UNUSED( _file );
-            MENGINE_UNUSED( _line );
-
-            static T * s_service = nullptr;
-
-            if( s_service == nullptr )
+        //////////////////////////////////////////////////////////////////////////        
+            template<class T>
+            T * getService2( const Char * _file, uint32_t _line )
             {
+                MENGINE_UNUSED( _file );
+                MENGINE_UNUSED( _line );
+
                 const Char * serviceName = T::getStaticServiceID();
 
                 ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
+#ifdef MENGINE_DEBUG
                 if( serviceProvider == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' invalid get provider"
                         , serviceName
                         );
-
-                    return nullptr;
                 }
+#endif
 
                 const ServiceInterfacePtr & service = serviceProvider->getService( serviceName );
 
                 ServiceInterface * service_ptr = service.get();
 
+#ifdef MENGINE_DEBUG
                 if( service_ptr == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service '%s' not found"
                         , serviceName
                         );
-
-                    return nullptr;
                 }
+#endif
 
 #ifdef MENGINE_DEBUG
                 if( dynamic_cast<T *>(service_ptr) == nullptr )
@@ -82,13 +81,22 @@ namespace Mengine
                         , serviceName
                         , Typename<T>::value
                         );
-
-                    return nullptr;
                 }
 #endif
 
-                s_service = static_cast<T *>(service_ptr);
+                T * service_ptr_t = static_cast<T *>(service_ptr);
+
+                return service_ptr_t;
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T * getService( const Char * _file, uint32_t _line )
+        {
+            MENGINE_UNUSED( _file );
+            MENGINE_UNUSED( _line );
+
+            static T * s_service = Detail::getService2<T>( _file, _line );
 
             MENGINE_ASSERTION_FATAL( s_service == nullptr || s_service->isInitializeService() == true, "service '%s' not initialized"
                 , T::getStaticServiceID()
@@ -100,23 +108,9 @@ namespace Mengine
         template<class T>
         bool existService()
         {
-            static bool s_exist = false;
-
-            if( s_exist == false )
-            {
-                const Char * serviceName = T::getStaticServiceID();
-
-                if( SERVICE_PROVIDER_GET()
-                    ->existService( serviceName ) == false )
-                {
-                    s_exist = false;
-                }
-                else
-                {
-                    s_exist = true;
-                }
-            }
-
+            static bool s_exist = SERVICE_PROVIDER_GET()
+                ->existService( T::getStaticServiceID() );
+            
             return s_exist;
         }
     }

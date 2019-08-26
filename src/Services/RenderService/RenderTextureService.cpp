@@ -287,10 +287,12 @@ namespace Mengine
 
         RenderTextureInterface * texture_ptr = _texture.get();
 
-        m_textures.emplace( std::make_pair( _fileGroup->getName(), _fileName ), texture_ptr );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        m_textures.emplace( std::make_pair( fileGroupName, _fileName ), texture_ptr );
 
         LOGGER_INFO( "cache texture '%s:%s'"
-            , _fileGroup->getName().c_str()
+            , fileGroupName.c_str()
             , _fileName.c_str()
         );
     }

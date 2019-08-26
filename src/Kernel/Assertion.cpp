@@ -89,7 +89,7 @@ namespace Mengine
                     ->abort();
             }
 
-            if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level >= ASSERTION_LEVEL_ERROR )
+            if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level >= ASSERTION_LEVEL_WARNING )
             {
                 return;
             }

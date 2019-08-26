@@ -338,7 +338,7 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element == reinterpret_cast<const element_type *>(~0)), "hash push" );
+                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0)), "hash push" );
 
                 if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
                 {
@@ -804,7 +804,7 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element == reinterpret_cast<const element_type *>(~0)), "hash push" );
+                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0)), "hash push" );
 
                 if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
                 {

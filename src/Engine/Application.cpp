@@ -324,7 +324,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalizeService()
     {
-        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
+        if( m_debugFileOpen == true )
+        {
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );
+        }
 
         if( SERVICE_EXIST( PlayerServiceInterface ) == true )
         {

@@ -388,13 +388,8 @@ if(MENGINE_DEPENDENCE_CURL)
     endif()
 
     if(MENGINE_TARGET_IOS)
-        set(ENABLE_THREADED_RESOLVER OFF CACHE BOOL "ENABLE_THREADED_RESOLVER" FORCE)
+        set(ENABLE_THREADED_RESOLVER ON CACHE BOOL "ENABLE_THREADED_RESOLVER" FORCE)
         set(CMAKE_USE_SECTRANSP ON CACHE BOOL "Use CMAKE_USE_SECTRANSP code. Experimental" FORCE)
-    endif()
-    
-    if(MENGINE_TARGET_IOS)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/curl_config.h ${THIRDPARTY_DIR}/curl/lib/curl_config.h COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/curlbuild.h ${THIRDPARTY_DIR}/curl/include/curl/curlbuild.h COPYONLY)	
     endif()		
 	
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/curl ${CMAKE_TEMP_DIR}/curl)

@@ -9,10 +9,7 @@ src
     DevToDevEventHandler.h
 )
 
-INCLUDE_DIRECTORIES( 
-		${THIRDPARTY_DIR}/pybind/include
-        ${THIRDPARTY_DIR}/libmath/include
-)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV)
 

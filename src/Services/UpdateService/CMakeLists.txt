@@ -7,5 +7,3 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Services)
-
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)

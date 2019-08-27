@@ -6,6 +6,4 @@ src
 	PrototypeService.cpp
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
-
 ADD_MENGINE_LIBRARY(Services)

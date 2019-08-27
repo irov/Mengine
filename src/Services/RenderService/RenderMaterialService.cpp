@@ -261,11 +261,18 @@ namespace Mengine
 
             RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, fileConverterType, isCompile );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load fragment shader '%s' compile %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' fragment shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , filePath.c_str()
+                , name.c_str()
                 , isCompile
+            );
+
+            MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( name ) == false, false, "material '%s:%s' already has fragment shader '%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
+                , name.c_str()
             );
 
             m_fragmentShaders.emplace( name, shader );
@@ -294,11 +301,18 @@ namespace Mengine
 
             RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _fileGroup, filePath, fileConverter, isCompile );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load vertex shader '%s' compile %d"
+            MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' vertex shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , filePath.c_str()
+                , name.c_str()
                 , isCompile
+            );
+
+            MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( name ) == false, false, "material '%s:%s' already has vertex shader '%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
+                , name.c_str()
             );
 
             m_vertexShaders.emplace( name, shader );
@@ -334,6 +348,12 @@ namespace Mengine
 
                 vertexAttribute->addAttribute( attribute_uniform, attribute_size, attribute_type, attribute_normalized, attribute_stride, attribute_offset );
             }
+
+            MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( name ) == false, false, "material '%s:%s' already has vertex attribute '%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
+                , name.c_str()
+            );
 
             m_vertexAttributes.emplace( name, vertexAttribute );
         }
@@ -393,6 +413,12 @@ namespace Mengine
                 , _fileName.c_str()
                 , vertexShaderName.c_str()
                 , fragmentShaderName.c_str()
+            );
+
+            MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( name ) == false, false, "material '%s:%s' already has vertex attribute '%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
+                , name.c_str()
             );
 
             m_programs.emplace( name, program );

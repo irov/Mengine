@@ -158,6 +158,12 @@ Object\\\\TextField
 )
 
 ADD_FILTER(
+Object\\\\Button
+	Button.cpp
+	Button.h
+)
+
+ADD_FILTER(
 Object\\\\Window
 	Window.cpp
 	Window.h
@@ -234,7 +240,6 @@ Resource\\\\HIT
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_LIBRARY()
 

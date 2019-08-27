@@ -9,7 +9,6 @@ src
     SoundDecoderOGGVorbis.h
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libvorbis/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libogg/include)
     

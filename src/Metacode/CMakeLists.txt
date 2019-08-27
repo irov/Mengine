@@ -10,7 +10,6 @@ Metabuf
     protocol.xml
 )
    
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 
 ADD_MENGINE_LIBRARY()

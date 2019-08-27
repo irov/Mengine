@@ -34,7 +34,6 @@ if(MENGINE_TARGET_IOS)
 endif()
 
 include_directories(${THIRDPARTY_DIR}/SDL2/include)
-include_directories(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_LIBRARY(Systems)
 

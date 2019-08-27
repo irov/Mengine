@@ -84,10 +84,6 @@
         <File Path = "DX9_Fragment_Desaturate.txt" Converter="text2pso" Compile="1"/>
     </FragmentShader>
     
-    <FragmentShader Name = "Fragment_Desaturate" RenderPlatform = "DX9">
-        <File Path = "DX9_Fragment_Desaturate.txt" Converter="text2pso" Compile="1"/>
-    </FragmentShader>
-    
     <FragmentShader Name = "Fragment_Legendary" RenderPlatform = "DX9">
         <File Path = "DX9_Fragment_Legendary.txt" Converter="text2pso" Compile="1"/>
     </FragmentShader>

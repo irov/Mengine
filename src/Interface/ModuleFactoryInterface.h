@@ -3,7 +3,7 @@
 #include "Interface/Interface.h"
 #include "Interface/ModuleInterface.h"
 
-#include "Kernel/ConstString.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -11,7 +11,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual ModuleInterfacePtr createModule( const ConstString & _name, const Char * _doc ) = 0;
+        virtual ModuleInterfacePtr createModule( const Char * _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;

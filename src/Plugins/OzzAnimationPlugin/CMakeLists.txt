@@ -21,18 +21,16 @@ src
 )
 
 if(MENGINE_USE_PYTHON_FRAMEWORK)
-ADD_FILTER(
-embedding
-    OzzScriptEmbedding.cpp
-    OzzScriptEmbedding.h
-    )
-    
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    ADD_FILTER(
+    embedding
+        OzzScriptEmbedding.cpp
+        OzzScriptEmbedding.h
+        )
+        
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/ozz/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_OZZ_ANIMATION)
 

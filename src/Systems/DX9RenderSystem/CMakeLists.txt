@@ -31,6 +31,4 @@ src
     DX9RenderProgramVariable.cpp
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
-
 ADD_MENGINE_LIBRARY(Systems)

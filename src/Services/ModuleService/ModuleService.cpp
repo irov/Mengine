@@ -53,13 +53,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::hasModule( const ConstString & _moduleName ) const
     {
-        VectorModules::const_iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
-        {
-            return _module->getName() == _moduleName;
-        } );
+        const ModuleFactoryInterfacePtr & factory = m_moduleFactory.find( _moduleName );
 
-        if( it_found == m_modules.end() )
+        if( factory == nullptr )
         {
             return false;
         }
@@ -69,16 +65,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::runModule( const ConstString & _moduleName, const Char * _doc )
     {
-        if( this->findModule_( _moduleName ) != nullptr )
-        {
-            return false;
-        }
-
         const ModuleFactoryInterfacePtr & factory = m_moduleFactory.find( _moduleName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
 
-        ModuleInterfacePtr module = factory->createModule( _moduleName, _doc );
+        ModuleInterfacePtr module = factory->createModule( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( module, false );
+
+        module->setName( _moduleName );
 
         if( module->initializeModule() == false )
         {
@@ -99,6 +94,22 @@ namespace Mengine
         );
 
         module->finalizeModule();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleService::isRunModule( const ConstString & _moduleName ) const
+    {
+        VectorModules::const_iterator it_found =
+            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
+        {
+            return _module->getName() == _moduleName;
+        } );
+
+        if( it_found == m_modules.end() )
+        {
+            return false;
+        }
 
         return true;
     }

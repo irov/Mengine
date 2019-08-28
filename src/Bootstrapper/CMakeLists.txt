@@ -6,9 +6,6 @@ Bootstrapper
     Bootstrapper.h
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/stdex/include)
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)
-    
 ADD_MENGINE_LIBRARY(Bootstrapper)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)

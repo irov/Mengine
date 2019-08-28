@@ -31,6 +31,7 @@ namespace Mengine
         bool hasModule( const ConstString & _moduleName ) const override;
         bool runModule( const ConstString & _moduleName, const Char * _doc ) override;
         bool stopModule( const ConstString & _moduleName ) override;
+        bool isRunModule( const ConstString & _moduleName ) const override;
 
     public:
         void update( bool _focus ) override;

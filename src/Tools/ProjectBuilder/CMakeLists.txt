@@ -19,15 +19,12 @@ add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
-INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/pugixml/src
-    ${THIRDPARTY_DIR}/metabuf/include
-	${THIRDPARTY_DIR}/metabuf/src/xml2metabuf
-    ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/libmovie/include
-    ${THIRDPARTY_DIR}/tinyini/include
-    ${THIRDPARTY_DIR}/libmath/include
-)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pugixml/src)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/src/xml2metabuf)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmovie/include)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/tinyini/include)
  
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
 ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )

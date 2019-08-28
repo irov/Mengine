@@ -10,5 +10,3 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Plugins)
-
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libmath/include)

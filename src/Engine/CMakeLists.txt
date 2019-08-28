@@ -158,12 +158,6 @@ Object\\\\TextField
 )
 
 ADD_FILTER(
-Object\\\\Button
-	Button.cpp
-	Button.h
-)
-
-ADD_FILTER(
 Object\\\\Window
 	Window.cpp
 	Window.h

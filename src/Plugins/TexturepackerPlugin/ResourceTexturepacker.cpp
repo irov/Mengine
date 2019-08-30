@@ -165,18 +165,6 @@ namespace Mengine
             bool rotated = value["rotated"];
             bool trimmed = value["trimmed"];
 
-            if( trimmed == true )
-            {
-                MENGINE_ASSERTION_NOT_IMPLEMENTED();
-            }
-
-            jpp::object spriteSourceSize = value["spriteSourceSize"];
-
-            //int32_t spriteSourceSize_x = spriteSourceSize["x"];
-            //int32_t spriteSourceSize_y = spriteSourceSize["y"];
-            //int32_t spriteSourceSize_w = spriteSourceSize["w"];
-            //int32_t spriteSourceSize_h = spriteSourceSize["h"];
-
             jpp::object sourceSize = value["sourceSize"];
 
             int32_t sourceSize_w = sourceSize["w"];
@@ -193,9 +181,28 @@ namespace Mengine
             image->setTexture( atlasTexture );
             image->setTextureAlpha( atlasTextureAlpha );
 
-            mt::vec2f size( (float)sourceSize_w, (float)sourceSize_h );
-            image->setMaxSize( size );
-            image->setSize( size );
+            mt::vec2f maxSize( (float)sourceSize_w, (float)sourceSize_h );
+            image->setMaxSize( maxSize );
+
+            if( trimmed == true )
+            {
+                jpp::object spriteSourceSize = value["spriteSourceSize"];
+
+                int32_t spriteSourceSize_x = spriteSourceSize["x"];
+                int32_t spriteSourceSize_y = spriteSourceSize["y"];
+                int32_t spriteSourceSize_w = spriteSourceSize["w"];
+                int32_t spriteSourceSize_h = spriteSourceSize["h"];
+
+                mt::vec2f offset( (float)spriteSourceSize_x, (float)spriteSourceSize_y );
+                mt::vec2f size( (float)spriteSourceSize_w, (float)spriteSourceSize_h );                
+
+                image->setOffset( offset );
+                image->setSize( size );
+            }
+            else
+            {
+                image->setSize( maxSize );
+            }
 
             mt::vec4f uv_mask( (float)frame_x, (float)frame_y, (float)(frame_x + frame_w), (float)(frame_y + frame_h) );
             uv_mask.x *= atlas_width_inv;

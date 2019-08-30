@@ -24,6 +24,11 @@ namespace Mengine
             return factory;
         }
 
+        void _finalizeFactory() override
+        {
+            //Empty
+        }
+
     protected:
         FactorablePointer generate( const Char * _doc ) override
         {

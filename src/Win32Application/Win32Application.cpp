@@ -122,7 +122,7 @@ namespace Mengine
         config->getValues( "Game", "Path", m_configPaths );
         config->getValues( "Config", "Path", m_configPaths );
         config->getValues( "Credential", "Path", m_configPaths );
-        config->getValues( "Resource", "Path", m_resourceConfigPaths );
+        config->getValues( "Resource", "Path", m_resourcePaths );
 
         return true;
     }
@@ -468,7 +468,7 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run() == false )
+            ->run( m_resourcePaths ) == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
             );
@@ -476,45 +476,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_INFO( "initialize Game..." );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        if( APPLICATION_SERVICE()
-            ->initializeGame( fileGroup, m_resourceConfigPaths ) == false )
-        {
-            LOGGER_CRITICAL( "invalid initialize Game"
-            );
-
-            return false;
-        }
-
-        if( SERVICE_EXIST( FrameworkInterface ) == false )
-        {
-            LOGGER_CRITICAL( "invalid found Framework"
-            );
-
-            return false;
-        }
-
-        if( FRAMEWORK_SERVICE()
-            ->onFrameworkInitialize() == false )
-        {
-            LOGGER_CRITICAL( "invalid initialize Framework"
-            );
-
-            return false;
-        }
-
-        if( GAME_SERVICE()
-            ->loadPersonality() == false )
-        {
-            LOGGER_CRITICAL( "invalid load Personality"
-            );
-
-            return false;
-        }
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 

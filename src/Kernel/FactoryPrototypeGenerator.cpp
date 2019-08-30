@@ -27,6 +27,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryPrototypeGenerator::finalize()
     {
+        this->_finalizeFactory();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
         m_factory = nullptr;
     }

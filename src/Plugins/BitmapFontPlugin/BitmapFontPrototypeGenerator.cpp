@@ -22,6 +22,11 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
+    void BitmapFontPrototypeGenerator::_finalizeFactory()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     FactorablePointer BitmapFontPrototypeGenerator::generate( const Char * _doc )
     {
         const FactoryPtr & factory = this->getFactory();

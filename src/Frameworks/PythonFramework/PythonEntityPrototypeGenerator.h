@@ -31,6 +31,7 @@ namespace Mengine
 
     protected:
         FactoryPtr _initializeFactory() override;
+        void _finalizeFactory() override;
 
     protected:
         FactorablePointer generate( const Char * _doc ) override;

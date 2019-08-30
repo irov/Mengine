@@ -2,6 +2,7 @@
 
 #include "Interface/PluginInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/ModuleFactoryInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -11,9 +12,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ModuleFactoryInterface> ModuleFactoryInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class PluginBase
         : public PluginInterface
         , public Factorable

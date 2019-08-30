@@ -1,9 +1,10 @@
 #include "PluginBase.h"
 
-#include "Interface/ModuleServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Document.h"
 
 namespace Mengine
@@ -114,10 +115,9 @@ namespace Mengine
 
         this->_finalizePlugin();
 
-        for( const ConstString & moduleFactory : m_moduleFactories )
+        for( const ConstString & name : m_moduleFactories )
         {
-            MODULE_SERVICE()
-                ->unregisterModule( moduleFactory );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Module" ), name );
         }
 
         m_moduleFactories.clear();
@@ -175,12 +175,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory )
     {
-        if( MODULE_SERVICE()
-            ->registerModule( _name, _factory ) == false )
-        {
-            return false;
-        }
-
+        VOCABULARY_SET( ModuleFactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory );
+        
         m_moduleFactories.emplace_back( _name );
 
         return true;

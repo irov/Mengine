@@ -1,20 +1,26 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
+#include "Interface/Interface.h"
+
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     class FrameworkInterface
-        : public ServiceInterface
+        : public Interface
     {
-        SERVICE_DECLARE( "Framework" );
+    public:
+        virtual void setName( const ConstString & _name ) = 0;
+        virtual const ConstString & getName() const = 0;
 
     public:
-        virtual bool onFrameworkInitialize() = 0;
-        virtual void onFrameworkFinalize() = 0;
+        virtual bool initializeFramework() = 0;
+        virtual void finalizeFramework() = 0;
+
+    public:
+        virtual bool isAvailableFramework() const = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<FrameworkInterface> FrameworkInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 }
-//////////////////////////////////////////////////////////////////////////
-#define FRAMEWORK_SERVICE()\
-    ((Mengine::FrameworkInterface*)SERVICE_GET(Mengine::FrameworkInterface))
-//////////////////////////////////////////////////////////////////////////

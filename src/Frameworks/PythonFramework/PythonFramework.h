@@ -1,27 +1,23 @@
 #pragma once
 
-#include "Interface/FrameworkInterface.h"
-
-#include "Kernel/ServiceBase.h"
+#include "Kernel/FrameworkBase.h"
+#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class PythonFramework
-        : public ServiceBase<FrameworkInterface>
+        : public FrameworkBase
+        , public Observable
     {
     public:
         PythonFramework();
         ~PythonFramework() override;
 
     public:
-        bool _initializeService() override;
-        void _finalizeService() override;
+        bool _initializeFramework() override;
+        void _finalizeFramework() override;
 
     protected:
-        bool onFrameworkInitialize() override;
-        void onFrameworkFinalize() override;
-
-    protected:
-        bool m_initializeFramework;
+        void notifyBootstrapperInitializeGame();
     };
 }

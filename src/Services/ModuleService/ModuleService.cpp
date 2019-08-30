@@ -1,7 +1,12 @@
 #include "ModuleService.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ModuleFactoryInterface.h"
+
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionVocabulary.h"
 
 #include <algorithm>
 
@@ -21,51 +26,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::_initializeService()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::_finalizeService()
-    {
-        m_moduleFactory.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ModuleService::finalizeModules()
-    {
+    {        
+#ifdef MENGINE_DEBUG
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->finalizeModule();
+            LOGGER_ERROR( "was forgotten stop module '%s'"
+                , module->getName().c_str()
+            );
         }
+#endif
 
-        m_modules.clear();
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Module" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::registerModule( const ConstString & _moduleName, const ModuleFactoryInterfacePtr & _module )
+    bool ModuleService::hasModule( const ConstString & _name ) const
     {
-        m_moduleFactory.emplace( _moduleName, _module );
+        bool exist = VOCABULARY_HAS( STRINGIZE_STRING_LOCAL( "Module" ), _name );
 
-        return true;
+        return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::unregisterModule( const ConstString & _moduleName )
+    bool ModuleService::runModule( const ConstString & _name, const Char * _doc )
     {
-        m_moduleFactory.erase( _moduleName );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::hasModule( const ConstString & _moduleName ) const
-    {
-        const ModuleFactoryInterfacePtr & factory = m_moduleFactory.find( _moduleName );
-
-        if( factory == nullptr )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::runModule( const ConstString & _moduleName, const Char * _doc )
-    {
-        const ModuleFactoryInterfacePtr & factory = m_moduleFactory.find( _moduleName );
+        ModuleFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Module" ), _name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
 
@@ -73,10 +62,14 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( module, false );
 
-        module->setName( _moduleName );
+        module->setName( _name );
 
         if( module->initializeModule() == false )
         {
+            LOGGER_ERROR( "invalid initialize module '%s'"
+                , _name.c_str()
+            );
+
             return false;
         }
 
@@ -85,12 +78,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::stopModule( const ConstString & _moduleName )
+    bool ModuleService::stopModule( const ConstString & _name )
     {
-        ModuleInterfacePtr module = this->popModule_( _moduleName );
+        ModuleInterfacePtr module = this->popModule_( _name );
 
         MENGINE_ASSERTION_MEMORY_PANIC( module, false, "not found module '%s'"
-            , _moduleName.c_str()
+            , _name.c_str()
         );
 
         module->finalizeModule();
@@ -98,12 +91,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::isRunModule( const ConstString & _moduleName ) const
+    bool ModuleService::isRunModule( const ConstString & _name ) const
     {
         VectorModules::const_iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
+            std::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
         {
-            return _module->getName() == _moduleName;
+            return _module->getName() == _name;
         } );
 
         if( it_found == m_modules.end() )
@@ -138,9 +131,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params )
+    void ModuleService::message( const ConstString & _name, const ConstString & _messageName, const MapWParams & _params )
     {
-        const ModuleInterfacePtr & module = this->findModule_( _moduleName );
+        const ModuleInterfacePtr & module = this->findModule_( _name );
 
         if( module == nullptr )
         {
@@ -150,20 +143,20 @@ namespace Mengine
         module->message( _messageName, _params );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::messageAll( const ConstString & _messageName, const MapWParams & _params )
+    void ModuleService::messageAll( const ConstString & _name, const MapWParams & _params )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->messageAll( _messageName, _params );
+            module->messageAll( _name, _params );
         }
     }
     //////////////////////////////////////////////////////////////////////////		
-    const ModuleInterfacePtr & ModuleService::findModule_( const ConstString & _moduleName ) const
+    const ModuleInterfacePtr & ModuleService::findModule_( const ConstString & _name ) const
     {
         VectorModules::const_iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
+            std::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
         {
-            return _module->getName() == _moduleName;
+            return _module->getName() == _name;
         } );
 
         if( it_found == m_modules.end() )
@@ -176,12 +169,12 @@ namespace Mengine
         return module;
     }
     //////////////////////////////////////////////////////////////////////////
-    ModuleInterfacePtr ModuleService::popModule_( const ConstString & _moduleName )
+    ModuleInterfacePtr ModuleService::popModule_( const ConstString & _name )
     {
         VectorModules::iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
+            std::find_if( m_modules.begin(), m_modules.end(), [&_name]( const ModuleInterfacePtr & _module )
         {
-            return _module->getName() == _moduleName;
+            return _module->getName() == _name;
         } );
 
         if( it_found == m_modules.end() )

@@ -104,6 +104,7 @@ src
     ChronometerServiceInterface.h
     ArgumentsInterface.h
     FrameworkInterface.h
+    FrameworkServiceInterface.h
     PluginServiceInterface.h
     DynamicLibraryInterface.h
     ScriptWrapperInterface.h

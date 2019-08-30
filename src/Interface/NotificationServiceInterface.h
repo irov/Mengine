@@ -72,6 +72,30 @@ namespace Mengine
         M m_method;
     };
     //////////////////////////////////////////////////////////////////////////
+    template<uint32_t ID, class L>
+    class LambdaObserverCallable
+        : public ArgsObserverCallable<ID>
+    {
+    public:
+        LambdaObserverCallable( const L & _lambda )
+            : m_lambda( _lambda )
+        {
+        }
+
+        ~LambdaObserverCallable()
+        {
+        }
+
+    protected:
+        void call( const typename Notificator<ID>::args_type & _args ) override
+        {
+            std::apply( m_lambda, _args );
+        }
+
+    protected:
+        L m_lambda;
+    };
+    //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class T>
     class GeneratorMethodObserverCallable;
     //////////////////////////////////////////////////////////////////////////
@@ -105,6 +129,15 @@ namespace Mengine
     public:
         virtual void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) = 0;
         virtual void removeObserver( uint32_t _id, const ObservablePtr & _observer ) = 0;
+
+    public:
+        template<uint32_t ID, class C, class L>
+        void addObserverLambda( C * _self, const L & _lambda, const Char * _doc )
+        {
+            ObserverCallableInterfacePtr callable( new LambdaObserverCallable<ID, L>( _lambda ) );
+
+            this->addObserver( ID, ObservablePtr( _self ), callable, _doc );
+        }
 
     public:
         template<uint32_t ID, class C, class M>
@@ -151,6 +184,9 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method )\
     NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method, MENGINE_DOCUMENT_FUNCTION )
+//////////////////////////////////////////////////////////////////////////
+#define NOTIFICATION_ADDOBSERVERLAMBDA( ID, Observer, L )\
+    NOTIFICATION_SERVICE()->addObserverLambda<ID>( Observer, L, MENGINE_DOCUMENT_FUNCTION )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )

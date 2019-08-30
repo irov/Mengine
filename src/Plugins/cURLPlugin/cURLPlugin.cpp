@@ -2,10 +2,12 @@
 
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FactorableUnique.h"
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "cURLScriptEmbedding.h"
 #endif
 
@@ -29,12 +31,10 @@ namespace Mengine
     {
         SERVICE_CREATE( cURLService );
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
-        SERVICE_WAIT( Mengine::ScriptServiceInterface, []()
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), cURLScriptEmbedding );
-
-            return true;
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>() );
         } );
 #endif
 
@@ -43,7 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );

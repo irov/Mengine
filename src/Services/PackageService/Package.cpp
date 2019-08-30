@@ -314,11 +314,13 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        SERVICE_WAIT( ScriptServiceInterface, [this]()
         {
             SCRIPT_SERVICE()
                 ->addModulePath( m_fileGroup, m_scriptsPackages );
-        }
+
+            return true;
+        } );
 
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();

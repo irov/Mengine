@@ -346,7 +346,7 @@ namespace Mengine
         this->unregisterBaseTypes_();
         this->unregisterBaseNodeTypes_();
         this->unregisterBaseResourceTypes_();
-        this->registerEntityGenerator_();
+        this->unregisterEntityGenerator_();
         this->unregisterSceneGenerator_();
         this->unregisterArrowGenerator_();
     }
@@ -689,7 +689,8 @@ namespace Mengine
             if( PACKAGE_SERVICE()
                 ->loadPackages( _fileGroup, resourcePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
-                LOGGER_CRITICAL( "invalid load resource packs"
+                LOGGER_CRITICAL( "invalid load resource pack '%s'"
+                    , resourcePath.c_str()
                 );
 
                 return false;

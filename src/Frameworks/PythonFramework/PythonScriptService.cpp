@@ -390,12 +390,18 @@ namespace Mengine
         m_debugCallFunctions.clear();
 #endif
 
-        for( const HashtableEmbeddings::value_type & value : m_embeddings )
+#ifdef MENGINE_DEBUG
+        for( const ScriptEmbeddingDesc & desc : m_embeddings )
         {
-            const ScriptEmbeddingInterfacePtr & embedding = value.element;
+            const ScriptEmbeddingInterfacePtr & embedding = desc.embedding;
+
+            LOGGER_ERROR( "was forgotten ejecting '%s'"
+                , desc.name.c_str()
+            );
 
             embedding->ejecting( m_kernel );
         }
+#endif
 
         m_embeddings.clear();
 
@@ -506,26 +512,42 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
-    {
+    {      
+        MENGINE_ASSERTION_FATAL( std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        {
+            return _desc.name == _name;
+        } ) == m_embeddings.end() );
+
+        ScriptEmbeddingDesc desc;
+        desc.name = _name;
+        desc.embedding = _embedding;
+
         if( _embedding->embedding( m_kernel ) == false )
         {
             return false;
         }
 
-        m_embeddings.emplace( _name, _embedding );
+        m_embeddings.emplace_back( desc );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeScriptEmbedding( const ConstString & _name )
     {
-        const ScriptEmbeddingInterfacePtr & embedding = m_embeddings.erase( _name );
+        VectorEmbeddings::const_iterator it_found = std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
+        {
+            return _desc.name == _name;
+        } );
 
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( embedding, "invalid erase '%s'"
-            , _name.c_str() 
-        );
+        MENGINE_ASSERTION_FATAL( it_found != m_embeddings.end() );
+
+        const ScriptEmbeddingDesc & desc = *it_found;
+
+        const ScriptEmbeddingInterfacePtr & embedding = desc.embedding;
 
         embedding->ejecting( m_kernel );
+
+        m_embeddings.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     EventablePtr PythonScriptService::eventableEntity( const pybind::object & _type )

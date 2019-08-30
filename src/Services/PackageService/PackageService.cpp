@@ -49,21 +49,19 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIniPath, const Char * _doc )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         LOGGER_INFO( "Packages load... %s:%s"
             , _fileGroup->getName().c_str()
-            , _resourceIniPath.c_str()
+            , _filePath.c_str()
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _resourceIniPath, _doc );
+            ->loadConfig( _fileGroup, _filePath, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load resource settings '%s'"
-            , _resourceIniPath.c_str()
+            , _filePath.c_str()
         );
-
-        ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
 
         VectorString frameworkPacksSettings;
         config->getValues( "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
@@ -79,12 +77,12 @@ namespace Mengine
             pack.dev = false;
             pack.immediately = true;
             pack.preload = true;
-            pack.type = c_dir;
+            pack.type = STRINGIZE_STRING_LOCAL( "dir" );
 
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "'%s' invalid load resource pack no found section for '%s'"
-                    , _resourceIniPath.c_str()
+                    , _filePath.c_str()
                     , resourcePack.c_str()
                 );
 
@@ -121,12 +119,12 @@ namespace Mengine
             pack.dev = false;
             pack.immediately = false;
             pack.preload = true;
-            pack.type = c_dir;
+            pack.type = STRINGIZE_STRING_LOCAL( "dir" );
 
             if( config->hasSection( resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "invalid load '%s' resource pack no found section for '%s'"
-                    , _resourceIniPath.c_str()
+                    , _filePath.c_str()
                     , resourcePack.c_str()
                 );
 
@@ -163,12 +161,12 @@ namespace Mengine
             pack.dev = false;
             pack.immediately = false;
             pack.preload = true;
-            pack.type = c_dir;
+            pack.type = STRINGIZE_STRING_LOCAL( "dir" );
 
             if( config->hasSection( languagePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "invalid load '%s' language pack no found section for '%s'"
-                    , _resourceIniPath.c_str()
+                    , _filePath.c_str()
                     , languagePack.c_str()
                 );
 

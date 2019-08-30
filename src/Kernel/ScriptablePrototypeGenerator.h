@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/NotificatorInterface.h"
 
 #include "FactoryPrototypeGenerator.h"
 
@@ -9,12 +11,14 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     template<class Type, uint32_t Count>
     class ScriptablePrototypeGenerator
         : public FactoryPrototypeGenerator
+        , public Observable
     {
     public:
         ScriptablePrototypeGenerator()
@@ -37,22 +41,29 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
-            if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+            NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING_END, this, [this]()
             {
                 const ConstString & prototype = this->getPrototype();
 
                 ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
 
-                MENGINE_ASSERTION_MEMORY_PANIC( scriptWrapper, nullptr );
+                MENGINE_ASSERTION_MEMORY_PANIC_VOID( scriptWrapper );
 
                 m_scriptWrapper = scriptWrapper;
-            }
+            } );
 #endif
 
             FactoryPtr factory = Helper::makeFactoryPool<Type, Count>();
 
             return factory;
+        }
+
+        void _finalizeFactory() override
+        {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+            NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END );
+#endif
         }
 
     protected:

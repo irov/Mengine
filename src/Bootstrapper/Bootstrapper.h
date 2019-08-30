@@ -18,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool run() override;
+        bool run( const VectorFilePath & _pakPaths ) override;
         void stop() override;
 
     protected:
@@ -27,8 +27,18 @@ namespace Mengine
         bool createDynamicPlugins_();
         bool createDynamicDevPlugins_();
         bool createApplication_();
-        bool runModules_();
-        bool runDevModules_();
+
+    protected:
         bool loadRenderMaterials_();
+
+    protected:
+        bool runModules_();
+        bool runDevModules_();        
+        bool runFrameworks_();
+
+    protected:
+        void stopModules_();
+        void stopDevModules_();
+        void stopFrameworks_();
     };
 }

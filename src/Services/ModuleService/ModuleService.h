@@ -19,19 +19,12 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-
+        
     public:
-        void finalizeModules() override;
-
-    public:
-        bool registerModule( const ConstString & _moduleName, const ModuleFactoryInterfacePtr & _module ) override;
-        void unregisterModule( const ConstString & _moduleName ) override;
-
-    public:
-        bool hasModule( const ConstString & _moduleName ) const override;
-        bool runModule( const ConstString & _moduleName, const Char * _doc ) override;
-        bool stopModule( const ConstString & _moduleName ) override;
-        bool isRunModule( const ConstString & _moduleName ) const override;
+        bool hasModule( const ConstString & _name ) const override;
+        bool runModule( const ConstString & _name, const Char * _doc ) override;
+        bool stopModule( const ConstString & _name ) override;
+        bool isRunModule( const ConstString & _name ) const override;
 
     public:
         void update( bool _focus ) override;
@@ -41,17 +34,14 @@ namespace Mengine
         void render( const RenderContext * _context ) override;
 
     public:
-        void message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params ) override;
+        void message( const ConstString & _name, const ConstString & _messageName, const MapWParams & _params ) override;
         void messageAll( const ConstString & _messageName, const MapWParams & _params ) override;
 
     protected:
-        const ModuleInterfacePtr & findModule_( const ConstString & _moduleName ) const;
-        ModuleInterfacePtr popModule_( const ConstString & _moduleName );
+        const ModuleInterfacePtr & findModule_( const ConstString & _name ) const;
+        ModuleInterfacePtr popModule_( const ConstString & _name );
 
     protected:
-        typedef Hashtable<ConstString, ModuleFactoryInterfacePtr> HashtableModuleFactory;
-        HashtableModuleFactory m_moduleFactory;
-
         typedef Vector<ModuleInterfacePtr> VectorModules;
         VectorModules m_modules;
     };

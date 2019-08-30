@@ -1,13 +1,18 @@
 #include "PythonFrameworkPlugin.h"
 
-#include "Interface/FrameworkInterface.h"
+#include "Interface/FrameworkFactoryInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+
+#include "PythonFramework.h"
+
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FrameworkFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ScriptProviderService );
 SERVICE_EXTERN( ScriptService );
-SERVICE_EXTERN( Framework );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( PythonFramework, Mengine::PythonFrameworkPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -26,21 +31,22 @@ namespace Mengine
     {
         SERVICE_CREATE( ScriptProviderService );
         SERVICE_CREATE( ScriptService );
-        SERVICE_CREATE( Framework );
+
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PythonFramework" ), Helper::makeFrameworkFactory<PythonFramework>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFrameworkPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Framework );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "LandbaseFramework" ) );
+
         SERVICE_FINALIZE( ScriptService );
         SERVICE_FINALIZE( ScriptProviderService );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonFrameworkPlugin::_destroyPlugin()
     {
-        SERVICE_DESTROY( Framework );
         SERVICE_DESTROY( ScriptService );
         SERVICE_DESTROY( ScriptProviderService );
     }

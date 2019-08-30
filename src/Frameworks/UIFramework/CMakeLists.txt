@@ -1,0 +1,26 @@
+set(MY_LIB_NAME UIFramework)
+
+ADD_FILTER(
+UIFrameworkPlugin
+    UIFrameworkPlugin.cpp
+    UIFrameworkPlugin.h
+)
+
+ADD_FILTER(
+UIFramework
+    UIFramework.cpp
+    UIFramework.h
+)
+
+ADD_FILTER(
+Button
+	Button.cpp
+	Button.h
+)
+
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_UIFRAMEWORK Frameworks)
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

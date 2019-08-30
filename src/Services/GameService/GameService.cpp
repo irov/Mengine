@@ -371,6 +371,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::removePersonality()
     {
+        PLAYER_SERVICE()
+            ->setArrow( nullptr );
+
         EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 

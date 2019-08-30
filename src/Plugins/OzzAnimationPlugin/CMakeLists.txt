@@ -20,7 +20,7 @@ src
     NodeOzzAnimation.h
 )
 
-if(MENGINE_USE_PYTHON_FRAMEWORK)
+if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
     embedding
         OzzScriptEmbedding.cpp

@@ -29,14 +29,14 @@ src
     AstralaxParticlePlugin.def    
 )
 
-if(MENGINE_USE_PYTHON_FRAMEWORK)
-ADD_FILTER(
-embedding
-    AstralaxScriptEmbedding.cpp
-    AstralaxScriptEmbedding.h    
-    )
-    
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    embedding
+        AstralaxScriptEmbedding.cpp
+        AstralaxScriptEmbedding.h    
+        )
+        
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 add_definitions(-DMAGIC_3D)

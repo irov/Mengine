@@ -39,14 +39,14 @@ src
     MovieFramePack.cpp
 )
 
-if(MENGINE_USE_PYTHON_FRAMEWORK)
-ADD_FILTER(
-embedding
-    MovieScriptEmbedding.cpp
-    MovieScriptEmbedding.h
-    )    
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    embedding
+        MovieScriptEmbedding.cpp
+        MovieScriptEmbedding.h
+        )    
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

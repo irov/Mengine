@@ -9,7 +9,7 @@
 
 #include "NodeOzzAnimation.h"
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "OzzScriptEmbedding.h"
 #endif
 
@@ -34,12 +34,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OzzAnimationPlugin::_initializePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
-        SERVICE_WAIT( ScriptServiceInterface, []()
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ), OzzScriptEmbedding );
-
-            return true;
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ), Helper::makeFactorableUnique<OzzScriptEmbedding>() );
         } );
 #endif
 
@@ -78,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OzzAnimationPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ) );

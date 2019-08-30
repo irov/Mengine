@@ -22,6 +22,7 @@ namespace Mengine
 
     protected:
         virtual FactoryPtr _initializeFactory() = 0;
+        virtual void _finalizeFactory() = 0;
 
     protected:
         uint32_t count() const override;

@@ -7,7 +7,7 @@ namespace Mengine
     class PythonFrameworkPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "Framework" )
+        PLUGIN_DECLARE( "PythonFramework" )
 
     public:
         PythonFrameworkPlugin();

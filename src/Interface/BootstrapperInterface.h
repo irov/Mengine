@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/VectorFilePath.h"
 
 #include "Config/Typedef.h"
 
@@ -14,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "Bootstrapper" );
 
     public:
-        virtual bool run() = 0;
+        virtual bool run( const VectorFilePath & _pakPaths ) = 0;
         virtual void stop() = 0;
     };
 }

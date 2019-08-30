@@ -14,11 +14,9 @@ namespace Mengine
 
     public:
         FactoryPtr _initializeFactory() override;
+        void _finalizeFactory() override;
 
     public:
         FactorablePointer generate( const Char * _doc ) override;
-
-    protected:
-        FactoryPtr m_factoryFont;
     };
 }

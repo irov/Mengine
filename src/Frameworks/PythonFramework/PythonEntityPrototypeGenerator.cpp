@@ -74,6 +74,11 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
+    void PythonEntityPrototypeGenerator::_finalizeFactory()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     const pybind::object & PythonEntityPrototypeGenerator::getPythonType()
     {
         if( m_type.is_invalid() == false )

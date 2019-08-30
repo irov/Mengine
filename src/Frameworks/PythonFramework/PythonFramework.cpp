@@ -2,6 +2,7 @@
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "ConstsScriptEmbedding.h"
 #include "EngineScriptEmbedding.h"
@@ -16,13 +17,10 @@
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Framework, Mengine::PythonFramework );
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonFramework::PythonFramework()
-        : m_initializeFramework( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -30,53 +28,70 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonFramework::_initializeService()
+    bool PythonFramework::_initializeFramework()
     {
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), ConstsScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ), MathScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ), HelperScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ), NodeScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ), EntityScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ), SoundScriptEmbedding );
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ), EngineScriptEmbedding );
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ), Helper::makeFactorableUnique<MathScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ), Helper::makeFactorableUnique<HelperScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ), Helper::makeFactorableUnique<NodeScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ), Helper::makeFactorableUnique<EntityScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ), Helper::makeFactorableUnique<SoundScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ), Helper::makeFactorableUnique<EngineScriptEmbedding>() ) == false )
+        {
+            return false;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EMBEDDING_END );
+
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME, this, &PythonFramework::notifyBootstrapperInitializeGame );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonFramework::_finalizeService()
+    void PythonFramework::_finalizeFramework()
     {
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
+
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "HelperScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonFramework::onFrameworkInitialize()
+    void PythonFramework::notifyBootstrapperInitializeGame()
     {
-        if( m_initializeFramework == true )
-        {
-            return true;
-        }
-
-        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), GameScriptEmbedding );
-
-        m_initializeFramework = true;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonFramework::onFrameworkFinalize()
-    {
-        if( m_initializeFramework == false )
-        {
-            return;
-        }
-
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
-
-        m_initializeFramework = false;
+        ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), Helper::makeFactorableUnique<GameScriptEmbedding>() );
     }
 }

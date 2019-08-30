@@ -99,7 +99,13 @@ namespace Mengine
         m_initializeServiceName = name;
 #endif
 
-        if( service->initializeService() == false )
+        bool successful = service->initializeService();
+
+#ifdef MENGINE_DEBUG
+        m_initializeServiceName = nullptr;
+#endif
+
+        if( successful == false )
         {
             if( _safe == false )
             {
@@ -111,10 +117,6 @@ namespace Mengine
 
             return false;
         }
-
-#ifdef MENGINE_DEBUG
-        m_initializeServiceName = nullptr;
-#endif
 
         MENGINE_ASSERTION( strlen( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
             , name

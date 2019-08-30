@@ -6,7 +6,7 @@
 
 #include "ResourceTexturepacker.h"
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "TexturepackerScriptEmbedding.h"
 #endif
 
@@ -31,12 +31,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TexturepackerPlugin::_initializePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
-        SERVICE_WAIT( ScriptServiceInterface, []()
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ), TexturepackerScriptEmbedding );
-
-            return true;
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ), Helper::makeFactorableUnique<TexturepackerScriptEmbedding>() );
         } );
 #endif
 
@@ -58,7 +56,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TexturepackerPlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "TexturepackerScriptEmbedding" ) );

@@ -4,6 +4,7 @@
 #include "Interface/RenderVertexAttributeInterface.h"
 
 #include "Kernel/PluginBase.h"
+#include "Kernel/Observable.h"
 
 #include "Config/Vector.h"
 
@@ -11,6 +12,7 @@ namespace Mengine
 {
     class OzzAnimationPlugin
         : public PluginBase
+        , public Observable
     {
         PLUGIN_DECLARE( "OzzAnimation" )
 

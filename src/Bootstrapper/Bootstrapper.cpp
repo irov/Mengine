@@ -12,7 +12,11 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
 #include "Interface/AccountServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 #include "Interface/GameServiceInterface.h"
+#include "Interface/FrameworkServiceInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
@@ -46,6 +50,7 @@ SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( SoundSystem );
 SERVICE_EXTERN( SilentSoundSystem );
 SERVICE_EXTERN( ModuleService );
+SERVICE_EXTERN( FrameworkService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( PrefetcherService );
@@ -170,6 +175,10 @@ PLUGIN_EXPORT( MENGINE_EXTERNAL_FRAMEWORK_NAME );
 PLUGIN_EXPORT( PythonFramework );
 #endif
 
+#ifdef MENGINE_PLUGIN_UIFRAMEWORK_STATIC
+PLUGIN_EXPORT( UIFramework );
+#endif
+
 #ifdef MENGINE_PLUGIN_JSON_STATIC
 PLUGIN_EXPORT( JSON );
 #endif
@@ -228,7 +237,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::run()
+    bool Bootstrapper::run( const VectorFilePath & _pakPaths )
     {
         if( this->createServices_() == false )
         {
@@ -269,6 +278,38 @@ namespace Mengine
         {
             return false;
         }
+
+        if( this->runFrameworks_() == false )
+        {
+            return false;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
+
+        LOGGER_INFO( "initialize Game..." );
+
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+        if( APPLICATION_SERVICE()
+            ->initializeGame( defaultFileGroup, _pakPaths ) == false )
+        {
+            LOGGER_CRITICAL( "Application invalid initialize game"
+            );
+
+            return false;
+        }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
+
+        if( GAME_SERVICE()
+            ->loadPersonality() == false )
+        {
+            LOGGER_CRITICAL( "Game invalid load personality"
+            );
+
+            return false;
+        }        
 
         return true;
     }
@@ -311,6 +352,7 @@ namespace Mengine
         SERVICE_CREATE( SoundService );
 
         SERVICE_CREATE( ModuleService );
+        SERVICE_CREATE( FrameworkService );
         SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );
         SERVICE_CREATE( PrefetcherService );
@@ -357,7 +399,11 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin PythonFramework..." );
+        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin Python Framework..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_UIFRAMEWORK_STATIC
+        MENGINE_ADD_PLUGIN( UIFramework, "initialize Plugin UI Framework..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
@@ -550,13 +596,13 @@ namespace Mengine
         VectorConstString modules;
         CONFIG_VALUES( "Modules", "Name", modules );
 
-        for( const ConstString & moduleName : modules )
+        for( const ConstString & name : modules )
         {
             if( MODULE_SERVICE()
-                ->runModule( moduleName, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->runModule( name, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_CRITICAL( "failed to run module '%s'"
-                    , moduleName.c_str()
+                    , name.c_str()
                 );
             }
         }
@@ -584,23 +630,23 @@ namespace Mengine
             VectorConstString devModules;
             CONFIG_VALUES( "DevModules", "Name", devModules );
 
-            for( const ConstString & moduleName : devModules )
+            for( const ConstString & name : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->hasModule( moduleName ) == false )
+                    ->hasModule( name ) == false )
                 {
                     LOGGER_ERROR( "not exist dev module '%s'"
-                        , moduleName.c_str()
+                        , name.c_str()
                     );
 
                     continue;
                 }
 
                 if( MODULE_SERVICE()
-                    ->runModule( moduleName, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    ->runModule( name, MENGINE_DOCUMENT_FUNCTION ) == false )
                 {
                     LOGGER_ERROR( "failed to run dev module '%s'"
-                        , moduleName.c_str()
+                        , name.c_str()
                     );
                 }
             }
@@ -630,6 +676,104 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::runFrameworks_()
+    {
+        LOGGER_MESSAGE( "run Frameworks..." );
+
+        VectorConstString frameworks;
+        CONFIG_VALUES( "Frameworks", "Name", frameworks );
+
+        for( const ConstString & name : frameworks )
+        {
+            if( FRAMEWORK_SERVICE()
+                ->runFramework( name, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_CRITICAL( "failed to run framework '%s'"
+                    , name.c_str()
+                );
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::stopModules_()
+    {
+        VectorConstString modules;
+        CONFIG_VALUES( "Modules", "Name", modules );
+
+        for( const ConstString & name : modules )
+        {
+            if( MODULE_SERVICE()
+                ->stopModule( name ) == false )
+            {
+                LOGGER_CRITICAL( "failed to stop module '%s'"
+                    , name.c_str()
+                );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::stopDevModules_()
+    {
+#ifdef MENGINE_MASTER_RELEASE
+        bool devmodules = false;
+#else
+#ifdef MENGINE_DEBUG
+        bool devmodules = true;
+#else
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool devmodules = developmentMode;
+#endif
+#endif
+
+        bool nodevmodules = HAS_OPTION( "nodevmodules" );
+
+        if( devmodules == true && nodevmodules == false )
+        {
+            VectorConstString devModules;
+            CONFIG_VALUES( "DevModules", "Name", devModules );
+
+            for( const ConstString & name : devModules )
+            {
+                if( MODULE_SERVICE()
+                    ->hasModule( name ) == false )
+                {
+                    LOGGER_ERROR( "not exist dev module '%s'"
+                        , name.c_str()
+                    );
+
+                    continue;
+                }
+
+                if( MODULE_SERVICE()
+                    ->stopModule( name ) == false )
+                {
+                    LOGGER_ERROR( "failed to stop dev module '%s'"
+                        , name.c_str()
+                    );
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::stopFrameworks_()
+    {
+        VectorConstString frameworks;
+        CONFIG_VALUES( "Frameworks", "Name", frameworks );
+
+        for( const ConstString & name : frameworks )
+        {
+            if( FRAMEWORK_SERVICE()
+                ->stopFramework( name ) == false )
+            {
+                LOGGER_CRITICAL( "failed to stop framework '%s'"
+                    , name.c_str()
+                );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
     {
         if( SERVICE_EXIST( PlatformInterface ) == true )
@@ -644,11 +788,14 @@ namespace Mengine
         GAME_SERVICE()
             ->removePersonality();
 
-        if( SERVICE_EXIST( FrameworkInterface ) == true )
-        {
-            FRAMEWORK_SERVICE()
-                ->onFrameworkFinalize();
-        }
+        SCENE_SERVICE()
+            ->destroyCurrentScene();
+
+        //if( SERVICE_EXIST( FrameworkInterface ) == true )
+        //{
+        //    FRAMEWORK_SERVICE()
+        //        ->onFrameworkFinalize();
+        //}
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
@@ -658,8 +805,10 @@ namespace Mengine
         SERVICE_PROVIDER_STOP();
 
 
-        MODULE_SERVICE()
-            ->finalizeModules();
+
+        this->stopModules_();
+        this->stopDevModules_();
+        this->stopFrameworks_();
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
@@ -685,6 +834,7 @@ namespace Mengine
             ->unloadPlugins();
 
         SERVICE_FINALIZE( ModuleService );
+        SERVICE_FINALIZE( FrameworkService );
         SERVICE_FINALIZE( PlayerService );
         SERVICE_FINALIZE( PickerService );
         SERVICE_FINALIZE( UpdateService );

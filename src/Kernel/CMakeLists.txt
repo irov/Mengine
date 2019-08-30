@@ -446,6 +446,11 @@ Core
     ModuleBase.cpp
     
     ModuleFactory.h
+
+    FrameworkBase.h
+    FrameworkBase.cpp
+    
+    FrameworkFactory.h
     
     Holder.h
     

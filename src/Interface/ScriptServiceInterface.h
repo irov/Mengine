@@ -6,7 +6,6 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/FactorableUnique.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 
@@ -82,8 +81,8 @@ namespace Mengine
 #define SCRIPT_SERVICE()\
     ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define ADD_SCRIPT_EMBEDDING(Name, Type)\
-    if(SCRIPT_SERVICE()->addScriptEmbedding( Name, Helper::makeFactorableUnique<Type>())==false) return false
+#define ADD_SCRIPT_EMBEDDING(Name, Embedding)\
+    SCRIPT_SERVICE()->addScriptEmbedding( Name, Embedding )
 //////////////////////////////////////////////////////////////////////////
 #define REMOVE_SCRIPT_EMBEDDING(Name)\
     SCRIPT_SERVICE()->removeScriptEmbedding( Name )

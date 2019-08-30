@@ -13,7 +13,7 @@
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "Movie2ScriptEmbedding.h"
 #endif
 
@@ -123,12 +123,10 @@ namespace Mengine
 
         m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
-        SERVICE_WAIT( ScriptServiceInterface, []()
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ), Movie2ScriptEmbedding );
-
-            return true;
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ), Helper::makeFactorableUnique<Movie2ScriptEmbedding>() );
         } );
 #endif
 
@@ -212,7 +210,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ) );

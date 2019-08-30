@@ -169,8 +169,10 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_ASSERTION_FATAL( ::strlen( name ) < MENGINE_PLUGIN_NAME_MAX );
+
         PluginDesc desc;
-        strcpy( desc.name, name );
+        ::strcpy( desc.name, name );
         desc.dynamicLibrary = _dynamicLibrary;
         desc.plugin = _plugin;
 

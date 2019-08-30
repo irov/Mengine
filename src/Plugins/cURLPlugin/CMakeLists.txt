@@ -26,14 +26,14 @@ src
     cURLErrorHelper.h
 	)
     
-if(MENGINE_USE_PYTHON_FRAMEWORK)
-ADD_FILTER(
-embedding
-    cURLScriptEmbedding.cpp
-    cURLScriptEmbedding.h
-    )    
+if(MENGINE_USE_SCRIPT_SERVICE)
+    ADD_FILTER(
+    embedding
+        cURLScriptEmbedding.cpp
+        cURLScriptEmbedding.h
+        )    
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
 endif()
 
 add_definitions(-DCURL_STATICLIB)

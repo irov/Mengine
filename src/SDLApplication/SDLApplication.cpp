@@ -186,7 +186,8 @@ namespace Mengine
 
         config->getValues( "Game", "Path", m_configPaths );
         config->getValues( "Config", "Path", m_configPaths );
-        config->getValues( "Resource", "Path", m_resourceConfigPaths );
+        config->getValues( "Resource", "Path", m_pakPaths );
+        config->getValues( "Pak", "Path", m_pakPaths );
 
         return true;
     }
@@ -433,38 +434,9 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run() == false )
+            ->run( m_pakPaths ) == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
-            );
-
-            return false;
-        }
-        
-        LOGGER_INFO( "initialize Game..." );
-
-        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        if( APPLICATION_SERVICE()
-            ->initializeGame( defaultFileGroup, m_resourceConfigPaths ) == false )
-        {
-            LOGGER_CRITICAL( "Application invalid initialize game"
-            );
-
-            return false;
-        }
-
-        if( FRAMEWORK_SERVICE()
-            ->onFrameworkInitialize() == false )
-        {
-            return false;
-        }
-
-        if( GAME_SERVICE()
-            ->loadPersonality() == false )
-        {
-            LOGGER_CRITICAL( "Game invalid load personality"
             );
 
             return false;

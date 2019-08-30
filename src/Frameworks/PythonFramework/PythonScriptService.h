@@ -107,8 +107,14 @@ namespace Mengine
         ScriptLoggerPtr m_loggerWarning;
         ScriptLoggerPtr m_loggerError;
 
-        typedef Hashtable<ConstString, ScriptEmbeddingInterfacePtr> HashtableEmbeddings;
-        HashtableEmbeddings m_embeddings;
+        struct ScriptEmbeddingDesc
+        {
+            ConstString name;
+            ScriptEmbeddingInterfacePtr embedding;            
+        };
+
+        typedef Vector<ScriptEmbeddingDesc> VectorEmbeddings;
+        VectorEmbeddings m_embeddings;
 
         typedef Map<ConstString, PyObject *> MapModules;
         typedef Map<ConstString, MapModules> MapCategoryPrototypies;

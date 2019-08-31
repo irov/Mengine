@@ -4,7 +4,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "SpineScriptEmbedding.h"
 #endif
 
@@ -38,12 +38,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SpinePlugin::_initializePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
-        SERVICE_WAIT( ScriptServiceInterface, []()
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SpineScriptEmbedding" ), SpineScriptEmbedding );
-
-            return true;
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SpineScriptEmbedding" ), Helper::makeFactorableUnique<SpineScriptEmbedding>() );
         } );
 #endif
 
@@ -85,7 +83,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SpinePlugin::_finalizePlugin()
     {
-#ifdef MENGINE_USE_PYTHON_FRAMEWORK
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END );
+
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SpineScriptEmbedding" ) );

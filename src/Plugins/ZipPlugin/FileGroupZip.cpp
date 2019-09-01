@@ -69,12 +69,12 @@ namespace Mengine
     {
         m_name = _name;
         m_fileGroup = _fileGroup;
-        m_path = _filePath;
+        m_filePath = _filePath;
 
         if( this->loadHeader_() == false )
         {
             LOGGER_ERROR( "can't load header '%s'"
-                , m_path.c_str()
+                , m_filePath.c_str()
             );
 
             return false;
@@ -97,10 +97,10 @@ namespace Mengine
     bool FileGroupZip::loadHeader_()
     {
         InputStreamInterfacePtr zipFile = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, m_path, false, MENGINE_DOCUMENT_FUNCTION );
+            ->openInputFile( m_fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( zipFile, false, "can't open input stream for path '%s'"
-            , m_path.c_str()
+            , m_filePath.c_str()
         );
 
         size_t zip_size = zipFile->size();
@@ -113,7 +113,7 @@ namespace Mengine
         if( zipFile->read( endof_central_dir, 22 ) != 22 )
         {
             LOGGER_ERROR( "invalid zip format '%s'"
-                , m_path.c_str()
+                , m_filePath.c_str()
             );
 
             return false;
@@ -124,7 +124,7 @@ namespace Mengine
         if( eocd != 0x06054B50 )
         {
             LOGGER_ERROR( "bad 'End of Central Dir' signature zip '%s'"
-                , m_path.c_str()
+                , m_filePath.c_str()
             );
 
             return false;
@@ -181,7 +181,7 @@ namespace Mengine
             if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' invalid compress method %d"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , filePath.c_str()
                     , header.compressionMethod
                 );
@@ -240,7 +240,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const FilePath & FileGroupZip::getFolderPath() const
     {
-        return m_path;
+        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existFile( const FilePath & _filePath ) const
@@ -424,14 +424,14 @@ namespace Mengine
     bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "zip '%s' file '%s' stream is NULL"
-            , m_path.c_str()
+            , m_filePath.c_str()
             , _filePath.c_str()
         );
 
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );
 
         MENGINE_ASSERTION_FATAL( it_found != m_files.end(), false, "zip '%s' file '%s' not found"
-            , m_path.c_str()
+            , m_filePath.c_str()
             , _filePath.c_str()
         );
 
@@ -441,7 +441,7 @@ namespace Mengine
         size_t file_size = _size == 0 ? fi.file_size : _size;
 
         MENGINE_ASSERTION_FATAL( _offset + file_size <= fi.file_size, false, "zip '%s' file '%s' invalid open range %d:%d (file size is low %d:%d)"
-            , m_path.c_str()
+            , m_filePath.c_str()
             , _filePath.c_str()
             , _offset
             , _size
@@ -452,14 +452,14 @@ namespace Mengine
         if( _streaming == true )
         {
             MENGINE_ASSERTION_FATAL( fi.compr_method == Z_NO_COMPRESSION, false, "zip '%s' file '%s' invalid open, not support compress + stream"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , _filePath.c_str()
             );
 
-            if( m_fileGroup->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
+            if( m_fileGroup->openInputFile( m_filePath, _stream, file_offset, file_size, true ) == false )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' invalid open range %d:%d"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , _filePath.c_str()
                     , fi.seek_pos
                     , fi.file_size
@@ -478,7 +478,7 @@ namespace Mengine
             void * buffer = memory->newBuffer( fi.file_size, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %d"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
             );
@@ -493,7 +493,7 @@ namespace Mengine
             void * buffer = memory->newBuffer( fi.unz_size, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %d"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , _filePath.c_str()
                 , fi.unz_size
             );
@@ -501,7 +501,7 @@ namespace Mengine
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "zip '%s' file '%s' failed cache memory %d"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , _filePath.c_str()
                 , fi.file_size
             );
@@ -518,7 +518,7 @@ namespace Mengine
             if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' failed inflate"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , _filePath.c_str()
                 );
 

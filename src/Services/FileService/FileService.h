@@ -23,7 +23,7 @@ namespace Mengine
         FileGroupInterfacePtr createFileGroup( const ConstString & _type, const Char * _doc );
 
     public:
-        bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) override;
+        bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) override;
         bool unmountFileGroup( const ConstString & _name ) override;
 
     public:

@@ -43,7 +43,7 @@ namespace Mengine
         virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:
-        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:
         virtual bool cancelRequest( HttpRequestID _id ) = 0;

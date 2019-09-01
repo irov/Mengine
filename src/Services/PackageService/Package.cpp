@@ -36,7 +36,7 @@ namespace Mengine
         , const Tags & _platform
         , const FilePath & _descriptionPath
         , const FileGroupInterfacePtr & _mountFileGroup
-        , const FilePath & _path
+        , const FilePath & _filePath
         , bool _preload )
     {
         m_name = _name;
@@ -45,7 +45,7 @@ namespace Mengine
         m_platform = _platform;
         m_descriptionPath = _descriptionPath;
         m_mountFileGroup = _mountFileGroup;
-        m_filePath = _path;
+        m_filePath = _filePath;
         m_preload = _preload;
     }
     //////////////////////////////////////////////////////////////////////////

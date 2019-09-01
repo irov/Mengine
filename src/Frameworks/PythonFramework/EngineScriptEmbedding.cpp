@@ -1499,14 +1499,14 @@ namespace Mengine
             pybind::object m_cb;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroupName, const FilePath & _path, const pybind::object & _cb )
+        bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroupName, const FilePath & _filePath, const pybind::object & _cb )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _fileGroupName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
 

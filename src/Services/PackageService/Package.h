@@ -26,7 +26,7 @@ namespace Mengine
             , const Tags & _platform
             , const FilePath & _descriptionPath
             , const FileGroupInterfacePtr & _mountFileGroup
-            , const FilePath & _path
+            , const FilePath & _filePath
             , bool _preload
         );
 
@@ -65,12 +65,12 @@ namespace Mengine
         void addModulePath_( const String & _filePath );
 
     protected:
-        void addResource_( const FilePath & _path, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored );
-        void addTextPath_( const FilePath & _path, const Tags & _platform );
-        void addScriptPackage_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
-        void addFontPath_( const FilePath & _path, const Tags & _tags );
-        void addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform );
-        void addMaterial_( const FilePath & _path, const Tags & _platform );
+        void addResource_( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored );
+        void addTextPath_( const FilePath & _filePath, const Tags & _platform );
+        void addScriptPackage_( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
+        void addFontPath_( const FilePath & _filePath, const Tags & _tags );
+        void addData_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform );
+        void addMaterial_( const FilePath & _filePath, const Tags & _platform );
 
     protected:
         bool loadText_( const FilePath & _filePath );

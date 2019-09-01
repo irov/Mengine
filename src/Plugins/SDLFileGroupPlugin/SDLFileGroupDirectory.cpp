@@ -77,16 +77,16 @@ namespace Mengine
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::existFile( const FilePath & _fileName ) const
+    bool SDLFileGroupDirectory::existFile( const FilePath & _filePath ) const
     {
         // SDL doesn't have this, so we're emulating ... ugly way :(
 
         Char filePath[MENGINE_MAX_PATH];
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, _filePath, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -105,7 +105,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderName ) const
+    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderPath ) const
     {
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
@@ -113,7 +113,7 @@ namespace Mengine
         PathString accountString;
         accountString.append( relationPath );
         accountString.append( folderPath );
-        accountString.append( _folderName );
+        accountString.append( _folderPath );
         accountString.append( '/' );
 
         if( PLATFORM_SERVICE()
@@ -171,9 +171,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc )
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, const Char * _doc )
     {
-        MENGINE_UNUSED( _fileName );
+        MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
 
         SDLFileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );

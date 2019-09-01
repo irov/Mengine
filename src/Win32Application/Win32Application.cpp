@@ -119,9 +119,8 @@ namespace Mengine
             , applicationPath.c_str()
         );
 
-        config->getValues( "Game", "Path", m_configPaths );
         config->getValues( "Configs", "Path", m_configPaths );
-        config->getValues( "Credentials", "Path", m_configPaths );
+        config->getValues( "Credentials", "Path", m_credentialsPaths );
         config->getValues( "Packages", "Path", m_packagesPaths );
 
         return true;
@@ -140,6 +139,19 @@ namespace Mengine
                 ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "invalid load config '%s'"
+                    , filePath.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        for( const FilePath & filePath : m_credentialsPaths )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_ERROR( "invalid load credential '%s'"
                     , filePath.c_str()
                 );
 

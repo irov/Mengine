@@ -184,10 +184,9 @@ namespace Mengine
             , applicationPath.c_str()
         );
 
-        config->getValues( "Game", "Path", m_configPaths );
-        config->getValues( "Config", "Path", m_configPaths );
-        config->getValues( "Resource", "Path", m_pakPaths );
-        config->getValues( "Pak", "Path", m_pakPaths );
+        config->getValues( "Configs", "Path", m_configPaths );
+        config->getValues( "Credentials", "Path", m_credentialsPaths );
+        config->getValues( "Packages", "Path", m_packagesPaths );
 
         return true;
     }
@@ -204,13 +203,26 @@ namespace Mengine
             if( CONFIG_SERVICE()
                 ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
-                LOGGER_ERROR( "invalid load config %s"
+                LOGGER_ERROR( "invalid load config '%s'"
                     , filePath.c_str()
                 );
 
                 return false;
             }
         }
+
+        for( const FilePath & filePath : m_credentialsPaths )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_ERROR( "invalid load credential '%s'"
+                    , filePath.c_str()
+                );
+
+                return false;
+            }
+        }        
 
         return true;
     }
@@ -434,7 +446,7 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run( m_pakPaths ) == false )
+            ->run( m_packagesPaths ) == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
             );

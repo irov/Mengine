@@ -64,6 +64,7 @@ namespace Mengine
         bool m_developmentMode;
 
         VectorFilePath m_configPaths;
-        VectorFilePath m_pakPaths;
+        VectorFilePath m_credentialsPaths;
+        VectorFilePath m_packagesPaths;
     };
 }

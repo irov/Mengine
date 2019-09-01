@@ -58,7 +58,7 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroup;
 
         FilePath m_relationPath;
-        FilePath m_path;
+        FilePath m_filePath;
 
         InputStreamInterfacePtr m_zipFile;
 

@@ -353,7 +353,7 @@ namespace Mengine
         }
         else
         {
-            m_fileLog = fileLog;
+            m_loggerFile = fileLog;
 
             LOGGER_INFO( "starting log to '%s'"
                 , logFilePath.c_str()
@@ -553,15 +553,15 @@ namespace Mengine
     {
         SERVICE_LEAVE( FileServiceInterface, [this]()
         {
-            if( m_fileLog != nullptr )
+            if( m_loggerFile != nullptr )
             {
                 if( SERVICE_EXIST( LoggerServiceInterface ) == true )
                 {
                     LOGGER_SERVICE()
-                        ->unregisterLogger( m_fileLog );
+                        ->unregisterLogger( m_loggerFile );
                 }
 
-                m_fileLog = nullptr;
+                m_loggerFile = nullptr;
             }
         } );
 

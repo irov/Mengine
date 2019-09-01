@@ -57,7 +57,7 @@ namespace Mengine
 
         ThreadMutexInterfacePtr m_mutexAllocatorPool;
 
-        LoggerInterfacePtr m_fileLog;
+        LoggerInterfacePtr m_loggerFile;
         LoggerInterfacePtr m_loggerMessageBox;
 
         VectorFilePath m_configPaths;

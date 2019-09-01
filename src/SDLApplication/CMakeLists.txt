@@ -32,12 +32,12 @@ if(MENGINE_TARGET_ANDROID)
 endif()
 
 if(MENGINE_TARGET_IOS AND NOT MENGINE_BUILD_ONLY_EXECUTABLE_MODULE)
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop/deploy-ios-plist")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/Desktop/deploy-ios-plist")
 
-    set(myApp_MEDIA ~/Desktop/deploy-ios-media.xcassets)
+    set(myApp_MEDIA "$ENV{HOME}/Desktop/deploy-ios-media.xcassets")
     set_source_files_properties(${myApp_MEDIA} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
-    set(DEPLOY_DATA $ENV{HOME}/Desktop/deploy-ios-data)
+    set(DEPLOY_DATA "$ENV{HOME}/Desktop/deploy-ios-data")
     file(GLOB_RECURSE myApp_DATAS "${DEPLOY_DATA}/*")
     list(FILTER myApp_DATAS EXCLUDE REGEX ".*.DS_Store$")
     foreach(myApp_DATA ${myApp_DATAS})
@@ -71,23 +71,23 @@ if(MENGINE_TARGET_IOS AND MENGINE_BUILD_ONLY_EXECUTABLE_MODULE)
 endif()
 
 if(MENGINE_TARGET_MAC)
-    set(myApp_ICON ~/Desktop/deploy-mac-icons/icon.icns)
+    set(myApp_ICON "$ENV{HOME}/Desktop/deploy-mac-icons/icon.icns")
     set_source_files_properties(${myApp_ICON} PROPERTIES
            MACOSX_PACKAGE_LOCATION "Resources")
 
-    set(myApp_ASTRALAX ~/Desktop/magic3d.dylib)
+    set(myApp_ASTRALAX "$ENV{HOME}/Desktop/magic3d.dylib")
     set_source_files_properties(${myApp_ASTRALAX} PROPERTIES
            MACOSX_PACKAGE_LOCATION "MacOS")
 
     if(MENGINE_PLUGIN_STEAM)
-        set(myApp_STEAM ~/Desktop/libsteam_api.dylib)
+        set(myApp_STEAM "$ENV{HOME}/Desktop/libsteam_api.dylib")
         set_source_files_properties(${myApp_STEAM} PROPERTIES
               MACOSX_PACKAGE_LOCATION "MacOS")
     else()
         set(myApp_STEAM)
     endif()
 
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "~/Desktop/deploy-mac-plist")
+    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "$ENV{HOME}/Desktop/deploy-mac-plist")
            
     ADD_EXECUTABLE( ${MY_LIB_NAME} MACOSX_BUNDLE ${myApp_ICON} ${myApp_ASTRALAX} ${myApp_STEAM} ${SRC_FILES} )
 

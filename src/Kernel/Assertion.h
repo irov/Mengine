@@ -94,11 +94,11 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_ASSERTION_DEBUG
-#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...) if(!(Condition)) return Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_FATAL_RETURN(Condition, Ret, ...) if(!(Condition)) return Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
-#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Helper::AssertionOperator( ASSERTION_LEVEL_CRITICAL, #Condition, nullptr, 0 ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...) if(!(Condition)) return Mengine::Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_ERROR, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_FATAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_FATAL_RETURN(Condition, Ret, ...) if(!(Condition)) return Mengine::Helper::makeAssertionReturnOperator(Ret) << Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_FATAL, #Condition, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE ) (__VA_ARGS__)
+#   define MENGINE_ASSERTION_CRITICAL(Condition, ...) if(!(Condition)) Mengine::Helper::AssertionOperator( Mengine::ASSERTION_LEVEL_CRITICAL, #Condition, nullptr, 0 ) (__VA_ARGS__)
 #else
 #   define MENGINE_ASSERTION(Condition, ...)
 #   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...)

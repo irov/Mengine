@@ -43,8 +43,8 @@ namespace Mengine
         virtual void setPlatfromTags( const Tags & _platform ) = 0;
         virtual const Tags & getPlatfromTags() const = 0;
 
-        virtual void setPath( const FilePath & _path ) = 0;
-        virtual const FilePath & getPath() const = 0;
+        virtual void setPathPath( const FilePath & _filePath ) = 0;
+        virtual const FilePath & getPathPath() const = 0;
 
     public:
         virtual bool load( const Char * _doc ) = 0;

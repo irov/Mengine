@@ -1571,16 +1571,16 @@ namespace Mengine
         ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer )
+    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer )
     {
-        MapCursors::iterator it_found = m_cursors.find( _path );
+        MapCursors::iterator it_found = m_cursors.find( _filePath );
 
         if( it_found == m_cursors.end() )
         {
             if( _buffer->empty() == true )
             {
                 LOGGER_ERROR( "'%s' buffer empty"
-                    , _path.c_str()
+                    , _filePath.c_str()
                 );
 
                 return false;
@@ -1589,7 +1589,7 @@ namespace Mengine
             PathString icoFile;
             icoFile += "IconCache";
             icoFile += '/';
-            icoFile += _path;
+            icoFile += _filePath;
             icoFile += ".ico";
 
             FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
@@ -1602,7 +1602,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' path '%s' can't open output stream '%s'"
                 , _name.c_str()
-                , _path.c_str()
+                , _filePath.c_str()
                 , c_icoFile.c_str()
             );
 
@@ -1613,7 +1613,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't write output stream '%s'"
                     , _name.c_str()
-                    , _path.c_str()
+                    , _filePath.c_str()
                     , c_icoFile.c_str()
                 );
 
@@ -1628,7 +1628,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
                     , _name.c_str()
-                    , _path.c_str()
+                    , _filePath.c_str()
                     , c_icoFile.c_str()
                 );
 
@@ -1754,10 +1754,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::existDirectory( const Char * _path ) const
+    bool Win32Platform::existDirectory( const Char * _directoryPath ) const
     {
         WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -1789,10 +1789,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectory( const Char * _path )
+    bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
         WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -1894,10 +1894,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::existFile( const Char * _path )
+    bool Win32Platform::existFile( const Char * _filePath )
     {
         WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -1907,10 +1907,10 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::existFile_( const WChar * _path )
+    bool Win32Platform::existFile_( const WChar * _filePath )
     {
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslashToW( pathCorrect, _path );
+        Helper::pathCorrectBackslashToW( pathCorrect, _filePath );
 
         size_t len = ::wcslen( pathCorrect );
 
@@ -1939,10 +1939,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::removeFile( const Char * _path )
+    bool Win32Platform::removeFile( const Char * _filePath )
     {
         WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }

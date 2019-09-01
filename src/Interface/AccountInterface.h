@@ -60,13 +60,13 @@ namespace Mengine
         virtual bool save() = 0;
 
     public:
-        virtual InputStreamInterfacePtr openReadBinaryFile( const FilePath & _fileName ) = 0;
-        virtual OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _fileName ) = 0;
+        virtual InputStreamInterfacePtr openReadBinaryFile( const FilePath & _filePath ) = 0;
+        virtual OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _filePath ) = 0;
 
     public:
-        virtual MemoryInterfacePtr loadBinaryFile( const FilePath & _filename ) = 0;
-        virtual bool writeBinaryFile( const FilePath & _filename, const void * _data, size_t _size ) = 0;
-        virtual bool hasBinaryFile( const FilePath & _filename ) const = 0;
+        virtual MemoryInterfacePtr loadBinaryFile( const FilePath & _filePath ) = 0;
+        virtual bool writeBinaryFile( const FilePath & _filePath, const void * _data, size_t _size ) = 0;
+        virtual bool hasBinaryFile( const FilePath & _filePath ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AccountInterface> AccountInterfacePtr;

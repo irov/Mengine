@@ -32,7 +32,7 @@ namespace Mengine
     typedef IntrusivePtr<class ScriptEmbeddingInterface> ScriptEmbeddingInterfacePtr;
     typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    struct ScriptModulePack
+    struct ScriptModulePackage
     {
         FileGroupInterfacePtr fileGroup;
         FilePath path;
@@ -42,7 +42,7 @@ namespace Mengine
         Tags platform;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ScriptModulePack> VectorScriptModulePack;
+    typedef Vector<ScriptModulePackage> VectorScriptModulePack;
     //////////////////////////////////////////////////////////////////////////
     class ScriptServiceInterface
         : public ServiceInterface

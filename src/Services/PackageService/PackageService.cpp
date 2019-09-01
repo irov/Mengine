@@ -64,7 +64,7 @@ namespace Mengine
         );
 
         VectorString frameworkPacksSettings;
-        config->getValues( "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
+        config->getValues( "GAME_PACKAGES", "FrameworkPack", frameworkPacksSettings );
 
         for( const String & resourcePack : frameworkPacksSettings )
         {
@@ -106,7 +106,7 @@ namespace Mengine
         }
 
         VectorString resourcePacksSettings;
-        config->getValues( "GAME_RESOURCES", "ResourcePack", resourcePacksSettings );
+        config->getValues( "GAME_PACKAGES", "ResourcePack", resourcePacksSettings );
 
         for( const String & resourcePack : resourcePacksSettings )
         {
@@ -148,7 +148,7 @@ namespace Mengine
         }
 
         VectorString languagePackSettings;
-        config->getValues( "GAME_RESOURCES", "LanguagePack", languagePackSettings );
+        config->getValues( "GAME_PACKAGES", "LanguagePack", languagePackSettings );
 
         for( const String & languagePack : languagePackSettings )
         {
@@ -245,7 +245,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid load package '%s' path '%s'"
                 , package->getName().c_str()
-                , package->getPath().c_str()
+                , package->getPathPath().c_str()
             );
 
             return false;
@@ -338,8 +338,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::enablePackages( const ConstString & _locale, const Tags & _platformTags )
     {
-        LOGGER_MESSAGE( "Packages enable..."
-        );
+        LOGGER_INFO( "Packages enable..." );
 
         VectorPackages packages;
 
@@ -366,8 +365,7 @@ namespace Mengine
         {
             if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( "en" ), _platformTags ) == false )
             {
-                LOGGER_WARNING( "not set locale pack"
-                );
+                LOGGER_WARNING( "not set locale pack" );
             }
         }
 
@@ -391,7 +389,7 @@ namespace Mengine
 
         if( NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_ENABLE_PACKAGES ) == false )
         {
-            LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!" );
+            LOGGER_ERROR( "[resources validation is invalid]" );
 
             bool resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
 

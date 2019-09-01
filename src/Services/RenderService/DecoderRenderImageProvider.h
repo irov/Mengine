@@ -18,14 +18,14 @@ namespace Mengine
         ~DecoderRenderImageProvider() override;
 
     public:
-        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName );
+        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName );
 
     public:
         RenderImageLoaderInterfacePtr getLoader() const override;
 
     protected:
         FileGroupInterfacePtr m_fileGroup;
-        FilePath m_fileName;
+        FilePath m_filePath;
         ConstString m_codecName;
     };
     //////////////////////////////////////////////////////////////////////////

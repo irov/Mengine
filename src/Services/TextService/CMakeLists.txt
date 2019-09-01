@@ -6,8 +6,8 @@ src
     TextService.h
 	TextEntry.cpp
     TextEntry.h
-    TextLocalePak.cpp
-    TextLocalePak.h
+    TextLocalePackage.cpp
+    TextLocalePackage.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)

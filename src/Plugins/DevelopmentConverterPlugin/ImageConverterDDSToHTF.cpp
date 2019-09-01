@@ -42,29 +42,29 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool ImageConverterDDSToHTF::convert()
     {
-        const FilePath & pakPath = m_options.fileGroup->getFolderPath();
+        const FilePath & folderPath = m_options.fileGroup->getFolderPath();
 
-        FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
-        FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
+        FilePath full_input = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
+        FilePath full_output = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
 
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
             ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
-            , m_options.inputFileName.c_str()
+            , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder for '%s'"
-            , m_options.inputFileName.c_str()
+            , m_options.inputFilePath.c_str()
         );
 
         if( decoder->prepareData( stream_intput ) == false )
         {
             LOGGER_ERROR( "invalid prepare decoder for '%s'"
-                , m_options.inputFileName.c_str()
+                , m_options.inputFilePath.c_str()
             );
 
             return false;
@@ -78,7 +78,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false, "invalid cache memory %d for '%s'"
             , data_full_size
-            , m_options.inputFileName.c_str()
+            , m_options.inputFilePath.c_str()
         );
 
         void * data_memory = data_buffer->getBuffer();
@@ -97,7 +97,7 @@ namespace Mengine
             if( decoder->setOptions( &decoder_options ) == false )
             {
                 LOGGER_ERROR( "invalid optionize decoder '%s'"
-                    , m_options.inputFileName.c_str()
+                    , m_options.inputFilePath.c_str()
                 );
 
                 return false;
@@ -106,7 +106,7 @@ namespace Mengine
             if( decoder->rewind() == false )
             {
                 LOGGER_ERROR( "invalid rewind '%s'"
-                    , m_options.inputFileName.c_str()
+                    , m_options.inputFilePath.c_str()
                 );
 
                 return false;
@@ -115,7 +115,7 @@ namespace Mengine
             if( decoder->decode( miplevel_data_memory, miplevel_data_size ) == 0 )
             {
                 LOGGER_ERROR( "invalid decode '%s'"
-                    , m_options.inputFileName.c_str()
+                    , m_options.inputFilePath.c_str()
                 );
 
                 return false;
@@ -129,7 +129,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "invalid open output '%s' for '%s'"
             , full_output.c_str()
-            , m_options.inputFileName.c_str()
+            , m_options.inputFilePath.c_str()
         );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
@@ -140,7 +140,7 @@ namespace Mengine
         if( encoder->initialize( stream_output ) == false )
         {
             LOGGER_ERROR( "'%s' invalid initialize encoder"
-                , m_options.inputFileName.c_str()
+                , m_options.inputFilePath.c_str()
             );
 
             return false;
@@ -153,7 +153,7 @@ namespace Mengine
         if( encoder->setOptions( &encoder_options ) == false )
         {
             LOGGER_ERROR( "'%s' invalid optionize encoder"
-                , m_options.inputFileName.c_str()
+                , m_options.inputFilePath.c_str()
             );
 
             return false;
@@ -172,7 +172,7 @@ namespace Mengine
         if( encode_byte == 0 )
         {
             LOGGER_ERROR( "'%s' invalid encode"
-                , m_options.inputFileName.c_str()
+                , m_options.inputFilePath.c_str()
             );
 
             return false;

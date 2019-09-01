@@ -35,17 +35,17 @@ namespace Mengine
         {
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
+                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "open ini file '%s:%s'"
                 , _fileGroup->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
-            _ini.path = _path;
+            _ini.path = _filePath;
 
             return loadIni( _ini, stream );
         }

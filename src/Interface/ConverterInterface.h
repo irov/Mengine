@@ -18,8 +18,8 @@ namespace Mengine
     {
         FileGroupInterfacePtr fileGroup;
 
-        FilePath inputFileName;
-        FilePath outputFileName;
+        FilePath inputFilePath;
+        FilePath outputFilePath;
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface

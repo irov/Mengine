@@ -18,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool run( const VectorFilePath & _pakPaths ) override;
+        bool run( const VectorFilePath & _packagesPaths ) override;
         void stop() override;
 
     protected:

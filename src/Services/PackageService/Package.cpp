@@ -45,7 +45,7 @@ namespace Mengine
         m_platform = _platform;
         m_descriptionPath = _descriptionPath;
         m_mountFileGroup = _mountFileGroup;
-        m_path = _path;
+        m_filePath = _path;
         m_preload = _preload;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -89,14 +89,14 @@ namespace Mengine
         return m_platform;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::setPath( const FilePath & _path )
+    void Package::setPathPath( const FilePath & _filePath )
     {
-        m_path = _path;
+        m_filePath = _filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Package::getPath() const
+    const FilePath & Package::getPathPath() const
     {
-        return m_path;
+        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::load( const Char * _doc )
@@ -106,7 +106,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->loadPak_() == false )
+        if( this->loadPackage_() == false )
         {
             return false;
         }
@@ -125,11 +125,11 @@ namespace Mengine
     {
         FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_mountFileGroup, m_path, m_type, &fileGroup, false, _doc ) == false )
+            ->mountFileGroup( m_name, m_mountFileGroup, m_filePath, m_type, &fileGroup, false, _doc ) == false )
         {
-            LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
+            LOGGER_ERROR( "failed to mount package '%s' path '%s'"
                 , m_name.c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
             );
 
             return false;
@@ -145,9 +145,9 @@ namespace Mengine
         if( FILE_SERVICE()
             ->unmountFileGroup( m_name ) == false )
         {
-            LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
+            LOGGER_ERROR( "failed to mount package '%s' path '%s'"
                 , m_name.c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
             );
 
             return false;
@@ -156,7 +156,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadPak_()
+    bool Package::loadPackage_()
     {
         if( SERVICE_EXIST( LoaderServiceInterface ) == false )
         {
@@ -172,10 +172,10 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( m_fileGroup, m_descriptionPath, &pak, Metacode::Meta_Data::getVersion(), exist ) == false )
+            ->load( m_fileGroup, m_descriptionPath, &pak, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             LOGGER_ERROR( "invalid resource file '%s:%s' '%s'"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
             );
@@ -202,7 +202,7 @@ namespace Mengine
             Tags Platform;
             meta_scripts.get_Platform( &Platform );
 
-            this->addScriptPak_( Path, Module, Initializer, Finalizer, Platform );
+            this->addScriptPackage_( Path, Module, Initializer, Finalizer, Platform );
         }
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
@@ -306,7 +306,7 @@ namespace Mengine
         if( m_enable == true )
         {
             LOGGER_ERROR( "already enable '%s:%s' '%s'"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
             );
@@ -325,7 +325,7 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        for( const PakResourceDesc & desc : m_resourcesDesc )
+        for( const PackageResourceDesc & desc : m_resourcesDesc )
         {
             if( desc.platform.empty() == false && platformTags.hasTags( desc.platform ) == false )
             {
@@ -336,7 +336,7 @@ namespace Mengine
                 ->loadResources( m_locale, m_fileGroup, desc.path, desc.tags, desc.ignored ) == false )
             {
                 LOGGER_ERROR( "invalid load '%s:%s' resource '%s'"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
                 );
@@ -345,7 +345,7 @@ namespace Mengine
             }
         }
 
-        for( const PakFontDesc & desc : m_pathFonts )
+        for( const PackageFontDesc & desc : m_fontsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -355,7 +355,7 @@ namespace Mengine
             if( this->loadFont_( desc.path ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid load font '%s'"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
                 );
@@ -364,7 +364,7 @@ namespace Mengine
             }
         }
 
-        for( const PakTextDesc & desc : m_pathTexts )
+        for( const PackageTextDesc & desc : m_textsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -374,7 +374,7 @@ namespace Mengine
             if( this->loadText_( desc.path ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid load text '%s'"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
                 );
@@ -383,7 +383,7 @@ namespace Mengine
             }
         }
 
-        for( const PakDataDesc & desc : m_datas )
+        for( const PackageDataDesc & desc : m_datasDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -393,7 +393,7 @@ namespace Mengine
             if( this->addUserData_( desc.name, desc.path ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid load userdata '%s' path '%s'"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , m_name.c_str()
                     , desc.name.c_str()
                     , desc.path.c_str()
@@ -403,7 +403,7 @@ namespace Mengine
             }
         }
 
-        for( const PakMaterialDesc & desc : m_pathMaterials )
+        for( const PackageMaterialDesc & desc : m_materialsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -413,7 +413,7 @@ namespace Mengine
             if( this->loadMaterials_( desc.path ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid load material '%s'"
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
                 );
@@ -432,7 +432,7 @@ namespace Mengine
         if( m_enable == false )
         {
             LOGGER_ERROR( "already disable '%s:%s' '%s'"
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
             );
@@ -451,7 +451,7 @@ namespace Mengine
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
 
-        for( const PakResourceDesc & desc : m_resourcesDesc )
+        for( const PackageResourceDesc & desc : m_resourcesDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -465,7 +465,7 @@ namespace Mengine
             }
         }
 
-        for( const PakFontDesc & desc : m_pathFonts )
+        for( const PackageFontDesc & desc : m_fontsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -478,7 +478,7 @@ namespace Mengine
             }
         }
 
-        for( const PakTextDesc & desc : m_pathTexts )
+        for( const PackageTextDesc & desc : m_textsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -491,7 +491,7 @@ namespace Mengine
             }
         }
 
-        for( const PakDataDesc & desc : m_datas )
+        for( const PackageDataDesc & desc : m_datasDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -504,7 +504,7 @@ namespace Mengine
             }
         }
 
-        for( const PakMaterialDesc & desc : m_pathMaterials )
+        for( const PackageMaterialDesc & desc : m_materialsDesc )
         {
             if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
             {
@@ -530,58 +530,58 @@ namespace Mengine
         return m_enable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadText_( const FilePath & _path )
+    bool Package::loadText_( const FilePath & _filePath )
     {
         bool result = TEXT_SERVICE()
-            ->loadTextEntry( m_fileGroup, _path );
+            ->loadTextEntry( m_fileGroup, _filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadText_( const FilePath & _path )
+    bool Package::unloadText_( const FilePath & _filePath )
     {
         bool result = TEXT_SERVICE()
-            ->unloadTextEntry( m_fileGroup, _path );
+            ->unloadTextEntry( m_fileGroup, _filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadFont_( const FilePath & _path )
+    bool Package::loadFont_( const FilePath & _filePath )
     {
         bool result = TEXT_SERVICE()
-            ->loadFonts( m_fileGroup, _path );
+            ->loadFonts( m_fileGroup, _filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadFont_( const FilePath & _path )
+    bool Package::unloadFont_( const FilePath & _filePath )
     {
         bool result = TEXT_SERVICE()
-            ->unloadFonts( m_fileGroup, _path );
+            ->unloadFonts( m_fileGroup, _filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::loadMaterials_( const FilePath & _path )
+    bool Package::loadMaterials_( const FilePath & _filePath )
     {
         bool result = RENDERMATERIAL_SERVICE()
-            ->loadMaterials( m_fileGroup, _path );
+            ->loadMaterials( m_fileGroup, _filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::unloadMaterials_( const FilePath & _path )
+    bool Package::unloadMaterials_( const FilePath & _filePath )
     {
         bool result = RENDERMATERIAL_SERVICE()
-            ->unloadMaterials( m_fileGroup, _path );
+            ->unloadMaterials( m_fileGroup, _filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::addUserData_( const ConstString & _name, const FilePath & _path )
+    bool Package::addUserData_( const ConstString & _name, const FilePath & _filePath )
     {
         bool result = USERDATA_SERVICE()
-            ->addUserdata( _name, m_fileGroup, _path );
+            ->addUserdata( _name, m_fileGroup, _filePath );
 
         return result;
     }
@@ -594,10 +594,10 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addResource_( const FilePath & _path, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored )
+    void Package::addResource_( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored )
     {
-        PakResourceDesc desc;
-        desc.path = _path;
+        PackageResourceDesc desc;
+        desc.path = _filePath;
         desc.tags = _tags;
         desc.platform = _platform;
         desc.demand = _demand;
@@ -606,53 +606,53 @@ namespace Mengine
         m_resourcesDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addTextPath_( const FilePath & _path, const Tags & _platform )
+    void Package::addTextPath_( const FilePath & _filePath, const Tags & _platform )
     {
-        PakTextDesc desc;
-        desc.path = _path;
+        PackageTextDesc desc;
+        desc.path = _filePath;
         desc.platform = _platform;
 
-        m_pathTexts.emplace_back( desc );
+        m_textsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
+    void Package::addScriptPackage_( const FilePath & _filePath, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
     {
-        ScriptModulePack pak;
-        pak.fileGroup = m_fileGroup;
-        pak.path = _path;
-        pak.module = _module;
-        pak.initializer = _initializer;
-        pak.finalizer = _finalizer;
-        pak.platform = _platform;
+        ScriptModulePackage package;
+        package.fileGroup = m_fileGroup;
+        package.path = _filePath;
+        package.module = _module;
+        package.initializer = _initializer;
+        package.finalizer = _finalizer;
+        package.platform = _platform;
 
-        m_scriptsPackages.emplace_back( pak );
+        m_scriptsPackages.emplace_back( package );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addFontPath_( const FilePath & _path, const Tags & _platform )
+    void Package::addFontPath_( const FilePath & _filePath, const Tags & _platform )
     {
-        PakFontDesc desc;
-        desc.path = _path;
+        PackageFontDesc desc;
+        desc.path = _filePath;
         desc.platform = _platform;
 
-        m_pathFonts.emplace_back( desc );
+        m_fontsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform )
+    void Package::addData_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform )
     {
-        PakDataDesc desc;
+        PackageDataDesc desc;
         desc.name = _name;
-        desc.path = _path;
+        desc.path = _filePath;
         desc.platform = _platform;
 
-        m_datas.emplace_back( desc );
+        m_datasDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addMaterial_( const FilePath & _path, const Tags & _platform )
+    void Package::addMaterial_( const FilePath & _filePath, const Tags & _platform )
     {
-        PakMaterialDesc desc;
-        desc.path = _path;
+        PackageMaterialDesc desc;
+        desc.path = _filePath;
         desc.platform = _platform;
 
-        m_pathMaterials.emplace_back( desc );
+        m_materialsDesc.emplace_back( desc );
     }
 }

@@ -26,13 +26,13 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToWEBM::convert()
     {
-        const ConstString & pakPath = m_options.fileGroup->getFolderPath();
+        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
 
-        String full_input = pakPath.c_str();
-        full_input += m_options.inputFileName.c_str();
+        String full_input = folderPath.c_str();
+        full_input += m_options.inputFilePath.c_str();
 
-        String full_output = pakPath.c_str();
-        full_output += m_options.outputFileName.c_str();
+        String full_output = folderPath.c_str();
+        full_output += m_options.outputFilePath.c_str();
 
         String buffer = "-loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + full_output + "\"";
 

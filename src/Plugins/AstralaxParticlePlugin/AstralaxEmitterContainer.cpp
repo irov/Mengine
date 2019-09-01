@@ -30,18 +30,18 @@ namespace Mengine
         MENGINE_ASSERTION( m_mf == 0, "astralax container is not finalized" );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator )
+    bool AstralaxEmitterContainer::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator )
     {
         MemoryInterfacePtr memory;
         if( PREFETCHER_SERVICE()
-            ->getStream( _fileGroup, _fileName, memory ) == false )
+            ->getStream( _fileGroup, _filePath, memory ) == false )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
+                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't open file '%s:%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             memory = Helper::loadStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FUNCTION );
@@ -63,7 +63,7 @@ namespace Mengine
         m_memory = memory;
 
         MENGINE_ASSERTION_RETURN( Magic_HasTextures( m_mf ) == false, false, "astralax '%s' incorrect safe 'with textures'"
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
 
         int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );

@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
+        bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
         bool removeUserdata( const ConstString & _name ) override;
         bool hasUserdata( const ConstString & _name ) const override;
 

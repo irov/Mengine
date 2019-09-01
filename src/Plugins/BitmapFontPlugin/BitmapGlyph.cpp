@@ -88,10 +88,10 @@ namespace Mengine
         class BitmapGlyphSaxCallback
         {
         public:
-            BitmapGlyphSaxCallback( BitmapGlyph * _glyph, const FileGroupInterfacePtr & _pakName, const FilePath & _path )
+            BitmapGlyphSaxCallback( BitmapGlyph * _glyph, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
                 : m_glyph( _glyph )
-                , m_pakName( _pakName )
-                , m_path( _path )
+                , m_fileGroup( _fileGroup )
+                , m_filePath( _filePath )
                 , m_glyphCode( 0 )
                 , m_valid( false )
             {
@@ -137,8 +137,8 @@ namespace Mengine
                             if( sscanf( value, "%f", &size ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read size '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -160,8 +160,8 @@ namespace Mengine
                             if( sscanf( value, "%f", &ascender ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read ascender '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -174,8 +174,8 @@ namespace Mengine
                             if( sscanf( value, "%f", &height ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -188,8 +188,8 @@ namespace Mengine
                             if( sscanf( value, "%f", &descender ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read descender '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -211,8 +211,8 @@ namespace Mengine
                             if( sscanf( value, "%u", &width ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -227,8 +227,8 @@ namespace Mengine
                             if( sscanf( value, "%u", &height ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -256,8 +256,8 @@ namespace Mengine
                             if( sscanf( value, "%f", &advance ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read width '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -267,8 +267,8 @@ namespace Mengine
                             if( sscanf( value, "%f %f", &offset.x, &offset.y ) != 2 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read offset '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -278,8 +278,8 @@ namespace Mengine
                             if( sscanf( value, "%f %f %f %f", &rect.x, &rect.y, &rect.z, &rect.w ) != 4 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read rect '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -300,8 +300,8 @@ namespace Mengine
                     if( cp == 0 || err_code != utf8::internal::UTF8_OK )
                     {
                         LOGGER_ERROR( "glyph '%s:%s' invalid utf8 id '%s'"
-                            , m_pakName->getName().c_str()
-                            , m_path.c_str()
+                            , m_fileGroup->getName().c_str()
+                            , m_filePath.c_str()
                             , id
                         );
                     }
@@ -329,8 +329,8 @@ namespace Mengine
                             if( sscanf( value, "%f", &advance ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read advance '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -346,8 +346,8 @@ namespace Mengine
                             if( cp == 0 || err_code != utf8::internal::UTF8_OK )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid utf8 code '%s'"
-                                    , m_pakName->getName().c_str()
-                                    , m_path.c_str()
+                                    , m_fileGroup->getName().c_str()
+                                    , m_filePath.c_str()
                                     , value
                                 );
                             }
@@ -359,8 +359,8 @@ namespace Mengine
                     if( m_glyphCode == 0 )
                     {
                         LOGGER_ERROR( "glyph '%s:%s' invalid kerning m_glyphChar is 0"
-                            , m_pakName->getName().c_str()
-                            , m_path.c_str()
+                            , m_fileGroup->getName().c_str()
+                            , m_filePath.c_str()
                         );
 
                         return;
@@ -379,22 +379,22 @@ namespace Mengine
         protected:
             BitmapGlyph * m_glyph;
 
-            const FileGroupInterfacePtr & m_pakName;
-            const FilePath & m_path;
+            const FileGroupInterfacePtr & m_fileGroup;
+            const FilePath & m_filePath;
 
             GlyphCode m_glyphCode;
             bool m_valid;
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapGlyph::initialize( const FileGroupInterfacePtr & _pak, const FilePath & _path )
+    bool BitmapGlyph::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
+            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
-            , _pak->getName().c_str()
-            , _path.c_str()
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
         );
 
         size_t xml_buffer_size = stream->size();
@@ -408,7 +408,7 @@ namespace Mengine
         stream->read( memory, xml_buffer_size );
         memory[xml_buffer_size] = '\0';
 
-        BitmapGlyphSaxCallback tmsc( this, _pak, _path );
+        BitmapGlyphSaxCallback tmsc( this, _fileGroup, _filePath );
 
         xmlsax_callbacks_t callbacks;
         callbacks.begin_node = nullptr;
@@ -426,8 +426,8 @@ namespace Mengine
         if( xmlsax_parse( memory, &callbacks, &tmsc ) == false )
         {
             LOGGER_ERROR( "invalid parse file '%s:%s'"
-                , _pak->getName().c_str()
-                , _path.c_str()
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -436,8 +436,8 @@ namespace Mengine
         if( tmsc.isValid() == false )
         {
             LOGGER_ERROR( "invalid glyph format '%s:%s'"
-                , _pak->getName().c_str()
-                , _path.c_str()
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
             );
 
             return false;

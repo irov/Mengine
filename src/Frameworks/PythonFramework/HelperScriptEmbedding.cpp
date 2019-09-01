@@ -1118,7 +1118,7 @@ namespace Mengine
             RENDERTEXTURE_SERVICE()
                 ->visitTexture( [&py_list]( const RenderTextureInterfacePtr & _texture )
             {
-                const FilePath & filePath = _texture->getFileName();
+                const FilePath & filePath = _texture->getFilePath();
 
                 py_list.append( filePath );
             } );
@@ -2626,13 +2626,13 @@ namespace Mengine
             return name;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
+        bool s_writeAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _filePath, PyObject * _data, PyObject * _pickleTypes )
         {
-            String utf8_fileName;
-            if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
+            String utf8_filePath;
+            if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
             {
                 LOGGER_ERROR( "invalid file '%s' convert to utf8"
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                 );
 
                 return false;
@@ -2645,7 +2645,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            FilePath filepath = Helper::stringizeFilePath( utf8_fileName );
+            FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
             size_t size;
             if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
@@ -2676,11 +2676,11 @@ namespace Mengine
                 return false;
             }
 
-            if( account->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
+            if( account->writeBinaryFile( filePath, memory_buffer, memory_size ) == false )
             {
                 LOGGER_ERROR( "account '%s' invalid write file '%s'"
                     , _accountID.c_str()
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                 );
 
                 return false;
@@ -2689,13 +2689,13 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _fileName, PyObject * _pickleTypes )
+        PyObject * s_loadAccountPickleFile( pybind::kernel_interface * _kernel, const ConstString & _accountID, const WString & _filePath, PyObject * _pickleTypes )
         {
-            String utf8_fileName;
-            if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
+            String utf8_filePath;
+            if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
             {
-                LOGGER_ERROR( "invalid convert filename '%s' to utf8"
-                    , _fileName.c_str()
+                LOGGER_ERROR( "invalid convert file '%s' to utf8"
+                    , _filePath.c_str()
                 );
 
                 return _kernel->ret_none();
@@ -2708,13 +2708,13 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            FilePath filename = Helper::stringizeFilePath( utf8_fileName );
+            FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
-            MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filename );
+            MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filePath );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "account '%s' invalid load file '%s'"
                 , _accountID.c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             void * binaryBuffer_memory = binaryBuffer->getBuffer();
@@ -2724,7 +2724,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( py_data, _kernel->ret_none(), "account '%s' invalid unpickle file '%s'"
                 , _accountID.c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             return py_data;
@@ -2754,7 +2754,7 @@ namespace Mengine
             return fileGroup;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasAccountPickleFile( const ConstString & _accountID, const WString & _fileName )
+        bool s_hasAccountPickleFile( const ConstString & _accountID, const WString & _filePath )
         {
             const AccountInterfacePtr & account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -2769,19 +2769,19 @@ namespace Mengine
                 return false;
             }
 
-            String utf8_fileName;
-            if( Helper::unicodeToUtf8( _fileName, utf8_fileName ) == false )
+            String utf8_filePath;
+            if( Helper::unicodeToUtf8( _filePath, utf8_filePath ) == false )
             {
-                LOGGER_ERROR( "invalid convert filename '%s' to utf8"
-                    , _fileName.c_str()
+                LOGGER_ERROR( "invalid convert file '%s' to utf8"
+                    , _filePath.c_str()
                 );
 
                 return false;
             }
 
-            FilePath filename = Helper::stringizeFilePath( utf8_fileName );
+            FilePath filePath = Helper::stringizeFilePath( utf8_filePath );
 
-            bool exist = account->hasBinaryFile( filename );
+            bool exist = account->hasBinaryFile( filePath );
 
             return exist;
         }

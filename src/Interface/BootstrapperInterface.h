@@ -15,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "Bootstrapper" );
 
     public:
-        virtual bool run( const VectorFilePath & _pakPaths ) = 0;
+        virtual bool run( const VectorFilePath & _packagesPaths ) = 0;
         virtual void stop() = 0;
     };
 }

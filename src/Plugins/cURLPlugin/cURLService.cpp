@@ -265,7 +265,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
     {
         if( this->isStopService() == true )
         {
@@ -274,12 +274,12 @@ namespace Mengine
             return 0;
         }
 
-        if( _fileGroup->existFile( _path ) == true )
+        if( _fileGroup->existFile( _filePath ) == true )
         {
             LOGGER_ERROR( "url '%s' category '%s' file alredy exist '%s'"
                 , _url.c_str()
                 , _fileGroup->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return 0;
@@ -294,7 +294,7 @@ namespace Mengine
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
-        task->initialize( _url, _login, _password, _fileGroup, _path );
+        task->initialize( _url, _login, _password, _fileGroup, _filePath );
 
         ReceiverDesc desc;
         desc.id = task_id;

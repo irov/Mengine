@@ -237,7 +237,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::run( const VectorFilePath & _pakPaths )
+    bool Bootstrapper::run( const VectorFilePath & _packagesPaths )
     {
         if( this->createServices_() == false )
         {
@@ -292,7 +292,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         if( APPLICATION_SERVICE()
-            ->initializeGame( defaultFileGroup, _pakPaths ) == false )
+            ->initializeGame( defaultFileGroup, _packagesPaths ) == false )
         {
             LOGGER_CRITICAL( "Application invalid initialize game"
             );

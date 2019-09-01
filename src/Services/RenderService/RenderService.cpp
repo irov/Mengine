@@ -1379,12 +1379,9 @@ namespace Mengine
 
                 if( texture != nullptr )
                 {
-                    const Char * fileName = texture->getFileName().c_str();
-                    const Char * materialName = _material->getName().c_str();
-
                     LOGGER_ERROR( "texture: '%s' material '%s'"
-                        , fileName
-                        , materialName
+                        , texture->getFilePath().c_str()
+                        , _material->getName().c_str()
                     );
                 }
 

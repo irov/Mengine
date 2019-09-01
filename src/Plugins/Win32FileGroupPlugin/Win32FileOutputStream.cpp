@@ -28,8 +28,8 @@ namespace Mengine
     {
 #ifdef MENGINE_DEBUG
         m_relationPath = _relationPath.c_str();
-        m_folder = _folderPath.c_str();
-        m_fileName = _filePath.c_str();
+        m_folderPath = _folderPath.c_str();
+        m_filePath = _filePath.c_str();
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];

@@ -1198,11 +1198,11 @@ namespace Mengine
                 ->endScene();
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_writeImageToFile( const ConstString & _resource, const FilePath & _fileName )
+        void s_writeImageToFile( const ConstString & _resource, const FilePath & _filePath )
         {
             LOGGER_WARNING( "write image to file '%s' path '%s'"
                 , _resource.c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             const ResourceImagePtr & resource = RESOURCE_SERVICE()
@@ -1218,7 +1218,7 @@ namespace Mengine
             const RenderTextureInterfacePtr & texture = resource->getTexture();
 
             RENDERTEXTURE_SERVICE()
-                ->saveImage( texture, fileGroup, STRINGIZE_STRING_LOCAL( "pngImage" ), _fileName );
+                ->saveImage( texture, fileGroup, STRINGIZE_STRING_LOCAL( "pngImage" ), _filePath );
         }
         //////////////////////////////////////////////////////////////////////////
         void setParticlesEnabled( bool _enabled )
@@ -1227,22 +1227,22 @@ namespace Mengine
                 ->setParticleEnable( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString & _pakName, const FilePath & _fileName, const mt::vec2f & _maxSize )
+        ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString & _fileGroupName, const FilePath & _filePath, const mt::vec2f & _maxSize )
         {
             mt::vec2f maxSize;
 
             if( _maxSize.x < 0.f || _maxSize.y < 0.f )
             {
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                    ->getFileGroup( _pakName );
+                    ->getFileGroup( _fileGroupName );
 
                 InputStreamInterfacePtr stream = FILE_SERVICE()
-                    ->openInputFile( fileGroup, _fileName, false, MENGINE_DOCUMENT_PYBIND );
+                    ->openInputFile( fileGroup, _filePath, false, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
                 ConstString codecType = CODEC_SERVICE()
-                    ->findCodecType( _fileName );
+                    ->findCodecType( _filePath );
 
                 ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
                     ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_PYBIND );
@@ -1274,7 +1274,7 @@ namespace Mengine
             mt::uv4f uv_image;
             mt::uv4f uv_alpha;
 
-            if( resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
+            if( resource->setup( _filePath, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
             {
                 return nullptr;
             }
@@ -1364,7 +1364,7 @@ namespace Mengine
                 ->sleep( _time );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_mountResourcePak( const ConstString & _fileGroup
+        bool s_mountResourcePackage( const ConstString & _fileGroupName
             , const ConstString & _name
             , const ConstString & _type
             , const ConstString & _category
@@ -1374,16 +1374,16 @@ namespace Mengine
         {
             FileGroupInterfacePtr fileGroup;
             if( FILE_SERVICE()
-                ->hasFileGroup( _fileGroup, &fileGroup ) == false )
+                ->hasFileGroup( _fileGroupName, &fileGroup ) == false )
             {
                 LOGGER_ERROR( "invalid found file group '%s'"
-                    , _fileGroup.c_str()
+                    , _fileGroupName.c_str()
                 );
 
                 return false;
             }
 
-            LOGGER_MESSAGE( "mount resource pak name '%s' type '%s' category '%s' path '%s'"
+            LOGGER_MESSAGE( "mount resource package name '%s' type '%s' category '%s' path '%s'"
                 , _name.c_str()
                 , _type.c_str()
                 , _category.c_str()
@@ -1415,7 +1415,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_unmountResourcePak( const ConstString & _name )
+        bool s_unmountResourcePackage( const ConstString & _name )
         {
             bool result = PACKAGE_SERVICE()
                 ->removePackage( _name );
@@ -1423,20 +1423,20 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_existFile( const ConstString & _fileGroupName, const FilePath & _path )
+        bool s_existFile( const ConstString & _fileGroupName, const FilePath & _filePath )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _fileGroupName );
 
-            bool result = fileGroup->existFile( _path );
+            bool result = fileGroup->existFile( _filePath );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_removeFile( const FilePath & _path )
+        bool s_removeFile( const FilePath & _filePath )
         {
             bool result = PLATFORM_SERVICE()
-                ->removeFile( _path.c_str() );
+                ->removeFile( _filePath.c_str() );
 
             return result;
         }
@@ -1755,10 +1755,10 @@ namespace Mengine
             return correct_polygon;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_copyFile_( const ConstString & _resourceFileName, const MemoryBufferInterfacePtr & _blob )
+        bool s_copyFile_( const ConstString & _resourceFilePath, const MemoryBufferInterfacePtr & _memory )
         {
             const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
-                ->getResource( _resourceFileName );
+                ->getResource( _resourceFilePath );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceFile, false );
 
@@ -1776,7 +1776,7 @@ namespace Mengine
 
             size_t size = stream->size();
 
-            void * memory_buffer = _blob->newBuffer( size, MENGINE_DOCUMENT_PYBIND );
+            void * memory_buffer = _memory->newBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
             if( stream->read( memory_buffer, size ) != size )
             {
@@ -1788,14 +1788,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_copyUserPicture( const ConstString & _resourceFileName, const String & _fileName )
+        bool s_copyUserPicture( const ConstString & _resourceFilePath, const String & _filePath )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
-            if( this->s_copyFile_( _resourceFileName, memory ) == false )
+            if( this->s_copyFile_( _resourceFilePath, memory ) == false )
             {
                 return false;
             }
@@ -1805,7 +1805,7 @@ namespace Mengine
                 ->getProjectName( projectName );
 
             if( PLATFORM_SERVICE()
-                ->createDirectoryUserPicture( projectName, _fileName.c_str(), memory->getBuffer(), memory->getSize() ) == false )
+                ->createDirectoryUserPicture( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )
             {
                 return false;
             }
@@ -1813,14 +1813,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_copyUserMusic( const ConstString & _resourceFileName, const String & _fileName )
+        bool s_copyUserMusic( const ConstString & _resourceFilePath, const String & _filePath )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
-            if( this->s_copyFile_( _resourceFileName, memory ) == false )
+            if( this->s_copyFile_( _resourceFilePath, memory ) == false )
             {
                 return false;
             }
@@ -1830,7 +1830,7 @@ namespace Mengine
                 ->getProjectName( projectName );
 
             if( PLATFORM_SERVICE()
-                ->createDirectoryUserMusic( projectName, _fileName.c_str(), memory->getBuffer(), memory->getSize() ) == false )
+                ->createDirectoryUserMusic( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )
             {
                 return false;
             }
@@ -3716,9 +3716,11 @@ namespace Mengine
 
 
 
-        pybind::def_functor( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePak );
-        pybind::def_functor( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePak );
-
+        pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
+        pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );
+        pybind::def_functor( _kernel, "mountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage );
+        pybind::def_functor( _kernel, "unmountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage );
+        
         pybind::def_functor( _kernel, "existFile", nodeScriptMethod, &EngineScriptMethod::s_existFile );
         pybind::def_functor( _kernel, "removeFile", nodeScriptMethod, &EngineScriptMethod::s_removeFile );
         pybind::def_functor_kernel( _kernel, "parseXml", nodeScriptMethod, &EngineScriptMethod::s_parseXml );

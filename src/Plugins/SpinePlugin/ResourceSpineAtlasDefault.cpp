@@ -10,18 +10,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlasDefault * _resource, const char * _path )
+    const ResourceImagePtr & _spAtlasPage_createTexture2( const ResourceSpineAtlasDefault * _resource, const char * _filePath )
     {
-        const ResourceImagePtr & resourceImage = _resource->getResourceImage_( _path );
+        const ResourceImagePtr & resourceImage = _resource->getResourceImage_( _filePath );
 
         return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    extern "C" void _spAtlasPage_createTexture( spAtlasPage * _page, const char * _path )
+    extern "C" void _spAtlasPage_createTexture( spAtlasPage * _page, const char * _filePath )
     {
         Mengine::ResourceSpineAtlasDefault * resource = (Mengine::ResourceSpineAtlasDefault *)_page->atlas->rendererObject;
 
-        const ResourceImagePtr & resourceImage = _spAtlasPage_createTexture2( resource, _path );
+        const ResourceImagePtr & resourceImage = _spAtlasPage_createTexture2( resource, _filePath );
 
         if( resourceImage == nullptr )
         {

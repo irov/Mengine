@@ -68,23 +68,23 @@ namespace Mengine
     bool HotspotImageConverterPNGToHIT::convert()
     {
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( m_options.fileGroup, m_options.inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
+            ->openInputFile( m_options.fileGroup, m_options.inputFilePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( input_stream, false, "Image file '%s' was not found"
-            , m_options.inputFileName.c_str()
+            , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, false, "Image decoder for file '%s' was not found"
-            , m_options.inputFileName.c_str()
+            , m_options.inputFilePath.c_str()
         );
 
         if( imageDecoder->prepareData( input_stream ) == false )
         {
             LOGGER_ERROR( "Image initialize for file '%s' was not found"
-                , m_options.inputFileName.c_str()
+                , m_options.inputFilePath.c_str()
             );
 
             return false;
@@ -120,7 +120,7 @@ namespace Mengine
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {
             LOGGER_ERROR( "invalid decode '%s'"
-                , m_options.inputFileName.c_str()
+                , m_options.inputFilePath.c_str()
             );
 
             return false;
@@ -131,10 +131,10 @@ namespace Mengine
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
+            ->openOutputFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file '%s')"
-            , m_options.outputFileName.c_str()
+            , m_options.outputFilePath.c_str()
             , m_options.fileGroup->getName().c_str()
         );
 
@@ -142,13 +142,13 @@ namespace Mengine
             ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "HIT file '%s' not create (createEncoder hitPick)"
-            , m_options.outputFileName.c_str()
+            , m_options.outputFilePath.c_str()
         );
 
         if( encoder->initialize( output_stream ) == false )
         {
             LOGGER_ERROR( "HIT file '%s' not initialize (createEncoder hitPick)"
-                , m_options.outputFileName.c_str()
+                , m_options.outputFilePath.c_str()
             );
 
             return false;

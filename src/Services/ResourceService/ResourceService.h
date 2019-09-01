@@ -28,8 +28,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const Tags & _tags, bool _ignored ) override;
-        bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
+        bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored ) override;
+        bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
         PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const override;

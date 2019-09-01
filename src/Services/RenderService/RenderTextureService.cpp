@@ -90,9 +90,9 @@ namespace Mengine
         m_factoryDecoderRenderImageProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
+    bool RenderTextureService::hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * _texture ) const
     {
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
         if( texture == nullptr )
         {
@@ -112,9 +112,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) const
+    RenderTextureInterfacePtr RenderTextureService::getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const
     {
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
         if( texture == nullptr )
         {
@@ -181,27 +181,27 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _fileName )
+    bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _filePath )
     {
         OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( _fileGroup, _fileName, MENGINE_DOCUMENT_FUNCTION );
+            ->openOutputFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't create file '%s' '%s'"
             , _fileGroup->getName().c_str()
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
             ->createEncoderT<ImageEncoderInterfacePtr>( _codecName, MENGINE_DOCUMENT_FUNCTION );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, false, "can't create encoder for filename '%s'"
-            , _fileName.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, false, "can't create encoder for file '%s'"
+            , _filePath.c_str()
         );
 
         if( imageEncoder->initialize( stream ) == false )
         {
-            LOGGER_ERROR( "can't initialize encoder for filename '%s'"
-                , _fileName.c_str()
+            LOGGER_ERROR( "can't initialize encoder for file '%s'"
+                , _filePath.c_str()
             );
 
             return false;
@@ -227,7 +227,7 @@ namespace Mengine
         void * buffer = image->lock( &pitch, 0, rect, true );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "can't lock texture '%s'"
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
 
         ImageCodecOptions options;
@@ -239,7 +239,7 @@ namespace Mengine
         if( imageEncoder->setOptions( &options ) == false )
         {
             LOGGER_ERROR( "invalid optionize '%s'"
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             image->unlock( 0, false );
@@ -280,26 +280,26 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const RenderTextureInterfacePtr & _texture )
+    void RenderTextureService::cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture )
     {
         _texture->setFileGroup( _fileGroup );
-        _texture->setFileName( _fileName );
+        _texture->setFilePath( _filePath );
 
         RenderTextureInterface * texture_ptr = _texture.get();
 
         const ConstString & fileGroupName = _fileGroup->getName();
 
-        m_textures.emplace( std::make_pair( fileGroupName, _fileName ), texture_ptr );
+        m_textures.emplace( std::make_pair( fileGroupName, _filePath ), texture_ptr );
 
         LOGGER_INFO( "cache texture '%s:%s'"
             , fileGroupName.c_str()
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName, const Char * _doc )
     {
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _fileName ) );
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
         if( texture != nullptr )
         {
@@ -309,11 +309,11 @@ namespace Mengine
         if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
-                ->resurrectTexture( _fileGroup, _fileName, _doc );
+                ->resurrectTexture( _fileGroup, _filePath, _doc );
 
             if( resurrect_texture != nullptr )
             {
-                this->cacheFileTexture( _fileGroup, _fileName, resurrect_texture );
+                this->cacheFileTexture( _fileGroup, _filePath, resurrect_texture );
 
                 return resurrect_texture;
             }
@@ -323,7 +323,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageProvider, nullptr, "invalid create render image provider" );
 
-        imageProvider->initialize( _fileGroup, _fileName, _codecName );
+        imageProvider->initialize( _fileGroup, _filePath, _codecName );
 
         RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
 
@@ -331,11 +331,11 @@ namespace Mengine
 
         RenderImageDesc imageDesc = imageLoader->getImageDesc();
 
-        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _fileName.c_str() );
+        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _filePath.c_str() );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, nullptr, "create texture '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
-            , _fileName.c_str()
+            , _filePath.c_str()
             , _codecName.c_str()
         );
 
@@ -355,7 +355,7 @@ namespace Mengine
 
         image->setRenderImageProvider( imageProvider );
 
-        this->cacheFileTexture( _fileGroup, _fileName, new_texture );
+        this->cacheFileTexture( _fileGroup, _filePath, new_texture );
 
         return new_texture;
     }
@@ -475,11 +475,11 @@ namespace Mengine
     bool RenderTextureService::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
         const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
-        const FilePath & fileName = _texture->getFileName();
+        const FilePath & filePath = _texture->getFilePath();
 
-        if( fileName.empty() == false )
+        if( filePath.empty() == false )
         {
-            m_textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
+            m_textures.erase( std::make_pair( fileGroup->getName(), filePath ) );
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, _texture );
         }

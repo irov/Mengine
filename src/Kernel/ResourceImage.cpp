@@ -39,7 +39,7 @@ namespace Mengine
         {
             LOGGER_INFO( "'%s' release texture '%s'"
                 , this->getName().c_str()
-                , m_texture->getFileName().c_str()
+                , m_texture->getFilePath().c_str()
             );
 
             m_texture = nullptr;
@@ -49,7 +49,7 @@ namespace Mengine
         {
             LOGGER_INFO( "'%s' release texture alpha '%s'"
                 , this->getName().c_str()
-                , m_textureAlpha->getFileName().c_str()
+                , m_textureAlpha->getFilePath().c_str()
             );
 
             m_textureAlpha = nullptr;

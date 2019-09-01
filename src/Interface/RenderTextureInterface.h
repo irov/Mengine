@@ -30,8 +30,8 @@ namespace Mengine
         virtual void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) = 0;
         virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
 
-        virtual void setFileName( const FilePath & _fileName ) = 0;
-        virtual const FilePath & getFileName() const = 0;
+        virtual void setFilePath( const FilePath & _filePath ) = 0;
+        virtual const FilePath & getFilePath() const = 0;
 
     public:
         virtual uint32_t getWidth() const = 0;

@@ -91,32 +91,32 @@ namespace Mengine
         bool openUrlInDefaultBrowser( const Char * _url ) override;
 
     public:
-        bool existDirectory( const Char * _path ) const override;
-        bool createDirectory( const Char * _path ) override;
+        bool existDirectory( const Char * _directoryPath ) const override;
+        bool createDirectory( const Char * _directoryPath ) override;
 
     public:
         bool existFile( const Char * _utf8Path ) override;
-        bool removeFile( const Char * _path ) override;
+        bool removeFile( const Char * _filePath ) override;
 
     public:
         bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const override;
 
     protected:
-        bool existFile_( const WChar * _path );
-        bool createDirectory_( const WChar * _path );
+        bool existFile_( const WChar * _filePath );
+        bool createDirectory_( const WChar * _filePath );
 
     public:
-        uint64_t getFileTime( const Char * _path ) const override;
+        uint64_t getFileTime( const Char * _filePath ) const override;
 
     public:
         DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
 
     public:
-        bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
-        bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
+        bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;
+        bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;
 
     protected:
-        bool createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size );
+        bool createDirectoryUser_( const WChar * _userPath, const WChar * _directoryPath, const WChar * _filePath, const void * _data, size_t _size );
 
     protected:
         bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const override;

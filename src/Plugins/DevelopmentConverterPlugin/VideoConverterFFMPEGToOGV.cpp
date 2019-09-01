@@ -26,13 +26,13 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool VideoConverterFFMPEGToOGV::convert()
     {
-        const ConstString & pakPath = m_options.fileGroup->getFolderPath();
+        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
 
-        String full_input = pakPath.c_str();
-        full_input += m_options.inputFileName.c_str();
+        String full_input = folderPath.c_str();
+        full_input += m_options.inputFilePath.c_str();
 
-        String full_output = pakPath.c_str();
-        full_output += m_options.outputFileName.c_str();
+        String full_output = folderPath.c_str();
+        full_output += m_options.outputFilePath.c_str();
 
         String buffer = "-loglevel error -y -threads 4 -i \"" + full_input + "\" -vcodec libtheora -f ogg -map_metadata -1 -an -q 9 -pix_fmt yuv420p \"" + full_output + "\"";
 

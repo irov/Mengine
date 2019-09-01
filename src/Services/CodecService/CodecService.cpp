@@ -101,11 +101,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & CodecService::findCodecType( const FilePath & _path ) const
+    const ConstString & CodecService::findCodecType( const FilePath & _filePath ) const
     {
-        const Char * str_path = _path.c_str();
+        const Char * str_filePath = _filePath.c_str();
 
-        const Char * dot_find = strrchr( str_path, '.' );
+        const Char * dot_find = strrchr( str_filePath, '.' );
 
         if( dot_find == nullptr )
         {

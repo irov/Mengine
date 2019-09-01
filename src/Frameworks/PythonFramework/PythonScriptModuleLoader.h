@@ -28,7 +28,7 @@ namespace Mengine
         const DataflowInterfacePtr & getDataflow() const;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
 
     public:
         void setPackagePath( bool _packagePath );

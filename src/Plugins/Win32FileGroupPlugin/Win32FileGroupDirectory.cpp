@@ -71,16 +71,16 @@ namespace Mengine
         return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
+    bool Win32FileGroupDirectory::existFile( const FilePath & _filePath ) const
     {
         WChar unicode_filePath[MENGINE_MAX_PATH];
-        size_t unicode_filePathLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, _fileName, unicode_filePath, MENGINE_MAX_PATH );
+        size_t unicode_filePathLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
         if( unicode_filePathLen == MENGINE_PATH_INVALID_LENGTH )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -164,9 +164,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc )
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, const Char * _doc )
     {
-        MENGINE_UNUSED( _fileName );
+        MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
 
         Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );

@@ -467,7 +467,7 @@ namespace Mengine
 
         VectorFilePath pathes;
 
-        for( const ScriptModulePack & pack : _modules )
+        for( const ScriptModulePackage & pack : _modules )
         {
             pathes.emplace_back( pack.path );
         }
@@ -478,7 +478,7 @@ namespace Mengine
 
         if( m_initializeModules == true )
         {
-            for( const ScriptModulePack & pack : _modules )
+            for( const ScriptModulePackage & pack : _modules )
             {
                 this->initializeModule_( pack );
             }
@@ -489,10 +489,10 @@ namespace Mengine
     {
         m_moduleFinder->removeModulePath( _fileGroup );
 
-        for( const ScriptModulePack & pack : _modules )
+        for( const ScriptModulePackage & pack : _modules )
         {
             m_bootstrapperModules.erase(
-                std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePack & _pack )
+                std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePackage & _pack )
             {
                 if( _pack.module < pack.module )
                 {
@@ -589,17 +589,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptService::bootstrapModules()
     {
-        for( const ScriptModulePack & pak : m_bootstrapperModules )
+        for( const ScriptModulePackage & package : m_bootstrapperModules )
         {
-            if( pak.module.empty() == true )
+            if( package.module.empty() == true )
             {
                 continue;
             }
 
-            ScriptModuleInterfacePtr module = this->importModule( pak.module );
+            ScriptModuleInterfacePtr module = this->importModule( package.module );
 
             MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
-                , pak.module.c_str()
+                , package.module.c_str()
             );
         }
 
@@ -613,9 +613,9 @@ namespace Mengine
             return false;
         }
 
-        for( const ScriptModulePack & pak : m_bootstrapperModules )
+        for( const ScriptModulePackage & package : m_bootstrapperModules )
         {
-            if( this->initializeModule_( pak ) == false )
+            if( this->initializeModule_( package ) == false )
             {
                 return false;
             }
@@ -626,7 +626,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptService::initializeModule_( const ScriptModulePack & _pack )
+    bool PythonScriptService::initializeModule_( const ScriptModulePackage & _pack )
     {
         if( _pack.module.empty() == true )
         {
@@ -665,28 +665,28 @@ namespace Mengine
 
         m_initializeModules = false;
 
-        for( const ScriptModulePack & pak : m_bootstrapperModules )
+        for( const ScriptModulePackage & package : m_bootstrapperModules )
         {
-            if( pak.module.empty() == true )
+            if( package.module.empty() == true )
             {
                 continue;
             }
 
-            if( pak.finalizer.empty() == true )
+            if( package.finalizer.empty() == true )
             {
                 continue;
             }
 
-            ScriptModuleInterfacePtr module = this->importModule( pak.module );
+            ScriptModuleInterfacePtr module = this->importModule( package.module );
 
             MENGINE_ASSERTION_MEMORY_PANIC( module, false, "invalid import module '%s'"
-                , pak.module.c_str()
+                , package.module.c_str()
             );
 
-            if( module->onFinalize( pak.finalizer ) == false )
+            if( module->onFinalize( package.finalizer ) == false )
             {
                 LOGGER_ERROR( "module '%s' invalid call finalizer"
-                    , pak.module.c_str()
+                    , package.module.c_str()
                 );
 
                 return false;
@@ -701,7 +701,7 @@ namespace Mengine
         DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
         DataflowInterfacePtr dataflowPYZ = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
-        for( const ScriptModulePack & pack : m_bootstrapperModules )
+        for( const ScriptModulePackage & pack : m_bootstrapperModules )
         {
             const FileGroupInterfacePtr & fileGroup = pack.fileGroup;
 

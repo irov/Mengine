@@ -54,7 +54,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const Char * _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         if( this->isAvailableService() == false )
         {
@@ -64,11 +64,11 @@ namespace Mengine
         }
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SYSTEM()
-            ->createEmitterContainerFromMemory( _fileGroup, _fileName, m_archivator, _doc );
+            ->createEmitterContainerFromMemory( _fileGroup, _filePath, m_archivator, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "can't create emitter container '%s:%s'"
             , _fileGroup->getName().c_str()
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
 
         return container;

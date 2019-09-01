@@ -26,7 +26,7 @@ namespace Mengine
 
     public:
         bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) override;
-        const ConstString & findCodecType( const FilePath & _path ) const override;
+        const ConstString & findCodecType( const FilePath & _filePath ) const override;
 
     protected:
         typedef Map<ConstString, ConstString> MapCodecExts;

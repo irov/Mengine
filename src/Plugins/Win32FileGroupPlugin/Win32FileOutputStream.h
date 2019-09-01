@@ -21,7 +21,7 @@ namespace Mengine
         ~Win32FileOutputStream() override;
 
     public:
-        bool open( const FilePath & _relation, const FilePath & _folder, const FilePath & _fileName ) override;
+        bool open( const FilePath & _relation, const FilePath & _folder, const FilePath & _filePath ) override;
 
     public:
         size_t write( const void * _data, size_t _size ) override;
@@ -37,8 +37,8 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         String m_relationPath;
-        String m_folder;
-        String m_fileName;
+        String m_folderPath;
+        String m_filePath;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

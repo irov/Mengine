@@ -15,7 +15,7 @@ namespace Mengine
         ~ThreadTaskPrefetch() override;
 
     public:
-        void initialize( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );
+        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const PrefetcherObserverInterfacePtr & _observer );
 
     public:
         MENGINE_INLINE const FilePath & getFilePath() const;

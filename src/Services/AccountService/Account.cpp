@@ -26,15 +26,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion )
+    bool Account::initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath, uint32_t _projectVersion )
     {
         m_id = _id;
         m_projectVersion = _projectVersion;
 
-        m_folder = _folder;
+        m_folderPath = _folderPath;
 
         PathString settingsPath;
-        settingsPath += m_folder;
+        settingsPath += m_folderPath;
         settingsPath += "settings.ini";
 
         m_settingsPath = Helper::stringizeFilePath( settingsPath );
@@ -63,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const FilePath & Account::getFolder() const
     {
-        return m_folder;
+        return m_folderPath;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Account::addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider )
@@ -304,12 +304,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Account::openReadBinaryFile( const FilePath & _fileName )
+    InputStreamInterfacePtr Account::openReadBinaryFile( const FilePath & _filePath )
     {
         PathString path;
 
-        path += m_folder;
-        path += _fileName;
+        path += m_folderPath;
+        path += _filePath;
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
@@ -328,7 +328,7 @@ namespace Mengine
     {
         PathString path;
 
-        path += m_folder;
+        path += m_folderPath;
         path += _filepath;
 
         FilePath fullpath = Helper::stringizeFilePath( path );
@@ -398,11 +398,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::hasBinaryFile( const FilePath & _fileName ) const
+    bool Account::hasBinaryFile( const FilePath & _filePath ) const
     {
         PathString path;
-        path += m_folder;
-        path += _fileName;
+        path += m_folderPath;
+        path += _filePath;
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 

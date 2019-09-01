@@ -22,7 +22,7 @@ namespace Mengine
         ~Account() override;
 
     public:
-        bool initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion );
+        bool initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath, uint32_t _projectVersion );
 
     public:
         const ConstString & getID() const override;
@@ -62,7 +62,7 @@ namespace Mengine
         AccountUID m_uid;
         uint32_t m_projectVersion;
 
-        FilePath m_folder;
+        FilePath m_folderPath;
         FilePath m_settingsPath;
 
         struct Setting

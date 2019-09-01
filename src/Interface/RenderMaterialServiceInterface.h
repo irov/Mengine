@@ -20,8 +20,8 @@ namespace Mengine
         SERVICE_DECLARE( "RenderMaterialService" )
 
     public:
-        virtual bool loadMaterials( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName ) = 0;
-        virtual bool unloadMaterials( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName ) = 0;
+        virtual bool loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
         virtual const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const = 0;

@@ -26,13 +26,13 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool SoundConverterFFMPEGToOGG::convert()
     {
-        const ConstString & pakPath = m_options.fileGroup->getFolderPath();
+        const ConstString & folderPath = m_options.fileGroup->getFolderPath();
 
-        String full_input = pakPath.c_str();
-        full_input += m_options.inputFileName.c_str();
+        String full_input = folderPath.c_str();
+        full_input += m_options.inputFilePath.c_str();
 
-        String full_output = pakPath.c_str();
-        full_output += m_options.outputFileName.c_str();
+        String full_output = folderPath.c_str();
+        full_output += m_options.outputFilePath.c_str();
 
         String buffer = "-loglevel error -y -threads 4 -i \"" + full_input + "\" -map_metadata -1 -ac 2 -ar 44100 -acodec libvorbis -aq 100 \"" + full_output + "\"";
 

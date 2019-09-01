@@ -31,7 +31,7 @@ namespace Mengine
         ~BitmapGlyph() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _pakName, const FilePath & _path );
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
 
     public:
         void setSize( float _size );

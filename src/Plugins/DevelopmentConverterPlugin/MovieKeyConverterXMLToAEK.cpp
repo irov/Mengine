@@ -71,12 +71,12 @@ namespace Mengine
     bool MovieKeyConverterXMLToAEK::convert()
     {
         Blobject buffer;
-        if( this->loadFramePak_( buffer ) == false )
+        if( this->loadFramePackage_( buffer ) == false )
         {
             return false;
         }
 
-        if( this->writeFramePak_( buffer ) == false )
+        if( this->writeFramePackage_( buffer ) == false )
         {
             return false;
         }
@@ -97,32 +97,31 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieKeyConverterXMLToAEK::loadFramePak_( Blobject & _buffer )
+    bool MovieKeyConverterXMLToAEK::loadFramePackage_( Blobject & _buffer )
     {
-        bool exist = false;
-
         Metacode::Meta_Data::Meta_KeyFramesPack keyFramesPack;
 
         PathString binPath;
 
-        binPath += m_options.inputFileName;
+        binPath += m_options.inputFilePath;
         binPath.replace_last( "bin" );
 
         FilePath path_bin = Helper::stringizeFilePath( binPath );
 
+        bool exist = false;
         if( LOADER_SERVICE()
-            ->load( m_options.fileGroup, path_bin, &keyFramesPack, Metacode::Meta_Data::getVersion(), exist ) == false )
+            ->load( m_options.fileGroup, path_bin, &keyFramesPack, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "KeyFramesFile '%s' not found"
-                    , m_options.inputFileName.c_str()
+                    , m_options.inputFilePath.c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "KeyFramesFile invalid parse '%s' "
-                    , m_options.inputFileName.c_str()
+                    , m_options.inputFilePath.c_str()
                 );
             }
 
@@ -786,14 +785,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
+    bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
     {
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
+            ->openOutputFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file '%s:%s'"
             , m_options.fileGroup->getName().c_str()
-            , m_options.outputFileName.c_str()
+            , m_options.outputFilePath.c_str()
         );
 
         const void * buffer_memory = &_buffer[0];
@@ -803,7 +802,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid write stream '%s:%s'"
                 , m_options.fileGroup->getName().c_str()
-                , m_options.outputFileName.c_str()
+                , m_options.outputFilePath.c_str()
             );
 
             return false;

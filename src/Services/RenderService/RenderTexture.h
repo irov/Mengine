@@ -33,8 +33,8 @@ namespace Mengine
         void setFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
         const FileGroupInterfacePtr & getFileGroup() const override;
 
-        void setFileName( const FilePath & _fileName ) override;
-        const FilePath & getFileName() const override;
+        void setFilePath( const FilePath & _filePath ) override;
+        const FilePath & getFilePath() const override;
 
         const Rect & getRect() const override;
 
@@ -54,7 +54,7 @@ namespace Mengine
         RenderImageInterfacePtr m_image;
 
         FileGroupInterfacePtr m_fileGroup;
-        FilePath m_fileName;
+        FilePath m_filePath;
 
         uint32_t m_width;
         uint32_t m_height;
@@ -75,8 +75,8 @@ namespace Mengine
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FilePath & RenderTexture::getFileName() const
+    MENGINE_INLINE const FilePath & RenderTexture::getFilePath() const
     {
-        return m_fileName;
+        return m_filePath;
     }
 }

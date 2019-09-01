@@ -17,10 +17,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    void DecoderRenderImageProvider::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
+    void DecoderRenderImageProvider::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName )
     {
         m_fileGroup = _fileGroup;
-        m_fileName = _fileName;
+        m_filePath = _filePath;
         m_codecName = _codecName;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@ namespace Mengine
     {
         DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>();
 
-        if( loader->initialize( m_fileGroup, m_fileName, m_codecName ) == false )
+        if( loader->initialize( m_fileGroup, m_filePath, m_codecName ) == false )
         {
             return nullptr;
         }

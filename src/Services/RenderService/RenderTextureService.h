@@ -24,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ConstString & _codecName, const Char * _doc ) override;
+        RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName, const Char * _doc ) override;
         RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc ) override;
 
     public:
@@ -32,16 +32,16 @@ namespace Mengine
         RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc ) override;
 
     public:
-        RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) const override;
+        RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const override;
 
     public:
-        bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
+        bool hasTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, RenderTextureInterfacePtr * _texture ) const override;
 
     public:
-        void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const RenderTextureInterfacePtr & _texture ) override;
+        void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
-        bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _fileName ) override;
+        bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _filePath ) override;
 
     public:
         void visitTexture( const LambdaRenderTexture & _lambda ) const override;

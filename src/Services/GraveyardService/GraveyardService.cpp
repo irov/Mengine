@@ -86,7 +86,7 @@ namespace Mengine
     bool GraveyardService::buryTexture( RenderTextureInterface * _texture )
     {
         const FileGroupInterfacePtr & fileGroup = _texture->getFileGroup();
-        const FilePath & filePath = _texture->getFileName();
+        const FilePath & filePath = _texture->getFilePath();
 
         if( filePath.empty() == true )
         {

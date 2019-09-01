@@ -36,7 +36,7 @@ namespace Mengine
         ~AstralaxEmitterContainer() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator );
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator );
         void finalize();
 
     public:

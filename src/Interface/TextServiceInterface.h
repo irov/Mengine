@@ -13,13 +13,13 @@ namespace Mengine
         SERVICE_DECLARE( "TextService" )
 
     public:
-        virtual bool loadTextEntry( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
-        virtual bool unloadTextEntry( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
+        virtual bool loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
         virtual TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const Char * _doc ) = 0;
-        virtual bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) = 0;
-        virtual bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) = 0;
+        virtual bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
         virtual bool addTextEntry( const ConstString & _key

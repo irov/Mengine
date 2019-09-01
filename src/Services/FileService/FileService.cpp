@@ -66,11 +66,11 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc )
     {
         LOGGER_INFO( "group '%s' path '%s' type '%s'"
             , _name.c_str()
-            , _path.c_str()
+            , _filePath.c_str()
             , _type.c_str()
         );
 
@@ -91,14 +91,14 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false, "can't create fileGroup '%s' type '%s' for object '%s'"
             , _name.c_str()
             , _type.c_str()
-            , _path.c_str()
+            , _filePath.c_str()
         );
 
-        if( fileGroup->initialize( _name, _fileGroup, _path ) == false )
+        if( fileGroup->initialize( _name, _fileGroup, _filePath ) == false )
         {
             LOGGER_ERROR( "can't initialize fileGroup '%s' for object '%s'"
                 , _name.c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -110,7 +110,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "invalid create fileGroup '%s' directory '%s'"
                     , _name.c_str()
-                    , _path.c_str()
+                    , _filePath.c_str()
                 );
 
                 return false;
@@ -199,20 +199,20 @@ namespace Mengine
         return m_defaultFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr FileService::openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streaming, const Char * _doc )
+    InputStreamInterfacePtr FileService::openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _streaming, const Char * _doc )
     {
-        InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming, _doc );
+        InputStreamInterfacePtr file = _fileGroup->createInputFile( _filePath, _streaming, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, nullptr, "can't create input file '%s:%s'"
             , _fileGroup->getName().c_str()
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
 
-        if( _fileGroup->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
+        if( _fileGroup->openInputFile( _filePath, file, 0, 0, _streaming ) == false )
         {
             LOGGER_ERROR( "can't open input file '%s:%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             return nullptr;
@@ -221,20 +221,20 @@ namespace Mengine
         return file;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr FileService::openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const Char * _doc )
+    OutputStreamInterfacePtr FileService::openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, nullptr, "can't create output file '%s:%s'"
             , _fileGroup->getName().c_str()
-            , _fileName.c_str()
+            , _filePath.c_str()
         );
 
-        if( _fileGroup->openOutputFile( _fileName, file ) == false )
+        if( _fileGroup->openOutputFile( _filePath, file ) == false )
         {
             LOGGER_ERROR( "can't open output file '%s:%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
             );
 
             return nullptr;

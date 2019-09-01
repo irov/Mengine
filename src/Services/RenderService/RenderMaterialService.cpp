@@ -210,26 +210,26 @@ namespace Mengine
         m_factoryMaterial = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialService::loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName )
+    bool RenderMaterialService::loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _fileName, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
+            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "materials '%s:%s' not found"
                     , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse materials '%s:%s'"
                     , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                 );
             }
 
@@ -263,7 +263,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' fragment shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , filePath.c_str()
                 , name.c_str()
                 , isCompile
@@ -271,7 +271,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( name ) == false, false, "material '%s:%s' already has fragment shader '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
             );
 
@@ -303,7 +303,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' vertex shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , filePath.c_str()
                 , name.c_str()
                 , isCompile
@@ -311,7 +311,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( name ) == false, false, "material '%s:%s' already has vertex shader '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
             );
 
@@ -351,7 +351,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( name ) == false, false, "material '%s:%s' already has vertex attribute '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
             );
 
@@ -382,7 +382,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, false, "material '%s:%s' program '%s' not found vertex shader '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
                 , vertexShaderName.c_str()
             );
@@ -391,7 +391,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, false, "material '%s:%s' program '%s' not found fragment shader '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
                 , fragmentShaderName.c_str()
             );
@@ -400,7 +400,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, false, "material '%s:%s' program '%s' not found vertex attribute '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
                 , vertexAttributeName.c_str()
             );
@@ -410,14 +410,14 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( program, false, "material '%s:%s' invalid create program vertex '%s' fragment '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , vertexShaderName.c_str()
                 , fragmentShaderName.c_str()
             );
 
             MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( name ) == false, false, "material '%s:%s' already has vertex attribute '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
             );
 
@@ -458,7 +458,7 @@ namespace Mengine
 
                 MENGINE_ASSERTION_MEMORY_PANIC( program, false, "material '%s:%s' invalid get program '%s'"
                     , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                     , programName.c_str()
                 );
 
@@ -486,7 +486,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, false, "material '%s:%s' invalid create stage group '%s'"
                 , _fileGroup->getName().c_str()
-                , _fileName.c_str()
+                , _filePath.c_str()
                 , name.c_str()
             );
 
@@ -522,26 +522,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialService::unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName )
+    bool RenderMaterialService::unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _fileName, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
+            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "materials '%s:%s' not found"
                     , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse materials '%s:%s'"
                     , _fileGroup->getName().c_str()
-                    , _fileName.c_str()
+                    , _filePath.c_str()
                 );
             }
 

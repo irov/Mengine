@@ -45,7 +45,7 @@ namespace Mengine
     bool TextService::_initializeService()
     {
         m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>();
-        m_factoryTextLocalePak = Helper::makeFactoryPool<TextLocalePack, 4>();
+        m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>();
 
         return true;
     }
@@ -56,13 +56,13 @@ namespace Mengine
         m_fonts.clear();
         m_aliases.clear();
         m_aliasesArguments.clear();
-        m_packs.clear();
+        m_packages.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePak );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePackage );
 
         m_factoryTextEntry = nullptr;
-        m_factoryTextLocalePak = nullptr;
+        m_factoryTextLocalePackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     class TextService::TextManagerLoadSaxCallback
@@ -371,11 +371,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( pak->initialize( _fileGroup, _filePath ) == false )
+        if( package->initialize( _fileGroup, _filePath ) == false )
         {
-            LOGGER_ERROR( "file '%s:%s' invalid initialize pak"
+            LOGGER_ERROR( "file '%s:%s' invalid initialize text locale package"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -383,9 +383,9 @@ namespace Mengine
             return false;
         }
 
-        m_packs.emplace_back( pak );
+        m_packages.emplace_back( package );
 
-        MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
+        MemoryInterfacePtr xml_memory = package->getXmlBuffer();
 
         Char * xml_buff = xml_memory->getBuffer();
 
@@ -406,7 +406,7 @@ namespace Mengine
 
         if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
         {
-            LOGGER_ERROR( "file '%s:%s' invalid parse pak"
+            LOGGER_ERROR( "file '%s:%s' invalid parse text locale package"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -421,10 +421,10 @@ namespace Mengine
     class TextService::TextManagerUnloadSaxCallback
     {
     public:
-        TextManagerUnloadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+        TextManagerUnloadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
             : m_textManager( _textManager )
             , m_fileGroup( _fileGroup )
-            , m_path( _path )
+            , m_filePath( _filePath )
         {
         }
 
@@ -467,23 +467,23 @@ namespace Mengine
         TextService * m_textManager;
 
         const FileGroupInterfacePtr & m_fileGroup;
-        const FilePath & m_path;
+        const FilePath & m_filePath;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+    bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        if( pak->initialize( _fileGroup, _path ) == false )
+        if( package->initialize( _fileGroup, _filePath ) == false )
         {
             return false;
         }
 
-        MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
+        MemoryInterfacePtr xml_memory = package->getXmlBuffer();
 
         Char * xml_buff = xml_memory->getBuffer();
 
-        TextManagerUnloadSaxCallback tmsc( this, _fileGroup, _path );
+        TextManagerUnloadSaxCallback tmsc( this, _fileGroup, _filePath );
 
         xmlsax_callbacks_t callbacks;
         callbacks.begin_node = nullptr;
@@ -503,15 +503,15 @@ namespace Mengine
             return false;
         }
 
-        m_packs.erase(
-            std::remove_if( m_packs.begin(), m_packs.end(), [&_fileGroup]( const TextLocalePackPtr & _pack )
+        m_packages.erase(
+            std::remove_if( m_packages.begin(), m_packages.end(), [&_fileGroup]( const TextLocalePackagePtr & _pack )
         {
             if( _pack->getFileGroup() != _fileGroup )
             {
                 return false;
             }return true;
         } )
-            , m_packs.end()
+            , m_packages.end()
             );
 
         return true;

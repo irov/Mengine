@@ -44,8 +44,8 @@ namespace Mengine
         void setPlatfromTags( const Tags & _tags ) override;
         const Tags & getPlatfromTags() const override;
 
-        void setPath( const FilePath & _path ) override;
-        const FilePath & getPath() const override;
+        void setPathPath( const FilePath & _filePath ) override;
+        const FilePath & getPathPath() const override;
 
     public:
         bool load( const Char * _doc ) override;
@@ -59,31 +59,31 @@ namespace Mengine
     protected:
         bool mountFileGroup_( const Char * _doc );
         bool unmountFileGroup_();
-        bool loadPak_();
+        bool loadPackage_();
 
     protected:
-        void addModulePath_( const String & _path );
+        void addModulePath_( const String & _filePath );
 
     protected:
         void addResource_( const FilePath & _path, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored );
         void addTextPath_( const FilePath & _path, const Tags & _platform );
-        void addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
+        void addScriptPackage_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform );
         void addFontPath_( const FilePath & _path, const Tags & _tags );
         void addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform );
         void addMaterial_( const FilePath & _path, const Tags & _platform );
 
     protected:
-        bool loadText_( const FilePath & _path );
-        bool unloadText_( const FilePath & _path );
-        bool loadFont_( const FilePath & _path );
-        bool unloadFont_( const FilePath & _path );
-        bool addUserData_( const ConstString & _name, const FilePath & _path );
+        bool loadText_( const FilePath & _filePath );
+        bool unloadText_( const FilePath & _filePath );
+        bool loadFont_( const FilePath & _filePath );
+        bool unloadFont_( const FilePath & _filePath );
+        bool addUserData_( const ConstString & _name, const FilePath & _filePath );
         bool removeUserData_( const ConstString & _name );
-        bool loadMaterials_( const FilePath & _path );
-        bool unloadMaterials_( const FilePath & _path );
+        bool loadMaterials_( const FilePath & _filePath );
+        bool unloadMaterials_( const FilePath & _filePath );
 
     protected:
-        struct PakResourceDesc
+        struct PackageResourceDesc
         {
             FilePath path;
             Tags tags;
@@ -92,8 +92,8 @@ namespace Mengine
             bool ignored;
         };
 
-        typedef Vector<PakResourceDesc> VectorPakResourceDesc;
-        VectorPakResourceDesc m_resourcesDesc;
+        typedef Vector<PackageResourceDesc> VectorPackageResourceDesc;
+        VectorPackageResourceDesc m_resourcesDesc;
 
         ConstString m_name;
         ConstString m_type;
@@ -105,46 +105,46 @@ namespace Mengine
         FilePath m_descriptionPath;
 
         FileGroupInterfacePtr m_fileGroup;
-        FilePath m_path;
+        FilePath m_filePath;
 
         VectorScriptModulePack m_scriptsPackages;
 
-        struct PakFontDesc
+        struct PackageFontDesc
         {
             FilePath path;
             Tags platform;
         };
 
-        typedef Vector<PakFontDesc> VectorPakFontDesc;
-        VectorPakFontDesc m_pathFonts;
+        typedef Vector<PackageFontDesc> VectorPackageFontDesc;
+        VectorPackageFontDesc m_fontsDesc;
 
-        struct PakTextDesc
+        struct PackageTextDesc
         {
             FilePath path;
             Tags platform;
         };
 
-        typedef Vector<PakTextDesc> VectorPakTextDesc;
-        VectorPakTextDesc m_pathTexts;
+        typedef Vector<PackageTextDesc> VectorPackageTextDesc;
+        VectorPackageTextDesc m_textsDesc;
 
-        struct PakDataDesc
+        struct PackageDataDesc
         {
             ConstString name;
             FilePath path;
             Tags platform;
         };
 
-        typedef Vector<PakDataDesc> VectorPakDataDesc;
-        VectorPakDataDesc m_datas;
+        typedef Vector<PackageDataDesc> VectorPackageDataDesc;
+        VectorPackageDataDesc m_datasDesc;
 
-        struct PakMaterialDesc
+        struct PackageMaterialDesc
         {
             FilePath path;
             Tags platform;
         };
 
-        typedef Vector<PakMaterialDesc> VectorPakMaterialDesc;
-        VectorPakMaterialDesc m_pathMaterials;
+        typedef Vector<PackageMaterialDesc> VectorPackageMaterialDesc;
+        VectorPackageMaterialDesc m_materialsDesc;
 
         bool m_preload;
         bool m_load;

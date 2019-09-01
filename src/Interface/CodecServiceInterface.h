@@ -69,7 +69,7 @@ namespace Mengine
 
     public:
         virtual bool registerCodecExt( const ConstString & _ext, const ConstString & _codecType ) = 0;
-        virtual const ConstString & findCodecType( const FilePath & _path ) const = 0;
+        virtual const ConstString & findCodecType( const FilePath & _filePath ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -80,7 +80,7 @@ namespace Mengine
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
+            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             if( exist == false )
             {
@@ -215,26 +215,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path )
+    bool ResourceService::unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _pak, _path, &datablock, Metacode::Meta_Data::getVersion(), exist ) == false )
+            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "resource '%s:%s' not found"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "invalid parse resource '%s:%s'"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
                 );
             }
 
@@ -249,11 +249,11 @@ namespace Mengine
         {
             const FilePath & path = meta_include.get_Path();
 
-            if( this->unloadResources( _locale, _pak, path ) == false )
+            if( this->unloadResources( _locale, _fileGroup, path ) == false )
             {
                 LOGGER_ERROR( "load '%s:%s' resource invalid load include '%s'"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
                     , path.c_str()
                 );
 
@@ -274,10 +274,10 @@ namespace Mengine
                 const FileGroupInterfacePtr & resource_fileGroup = has_resource->getFileGroup();
 
                 LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
-                    , _path.c_str()
+                    , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
-                    , _pak->getName().c_str()
+                    , _fileGroup->getName().c_str()
                     , resource_fileGroup->getName().c_str()
                     , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
@@ -290,8 +290,8 @@ namespace Mengine
             if( this->removeResource( has_resource ) == false )
             {
                 LOGGER_ERROR( "path '%s' invalid remove resource '%s:%s' name '%s' type '%s'"
-                    , _path.c_str()
-                    , _pak->getName().c_str()
+                    , _filePath.c_str()
+                    , _fileGroup->getName().c_str()
                     , groupName.c_str()
                     , name.c_str()
                     , type.c_str()

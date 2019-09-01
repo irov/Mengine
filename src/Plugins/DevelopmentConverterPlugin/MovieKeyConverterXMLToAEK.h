@@ -26,8 +26,8 @@ namespace Mengine
         bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
     protected:
-        bool loadFramePak_( Blobject & _buffer );
-        bool writeFramePak_( const Blobject & _buffer );
+        bool loadFramePackage_( Blobject & _buffer );
+        bool writeFramePackage_( const Blobject & _buffer );
 
     protected:
         ArchivatorInterfacePtr m_archivator;

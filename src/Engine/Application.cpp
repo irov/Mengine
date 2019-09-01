@@ -682,15 +682,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths )
+    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths )
     {
-        for( const FilePath & resourcePath : _resourcePaths )
+        for( const FilePath & packagePath : _packagesPaths )
         {
             if( PACKAGE_SERVICE()
-                ->loadPackages( _fileGroup, resourcePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_CRITICAL( "invalid load resource pack '%s'"
-                    , resourcePath.c_str()
+                    , packagePath.c_str()
                 );
 
                 return false;
@@ -1097,7 +1097,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::notifyDebugOpenFile_( const Char * _folder, const Char * _fileName, bool _streaming )
+    void Application::notifyDebugOpenFile_( const Char * _folder, const Char * _filePath, bool _streaming )
     {
         bool isMainThread = THREAD_SERVICE()
             ->isMainThread();
@@ -1108,14 +1108,14 @@ namespace Mengine
             {
                 LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
                     , _folder
-                    , _fileName
+                    , _filePath
                     );
             }
             else
             {
                 LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("streaming %s%s"
                     , _folder
-                    , _fileName
+                    , _filePath
                     );
             }
         }
@@ -1126,7 +1126,7 @@ namespace Mengine
                 LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open [multithread:%u] open %s%s"
                     , THREAD_SERVICE()->getCurrentThreadId()
                     , _folder
-                    , _fileName
+                    , _filePath
                     );
             }
             else
@@ -1134,7 +1134,7 @@ namespace Mengine
                 LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("streaming [multithread:%u] open %s%s"
                     , THREAD_SERVICE()->getCurrentThreadId()
                     , _folder
-                    , _fileName
+                    , _filePath
                     );
             }
         }

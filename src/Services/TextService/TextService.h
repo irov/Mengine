@@ -4,7 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 
-#include "TextLocalePak.h"
+#include "TextLocalePackage.h"
 
 #include "TextEntry.h"
 
@@ -33,13 +33,13 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
-        bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
+        bool loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
         TextFontInterfacePtr createFont( const ConstString & _fontName, const ConstString & _fontType, const Char * _doc ) override;
-        bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
-        bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
+        bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
         bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
@@ -105,13 +105,13 @@ namespace Mengine
         typedef Map<PairAliasKey, VectorString> MapTextAliasesArguments;
         MapTextAliasesArguments m_aliasesArguments;
 
-        typedef Vector<TextLocalePackPtr> VectorTextLocalePaks;
-        VectorTextLocalePaks m_packs;
+        typedef Vector<TextLocalePackagePtr> VectorTextLocalePackages;
+        VectorTextLocalePackages m_packages;
 
         ConstString m_defaultFontName;
 
         FactoryPtr m_factoryTextEntry;
-        FactoryPtr m_factoryTextLocalePak;
+        FactoryPtr m_factoryTextLocalePackage;
 
         typedef stdex::template_pool<ConstStringHolderLocalString, 1024> PoolConstStringHolderLocalString;
         PoolConstStringHolderLocalString m_poolLocalString;

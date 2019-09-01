@@ -38,7 +38,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         MapDatas::const_iterator it_found = m_datas.find( _name );
 
@@ -53,7 +53,7 @@ namespace Mengine
 
         UserdataDesc desc;
         desc.category = _fileGroup;
-        desc.path = _path;
+        desc.path = _filePath;
 
         m_datas.emplace( _name, desc );
 

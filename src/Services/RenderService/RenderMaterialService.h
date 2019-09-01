@@ -36,8 +36,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) override;
-        bool unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) override;
+        bool loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+        bool unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     protected:
         const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const override;

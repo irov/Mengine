@@ -72,7 +72,7 @@ namespace Mengine
         void prefetchModules( const PrefetcherObserverInterfacePtr & _cb ) override;
 
     protected:
-        bool initializeModule_( const ScriptModulePack & _pack );
+        bool initializeModule_( const ScriptModulePackage & _pack );
 
     public:
         bool stringize( PyObject * _object, ConstString & _str ) override;

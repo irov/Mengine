@@ -120,9 +120,9 @@ namespace Mengine
         );
 
         config->getValues( "Game", "Path", m_configPaths );
-        config->getValues( "Config", "Path", m_configPaths );
-        config->getValues( "Credential", "Path", m_configPaths );
-        config->getValues( "Resource", "Path", m_resourcePaths );
+        config->getValues( "Configs", "Path", m_configPaths );
+        config->getValues( "Credentials", "Path", m_configPaths );
+        config->getValues( "Packages", "Path", m_packagesPaths );
 
         return true;
     }
@@ -309,8 +309,8 @@ namespace Mengine
         WString unicode_date;
         Helper::utf8ToUnicode( str_date, unicode_date );
 
-        WString unicode_logFilename;
-        unicode_logFilename += L"Game";
+        WString unicode_logFilePath;
+        unicode_logFilePath += L"Game";
 
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -318,23 +318,23 @@ namespace Mengine
 
         if( developmentMode == true && roamingMode == false || noroamingMode == false )
         {
-            unicode_logFilename += L"_";
-            unicode_logFilename += unicode_date;
+            unicode_logFilePath += L"_";
+            unicode_logFilePath += unicode_date;
         }
 
-        unicode_logFilename += L".log";
+        unicode_logFilePath += L".log";
 
-        String utf8_logFilename;
-        if( Helper::unicodeToUtf8( unicode_logFilename, utf8_logFilename ) == false )
+        String utf8_logFilePath;
+        if( Helper::unicodeToUtf8( unicode_logFilePath, utf8_logFilePath ) == false )
         {
             LOGGER_ERROR( "failed log directory '%ls' convert to ut8f"
-                , unicode_logFilename.c_str()
+                , unicode_logFilePath.c_str()
             );
 
             return false;
         }
 
-        FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename );
+        FilePath logFilePath = Helper::stringizeFilePath( utf8_logFilePath );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -342,13 +342,13 @@ namespace Mengine
         FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>();
 
         fileLog->setFileGroup( fileGroup );
-        fileLog->setFilePath( logFilename );
+        fileLog->setFilePath( logFilePath );
 
         if( LOGGER_SERVICE()
             ->registerLogger( fileLog ) == false )
         {
             LOGGER_ERROR( "invalid register file logger '%s'"
-                , logFilename.c_str()
+                , logFilePath.c_str()
             );
         }
         else
@@ -356,7 +356,7 @@ namespace Mengine
             m_fileLog = fileLog;
 
             LOGGER_INFO( "starting log to '%s'"
-                , logFilename.c_str()
+                , logFilePath.c_str()
             );
         }
 
@@ -468,7 +468,7 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run( m_resourcePaths ) == false )
+            ->run( m_packagesPaths ) == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
             );

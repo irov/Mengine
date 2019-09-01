@@ -70,9 +70,9 @@ namespace Mengine
         m_fileGroup = _fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::setFileName( const FilePath & _fileName )
+    void RenderTexture::setFilePath( const FilePath & _filePath )
     {
-        m_fileName = _fileName;
+        m_filePath = _filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t RenderTexture::getWidth() const

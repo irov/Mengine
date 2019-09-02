@@ -30,6 +30,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::_initializeFramework()
     {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonFramework::_finalizeFramework()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PythonFramework::_runFramework()
+    {
         if( ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ), Helper::makeFactorableUnique<ConstsScriptEmbedding>() ) == false )
         {
             return false;
@@ -73,7 +83,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonFramework::_finalizeFramework()
+    void PythonFramework::_stopFramework()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
 

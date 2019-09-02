@@ -27,6 +27,10 @@ namespace Mengine
         bool createDynamicPlugins_();
         bool createDynamicDevPlugins_();
         bool createApplication_();
+        bool createFrameworks_();
+
+    protected:
+        void finalizeFrameworks_();
 
     protected:
         bool loadRenderMaterials_();

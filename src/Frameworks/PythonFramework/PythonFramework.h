@@ -17,6 +17,9 @@ namespace Mengine
         bool _initializeFramework() override;
         void _finalizeFramework() override;
 
+        bool _runFramework() override;
+        void _stopFramework() override;
+
     protected:
         void notifyBootstrapperInitializeGame();
     };

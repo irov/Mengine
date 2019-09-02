@@ -24,9 +24,13 @@ namespace Mengine
 
     public:
         bool hasFramework( const ConstString & _name ) const override;
-        bool runFramework( const ConstString & _name, const Char * _doc ) override;
-        bool stopFramework( const ConstString & _name ) override;
+        bool initializeFramework( const ConstString & _name, const Char * _doc ) override;
+        bool finalizeFramework( const ConstString & _name ) override;
         bool isRunFramework( const ConstString & _name ) const override;
+
+    public:
+        bool runFrameworks() override;
+        bool stopFrameworks() override;
 
     protected:
         const FrameworkInterfacePtr & findFramework_( const ConstString & _moduleName ) const;

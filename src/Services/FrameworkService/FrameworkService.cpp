@@ -50,7 +50,7 @@ namespace Mengine
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FrameworkService::runFramework( const ConstString & _name, const Char * _doc )
+    bool FrameworkService::initializeFramework( const ConstString & _name, const Char * _doc )
     {
         FrameworkFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Framework" ), _name );
 
@@ -76,7 +76,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FrameworkService::stopFramework( const ConstString & _name )
+    bool FrameworkService::finalizeFramework( const ConstString & _name )
     {
         FrameworkInterfacePtr framework = this->popFramework_( _name );
 
@@ -85,6 +85,29 @@ namespace Mengine
         );
 
         framework->finalizeFramework();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FrameworkService::runFrameworks()
+    {
+        for( const FrameworkInterfacePtr & framework : m_frameworks )
+        {
+            if( framework->runFramework() == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FrameworkService::stopFrameworks()
+    {
+        for( const FrameworkInterfacePtr & framework : m_frameworks )
+        {
+            framework->stopFramework();
+        }
 
         return true;
     }

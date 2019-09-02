@@ -6,8 +6,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     FrameworkBase::FrameworkBase()
-        : m_initialize( false )
-        , m_available( false )
+        : m_available( false )
+        , m_initialize( false )
+        , m_running( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,9 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_ASSERTION_FATAL( m_initialize == false );
+        MENGINE_ASSERTION_FATAL( m_running == false );
+
         m_initialize = this->_initializeFramework();
 
         return m_initialize;
@@ -57,8 +61,29 @@ namespace Mengine
         }
 
         MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_running == false );
 
         this->_finalizeFramework();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FrameworkBase::runFramework()
+    {
+        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_running == false );
+
+        m_running = this->_runFramework();
+
+        return m_running;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FrameworkBase::stopFramework()
+    {
+        MENGINE_ASSERTION_FATAL( m_initialize == true );
+        MENGINE_ASSERTION_FATAL( m_running == true );
+
+        this->_stopFramework();
+
+        m_running = false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FrameworkBase::_initializeFramework()
@@ -67,6 +92,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void FrameworkBase::_finalizeFramework()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FrameworkBase::_runFramework()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FrameworkBase::_stopFramework()
     {
         //Empty
     }

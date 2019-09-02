@@ -20,14 +20,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchImageDecoder::setImageCodec( const ConstString & _codec )
+    void ThreadTaskPrefetchImageDecoder::setImageCodec( const ConstString & _codecType )
     {
-        m_imageCodec = _codec;
+        m_codecType = _codecType;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ThreadTaskPrefetchImageDecoder::getImageCodec() const
     {
-        return m_imageCodec;
+        return m_codecType;
     }
     //////////////////////////////////////////////////////////////////////////
     const ImageDecoderInterfacePtr & ThreadTaskPrefetchImageDecoder::getDecoder() const
@@ -49,10 +49,10 @@ namespace Mengine
         );
 
         m_imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( m_imageCodec, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_imageDecoder, false, "invalide create codec '%s'"
-            , m_imageCodec.c_str()
+            , m_codecType.c_str()
         );
 
         return true;

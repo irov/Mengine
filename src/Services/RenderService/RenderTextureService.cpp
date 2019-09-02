@@ -181,7 +181,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _filePath )
+    bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
     {
         OutputStreamInterfacePtr stream = FILE_SERVICE()
             ->openOutputFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
@@ -192,7 +192,7 @@ namespace Mengine
         );
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( _codecName, MENGINE_DOCUMENT_FUNCTION );
+            ->createEncoderT<ImageEncoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, false, "can't create encoder for file '%s'"
             , _filePath.c_str()
@@ -297,9 +297,11 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const Char * _doc )
     {
-        const RenderTextureInterface * texture = m_textures.find( std::make_pair( _fileGroup->getName(), _filePath ) );
+        const ConstString & fileGroupName = _fileGroup->getName();
+
+        const RenderTextureInterface * texture = m_textures.find( std::make_pair( fileGroupName, _filePath ) );
 
         if( texture != nullptr )
         {
@@ -323,20 +325,21 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageProvider, nullptr, "invalid create render image provider" );
 
-        imageProvider->initialize( _fileGroup, _filePath, _codecName );
+        imageProvider->initialize( _fileGroup, _filePath, _codecType, _codecFlags );
 
         RenderImageLoaderInterfacePtr imageLoader = imageProvider->getLoader();
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageLoader, nullptr, "invalid get image loader" );
 
-        RenderImageDesc imageDesc = imageLoader->getImageDesc();
+        RenderImageDesc imageDesc;
+        imageLoader->getImageDesc( &imageDesc );
 
         RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _filePath.c_str() );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, nullptr, "create texture '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
-            , _codecName.c_str()
+            , _codecType.c_str()
         );
 
         const RenderImageInterfacePtr & image = new_texture->getImage();

@@ -42,7 +42,7 @@ namespace Mengine
         const ConstString & codecType = this->getCodecType();
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->loadTexture( fileGroup, filePath, codecType, DF_NONE, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()
@@ -93,15 +93,12 @@ namespace Mengine
 
         this->correctUVTexture();
 
-        if( this->recompile( [this, _imagePath]()
+        bool successful = this->recompile( [this, _imagePath]()
         {
             this->setFilePath( _imagePath );
-        } ) == false )
-        {
-            return false;
-        }
+        } );
 
-        return true;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::prepareImageFrame_()

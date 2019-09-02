@@ -39,6 +39,11 @@ namespace Mengine
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ), Helper::makeFactorableUnique<JSONScriptEmbedding>() );
         } );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+        {
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ) );
+        } );        
 #endif
 
         if( PROTOTYPE_SERVICE()
@@ -60,10 +65,8 @@ namespace Mengine
     void JSONPlugin::_finalizePlugin()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
-        {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "JSONScriptEmbedding" ) );
-        }
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

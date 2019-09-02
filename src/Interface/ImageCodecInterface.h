@@ -72,6 +72,7 @@ namespace Mengine
         DF_QUALITY = 0x00000004,
         DF_WRITE_ALPHA_ONLY = 0x00000008,
         DF_NOT_ADD_ALPHA = 0x00000010,
+        DF_PREMULTIPLY_ALPHA = 0x00010000,
     };
     //////////////////////////////////////////////////////////////////////////
     struct ImageCodecOptions
@@ -79,16 +80,16 @@ namespace Mengine
     {
         ImageCodecOptions() noexcept
             : flags( DF_NONE )
-            , pitch( 0 )
             , channels( 0 )
             , mipmap( 0 )
+            , pitch( 0 )
         {
         }
 
         uint32_t flags;
-        size_t pitch;
         uint32_t channels;
         uint32_t mipmap;
+        size_t pitch;
 
         bool hasFlag( uint32_t _flag ) const
         {

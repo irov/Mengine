@@ -128,6 +128,11 @@ namespace Mengine
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ), Helper::makeFactorableUnique<Movie2ScriptEmbedding>() );
         } );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+        {
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ) );
+        } );
 #endif
 
         if( PROTOTYPE_SERVICE()
@@ -211,10 +216,8 @@ namespace Mengine
     void MoviePlugin::_finalizePlugin()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
-        {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "Movie2ScriptEmbedding" ) );
-        }
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
         ae_delete_movie_instance( m_movieInstance );

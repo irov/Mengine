@@ -14,6 +14,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DecoderRenderImageLoader::DecoderRenderImageLoader()
+        : m_codecFlags( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,18 +22,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DecoderRenderImageLoader::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName )
+    bool DecoderRenderImageLoader::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags )
     {
         ImageDecoderInterfacePtr decoder;
         if( PREFETCHER_SERVICE()
             ->getImageDecoder( _fileGroup, _filePath, decoder ) == false )
         {
-            decoder = this->createImageDecoder_( _fileGroup, _filePath, _codecName );
+            decoder = this->createImageDecoder_( _fileGroup, _filePath, _codecType );
 
             MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder '%s':'%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
-                , _codecName.c_str()
+                , _codecType.c_str()
             );
         }
         else
@@ -42,7 +43,7 @@ namespace Mengine
                 LOGGER_ERROR( "invalid rewind decoder '%s':'%s' codec '%s'"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
-                    , _codecName.c_str()
+                    , _codecType.c_str()
                 );
 
                 return false;
@@ -50,23 +51,21 @@ namespace Mengine
         }
 
         m_decoder = decoder;
+        m_codecFlags = _codecFlags;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageDesc DecoderRenderImageLoader::getImageDesc() const
+    void DecoderRenderImageLoader::getImageDesc( RenderImageDesc * _desc ) const
     {
         const ImageCodecDataInfo * dataInfo = m_decoder->getCodecDataInfo();
 
-        RenderImageDesc desc;
-        desc.mipmaps = dataInfo->mipmaps;
-        desc.width = dataInfo->width;
-        desc.height = dataInfo->height;
-        desc.channels = dataInfo->channels;
-        desc.depth = dataInfo->depth;
-        desc.format = dataInfo->format;
-
-        return desc;
+        _desc->mipmaps = dataInfo->mipmaps;
+        _desc->width = dataInfo->width;
+        _desc->height = dataInfo->height;
+        _desc->channels = dataInfo->channels;
+        _desc->depth = dataInfo->depth;
+        _desc->format = dataInfo->format;
     }
     //////////////////////////////////////////////////////////////////////////    
     bool DecoderRenderImageLoader::load( const RenderImageInterfacePtr & _image ) const
@@ -109,6 +108,7 @@ namespace Mengine
         options.pitch = pitch;
         options.channels = image_channels;
         options.mipmap = mipmap;
+        options.flags = m_codecFlags;
 
         m_decoder->setOptions( &options );
 
@@ -151,7 +151,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName ) const
+    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType ) const
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
@@ -159,16 +159,16 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid open stream '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
-            , _codecName.c_str()
+            , _codecType.c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( _codecName, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, nullptr, "invalid create decoder '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
-            , _codecName.c_str()
+            , _codecType.c_str()
         );
 
         if( decoder->prepareData( stream ) == false )
@@ -176,7 +176,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid prepare data '%s:%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
-                , _codecName.c_str()
+                , _codecType.c_str()
             );
 
             return nullptr;

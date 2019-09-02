@@ -28,11 +28,10 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual RenderImageDesc getImageDesc() const = 0;
+        virtual void getImageDesc( RenderImageDesc * _desc ) const = 0;
 
     public:
         virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
-        //virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;

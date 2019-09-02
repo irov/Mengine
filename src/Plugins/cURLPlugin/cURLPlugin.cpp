@@ -36,6 +36,11 @@ namespace Mengine
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>() );
         } );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+        {
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );
+        } );
 #endif
 
         return true;
@@ -45,11 +50,7 @@ namespace Mengine
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
-        {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ) );
-        }
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
         SERVICE_FINALIZE( cURLService );

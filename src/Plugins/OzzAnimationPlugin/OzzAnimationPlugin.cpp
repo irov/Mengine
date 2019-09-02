@@ -39,6 +39,11 @@ namespace Mengine
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ), Helper::makeFactorableUnique<OzzScriptEmbedding>() );
         } );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+        {
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ) );
+        } );
 #endif
 
         if( PROTOTYPE_SERVICE()
@@ -77,10 +82,8 @@ namespace Mengine
     void OzzAnimationPlugin::_finalizePlugin()
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
-        {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "OzzScriptEmbedding" ) );
-        }
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
         PROTOTYPE_SERVICE()

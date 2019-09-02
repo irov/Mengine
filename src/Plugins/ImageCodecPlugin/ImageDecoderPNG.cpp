@@ -220,183 +220,204 @@ namespace Mengine
             return 0;
         }
 
-        if( m_options.flags == DF_NONE )
+        switch( m_options.flags & 0x0000ffff )
         {
-            if( m_dataInfo.channels == m_options.channels )
+        case DF_NONE:
             {
-                if( m_interlace_number_of_passes == 1 )
+                if( m_dataInfo.channels == m_options.channels )
                 {
-                    png_bytep bufferCursor = (png_bytep)_buffer;
+                    if( m_interlace_number_of_passes == 1 )
+                    {
+                        png_bytep carriage = (png_bytep)_buffer;
+
+                        for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                        {
+                            png_read_row( m_png_ptr, carriage, nullptr );
+
+                            carriage += m_options.pitch;
+                        }
+                    }
+                    else
+                    {
+                        png_bytep * image = (png_bytep *)png_malloc( m_png_ptr, m_dataInfo.height * sizeof( png_bytep * ) );
+
+                        png_bytep carriage = (png_bytep)_buffer;
+
+                        for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                        {
+                            image[i] = carriage;
+
+                            carriage += m_options.pitch;
+                        }
+
+                        png_read_image( m_png_ptr, image );
+
+                        png_free( m_png_ptr, image );
+                    }
+
+                    if( m_options.flags & DF_PREMULTIPLY_ALPHA && m_dataInfo.channels == 4 )
+                    {
+                        png_bytep carriage = (png_bytep)_buffer;
+
+                        for( uint32_t j = 0; j != m_dataInfo.height; ++j )
+                        {
+                            for( uint32_t i = 0; i != m_dataInfo.width; ++i )
+                            {
+                                carriage[i * 4 + 0] = carriage[i * 4 + 0] * carriage[i * 4 + 3] / 255;
+                                carriage[i * 4 + 1] = carriage[i * 4 + 1] * carriage[i * 4 + 3] / 255;
+                                carriage[i * 4 + 2] = carriage[i * 4 + 2] * carriage[i * 4 + 3] / 255;
+                            }
+
+                            carriage += m_options.pitch;
+                        }
+                    }
+                }
+                else if( m_dataInfo.channels == 1 && m_options.channels == 4 )
+                {
+                    png_bytep carriage = (png_bytep)_buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
-                        png_read_row( m_png_ptr, bufferCursor, nullptr );
+                        png_read_row( m_png_ptr, carriage, nullptr );
 
-                        bufferCursor += m_options.pitch;
+                        carriage += m_options.pitch;
+                    }
+
+                    this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+                }
+                else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+                {
+                    png_bytep carriage = (png_bytep)_buffer;
+
+                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                    {
+                        png_read_row( m_png_ptr, carriage, nullptr );
+
+                        carriage += m_options.pitch;
+                    }
+
+                    this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+                }
+                else
+                {
+                    LOGGER_ERROR( "DEFAULT not support chanells %d - %d"
+                        , m_dataInfo.channels
+                        , m_options.channels
+                    );
+
+                    return 0;
+                }
+            }break;
+        case DF_READ_ALPHA_ONLY:
+            {
+                if( m_dataInfo.channels == 1 && m_options.channels == 1 )
+                {
+                    png_bytep carriage = (png_bytep)_buffer;
+
+                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                    {
+                        png_read_row( m_png_ptr, carriage, nullptr );
+
+                        carriage += m_options.pitch;
+                    }
+                }
+                else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
+                {
+                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
+
+                    png_byte * row_memory = row_buffer->getBuffer();
+
+                    png_bytep carriage = (png_bytep)_buffer;
+
+                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                    {
+                        png_read_row( m_png_ptr, row_memory, nullptr );
+
+                        png_size_t row_alpha = m_row_bytes / 4;
+                        for( png_size_t j = 0; j != row_alpha; ++j )
+                        {
+                            carriage[j] = row_memory[j * 4 + 3];
+                        }
+
+                        carriage += m_options.pitch;
                     }
                 }
                 else
                 {
-                    png_bytep * image = (png_bytep *)png_malloc( m_png_ptr, m_dataInfo.height * sizeof( png_bytep * ) );
+                    LOGGER_ERROR( "DF_READ_ALPHA_ONLY not support chanells %d - %d"
+                        , m_dataInfo.channels
+                        , m_options.channels
+                    );
 
-                    png_bytep bufferCursor = (png_bytep)_buffer;
+                    return 0;
+                }
+            }break;
+        case DF_WRITE_ALPHA_ONLY:
+            {
+                if( m_dataInfo.channels == 1 && m_options.channels == 4 )
+                {
+                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
+
+                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
+
+                    png_byte * row_memory = row_buffer->getBuffer();
+
+                    png_bytep carriage = (png_bytep)_buffer;
 
                     for( uint32_t i = 0; i != m_dataInfo.height; ++i )
                     {
-                        image[i] = bufferCursor;
+                        png_read_row( m_png_ptr, row_memory, nullptr );
 
-                        bufferCursor += m_options.pitch;
+                        for( png_uint_32 j = 0; j != m_row_bytes; ++j )
+                        {
+                            carriage[j * 4 + 3] = row_memory[j];
+                        }
+
+                        carriage += m_options.pitch;
                     }
-
-                    png_read_image( m_png_ptr, image );
-
-                    png_free( m_png_ptr, image );
                 }
-            }
-            else if( m_dataInfo.channels == 1 && m_options.channels == 4 )
-            {
-                png_bytep bufferCursor = (png_bytep)_buffer;
-
-                for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
                 {
-                    png_read_row( m_png_ptr, bufferCursor, nullptr );
+                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
 
-                    bufferCursor += m_options.pitch;
+                    MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
+
+                    png_byte * row_memory = row_buffer->getBuffer();
+
+                    png_bytep carriage = (png_bytep)_buffer;
+
+                    for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                    {
+                        png_read_row( m_png_ptr, row_memory, nullptr );
+
+                        for( png_uint_32 j = 0; j != m_row_bytes; ++j )
+                        {
+                            carriage[j * 4 + 3] = row_memory[j * 4 + 3];
+                        }
+
+                        carriage += m_options.pitch;
+                    }
                 }
-
-                this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-            }
-            else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
-            {
-                png_bytep bufferCursor = (png_bytep)_buffer;
-
-                for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+                else
                 {
-                    png_read_row( m_png_ptr, bufferCursor, nullptr );
+                    LOGGER_ERROR( "DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
+                        , m_dataInfo.channels
+                        , m_options.channels
+                    );
 
-                    bufferCursor += m_options.pitch;
+                    return 0;
                 }
-
-                this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-            }
-            else
+            }break;
+        default:
             {
-                LOGGER_ERROR( "DEFAULT not support chanells %d - %d"
-                    , m_dataInfo.channels
-                    , m_options.channels
+                LOGGER_ERROR( "unsupport options flag %d"
+                    , m_options.flags
                 );
 
                 return 0;
-            }
-        }
-        else if( m_options.flags & DF_READ_ALPHA_ONLY )
-        {
-            if( m_dataInfo.channels == 1 && m_options.channels == 1 )
-            {
-                png_bytep bufferCursor = (png_bytep)_buffer;
-                for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, bufferCursor, nullptr );
-
-                    bufferCursor += m_options.pitch;
-                }
-            }
-            else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
-            {
-                MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
-
-                png_byte * row_memory = row_buffer->getBuffer();
-
-                png_bytep bufferCursor = (png_bytep)_buffer;
-
-                for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, row_memory, nullptr );
-
-                    png_size_t row_alpha = m_row_bytes / 4;
-                    for( png_size_t j = 0; j != row_alpha; ++j )
-                    {
-                        bufferCursor[j] = row_memory[j * 4 + 3];
-                    }
-
-                    bufferCursor += m_options.pitch;
-                }
-            }
-            else
-            {
-                LOGGER_ERROR( "DF_READ_ALPHA_ONLY not support chanells %d - %d"
-                    , m_dataInfo.channels
-                    , m_options.channels
-                );
-
-                return 0;
-            }
-        }
-        else if( m_options.flags & DF_WRITE_ALPHA_ONLY )
-        {
-            if( m_dataInfo.channels == 1 && m_options.channels == 4 )
-            {
-                MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
-
-                png_byte * row_memory = row_buffer->getBuffer();
-
-                png_bytep bufferCursor = (png_bytep)_buffer;
-
-                for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, row_memory, nullptr );
-
-                    for( png_uint_32 j = 0; j != m_row_bytes; ++j )
-                    {
-                        bufferCursor[j * 4 + 3] = row_memory[j];
-                    }
-
-                    bufferCursor += m_options.pitch;
-                }
-            }
-            else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
-            {
-                MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
-
-                png_byte * row_memory = row_buffer->getBuffer();
-
-                png_bytep bufferCursor = (png_bytep)_buffer;
-
-                for( uint32_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, row_memory, nullptr );
-
-                    for( png_uint_32 j = 0; j != m_row_bytes; ++j )
-                    {
-                        bufferCursor[j * 4 + 3] = row_memory[j * 4 + 3];
-                    }
-
-                    bufferCursor += m_options.pitch;
-                }
-            }
-            else
-            {
-                LOGGER_ERROR( "DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
-                    , m_dataInfo.channels
-                    , m_options.channels
-                );
-
-                return 0;
-            }
-        }
-        else
-        {
-            LOGGER_ERROR( "unsupport options flag %d"
-                , m_options.flags
-            );
-
-            return 0;
+            }break;
         }
 
         png_read_end( m_png_ptr, m_info_ptr );

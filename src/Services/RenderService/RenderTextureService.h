@@ -24,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName, const Char * _doc ) override;
+        RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const Char * _doc ) override;
         RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc ) override;
 
     public:
@@ -41,7 +41,7 @@ namespace Mengine
         void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
-        bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _filePath ) override;
+        bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath ) override;
 
     public:
         void visitTexture( const LambdaRenderTexture & _lambda ) const override;

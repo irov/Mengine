@@ -50,6 +50,11 @@ namespace Mengine
         {
             ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ), Helper::makeFactorableUnique<ResourcePrefetcherScriptEmbedding>() );
         } );
+
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()
+        {
+            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
+        } );
 #endif
 
         VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), Helper::makeFactorableUnique<DefaultResourcePrefetcher>() );
@@ -90,11 +95,7 @@ namespace Mengine
     {
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
-
-        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
-        {
-            REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherScriptEmbedding" ) );
-        }
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
 
         RESOURCEPREFETCHER_SERVICE()

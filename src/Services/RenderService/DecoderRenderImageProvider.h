@@ -18,7 +18,7 @@ namespace Mengine
         ~DecoderRenderImageProvider() override;
 
     public:
-        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecName );
+        void initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags );
 
     public:
         RenderImageLoaderInterfacePtr getLoader() const override;
@@ -26,7 +26,8 @@ namespace Mengine
     protected:
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_filePath;
-        ConstString m_codecName;
+        ConstString m_codecType;
+        uint32_t m_codecFlags;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DecoderRenderImageProvider> DecoderRenderImageProviderPtr;

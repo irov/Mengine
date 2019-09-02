@@ -4,6 +4,7 @@
 
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ImageCodecInterface.h"
 
 #include "Config/Lambda.h"
 
@@ -16,7 +17,7 @@ namespace Mengine
         SERVICE_DECLARE( "RenderTextureService" )
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codec, const Char * _doc ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const Char * _doc ) = 0;
         virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc ) = 0;
 
     public:
@@ -35,7 +36,7 @@ namespace Mengine
         virtual void cacheFileTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
-        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _filePath ) = 0;
+        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath ) = 0;
 
     public:
         typedef Lambda<void( const RenderTextureInterfacePtr & )> LambdaRenderTexture;

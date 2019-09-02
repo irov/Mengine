@@ -27,7 +27,7 @@ namespace Mengine
         void correctUVTexture();
 
     protected:
-        void prepareImageFrame_();
+        void prepareImageFrame_();        
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceImageDefault> ResourceImageDefaultPtr;

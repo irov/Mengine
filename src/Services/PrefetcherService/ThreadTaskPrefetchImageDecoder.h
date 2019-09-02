@@ -25,7 +25,7 @@ namespace Mengine
         bool _onMain() override;
 
     protected:
-        ConstString m_imageCodec;
+        ConstString m_codecType;
 
         ImageDecoderInterfacePtr m_imageDecoder;
     };

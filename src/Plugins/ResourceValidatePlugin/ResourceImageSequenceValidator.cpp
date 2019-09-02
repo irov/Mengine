@@ -32,18 +32,19 @@ namespace Mengine
 
         for( const FrameImageSequence & sequence : sequences )
         {
-            ResourceImagePtr resourceImage;
-            if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
-            {
-                LOGGER_ERROR( "resource '%s' group '%s' not found image resource '%s'"
-                    , _resource->getName().c_str()
-                    , _resource->getGroupName().c_str()
-                    , sequence.resourceName.c_str()
-                );
+            //ResourceImagePtr resourceImage;
+            //if( RESOURCE_SERVICE()
+            //    ->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
+            //{
+            //    LOGGER_ERROR( "resource '%s' group '%s' not found image resource '%s'"
+            //        , _resource->getName().c_str()
+            //        , _resource->getGroupName().c_str()
+            //        , sequence.resourceName.c_str()
+            //    );
 
-                return false;
-            }
+            //    return false;
+            //}
+            const ResourceImagePtr & resourceImage = sequence.resource;
 
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )

@@ -1,6 +1,10 @@
 #include "LoaderResourceImageSequence.h"
 
+#include "Interface/ResourceServiceInterface.h"
+
 #include "Engine/ResourceImageSequence.h"
+
+#include "Kernel/AssertionResourceType.h"
 
 #include "Metacode/Metacode.h"
 
@@ -33,7 +37,14 @@ namespace Mengine
 
             duration += delay;
 
-            resource->addFrame( resourceName, delay );
+            MENGINE_ASSERTION_RESOURCE_TYPE( resourceName, ResourceImagePtr, false, "resource '%s' type does not match 'ResourceImage'"
+                , resourceName.c_str() 
+            );
+
+            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
+                ->getResourceReference( resourceName );
+
+            resource->addFrame( resourceImage, delay );
         }
 
         resource->setSequenceDuration( duration );

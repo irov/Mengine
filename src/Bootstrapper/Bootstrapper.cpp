@@ -279,6 +279,11 @@ namespace Mengine
             return false;
         }
 
+        if( this->createFrameworks_() == false )
+        {
+            return false;
+        }
+
         if( this->runFrameworks_() == false )
         {
             return false;
@@ -589,6 +594,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createFrameworks_()
+    {
+        LOGGER_MESSAGE( "run Frameworks..." );
+
+        VectorConstString frameworks;
+        CONFIG_VALUES( "Frameworks", "Name", frameworks );
+
+        for( const ConstString & name : frameworks )
+        {
+            if( FRAMEWORK_SERVICE()
+                ->initializeFramework( name, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_CRITICAL( "failed to run framework '%s'"
+                    , name.c_str()
+                );
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::runModules_()
     {
         LOGGER_MESSAGE( "run Modules..." );
@@ -678,20 +704,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::runFrameworks_()
     {
-        LOGGER_MESSAGE( "run Frameworks..." );
-
-        VectorConstString frameworks;
-        CONFIG_VALUES( "Frameworks", "Name", frameworks );
-
-        for( const ConstString & name : frameworks )
+        if( FRAMEWORK_SERVICE()
+            ->runFrameworks() == false )
         {
-            if( FRAMEWORK_SERVICE()
-                ->runFramework( name, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_CRITICAL( "failed to run framework '%s'"
-                    , name.c_str()
-                );
-            }
+            return false;
         }
 
         return true;
@@ -757,7 +773,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Bootstrapper::stopFrameworks_()
+    void Bootstrapper::finalizeFrameworks_()
     {
         VectorConstString frameworks;
         CONFIG_VALUES( "Frameworks", "Name", frameworks );
@@ -765,13 +781,19 @@ namespace Mengine
         for( const ConstString & name : frameworks )
         {
             if( FRAMEWORK_SERVICE()
-                ->stopFramework( name ) == false )
+                ->finalizeFramework( name ) == false )
             {
                 LOGGER_CRITICAL( "failed to stop framework '%s'"
                     , name.c_str()
                 );
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Bootstrapper::stopFrameworks_()
+    {
+        FRAMEWORK_SERVICE()
+            ->stopFrameworks();
     }
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
@@ -804,11 +826,10 @@ namespace Mengine
 
         SERVICE_PROVIDER_STOP();
 
-
-
+        this->stopFrameworks_();
         this->stopModules_();
         this->stopDevModules_();
-        this->stopFrameworks_();
+        this->finalizeFrameworks_();
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {

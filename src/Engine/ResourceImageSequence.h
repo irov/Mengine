@@ -14,7 +14,6 @@ namespace Mengine
     {
         ResourceImagePtr resource;
         float delay;
-        ConstString resourceName;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<FrameImageSequence> VectorFrameImageSequence;
@@ -31,7 +30,6 @@ namespace Mengine
     public:
         uint32_t getSequenceCount() const;
         float getSequenceDelay( uint32_t _index ) const;
-        const ConstString & getSequenceResourceName( uint32_t _index ) const;
         const ResourceImagePtr & getSequenceResource( uint32_t _index ) const;
 
         uint32_t getLastFrameIndex() const;
@@ -40,7 +38,7 @@ namespace Mengine
         float getSequenceDuration() const;
 
     public:
-        void addFrame( const ConstString & _resourceName, float _delay );
+        void addFrame( const ResourceImagePtr & _resourceImage, float _delay );
 
     public:
         void setSequence( const VectorFrameImageSequence & _sequence );

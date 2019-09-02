@@ -89,7 +89,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Amplifier::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {
-        MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceMusic *, false, "resource '%s' type does not match 'ResourceMusic'"
+        MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceMusicPtr, false, "resource '%s' type does not match 'ResourceMusic'"
             , _resourceName.c_str()
         );
 

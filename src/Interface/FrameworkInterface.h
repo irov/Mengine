@@ -18,6 +18,10 @@ namespace Mengine
         virtual void finalizeFramework() = 0;
 
     public:
+        virtual bool runFramework() = 0;
+        virtual void stopFramework() = 0;
+
+    public:
         virtual bool isAvailableFramework() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

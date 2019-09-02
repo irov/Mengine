@@ -23,11 +23,18 @@ namespace Mengine
         void finalizeFramework() override;
 
     public:
+        bool runFramework() override;
+        void stopFramework() override;
+
+    public:
         bool isAvailableFramework() const override;
 
     protected:
         virtual bool _initializeFramework();
         virtual void _finalizeFramework();
+
+        virtual bool _runFramework();
+        virtual void _stopFramework();
 
     protected:
         virtual bool _availableFramework() const;
@@ -35,7 +42,9 @@ namespace Mengine
     protected:
         ConstString m_name;
 
-        bool m_initialize;
         bool m_available;
+        bool m_initialize;
+        bool m_running;
+        
     };
 }

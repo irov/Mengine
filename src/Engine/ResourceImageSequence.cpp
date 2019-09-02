@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSequence::_compile()
     {
-        if( m_sequence.empty() )
+        if( m_sequence.empty() == true )
         {
             LOGGER_ERROR( "'%s' sequence count is empty"
                 , this->getName().c_str()
@@ -31,17 +31,15 @@ namespace Mengine
             return false;
         }
 
-        for( FrameImageSequence & sequence : m_sequence )
+        for( const FrameImageSequence & sequence : m_sequence )
         {
-            const ResourceImagePtr & resource = RESOURCE_SERVICE()
-                ->getResource( sequence.resourceName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "'%s' Image resource not found resource '%s'"
-                , this->getName().c_str()
-                , sequence.resourceName.c_str()
-            );
-
-            sequence.resource = resource;
+            if( sequence.resource->compile() == false )
+            {
+                LOGGER_ERROR( "resource sequence '%s' not compile image resource '%s'"
+                    , this->getName().c_str()
+                    , sequence.resource->getName().c_str()
+                );
+            }
         }
 
         return true;
@@ -49,10 +47,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::_release()
     {
-        for( FrameImageSequence & sequence : m_sequence )
+        for( const FrameImageSequence & sequence : m_sequence )
         {
             sequence.resource->release();
-            sequence.resource = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -87,30 +84,6 @@ namespace Mengine
         return delay;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageSequence::getSequenceResourceName( uint32_t _index ) const
-    {
-#ifdef MENGINE_DEBUG
-        uint32_t sequenceCount = this->getSequenceCount();
-
-        if( _index >= sequenceCount )
-        {
-            LOGGER_ERROR( "'%s' sequence '%u' out of range '%u'"
-                , this->getName().c_str()
-                , _index
-                , sequenceCount
-            );
-
-            return ConstString::none();
-        }
-#endif
-
-        const FrameImageSequence & sequence = m_sequence[_index];
-
-        const ConstString & resourceName = sequence.resourceName;
-
-        return resourceName;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceImageSequence::getLastFrameIndex() const
     {
         uint32_t sequenceCount = this->getSequenceCount();
@@ -131,10 +104,10 @@ namespace Mengine
         return lastIndex;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSequence::addFrame( const ConstString & _resourceName, float _delay )
+    void ResourceImageSequence::addFrame( const ResourceImagePtr & _resourceImage, float _delay )
     {
-        FrameImageSequence frame;
-        frame.resourceName = _resourceName;
+        FrameImageSequence frame;        
+        frame.resource = _resourceImage;
         frame.delay = _delay;
 
         m_sequence.emplace_back( frame );

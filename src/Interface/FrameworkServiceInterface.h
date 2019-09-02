@@ -15,9 +15,13 @@ namespace Mengine
 
     public:
         virtual bool hasFramework( const ConstString & _name ) const = 0;
-        virtual bool runFramework( const ConstString & _name, const Char * _doc ) = 0;
-        virtual bool stopFramework( const ConstString & _name ) = 0;
+        virtual bool initializeFramework( const ConstString & _name, const Char * _doc ) = 0;
+        virtual bool finalizeFramework( const ConstString & _name ) = 0;
         virtual bool isRunFramework( const ConstString & _name ) const = 0;
+
+    public:
+        virtual bool runFrameworks() = 0;
+        virtual bool stopFrameworks() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

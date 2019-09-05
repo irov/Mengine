@@ -203,11 +203,6 @@ namespace Mengine
 
         m_accounts.emplace( _accountID, newAccount );
 
-        if( m_accountProvider != nullptr )
-        {
-            m_accountProvider->onCreateAccount( _accountID, true );
-        }
-
         newAccount->apply();
 
         return newAccount;

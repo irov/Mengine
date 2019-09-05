@@ -259,7 +259,6 @@ namespace Mengine
         {
             MENGINE_ASSERTION_FATAL( strcmp( test->c_str(), _str ) == 0, "stringize unique '%s' alredy exist"
                 , _str
-                , test->c_str()
             );
 
             return test;

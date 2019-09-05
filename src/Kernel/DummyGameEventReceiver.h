@@ -4,13 +4,13 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     class DummyGameEventReceiver
         : public GameEventReceiverInterface
     {
     public:
         DummyGameEventReceiver();
         ~DummyGameEventReceiver() override;
+
     public:
         void onGameFullscreen( bool _fullscreen ) override;
         void onGameFixedContentResolution( bool _fixed ) override;
@@ -50,5 +50,4 @@ namespace Mengine
         void onGameOverFillrate( double _fillrate ) override;
         void onGameFrameEnd() override;
     };
-    //////////////////////////////////////////////////////////////////////////
 }

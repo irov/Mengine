@@ -3,6 +3,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -63,6 +64,11 @@ namespace Mengine
         key.hash = _category.hash() + _prototype.hash();
         key.category = _category;
         key.prototype = _prototype;
+
+        MENGINE_ASSERTION_FATAL_RETURN( m_generators.exist( key ) == false, false, "prototype '%s:%s' alredy exist"
+            , _category.c_str()
+            , _prototype.c_str()
+        );
 
         m_generators.emplace( key, _generator );
 

@@ -60,7 +60,7 @@ namespace Mengine
         LoggerInterfacePtr m_loggerFile;
         LoggerInterfacePtr m_loggerMessageBox;
 
-        VectorFilePath m_configPaths;
+        VectorFilePath m_configsPaths;
         VectorFilePath m_credentialsPaths;
         VectorFilePath m_packagesPaths;
     };

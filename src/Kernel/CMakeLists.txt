@@ -535,6 +535,9 @@ Core
     Delegate.h
     
     DateTime.h
+
+	DummyGameEventReceiver.h
+	DummyGameEventReceiver.cpp
 )
 
 ADD_FILTER(

@@ -364,10 +364,34 @@ namespace Mengine
         this->addGlobalModuleT( "_WIN32", false );
 #endif
 
+#if defined(MENGINE_PLATFORM_OSX)
+        this->addGlobalModuleT( "_OSX", true );
+#else
+        this->addGlobalModuleT( "_OSX", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_DESKTOP)
+        this->addGlobalModuleT( "_DESKTOP", true );
+#else
+        this->addGlobalModuleT( "_DESKTOP", false );
+#endif
+
 #if defined(MENGINE_PLATFORM_ANDROID)
         this->addGlobalModuleT( "_ANDROID", true );
 #else
         this->addGlobalModuleT( "_ANDROID", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_IOS)
+        this->addGlobalModuleT( "_IOS", true );
+#else
+        this->addGlobalModuleT( "_IOS", false );
+#endif
+
+#if defined(MENGINE_PLATFORM_MOBILE)
+        this->addGlobalModuleT( "_MOBILE", true );
+#else
+        this->addGlobalModuleT( "_MOBILE", false );
 #endif
 
 #if defined(MENGINE_MASTER_RELEASE)

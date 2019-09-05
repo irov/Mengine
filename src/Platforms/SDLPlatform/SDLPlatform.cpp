@@ -433,7 +433,7 @@ namespace Mengine
             {
                 isAccelerometer = true;
             }
-            else if( strcmp( joystickName, "IOS Accelerometer" ) == 0 )
+            else if( strcmp( joystickName, "iOS Accelerometer" ) == 0 )
             {
                 isAccelerometer = true;
             }

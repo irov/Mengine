@@ -16,6 +16,7 @@ ADD_FILTER(
 Button
 	Button.cpp
 	Button.h
+    ButtonEventReceiverInterface.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

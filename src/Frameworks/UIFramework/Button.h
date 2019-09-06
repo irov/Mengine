@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseEventation.h"
 
 #include "GOAP/GOAP.h"
 
@@ -27,12 +28,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Button
         : public Node
+        , public BaseEventation
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_EVENTABLE();
 
     public:
         Button();
         ~Button() override;
+
+    public:
+        void setBlock( bool _block );
+        bool isBlock() const;
 
     public:
         void setPickerable( const PickerablePtr & _pickerable );

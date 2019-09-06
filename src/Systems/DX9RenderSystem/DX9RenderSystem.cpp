@@ -613,10 +613,12 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
-        mt::mat4f vmperfect;
-        float offset_x = -0.5f / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        float offset_y = 0.5f / (m_windowViewport.end.y - m_windowViewport.begin.y);
+        //float offset_x = -0.5f / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        //float offset_y = 0.5f / (m_windowViewport.end.y - m_windowViewport.begin.y);
+        float offset_x = 0.f;
+        float offset_y = 0.f;
 
+        mt::mat4f vmperfect;
         mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
 
         mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );

@@ -72,9 +72,12 @@ namespace Mengine
     {
         EventationInterface * eventation = m_eventable->getEventation();
 
-        eventation->removeEventReceiver( EVENT_ANIMATION_END );
-        eventation->removeEventReceiver( EVENT_ANIMATION_STOP );
-        eventation->removeEventReceiver( EVENT_ANIMATION_INTERRUPT );
+        if( eventation != nullptr )
+        {
+            eventation->removeEventReceiver( EVENT_ANIMATION_END );
+            eventation->removeEventReceiver( EVENT_ANIMATION_STOP );
+            eventation->removeEventReceiver( EVENT_ANIMATION_INTERRUPT );
+        }
 
         m_animatable = nullptr;
         m_eventable = nullptr;

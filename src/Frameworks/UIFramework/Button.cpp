@@ -45,6 +45,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Button::_activate()
     {
+        const NodePtr & nodeIdle = m_nodes[EBS_IDLE];
+
+        if( nodeIdle == nullptr )
+        {
+            return false;
+        }
+
+        if( m_nodes[EBS_PRESSED] == nullptr )
+        {
+            m_nodes[EBS_PRESSED] = nodeIdle;
+        }
+
+        if( m_nodes[EBS_BLOCK] == nullptr )
+        {
+            m_nodes[EBS_BLOCK] = nodeIdle;
+        }
+
+        if( m_nodes[EBS_APPEAR] == nullptr )
+        {
+            m_state = EBS_IDLE;
+        }
+
+        GOAP::EventPtr eventBlock( new GOAP::Event() );
+        m_semaphoreBlock = GOAP::SemaphorePtr::from( new GOAP::Semaphore( eventBlock, 0 ) );
+
         GOAP::SourcePtr source = GOAP::Helper::makeSource();
 
         auto fn = [this]( const GOAP::SourcePtr & _source )

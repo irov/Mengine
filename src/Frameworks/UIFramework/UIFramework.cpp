@@ -32,6 +32,7 @@ namespace Mengine
     void UIFramework::_finalizeFramework()
     {
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Button" ) );        
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Button" ) );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

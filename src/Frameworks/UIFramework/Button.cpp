@@ -233,6 +233,7 @@ namespace Mengine
 
         _source->addTask<TaskNodeEnable>( _nodeEnter );
         _source->addTask<TaskLocalDelay>( 0.f );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
 
         auto && [source_enter_movie, source_enter_leave, source_enter_click] = _source->addRace<3>();
         source_enter_movie->addTask<TaskAnimatablePlayWait>( _nodeEnter, _nodeEnter );
@@ -251,6 +252,7 @@ namespace Mengine
     {
         if( _nodeLeave == nullptr )
         {
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
             _source->addFunction( this, &Button::__setState, EBS_IDLE );
 
             return;
@@ -258,6 +260,7 @@ namespace Mengine
 
         _source->addTask<TaskNodeEnable>( _nodeLeave );
         _source->addTask<TaskLocalDelay>( 0.f );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
 
         auto && [source_leave_movie, source_leave_enter] = _source->addRace<2>();
         source_leave_movie->addTask<TaskAnimatablePlayWait>( _nodeLeave, _nodeLeave );
@@ -273,6 +276,7 @@ namespace Mengine
     {
         if( _nodePush == nullptr )
         {
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
             _source->addFunction( this, &Button::__setState, EBS_PRESSED );
 
             return;
@@ -280,6 +284,7 @@ namespace Mengine
 
         _source->addTask<TaskNodeEnable>( _nodePush );
         _source->addTask<TaskLocalDelay>( 0.f );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
 
         auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel] = _source->addRace<3>();
         source_Push_movie->addTask<TaskAnimatablePlayWait>( _nodePush, _nodePush );
@@ -298,6 +303,7 @@ namespace Mengine
     {
         if( _nodePressed == nullptr )
         {
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
             _source->addFunction( this, &Button::__setState, EBS_CLICK );
 
             return;
@@ -305,6 +311,7 @@ namespace Mengine
 
         _source->addTask<TaskNodeEnable>( _nodePressed );
         _source->addTask<TaskLocalDelay>( 0.f );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
 
         auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block] = _source->addRace<3>();
 
@@ -324,6 +331,7 @@ namespace Mengine
     {
         if( _nodeRelease == nullptr )
         {
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
             _source->addFunction( this, &Button::__setState, EBS_RELEASE_PLAY );
 
             return;
@@ -331,6 +339,7 @@ namespace Mengine
 
         _source->addTask<TaskNodeEnable>( _nodeRelease );
         _source->addTask<TaskLocalDelay>( 0.f );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
 
         auto && [source_Release_movie, source_Release_enter] = _source->addRace<2>();
         source_Release_movie->addTask<TaskPickerableMouseButton>( m_pickerable, MC_LBUTTON, false, true, nullptr );
@@ -362,6 +371,10 @@ namespace Mengine
     {
         if( _nodeClick == nullptr )
         {
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
+
             _source->addFunction( this, &Button::__setState, EBS_IDLE );
 
             return;
@@ -369,6 +382,10 @@ namespace Mengine
 
         _source->addTask<TaskNodeEnable>( _nodeClick );
         _source->addTask<TaskAnimatablePlayWait>( _nodeClick, _nodeClick );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
+        _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
+
         _source->addFunction( this, &Button::__setState, EBS_IDLE );
         _source->addTask<TaskNodeDisable>( _nodeClick );
     }

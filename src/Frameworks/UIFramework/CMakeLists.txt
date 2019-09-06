@@ -17,6 +17,8 @@ Button
 	Button.cpp
 	Button.h
     ButtonEventReceiverInterface.h
+    TaskButtonClick.cpp
+    TaskButtonClick.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

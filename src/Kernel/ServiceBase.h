@@ -9,7 +9,7 @@ namespace Mengine
     {
     public:
         ServiceBase() noexcept
-            : m_available( false )
+            : m_availableService( false )
             , m_initializeService( false )
             , m_stopService( false )
         {
@@ -29,9 +29,9 @@ namespace Mengine
 
             this->_dependencyService();
 
-            m_available = this->_availableService();
+            m_availableService = this->_availableService();
 
-            if( m_available == false )
+            if( m_availableService == false )
             {
                 return false;
             }
@@ -68,7 +68,7 @@ namespace Mengine
     public:
         bool isAvailableService() const override
         {
-            return m_available;
+            return m_availableService;
         }
 
         bool isInitializeService() const override
@@ -148,7 +148,7 @@ namespace Mengine
         }
 
     protected:
-        bool m_available;
+        bool m_availableService;
         bool m_initializeService;
         bool m_stopService;
     };

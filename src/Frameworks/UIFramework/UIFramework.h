@@ -16,8 +16,5 @@ namespace Mengine
     public:
         bool _initializeFramework() override;
         void _finalizeFramework() override;
-
-    protected:
-        void notifyBootstrapperInitializeGame();
     };
 }

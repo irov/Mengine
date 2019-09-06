@@ -1,4 +1,4 @@
-#include "TaskAnimatablePause.h"
+#include "TaskAnimatableRewind.h"
 
 #include "Interface/AnimationInterface.h"
 
@@ -7,16 +7,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskAnimatablePause::TaskAnimatablePause( const AnimatablePtr & _animatable )
+    TaskAnimatableRewind::TaskAnimatableRewind( const AnimatablePtr & _animatable )
         : m_animatable( _animatable )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskAnimatablePause::~TaskAnimatablePause()
+    TaskAnimatableRewind::~TaskAnimatableRewind()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskAnimatablePause::_onRun()
+    bool TaskAnimatableRewind::_onRun()
     {
         AnimationInterface * animation = m_animatable->getAnimation();
 
@@ -25,12 +25,12 @@ namespace Mengine
             return true;
         }
 
-        animation->pause();
+        animation->setFirstFrame();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskAnimatablePause::_onFinally()
+    void TaskAnimatableRewind::_onFinally()
     {
         m_animatable = nullptr;
     }

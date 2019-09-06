@@ -59,6 +59,8 @@ namespace Mengine
 
         const RenderTextureInterfacePtr & texture = atlas->texture;
 
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
+
         Rect rect;
         rect.left = index * atlas->width;
         rect.top = 0;
@@ -71,6 +73,8 @@ namespace Mengine
 
         size_t texture_pitch;
         uint8_t * texture_memory = texture_image->lock( &texture_pitch, 0, rect, false );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( texture_memory, nullptr );
 
         uint32_t texture_channel = texture_image->getHWChannels();
 
@@ -96,6 +100,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFAtlasService::TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel )
     {
+        MENGINE_ASSERTION_FATAL( _channel < 5 );
+
         uint32_t hw_width = Helper::getTexturePOW2( _width );
         uint32_t hw_height = Helper::getTexturePOW2( _height );
 

@@ -20,26 +20,6 @@ SERVICE_FACTORY( Amplifier, Mengine::Amplifier );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Amplifier::Amplifier()
-        : m_play( false )
-        , m_pause( false )
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Amplifier::~Amplifier()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::_initializeService()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Amplifier::_finalizeService()
-    {
-        m_soundEmitter = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
     class Amplifier::MyMusicSoundListener
         : public Factorable
         , public SoundListenerInterface
@@ -86,6 +66,26 @@ namespace Mengine
     protected:
         AmplifierMusicCallbackInterfacePtr m_callback;
     };
+    //////////////////////////////////////////////////////////////////////////
+    Amplifier::Amplifier()
+        : m_play( false )
+        , m_pause( false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Amplifier::~Amplifier()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Amplifier::_initializeService()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Amplifier::_finalizeService()
+    {
+        MENGINE_ASSERTION_FATAL( m_soundEmitter == nullptr );
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Amplifier::playMusic( const ConstString & _resourceName, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {

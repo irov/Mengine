@@ -147,6 +147,8 @@ namespace Mengine
             return false;
         }
 
+        _scheduler->finalize();
+
         m_schedulers.erase( it_found );
 
         return true;
@@ -257,22 +259,17 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
 
-        if( m_globalInputHandler != nullptr )
-        {
-            m_globalInputHandler->finalize();
-            m_globalInputHandler = nullptr;
-        }
+        m_globalInputHandler = nullptr;
+        m_scheduleManager = nullptr;
+        m_scheduleManagerGlobal = nullptr;
 
-        if( m_scheduleManager != nullptr )
+        for( const SchedulerInterfacePtr & scheduler : m_schedulers )
         {
-            m_scheduleManager->finalize();
-            m_scheduleManager = nullptr;
-        }
+            LOGGER_ERROR( "was forgotten finalize scheduler '%s'"
+                , scheduler->getName().c_str()
+            );
 
-        if( m_scheduleManagerGlobal != nullptr )
-        {
-            m_scheduleManagerGlobal->finalize();
-            m_scheduleManagerGlobal = nullptr;
+            scheduler->finalize();
         }
 
         m_schedulers.clear();
@@ -306,6 +303,21 @@ namespace Mengine
         m_renderScissor = nullptr;
 
         m_renderTarget = nullptr;
+
+        if( m_globalInputHandler != nullptr )
+        {
+            m_globalInputHandler->finalize();
+        }
+
+        if( m_scheduleManager != nullptr )
+        {
+            m_scheduleManager->finalize();
+        }
+
+        if( m_scheduleManagerGlobal != nullptr )
+        {
+            m_scheduleManagerGlobal->finalize();
+        }
 
         if( m_scheduleManager != nullptr )
         {

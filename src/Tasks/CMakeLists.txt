@@ -2,12 +2,24 @@ SET(MY_LIB_NAME Tasks)
 
 ADD_FILTER(
 Tasks
+    TaskNodeEnable.h
+    TaskNodeEnable.cpp
+    TaskNodeDisable.h
+    TaskNodeDisable.cpp
     TaskDelay.cpp
     TaskDelay.h
+    TaskLocalDelay.h
+    TaskLocalDelay.cpp
+    TaskGlobalDelay.h
+    TaskGlobalDelay.cpp
     TaskPrint.cpp
     TaskPrint.h
     TaskPickerableMouseButton.cpp
     TaskPickerableMouseButton.h
+    TaskPickerableMouseEnter.cpp
+    TaskPickerableMouseEnter.h
+    TaskPickerableMouseLeave.cpp
+    TaskPickerableMouseLeave.h
     TaskGlobalMouseButton.cpp
     TaskGlobalMouseButton.h
     TaskGlobalMouseMove.cpp
@@ -38,6 +50,8 @@ Tasks
     TaskAnimatableResume.h
 	TaskAnimatablePlayReceiver.h
 	TaskAnimatablePlayReceiver.cpp
+    TaskAnimatableRewind.h
+    TaskAnimatableRewind.cpp
     TaskHttpBase.h
     TaskHttpBase.cpp
     TaskHttpGet.h
@@ -46,6 +60,8 @@ Tasks
     TaskHttpPost.cpp
     TaskHttpHeaderData.h
     TaskHttpHeaderData.cpp
+    TaskNotify.h
+    TaskNotify.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

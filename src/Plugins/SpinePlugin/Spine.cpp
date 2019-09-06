@@ -425,6 +425,31 @@ namespace Mengine
             spAnimationState_update( animationState, spTiming );
         }
 
+        int slotCount = m_skeleton->slotsCount;
+
+        for( int index = 0; index != slotCount; ++index )
+        {
+            spSlot * slot = m_skeleton->drawOrder[index];
+
+            uint32_t slotIndex = (uint32_t)slot->data->index;
+
+            VectorAttachmentMesh::iterator it_found = std::find_if( m_attachmentMeshes.begin(), m_attachmentMeshes.end(), [slotIndex]( const AttachmentMeshDesc & _desc )
+            {
+                return _desc.index == slotIndex;
+            } );
+
+            if( it_found != m_attachmentMeshes.end() )
+            {
+                continue;
+            }
+             
+            AttachmentMeshDesc desc;
+            desc.index = slotIndex;
+            desc.image = nullptr;
+
+            m_attachmentMeshes.emplace_back( desc );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -672,9 +697,9 @@ namespace Mengine
         float nb = color.getB();
         float na = color.getA();
 
-        for( int i = 0; i != slotCount; ++i )
+        for( int index = 0; index != slotCount; ++index )
         {
-            spSlot * slot = m_skeleton->drawOrder[i];
+            spSlot * slot = m_skeleton->drawOrder[index];
 
             if( slot->attachment == nullptr )
             {
@@ -688,10 +713,7 @@ namespace Mengine
                 return _desc.index == slotIndex;
             } );
 
-            if( it_found == m_attachmentMeshes.end() )
-            {
-                it_found = m_attachmentMeshes.insert( m_attachmentMeshes.end(), AttachmentMeshDesc() );
-            }
+            MENGINE_ASSERTION_FATAL( it_found != m_attachmentMeshes.end() );
 
             AttachmentMeshDesc & mesh = *it_found;
 

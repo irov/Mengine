@@ -11,6 +11,7 @@ namespace Mengine
         EVENT_BUTTON_MOUSE_ENTER = 0,
         EVENT_BUTTON_MOUSE_LEAVE,
         EVENT_BUTTON_MOUSE_PUSH,
+        EVENT_BUTTON_MOUSE_PRESSED,
         EVENT_BUTTON_MOUSE_RELEASE,
         EVENT_BUTTON_MOUSE_BUTTON,
         EVENT_BUTTON_MOUSE_BUTTON_BEGIN,
@@ -25,6 +26,7 @@ namespace Mengine
         virtual void onButtonMouseEnter() = 0;
         virtual void onButtonMouseLeave() = 0;
         virtual bool onButtonMousePush() = 0;
+        virtual bool onButtonMousePressed() = 0;
         virtual bool onButtonMouseRelease() = 0;
         virtual bool onButtonMouseButton() = 0;
         virtual bool onButtonMouseButtonBegin() = 0;
@@ -36,6 +38,7 @@ namespace Mengine
     EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_ENTER );
     EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_LEAVE );
     EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_PUSH );
+    EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_PRESSED );
     EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_RELEASE );
     EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_BUTTON );
     EVENTATION_TYPEID( ButtonEventReceiverInterface, EVENT_BUTTON_MOUSE_BUTTON_BEGIN );

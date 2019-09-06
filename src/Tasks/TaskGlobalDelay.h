@@ -6,12 +6,12 @@
 
 namespace Mengine
 {
-    class TaskDelay
+    class TaskGlobalDelay
         : public GOAP::Task
     {
     public:
-        TaskDelay( const SchedulerInterfacePtr & _scheduler, float _time );
-        ~TaskDelay() override;
+        TaskGlobalDelay( float _time );
+        ~TaskGlobalDelay() override;
 
     protected:
         bool _onRun() override;
@@ -21,7 +21,6 @@ namespace Mengine
         void schedulerComplete( uint32_t _id );
 
     protected:
-        SchedulerInterfacePtr m_scheduler;
         float m_time;
 
         uint32_t m_id;
@@ -29,6 +28,6 @@ namespace Mengine
         class ScheduleEvent;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef GOAP::IntrusivePtr<TaskDelay> TaskDelayPtr;
+    typedef GOAP::IntrusivePtr<TaskGlobalDelay> TaskGlobalDelayPtr;
     //////////////////////////////////////////////////////////////////////////
 }

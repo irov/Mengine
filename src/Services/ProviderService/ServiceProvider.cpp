@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
 
 #include <string.h>
@@ -213,7 +214,7 @@ namespace Mengine
                 break;
             }
 
-            desc.service->finalizeService();
+            desc.service->finalizeService();            
 
             return true;
         }
@@ -449,6 +450,11 @@ namespace Mengine
             ServiceDesc & desc = m_services[index];
 
             if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( desc.service->isInitializeService() == false )
             {
                 continue;
             }

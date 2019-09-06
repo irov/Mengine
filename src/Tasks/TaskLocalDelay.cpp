@@ -1,4 +1,6 @@
-#include "TaskDelay.h"
+#include "TaskLocalDelay.h"
+
+#include "Interface/PlayerServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
@@ -6,12 +8,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class TaskDelay::ScheduleEvent
+    class TaskLocalDelay::ScheduleEvent
         : public SchedulerEventInterface
         , public Mengine::Factorable
     {
     public:
-        explicit ScheduleEvent( TaskDelay * _task )
+        explicit ScheduleEvent( TaskLocalDelay * _task )
             : m_task( _task )
         {
         }
@@ -32,21 +34,20 @@ namespace Mengine
         }
 
     protected:
-        TaskDelay * m_task;
+        TaskLocalDelay * m_task;
     };
     //////////////////////////////////////////////////////////////////////////
-    TaskDelay::TaskDelay( const SchedulerInterfacePtr & _scheduler, float _time )
-        : m_scheduler( _scheduler )
-        , m_time( _time )
+    TaskLocalDelay::TaskLocalDelay( float _time )
+        : m_time( _time )
         , m_id( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskDelay::~TaskDelay()
+    TaskLocalDelay::~TaskLocalDelay()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskDelay::schedulerComplete( uint32_t _id )
+    void TaskLocalDelay::schedulerComplete( uint32_t _id )
     {
         if( m_id != _id )
         {
@@ -58,11 +59,14 @@ namespace Mengine
         this->complete();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskDelay::_onRun()
+    bool TaskLocalDelay::_onRun()
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( this );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskLocalDelay::ScheduleEvent>( this );
 
-        uint32_t id = m_scheduler->event( m_time, ev );
+        const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
+            ->getScheduler();
+
+        uint32_t id = scheduler->event( m_time, ev );
 
         if( id == 0 )
         {
@@ -76,14 +80,15 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskDelay::_onFinally()
+    void TaskLocalDelay::_onFinally()
     {
         if( m_id != 0 )
         {
-            m_scheduler->remove( m_id );
+            const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
+                ->getScheduler();
+
+            scheduler->remove( m_id );
             m_id = 0;
         }
-
-        m_scheduler = nullptr;
     }
 }

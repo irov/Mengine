@@ -25,8 +25,6 @@ namespace Mengine
 
         if( animation == nullptr )
         {
-            LOGGER_ERROR( "animatable not have animation" );
-
             return true;
         }
 
@@ -63,8 +61,6 @@ namespace Mengine
 
         if( animation == nullptr )
         {
-            LOGGER_ERROR( "animatable not have animation" );
-
             return;
         }
 

@@ -3,6 +3,8 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 
+#include "Kernel/ConstStringHelper.h"
+
 #include "Kernel/Logger.h"
 
 #include <string.h>
@@ -122,10 +124,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::unloadPlugins()
     {
-        VectorPlugins reverse_plugins = m_plugins;
+        VectorPlugins reverse_plugins = std::move( m_plugins );
         std::reverse( reverse_plugins.begin(), reverse_plugins.end() );
-
-        m_plugins.clear();
 
         for( PluginDesc & desc : reverse_plugins )
         {

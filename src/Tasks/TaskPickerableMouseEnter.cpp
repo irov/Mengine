@@ -1,4 +1,4 @@
-#include "TaskPickerableMouseButton.h"
+#include "TaskPickerableMouseEnter.h"
 
 #include "Interface/PickerInterface.h"
 
@@ -12,24 +12,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        class TaskPickerableMouseButtonEventReceiver
+        class TaskPickerableMouseEnterEventReceiver
             : public HotSpotEventReceiverInterface
             , public Factorable
         {
         public:
-            TaskPickerableMouseButtonEventReceiver( EMouseCode _code, bool _isDown, const LambdaPickerMouseButtonEvent & _filter )
-                : m_code( _code )
-                , m_isDown( _isDown )
-                , m_filter( _filter )
+            TaskPickerableMouseEnterEventReceiver( const LambdaPickerMouseEnterEvent & _filter )
+                : m_filter( _filter )
             {
             }
 
-            ~TaskPickerableMouseButtonEventReceiver() override
+            ~TaskPickerableMouseEnterEventReceiver() override
             {
             }
 
         protected:
-            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
+            bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
             {
                 bool handle = m_filter( _event );
 
@@ -47,7 +45,7 @@ namespace Mengine
                 //Empty
             }
 
-            bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
+            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
                 MENGINE_UNUSED( _event );
 
@@ -141,42 +139,24 @@ namespace Mengine
         protected:
             EMouseCode m_code;
             bool m_isDown;
-            LambdaPickerMouseButtonEvent m_filter;
+            LambdaPickerMouseEnterEvent m_filter;
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseButton::TaskPickerableMouseButton( const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
+    TaskPickerableMouseEnter::TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter )
         : m_pickerable( _pickerable )
-        , m_code( _code )
-        , m_isDown( _isDown )
-        , m_isPressed( _isPressed )
         , m_filter( _filter )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseButton::~TaskPickerableMouseButton()
+    TaskPickerableMouseEnter::~TaskPickerableMouseEnter()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPickerableMouseButton::_onRun()
+    bool TaskPickerableMouseEnter::_onRun()
     {
-        auto lambda = [this]( const InputMouseButtonEvent & _event )
+        auto lambda = [this]( const InputMouseEnterEvent & _event )
         {
-            if( _event.code != m_code )
-            {
-                return false;
-            }
-
-            if( _event.isDown != m_isDown )
-            {
-                return false;
-            }
-
-            if( _event.isDown != m_isPressed )
-            {
-                return false;
-            }
-
             bool handle = false;
 
             if( m_filter != nullptr )
@@ -195,12 +175,12 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, lambda ) );
+        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_ENTER, Helper::makeFactorableUnique<Detail::TaskPickerableMouseEnterEventReceiver>( lambda ) );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskPickerableMouseButton::_onFinally()
+    void TaskPickerableMouseEnter::_onFinally()
     {
         PickerInterface * picker = m_pickerable->getPicker();
 
@@ -208,13 +188,13 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON );
+        eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_ENTER );
+        
         m_pickerable = nullptr;
-
         m_filter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPickerableMouseButton::_onSkipable() const
+    bool TaskPickerableMouseEnter::_onSkipable() const
     {
         return false;
     }

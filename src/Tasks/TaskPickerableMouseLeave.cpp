@@ -1,4 +1,4 @@
-#include "TaskPickerableMouseButton.h"
+#include "TaskPickerableMouseLeave.h"
 
 #include "Interface/PickerInterface.h"
 
@@ -12,28 +12,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        class TaskPickerableMouseButtonEventReceiver
+        class TaskPickerableMouseLeaveEventReceiver
             : public HotSpotEventReceiverInterface
             , public Factorable
         {
         public:
-            TaskPickerableMouseButtonEventReceiver( EMouseCode _code, bool _isDown, const LambdaPickerMouseButtonEvent & _filter )
-                : m_code( _code )
-                , m_isDown( _isDown )
-                , m_filter( _filter )
+            TaskPickerableMouseLeaveEventReceiver( const LambdaPickerMouseLeaveEvent & _filter )
+                : m_filter( _filter )
             {
             }
 
-            ~TaskPickerableMouseButtonEventReceiver() override
+            ~TaskPickerableMouseLeaveEventReceiver() override
             {
             }
 
         protected:
-            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
+            void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override
             {
-                bool handle = m_filter( _event );
-
-                return handle;
+                m_filter( _event );
             }
 
         protected:
@@ -47,7 +43,7 @@ namespace Mengine
                 //Empty
             }
 
-            bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
+            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
                 MENGINE_UNUSED( _event );
 
@@ -56,11 +52,13 @@ namespace Mengine
                 return false;
             }
 
-            void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override
+            bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
             {
                 MENGINE_UNUSED( _event );
 
                 //Empty
+
+                return false;
             }
 
             bool onHotSpotKey( const InputKeyEvent & _event ) override
@@ -141,52 +139,30 @@ namespace Mengine
         protected:
             EMouseCode m_code;
             bool m_isDown;
-            LambdaPickerMouseButtonEvent m_filter;
+            LambdaPickerMouseLeaveEvent m_filter;
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseButton::TaskPickerableMouseButton( const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
+    TaskPickerableMouseLeave::TaskPickerableMouseLeave( const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter )
         : m_pickerable( _pickerable )
-        , m_code( _code )
-        , m_isDown( _isDown )
-        , m_isPressed( _isPressed )
         , m_filter( _filter )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskPickerableMouseButton::~TaskPickerableMouseButton()
+    TaskPickerableMouseLeave::~TaskPickerableMouseLeave()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPickerableMouseButton::_onRun()
+    bool TaskPickerableMouseLeave::_onRun()
     {
-        auto lambda = [this]( const InputMouseButtonEvent & _event )
+        auto lambda = [this]( const InputMouseLeaveEvent & _event )
         {
-            if( _event.code != m_code )
-            {
-                return false;
-            }
-
-            if( _event.isDown != m_isDown )
-            {
-                return false;
-            }
-
-            if( _event.isDown != m_isPressed )
-            {
-                return false;
-            }
-
-            bool handle = false;
-
             if( m_filter != nullptr )
             {
-                handle = m_filter( _event );
+                m_filter( _event );
             }
 
             this->complete();
-
-            return handle;
         };
 
         PickerInterface * picker = m_pickerable->getPicker();
@@ -195,12 +171,12 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, lambda ) );
+        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE, Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( lambda ) );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskPickerableMouseButton::_onFinally()
+    void TaskPickerableMouseLeave::_onFinally()
     {
         PickerInterface * picker = m_pickerable->getPicker();
 
@@ -208,13 +184,13 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON );
+        eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE );
+        
         m_pickerable = nullptr;
-
         m_filter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPickerableMouseButton::_onSkipable() const
+    bool TaskPickerableMouseLeave::_onSkipable() const
     {
         return false;
     }

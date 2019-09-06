@@ -556,6 +556,7 @@ namespace Mengine
             ->stop();
 
         SERVICE_FINALIZE( Bootstrapper );
+        SERVICE_DESTROY( Bootstrapper );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }

@@ -10,7 +10,7 @@ namespace Mengine
     class SecureServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "SequreService" );
+        SERVICE_DECLARE( "SecureService" );
 
     public:
         virtual HashType getSequreHash() const = 0;

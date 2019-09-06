@@ -11,6 +11,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 
@@ -58,6 +59,8 @@ namespace Mengine
         m_loaders.clear();
 
         m_metacache.strings.clear();
+
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Loader" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void LoaderService::setProtocolPath( const FilePath & _protocolPath )

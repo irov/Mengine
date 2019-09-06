@@ -840,6 +840,7 @@ namespace Mengine
         SERVICE_FINALIZE( GameService );
         SERVICE_FINALIZE( Application );
 
+        SERVICE_FINALIZE( SecureService );        
         SERVICE_FINALIZE( AccountService );
         SERVICE_FINALIZE( SceneService );
         SERVICE_FINALIZE( ChronometerService );
@@ -854,6 +855,9 @@ namespace Mengine
         PLUGIN_SERVICE()
             ->unloadPlugins();
 
+        SERVICE_FINALIZE( LoaderService );
+        SERVICE_FINALIZE( TimelineService );
+        SERVICE_FINALIZE( WatchdogService );
         SERVICE_FINALIZE( ModuleService );
         SERVICE_FINALIZE( FrameworkService );
         SERVICE_FINALIZE( PlayerService );
@@ -886,5 +890,6 @@ namespace Mengine
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( StringizeService );
+        SERVICE_FINALIZE( FactoryService );
     }
 }

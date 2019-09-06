@@ -11,14 +11,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaPickerMouseButtonEvent;
+    typedef Lambda<bool( const InputMouseEnterEvent & )> LambdaPickerMouseEnterEvent;
     //////////////////////////////////////////////////////////////////////////
-    class TaskPickerableMouseButton
+    class TaskPickerableMouseEnter
         : public GOAP::Task
     {
     public:
-        TaskPickerableMouseButton( const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter );
-        ~TaskPickerableMouseButton() override;
+        TaskPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter );
+        ~TaskPickerableMouseEnter() override;
 
     protected:
         bool _onRun() override;
@@ -27,13 +27,10 @@ namespace Mengine
 
     protected:
         PickerablePtr m_pickerable;
-        EMouseCode m_code;
-        bool m_isDown;
-        bool m_isPressed;
 
-        LambdaPickerMouseButtonEvent m_filter;
+        LambdaPickerMouseEnterEvent m_filter;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef GOAP::IntrusivePtr<TaskPickerableMouseButton> TaskPickerableMouseButtonPtr;
+    typedef GOAP::IntrusivePtr<TaskPickerableMouseEnter> TaskPickerableMouseEnterPtr;
     //////////////////////////////////////////////////////////////////////////
 }

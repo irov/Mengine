@@ -25,12 +25,12 @@ namespace Mengine
     public:
         virtual void onButtonMouseEnter() = 0;
         virtual void onButtonMouseLeave() = 0;
-        virtual bool onButtonMousePush() = 0;
-        virtual bool onButtonMousePressed() = 0;
-        virtual bool onButtonMouseRelease() = 0;
-        virtual bool onButtonMouseButton() = 0;
-        virtual bool onButtonMouseButtonBegin() = 0;
-        virtual bool onButtonMouseButtonEnd() = 0;
+        virtual void onButtonMousePush() = 0;
+        virtual void onButtonMousePressed() = 0;
+        virtual void onButtonMouseRelease() = 0;
+        virtual void onButtonMouseButton() = 0;
+        virtual void onButtonMouseButtonBegin() = 0;
+        virtual void onButtonMouseButtonEnd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ButtonEventReceiverInterface> ButtonEventReceiverInterfacePtr;

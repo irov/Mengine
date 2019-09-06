@@ -61,7 +61,8 @@ Tasks
     TaskHttpHeaderData.h
     TaskHttpHeaderData.cpp
     TaskNotify.h
-    TaskNotify.cpp
+    TaskEventable.h
+    TaskEventable.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

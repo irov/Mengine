@@ -8,6 +8,9 @@
 #include "Tasks/TaskPickerableMouseLeave.h"
 #include "Tasks/TaskAnimatablePlayWait.h"
 #include "Tasks/TaskAnimatableRewind.h"
+#include "Tasks/TaskEventable.h"
+
+#include "ButtonEventReceiverInterface.h"
 
 #include "Kernel/Delegate.h"
 
@@ -16,11 +19,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Button::Button()
         : m_state( EBS_APPEAR )
+        , m_semaphoreBlock( new GOAP::Semaphore( GOAP::Helper::makeEvent(), 0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Button::~Button()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Button::setBlock( bool _block )
+    {
+        m_semaphoreBlock->setValue( _block == true ? 1 : 0 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Button::isBlock() const
+    {
+        int value = m_semaphoreBlock->getValue();
+
+        return value == 1 ? true : false;
     }
     //////////////////////////////////////////////////////////////////////////
     void Button::setPickerable( const PickerablePtr & _pickerable )
@@ -68,7 +84,7 @@ namespace Mengine
         }
 
         GOAP::EventPtr eventBlock( new GOAP::Event() );
-        m_semaphoreBlock = GOAP::SemaphorePtr::from( new GOAP::Semaphore( eventBlock, 0 ) );
+        ;
 
         GOAP::SourcePtr source = GOAP::Helper::makeSource();
 
@@ -210,6 +226,7 @@ namespace Mengine
     {
         if( _nodeEnter == nullptr )
         {
+            _source->addTask<TaskEventable>( this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
             _source->addFunction( this, &Button::__setState, EBS_OVER );
             return;
         }

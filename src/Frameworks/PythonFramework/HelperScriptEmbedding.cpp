@@ -302,7 +302,9 @@ namespace Mengine
                 it.next_shuffle();
 
                 Color color;
-                if( RenderInterface * render = Helper::getNodeRenderInheritance( child.get() ) )
+
+                Node * nodeRender;
+                if( RenderInterface * render = Helper::getNodeRenderInheritance( child.get(), &nodeRender ) )
                 {
                     render->calcTotalColor( color );
                 }

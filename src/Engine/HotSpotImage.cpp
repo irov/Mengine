@@ -140,7 +140,15 @@ namespace Mengine
         point_vp = _point * contentResolutionSize;
 
         point_vp -= vp.begin;
-        point_vp /= vp.size();
+
+        mt::vec2f size = vp.size();
+
+        if( size.x < mt::constant::eps || size.y < mt::constant::eps )
+        {
+            return m_outward;
+        }
+
+        point_vp /= size;
 
         mt::vec2f point_norm;
         point_norm.x = point_vp.x * 2.f - 1.f;
@@ -190,7 +198,15 @@ namespace Mengine
         point_vp = _point * contentResolutionSize;
 
         point_vp -= vp.begin;
-        point_vp /= vp.size();
+
+        mt::vec2f size = vp.size();
+
+        if( size.x < mt::constant::eps || size.y < mt::constant::eps )
+        {
+            return m_outward;
+        }
+
+        point_vp /= size;
 
         mt::vec2f point_norm;
         point_norm.x = point_vp.x * 2.f - 1.f;

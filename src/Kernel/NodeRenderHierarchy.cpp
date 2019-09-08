@@ -81,7 +81,28 @@ namespace Mengine
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderInterface * getNodeRenderInheritance( Node * _node )
+        bool hasNodeRenderInheritance( Node * _node )
+        {
+            if( _node == nullptr )
+            {
+                return false;
+            }
+
+            RenderInterface * render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                return true;
+            }
+
+            Node * parent = _node->getParent();
+
+            bool successful = Helper::hasNodeRenderInheritance( parent );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        RenderInterface * getNodeRenderInheritance( Node * _node, Node ** _nodeRender )
         {
             if( _node == nullptr )
             {
@@ -92,12 +113,14 @@ namespace Mengine
 
             if( render != nullptr )
             {
+                *_nodeRender = _node;
+
                 return render;
             }
 
             Node * parent = _node->getParent();
 
-            RenderInterface * render_parent = Helper::getNodeRenderInheritance( parent );
+            RenderInterface * render_parent = Helper::getNodeRenderInheritance( parent, _nodeRender );
 
             return render_parent;
         }

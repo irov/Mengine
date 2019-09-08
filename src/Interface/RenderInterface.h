@@ -20,17 +20,12 @@ namespace Mengine
     {
     public:
         virtual void setRelationRender( RenderInterface * _relationRender ) = 0;
-        virtual void setRelationRenderFront( RenderInterface * _relationRender ) = 0;
         virtual void removeRelationRender() = 0;
         virtual RenderInterface * getRelationRender() const = 0;
 
     public:
-        virtual void moveRelationRenderFront( RenderInterface * _childRender ) = 0;
-        virtual void moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender ) = 0;
-        virtual void moveRelationRenderBack( RenderInterface * _childRender ) = 0;
-
-    public:
         virtual bool emptyRenderChildren() const = 0;
+        virtual void clearRenderChildren() = 0;
 
     public:
         typedef Lambda<void( RenderInterface * )> LambdaRender;

@@ -23,17 +23,12 @@ namespace Mengine
 
     public:
         void setRelationRender( RenderInterface * _relationRender ) override;
-        void setRelationRenderFront( RenderInterface * _relationRender ) override;
         void removeRelationRender() override;
         MENGINE_INLINE BaseRender * getRelationRender() const override;
 
     public:
-        void moveRelationRenderFront( RenderInterface * _childRender ) override;
-        void moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender ) override;
-        void moveRelationRenderBack( RenderInterface * _childRender ) override;
-
-    public:
         bool emptyRenderChildren() const override;
+        void clearRenderChildren() override;
 
     public:
         void foreachRenderChildren( const LambdaRender & _lambda ) override;
@@ -57,9 +52,7 @@ namespace Mengine
 
     protected:
         void addRelationRenderChildrenBack_( BaseRender * _childRender );
-        void addRelationRenderChildrenFront_( BaseRender * _childRender );
         void removeRelationRenderChildren_( BaseRender * _childRender );
-        void addRelationRenderChildrenAfter_( BaseRender * _afterRender, BaseRender * _childRender );
 
     public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;

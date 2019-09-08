@@ -13,7 +13,8 @@ namespace Mengine
     namespace Helper
     {
         void nodeRenderChildren( const Node * _node, const RenderContext * _context, bool _external );
-        RenderInterface * getNodeRenderInheritance( Node * _node );
+        bool hasNodeRenderInheritance( Node * _node );
+        RenderInterface * getNodeRenderInheritance( Node * _node, Node ** _nodeRender );
         const RenderViewportInterfacePtr & getRenderViewportInheritance( RenderInterface * _render );
         const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render );
         const RenderTransformationInterfacePtr & getRenderTransformationInheritance( RenderInterface * _render );

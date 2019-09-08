@@ -23,7 +23,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BasePicker::setRelationPickerBack( PickerInterface * _relationPicker )
+    void BasePicker::setRelationPicker( PickerInterface * _relationPicker )
     {
         MENGINE_ASSERTION( _relationPicker != nullptr, "set nullptr relation" );
         MENGINE_ASSERTION( _relationPicker != this, "set this relation" );
@@ -37,20 +37,6 @@ namespace Mengine
         m_relationPicker->addRelationPickerChildrenBack_( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BasePicker::setRelationPickerFront( PickerInterface * _relationPicker )
-    {
-        MENGINE_ASSERTION( _relationPicker != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationPicker != this, "set this relation" );
-
-        if( m_relationPicker != nullptr )
-        {
-            m_relationPicker->removeRelationPickerChildren_( this );
-        }
-
-        m_relationPicker = static_cast<BasePicker *>(_relationPicker);
-        m_relationPicker->addRelationPickerChildrenFront_( this );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void BasePicker::removeRelationPicker()
     {
         if( m_relationPicker == nullptr )
@@ -62,54 +48,19 @@ namespace Mengine
         m_relationPicker = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BasePicker::moveRelationPickerFront( PickerInterface * _childPicker )
-    {
-        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
-
-        BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
-
-        BasePicker * frontPicker = m_pickerChildren.front();
-
-        if( frontPicker == childPicker )
-        {
-            return;
-        }
-
-        this->removeRelationPickerChildren_( childPicker );
-        this->addRelationPickerChildrenFront_( childPicker );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BasePicker::moveRelationPickerMiddle( PickerInterface * _afterPicker, PickerInterface * _childPicker )
-    {
-        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
-
-        BasePicker * afterPicker = static_cast<BasePicker *>(_afterPicker);
-        BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
-
-        this->removeRelationPickerChildren_( childPicker );
-        this->addRelationPickerChildrenAfter_( afterPicker, childPicker );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BasePicker::moveRelationPickerBack( PickerInterface * _childPicker )
-    {
-        MENGINE_ASSERTION_FATAL( m_pickerChildren.empty() == false, "move child is empty" );
-
-        BasePicker * childPicker = static_cast<BasePicker *>(_childPicker);
-
-        BasePicker * backPicker = m_pickerChildren.back();
-
-        if( backPicker == childPicker )
-        {
-            return;
-        }
-
-        this->removeRelationPickerChildren_( childPicker );
-        this->addRelationPickerChildrenBack_( childPicker );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool BasePicker::emptyPickerChildren() const
     {
         return m_pickerChildren.empty();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BasePicker::clearPickerChildren()
+    {
+        for( BasePicker * child : m_pickerChildren )
+        {
+            child->m_relationPicker = nullptr;
+        }
+
+        m_pickerChildren.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void BasePicker::foreachPickerChildren( const LambdaPicker & _lambda )

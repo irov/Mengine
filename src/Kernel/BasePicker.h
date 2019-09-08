@@ -15,18 +15,13 @@ namespace Mengine
         ~BasePicker() override;
 
     public:
-        void setRelationPickerBack( PickerInterface * _relationPicker ) override;
-        void setRelationPickerFront( PickerInterface * _relationPicker ) override;
+        void setRelationPicker( PickerInterface * _relationPicker ) override;
         void removeRelationPicker() override;
         MENGINE_INLINE BasePicker * getRelationPicker() const override;
 
     public:
-        void moveRelationPickerFront( PickerInterface * _childPicker ) override;
-        void moveRelationPickerMiddle( PickerInterface * _afterPicker, PickerInterface * _childPicker ) override;
-        void moveRelationPickerBack( PickerInterface * _childPicker ) override;
-
-    public:
         bool emptyPickerChildren() const override;
+        void clearPickerChildren() override;
 
     public:
         void foreachPickerChildren( const LambdaPicker & _lambda ) override;

@@ -2,18 +2,15 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/DummyRender.h"
-#include "Kernel/DummyPicker.h"
 
 namespace Mengine
 {
     class MatrixProxy
         : public Node
         , public DummyRender
-        , public DummyPicker
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
-        DECLARE_PICKERABLE();
 
     public:
         MatrixProxy();

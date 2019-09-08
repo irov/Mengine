@@ -20,13 +20,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum ENodeChildInsertMode
-    {
-        ENCI_FRONT,
-        ENCI_MIDDLE,
-        ENCI_BACK
-    };
-    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveSlugListSize<Node> IntrusiveSlugListNodeChild;
@@ -94,7 +87,9 @@ namespace Mengine
     protected:
         void removeChild_( const NodePtr & _node );
         void removeParent_();
-        void setParent_( Node * _node, ENodeChildInsertMode _mode );
+        void setParent_( Node * _parent );
+        void refreshRenderRelation_( Node * _parent );
+        void refreshPickerRelation_( Node * _parent );
 
     protected:
         virtual bool _hasChild( const ConstString & _name, bool _recursive ) const;
@@ -111,8 +106,9 @@ namespace Mengine
         IntrusiveSlugListNodeChild m_children;
 
     private:
-        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node, ENodeChildInsertMode _mode );
+        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
 
+    private:
         void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );
 
@@ -132,11 +128,6 @@ namespace Mengine
 
     public:
         void removeRelationRender_();
-        void setRelationRender_( Node * _parent );
-        void setRelationRenderFront_( Node * _parent );
-        void moveChildRenderFront_( const NodePtr & _child );
-        void moveChildRenderMiddle_( const NodePtr & _after, const NodePtr & _child );
-        void moveChildRenderBack_( const NodePtr & _child );
 
     protected:
         typedef const Lambda<void( RenderInterface * )> LambdaRenderCloseChildren;
@@ -145,13 +136,6 @@ namespace Mengine
 
     public:
         void removeRelationPicker_();
-        void setRelationPickerBack_( Node * _parent );
-        void setRelationPickerFront_( Node * _parent );
-        void moveChildPickerFront_( const NodePtr & _child );
-        void moveChildPickerMiddle_( const NodePtr & _after, const NodePtr & _child );
-        void moveChildPickerBack_( const NodePtr & _child );
-
-        PickerInterface * getPickerSiblingPrev_( const NodePtr & _after ) const;
 
         typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
         void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );

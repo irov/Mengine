@@ -20,18 +20,13 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void setRelationPickerBack( PickerInterface * _relationPicker ) = 0;
-        virtual void setRelationPickerFront( PickerInterface * _relationPicker ) = 0;
+        virtual void setRelationPicker( PickerInterface * _relationPicker ) = 0;
         virtual void removeRelationPicker() = 0;
         virtual PickerInterface * getRelationPicker() const = 0;
 
     public:
-        virtual void moveRelationPickerFront( PickerInterface * _childPicker ) = 0;
-        virtual void moveRelationPickerMiddle( PickerInterface * _afterPicker, PickerInterface * _childPicker ) = 0;
-        virtual void moveRelationPickerBack( PickerInterface * _childPicker ) = 0;
-
-    public:
         virtual bool emptyPickerChildren() const = 0;
+        virtual void clearPickerChildren() = 0;
 
     public:
         typedef Lambda<void( PickerInterface * )> LambdaPicker;

@@ -35,27 +35,7 @@ namespace Mengine
         }
 
         m_relationRender = static_cast<BaseRender *>(_relationRender);
-
         m_relationRender->addRelationRenderChildrenBack_( this );
-
-        this->invalidateColor();
-
-        m_invalidateRendering = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRelationRenderFront( RenderInterface * _relationRender )
-    {
-        MENGINE_ASSERTION( _relationRender != nullptr, "set nullptr relation" );
-        MENGINE_ASSERTION( _relationRender != this, "set this relation" );
-
-        if( m_relationRender != nullptr )
-        {
-            m_relationRender->removeRelationRenderChildren_( this );
-        }
-
-        m_relationRender = static_cast<BaseRender *>(_relationRender);
-
-        m_relationRender->addRelationRenderChildrenFront_( this );
 
         this->invalidateColor();
 
@@ -71,61 +51,26 @@ namespace Mengine
 
         m_relationRender->removeRelationRenderChildren_( this );
         m_relationRender = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::moveRelationRenderFront( RenderInterface * _childRender )
-    {
-        MENGINE_ASSERTION_FATAL( m_renderChildren.empty() == false, "move child is empty" );
-
-        BaseRender * childRender = static_cast<BaseRender *>(_childRender);
-
-        BaseRender * frontRender = m_renderChildren.front();
-
-        if( frontRender == childRender )
-        {
-            return;
-        }
-
-        this->removeRelationRenderChildren_( childRender );
-        this->addRelationRenderChildrenFront_( childRender );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::moveRelationRenderMiddle( RenderInterface * _afterRender, RenderInterface * _childRender )
-    {
-        MENGINE_ASSERTION_FATAL( m_renderChildren.empty() == false, "move child is empty" );
-
-        BaseRender * afterRender = static_cast<BaseRender *>(_afterRender);
-        BaseRender * childRender = static_cast<BaseRender *>(_childRender);
-
-        this->removeRelationRenderChildren_( childRender );
-        this->addRelationRenderChildrenAfter_( afterRender, childRender );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::moveRelationRenderBack( RenderInterface * _childRender )
-    {
-        MENGINE_ASSERTION_FATAL( m_renderChildren.empty() == false, "move child is empty" );
-
-        BaseRender * childRender = static_cast<BaseRender *>(_childRender);
-
-        BaseRender * backRender = m_renderChildren.back();
-
-        if( backRender == childRender )
-        {
-            return;
-        }
-
-        this->removeRelationRenderChildren_( childRender );
-        this->addRelationRenderChildrenBack_( childRender );
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::emptyRenderChildren() const
     {
         return m_renderChildren.empty();
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::clearRenderChildren()
+    {
+        for( BaseRender * child : m_renderChildren )
+        {
+            child->m_relationRender = nullptr;
+        }
+
+        m_renderChildren.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::foreachRenderChildren( const LambdaRender & _lambda )
     {
-        for( RenderInterface * child : m_renderChildren )
+        for( BaseRender * child : m_renderChildren )
         {
             _lambda( child );
         }
@@ -199,13 +144,7 @@ namespace Mengine
     void BaseRender::addRelationRenderChildrenBack_( BaseRender * _childRender )
     {
         m_renderChildren.push_back( _childRender );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRelationRenderChildrenFront_( BaseRender * _childRender )
-    {
-        m_renderChildren.insert( m_renderChildren.begin(), _childRender );
-    }
-    //////////////////////////////////////////////////////////////////////////
+    }    //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )
     {
         VectorBaseRender::iterator it_erase = std::find( m_renderChildren.begin(), m_renderChildren.end(), _childRender );
@@ -213,15 +152,6 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( it_erase != m_renderChildren.end(), "remove relation child is not found" );
 
         m_renderChildren.erase( it_erase );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRelationRenderChildrenAfter_( BaseRender * _afterRender, BaseRender * _childRender )
-    {
-        VectorBaseRender::iterator it_insert = std::find( m_renderChildren.begin(), m_renderChildren.end(), _afterRender );
-
-        MENGINE_ASSERTION_FATAL( it_insert != m_renderChildren.end(), "after relation child is not found" );
-
-        m_renderChildren.insert( it_insert, _childRender );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _viewport )

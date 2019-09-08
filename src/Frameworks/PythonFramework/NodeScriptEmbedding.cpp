@@ -2510,7 +2510,8 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox> >( _kernel, "RenderInterface" )
-            .def( "setRelationRender", &RenderInterface::setRelationRender )
+            .def_deprecated( "setRelationRender", &RenderInterface::setRelationRender, "use setRelationRenderBack" )
+            .def( "setRelationRenderBack", &RenderInterface::setRelationRender )            
             .def( "removeRelationRender", &RenderInterface::removeRelationRender )
             .def( "getRelationRender", &RenderInterface::getRelationRender )
             .def( "setHide", &RenderInterface::setHide )

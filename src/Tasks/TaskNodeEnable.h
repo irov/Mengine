@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        TaskNodeEnable( const NodePtr & _node );
+        explicit TaskNodeEnable( const NodePtr & _node );
         ~TaskNodeEnable() override;
 
     protected:

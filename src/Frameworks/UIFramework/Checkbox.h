@@ -12,8 +12,8 @@ namespace Mengine
     {
         ECS_APPEAR,
         ECS_IDLE,
-        ECS_ENTER,
         ECS_OVER,
+        ECS_ENTER,        
         ECS_LEAVE,
         ECS_CLICK,
         ECS_PUSH,

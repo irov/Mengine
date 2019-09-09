@@ -108,6 +108,16 @@ namespace Mengine
             m_state = ECS_IDLE;
         }
 
+        if( m_nodes[0][ECS_OVER] == nullptr )
+        {
+            m_nodes[0][ECS_OVER] = m_nodes[0][ECS_IDLE];
+        }
+
+        if( m_nodes[1][ECS_OVER] == nullptr )
+        {
+            m_nodes[1][ECS_OVER] = m_nodes[1][ECS_IDLE];
+        }
+
         GOAP::SourcePtr source = GOAP::Helper::makeSource();
 
         auto fn = [this]( const GOAP::SourcePtr & _source )
@@ -122,6 +132,9 @@ namespace Mengine
                 &Checkbox::__stateEnter,
                 &Checkbox::__stateLeave,
                 &Checkbox::__stateClick,
+                &Checkbox::__statePush,
+                &Checkbox::__stateRelease,
+                &Checkbox::__statePressed,
                 &Checkbox::__stateBlock,
                 &Checkbox::__stateBlockEnter,
                 &Checkbox::__stateBlockEnd,
@@ -222,13 +235,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Checkbox::__stateOver( const GOAP::SourcePtr & _source, const NodePtr & _nodeOver, bool _value )
     {
-        if( _nodeOver == nullptr )
-        {
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
-
-            return;
-        }
-
         _source->addTask<TaskNodeEnable>( _nodeOver );
         _source->addTask<TaskLocalDelay>( 0.f );
 
@@ -252,6 +258,7 @@ namespace Mengine
         {
             _source->addTask<TaskEventable>( this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
             _source->addFunction( this, &Checkbox::__setState, _value, ECS_OVER );
+
             return;
         }
 
@@ -382,7 +389,6 @@ namespace Mengine
         if( _nodeClick == nullptr )
         {
             _source->addTask<TaskEventable>( this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
-
             _source->addFunction( this, &Checkbox::__setState, changeValue, ECS_IDLE );
 
             return;

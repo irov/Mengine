@@ -7,6 +7,8 @@ namespace Mengine
     class HotSpotCircle
         : public HotSpot
     {
+        DECLARE_VISITABLE( HotSpot );
+
     public:
         HotSpotCircle();
         ~HotSpotCircle() override;

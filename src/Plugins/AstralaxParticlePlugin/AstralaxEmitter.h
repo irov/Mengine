@@ -43,6 +43,7 @@ namespace Mengine
         , public AstralaxCameraProviderInterface
         , public UnknownParticleEmitterInterface
     {
+        DECLARE_VISITABLE( Node );
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();

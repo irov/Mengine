@@ -9,6 +9,8 @@ namespace Mengine
     class HotSpotShape
         : public HotSpotPolygon
     {
+        DECLARE_VISITABLE( HotSpotPolygon );
+
     public:
         HotSpotShape();
         ~HotSpotShape() override;

@@ -9,6 +9,8 @@ namespace Mengine
     class HotSpotBubbles
         : public HotSpot
     {
+        DECLARE_VISITABLE( HotSpot );
+
     public:
         HotSpotBubbles();
         ~HotSpotBubbles() override;

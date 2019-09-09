@@ -9,6 +9,8 @@ namespace Mengine
     class HotSpotImage
         : public HotSpot
     {
+        DECLARE_VISITABLE( HotSpot );
+
     public:
         HotSpotImage();
         ~HotSpotImage() override;

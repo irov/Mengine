@@ -15,7 +15,7 @@ namespace Mengine
         : public Node
         , public BaseRender
     {
-        DECLARE_VISITABLE( Vectorizator );
+        DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
 
     public:

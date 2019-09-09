@@ -4,8 +4,7 @@
 #include "Kernel/DummyRender.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     class Movie2Slot
         : public Node
         , public DummyRender

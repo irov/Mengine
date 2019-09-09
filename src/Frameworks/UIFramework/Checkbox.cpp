@@ -388,17 +388,18 @@ namespace Mengine
 
         if( _nodeClick == nullptr )
         {
-            _source->addTask<TaskEventable>( this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
             _source->addFunction( this, &Checkbox::__setState, changeValue, ECS_IDLE );
+            _source->addTask<TaskEventable>( this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
 
             return;
         }
 
         _source->addTask<TaskNodeEnable>( _nodeClick );
         _source->addTask<TaskAnimatablePlayWait>( _nodeClick, _nodeClick );
+        
+        _source->addFunction( this, &Checkbox::__setState, changeValue, ECS_IDLE );
         _source->addTask<TaskEventable>( this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
 
-        _source->addFunction( this, &Checkbox::__setState, changeValue, ECS_IDLE );
         _source->addTask<TaskNodeDisable>( _nodeClick );
     }
     //////////////////////////////////////////////////////////////////////////

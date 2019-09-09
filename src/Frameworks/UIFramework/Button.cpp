@@ -66,6 +66,11 @@ namespace Mengine
             return false;
         }
 
+        if( m_nodes[EBS_OVER] == nullptr )
+        {
+            m_nodes[EBS_OVER] = nodeIdle;
+        }
+
         if( m_nodes[EBS_PRESSED] == nullptr )
         {
             m_nodes[EBS_PRESSED] = nodeIdle;
@@ -196,13 +201,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Button::__stateOver( const GOAP::SourcePtr & _source, const NodePtr & _nodeOver )
     {
-        if( _nodeOver == nullptr )
-        {
-            _source->addFunction( this, &Button::__setState, EBS_PUSH );
-
-            return;
-        }
-
         _source->addTask<TaskNodeEnable>( _nodeOver );
         _source->addTask<TaskLocalDelay>( 0.f );
 

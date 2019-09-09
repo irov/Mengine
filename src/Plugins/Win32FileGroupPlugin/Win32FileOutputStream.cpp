@@ -33,15 +33,14 @@ namespace Mengine
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];
-        if( Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
-        {
-            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
-                , _folderPath.c_str()
-                , _filePath.c_str()
-            );
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH );
 
-            return false;
-        }
+        MENGINE_UNUSED( fullPathLen );
+
+        MENGINE_ASSERTION_FATAL_RETURN( fullPathLen != MENGINE_PATH_INVALID_LENGTH, false, "invlalid concatenate filePath '%s':'%s'"
+            , _folderPath.c_str()
+            , _filePath.c_str()
+        );
 
         m_hFile = Helper::Win32CreateFile(
             fullPath

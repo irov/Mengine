@@ -18,6 +18,8 @@ namespace Mengine
         , m_lineWidth( 2.f )
         , m_lineSoft( 1.f )
         , m_lineColor( 1.f, 1.f, 1.f, 1.f )
+        , m_fillColor( 1.f, 1.f, 1.f, 1.f )
+        , m_filling( false )
         , m_curveQuality( 20 )
         , m_ellipseQuality( 32 )
     {

@@ -46,6 +46,8 @@ namespace Mengine
 
         if( connect_result != 0 )
         {
+            ::closesocket( socket );
+            
             return false;
         }
 

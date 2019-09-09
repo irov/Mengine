@@ -125,15 +125,12 @@ namespace Mengine
     {
         size_t fullPathLen = Helper::Win32ConcatenateFilePathW( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
 
-        if( fullPathLen == MENGINE_PATH_INVALID_LENGTH )
-        {
-            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
-                , _folderPath.c_str()
-                , _filePath.c_str()
-            );
+        MENGINE_UNUSED( fullPathLen );
 
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( fullPathLen != MENGINE_PATH_INVALID_LENGTH, false, "invlalid concatenate filePath '%s':'%s'"
+            , _folderPath.c_str()
+            , _filePath.c_str()
+        );
 
         HANDLE hFile = Helper::Win32CreateFile(
             _fullPath, // file to open

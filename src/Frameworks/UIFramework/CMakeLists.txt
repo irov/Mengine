@@ -21,6 +21,16 @@ Button
     TaskButtonClick.h
 )
 
+ADD_FILTER(
+Checkbox
+	Checkbox.cpp
+	Checkbox.h
+    CheckboxEventReceiverInterface.h
+    TaskCheckboxChange.cpp
+    TaskCheckboxChange.h
+)
+
+
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 

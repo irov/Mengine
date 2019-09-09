@@ -53,6 +53,7 @@ namespace Mengine
         , m_depth( false )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
         , m_deviceType( D3DDEVTYPE_HAL )
+        , m_vertexDeclaration( nullptr )
         , m_waitForVSync( false )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )

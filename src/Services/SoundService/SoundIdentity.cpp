@@ -4,6 +4,14 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::SoundIdentity()
+        : id( 0 )
+        , bufferId( 0 )
+        , time_left( 0.f )
+        , state( ESS_STOP )
+        , category( ES_SOURCE_CATEGORY_SOUND )
+        , streamable( false )
+        , looped( false )
+        , turn( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -137,8 +137,6 @@ namespace Mengine
             }
 
         protected:
-            EMouseCode m_code;
-            bool m_isDown;
             LambdaPickerMouseEnterEvent m_filter;
         };
     }

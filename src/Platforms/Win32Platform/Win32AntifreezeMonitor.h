@@ -16,7 +16,7 @@ namespace Mengine
     {
     public:
         Win32AntifreezeMonitor();
-        ~Win32AntifreezeMonitor();
+        ~Win32AntifreezeMonitor() override;
 
     public:
         bool initialize();

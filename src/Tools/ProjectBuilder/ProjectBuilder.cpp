@@ -127,7 +127,8 @@ namespace Mengine
             SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
         }
 
-        freopen( "CONOUT$", "w", stdout );
+        FILE * CONOUT = freopen( "CONOUT$", "w", stdout );
+        MENGINE_UNUSED( CONOUT );
 
         //::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
         // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog

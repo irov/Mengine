@@ -146,15 +146,14 @@ namespace Mengine
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
         Char unicode_base[MENGINE_MAX_PATH];
-        if( Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, FilePath::none(), unicode_base, MENGINE_MAX_PATH ) == false )
-        {
-            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-            );
+        size_t fullPath = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, FilePath::none(), unicode_base, MENGINE_MAX_PATH );
+        
+        MENGINE_UNUSED( fullPath );
 
-            return false;
-        }
+        MENGINE_ASSERTION_FATAL_RETURN( fullPath != MENGINE_PATH_INVALID_LENGTH, false, "invlalid concatenate filePath '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
         Helper::pathCorrectForwardslashA( unicode_base );
 

@@ -20,9 +20,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32AntifreezeMonitor::Win32AntifreezeMonitor()
-        : m_refalive( 0 )
-        , m_oldrefalive( 0 )
+        : m_seconds( 0 )
         , m_workerId( 0 )
+        , m_refalive( 0 )
+        , m_oldrefalive( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////

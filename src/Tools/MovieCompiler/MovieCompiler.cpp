@@ -14,7 +14,7 @@
 //////////////////////////////////////////////////////////////////////////
 static bool loadFile( const std::wstring & _filepath, Mengine::Blobject & _buffer )
 {
-    FILE * f = _wfopen( _filepath.c_str(), L"rb" );
+    FILE * f = ::_wfopen( _filepath.c_str(), L"rb" );
 
     if( f == NULL )
     {
@@ -25,12 +25,14 @@ static bool loadFile( const std::wstring & _filepath, Mengine::Blobject & _buffe
         return false;
     }
 
-    fseek( f, 0, SEEK_END );
-    int f_size = ftell( f );
-    rewind( f );
+    ::fseek( f, 0, SEEK_END );
+    int f_size = ::ftell( f );
+    ::rewind( f );
 
     if( f_size == 0 )
     {
+        ::fclose( f );
+        
         message_error( "invalid size %ls\n"
             , _filepath.c_str()
         );
@@ -42,15 +44,15 @@ static bool loadFile( const std::wstring & _filepath, Mengine::Blobject & _buffe
 
     uint8_t * memory = &_buffer[0];
 
-    fread( memory, 1, f_size, f );
-    fclose( f );
+    ::fread( memory, 1, f_size, f );
+    ::fclose( f );
 
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
 static bool writeCompress( const std::wstring & _filepath, const Mengine::Blobject & _buffer, Mengine::magic_number_type numberz, Mengine::magic_version_type versionz )
 {
-    FILE * fz = _wfopen( _filepath.c_str(), L"wb" );
+    FILE * fz = ::_wfopen( _filepath.c_str(), L"wb" );
 
     if( fz == NULL )
     {
@@ -61,16 +63,16 @@ static bool writeCompress( const std::wstring & _filepath, const Mengine::Blobje
         return false;
     }
 
-    fwrite( &numberz, sizeof( numberz ), 1, fz );
-    fwrite( &versionz, sizeof( versionz ), 1, fz );
+    ::fwrite( &numberz, sizeof( numberz ), 1, fz );
+    ::fwrite( &versionz, sizeof( versionz ), 1, fz );
 
     uint32_t value_crc32 = 0;
-    fwrite( &value_crc32, sizeof( value_crc32 ), 1, fz );
+    ::fwrite( &value_crc32, sizeof( value_crc32 ), 1, fz );
 
     uint32_t buffer_size = (uint32_t)_buffer.size();
 
     uint32_t write_uncompressSize = buffer_size;
-    fwrite( &write_uncompressSize, sizeof( write_uncompressSize ), 1, fz );
+    ::fwrite( &write_uncompressSize, sizeof( write_uncompressSize ), 1, fz );
 
     int lz_size = ::LZ4_compressBound( buffer_size );
 
@@ -84,6 +86,8 @@ static bool writeCompress( const std::wstring & _filepath, const Mengine::Blobje
 
     if( compressSize < 0 )
     {
+        ::fclose( fz );
+        
         message_error( "invalid compress '%ls'\n"
             , _filepath.c_str()
         );
@@ -92,10 +96,10 @@ static bool writeCompress( const std::wstring & _filepath, const Mengine::Blobje
     }
 
     uint32_t write_compressSize = (uint32_t)compressSize;
-    fwrite( &write_compressSize, sizeof( write_compressSize ), 1, fz );
+    ::fwrite( &write_compressSize, sizeof( write_compressSize ), 1, fz );
 
-    fwrite( dst_buffer, compressSize, 1, fz );
-    fclose( fz );
+    ::fwrite( dst_buffer, compressSize, 1, fz );
+    ::fclose( fz );
 
     return true;
 }

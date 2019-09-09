@@ -33,7 +33,7 @@ namespace Mengine
         , public BaseAnimation
         , public Scriptable
     {
-        DECLARE_ANIMATABLE()
+        DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE();
 
     public:

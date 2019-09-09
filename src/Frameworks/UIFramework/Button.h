@@ -55,6 +55,8 @@ namespace Mengine
 
     protected:
         void __setState( EButtonState _state );
+
+    protected:
         void __stateAppear( const GOAP::SourcePtr & _source, const NodePtr & _nodeAppear );
         void __stateIdle( const GOAP::SourcePtr & _source, const NodePtr & _nodeIdle );
         void __stateOver( const GOAP::SourcePtr & source, const NodePtr & _nodeOver );

@@ -3,6 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Button.h"
+#include "Checkbox.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 
@@ -26,6 +27,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Checkbox" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Checkbox, 128> >() ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,6 +40,9 @@ namespace Mengine
     {
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Button" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Checkbox" ) );
     }
     //////////////////////////////////////////////////////////////////////////
 }

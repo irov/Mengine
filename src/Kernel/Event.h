@@ -44,7 +44,7 @@ namespace Mengine
 
         uint32_t remove( const LambdaEvent & _lambda )
         {
-            VectorEvents::iterator it_found = std::find_if( m_events.begin(), m_events.end(), [&_lambda]( const EventDesc & _desc )
+            typename VectorEvents::iterator it_found = std::find_if( m_events.begin(), m_events.end(), [&_lambda]( const EventDesc & _desc )
             {
                 return _desc.lambda == _lambda;
             } );
@@ -62,7 +62,7 @@ namespace Mengine
 
         LambdaEvent remove( uint32_t _id )
         {
-            VectorEvents::iterator it_found = std::find_if( m_events.begin(), m_events.end(), [_id]( const EventDesc & _desc )
+            typename VectorEvents::iterator it_found = std::find_if( m_events.begin(), m_events.end(), [_id]( const EventDesc & _desc )
             {
                 return _desc.id == _id;
             } );

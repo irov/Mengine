@@ -1045,7 +1045,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ae_bool_t Movie2::__movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
     {
-        Movie2 * movie2 = (Movie2 *)_ud;
+        Movie2 * movie2 = static_cast<Movie2 *>( _ud );
 
         const aeMovieLayerData * layer = _callbackData->layer;
 

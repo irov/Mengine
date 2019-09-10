@@ -15,11 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexShader::~DX9RenderVertexShader()
     {
-        if( m_shader != nullptr )
-        {
-            m_shader->Release();
-            m_shader = nullptr;
-        }
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderVertexShader::getName() const
@@ -37,8 +33,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderVertexShader::finalize()
+    {
+        m_memory = nullptr;
+
+        DXRELEASE( m_shader );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
+        MENGINE_ASSERTION_FATAL( m_shader == nullptr );
+
         const DWORD * dx_source = m_memory->getBuffer();
 
         LOGGER_INFO( "compile vertex shader '%s'"

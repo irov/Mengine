@@ -8,6 +8,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "MovieScriptEmbedding.h"
@@ -129,14 +130,25 @@ namespace Mengine
             return false;
         }
 
-        DataflowInterfacePtr dataflowAEK = Helper::makeFactorableUnique<DataflowAEK>();
-
-        if( dataflowAEK->initialize() == false )
+        SERVICE_WAIT( DataServiceInterface, [this]()
         {
-            return false;
-        }
+            DataflowInterfacePtr dataflowAEK = Helper::makeFactorableUnique<DataflowAEK>();
 
-        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ), dataflowAEK );
+            if( dataflowAEK->initialize() == false )
+            {
+                return false;
+            }
+
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ), dataflowAEK );
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( DataServiceInterface, []()
+        {
+            DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+            dataflow->finalize();
+        } );
 
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "aek" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
@@ -205,9 +217,6 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
-
-        DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
-        dataflow->finalize();
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

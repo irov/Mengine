@@ -3,6 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Kernel/PixelFormat.h"
 
@@ -83,27 +84,41 @@ namespace Mengine
         m_ftMutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
-        TTFDataflowPtr dataflowTTF = Helper::makeFactorableUnique<TTFDataflow>();
-
-        dataflowTTF->setFTLibrary( ftlibrary );
-
-        dataflowTTF->setMutex( m_ftMutex );
-
-        if( dataflowTTF->initialize() == false )
+        SERVICE_WAIT( DataServiceInterface, [this]()
         {
-            return false;
-        }
+            TTFDataflowPtr dataflowTTF = Helper::makeFactorableUnique<TTFDataflow>();
 
-        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF );
+            dataflowTTF->setFTLibrary( m_ftlibrary );
 
-        FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>();
+            dataflowTTF->setMutex( m_ftMutex );
 
-        if( dataflowFE->initialize() == false )
+            if( dataflowTTF->initialize() == false )
+            {
+                return false;
+            }
+
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF );
+
+            FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>();
+
+            if( dataflowFE->initialize() == false )
+            {
+                return false;
+            }
+
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ), dataflowFE );
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( DataServiceInterface, []()
         {
-            return false;
-        }
+            DataflowInterfacePtr dataflowTTF = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+            dataflowTTF->finalize();
 
-        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ), dataflowFE );
+            DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+            dataflowFE->finalize();
+        } );
 
         return true;
     }
@@ -114,12 +129,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
-
-        DataflowInterfacePtr dataflowTTF = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
-        dataflowTTF->finalize();
-
-        DataflowInterfacePtr dataflowFE = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
-        dataflowFE->finalize();
 
         SERVICE_FINALIZE( TTFAtlasService );
 

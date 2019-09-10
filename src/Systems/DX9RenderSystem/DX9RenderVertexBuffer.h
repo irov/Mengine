@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         bool initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType );
+        void finalize();
 
     protected:
         uint32_t getVertexCount() const override;

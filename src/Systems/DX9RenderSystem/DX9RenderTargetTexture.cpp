@@ -72,8 +72,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::finalize()
     {
-        m_pD3DTexture->Release();
-        m_pD3DTexture = nullptr;
+        DXRELEASE( m_pD3DTexture );
 
         this->_finalize();
     }
@@ -183,10 +182,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     void DX9RenderTargetTexture::onRenderReset()
     {
-        ULONG refCount = m_pD3DTexture->Release();
-        MENGINE_UNUSED( refCount );
-
-        m_pD3DTexture = nullptr;
+        DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////        
     bool DX9RenderTargetTexture::onRenderRestore()

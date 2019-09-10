@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         bool initialize( const ConstString & _name, uint32_t _elementSize );
+        void finalize();
 
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );

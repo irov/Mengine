@@ -5,7 +5,9 @@
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "pybind/kernel.hpp"
+#endif
 
 namespace Mengine
 {
@@ -22,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::setEmbed( pybind::kernel_interface * _kernel, PyObject * _embed )
     {
-#ifdef MENGINE_DEBUG
+#if defined(MENGINE_DEBUG) && defined(MENGINE_USE_SCRIPT_SERVICE)
         if( _kernel->is_object_bindable( _embed ) == false )
         {
             MENGINE_THROW_EXCEPTION( "'%s' but scope not settup bindable"
@@ -38,6 +40,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * Scriptable::getEmbed( pybind::kernel_interface * _kernel )
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( m_embed == nullptr )
         {
             PyObject * embed = this->_embedded( _kernel );
@@ -48,6 +51,7 @@ namespace Mengine
         {
             _kernel->incref( m_embed );
         }
+#endif
 
         return m_embed;
     }
@@ -65,6 +69,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::unwrap()
     {
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( m_kernel != nullptr )
         {
             PyObject * embed = m_embed;
@@ -72,6 +77,7 @@ namespace Mengine
             m_kernel->unwrap( embed );
             m_kernel = nullptr;
         }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper )

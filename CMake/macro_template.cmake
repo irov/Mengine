@@ -125,6 +125,8 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
             add_definitions(-D${Plugin}_STATIC)
         ENDIF()
     ENDIF()
+    
+    MESSAGE("PLUGIN: ${Plugin} = ${${Plugin}} [${DLL}]")
 ENDMACRO()
 
 MACRO(CREATE_PRECOMPILED_HEADER)

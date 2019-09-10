@@ -3,7 +3,6 @@
 #include "Interface/UpdateServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Factory.h"
 
 #include "Config/Vector.h"
 

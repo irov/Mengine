@@ -55,7 +55,7 @@ if(MSVC)
 endif()
 
 if(MINGW)
-	set_target_properties(${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map)
+	set_target_properties(${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map"            )
 endif()
 
 ADD_DEPENDENCIES(${MY_LIB_NAME} ${APPLICATION_DEPENDENCIES})

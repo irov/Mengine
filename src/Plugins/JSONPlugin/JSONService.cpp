@@ -12,6 +12,8 @@
 
 #include "jpp/jpp.hpp"
 
+#include <string.h>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( JSONService, Mengine::JSONService );
 //////////////////////////////////////////////////////////////////////////
@@ -146,7 +148,7 @@ namespace Mengine
 
         if( json == jpp::detail::invalid )
         {
-            return false;
+            return nullptr;
         }
 
         JSONStoragePtr storage = this->createStorage( json, _doc );

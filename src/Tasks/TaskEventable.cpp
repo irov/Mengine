@@ -1,5 +1,3 @@
-#pragma once
-
 #include "TaskEventable.h"
 
 namespace Mengine

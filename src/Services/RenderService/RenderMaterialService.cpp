@@ -1005,12 +1005,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile )
     {
-        FilePath outFilePath;
+        MENGINE_UNUSED( _converterType );
+
+        FilePath outFilePath = _filePath;
+
+#ifndef MENGINE_MASTER_RELEASE
         if( CONVERTER_SERVICE()
             ->convert( _converterType, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return nullptr;
         }
+#endif
 
         MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -1026,12 +1031,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile )
     {
-        FilePath outFilePath;
+        MENGINE_UNUSED( _converterType );
+
+        FilePath outFilePath = _filePath;
+
+#ifndef MENGINE_MASTER_RELEASE
         if( CONVERTER_SERVICE()
             ->convert( _converterType, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return nullptr;
         }
+#endif
 
         MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, MENGINE_DOCUMENT_FUNCTION );
 

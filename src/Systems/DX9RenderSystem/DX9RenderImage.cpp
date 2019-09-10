@@ -21,13 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImage::~DX9RenderImage()
     {
-        if( m_pD3DTexture != nullptr )
-        {
-            ULONG ref = m_pD3DTexture->Release();
-            MENGINE_UNUSED( ref );
-
-            m_pD3DTexture = nullptr;
-        }
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat )
@@ -46,6 +40,13 @@ namespace Mengine
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderImage::finalize()
+    {
+        m_renderImageProvider = nullptr;
+
+        DXRELEASE( m_pD3DTexture );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::bind( uint32_t _stage )

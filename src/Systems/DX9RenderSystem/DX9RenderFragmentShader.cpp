@@ -15,11 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderFragmentShader::~DX9RenderFragmentShader()
     {
-        if( m_shader != nullptr )
-        {
-            m_shader->Release();
-            m_shader = nullptr;
-        }
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & DX9RenderFragmentShader::getName() const
@@ -37,8 +33,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderFragmentShader::finalize()
+    {
+        m_memory = nullptr;
+
+        DXRELEASE( m_shader );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
     {
+        MENGINE_ASSERTION_FATAL( m_shader == nullptr );
+
         const DWORD * shader_compile_data = m_memory->getBuffer();
 
         LOGGER_INFO( "compile pixel shader '%s'"
@@ -49,7 +54,7 @@ namespace Mengine
         {
             return false;
         }
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

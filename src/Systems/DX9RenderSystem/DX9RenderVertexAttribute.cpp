@@ -18,6 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::~DX9RenderVertexAttribute()
     {
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::initialize( const ConstString & _name, uint32_t _elementSize )
@@ -28,8 +29,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderVertexAttribute::finalize()
+    {
+        DXRELEASE( m_vertexDeclaration );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexAttribute::compile( IDirect3DDevice9 * _pD3DDevice )
     {
+        MENGINE_ASSERTION_FATAL( m_vertexDeclaration == nullptr );
+
         m_pD3DDevice = _pD3DDevice;
 
         D3DVERTEXELEMENT9 declaration[64];

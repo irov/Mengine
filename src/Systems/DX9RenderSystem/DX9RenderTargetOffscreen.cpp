@@ -31,8 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetOffscreen::_finalize()
     {
-        m_surfacePlain->Release();
-        m_surfacePlain = nullptr;
+        DXRELEASE( m_surfacePlain );
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetOffscreen::getData( void * _buffer, size_t _pitch )

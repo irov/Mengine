@@ -19,6 +19,7 @@ namespace Mengine
     typedef IntrusivePtr<class DX9RenderImage> DX9RenderImagePtr;
     typedef IntrusivePtr<class DX9RenderVertexShader> DX9RenderVertexShaderPtr;
     typedef IntrusivePtr<class DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;
+    typedef IntrusivePtr<class DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
     typedef IntrusivePtr<class DX9RenderProgram> DX9RenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
     class DX9RenderImageTarget;
@@ -216,16 +217,19 @@ namespace Mengine
         FactoryPtr m_factoryRenderProgramVariable;
         FactoryPtr m_factoryVertexBuffer;
         FactoryPtr m_factoryIndexBuffer;
-        FactoryPtr m_factoryDX9Image;
-        FactoryPtr m_factoryDX9ImageTarget;
-        FactoryPtr m_factoryDX9TargetTexture;
-        FactoryPtr m_factoryDX9TargetOffscreen;
+        FactoryPtr m_factoryRenderImage;
+        FactoryPtr m_factoryRenderImageTarget;
+        FactoryPtr m_factoryRenderTargetTexture;
+        FactoryPtr m_factoryRenderTargetOffscreen;
 
         typedef Vector<DX9RenderVertexShaderPtr> VectorRenderVertexShaders;
         VectorRenderVertexShaders m_deferredCompileVertexShaders;
 
         typedef Vector<DX9RenderFragmentShaderPtr> VectorRenderFragmentShaders;
         VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
+
+        typedef Vector<DX9RenderVertexAttributePtr> VectorRenderVertexAttributes;
+        VectorRenderVertexAttributes m_deferredCompileVertexAttributes;
 
         typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
         VectorRenderPrograms m_deferredCompilePrograms;

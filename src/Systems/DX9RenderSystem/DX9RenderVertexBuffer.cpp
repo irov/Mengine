@@ -27,13 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
     {
-        if( m_pVB != nullptr )
-        {
-            ULONG ref = m_pVB->Release();
-            MENGINE_UNUSED( ref );
-
-            m_pVB = nullptr;
-        }
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType )
@@ -68,6 +62,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderVertexBuffer::finalize()
+    {
+        m_memory = nullptr;
+
+        DXRELEASE( m_pVB );
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderVertexBuffer::getVertexCount() const
     {
         return m_vertexCount;
@@ -84,14 +85,8 @@ namespace Mengine
         {
             return true;
         }
-
-        if( m_pVB != nullptr )
-        {
-            ULONG ref = m_pVB->Release();
-            MENGINE_UNUSED( ref );
-
-            m_pVB = nullptr;
-        }
+        
+        DXRELEASE( m_pVB );
 
         m_vertexCount = _count;
 
@@ -204,15 +199,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     void DX9RenderVertexBuffer::onRenderReset()
     {
-        if( m_pVB == nullptr )
-        {
-            return;
-        }
-
-        ULONG refCount = m_pVB->Release();
-        MENGINE_UNUSED( refCount );
-
-        m_pVB = nullptr;
+        DXRELEASE( m_pVB );
     }
     //////////////////////////////////////////////////////////////////////////        
     bool DX9RenderVertexBuffer::onRenderRestore()

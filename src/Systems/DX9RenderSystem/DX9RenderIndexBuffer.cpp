@@ -71,13 +71,7 @@ namespace Mengine
     {
         m_memory = nullptr;
 
-        if( m_pIB != nullptr )
-        {
-            ULONG ref = m_pIB->Release();
-            MENGINE_UNUSED( ref );
-
-            m_pIB = nullptr;
-        }
+        DXRELEASE( m_pIB );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderIndexBuffer::getIndexCount() const
@@ -97,13 +91,7 @@ namespace Mengine
             return true;
         }
 
-        if( m_pIB != nullptr )
-        {
-            ULONG ref = m_pIB->Release();
-            MENGINE_UNUSED( ref );
-
-            m_pIB = nullptr;
-        }
+        DXRELEASE( m_pIB );
 
         m_indexCount = _count;
 
@@ -217,15 +205,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     void DX9RenderIndexBuffer::onRenderReset()
     {
-        if( m_pIB == nullptr )
-        {
-            return;
-        }
-
-        ULONG ref = m_pIB->Release();
-        MENGINE_UNUSED( ref );
-
-        m_pIB = nullptr;
+        DXRELEASE( m_pIB );
     }
     //////////////////////////////////////////////////////////////////////////        
     bool DX9RenderIndexBuffer::onRenderRestore()

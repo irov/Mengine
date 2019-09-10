@@ -111,25 +111,25 @@ namespace Mengine
 
         if( pDirect3DCreate9 == nullptr )
         {
-            LOGGER_ERROR( "Failed to get Direct3DCreate9 proc address"
-            );
+            LOGGER_ERROR( "Failed to get 'Direct3DCreate9' proc address" );
 
             return false;
         }
 
         // Init D3D
-        LOGGER_INFO( "Initializing DX9RenderSystem..."
-        );
+        LOGGER_INFO( "Initializing DX9RenderSystem..." );
 
-        m_pD3D = pDirect3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
+        IDirect3D9 * pD3D = pDirect3DCreate9( D3D_SDK_VERSION ); // D3D_SDK_VERSION
 
-        if( m_pD3D == nullptr )
+        if( pD3D == nullptr )
         {
             LOGGER_ERROR( "Can't create D3D interface"
             );
 
             return false;
         }
+
+        m_pD3D = pD3D;
 
         m_adapterToUse = D3DADAPTER_DEFAULT;
         m_deviceType = D3DDEVTYPE_HAL;
@@ -221,11 +221,11 @@ namespace Mengine
         m_factoryVertexBuffer = Helper::makeFactoryPool<DX9RenderVertexBuffer, 8>();
         m_factoryIndexBuffer = Helper::makeFactoryPool<DX9RenderIndexBuffer, 8>();
 
-        m_factoryDX9Image = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
-        m_factoryDX9ImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_ );
+        m_factoryRenderImage = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
+        m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_ );
 
-        m_factoryDX9TargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_ );
-        m_factoryDX9TargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_ );
+        m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_ );
+        m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_ );
 
         return true;
     }
@@ -236,6 +236,7 @@ namespace Mengine
 
         m_deferredCompileVertexShaders.clear();
         m_deferredCompileFragmentShaders.clear();
+        m_deferredCompileVertexAttributes.clear();
         m_deferredCompilePrograms.clear();
 
         this->release_();
@@ -253,10 +254,10 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9Image );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9ImageTarget );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetTexture );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9TargetOffscreen );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImageTarget );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetTexture );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderTargetOffscreen );
 
         m_factoryRenderVertexAttribute = nullptr;
         m_factoryRenderVertexShader = nullptr;
@@ -265,10 +266,10 @@ namespace Mengine
         m_factoryRenderProgramVariable = nullptr;
         m_factoryVertexBuffer = nullptr;
         m_factoryIndexBuffer = nullptr;
-        m_factoryDX9Image = nullptr;
-        m_factoryDX9ImageTarget = nullptr;
-        m_factoryDX9TargetTexture = nullptr;
-        m_factoryDX9TargetOffscreen = nullptr;
+        m_factoryRenderImage = nullptr;
+        m_factoryRenderImageTarget = nullptr;
+        m_factoryRenderTargetTexture = nullptr;
+        m_factoryRenderTargetOffscreen = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     D3DMULTISAMPLE_TYPE DX9RenderSystem::findMatchingMultiSampleType_( uint32_t _MultiSampleCount )
@@ -587,6 +588,16 @@ namespace Mengine
 
         m_deferredCompileFragmentShaders.clear();
 
+        for( const DX9RenderVertexAttributePtr & attribute : m_deferredCompileVertexAttributes )
+        {
+            if( attribute->compile( m_pD3DDevice ) == false )
+            {
+                return false;
+            }
+        }
+
+        m_deferredCompileVertexAttributes.clear();
+
         for( const DX9RenderProgramPtr & program : m_deferredCompilePrograms )
         {
             if( program->compile( m_pD3DDevice ) == false )
@@ -721,7 +732,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
-        DX9RenderTargetTexturePtr target = m_factoryDX9TargetTexture->createObject( _doc );
+        DX9RenderTargetTexturePtr target = m_factoryRenderTargetTexture->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( target, nullptr );
 
@@ -749,7 +760,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
     {
-        DX9RenderTargetOffscreenPtr target = m_factoryDX9TargetOffscreen->createObject( _doc );
+        DX9RenderTargetOffscreenPtr target = m_factoryRenderTargetOffscreen->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( target, nullptr );
 
@@ -777,7 +788,7 @@ namespace Mengine
     {
         DX9RenderTargetTexturePtr dx9RenderTarget = stdex::intrusive_static_cast<DX9RenderTargetTexturePtr>(_renderTarget);
 
-        DX9RenderImageTargetPtr dx9TextureImageTarget = m_factoryDX9ImageTarget->createObject( _doc );
+        DX9RenderImageTargetPtr dx9TextureImageTarget = m_factoryRenderImageTarget->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dx9TextureImageTarget, nullptr );
 
@@ -1258,7 +1269,7 @@ namespace Mengine
             ULONG ref = m_pD3DDevice->Release();
             MENGINE_UNUSED( ref );
 
-            MENGINE_ASSERTION( ref == 0, "D3DDevice has refcount [%d]", ref );
+            MENGINE_ASSERTION_FATAL( ref == 0, "D3DDevice has refcount [%d]", ref );
 
             m_pD3DDevice = nullptr;
         }
@@ -1268,7 +1279,7 @@ namespace Mengine
             ULONG ref = m_pD3D->Release();
             MENGINE_UNUSED( ref );
 
-            MENGINE_ASSERTION( ref == 0, "D3D has refcount [%d]", ref );
+            MENGINE_ASSERTION_FATAL( ref == 0, "D3D has refcount [%d]", ref );
 
             m_pD3D = nullptr;
         }
@@ -1558,6 +1569,22 @@ namespace Mengine
             return nullptr;
         }
 
+        if( m_pD3DDevice != nullptr )
+        {
+            if( attribute->compile( m_pD3DDevice ) == false )
+            {
+                LOGGER_ERROR( "invalid compile attribute '%s'"
+                    , _name.c_str()
+                );
+
+                return nullptr;
+            }
+        }
+        else
+        {
+            m_deferredCompileVertexAttributes.emplace_back( attribute );
+        }
+
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1786,9 +1813,7 @@ namespace Mengine
         }
 #endif
 
-        m_textureCount++;
-
-        DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( _doc );
+        DX9RenderImagePtr dx9RenderImage = m_factoryRenderImage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dx9RenderImage, nullptr );
 
@@ -1796,15 +1821,20 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( dx9RenderImage.get() );
 
+#ifdef MENGINE_DEBUG
+        ++m_textureCount;
+
         uint32_t memoryUse = Helper::getTextureMemorySize( _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 
         m_textureMemoryUse += memoryUse;
+#endif
 
         return dx9RenderImage;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
     {
+#ifdef MENGINE_DEBUG
         m_textureCount--;
 
         uint32_t hwWidth = _image->getHWWidth();
@@ -1815,6 +1845,7 @@ namespace Mengine
         uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
 
         m_textureMemoryUse -= memoryUse;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget )

@@ -25,6 +25,7 @@ namespace Mengine
         const Char * m_method;
     };
 }
+/////
 //////////////////////////////////////////////////////////////////////////
 #define DXERRORCHECK( Method, HRES )\
 	(Mengine::DX9ErrorHelper(MENGINE_CODE_FILE, MENGINE_CODE_LINE, Method ) == HRES)
@@ -33,10 +34,14 @@ namespace Mengine
 	if( DXERRORCHECK(#Method, HRES) )
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_RENDER_CHECK_ERROR
+#define DXRELEASE( Object )\
+    if( Object == nullptr ){}else{ ULONG ref = Object -> Release(); MENGINE_ASSERTION_FATAL( ref == 0 ); Object = nullptr; }
 #define DXCALL( Device, Method, Args )\
 	(DXERRORCHECK(#Method, Device -> Method Args))
 //////////////////////////////////////////////////////////////////////////
 #else
+#define DXRELEASE( Object )\
+    if( Object == nullptr ){}else{Object -> Release(); Object = nullptr;}
 #define DXCALL( Device, Method, Args )\
 	(Device -> Method Args)
 //////////////////////////////////////////////////////////////////////////

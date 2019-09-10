@@ -153,23 +153,34 @@ namespace Mengine
             return false;
         }
 
-        ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
-
-        DataflowAEZPtr dataflowAEZ = Helper::makeFactorableUnique<DataflowAEZ>();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ, false );
-
-        dataflowAEZ->setMovieInstance( m_movieInstance );
-        dataflowAEZ->setArchivator( archivator );
-
-        if( dataflowAEZ->initialize() == false )
+        SERVICE_WAIT( DataServiceInterface, [this]()
         {
-            return false;
-        }
+            ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+
+            DataflowAEZPtr dataflowAEZ = Helper::makeFactorableUnique<DataflowAEZ>();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( dataflowAEZ, false );
+
+            dataflowAEZ->setMovieInstance( m_movieInstance );
+            dataflowAEZ->setArchivator( archivator );
+
+            if( dataflowAEZ->initialize() == false )
+            {
+                return false;
+            }
+
+            VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( DataServiceInterface, []()
+        {
+            DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ) );
+            dataflow->finalize();
+        } );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128>>() ) == false )
@@ -191,15 +202,21 @@ namespace Mengine
                 ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebugRender>() );
         }
 
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        SERVICE_WAIT( ResourceValidateServiceInterface, [this]()
         {
+            ArchivatorInterfacePtr archivator = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( archivator, false );
+
             ResourceMovie2ValidatorPtr movie2Validator = Helper::makeFactorableUnique<ResourceMovie2Validator>();
 
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );
 
             VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator );
-        }
+
+            return true;
+        } );
 
         SERVICE_WAIT( LoaderServiceInterface, []()
         {
@@ -234,9 +251,6 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
-
-        DataflowInterfacePtr dataflow = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ) );
-        dataflow->finalize();
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {

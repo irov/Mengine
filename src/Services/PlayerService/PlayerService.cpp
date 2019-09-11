@@ -353,7 +353,7 @@ namespace Mengine
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_camera2D->setOrthogonalViewport( vp );
-        m_camera2D->enable();
+        m_camera2D->enableForce();
 
         this->setRenderCamera( m_camera2D );
 
@@ -361,7 +361,7 @@ namespace Mengine
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_viewport2D->setViewport( vp );
-        m_viewport2D->enable();
+        m_viewport2D->enableForce();
 
         this->setRenderViewport( m_viewport2D );
 
@@ -369,7 +369,7 @@ namespace Mengine
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_arrowCamera2D->setOrthogonalViewport( vp );
-        m_arrowCamera2D->enable();
+        m_arrowCamera2D->enableForce();
 
         if( m_arrow != nullptr )
         {

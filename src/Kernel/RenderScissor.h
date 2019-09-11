@@ -3,6 +3,9 @@
 #include "Interface/RenderScissorInterface.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/Observable.h"
+
+#include "Kernel/Resolution.h"
 
 namespace Mengine
 {
@@ -11,6 +14,7 @@ namespace Mengine
     class RenderScissor
         : public Node
         , public RenderScissorInterface
+        , public Observable
     {
         DECLARE_VISITABLE( Node );
 
@@ -20,6 +24,7 @@ namespace Mengine
 
     protected:
         bool _activate() override;
+        void _deactivate() override;
 
     public:
         void setViewport( const Viewport & _viewport );
@@ -33,6 +38,9 @@ namespace Mengine
 
         void invalidateViewport_();
         void updateViewport_() const;
+
+    protected:
+        void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
 
     protected:
         Viewport m_viewport;

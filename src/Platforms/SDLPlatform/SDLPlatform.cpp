@@ -505,6 +505,25 @@ namespace Mengine
 
             float frameTime = (float)(currentTime - m_prevTime);
 
+            for( TimerDesc & desc : m_timers )
+            {
+                if( desc.id == 0 )
+                {
+                    continue;
+                }
+
+                desc.time -= frameTime;
+
+                if( desc.time > 0.f )
+                {
+                    continue;
+                }
+
+                desc.time += desc.milliseconds;
+
+                desc.lambda();
+            }
+
             m_prevTime = currentTime;
 
             if( m_pause == true )
@@ -573,6 +592,35 @@ namespace Mengine
     {
         m_running = false;
         m_shouldQuit = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLPlatform::addTimer( float _milliseconds, const LambdaTimer & _lambda )
+    {
+        uint32_t new_id = ++m_enumerator;
+
+        TimerDesc desc;
+        desc.id = new_id;
+        desc.milliseconds = _milliseconds;
+        desc.time = _milliseconds;
+        desc.lambda = _lambda;
+
+        m_timers.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::removeTimer( uint32_t _id )
+    {
+        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
+
+        TimerDesc & desc = *it_found;
+
+        desc.id = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setIcon( uint32_t _icon )

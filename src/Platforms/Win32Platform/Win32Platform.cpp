@@ -62,6 +62,7 @@ namespace Mengine
         , m_hWnd( NULL )
         , m_active( false )
         , m_update( false )
+        , m_enumerator( 0 )
         , m_icon( 0 )
         , m_close( false )
         , m_vsync( false )
@@ -425,6 +426,35 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda )
+    {
+        uint32_t new_id = ++m_enumerator;
+
+        TimerDesc desc;
+        desc.id = new_id;
+        desc.milliseconds = _milliseconds;
+        desc.time = _milliseconds;
+        desc.lambda = _lambda;
+
+        m_timers.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::removeTimer( uint32_t _id )
+    {
+        VectorTimers::iterator it_found = std::find_if( m_timers.begin(), m_timers.end(), [_id]( const TimerDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_timers.end() );
+
+        TimerDesc & desc = *it_found;
+
+        desc.id = 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {
         if( m_antifreezeMonitor != nullptr )
@@ -472,6 +502,25 @@ namespace Mengine
                 {
                     ::TranslateMessage( &msg );
                     ::DispatchMessage( &msg );
+                }
+
+                for( TimerDesc & desc : m_timers )
+                {
+                    if( desc.id == 0 )
+                    {
+                        continue;
+                    }
+
+                    desc.time -= frameTime;
+
+                    if( desc.time > 0.f )
+                    {
+                        continue;
+                    }
+
+                    desc.time += desc.milliseconds;
+                     
+                    desc.lambda();
                 }
 
                 m_update = true;

@@ -72,8 +72,7 @@ android {
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
                             "-DCMAKE_BUILD_TYPE:STRING=Debug",
-                            "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug",
-                            "-DMENGINE_LIB_DIR=Depends_Android_SDL"
+                            "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug"
                 }
             }
         }
@@ -87,8 +86,7 @@ android {
                             "-DANDROID_TOOLCHAIN=clang",
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
                             "-DCMAKE_BUILD_TYPE:STRING=Release",
-                            "-DCMAKE_CONFIGURATION_TYPES:STRING=Release",
-                            "-DMENGINE_LIB_DIR=Depends_Android_SDL"
+                            "-DCMAKE_CONFIGURATION_TYPES:STRING=Release"
                 }
             }
         }

@@ -1,6 +1,7 @@
 /build_temp
 /dependencies
 /CMakeTemp
+/lib
 /bin
 /solutions
 /cppcheck

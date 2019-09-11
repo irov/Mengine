@@ -1375,15 +1375,15 @@ namespace Mengine
         {
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
             {
-                const RenderTextureInterfacePtr & texture = _material->getTexture( 0 );
+                //const RenderTextureInterfacePtr & texture = _material->getTexture( 0 );
 
-                if( texture != nullptr )
-                {
-                    LOGGER_ERROR( "texture: '%s' material '%s'"
-                        , texture->getFilePath().c_str()
-                        , _material->getName().c_str()
-                    );
-                }
+                //if( texture != nullptr )
+                //{
+                //    LOGGER_ERROR( "texture: '%s' material '%s'"
+                //        , texture->getFilePath().c_str()
+                //        , _material->getName().c_str()
+                //    );
+                //}
 
                 EPrimitiveType primitiveType = _material->getPrimitiveType();
 

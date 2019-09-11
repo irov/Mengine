@@ -883,7 +883,7 @@ namespace Mengine
                 if( RENDER_SERVICE()
                     ->decrefLimitRenderObjects() == false )
                 {
-                    m_debugPause = false;
+                    //m_debugPause = false;
 
                     RENDER_SERVICE()
                         ->enableDebugStepRenderMode( false );
@@ -900,13 +900,13 @@ namespace Mengine
                 RENDER_SERVICE()
                     ->increfLimitRenderObjects();
 
-                if( m_debugPause == false )
+                //if( m_debugPause == false )
                 {
                     RENDER_SERVICE()
                         ->enableDebugStepRenderMode( true );
                 }
 
-                m_debugPause = true;
+                //m_debugPause = true;
             }
 
             if( _event.code == KC_F12 && _event.isDown == true )

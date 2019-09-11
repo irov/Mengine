@@ -129,8 +129,8 @@ namespace Mengine
 
         GlobalInputHandlerInterfacePtr m_globalInputHandler;
 
-        SchedulerInterfacePtr m_scheduleManager;
-        SchedulerInterfacePtr m_scheduleManagerGlobal;
+        SchedulerInterfacePtr m_scheduler;
+        SchedulerInterfacePtr m_schedulerGlobal;
 
         RandomizerInterfacePtr m_randomizer;
 

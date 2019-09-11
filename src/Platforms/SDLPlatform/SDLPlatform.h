@@ -48,6 +48,10 @@ namespace Mengine
         void stopPlatform()	override;
 
     public:
+        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) override;
+        void removeTimer( uint32_t _id ) override;
+
+    public:
         void setIcon( uint32_t _icon ) override;
         uint32_t getIcon() const override;
 
@@ -155,6 +159,19 @@ namespace Mengine
         SDL_Window * m_window;
 
         SDL_Joystick * m_accelerometer;
+
+        struct TimerDesc
+        {
+            uint32_t id;
+            float milliseconds;
+            float time;
+            LambdaTimer lambda;
+        };
+
+        uint32_t m_enumerator;
+
+        typedef Vector<TimerDesc> VectorTimers;
+        VectorTimers m_timers;
 
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;

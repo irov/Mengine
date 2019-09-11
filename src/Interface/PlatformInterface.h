@@ -22,6 +22,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef Lambda<void()> LambdaTimer;
+    //////////////////////////////////////////////////////////////////////////
     class PlatformInterface
         : public ServiceInterface
     {
@@ -31,6 +33,10 @@ namespace Mengine
         virtual bool runPlatform() = 0;
         virtual void updatePlatform() = 0;
         virtual void stopPlatform() = 0;
+
+    public:
+        virtual uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) = 0;
+        virtual void removeTimer( uint32_t _id ) = 0;
 
     public:
         virtual void setIcon( uint32_t _icon ) = 0;

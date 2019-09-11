@@ -10,6 +10,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/ScriptProviderServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 
@@ -36,7 +37,7 @@ namespace Mengine
         : m_fps( 0 )
         , m_showDebugText( 0 )
         , m_globalKeyHandlerF9( 0 )
-        , m_schedulerFPS( 0 )
+        , m_timerFPS( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -80,15 +81,8 @@ namespace Mengine
         //m_debugText->setLocalColor( Color( 1.0, 0.0, 0.0, 1.0 ) );
         //m_debugText->enable();
 
-        const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
-            ->getGlobalScheduler();
-
-        m_schedulerFPS = Helper::schedulerTiming( scheduler
-            , []( uint32_t, uint32_t )
-        {
-            return 1000.f;
-        }
-            , [this]( uint32_t, uint32_t, float )
+        m_timerFPS = PLATFORM_SERVICE()
+            ->addTimer( 1000.f, [this]()
         {
             const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
                 ->getDebugInfo();
@@ -97,7 +91,7 @@ namespace Mengine
 
             RENDER_SERVICE()
                 ->resetFrameCount();
-        }, nullptr );
+        } );
 
         return true;
     }
@@ -115,10 +109,8 @@ namespace Mengine
         //    m_debugText = nullptr;
         //}
 
-        const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
-            ->getGlobalScheduler();
-
-        scheduler->remove( m_schedulerFPS );
+        PLATFORM_SERVICE()
+            ->removeTimer( m_timerFPS );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external )

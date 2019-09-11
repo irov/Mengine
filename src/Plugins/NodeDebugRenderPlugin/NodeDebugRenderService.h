@@ -48,6 +48,6 @@ namespace Mengine
         uint32_t m_showDebugText;
         uint32_t m_globalKeyHandlerF9;
 
-        uint32_t m_schedulerFPS;
+        uint32_t m_timerFPS;
     };
 }

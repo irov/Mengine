@@ -25,6 +25,10 @@ namespace Mengine
         void _runService() override;
 
     public:
+        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) override;
+        void removeTimer( uint32_t _id ) override;
+
+    public:
         bool runPlatform() override;
         void updatePlatform() override;
         void stopPlatform() override;
@@ -159,6 +163,19 @@ namespace Mengine
         Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 
         Win32MouseEvent m_mouseEvent;
+
+        struct TimerDesc
+        {
+            uint32_t id;
+            float milliseconds;
+            float time;
+            LambdaTimer lambda;
+        };
+
+        uint32_t m_enumerator;
+
+        typedef Vector<TimerDesc> VectorTimers;
+        VectorTimers m_timers;
 
         uint32_t m_icon;
         WChar m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];

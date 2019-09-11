@@ -850,12 +850,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_pause( uint32_t _playId )
     {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "name '%s' is not compile"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
+        ae_pause_movie_composition( m_composition );
+
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_resume( uint32_t _playId, float _time )
     {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "name '%s' is not compile"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
+        ae_resume_movie_composition( m_composition );
+
         EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
             ->onAnimationResume( _playId, _time );
     }

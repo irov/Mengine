@@ -161,12 +161,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const SchedulerInterfacePtr & PlayerService::getScheduler() const
     {
-        return m_scheduleManager;
+        return m_scheduler;
     }
     //////////////////////////////////////////////////////////////////////////
     const SchedulerInterfacePtr & PlayerService::getGlobalScheduler() const
     {
-        return m_scheduleManagerGlobal;
+        return m_schedulerGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
     const RandomizerInterfacePtr & PlayerService::getRandomizer() const
@@ -190,27 +190,27 @@ namespace Mengine
 
         m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>();
 
-        SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr scheduler = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        scheduleManager->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
+        scheduler->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
 
-        if( scheduleManager->initialize() == false )
+        if( scheduler->initialize() == false )
         {
             return false;
         }
 
-        m_scheduleManager = scheduleManager;
+        m_scheduler = scheduler;
 
-        SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr schedulerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        scheduleManagerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
+        schedulerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
 
-        if( scheduleManagerGlobal->initialize() == false )
+        if( schedulerGlobal->initialize() == false )
         {
             return false;
         }
 
-        m_scheduleManagerGlobal = scheduleManagerGlobal;
+        m_schedulerGlobal = schedulerGlobal;
 
         m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>();
 
@@ -260,8 +260,8 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
 
         m_globalInputHandler = nullptr;
-        m_scheduleManager = nullptr;
-        m_scheduleManagerGlobal = nullptr;
+        m_scheduler = nullptr;
+        m_schedulerGlobal = nullptr;
 
         for( const SchedulerInterfacePtr & scheduler : m_schedulers )
         {
@@ -309,24 +309,24 @@ namespace Mengine
             m_globalInputHandler->finalize();
         }
 
-        if( m_scheduleManager != nullptr )
+        if( m_scheduler != nullptr )
         {
-            m_scheduleManager->finalize();
+            m_scheduler->finalize();
         }
 
-        if( m_scheduleManagerGlobal != nullptr )
+        if( m_schedulerGlobal != nullptr )
         {
-            m_scheduleManagerGlobal->finalize();
+            m_schedulerGlobal->finalize();
         }
 
-        if( m_scheduleManager != nullptr )
+        if( m_scheduler != nullptr )
         {
-            m_scheduleManager->removeAll();
+            m_scheduler->removeAll();
         }
 
-        if( m_scheduleManagerGlobal != nullptr )
+        if( m_schedulerGlobal != nullptr )
         {
-            m_scheduleManagerGlobal->removeAll();
+            m_schedulerGlobal->removeAll();
         }
 
         if( m_affectorable != nullptr )
@@ -747,7 +747,7 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        m_scheduleManager->removeAll();
+        m_scheduler->removeAll();
         m_affectorable->stopAllAffectors();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -799,7 +799,7 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        m_scheduleManager->removeAll();
+        m_scheduler->removeAll();
         m_affectorable->stopAllAffectors();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -834,7 +834,7 @@ namespace Mengine
             m_arrow->disable();
         }
 
-        m_scheduleManager->removeAll();
+        m_scheduler->removeAll();
         m_affectorable->stopAllAffectors();
     }
     //////////////////////////////////////////////////////////////////////////

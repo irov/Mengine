@@ -40,6 +40,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * Scriptable::getEmbed( pybind::kernel_interface * _kernel )
     {
+        MENGINE_UNUSED( _kernel );
+
 #ifdef MENGINE_USE_SCRIPT_SERVICE
         if( m_embed == nullptr )
         {

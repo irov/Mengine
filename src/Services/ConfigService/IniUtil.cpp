@@ -289,13 +289,13 @@ namespace Mengine
                 return false;
             }
 
-            int8_t tmp_value;
-            if( sscanf( ini_value, "%" PRId8, &tmp_value ) != 1 )
+            int32_t tmp_value;
+            if( sscanf( ini_value, "%" PRId32, &tmp_value ) != 1 )
             {
                 return false;
             }
 
-            _value = tmp_value;
+            _value = (int8_t)tmp_value;
 
             return true;
         }
@@ -309,13 +309,13 @@ namespace Mengine
                 return false;
             }
 
-            int8_t tmp_value;
-            if( sscanf( ini_value, "%" PRIu8, &tmp_value ) != 1 )
+            uint32_t tmp_value;
+            if( sscanf( ini_value, "%" PRIu32, &tmp_value ) != 1 )
             {
                 return false;
             }
 
-            _value = tmp_value;
+            _value = (uint8_t)tmp_value;
 
             return true;
         }

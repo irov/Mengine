@@ -909,8 +909,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_interrupt( uint32_t _playId )
     {
-        MENGINE_UNUSED( _playId );
-
         if( this->isCompile() == false )
         {
             LOGGER_ERROR( "name '%s' is not compile"

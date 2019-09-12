@@ -64,6 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
         : m_window( nullptr )
+        , m_enumerator( 0 )
         , m_accelerometer( nullptr )
         , m_glContext( nullptr )
         , m_sdlInput( nullptr )

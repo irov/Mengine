@@ -22,9 +22,6 @@ namespace Mengine
     public:
         size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
-    private:
-        void cleanup_();
-
     protected:
         uint32_t m_mipmapcompresssize;
 

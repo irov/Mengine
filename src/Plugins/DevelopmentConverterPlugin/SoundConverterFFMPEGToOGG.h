@@ -16,8 +16,5 @@ namespace Mengine
 
     public:
         bool convert() override;
-
-    private:
-        bool convert_( const FilePath & _input, const FilePath & _output );
     };
 }

@@ -280,6 +280,46 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int8_t & _value )
+        {
+            const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
+
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
+
+            int8_t tmp_value;
+            if( sscanf( ini_value, "%" PRId8, &tmp_value ) != 1 )
+            {
+                return false;
+            }
+
+            _value = tmp_value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t & _value )
+        {
+            const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );
+
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
+
+            int8_t tmp_value;
+            if( sscanf( ini_value, "%" PRIu8, &tmp_value ) != 1 )
+            {
+                return false;
+            }
+
+            _value = tmp_value;
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value )
         {
             const Char * ini_value = tinyini_get_property_value( &_ini.ini, _section, _key );

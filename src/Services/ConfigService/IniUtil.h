@@ -51,6 +51,8 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int8_t & _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint8_t & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value );

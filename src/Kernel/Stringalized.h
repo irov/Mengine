@@ -17,6 +17,8 @@ namespace Mengine
     namespace Helper
     {
         bool stringalized( const Char * _string, bool * _value );
+        bool stringalized( const Char * _string, int8_t * _value );
+        bool stringalized( const Char * _string, uint8_t * _value );
         bool stringalized( const Char * _string, int32_t * _value );
         bool stringalized( const Char * _string, uint32_t * _value );
         bool stringalized( const Char * _string, int64_t * _value );

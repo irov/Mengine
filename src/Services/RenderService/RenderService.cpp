@@ -469,14 +469,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene()
     {
-        this->restoreRenderSystemStates_();
+        this->restoreRenderFrameStates_();
 
         if( m_renderSystem->beginScene() == false )
         {
             return false;
         }
 
-        m_renderSystem->clear( 0, 0, 0 );
+        bool RenderFrameClear = CONFIG_VALUE( "Engine", "RenderFrameClear", true );
+
+        if( RenderFrameClear == true )
+        {            
+            uint8_t RenderFrameClearColorR = CONFIG_VALUET( "Engine", "RenderFrameClearColorR", 0U, uint8_t );
+            uint8_t RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
+            uint8_t RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
+
+            m_renderSystem->clear( RenderFrameClearColorR, RenderFrameClearColorG, RenderFrameClearColorB );
+        }
 
         return true;
     }
@@ -713,7 +722,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::restoreRenderSystemStates_()
+    void RenderService::restoreRenderFrameStates_()
     {
         m_renderBatches.clear();
         m_renderObjects.clear();
@@ -743,6 +752,11 @@ namespace Mengine
 
         m_iterateRenderObjects = 0;
         m_stopRenderObjects = false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderService::restoreRenderSystemStates_()
+    {
+        this->restoreRenderFrameStates_();
 
         m_currentRenderCamera = nullptr;
 

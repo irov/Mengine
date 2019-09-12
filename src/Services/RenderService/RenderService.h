@@ -245,6 +245,7 @@ namespace Mengine
         void restoreTextureStage_( uint32_t _stage );
 
         void restoreRenderSystemStates_();
+        void restoreRenderFrameStates_();
 
         void renderPasses_();
         void renderPass_( const RenderPass * _renderPass );

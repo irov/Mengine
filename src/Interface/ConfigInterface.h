@@ -30,6 +30,8 @@ namespace Mengine
 
     public:
         virtual bool hasValue( const Char * _section, const Char * _key, bool * _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, int8_t * _value ) const = 0;
+        virtual bool hasValue( const Char * _section, const Char * _key, uint8_t * _value ) const = 0;
         virtual bool hasValue( const Char * _section, const Char * _key, int32_t * _value ) const = 0;
         virtual bool hasValue( const Char * _section, const Char * _key, uint32_t * _value ) const = 0;
         virtual bool hasValue( const Char * _section, const Char * _key, uint64_t * _value ) const = 0;
@@ -47,6 +49,8 @@ namespace Mengine
 
     public:
         virtual bool getValue( const Char * _section, const Char * _key, bool _default ) const = 0;
+        virtual int8_t getValue( const Char * _section, const Char * _key, int8_t _default ) const = 0;
+        virtual uint8_t getValue( const Char * _section, const Char * _key, uint8_t _default ) const = 0;
         virtual int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const = 0;
         virtual uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const = 0;
         virtual uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const = 0;

@@ -26,6 +26,26 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, int8_t * _value )
+        {
+            if( ::sscanf( _string, "%" SCNd8, _value ) != 1 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _string, uint8_t * _value )
+        {
+            if( ::sscanf( _string, "%" SCNu8, _value ) != 1 )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int32_t * _value )
         {
             if( ::sscanf( _string, "%" SCNd32, _value ) != 1 )

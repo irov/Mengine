@@ -40,6 +40,9 @@ namespace Mengine
 ////////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUE2( section, key, default )\
 	([default]() -> const decltype(Mengine::decltype_string(default)) &{ static decltype(Mengine::decltype_string(default)) value = CONFIG_SERVICE()->getDefaultConfig()->getValue( section, key, default ); return value;}())
+//////////////////////////////////////////////////////////////////////////
+#define CONFIG_VALUET( section, key, default, type )\
+	([]() -> const type &{static type value = CONFIG_SERVICE()->getDefaultConfig()->getValue( section, key, (type)default );return value;}())
 ////////////////////////////////////////////////////////////////////////////
 #define CONFIG_VALUES(  section, key, value )\
 	(CONFIG_SERVICE()->getDefaultConfig()->getValues( section, key, value ))

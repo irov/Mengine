@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        TaskGlobalDelay( float _time );
+        explicit TaskGlobalDelay( float _time );
         ~TaskGlobalDelay() override;
 
     protected:

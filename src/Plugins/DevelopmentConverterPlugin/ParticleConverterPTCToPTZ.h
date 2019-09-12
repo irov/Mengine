@@ -20,9 +20,6 @@ namespace Mengine
         bool convert() override;
 
     protected:
-        bool convert_( const FilePath & _input, const FilePath & _output );
-
-    protected:
         bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
     protected:

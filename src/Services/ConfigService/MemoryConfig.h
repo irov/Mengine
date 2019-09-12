@@ -37,6 +37,8 @@ namespace Mengine
 
     public:
         bool hasValue( const Char * _section, const Char * _key, bool * _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, int8_t * _value ) const override;
+        bool hasValue( const Char * _section, const Char * _key, uint8_t * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, int32_t * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, uint32_t * _value ) const override;
         bool hasValue( const Char * _section, const Char * _key, uint64_t * _value ) const override;
@@ -51,6 +53,8 @@ namespace Mengine
 
     public:
         bool getValue( const Char * _section, const Char * _key, bool _default ) const override;
+        int8_t getValue( const Char * _section, const Char * _key, int8_t _default ) const override;
+        uint8_t getValue( const Char * _section, const Char * _key, uint8_t _default ) const override;
         int32_t getValue( const Char * _section, const Char * _key, int32_t _default ) const override;
         uint32_t getValue( const Char * _section, const Char * _key, uint32_t _default ) const override;
         uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const override;

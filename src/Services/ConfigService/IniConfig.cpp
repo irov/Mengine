@@ -261,6 +261,16 @@ namespace Mengine
         return Detail::s_hasValueT( m_stores, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool IniConfig::hasValue( const Char * _section, const Char * _key, int8_t * _value ) const
+    {
+        return Detail::s_hasValueT( m_stores, m_platformTags, _section, _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool IniConfig::hasValue( const Char * _section, const Char * _key, uint8_t * _value ) const
+    {
+        return Detail::s_hasValueT( m_stores, m_platformTags, _section, _key, _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool IniConfig::hasValue( const Char * _section, const Char * _key, int32_t * _value ) const
     {
         return Detail::s_hasValueT( m_stores, m_platformTags, _section, _key, _value );
@@ -317,6 +327,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool IniConfig::getValue( const Char * _section, const Char * _key, bool _default ) const
+    {
+        return Detail::s_getValueT( m_stores, m_platformTags, _section, _key, _default );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int8_t IniConfig::getValue( const Char * _section, const Char * _key, int8_t _default ) const
+    {
+        return Detail::s_getValueT( m_stores, m_platformTags, _section, _key, _default );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint8_t IniConfig::getValue( const Char * _section, const Char * _key, uint8_t _default ) const
     {
         return Detail::s_getValueT( m_stores, m_platformTags, _section, _key, _default );
     }

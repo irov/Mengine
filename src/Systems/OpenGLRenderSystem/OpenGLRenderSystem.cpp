@@ -54,8 +54,7 @@ namespace Mengine
 
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
-        : m_glMaxClipPlanes( 0 )
-        , m_glMaxCombinedTextureImageUnits( 0 )
+        : m_glMaxCombinedTextureImageUnits( 0 )
         , m_renderWindowCreate( false )
         , m_depthMask( false )
     {
@@ -181,8 +180,6 @@ namespace Mengine
 
         OPENGL_RENDER_CHECK_ERROR();
 
-        m_glMaxClipPlanes = 0;
-
         GLint maxCombinedTextureImageUnits;
         glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombinedTextureImageUnits );
 
@@ -247,15 +244,6 @@ namespace Mengine
         m_renderWindowCreate = true;
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
-    {
-        MENGINE_UNUSED( _image );
-        MENGINE_UNUSED( _rect );
-        //ToDo!
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setScissor( const Viewport & _viewport )
@@ -881,8 +869,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::beginScene()
     {
-        this->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0x00000000, 1.f, 0x00000000 );
-
         m_currentIndexBuffer = nullptr;
         m_currentVertexBuffer = nullptr;
 
@@ -1030,15 +1016,6 @@ namespace Mengine
     void OpenGLRenderSystem::setVSync( bool _vSync )
     {
         MENGINE_UNUSED( _vSync );
-
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
-    {
-        MENGINE_UNUSED( _r );
-        MENGINE_UNUSED( _g );
-        MENGINE_UNUSED( _b );
 
         //Empty
     }

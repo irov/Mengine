@@ -426,13 +426,6 @@ namespace Mengine
         //this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::screenshot( const RenderTextureInterfacePtr & _texture, const mt::vec4f & _rect )
-    {
-        const RenderImageInterfacePtr & image = _texture->getImage();
-
-        m_renderSystem->screenshot( image, _rect );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void RenderService::onWindowClose()
     {
         if( m_windowCreated == true )
@@ -469,7 +462,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene()
     {
-        this->restoreRenderFrameStates_();
+        this->restoreRenderSystemStates_();
 
         if( m_renderSystem->beginScene() == false )
         {
@@ -484,7 +477,18 @@ namespace Mengine
             uint8_t RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
             uint8_t RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
 
-            m_renderSystem->clear( RenderFrameClearColorR, RenderFrameClearColorG, RenderFrameClearColorB );
+            ColorValue_ARGB argb = Helper::makeARGB8( RenderFrameClearColorR, RenderFrameClearColorG, RenderFrameClearColorB, 255 );
+
+            uint32_t frameBufferTypes = FBT_COLOR;
+
+            bool RenderEnableAutoDepthStencil = CONFIG_VALUE( "Engine", "RenderEnableAutoDepthStencil", false );
+
+            if( RenderEnableAutoDepthStencil == true )
+            {
+                frameBufferTypes |= FBT_DEPTH;
+            }
+
+            m_renderSystem->clearFrameBuffer( frameBufferTypes, argb, 1.f, 0x00000000 );
         }
 
         return true;
@@ -492,7 +496,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::endScene()
     {
-
 #ifndef MENGINE_MASTER_RELEASE
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
@@ -1968,11 +1971,6 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::clear( uint8_t _r, uint8_t _g, uint8_t _b )
-    {
-        m_renderSystem->clear( _r, _g, _b );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::enableDebugFillrateCalcMode( bool _enable )

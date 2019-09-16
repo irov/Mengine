@@ -613,14 +613,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
-    {
-        MENGINE_UNUSED( _image );
-        MENGINE_UNUSED( _rect );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
@@ -1780,20 +1772,6 @@ namespace Mengine
             m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
-    {
-        MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
-
-        DWORD Flags = D3DCLEAR_TARGET;
-
-        if( m_depth == true )
-        {
-            Flags |= D3DCLEAR_ZBUFFER;
-        }
-
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, Flags, D3DCOLOR_XRGB( _r, _g, _b ), 1.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const Char * _doc )

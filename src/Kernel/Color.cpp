@@ -1,27 +1,39 @@
 #include "Color.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
+{    
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        ColorValue_ARGB makeARGB8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
+        {
+#ifdef MENGINE_RENDER_TEXTURE_RGBA			
+            uint8_t b8 = _r;
+            uint8_t g8 = _g;
+            uint8_t r8 = _b;
+            uint8_t a8 = _a;
+#else			
+            uint8_t r8 = _r;
+            uint8_t g8 = _g;
+            uint8_t b8 = _b;
+            uint8_t a8 = _a;
+#endif
+
+            ColorValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
+
+            return argb;
+        }
+        //////////////////////////////////////////////////////////////////////////
         ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a )
         {
             const float rgba_255 = 255.5f;
 
-#ifdef MENGINE_RENDER_TEXTURE_RGBA			
-            uint8_t b8 = static_cast<uint8_t>(_r * rgba_255);
-            uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
-            uint8_t r8 = static_cast<uint8_t>(_b * rgba_255);
-            uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
-#else			
             uint8_t r8 = static_cast<uint8_t>(_r * rgba_255);
             uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
             uint8_t b8 = static_cast<uint8_t>(_b * rgba_255);
             uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
-#endif
 
-            ColorValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
+            ColorValue_ARGB argb = makeARGB8( r8, g8, b8, a8 );
 
             return argb;
         }

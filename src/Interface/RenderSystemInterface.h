@@ -54,9 +54,6 @@ namespace Mengine
             , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
     public:
-        virtual bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) = 0;
-
-    public:
         virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
         virtual	void setViewMatrix( const mt::mat4f & _view ) = 0;
         virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
@@ -131,7 +128,6 @@ namespace Mengine
         virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
 
         virtual void setVSync( bool _vSync ) = 0;
-        virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b ) = 0;
 
         virtual bool supportTextureFormat( EPixelFormat _format ) const = 0;
         virtual bool supportTextureNonPow2() const = 0;

@@ -26,5 +26,14 @@ namespace Mengine
 
     public:
         virtual const VectorResourceImages & getFrames() const = 0;
+
+    public:
+        virtual void setResourceJSONName( const ConstString & _resourceJSONName ) = 0;
+        virtual const ConstString & getResourceJSONName() const = 0;
+        
+
+    public:
+        virtual void setResourceImageName( const ConstString & _resourceImageName ) = 0;
+        virtual const ConstString & getResourceImageName() const = 0;
     };
 }

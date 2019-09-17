@@ -30,12 +30,12 @@ namespace Mengine
         float getAtlasHeightInv() const override;
 
     public:
-        void setResourceJSONName( const ConstString & _resourceJSONName );
-        const ConstString & getResourceJSONName() const;
+        void setResourceJSONName( const ConstString & _resourceJSONName ) override;
+        const ConstString & getResourceJSONName() const override;
 
     public:
-        void setResourceImageName( const ConstString & _resourceImageName );
-        const ConstString & getResourceImageName() const;
+        void setResourceImageName( const ConstString & _resourceImageName ) override;
+        const ConstString & getResourceImageName() const override;
 
     public:
         const ResourceImagePtr & getAtlasImage() const override;

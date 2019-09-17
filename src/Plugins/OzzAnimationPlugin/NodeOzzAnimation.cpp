@@ -10,6 +10,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "OzzDetail.h"
+
 #include "ozz/base/maths/soa_transform.h"
 #include "ozz/base/containers/vector.h"
 
@@ -188,13 +190,10 @@ namespace Mengine
         int32_t num_soa_joints = skeleton.num_soa_joints();
         int32_t num_joints = skeleton.num_joints();
 
-        m_models = allocator->AllocateRange<ozz::math::Float4x4>( num_joints );
-
-        m_skinningMatrices = allocator->AllocateRange<ozz::math::Float4x4>( num_joints );
-
-        m_upperBodyJointWeights = allocator->AllocateRange<ozz::math::SimdFloat4>( num_soa_joints );
-
-        m_blendedLocals = allocator->AllocateRange<ozz::math::SoaTransform>( num_soa_joints );
+        m_models = Detail::AllocateRange<ozz::math::Float4x4>( allocator, num_joints );
+        m_skinningMatrices = Detail::AllocateRange<ozz::math::Float4x4>( allocator, num_joints );
+        m_upperBodyJointWeights = Detail::AllocateRange<ozz::math::SimdFloat4>( allocator, num_soa_joints );
+        m_blendedLocals = Detail::AllocateRange<ozz::math::SoaTransform>( allocator, num_soa_joints );
 
         // Finds the "Spine1" joint in the joint hierarchy.
         const ozz::Range<const char * const> & joint_names = skeleton.joint_names();
@@ -216,22 +215,15 @@ namespace Mengine
         }
 
         // Extracts the list of children of the shoulder.
-        ozz::animation::JointsIterator it;
-        ozz::animation::IterateJointsDF( skeleton, m_upperBodyRoot, &it );
-
-        float upper_body_joint_weight_setting = 1.f;
-
-        // Sets the weight_setting of all the joints children of the arm to 1. Note
-        // that weights are stored in SoA format.
-        for( int32_t i = 0; i != it.num_joints; ++i )
+        ozz::animation::IterateJointsDF( skeleton, m_upperBodyRoot, [this]( int _joint, int )
         {
-            const int32_t joint_id = it.joints[i];
+            float upper_body_joint_weight_setting = 1.f;
 
             // Updates upper body animation sampler joint weights.
-            ozz::math::SimdFloat4 & weight_setting = m_upperBodyJointWeights[joint_id / 4];
+            ozz::math::SimdFloat4 & weight_setting = m_upperBodyJointWeights[_joint / 4];
 
-            weight_setting = ozz::math::SetI( weight_setting, joint_id % 4, upper_body_joint_weight_setting );
-        }
+            weight_setting = ozz::math::SetI( weight_setting, ozz::math::simd_float4::Load1( upper_body_joint_weight_setting ), _joint % 4 );
+        } );
 
         m_vertexMemory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
@@ -284,10 +276,10 @@ namespace Mengine
     {
         ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
-        allocator->Deallocate( m_models );
-        allocator->Deallocate( m_skinningMatrices );
-        allocator->Deallocate( m_upperBodyJointWeights );
-        allocator->Deallocate( m_blendedLocals );
+        Detail::DeallocateRange( allocator, m_models );
+        Detail::DeallocateRange( allocator, m_skinningMatrices );
+        Detail::DeallocateRange( allocator, m_upperBodyJointWeights );
+        Detail::DeallocateRange( allocator, m_blendedLocals );
 
         m_vertexMemory = nullptr;
         m_vertexBuffer = nullptr;
@@ -341,7 +333,7 @@ namespace Mengine
         ozz::animation::BlendingJob blend_job;
         blend_job.threshold = threshold;
         blend_job.layers = ozz::Range<ozz::animation::BlendingJob::Layer>( layers, layers_iterator );
-        blend_job.bind_pose = ozz_skeleton.bind_pose();
+        blend_job.bind_pose = ozz_skeleton.joint_bind_poses();
         blend_job.output = m_blendedLocals;
 
         // Blends.

@@ -12,6 +12,22 @@ namespace Mengine
 {
     namespace Detail
     {
+        template<class T>
+        ozz::Range<T> AllocateRange( ozz::memory::Allocator * _allocator, int32_t _num )
+        {
+            void * memory = _allocator->Allocate( sizeof( T ) * _num, OZZ_ALIGN_OF( T ) );
+            T * t = reinterpret_cast<T *>(memory);
+            
+            return ozz::Range<T>( t, t + _num );
+        }
+
+        template<class T>
+        void DeallocateRange( ozz::memory::Allocator * _allocator, ozz::Range<T> & _range )
+        {
+            _allocator->Delete( _range.begin );
+            _range.Clear();
+        }
+
         const size_t ozz_normals_size = sizeof( float ) * 3;
         const size_t ozz_tangents_size = sizeof( float ) * 6;
         const size_t ozz_positions_size = sizeof( float ) * 9;

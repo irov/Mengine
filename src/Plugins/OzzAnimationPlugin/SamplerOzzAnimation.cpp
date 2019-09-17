@@ -4,6 +4,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EventableHelper.h"
 
+#include "OzzDetail.h"
+
 #include "ozz/base/memory/allocator.h"
 #include "ozz/base/maths/soa_transform.h"
 
@@ -96,7 +98,7 @@ namespace Mengine
 
         ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
-        m_locals = allocator->AllocateRange<ozz::math::SoaTransform>( num_soa_joints );
+        m_locals = Detail::AllocateRange<ozz::math::SoaTransform>( allocator, num_soa_joints );
         m_cache = allocator->New<ozz::animation::SamplingCache>( num_joints );
 
         this->updateAnimation_();
@@ -108,7 +110,7 @@ namespace Mengine
     {
         ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
-        allocator->Deallocate( m_locals );
+        Detail::DeallocateRange( allocator, m_locals );
         allocator->Delete( m_cache );
 
         m_resourceOzzAnimation->release();

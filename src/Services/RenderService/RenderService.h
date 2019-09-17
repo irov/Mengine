@@ -198,12 +198,6 @@ namespace Mengine
         ERenderBatchMode getBatchMode() const override;
 
     public:
-        void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
-
-    public:
-        void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
-
-    public:
         void enableDebugFillrateCalcMode( bool _enable ) override;
         bool isDebugFillrateCalcMode() const override;
 

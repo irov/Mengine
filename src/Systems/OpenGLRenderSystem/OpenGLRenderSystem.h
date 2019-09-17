@@ -57,9 +57,6 @@ namespace Mengine
         bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _depth, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
     public:
-        bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
-
-    public:
         void setViewMatrix( const mt::mat4f & _view ) override;
         void setWorldMatrix( const mt::mat4f & _world ) override;
         void setProjectionMatrix( const mt::mat4f & _projection ) override;
@@ -140,8 +137,6 @@ namespace Mengine
 
         void setVSync( bool _vSync ) override;
 
-        void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
-
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 
@@ -185,7 +180,6 @@ namespace Mengine
         OpenGLRenderProgramPtr m_currentProgram;
         OpenGLRenderProgramVariablePtr m_currentProgramVariable;
 
-        uint32_t m_glMaxClipPlanes;
         uint32_t m_glMaxCombinedTextureImageUnits;
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];

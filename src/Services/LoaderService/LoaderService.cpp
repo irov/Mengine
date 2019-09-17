@@ -429,15 +429,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::openBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, InputStreamInterfacePtr * _stream, bool * _exist ) const
     {
-        if( _fileGroup->existFile( _filePath ) == false )
+        if( _fileGroup->existFile( _filePath, true ) == false )
         {
             *_exist = false;
 
             return false;
         }
 
-        InputStreamInterfacePtr file_bin = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 

@@ -11,6 +11,7 @@ namespace Mengine
         FilePath concatenationFilePath( const FilePath & _left, const FilePath & _right );
         bool makeFullPath( const ConstString & _fileGroupName, const FilePath & _filePath, FilePath & _fullPath );
         FilePath getPathFolder( const FilePath & _fullpath );
+        FilePath replaceFileSpec( const FilePath & _fullpath, const Char * _fileSpec );
         FilePath unicodeToFilePath( const WString & _unicode );
         void pathCorrectBackslashW( WChar * _out );
         void pathCorrectBackslashToW( WChar * _out, const WChar * _in );

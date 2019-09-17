@@ -69,6 +69,27 @@ namespace Mengine
             return c_folder;
         }
         //////////////////////////////////////////////////////////////////////////
+        FilePath replaceFileSpec( const FilePath & _fullpath, const Char * _fileSpec )
+        {
+            const Char * str_fullpath = _fullpath.c_str();
+
+            const Char * folder_delimiter_1 = strrchr( str_fullpath, '\\' );
+            const Char * folder_delimiter_2 = strrchr( str_fullpath, '/' );
+
+            const Char * folder_delimiter = (folder_delimiter_1 > folder_delimiter_2) ? folder_delimiter_1 : folder_delimiter_2;
+
+            if( folder_delimiter == nullptr )
+            {
+                return Helper::stringizeFilePath( _fileSpec );
+            }
+
+            FilePath::size_type size_fullpath = (FilePath::size_type)(folder_delimiter - str_fullpath + 1);
+
+            FilePath c_folder = Helper::stringizeFilePathFormat( "%.*s%s", size_fullpath, str_fullpath, _fileSpec );
+
+            return c_folder;
+        }
+        //////////////////////////////////////////////////////////////////////////
         FilePath unicodeToFilePath( const WString & _unicode )
         {
             String utf8;

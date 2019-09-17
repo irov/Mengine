@@ -11,7 +11,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a );
+        ColorValue_ARGB makeARGB8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a );
+        ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a );        
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail

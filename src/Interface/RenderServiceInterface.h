@@ -111,11 +111,9 @@ namespace Mengine
         virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 
     public:
-        virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b ) = 0;
         virtual bool beginScene() = 0;
         virtual void endScene() = 0;
         virtual void swapBuffers() = 0;
-        virtual void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) = 0;
         virtual void setVSync( bool _vSync ) = 0;
         virtual bool getVSync() const = 0;
 

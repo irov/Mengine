@@ -134,7 +134,7 @@ namespace Mengine
         // mount root
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount application directory"
             );
@@ -149,7 +149,7 @@ namespace Mengine
         ConstString c_dev = STRINGIZE_STRING_LOCAL( "dev" );
         // mount root
         if( FILE_SERVICE()
-            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( c_dev, defaultFileGroup, nullptr, FilePath::none(), c_dir, nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount dev directory"
             );
@@ -168,7 +168,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        if( fileGroup->existFile( applicationPath ) == false )
+        if( fileGroup->existFile( applicationPath, true ) == false )
         {
             LOGGER_INFO( "not exist application config '%s'"
                 , applicationPath.c_str()
@@ -237,7 +237,7 @@ namespace Mengine
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr, true, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             LOGGER_ERROR( "failed to mount user directory '%s'"
                 , cs_userPath.c_str()

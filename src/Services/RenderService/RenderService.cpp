@@ -492,7 +492,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::endScene()
     {
-
 #ifndef MENGINE_MASTER_RELEASE
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {

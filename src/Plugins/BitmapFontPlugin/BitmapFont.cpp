@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::isValid()
     {
-        if( m_fileGroup->existFile( m_pathFontImage ) == false )
+        if( m_fileGroup->existFile( m_pathFontImage, true ) == false )
         {
             LOGGER_ERROR( "font '%s' not found file '%s'"
                 , m_name.c_str()

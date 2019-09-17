@@ -329,6 +329,9 @@ Core
 	FontBase.h
 	FontBase.cpp
     
+    BaseFileGroup.h
+    BaseFileGroup.cpp
+    
     Exception.h
     Visitor.h
     
@@ -538,6 +541,9 @@ Core
 
 	DummyGameEventReceiver.h
 	DummyGameEventReceiver.cpp
+    
+    FileStreamHelper.h
+    FileStreamHelper.cpp
 )
 
 ADD_FILTER(

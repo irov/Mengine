@@ -53,6 +53,12 @@
 #endif
 
 
+/* Disable warning that is part of -Wextra since gcc 7.0. */
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && __GNUC__ >= 7
+  #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif
+
+
 #if defined(_MSC_VER)
   #define ALWAYS_INLINE __forceinline
 #elif defined(LEGACY_COMPILER)
@@ -439,7 +445,7 @@ mpd_isconst_data(const mpd_t *dec)
 /******************************************************************************/
 
 /* Fill destination with zeros */
-void
+ALWAYS_INLINE void
 mpd_uint_zero(mpd_uint_t *dest, mpd_size_t len)
 {
     mpd_size_t i;
@@ -450,7 +456,7 @@ mpd_uint_zero(mpd_uint_t *dest, mpd_size_t len)
 }
 
 /* Free a decimal */
-void
+ALWAYS_INLINE void
 mpd_del(mpd_t *dec)
 {
     if (mpd_isdynamic_data(dec)) {
@@ -485,7 +491,7 @@ mpd_del(mpd_t *dec)
  *
  * [1] In that case the old (now oversized) area is still valid.
  */
-int
+ALWAYS_INLINE int
 mpd_qresize(mpd_t *result, mpd_ssize_t nwords, uint32_t *status)
 {
     assert(!mpd_isconst_data(result)); /* illegal operation for a const */

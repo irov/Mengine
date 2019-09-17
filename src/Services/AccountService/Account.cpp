@@ -12,6 +12,7 @@
 #include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/StringHelper.h"
 
 namespace Mengine
@@ -152,7 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::load()
     {
-        if( m_fileGroup->existFile( m_settingsPath ) == false )
+        if( m_fileGroup->existFile( m_settingsPath, true ) == false )
         {
             LOGGER_ERROR( "account '%s' settings not found '%s'"
                 , m_id.c_str()
@@ -247,8 +248,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::save()
     {
-        OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Account '%s' settings not saved '%s'"
             , m_id.c_str()
@@ -313,8 +313,7 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, fullpath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullpath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
             , m_id.c_str()
@@ -333,8 +332,7 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-        OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, fullpath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullpath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
             , m_id.c_str()
@@ -406,7 +404,7 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-        bool exist = m_fileGroup->existFile( fullpath );
+        bool exist = m_fileGroup->existFile( fullpath, true );
 
         return exist;
     }

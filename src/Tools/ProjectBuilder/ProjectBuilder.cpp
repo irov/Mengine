@@ -42,6 +42,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "Config/Vector.h"
 
@@ -219,7 +220,7 @@ namespace Mengine
             ->loadPlugin( "XmlToBinPlugin.dll" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -227,7 +228,7 @@ namespace Mengine
         ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( dev, nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -254,8 +255,8 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         options.fileGroup = fileGroup;
-        options.inputFileName = Helper::stringizeFilePath( utf8_fromPath );
-        options.outputFileName = Helper::stringizeFilePath( utf8_toPath );
+        options.inputFilePath = Helper::stringizeFilePath( utf8_fromPath );
+        options.outputFilePath = Helper::stringizeFilePath( utf8_toPath );
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );
@@ -264,8 +265,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
-                , options.inputFileName.c_str()
-                , options.outputFileName.c_str()
+                , options.inputFilePath.c_str()
+                , options.outputFilePath.c_str()
             );
 
             return false;
@@ -277,8 +278,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , utf8_convertType.c_str()
-                , options.inputFileName.c_str()
-                , options.outputFileName.c_str()
+                , options.inputFilePath.c_str()
+                , options.outputFilePath.c_str()
             );
 
             return false;
@@ -320,8 +321,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, c_path, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, c_path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -508,8 +508,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, c_path, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, c_path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -688,6 +687,46 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
     return true;
 }
 //////////////////////////////////////////////////////////////////////////
+static bool filterCurrentUserRegValue( const WCHAR * _path, const std::function<void( const WCHAR *, DWORD )> & _filter )
+{
+    HKEY hKey;
+    LONG lOpenRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ, &hKey );  // Check Python x32
+    if( lOpenRes == ERROR_FILE_NOT_FOUND )
+    {
+#ifdef _MSC_VER
+        lOpenRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );  // Check Python x64
+#endif
+    }
+
+    if( lOpenRes != ERROR_SUCCESS )
+    {
+        LOGGER_ERROR( "getCurrentUserRegValue %ls RegOpenKeyEx get Error %d"
+            , _path
+            , lOpenRes
+        );
+
+        return false;
+    }
+
+    for( DWORD index = 0;; ++index )
+    {
+        WCHAR wcKeyValue[256];
+        DWORD wcKeyValueSize = 256;
+        LONG lEnumRes = ::RegEnumKeyEx( hKey, index, wcKeyValue, &wcKeyValueSize, 0, NULL, NULL, NULL );
+
+        if( lEnumRes != ERROR_SUCCESS )
+        {
+            break;
+        }
+
+        _filter( wcKeyValue, wcKeyValueSize );
+    }
+
+    RegCloseKey( hKey );
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
 struct extract_String_type
     : public pybind::type_cast_result<Mengine::String>
 {
@@ -838,17 +877,45 @@ bool run()
 
     LOGGER_ERROR( "initialize complete" );
 
-    const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.6-32\\PythonPath";
+    const WCHAR * szPythonVersionRegPath = L"SOFTWARE\\Python\\PythonCore";
 
-    WCHAR szPythonPath[512];
-    if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
+    std::vector<std::wstring> vPythonVersions;
+    if( filterCurrentUserRegValue( szPythonVersionRegPath, [&vPythonVersions]( const WCHAR * _value, DWORD _size )
     {
-        LOGGER_ERROR( "invalid get reg value '%ls'"
-            , szRegPath
+        vPythonVersions.emplace_back( std::wstring( _value, _size ) );
+    } ) == false )
+    {
+        LOGGER_ERROR( "invalid enum reg value '%ls'"
+            , szPythonVersionRegPath
         );
+
+        return false;
     }
 
-    LOGGER_ERROR( "python path '%ls'"
+    WCHAR szPythonPath[512] = { 0 };
+    for( const std::wstring & version : vPythonVersions )
+    {
+        WCHAR szRegPath[512];
+        wsprintf( szRegPath, L"SOFTWARE\\Python\\PythonCore\\%ls\\PythonPath"
+            , version.c_str()
+        );
+
+        if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
+        {
+            continue;
+        }
+
+        break;
+    }
+
+    if( ::wcslen( szPythonPath ) == 0 )
+    {
+        LOGGER_ERROR( "invalid found python path" );
+
+        return false;
+    }
+
+    LOGGER_ERROR( "python path: %ls"
         , szPythonPath
     );
 

@@ -1,6 +1,5 @@
 #include "ResourceVideo.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -11,6 +10,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -71,8 +71,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
         const FilePath & filePath = this->getFilePath();
 
-        InputStreamInterfacePtr videoStream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, true, _doc );
+        InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( videoStream, nullptr, "group '%s' name '%s' can't open video file '%s'"
             , this->getGroupName().c_str()

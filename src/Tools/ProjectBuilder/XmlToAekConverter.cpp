@@ -62,8 +62,8 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         options.fileGroup = fileGroup;
-        options.inputFileName = path_xml;
-        options.outputFileName = Helper::stringizeFilePath( utf8_aekPath );
+        options.inputFilePath = path_xml;
+        options.outputFilePath = Helper::stringizeFilePath( utf8_aekPath );
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
             ->createConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ), MENGINE_DOCUMENT_FUNCTION );
@@ -72,8 +72,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "writeAek can't create convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
-                , options.inputFileName.c_str()
-                , options.outputFileName.c_str()
+                , options.inputFilePath.c_str()
+                , options.outputFilePath.c_str()
             );
 
             return false;
@@ -85,8 +85,8 @@ namespace Mengine
         {
             LOGGER_ERROR( "can't convert '%s'\nfrom: %s\nto: %s\n"
                 , "xmlToAekMovie"
-                , options.inputFileName.c_str()
-                , options.outputFileName.c_str()
+                , options.inputFilePath.c_str()
+                , options.outputFilePath.c_str()
             );
 
             return false;

@@ -1,7 +1,6 @@
 #include "ResourceMovie2Validator.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/FileServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -12,6 +11,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -195,8 +195,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

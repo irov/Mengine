@@ -5,6 +5,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "ozz/base/io/stream.h"
 #include "ozz/base/io/archive.h"
@@ -29,8 +30,7 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 

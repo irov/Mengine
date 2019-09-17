@@ -5,7 +5,7 @@
 
 #include "Win32FileHelper.h"
 
-#include "Kernel/UnicodeHelper.h"
+#include "Kernel/PathString.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -27,12 +27,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath )
+    bool Win32FileGroupDirectory::_initialize()
     {
-        m_name = _name;
-        m_fileGroup = _fileGroup;
-        m_folderPath = _folderPath;
-
         m_factoryInputStream = Helper::makeFactoryPool<Win32FileInputStream, 8>();
         m_factoryOutputStream = Helper::makeFactoryPool<Win32FileOutputStream, 4>();
         m_factoryWin32MappedFile = Helper::makeFactoryPool<Win32FileMappedStream, 4>();
@@ -40,7 +36,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FileGroupDirectory::finalize()
+    void Win32FileGroupDirectory::_finalize()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
@@ -51,32 +47,17 @@ namespace Mengine
         m_factoryWin32MappedFile = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Win32FileGroupDirectory::getName() const
-    {
-        return m_name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & Win32FileGroupDirectory::getFileGroup() const
-    {
-        return m_fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::isPacked() const
     {
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileGroupDirectory::getFolderPath() const
+    bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::existFile( const FilePath & _filePath ) const
-    {
-        WChar unicode_filePath[MENGINE_MAX_PATH];
-        size_t unicode_filePathLen = Helper::Win32ConcatenateFilePathW( m_relationPath, m_folderPath, _filePath, unicode_filePath, MENGINE_MAX_PATH );
+        Char utf8_filePath[MENGINE_MAX_PATH];
+        size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
 
-        if( unicode_filePathLen == MENGINE_PATH_INVALID_LENGTH )
+        if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
@@ -86,19 +67,18 @@ namespace Mengine
             return false;
         }
 
-        Char utf8_filePath[MENGINE_MAX_PATH];
-        if( Helper::unicodeToUtf8Size( unicode_filePath, unicode_filePathLen, utf8_filePath, MENGINE_MAX_PATH ) == false )
-        {
-            return false;
-        }
-
         bool result = PLATFORM_SERVICE()
             ->existFile( utf8_filePath );
+
+        if( _recursive == true && result == false && m_parentFileGroup != nullptr )
+        {
+            result = m_parentFileGroup->existFile( _filePath, true );
+        }
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::existDirectory( const FilePath & _folderName ) const
+    bool Win32FileGroupDirectory::existDirectory( const FilePath & _folderPath, bool _recursive ) const
     {
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
@@ -106,16 +86,18 @@ namespace Mengine
         PathString account_folderPath;
         account_folderPath.append( relationPath );
         account_folderPath.append( folderPath );
-        account_folderPath.append( _folderName );
+        account_folderPath.append( _folderPath );
         account_folderPath.append( '/' );
 
-        if( PLATFORM_SERVICE()
-            ->existDirectory( account_folderPath.c_str() ) == false )
+        bool result = PLATFORM_SERVICE()
+            ->existDirectory( account_folderPath.c_str() );
+
+        if( _recursive == true && result == false && m_parentFileGroup != nullptr )
         {
-            return false;
+            result = m_parentFileGroup->existDirectory( _folderPath, true );
         }
 
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::createDirectory( const FilePath & _folderName ) const
@@ -163,75 +145,68 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, const Char * _doc )
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const Char * _doc )
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
 
-        Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
+        if( m_parentFileGroup != nullptr )
+        {
+            if( this->existFile( _filePath, false ) == false )
+            {
+                InputStreamInterfacePtr stream = m_parentFileGroup->createInputFile( _filePath, _streaming, _fileGroup, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( inputStream, nullptr );
+                return stream;
+            }
+        }
 
-        return inputStream;
+        Win32FileInputStreamPtr stream = m_factoryInputStream->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+
+        *_fileGroup = this;
+
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
     {
-        MENGINE_UNUSED( _streaming );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == NULL" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming ) == false )
-        {
-            LOGGER_ERROR( "failed open file '%s':'%s'"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-            );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming );
 
-            return false;
-        }
+        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const Char * _doc )
     {
-        Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
+        Win32FileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( outputStream, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
-        return outputStream;
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////	
     bool Win32FileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
     {
-        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == NULL" );
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
 
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
-        if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
-        {
-            LOGGER_ERROR( "failed open file '%s':'%s'"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-            );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath );
+        
+        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
-            return false;
-        }
-
-        return true;
+        return result;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32FileGroupDirectory::setRelationPath( const FilePath & _relationPath )
-    {
-        m_relationPath = _relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & Win32FileGroupDirectory::getRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

@@ -1,10 +1,9 @@
 #include "MemoryHelper.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/AssertionMemoryPanic.h"
-
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/Document.h"
 
 namespace Mengine
@@ -68,8 +67,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, const Char * _doc )
         {
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid create input file stream '%s:%s' stream [%d] (doc: %s)"
                 , _fileGroup->getName().c_str()
@@ -165,8 +163,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, const Char * _doc )
         {
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
@@ -179,8 +176,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, const Char * _doc )
         {
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 

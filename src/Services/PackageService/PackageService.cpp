@@ -66,10 +66,10 @@ namespace Mengine
         VectorString frameworkPacksSettings;
         config->getValues( "GAME_PACKAGES", "FrameworkPack", frameworkPacksSettings );
 
-        for( const String & resourcePack : frameworkPacksSettings )
+        for( const String & frameworkPack : frameworkPacksSettings )
         {
             LOGGER_MESSAGE( "Package '%s'"
-                , resourcePack.c_str()
+                , frameworkPack.c_str()
             );
 
             PackageDesc pack;
@@ -79,28 +79,33 @@ namespace Mengine
             pack.preload = true;
             pack.type = STRINGIZE_STRING_LOCAL( "dir" );
 
-            if( config->hasSection( resourcePack.c_str() ) == false )
+            if( config->hasSection( frameworkPack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "'%s' invalid load resource pack no found section for '%s'"
+                LOGGER_CRITICAL( "invalid load '%s' framework pack no found section for '%s'"
                     , _filePath.c_str()
-                    , resourcePack.c_str()
+                    , frameworkPack.c_str()
                 );
 
                 return false;
             }
 
-            config->hasValue( resourcePack.c_str(), "Name", &pack.name );
-            config->hasValue( resourcePack.c_str(), "Type", &pack.type );
-            config->hasValue( resourcePack.c_str(), "Category", &pack.category );
-            config->hasValue( resourcePack.c_str(), "Path", &pack.path );
-            config->hasValue( resourcePack.c_str(), "Locale", &pack.locale );
-            config->hasValue( resourcePack.c_str(), "Platform", &pack.platform );
-            config->hasValue( resourcePack.c_str(), "Description", &pack.descriptionPath );
-            config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
-            config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
+            config->hasValue( frameworkPack.c_str(), "Name", &pack.name );
+            config->hasValue( frameworkPack.c_str(), "Type", &pack.type );
+            config->hasValue( frameworkPack.c_str(), "Locale", &pack.locale );
+            config->hasValue( frameworkPack.c_str(), "Platform", &pack.platform );
+            config->hasValue( frameworkPack.c_str(), "Category", &pack.fileGroupName );
+            config->hasValue( frameworkPack.c_str(), "Parent", &pack.parent );
+            config->hasValue( frameworkPack.c_str(), "Description", &pack.descriptionPath );
+            config->hasValue( frameworkPack.c_str(), "Path", &pack.path );
+            config->hasValue( frameworkPack.c_str(), "Dev", &pack.dev );
+            config->hasValue( frameworkPack.c_str(), "PreLoad", &pack.preload );
 
             if( this->addPackage( pack, _doc ) == false )
             {
+                LOGGER_CRITICAL( "invalid add framework pack '%s'"
+                    , pack.name.c_str()
+                );
+
                 return false;
             }
         }
@@ -133,16 +138,22 @@ namespace Mengine
 
             config->hasValue( resourcePack.c_str(), "Name", &pack.name );
             config->hasValue( resourcePack.c_str(), "Type", &pack.type );
-            config->hasValue( resourcePack.c_str(), "Category", &pack.category );
-            config->hasValue( resourcePack.c_str(), "Path", &pack.path );
             config->hasValue( resourcePack.c_str(), "Locale", &pack.locale );
             config->hasValue( resourcePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( resourcePack.c_str(), "Category", &pack.fileGroupName );
+            config->hasValue( resourcePack.c_str(), "FileGroup", &pack.fileGroupName );
+            config->hasValue( resourcePack.c_str(), "Parent", &pack.parent );
             config->hasValue( resourcePack.c_str(), "Description", &pack.descriptionPath );
+            config->hasValue( resourcePack.c_str(), "Path", &pack.path );            
             config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
             config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
 
             if( this->addPackage( pack, _doc ) == false )
             {
+                LOGGER_CRITICAL( "invalid add resource pack '%s'"
+                    , pack.name.c_str()
+                );
+
                 return false;
             }
         }
@@ -174,17 +185,23 @@ namespace Mengine
             }
 
             config->hasValue( languagePack.c_str(), "Name", &pack.name );
-            config->hasValue( languagePack.c_str(), "Type", &pack.type );
-            config->hasValue( languagePack.c_str(), "Category", &pack.category );
-            config->hasValue( languagePack.c_str(), "Path", &pack.path );
+            config->hasValue( languagePack.c_str(), "Type", &pack.type );            
             config->hasValue( languagePack.c_str(), "Locale", &pack.locale );
             config->hasValue( languagePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( languagePack.c_str(), "Category", &pack.fileGroupName );
+            config->hasValue( languagePack.c_str(), "FileGroup", &pack.fileGroupName );
+            config->hasValue( languagePack.c_str(), "Parent", &pack.parent );
             config->hasValue( languagePack.c_str(), "Description", &pack.descriptionPath );
+            config->hasValue( languagePack.c_str(), "Path", &pack.path );
             config->hasValue( languagePack.c_str(), "Dev", &pack.dev );
             config->hasValue( languagePack.c_str(), "PreLoad", &pack.preload );
 
             if( this->addPackage( pack, _doc ) == false )
             {
+                LOGGER_CRITICAL( "invalid add language pack '%s'"
+                    , pack.name.c_str()
+                );
+
                 return false;
             }
         }
@@ -218,12 +235,12 @@ namespace Mengine
             return true;
         }
 
-        FileGroupInterfacePtr category;
+        FileGroupInterfacePtr baseFileGroup;
         if( FILE_SERVICE()
-            ->hasFileGroup( _desc.category, &category ) == false )
+            ->hasFileGroup( _desc.fileGroupName, &baseFileGroup ) == false )
         {
             LOGGER_ERROR( "invalid found file group '%s'"
-                , _desc.category.c_str()
+                , _desc.fileGroupName.c_str()
             );
 
             return false;
@@ -236,10 +253,17 @@ namespace Mengine
             , _desc.locale
             , _desc.platform
             , _desc.descriptionPath
-            , category
+            , baseFileGroup
             , _desc.path
             , _desc.preload
         );
+
+        if( _desc.parent.empty() == false )
+        {
+            const PackageInterfacePtr & parent_package = this->getPackage( _desc.parent );
+
+            package->setParent( parent_package );
+        }
 
         if( package->load( _doc ) == false )
         {
@@ -291,7 +315,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    PackageInterfacePtr PackageService::getPackage( const ConstString & _name ) const
+    const PackageInterfacePtr & PackageService::getPackage( const ConstString & _name ) const
     {
         for( const PackagePtr & package : m_packages )
         {
@@ -305,7 +329,7 @@ namespace Mengine
             return package;
         }
 
-        return nullptr;
+        return PackageInterfacePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadLocalePacksByName_( VectorPackages & _packs, const ConstString & _locale, const Tags & _platformTags ) const

@@ -259,6 +259,91 @@ namespace Mengine
             value_type * m_end;
         };
 
+        class const_reverse_iterator
+        {
+        public:
+            const_reverse_iterator( value_type * _carriage, value_type * _end )
+                : m_carriage( _carriage )
+                , m_end( _end )
+            {
+                this->adapt_();
+            }
+
+            const_reverse_iterator( const const_reverse_iterator & _it )
+                : m_carriage( _it.m_carriage )
+                , m_end( _it.m_end )
+            {
+            }
+
+        public:
+            const_reverse_iterator & operator = ( const const_reverse_iterator & _it )
+            {
+                this->m_carriage = _it.m_carriage;
+                this->m_end = _it.m_end;
+
+                return *this;
+            }
+
+        public:
+            const value_type * operator -> () const
+            {
+                return (m_carriage - 1);
+            }
+
+            const value_type & operator * () const
+            {
+                return *(m_carriage - 1);
+            }
+
+        public:
+            bool operator == ( const const_reverse_iterator & _it ) const
+            {
+                return m_carriage == _it.m_carriage;
+            }
+
+            bool operator != ( const const_reverse_iterator & _it ) const
+            {
+                return !this->operator == ( _it );
+            }
+
+            const_reverse_iterator & operator ++ ()
+            {
+                --m_carriage;
+
+                this->adapt_();
+
+                return *this;
+            }
+
+            const_iterator operator ++ ( int )
+            {
+                const_iterator tmp = *this;
+                -- * this;
+
+                return tmp;
+            }
+
+        protected:
+            void adapt_()
+            {
+                for( ; m_carriage != m_end; --m_carriage )
+                {
+                    const value_type * value = m_carriage - 1;
+
+                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0) )
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+
+        protected:
+            value_type * m_carriage;
+            value_type * m_end;
+        };
+
     public:
         const_iterator begin() const
         {
@@ -268,6 +353,16 @@ namespace Mengine
         const_iterator end() const
         {
             return const_iterator( m_buffer + m_capacity, m_buffer + m_capacity );
+        }
+
+        const_reverse_iterator rbegin() const
+        {
+            return const_reverse_iterator( m_buffer + m_capacity, m_buffer );
+        }
+
+        const_reverse_iterator rend() const
+        {
+            return const_reverse_iterator( m_buffer, m_buffer );
         }
 
     protected:
@@ -711,7 +806,94 @@ namespace Mengine
             {
                 for( ; m_carriage != m_end; ++m_carriage )
                 {
-                    if( m_carriage->element == nullptr || m_carriage->element == reinterpret_cast<const element_type *>(~0) )
+                    const value_type * value = m_carriage;
+
+                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0) )
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+
+        protected:
+            value_type * m_carriage;
+            value_type * m_end;
+        };
+
+        class const_reverse_iterator
+        {
+        public:
+            const_reverse_iterator( value_type * _carriage, value_type * _end )
+                : m_carriage( _carriage )
+                , m_end( _end )
+            {
+                this->adapt_();
+            }
+
+            const_reverse_iterator( const const_reverse_iterator & _it )
+                : m_carriage( _it.m_carriage )
+                , m_end( _it.m_end )
+            {
+            }
+
+        public:
+            const_reverse_iterator & operator = ( const const_reverse_iterator & _it )
+            {
+                this->m_carriage = _it.m_carriage;
+                this->m_end = _it.m_end;
+
+                return *this;
+            }
+
+        public:
+            const value_type * operator -> () const
+            {
+                return (m_carriage - 1);
+            }
+
+            const value_type & operator * () const
+            {
+                return *(m_carriage - 1);
+            }
+
+        public:
+            bool operator == ( const const_reverse_iterator & _it ) const
+            {
+                return m_carriage == _it.m_carriage;
+            }
+
+            bool operator != ( const const_reverse_iterator & _it ) const
+            {
+                return !this->operator == ( _it );
+            }
+
+            const_reverse_iterator & operator ++ ()
+            {
+                --m_carriage;
+
+                this->adapt_();
+
+                return *this;
+            }
+
+            const_iterator operator ++ ( int )
+            {
+                const_iterator tmp = *this;
+                -- * this;
+
+                return tmp;
+            }
+
+        protected:
+            void adapt_()
+            {
+                for( ; m_carriage != m_end; --m_carriage )
+                {
+                    const value_type * value = m_carriage - 1;
+
+                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0) )
                     {
                         continue;
                     }
@@ -734,6 +916,16 @@ namespace Mengine
         const_iterator end() const
         {
             return const_iterator( m_buffer + m_capacity, m_buffer + m_capacity );
+        }
+
+        const_reverse_iterator rbegin() const
+        {
+            return const_reverse_iterator( m_buffer + m_capacity, m_buffer );
+        }
+
+        const_reverse_iterator rend() const
+        {
+            return const_reverse_iterator( m_buffer, m_buffer );
         }
 
     protected:

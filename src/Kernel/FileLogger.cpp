@@ -1,10 +1,9 @@
 #include "FileLogger.h"
 
-#include "Interface/FileServiceInterface.h"
-
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -39,8 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileLogger::initialize()
     {
-        OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 

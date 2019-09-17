@@ -2362,7 +2362,9 @@ namespace Mengine
 
         pybind::interface_<FileGroupInterface, pybind::bases<Mixin> >( _kernel, "FileGroupInterface" )
             .def( "getName", &FileGroupInterface::getName )
-            .def( "getCategory", &FileGroupInterface::getFileGroup )
+            .def_deprecated( "getCategory", &FileGroupInterface::getBaseFileGroup, "use getBaseFileGroup" )
+            .def( "getBaseFileGroup", &FileGroupInterface::getBaseFileGroup )
+            .def( "getParentFileGroup", &FileGroupInterface::getParentFileGroup )
             .def( "isPacked", &FileGroupInterface::isPacked )
             .def( "getRelationPath", &FileGroupInterface::getRelationPath )
             .def( "existFile", &FileGroupInterface::existFile )

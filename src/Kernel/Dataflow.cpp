@@ -1,13 +1,13 @@
 #include "Dataflow.h"
 
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -23,8 +23,7 @@ namespace Mengine
                 return prefetch_data;
             }
 
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, _doc );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "dataflow invalid open file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
@@ -51,8 +50,7 @@ namespace Mengine
                 return prefetch_data;
             }
 
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, _doc );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "dataflow invalid open file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()

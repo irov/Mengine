@@ -17,6 +17,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
 
 namespace Mengine
@@ -39,8 +40,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( fileGroup, inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( input_stream == nullptr )
         {
@@ -174,8 +174,7 @@ namespace Mengine
             }
         }
 
-        OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( fileGroup, outputFileName, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( fileGroup, outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
         if( output_stream == nullptr )
         {

@@ -4,7 +4,6 @@
 
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
@@ -15,6 +14,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/ResourceImage.h"
 
 namespace Mengine
@@ -59,8 +59,7 @@ namespace Mengine
             , full_inputFilePath.c_str()
         );
 
-        OutputStreamInterfacePtr output = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output, false, "invalid open '%s'"
             , full_outputFilePath.c_str()

@@ -29,7 +29,7 @@ namespace Mengine
         bool hasPackage( const ConstString & _name ) const override;
         bool addPackage( const PackageDesc & _desc, const Char * _doc ) override;
         bool removePackage( const ConstString & _name ) override;
-        PackageInterfacePtr getPackage( const ConstString & _name ) const override;
+        const PackageInterfacePtr & getPackage( const ConstString & _name ) const override;
 
     public:
         bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;

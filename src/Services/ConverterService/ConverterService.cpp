@@ -7,6 +7,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterService );
@@ -140,7 +141,7 @@ namespace Mengine
             return false;
         }
 
-        if( options.fileGroup->existFile( options.inputFilePath ) == false )
+        if( options.fileGroup->existFile( options.inputFilePath, true ) == false )
         {
             LOGGER_ERROR( "input file '%s:%s' not found"
                 , options.fileGroup->getName().c_str()
@@ -150,10 +151,9 @@ namespace Mengine
             return false;
         }
 
-        if( options.fileGroup->existFile( options.outputFilePath ) == true )
+        if( options.fileGroup->existFile( options.outputFilePath, true ) == true )
         {
-            InputStreamInterfacePtr oldFile = FILE_SERVICE()
-                ->openInputFile( options.fileGroup, options.inputFilePath, false, _doc );
+            InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( options.fileGroup, options.inputFilePath, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( oldFile, false, "converter '%s' can't open input file '%s:%s' (time)"
                 , _converter.c_str()
@@ -166,8 +166,7 @@ namespace Mengine
 
             oldFile = nullptr;
 
-            InputStreamInterfacePtr newFile = FILE_SERVICE()
-                ->openInputFile( options.fileGroup, options.outputFilePath, false, _doc );
+            InputStreamInterfacePtr newFile = Helper::openInputStreamFile( options.fileGroup, options.outputFilePath, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( newFile, false, "converter '%s' can't open output file '%s:%s' (time)"
                 , _converter.c_str()

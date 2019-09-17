@@ -1,6 +1,5 @@
 #include "cURLGetAssetThreadTask.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "cURLErrorHelper.h"
@@ -8,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -38,8 +38,7 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, m_filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "get asset url '%s' invalid open file '%s:%s'"
             , m_url.c_str()

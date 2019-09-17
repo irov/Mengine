@@ -11,6 +11,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionNotImplemented.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PathHelper.h"
@@ -29,22 +30,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath )
+    bool SDLFileGroupDirectory::_initialize()
     {
-        m_name = _name;
-        m_fileGroup = _fileGroup;
-        m_folderPath = _folderPath;
-
         m_factoryInputStream = Helper::makeFactoryPool<SDLFileInputStream, 8>();
         m_factoryOutputStream = Helper::makeFactoryPool<SDLFileOutputStream, 4>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLFileGroupDirectory::finalize()
+    void SDLFileGroupDirectory::_finalize()
     {
-        m_fileGroup = nullptr;
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
 
@@ -52,32 +47,12 @@ namespace Mengine
         m_factoryOutputStream = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & SDLFileGroupDirectory::getName() const
-    {
-        return m_name;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & SDLFileGroupDirectory::getFileGroup() const
-    {
-        return m_fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::isPacked() const
     {
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileGroupDirectory::getRelationPath() const
-    {
-        return m_relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & SDLFileGroupDirectory::getFolderPath() const
-    {
-        return m_folderPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::existFile( const FilePath & _filePath ) const
+    bool SDLFileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
         // SDL doesn't have this, so we're emulating ... ugly way :(
 
@@ -102,10 +77,17 @@ namespace Mengine
             return true;
         }
 
+        if( _recursive == true && m_parentFileGroup != nullptr )
+        {
+            bool result = m_parentFileGroup->existFile( _filePath, true );
+
+            return result;
+        }
+
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderPath ) const
+    bool SDLFileGroupDirectory::existDirectory( const FilePath & _folderPath, bool _recursive ) const
     {
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
@@ -116,13 +98,15 @@ namespace Mengine
         accountString.append( _folderPath );
         accountString.append( '/' );
 
-        if( PLATFORM_SERVICE()
-            ->existDirectory( accountString.c_str() ) == false )
+        bool result = PLATFORM_SERVICE()
+            ->existDirectory( accountString.c_str() );
+
+        if( _recursive == true && result == false && m_parentFileGroup != nullptr )
         {
-            return false;
+            result = m_parentFileGroup->existDirectory( _folderPath, true );
         }
 
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::createDirectory( const FilePath & _folderName ) const
@@ -171,60 +155,68 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, const Char * _doc )
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const Char * _doc )
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
 
-        SDLFileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
+        if( m_parentFileGroup != nullptr )
+        {
+            if( this->existFile( _filePath, false ) == false )
+            {
+                InputStreamInterfacePtr stream = m_parentFileGroup->createInputFile( _filePath, _streaming, _fileGroup, _doc );
 
-        return inputStream;
+                return stream;
+            }
+        }
+
+        SDLFileInputStreamPtr stream = m_factoryInputStream->createObject( _doc );
+        
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+
+        *_fileGroup = this;
+
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
+
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming ) == false )
-        {
-            LOGGER_ERROR( "failed open file '%s':'%s'"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-            );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming );
+        
+        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
-            return false;
-        }
-
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const Char * _doc )
     {
-        SDLFileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
+        SDLFileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
 
-        return outputStream;
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+
+        return stream;
     }
     //////////////////////////////////////////////////////////////////////////	
     bool SDLFileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
+
         FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
-        if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
-        {
-            LOGGER_ERROR( "failed open file '%s':'%s'"
-                , m_folderPath.c_str()
-                , _filePath.c_str()
-            );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath );
+        
+        MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
 
-            return false;
-        }
-
-        return true;
+        return result;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLFileGroupDirectory::setRelationPath( const FilePath & _relationPath )
-    {
-        m_relationPath = _relationPath;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

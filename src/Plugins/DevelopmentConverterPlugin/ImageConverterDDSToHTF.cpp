@@ -14,6 +14,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -47,8 +48,7 @@ namespace Mengine
         FilePath full_input = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
         FilePath full_output = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
 
-        InputStreamInterfacePtr stream_intput = FILE_SERVICE()
-            ->openInputFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_input, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
             , m_options.inputFilePath.c_str()
@@ -124,8 +124,7 @@ namespace Mengine
             miplevel_data_memory += miplevel_data_size;
         }
 
-        OutputStreamInterfacePtr stream_output = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_output, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "invalid open output '%s' for '%s'"
             , full_output.c_str()

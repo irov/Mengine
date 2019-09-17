@@ -1,6 +1,5 @@
 #include "UserdataService.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -8,6 +7,7 @@
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UserdataService, Mengine::UserdataService );
@@ -85,7 +85,7 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        if( desc.category->existFile( desc.path ) == false )
+        if( desc.category->existFile( desc.path, true ) == false )
         {
             return false;
         }
@@ -108,8 +108,7 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( desc.category, desc.path, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.category, desc.path, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "data '%s' invalid open file '%s'"
             , _name.c_str()
@@ -151,8 +150,7 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( desc.category, desc.path, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.category, desc.path, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "data '%s' invalid open file '%s'"
             , _name.c_str()

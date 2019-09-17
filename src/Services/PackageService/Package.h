@@ -25,7 +25,7 @@ namespace Mengine
             , const ConstString & _locale
             , const Tags & _platform
             , const FilePath & _descriptionPath
-            , const FileGroupInterfacePtr & _mountFileGroup
+            , const FileGroupInterfacePtr & _baseFileGroup
             , const FilePath & _filePath
             , bool _preload
         );
@@ -46,6 +46,13 @@ namespace Mengine
 
         void setPathPath( const FilePath & _filePath ) override;
         const FilePath & getPathPath() const override;
+
+    public:
+        void setParent( const PackageInterfacePtr & _package ) override;
+        const PackageInterfacePtr & getParent() const override;
+
+    public:
+        const FileGroupInterfacePtr & getFileGroup() const override;
 
     public:
         bool load( const Char * _doc ) override;
@@ -99,7 +106,9 @@ namespace Mengine
         ConstString m_type;
         ConstString m_locale;
 
-        FileGroupInterfacePtr m_mountFileGroup;
+        PackageInterfacePtr m_parentPackage;
+
+        FileGroupInterfacePtr m_baseFileGroup;
 
         Tags m_platform;
         FilePath m_descriptionPath;
@@ -151,6 +160,6 @@ namespace Mengine
         bool m_enable;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Package> PackagePtr;
+    typedef IntrusivePtr<Package, PackageInterface> PackagePtr;
     //////////////////////////////////////////////////////////////////////////
 }

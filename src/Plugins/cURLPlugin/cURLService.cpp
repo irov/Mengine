@@ -274,7 +274,7 @@ namespace Mengine
             return 0;
         }
 
-        if( _fileGroup->existFile( _filePath ) == true )
+        if( _fileGroup->existFile( _filePath, true ) == true )
         {
             LOGGER_ERROR( "url '%s' category '%s' file alredy exist '%s'"
                 , _url.c_str()

@@ -1,6 +1,5 @@
 #include "ResourceImageData.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -30,8 +30,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
         const FilePath & filePath = this->getFilePath();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "image file '%s:%s' was not found"
             , this->getFileGroup()->getName().c_str()

@@ -1,6 +1,7 @@
 #include "ResourceTexturepacker.h"
 
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -10,6 +11,9 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Content.h"
+#include "Kernel/Document.h"
+#include "Kernel/PathHelper.h"
 
 #include "jpp/jpp.hpp"
 
@@ -87,17 +91,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
-        const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageName );
+        if( m_resourceImageName.empty() == false )
+        {
+            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
+                ->getResource( m_resourceImageName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
-            , this->getName().c_str()
-            , this->getFileGroup()->getName().c_str()
-            , this->getGroupName().c_str()
-            , m_resourceImageName.c_str()
-        );
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+                , this->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
+                , this->getGroupName().c_str()
+                , m_resourceImageName.c_str()
+            );
 
-        m_resourceImage = resourceImage;
+            m_resourceImage = resourceImage;
+        }
 
         const ResourcePtr & resourceJSON = RESOURCE_SERVICE()
             ->getResource( m_resourceJSONName );
@@ -111,26 +118,15 @@ namespace Mengine
 
         m_resourceJSON = resourceJSON;
 
-        bool atlasHasAlpha = m_resourceImage->hasAlpha();
-        bool atlasIsPremultiply = m_resourceImage->isPremultiply();
-        bool atlasIsPow2 = m_resourceImage->isPow2();
-        const RenderTextureInterfacePtr & atlasTexture = m_resourceImage->getTexture();
-        const RenderTextureInterfacePtr & atlasTextureAlpha = m_resourceImage->getTextureAlpha();
-
         UnknownResourceJSONInterface * unknownResourceJSON = m_resourceJSON->getUnknown();
 
         const JSONStorageInterfacePtr & storage = unknownResourceJSON->getJSONStorage();
 
         const jpp::object & root = storage->getJSON();
 
-        if( root == jpp::detail::invalid )
-        {
-            LOGGER_ERROR( "invalid json '%s'"
-                , m_resourceJSONName.c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION( root != jpp::detail::invalid, false, "invalid json '%s'"
+            , m_resourceJSONName.c_str()
+        );
 
         jpp::object root_meta = root["meta"];
 
@@ -150,6 +146,48 @@ namespace Mengine
 
         m_atlasWidthInv = atlas_width_inv;
         m_atlasHeightInv = atlas_height_inv;
+
+        if( m_resourceImageName.empty() == true )
+        {
+            const Char * root_meta_image = (const Char *)root_meta["image"];
+            (void)root_meta_image;
+
+            ResourceImagePtr resource = RESOURCE_SERVICE()
+                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
+
+            Content * json_content = m_resourceJSON->getContent();
+            const FileGroupInterfacePtr & fileGroup = m_resourceJSON->getFileGroup();
+            const FilePath & filePath = json_content->getFilePath();
+            
+
+            Content * resource_content = resource->getContent();
+
+            FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
+
+            resource->setFileGroup( fileGroup );
+            resource_content->setFilePath( newFilePath );
+
+            ConstString codecType = CODEC_SERVICE()
+                ->findCodecType( newFilePath );
+
+            resource_content->setCodecType( codecType );
+
+            mt::vec2f size( (float)atlas_width, (float)atlas_height );
+            resource->setMaxSize( size );
+            resource->setSize( size );
+
+            resource->compile();
+
+            m_resourceImage = resource;
+        }
+
+        bool atlasHasAlpha = m_resourceImage->hasAlpha();
+        bool atlasIsPremultiply = m_resourceImage->isPremultiply();
+        bool atlasIsPow2 = m_resourceImage->isPow2();
+        const RenderTextureInterfacePtr & atlasTexture = m_resourceImage->getTexture();
+        const RenderTextureInterfacePtr & atlasTextureAlpha = m_resourceImage->getTextureAlpha();
 
         jpp::object root_frames = root["frames"];
 

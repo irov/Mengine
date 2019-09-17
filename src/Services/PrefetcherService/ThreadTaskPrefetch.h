@@ -34,6 +34,8 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroup;
         InputStreamInterfacePtr m_stream;
         PrefetcherObserverInterfacePtr m_observer;
+
+        FileGroupInterface * m_realFileGroup;
     };
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const FilePath & ThreadTaskPrefetch::getFilePath() const

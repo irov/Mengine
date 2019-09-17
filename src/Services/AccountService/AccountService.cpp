@@ -4,9 +4,9 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -17,6 +17,7 @@
 #include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/StringHelper.h"
 
 #include "Config/Typedef.h"
@@ -499,7 +500,7 @@ namespace Mengine
 
         FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-        if( m_fileGroup->existFile( accountsPath ) == false )
+        if( m_fileGroup->existFile( accountsPath, true ) == false )
         {
             LOGGER_WARNING( "not exist accounts '%s'"
                 , accountsPath.c_str()
@@ -664,8 +665,7 @@ namespace Mengine
 
         FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-        OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Accounts '%s' settings not saved"
             , accountsPath.c_str()

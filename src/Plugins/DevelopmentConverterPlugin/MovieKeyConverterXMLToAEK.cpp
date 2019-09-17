@@ -2,7 +2,6 @@
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
@@ -16,8 +15,10 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/PathString.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/PathString.h"
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "Config/Vector.h"
 
@@ -787,8 +788,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
     {
-        OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file '%s:%s'"
             , m_options.fileGroup->getName().c_str()

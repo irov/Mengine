@@ -8,6 +8,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/Document.h"
 
 namespace Mengine
@@ -45,8 +46,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -116,8 +116,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( fileGroup, _path, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, _path, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

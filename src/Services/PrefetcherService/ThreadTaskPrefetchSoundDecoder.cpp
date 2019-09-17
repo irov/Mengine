@@ -42,7 +42,7 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
             , this->getFileGroup()->getName().c_str()
@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchSoundDecoder::_onMain()
     {
-        if( m_fileGroup->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
+        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
         {
             LOGGER_ERROR( "invalide open file '%s:%s'"
                 , this->getFileGroup()->getName().c_str()

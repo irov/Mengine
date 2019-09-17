@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
@@ -17,7 +18,8 @@ namespace Mengine
         ConstString locale;
         Tags platform;
 
-        ConstString category;
+        ConstString fileGroupName;
+        ConstString parent;
         FilePath descriptionPath;
         FilePath path;
 
@@ -25,6 +27,8 @@ namespace Mengine
         bool immediately;
         bool preload;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class PackageInterface> PackageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PackageInterface
         : public Interface
@@ -47,6 +51,13 @@ namespace Mengine
         virtual const FilePath & getPathPath() const = 0;
 
     public:
+        virtual void setParent( const PackageInterfacePtr & _package ) = 0;
+        virtual const PackageInterfacePtr & getParent() const = 0;
+
+    public:
+        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
+
+    public:
         virtual bool load( const Char * _doc ) = 0;
         virtual bool enable() = 0;
         virtual bool disable() = 0;
@@ -57,5 +68,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PackageInterface> PackageInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////    
+    //////////////////////////////////////////////////////////////////////////
 }

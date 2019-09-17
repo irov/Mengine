@@ -19,7 +19,7 @@ namespace Mengine
         const FilePath & filePath = _resource->getFilePath();
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        if( fileGroup->existFile( filePath ) == false )
+        if( fileGroup->existFile( filePath, true ) == false )
         {
             LOGGER_ERROR( "resource '%s' group '%s' file group '%s' not found file '%s'"
                 , _resource->getName().c_str()

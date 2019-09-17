@@ -1,6 +1,5 @@
 #include "BitmapGlyph.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryHelper.h"
@@ -9,6 +8,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "xmlsax/xmlsax.hpp"
 
@@ -389,8 +389,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapGlyph::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
             , _fileGroup->getName().c_str()

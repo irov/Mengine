@@ -3,7 +3,6 @@
 #include "Config/Stringstream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SecureServiceInterface.h"
 
@@ -13,6 +12,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/FilePathHelper.h"
 
 #include <stdio.h>
@@ -37,8 +37,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
         {
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "open ini file '%s:%s'"
                 , _fileGroup->getName().c_str()
@@ -47,7 +46,9 @@ namespace Mengine
 
             _ini.path = _filePath;
 
-            return loadIni( _ini, stream );
+            bool successful = IniUtil::loadIni( _ini, stream );
+
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream )

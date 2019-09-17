@@ -10,6 +10,7 @@
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "Metacode/Metacode.h"
 
@@ -137,8 +138,7 @@ namespace Mengine
             , m_options.pathBin.c_str()
         );
 
-        InputStreamInterfacePtr protocol_stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroupDev, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathProtocol, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, 0, "error open protocol '%s'"
             , m_options.pathProtocol.c_str()
@@ -204,8 +204,7 @@ namespace Mengine
 
         memory_protocol = nullptr;
 
-        InputStreamInterfacePtr xml_stream = FILE_SERVICE()
-            ->openInputFile( m_fileGroupDev, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathXml, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, 0, "error open xml '%s'"
             , m_options.pathXml.c_str()
@@ -311,8 +310,7 @@ namespace Mengine
             , m_options.pathXml.c_str()
         );
 
-        OutputStreamInterfacePtr bin_stream = FILE_SERVICE()
-            ->openOutputFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, 0, "error create bin '%s'"
             , m_options.pathBin.c_str()

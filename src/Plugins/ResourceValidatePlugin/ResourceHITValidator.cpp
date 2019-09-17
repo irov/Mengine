@@ -1,6 +1,5 @@
 #include "ResourceHITValidator.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PickCodecInterface.h"
 
@@ -8,6 +7,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -25,13 +25,12 @@ namespace Mengine
         const FilePath & filePath = _resource->getFilePath();
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        if( fileGroup->existFile( filePath ) == false )
+        if( fileGroup->existFile( filePath, true ) == false )
         {
             return false;
         }
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "resource '%s' group '%s' invalid open file '%s:%s'"
             , _resource->getName().c_str()

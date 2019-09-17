@@ -1,12 +1,12 @@
 #include "TextLocalePackage.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "stdex/xml_sax_parser.h"
 
@@ -26,8 +26,7 @@ namespace Mengine
         m_fileGroup = _fileGroup;
         m_filePath = _filePath;
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
             , _fileGroup->getName().c_str()

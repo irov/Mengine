@@ -1,13 +1,16 @@
-cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2)
 
 project(python3)
 
-SET( SOURCE_DIR ${THIRDPARTY_DIR}/Python3 )
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/Python3)
 
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-configure_file(Modified/_iomodule.c ${SOURCE_DIR}/Modules/_io/_iomodule.c COPYONLY)
-configure_file(Modified/mpdecimal.c ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c COPYONLY)
+#configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+#configure_file(Modified/_iomodule.c ${SOURCE_DIR}/Modules/_io/_iomodule.c COPYONLY)
+#configure_file(Modified/mpdecimal.c ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c COPYONLY)
+
+ADD_DEFINITIONS(-D_PYTHONFRAMEWORK="CPython")
+ADD_DEFINITIONS(-D_Py_HAVE_ZLIB)
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -20,8 +23,6 @@ REMOVE_DEFINITIONS(-Doverride)
 
 set(extraLibs)
 
-set(THREAD_SRC)
-
 if(HAVE_LIBM)
   set(extraLibs ${extraLibs} ${HAVE_LIBM})
 endif()
@@ -30,11 +31,7 @@ if(HAVE_LIBUTIL)
   set(extraLibs ${extraLibs} ${HAVE_LIBUTIL})
 endif()
 
-set(MACHDEP_SRCS ) #conf 
-
-set(SIGNAL_SRCS )    # configure
-
-set(MOD_SRCS )
+set(MOD_SRCS)
 
 # this macro let's you decide whether you want to build the macro 
 # and if yes, whether you want to build it statically or as module
@@ -103,6 +100,7 @@ set(PARSER_SRCS ${P_SRCS} ${SOURCE_DIR}/Parser/myreadline.c ${SOURCE_DIR}/Parser
 
 set(OBJECT_SRCS                
         ${SOURCE_DIR}/Objects/abstract.c
+        ${SOURCE_DIR}/Objects/call.c
         ${SOURCE_DIR}/Objects/boolobject.c
         ${SOURCE_DIR}/Objects/bytes_methods.c
         ${SOURCE_DIR}/Objects/bytearrayobject.c
@@ -156,6 +154,8 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/asdl.c
                 ${SOURCE_DIR}/Python/ast.c
+                ${SOURCE_DIR}/Python/ast_opt.c
+                ${SOURCE_DIR}/Python/ast_unparse.c
                 ${SOURCE_DIR}/Python/bltinmodule.c
                 ${SOURCE_DIR}/Python/ceval.c
                 ${SOURCE_DIR}/Python/codecs.c
@@ -202,8 +202,11 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/pyhash.c    
                 ${SOURCE_DIR}/Python/pylifecycle.c
                 ${SOURCE_DIR}/Python/pystrhex.c
+                ${SOURCE_DIR}/Python/bootstrap_hash.c
 				${SOURCE_DIR}/Python/pyhash.c
-				${SOURCE_DIR}/Python/random.c
+                ${SOURCE_DIR}/Python/pathconfig.c
+                ${SOURCE_DIR}/Python/context.c
+                ${SOURCE_DIR}/Python/hamt.c
                 
                 ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/dl_nt.c
@@ -213,8 +216,6 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/PC/invalid_parameter_handler.c
                 
                 
-                #${MACHDEP_SRCS}
-                ${THREAD_SRC}
                 ${DYNLOAD_SRC}
                 )
  
@@ -241,7 +242,9 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_stat.c
                 ${SOURCE_DIR}/Modules/_winapi.c
                 ${SOURCE_DIR}/Modules/_operator.c
+                ${SOURCE_DIR}/Modules/_contextvarsmodule.c
                 ${SOURCE_DIR}/Modules/_ssl.c
+                ${SOURCE_DIR}/Modules/_abc.c
 
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c

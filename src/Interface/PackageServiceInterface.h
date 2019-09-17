@@ -23,7 +23,7 @@ namespace Mengine
         virtual bool hasPackage( const ConstString & _name ) const = 0;
         virtual bool addPackage( const PackageDesc & _desc, const Char * _doc ) = 0;
         virtual bool removePackage( const ConstString & _name ) = 0;
-        virtual PackageInterfacePtr getPackage( const ConstString & _name ) const = 0;
+        virtual const PackageInterfacePtr & getPackage( const ConstString & _name ) const = 0;
 
     public:
         virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;

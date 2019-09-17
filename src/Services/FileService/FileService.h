@@ -3,8 +3,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Map.h"
+#include "Kernel/Hashtable.h"
 
 namespace Mengine
 {
@@ -23,7 +22,7 @@ namespace Mengine
         FileGroupInterfacePtr createFileGroup( const ConstString & _type, const Char * _doc );
 
     public:
-        bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) override;
+        bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) override;
         bool unmountFileGroup( const ConstString & _name ) override;
 
     public:
@@ -33,14 +32,10 @@ namespace Mengine
     public:
         const FileGroupInterfacePtr & getDefaultFileGroup() const override;
 
-    public:
-        InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _streaming, const Char * _doc ) override;
-        OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
-
     private:
         FileGroupInterfacePtr m_defaultFileGroup;
 
-        typedef Map<ConstString, FileGroupInterfacePtr> MapFileGroups;
-        MapFileGroups m_fileGroups;
+        typedef Hashtable<ConstString, FileGroupInterfacePtr> HashtableFileGroups;
+        HashtableFileGroups m_fileGroups;
     };
 }

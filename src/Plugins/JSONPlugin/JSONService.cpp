@@ -118,6 +118,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _stream, nullptr );
+
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
@@ -129,10 +131,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _memory, nullptr );
+
         const void * memory_buffer = _memory->getBuffer();
         size_t memory_size = _memory->getSize();
 
         JSONStorageInterfacePtr storage = this->createJSONBuffer( memory_buffer, memory_size, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr );
 
         return storage;
     }

@@ -12,6 +12,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include <string.h>
 
@@ -36,8 +37,7 @@ namespace Mengine
         if( PREFETCHER_SERVICE()
             ->getStream( _fileGroup, _filePath, memory ) == false )
         {
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't open file '%s:%s'"
                 , _fileGroup->getName().c_str()

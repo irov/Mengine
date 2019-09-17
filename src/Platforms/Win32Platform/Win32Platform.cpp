@@ -2,8 +2,8 @@
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 
@@ -21,6 +21,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/Stringalized.h"
 
@@ -1646,8 +1647,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-            OutputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openOutputFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
+            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' path '%s' can't open output stream '%s'"
                 , _name.c_str()

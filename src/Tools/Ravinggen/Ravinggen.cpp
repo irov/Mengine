@@ -29,6 +29,8 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Ravingcode.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "ToolUtils/ToolUtils.h"
 
@@ -140,7 +142,7 @@ namespace Mengine
         PLUGIN_CREATE( LZ4 );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -148,7 +150,7 @@ namespace Mengine
         ConstString dev = STRINGIZE_STRING_LOCAL( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->mountFileGroup( dev, nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -223,8 +225,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     Mengine::Helper::ravingcode( (uint32_t)sequreHash, memoryBuffer, memorySize, memoryBuffer );
 
-    Mengine::OutputStreamInterfacePtr outputStream = FILE_SERVICE()
-        ->openOutputFile( fileGroup, fp_out, MENGINE_DOCUMENT_FUNCTION );
+    Mengine::OutputStreamInterfacePtr outputStream = Mengine::Helper::openOutputStreamFile( fileGroup, fp_out, MENGINE_DOCUMENT_FUNCTION );
 
     outputStream->write( "RGCD", 4 );
     outputStream->write( memoryBuffer, memorySize );

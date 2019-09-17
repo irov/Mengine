@@ -31,6 +31,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/MT19937Randomizer.h"
 #include "Kernel/InputServiceHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
 
 #include "Engine/ResourceFile.h"
@@ -1236,8 +1237,7 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
-                InputStreamInterfacePtr stream = FILE_SERVICE()
-                    ->openInputFile( fileGroup, _filePath, false, MENGINE_DOCUMENT_PYBIND );
+                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
@@ -1397,7 +1397,7 @@ namespace Mengine
 
             desc.name = _name;
             desc.type = _type;
-            desc.category = _category;
+            desc.fileGroupName = _category;
             desc.path = _path;
             desc.descriptionPath = _descriptionPath;
 
@@ -1428,7 +1428,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _fileGroupName );
 
-            bool result = fileGroup->existFile( _filePath );
+            bool result = fileGroup->existFile( _filePath, true );
 
             return result;
         }
@@ -1766,8 +1766,7 @@ namespace Mengine
 
             const FilePath & filePath = resourceFile->getFilePath();
 
-            InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_PYBIND );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_PYBIND );
 
             if( stream == nullptr )
             {

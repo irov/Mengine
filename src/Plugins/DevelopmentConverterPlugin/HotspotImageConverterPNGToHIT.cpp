@@ -3,7 +3,6 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/PickCodecInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
@@ -11,6 +10,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include <algorithm>
 #include <math.h>
@@ -67,8 +67,7 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::convert()
     {
-        InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( m_options.fileGroup, m_options.inputFilePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( m_options.fileGroup, m_options.inputFilePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( input_stream, false, "Image file '%s' was not found"
             , m_options.inputFilePath.c_str()
@@ -130,8 +129,7 @@ namespace Mengine
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file '%s')"
             , m_options.outputFilePath.c_str()

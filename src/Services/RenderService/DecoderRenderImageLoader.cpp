@@ -1,11 +1,11 @@
 #include "DecoderRenderImageLoader.h"
 
 #include "Interface/PrefetcherServiceInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/memorycopy.h"
@@ -153,8 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType ) const
     {
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid open stream '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()

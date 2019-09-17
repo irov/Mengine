@@ -35,7 +35,7 @@ namespace Mengine
         , const ConstString & _locale
         , const Tags & _platform
         , const FilePath & _descriptionPath
-        , const FileGroupInterfacePtr & _mountFileGroup
+        , const FileGroupInterfacePtr & _baseFileGroup
         , const FilePath & _filePath
         , bool _preload )
     {
@@ -44,7 +44,7 @@ namespace Mengine
         m_locale = _locale;
         m_platform = _platform;
         m_descriptionPath = _descriptionPath;
-        m_mountFileGroup = _mountFileGroup;
+        m_baseFileGroup = _baseFileGroup;
         m_filePath = _filePath;
         m_preload = _preload;
     }
@@ -99,6 +99,21 @@ namespace Mengine
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Package::setParent( const PackageInterfacePtr & _package )
+    {
+        m_parentPackage = _package;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const PackageInterfacePtr & Package::getParent() const
+    {
+        return m_parentPackage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & Package::getFileGroup() const
+    {
+        return m_fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Package::load( const Char * _doc )
     {
         if( this->mountFileGroup_( _doc ) == false )
@@ -123,9 +138,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::mountFileGroup_( const Char * _doc )
     {
+        const PackageInterfacePtr & parentPackage = this->getParent();
+        const FileGroupInterfacePtr & parentFileGroup = (parentPackage == nullptr) ? FileGroupInterfacePtr::none() : parentPackage->getFileGroup();
+
         FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_mountFileGroup, m_filePath, m_type, &fileGroup, false, _doc ) == false )
+            ->mountFileGroup( m_name, m_baseFileGroup, parentFileGroup, m_filePath, m_type, &fileGroup, false, _doc ) == false )
         {
             LOGGER_ERROR( "failed to mount package '%s' path '%s'"
                 , m_name.c_str()
@@ -158,10 +176,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadPackage_()
     {
-        if( SERVICE_EXIST( LoaderServiceInterface ) == false )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_RETURN( SERVICE_EXIST( LoaderServiceInterface ) == true, false );
 
         if( m_descriptionPath.empty() == true )
         {
@@ -193,6 +208,7 @@ namespace Mengine
 
             ConstString Module;
             meta_scripts.get_Module( &Module );
+
             ConstString Initializer;
             meta_scripts.get_Initializer( &Initializer );
 

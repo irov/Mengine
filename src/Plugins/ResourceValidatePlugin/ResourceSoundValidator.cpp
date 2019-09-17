@@ -1,11 +1,11 @@
 #include "ResourceSoundValidator.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -27,8 +27,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, streamable, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

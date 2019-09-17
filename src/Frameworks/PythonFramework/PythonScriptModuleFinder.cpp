@@ -245,7 +245,7 @@ namespace Mengine
 
                 FilePath c_fullPath = Helper::stringizeFilePath( m_cacheFullPath );
 
-                if( fileGroup->existFile( c_fullPath ) == false )
+                if( fileGroup->existFile( c_fullPath, true ) == false )
                 {
                     continue;
                 }

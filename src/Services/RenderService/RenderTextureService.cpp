@@ -1,6 +1,5 @@
 #include "RenderTextureService.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardServiceInterface.h"
@@ -17,6 +16,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -183,8 +183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
     {
-        OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't create file '%s' '%s'"
             , _fileGroup->getName().c_str()

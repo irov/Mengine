@@ -1,7 +1,6 @@
 #include "SoundService.h"
 
 #include "Interface/SoundCodecInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -15,6 +14,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "math/utils.h"
 
@@ -434,8 +434,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
     {
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, _streamable, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "can't open sound file '%s:%s'"
             , _fileGroup->getName().c_str()

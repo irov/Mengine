@@ -1,11 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/InputStreamInterface.h"
-
 #include "Interface/FileGroupInterface.h"
-
-#include "Kernel/Factory.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -18,7 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "FileService" )
 
     public:
-        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) = 0;
+        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) = 0;
         virtual bool unmountFileGroup( const ConstString & _name ) = 0;
 
     public:
@@ -27,10 +23,6 @@ namespace Mengine
 
     public:
         virtual const FileGroupInterfacePtr & getDefaultFileGroup() const = 0;
-
-    public:
-        virtual InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _streamable, const Char * _doc ) = 0;
-        virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

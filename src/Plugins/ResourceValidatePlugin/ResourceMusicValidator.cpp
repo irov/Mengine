@@ -29,7 +29,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        if( fileGroup->existFile( filePath ) == false )
+        if( fileGroup->existFile( filePath, true ) == false )
         {
             LOGGER_ERROR( "resource '%s' group '%s' music '%s' not exist"
                 , _resource->getName().c_str()

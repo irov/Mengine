@@ -1,6 +1,5 @@
 #include "LoaderService.h"
 
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
@@ -14,6 +13,7 @@
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 #include "metabuf/Metadata.hpp"
 #include "Metacode/Metacode.h"
@@ -127,8 +127,7 @@ namespace Mengine
                 return false;
             }
 
-            file_bin = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             done = this->importBin_( file_bin, _metadata, _metaVersion, nullptr );
         }
@@ -139,8 +138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const
     {
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -287,12 +285,15 @@ namespace Mengine
             ++index;
         }
 
-        if( _metadata->parse( binary_memory, bin_size, read_size, (void *)& m_metacache ) == false )
+        if( read_size != bin_size )
         {
-            LOGGER_ERROR( "invlid parse (error)"
-            );
+            if( _metadata->parse( binary_memory, bin_size, read_size, (void *)& m_metacache ) == false )
+            {
+                LOGGER_ERROR( "invlid parse (error)"
+                );
 
-            return false;
+                return false;
+            }
         }
 
         m_metacache.strings.clear();
@@ -317,17 +318,16 @@ namespace Mengine
 
         FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
 
-        if( _fileGroup->existFile( c_cache_path_xml ) == false )
+        if( _fileGroup->existFile( c_cache_path_xml, true ) == false )
         {
-            if( _fileGroup->existFile( _filePath ) == false )
+            if( _fileGroup->existFile( _filePath, true ) == false )
             {
                 *_exist = false;
 
                 return false;
             }
 
-            InputStreamInterfacePtr file_bin = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
@@ -338,7 +338,7 @@ namespace Mengine
 
         *_exist = true;
 
-        if( _fileGroup->existFile( _filePath ) == false )
+        if( _fileGroup->existFile( _filePath, true ) == false )
         {
             if( this->makeBin_( _fileGroup, c_cache_path_xml, _filePath ) == false )
             {
@@ -346,13 +346,11 @@ namespace Mengine
             }
         }
 
-        InputStreamInterfacePtr file_bin = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
-        InputStreamInterfacePtr file_xml = FILE_SERVICE()
-            ->openInputFile( _fileGroup, c_cache_path_xml, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( _fileGroup, c_cache_path_xml, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_xml, false );
 
@@ -376,8 +374,7 @@ namespace Mengine
                 return false;
             }
 
-            file_bin = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
         }
 
         *_stream = file_bin;

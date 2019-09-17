@@ -1,12 +1,12 @@
 #include "ResourceImageDefaultValidator.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -96,7 +96,7 @@ namespace Mengine
         const FilePath & filePath = _resource->getFilePath();
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        if( fileGroup->existFile( filePath ) == false )
+        if( fileGroup->existFile( filePath, true ) == false )
         {
             bool validNoExist = resource->isValidNoExist();
 
@@ -115,8 +115,7 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

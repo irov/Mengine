@@ -212,6 +212,11 @@ namespace Mengine
             this->updateLocalVertex2D_();
         }
 
+        if( m_renderIndices.empty() == true )
+        {
+            return;
+        }
+
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
             ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
 
@@ -221,7 +226,7 @@ namespace Mengine
         VectorRenderIndex::value_type * indexData = m_renderIndices.data();
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
 
-        this->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false );
+        this->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::_invalidateWorldMatrix()

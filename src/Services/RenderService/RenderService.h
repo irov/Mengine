@@ -144,34 +144,34 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount ) override;
+            , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc ) override;
 
         void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug ) override;
+            , const mt::box2f * _bb, bool _debug, const Char * _doc ) override;
 
         void addRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug ) override;
+            , const mt::box2f * _bb, bool _debug, const Char * _doc ) override;
 
         void addRenderLine( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug ) override;
+            , const mt::box2f * _bb, bool _debug, const Char * _doc ) override;
 
     public:
         void addDebugRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount ) override;
+            , const RenderIndex * _indices, uint32_t _indexCount, const Char * _doc ) override;
 
         void addDebugRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount ) override;
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const Char * _doc ) override;
 
     protected:
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );

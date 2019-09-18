@@ -7,6 +7,11 @@
 #define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MENGINE_MIN(a, b) ((a) < (b) ? (a) : (b))
 
+#define MENGINE_PP_STRINGIZE_I(X) #X
+#define MENGINE_PP_STRINGIZE(X) MENGINE_STRINGIZE_I(X)
+
+#define MENGINE_PP_CONCATENATE_I(X, Y) X Y
+#define MENGINE_PP_CONCATENATE(X, Y) MENGINE_CONCATENATE_I(X, Y)
 
 #ifndef MENGINE_UNUSED
 #define MENGINE_UNUSED(X) ((void)X)

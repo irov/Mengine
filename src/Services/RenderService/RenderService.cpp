@@ -499,7 +499,7 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
-            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true );
+            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_FUNCTION );
         }
 
         m_debugRenderObjects.clear();
@@ -1234,14 +1234,16 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , uint32_t _vertexCount, uint32_t _indexCount )
+        , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc )
     {
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr" );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr" );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr" );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr" );
-        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, "_vertexBuffer == nullptr" );
-        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, "_indexBuffer == nullptr" );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, "_vertexBuffer == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, "_indexBuffer == nullptr (doc: %s)", _doc );
 
         if( m_renderObjects.full() == true )
         {
@@ -1311,14 +1313,16 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
-        , const mt::box2f * _bb, bool _debug )
+        , const mt::box2f * _bb, bool _debug, const Char * _doc )
     {
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr" );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr" );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr" );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr" );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr" );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr" );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", _doc );
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {
@@ -1482,14 +1486,16 @@ namespace Mengine
     void RenderService::addDebugRenderObject( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const RenderIndex * _indices, uint32_t _indexCount )
+        , const RenderIndex * _indices, uint32_t _indexCount, const Char * _doc )
     {
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr" );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr" );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr" );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr" );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr" );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr" );
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", _doc );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", _doc );
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {
@@ -1523,7 +1529,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::addDebugRenderQuad( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount )
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount, const Char * _doc )
     {
         uint32_t indicesCount = (_vertexCount / 4) * 6;
 
@@ -1539,13 +1545,13 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addDebugRenderObject( _context, _material, _vertices, _vertexCount, indices, indicesCount );
+        this->addDebugRenderObject( _context, _material, _vertices, _vertexCount, indices, indicesCount, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::addRenderQuad( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug )
+        , const mt::box2f * _bb, bool _debug, const Char * _doc )
     {
         uint32_t indicesCount = (_vertexCount / 4) * 6;
 
@@ -1561,13 +1567,13 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug );
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::addRenderLine( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug )
+        , const mt::box2f * _bb, bool _debug, const Char * _doc )
     {
         uint32_t indicesCount = _vertexCount;
 
@@ -1583,7 +1589,7 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesLine.buff();
 
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug );
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( uint32_t _count )

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Config/Config.h"
-
 #ifdef MENGINE_DEBUG
+#   include "Config/Config.h"
 #   include "Config/Char.h"
 #   include <stdio.h>
 

@@ -140,7 +140,7 @@ namespace Mengine
             {
                 const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-                this->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false );
+                this->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false, MENGINE_DOCUMENT_FUNCTION );
             }
 
             elementVertexOffset += 4;

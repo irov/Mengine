@@ -104,7 +104,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        this->addRenderQuad( _context, material, m_vertices, 4, nullptr, false );
+        this->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
 

@@ -275,36 +275,36 @@ namespace Mengine
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , uint32_t _vertexCount, uint32_t _indexCount ) const
+        , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc ) const
     {
         RENDER_SERVICE()
-            ->addRenderMesh( _context, _material, _programVariable, _vertexBuffer, _indexBuffer, _vertexCount, _indexCount );
+            ->addRenderMesh( _context, _material, _programVariable, _vertexBuffer, _indexBuffer, _vertexCount, _indexCount, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
         , const RenderProgramVariableInterfacePtr & _programVariable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
-        , const mt::box2f * _bb, bool _debug ) const
+        , const mt::box2f * _bb, bool _debug, const Char * _doc ) const
     {
         RENDER_SERVICE()
-            ->addRenderObject( _context, _material, _programVariable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
+            ->addRenderObject( _context, _material, _programVariable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug ) const
+        , const mt::box2f * _bb, bool _debug, const Char * _doc ) const
     {
         RENDER_SERVICE()
-            ->addRenderQuad( _context, _material, _vertices, _vertexCount, _bb, _debug );
+            ->addRenderQuad( _context, _material, _vertices, _vertexCount, _bb, _debug, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderLine( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug ) const
+        , const mt::box2f * _bb, bool _debug, const Char * _doc ) const
     {
         RENDER_SERVICE()
-            ->addRenderLine( _context, _material, _vertices, _vertexCount, _bb, _debug );
+            ->addRenderLine( _context, _material, _vertices, _vertexCount, _bb, _debug, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderMaterialInterfacePtr & BaseRender::getDebugMaterial() const

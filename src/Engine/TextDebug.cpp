@@ -132,7 +132,7 @@ namespace Mengine
                     }
 
                     RENDER_SERVICE()
-                        ->addDebugRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count );
+                        ->addDebugRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, MENGINE_DOCUMENT_FUNCTION );
                 }
             }
         }

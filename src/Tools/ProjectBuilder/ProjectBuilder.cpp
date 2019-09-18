@@ -51,6 +51,7 @@
 
 #include "stdex/sha1.h"
 
+#include <algorithm>
 #include <io.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -648,7 +649,7 @@ static void s_error( const wchar_t * _msg )
     );
 }
 //////////////////////////////////////////////////////////////////////////
-static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _size )
+static bool getCurrentUserRegValue( const WCHAR * _path, const WCHAR * _key, WCHAR * _value, DWORD _size )
 {
     HKEY hKey;
     LONG lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ, &hKey );  // Check Python x32
@@ -670,7 +671,7 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
     }
 
     DWORD dwBufferSize = _size;
-    LONG nError = ::RegQueryValueEx( hKey, L"", 0, NULL, (LPBYTE)_value, &dwBufferSize );
+    LONG nError = ::RegQueryValueEx( hKey, _key, 0, NULL, (LPBYTE)_value, &dwBufferSize );
 
     RegCloseKey( hKey );
 
@@ -892,21 +893,59 @@ bool run()
         return false;
     }
 
-    WCHAR szPythonPath[512] = { 0 };
+    struct PythonDesc
+    {
+        uint32_t major_version;
+        uint32_t minor_version;
+
+        WCHAR szPythonPath[512];
+    };
+
+    std::vector<PythonDesc> pythonDescs;
     for( const std::wstring & version : vPythonVersions )
     {
+        PythonDesc desc;
+
         WCHAR szRegPath[512];
         wsprintf( szRegPath, L"SOFTWARE\\Python\\PythonCore\\%ls\\PythonPath"
             , version.c_str()
-        );
+        );        
 
-        if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
+        if( getCurrentUserRegValue( szRegPath, L"", desc.szPythonPath, 512 ) == false )
         {
             continue;
         }
 
-        break;
+        WCHAR szRegSysVersion[512];
+        wsprintf( szRegSysVersion, L"SOFTWARE\\Python\\PythonCore\\%ls"
+            , version.c_str()
+        );
+
+        WCHAR szSysVersion[512];
+        if( getCurrentUserRegValue( szRegSysVersion, L"SysVersion", szSysVersion, 512 ) == false )
+        {
+            continue;
+        }
+
+        ::swscanf( szSysVersion, L"%u.%u"
+            , &desc.major_version
+            , &desc.minor_version
+        );
+
+        pythonDescs.emplace_back( desc );
     }
+
+    std::sort( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _l, const PythonDesc & _r )
+    {
+        uint32_t lk = _l.major_version * 100 + _l.minor_version;
+        uint32_t rk = _r.major_version * 100 + _r.minor_version;
+
+        return lk < rk;
+    } );
+
+    PythonDesc & desc = pythonDescs.front();
+
+    WCHAR * szPythonPath = desc.szPythonPath;
 
     if( ::wcslen( szPythonPath ) == 0 )
     {

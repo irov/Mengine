@@ -216,7 +216,7 @@ namespace Mengine
     {
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );
 
-        bool result = (it_found == m_files.end());
+        bool result = (it_found != m_files.end());
 
         if( _recursive == true && result == false && m_parentFileGroup != nullptr )
         {
@@ -376,8 +376,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const Char * _doc )
     {
-        MENGINE_ASSERTION_FATAL( m_files.find( _filePath ) != m_files.end(), nullptr );
-
         if( m_parentFileGroup != nullptr )
         {
             if( this->existFile( _filePath, false ) == false )
@@ -387,6 +385,8 @@ namespace Mengine
                 return stream;
             }
         }
+
+        MENGINE_ASSERTION_FATAL( m_files.find( _filePath ) != m_files.end(), nullptr );
 
         if( _streaming == true )
         {

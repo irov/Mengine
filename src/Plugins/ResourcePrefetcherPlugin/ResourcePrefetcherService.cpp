@@ -48,11 +48,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::prefetchResource( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
     {
-        LOGGER_INFO( "prefetch resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
+        LOGGER_INFO( "prefetch resource '%s' type '%s' group '%s' locale '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getFileGroup()->getName().c_str()
             , _resource->getLocale().c_str()
         );
 
@@ -72,11 +71,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::unfetchResource( const ResourcePtr & _resource )
     {
-        LOGGER_INFO( "unfetch resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
+        LOGGER_INFO( "unfetch resource '%s' type '%s' group '%s' locale '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getFileGroup()->getName().c_str()
             , _resource->getLocale().c_str()
         );
 

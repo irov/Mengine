@@ -1612,20 +1612,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<CacheResourceVisitor> CacheResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////
-        void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
+        void s_cacheResources( const ConstString & _groupName )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return;
-            }
-
             CacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<CacheResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class UncacheResourceVisitor
@@ -1672,20 +1664,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<UncacheResourceVisitor> UncacheResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////
-        void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
+        void s_uncacheResources( const ConstString & _groupName )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return;
-            }
-
             UncacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<UncacheResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_rotateToTrimetric( const mt::vec2f & _dir, const mt::vec2f & _vx, const mt::vec2f & _vy )
@@ -3300,20 +3284,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<ResourceVisitorGetAlreadyCompiled> ResourceVisitorGetAlreadyCompiledPtr;
         //////////////////////////////////////////////////////////////////////////
-        void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
+        void s_visitCompiledResources( const ConstString & _groupName, const pybind::object & _cb )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return;
-            }
-
             ResourceVisitorGetAlreadyCompiledPtr rv_gac = Helper::makeFactorableUnique<ResourceVisitorGetAlreadyCompiled>( _cb );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class MyResourceVisitor
@@ -3343,20 +3319,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<MyResourceVisitor> MyResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////
-        void s_visitResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
+        void s_visitResources( const ConstString & _groupName, const pybind::object & _cb )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return;
-            }
-
             MyResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<MyResourceVisitor>( _cb );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class IncrefResourceVisitor
@@ -3373,20 +3341,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<IncrefResourceVisitor> IncrefResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////		
-        void s_incrementResources( const ConstString & _category, const ConstString & _groupName )
+        void s_incrementResources( const ConstString & _groupName )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return;
-            }
-
             IncrefResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<IncrefResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class DecrementResourceVisitor
@@ -3403,20 +3363,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<DecrementResourceVisitor> DecrementResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////		
-        void s_decrementResources( const ConstString & _category, const ConstString & _groupName )
+        void s_decrementResources( const ConstString & _groupName )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return;
-            }
-
             DecrementResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<DecrementResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_incrementResourcesTags( const Tags & _tags )
@@ -3476,20 +3428,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<GetResourceVisitor> GetResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////		
-        pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _groupName )
+        pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _groupName )
         {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            if( fileGroup == nullptr )
-            {
-                return pybind::list( _kernel );
-            }
-
             GetResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<GetResourceVisitor>( _kernel );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, rv_gac );
+                ->visitGroupResources( _groupName, rv_gac );
 
             const pybind::list & l = rv_gac->getResult();
 

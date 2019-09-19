@@ -1621,16 +1621,18 @@ namespace Mengine
         ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer )
+    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const Content * _content, const MemoryInterfacePtr & _buffer )
     {
-        MapCursors::iterator it_found = m_cursors.find( _filePath );
+        const FilePath & filePath = _content->getFilePath();
+
+        MapCursors::iterator it_found = m_cursors.find( filePath );
 
         if( it_found == m_cursors.end() )
         {
             if( _buffer->empty() == true )
             {
                 LOGGER_ERROR( "'%s' buffer empty"
-                    , _filePath.c_str()
+                    , filePath.c_str()
                 );
 
                 return false;
@@ -1639,7 +1641,7 @@ namespace Mengine
             PathString icoFile;
             icoFile += "IconCache";
             icoFile += '/';
-            icoFile += _filePath;
+            icoFile += filePath;
             icoFile += ".ico";
 
             FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
@@ -1651,7 +1653,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' path '%s' can't open output stream '%s'"
                 , _name.c_str()
-                , _filePath.c_str()
+                , filePath.c_str()
                 , c_icoFile.c_str()
             );
 
@@ -1662,7 +1664,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't write output stream '%s'"
                     , _name.c_str()
-                    , _filePath.c_str()
+                    , filePath.c_str()
                     , c_icoFile.c_str()
                 );
 
@@ -1677,7 +1679,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
                     , _name.c_str()
-                    , _filePath.c_str()
+                    , filePath.c_str()
                     , c_icoFile.c_str()
                 );
 

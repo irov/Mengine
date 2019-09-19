@@ -34,7 +34,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         uint32_t magicNumber = _resource->getMagicNumber();
@@ -57,7 +57,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         bool successful = PREFETCHER_SERVICE()

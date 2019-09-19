@@ -1,5 +1,6 @@
 #include "ResourceFileValidator.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 
@@ -16,8 +17,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceFileValidator::_validate( const ResourceFilePtr & _resource )
     {
-        const FilePath & filePath = _resource->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        Content * content = _resource->getContent();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
+            , _resource->getType().c_str()
+        );
+
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         if( fileGroup->existFile( filePath, true ) == false )
         {

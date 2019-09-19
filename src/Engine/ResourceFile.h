@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 
 #include "Kernel/FilePath.h"
 
@@ -8,19 +9,14 @@ namespace Mengine
 {
     class ResourceFile
         : public Resource
+        , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceFile();
         ~ResourceFile() override;
-
-    public:
-        void setFilePath( const FilePath & _filePath );
-        const FilePath & getFilePath() const;
-
-    protected:
-        FilePath m_filePath;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceFile> ResourceFilePtr;

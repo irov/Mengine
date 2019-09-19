@@ -2144,11 +2144,12 @@ namespace Mengine
         if( m_cursorMode == true && m_cursorResource != nullptr )
         {
             const ConstString & name = m_cursorResource->getName();
-            const FilePath & filePath = m_cursorResource->getFilePath();
             const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
+            Content * content = m_cursorResource->getContent();
+
             PLATFORM_SERVICE()
-                ->notifyCursorIconSetup( name, filePath, buffer );
+                ->notifyCursorIconSetup( name, content, buffer );
         }
 
         m_invalidateCursorMode = true;
@@ -2181,11 +2182,12 @@ namespace Mengine
         }
 
         const ConstString & name = m_cursorResource->getName();
-        const FilePath & filePath = m_cursorResource->getFilePath();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
+        Content * content = m_cursorResource->getContent();
+
         PLATFORM_SERVICE()
-            ->notifyCursorIconSetup( name, filePath, buffer );
+            ->notifyCursorIconSetup( name, content, buffer );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::debugPause( bool _pause )

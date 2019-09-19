@@ -7,6 +7,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
+#include "Kernel/Content.h"
 #include "Kernel/Params.h"
 #include "Kernel/LambdaFilePath.h"
 
@@ -83,7 +84,7 @@ namespace Mengine
         virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
-        virtual bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _memory ) = 0;
+        virtual bool notifyCursorIconSetup( const ConstString & _name, const Content * _content, const MemoryInterfacePtr & _memory ) = 0;
 
     public:
         virtual void onEvent( const ConstString & _event, const MapWParams & _params ) = 0;

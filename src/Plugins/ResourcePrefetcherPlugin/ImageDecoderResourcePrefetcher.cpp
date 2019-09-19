@@ -21,7 +21,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
         const ConstString & codecType = content->getCodecType();
 
@@ -42,7 +42,7 @@ namespace Mengine
             , _resource->getType().c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
         bool successful = PREFETCHER_SERVICE()

@@ -96,9 +96,8 @@ namespace Mengine
             const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
                 ->getResource( m_resourceImageName );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
                 , this->getGroupName().c_str()
                 , m_resourceImageName.c_str()
             );
@@ -109,9 +108,8 @@ namespace Mengine
         const ResourcePtr & resourceJSON = RESOURCE_SERVICE()
             ->getResource( m_resourceJSONName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, false, "'%s' group '%s' invalid get image resource '%s'"
             , this->getName().c_str()
-            , this->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()
             , m_resourceJSONName.c_str()
         );
@@ -158,7 +156,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
 
             Content * json_content = m_resourceJSON->getContent();
-            const FileGroupInterfacePtr & fileGroup = m_resourceJSON->getFileGroup();
+            const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
             
 
@@ -166,7 +164,7 @@ namespace Mengine
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
 
-            resource->setFileGroup( fileGroup );
+            resource_content->setFileGroup( fileGroup );
             resource_content->setFilePath( newFilePath );
 
             ConstString codecType = CODEC_SERVICE()

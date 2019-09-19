@@ -13,18 +13,8 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceCursorSystem::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceCursorSystem::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const MemoryInterfacePtr & ResourceCursorSystem::getBuffer() const
     {
-        return m_buffer;
+        return MemoryInterfacePtr::none();
     }
 }

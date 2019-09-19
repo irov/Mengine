@@ -34,7 +34,7 @@ namespace Mengine
     public:
         PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const override;
 
-        PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) override;
+        PointerResourceReference createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) override;
         bool removeResource( const ResourcePtr & _resource ) override;
 
     public:
@@ -48,12 +48,12 @@ namespace Mengine
 
     public:
         void foreachResources( const LambdaResource & _lambda ) const override;
-        void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const override;
+        void foreachGroupResources( const ConstString & _groupName, const LambdaResource & _lambda ) const override;
         void foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const override;
 
     public:
         void visitResources( const VisitorPtr & _visitor ) const override;
-        void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
+        void visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
@@ -63,7 +63,7 @@ namespace Mengine
 
         typedef Pair<ConstString, ConstString> ResourceCacheKey;
         typedef Vector<ResourcePtr> VectorResources;
-        typedef Map<ResourceCacheKey, VectorResources> MapResourceCache;
+        typedef Map<ConstString, VectorResources> MapResourceCache;
         MapResourceCache m_resourcesCache;
     };
 }

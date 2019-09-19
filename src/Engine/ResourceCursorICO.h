@@ -2,22 +2,22 @@
 
 #include "ResourceCursor.h"
 
+#include "Kernel/Content.h"
+
 namespace Mengine
 {
     class ResourceCursorICO
         : public ResourceCursor
+        , public Content
     {
         DECLARE_VISITABLE( ResourceCursor );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceCursorICO();
         ~ResourceCursorICO() override;
 
     public:
-        void setFilePath( const FilePath & _filePath );
-
-    public:
-        const FilePath & getFilePath() const override;
         const MemoryInterfacePtr & getBuffer() const override;
 
     public:
@@ -25,8 +25,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        FilePath m_filePath;
-
         MemoryInterfacePtr m_buffer;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void Content::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    {
+        m_fileGroup = _fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & Content::getFileGroup() const
+    {
+        return m_fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Content::setFilePath( const FilePath & _filePath )
     {
         m_filePath = _filePath;

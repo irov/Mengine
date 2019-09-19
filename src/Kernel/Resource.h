@@ -39,9 +39,6 @@ namespace Mengine
         void setLocale( const ConstString & _locale );
         MENGINE_INLINE const ConstString & getLocale() const;
 
-        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
-        MENGINE_INLINE const FileGroupInterfacePtr & getFileGroup() const;
-
         void setGroupName( const ConstString & _groupName );
         MENGINE_INLINE const ConstString & getGroupName() const;
 
@@ -85,7 +82,6 @@ namespace Mengine
         uint32_t m_prefetchReferenceCount;
 
         ConstString m_locale;
-        FileGroupInterfacePtr m_fileGroup;
         ConstString m_groupName;
         Tags m_tags;
 
@@ -97,11 +93,6 @@ namespace Mengine
     MENGINE_INLINE const ConstString & Resource::getLocale() const
     {
         return m_locale;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE const FileGroupInterfacePtr & Resource::getFileGroup() const
-    {
-        return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ConstString & Resource::getGroupName() const

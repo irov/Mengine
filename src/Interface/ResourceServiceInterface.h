@@ -33,7 +33,7 @@ namespace Mengine
         virtual PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const = 0;
 
     public:
-        virtual PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) = 0;
+        virtual PointerResourceReference createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) = 0;
 
     public:
         virtual bool removeResource( const ResourcePtr & _resource ) = 0;
@@ -76,12 +76,12 @@ namespace Mengine
     public:
         typedef Lambda<void( const ResourcePtr & )> LambdaResource;
         virtual void foreachResources( const LambdaResource & _lambda ) const = 0;
-        virtual void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const = 0;
+        virtual void foreachGroupResources( const ConstString & _groupName, const LambdaResource & _lambda ) const = 0;
         virtual void foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const = 0;
 
     public:
         virtual void visitResources( const VisitorPtr & _visitor ) const = 0;
-        virtual void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const = 0;
+        virtual void visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

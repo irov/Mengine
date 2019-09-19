@@ -60,9 +60,8 @@ namespace Mengine
         m_resourceImageRGB = RESOURCE_SERVICE()
             ->getResource( m_resourceImageRGBName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, false, "'%s' category '%s' group '%s' invalid get rgb resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, false, "'%s' group '%s' invalid get rgb resource '%s'"
             , this->getName().c_str()
-            , this->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()
             , m_resourceImageRGBName.c_str()
         );
@@ -70,9 +69,8 @@ namespace Mengine
         m_resourceImageAlpha = RESOURCE_SERVICE()
             ->getResource( m_resourceImageAlphaName );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, false, "'%s' category '%s' group '%s' invalid get alpha resource '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, false, "'%s' group '%s' invalid get alpha resource '%s'"
             , this->getName().c_str()
-            , this->getFileGroup()->getName().c_str()
             , this->getGroupName().c_str()
             , m_resourceImageRGBName.c_str()
         );

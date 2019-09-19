@@ -900,10 +900,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _filePath, const MemoryInterfacePtr & _buffer )
+    bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const Content * _content, const MemoryInterfacePtr & _buffer )
     {
         MENGINE_UNUSED( _name );
-        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _content );
         MENGINE_UNUSED( _buffer );
 
         return true;

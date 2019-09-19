@@ -293,15 +293,6 @@ namespace Mengine
             _transformation->removeRelationTransformation();
         }
         //////////////////////////////////////////////////////////////////////////
-        const ConstString & s_Resource_getCategory( Resource * _resource )
-        {
-            const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
-
-            const ConstString & categoryName = fileGroup->getName();
-
-            return categoryName;
-        }
-        //////////////////////////////////////////////////////////////////////////
         void Transformation_coordinate( Transformation * _transformation, const mt::vec3f & _coordinate )
         {
             const mt::vec3f & origin = _transformation->getLocalOrigin();
@@ -2372,6 +2363,8 @@ namespace Mengine
             ;
 
         pybind::interface_<Content, pybind::bases<Mixin> >( _kernel, "Content", false )
+            .def( "setFileGroup", &Content::setFileGroup )
+            .def( "getFileGroup", &Content::getFileGroup )
             .def( "setFilePath", &Content::setFilePath )
             .def( "getFilePath", &Content::getFilePath )
             .def( "setCodecType", &Content::setCodecType )
@@ -2391,8 +2384,6 @@ namespace Mengine
         pybind::interface_<Resource, pybind::bases<Contentable, Scriptable, Compilable, Identity> >( _kernel, "ResourceReference", false )
             .def( "setLocale", &Resource::setLocale )
             .def( "getLocale", &Resource::getLocale )
-            .def( "setFileGroup", &Resource::setFileGroup )
-            .def( "getFileGroup", &Resource::getFileGroup )
             .def( "setGroupName", &Resource::setGroupName )
             .def( "getGroupName", &Resource::getGroupName )
             .def( "cache", &Resource::cache )

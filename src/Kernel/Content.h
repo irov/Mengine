@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/FileGroupInterface.h"
+
 #include "Kernel/Mixin.h"
 
 #include "Kernel/ConstString.h"
@@ -15,6 +17,9 @@ namespace Mengine
         ~Content() override;
 
     public:
+        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
+        const FileGroupInterfacePtr & getFileGroup() const;
+
         void setFilePath( const FilePath & _filePath );
         const FilePath & getFilePath() const;
 
@@ -32,6 +37,8 @@ namespace Mengine
         bool isValidNoExist() const;
 
     protected:
+        FileGroupInterfacePtr m_fileGroup;
+
         FilePath m_filePath;
         ConstString m_codecType;
         ConstString m_converterType;

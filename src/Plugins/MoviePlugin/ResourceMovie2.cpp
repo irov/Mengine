@@ -180,7 +180,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_compile()
     {
-        const FilePath & filePath = this->getFilePath();
+        Content * content = this->getContent();
+
+        const FilePath & filePath = content->getFilePath();
 
         if( filePath.empty() == true )
         {
@@ -192,9 +194,9 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
-        const ConstString & dataflowType = this->getDataflowType();
+        const ConstString & dataflowType = content->getDataflowType();
 
         DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 

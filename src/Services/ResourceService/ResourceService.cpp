@@ -14,6 +14,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
@@ -138,15 +139,11 @@ namespace Mengine
                     continue;
                 }
 
-                const FileGroupInterfacePtr & resource_fileGroup = has_resource->getFileGroup();
-
-                LOGGER_ERROR( "path '%s' already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+                LOGGER_ERROR( "path '%s' already exist resource name '%s' in group '%s' ('%s')\nhas resource group '%s' name '%s'"
                     , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
                     , _fileGroup->getName().c_str()
-                    , resource_fileGroup->getName().c_str()
-                    , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
                     , has_resource->getName().c_str()
                 );
@@ -154,7 +151,7 @@ namespace Mengine
                 return false;
             }
 
-            ResourcePtr resource = this->createResource( _locale, _fileGroup, groupName, name, type, MENGINE_DOCUMENT_FUNCTION );
+            ResourcePtr resource = this->createResource( _locale, groupName, name, type, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
                 , _filePath.c_str()
@@ -165,6 +162,13 @@ namespace Mengine
             );
 
             resource->setTags( _tags );
+
+            Content * content = resource->getContent();
+
+            if( content != nullptr )
+            {
+                content->setFileGroup( _fileGroup );
+            }
 
             LoaderInterfacePtr loader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
@@ -271,15 +275,11 @@ namespace Mengine
             ResourcePtr has_resource = nullptr;
             if( this->hasResource( name, &has_resource ) == false )
             {
-                const FileGroupInterfacePtr & resource_fileGroup = has_resource->getFileGroup();
-
-                LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+                LOGGER_ERROR( "path '%s' not found resource name '%s' in group '%s' category '%s'\nhas resource group '%s' name '%s'"
                     , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
                     , _fileGroup->getName().c_str()
-                    , resource_fileGroup->getName().c_str()
-                    , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
                     , has_resource->getName().c_str()
                 );
@@ -325,13 +325,12 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc )
+    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc )
     {
         ResourcePtr resource = this->generateResource( _type, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s' doc '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
             , _locale.c_str()
-            , _fileGroup->getName().c_str()
             , _groupName.c_str()
             , _name.c_str()
             , _type.c_str()
@@ -339,19 +338,16 @@ namespace Mengine
         );
 
         resource->setLocale( _locale );
-        resource->setFileGroup( _fileGroup );
         resource->setGroupName( _groupName );
         resource->setName( _name );
 
         const ResourcePtr & prev_resource = m_resources.change( _name, resource );
-
-        ResourceCacheKey cache_key = std::make_pair( _fileGroup->getName(), _groupName );
-
-        MapResourceCache::iterator it_cache_found = m_resourcesCache.find( cache_key );
+        
+        MapResourceCache::iterator it_cache_found = m_resourcesCache.find( _groupName );
 
         if( it_cache_found == m_resourcesCache.end() )
         {
-            it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, VectorResources() ) );
+            it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( _groupName, VectorResources() ) );
         }
 
         VectorResources & cahce_resources = it_cache_found->second;
@@ -360,12 +356,9 @@ namespace Mengine
 
         if( prev_resource != nullptr )
         {
-            const FileGroupInterfacePtr & insert_fileGroup = prev_resource->getFileGroup();
             const ConstString & insert_group = prev_resource->getGroupName();
 
-            ResourceCacheKey remove_cache_key = std::make_pair( insert_fileGroup->getName(), insert_group );
-
-            MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
+            MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( insert_group );
 
             VectorResources::iterator it_remove_found = std::remove(
                 it_remove_cache_found->second.begin(),
@@ -389,12 +382,9 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const ConstString & group = _resource->getGroupName();
 
-        ResourceCacheKey remove_cache_key = std::make_pair( fileGroup->getName(), group );
-
-        MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
+        MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( group );
 
         if( it_remove_cache_found == m_resourcesCache.end() )
         {
@@ -506,11 +496,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceService::foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const
+    void ResourceService::foreachGroupResources( const ConstString & _groupName, const LambdaResource & _lambda ) const
     {
-        ResourceCacheKey cache_key = std::make_pair( _fileGroup->getName(), _groupName );
-
-        MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
+        MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( _groupName );
 
         if( it_cache_found == m_resourcesCache.end() )
         {
@@ -552,11 +540,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceService::visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const
+    void ResourceService::visitGroupResources( const ConstString & _groupName, const VisitorPtr & _visitor ) const
     {
-        ResourceCacheKey cache_key = std::make_pair( _fileGroup->getName(), _groupName );
-
-        MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
+        MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( _groupName );
 
         if( it_cache_found == m_resourcesCache.end() )
         {

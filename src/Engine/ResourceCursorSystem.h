@@ -2,28 +2,23 @@
 
 #include "ResourceCursor.h"
 
+#include "Kernel/Content.h"
+
 namespace Mengine
 {
     class ResourceCursorSystem
         : public ResourceCursor
+        , public Content
     {
         DECLARE_VISITABLE( ResourceCursor );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceCursorSystem();
         ~ResourceCursorSystem() override;
 
     public:
-        void setFilePath( const FilePath & _filePath );
-
-    public:
-        const FilePath & getFilePath() const override;
         const MemoryInterfacePtr & getBuffer() const override;
-
-    protected:
-        FilePath m_filePath;
-
-        MemoryInterfacePtr m_buffer;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceCursorSystem> ResourceCursorSystemPtr;

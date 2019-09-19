@@ -17,16 +17,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceCursorICO::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceCursorICO::_compile()
     {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        Content * content = this->getContent();
 
-        m_buffer = Helper::createMemoryFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+
+        m_buffer = Helper::createMemoryFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         return true;
     }
@@ -34,11 +32,6 @@ namespace Mengine
     void ResourceCursorICO::_release()
     {
         m_buffer = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceCursorICO::getFilePath() const
-    {
-        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     const MemoryInterfacePtr & ResourceCursorICO::getBuffer() const

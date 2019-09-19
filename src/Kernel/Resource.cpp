@@ -25,11 +25,6 @@ namespace Mengine
         m_locale = _locale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
-    {
-        m_fileGroup = _fileGroup;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Resource::setGroupName( const ConstString & _groupName )
     {
         m_groupName = _groupName;

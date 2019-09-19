@@ -13,7 +13,6 @@ namespace Mengine
         DECLARE_VISITABLE( Resource );
 
     public:
-        virtual const FilePath & getFilePath() const = 0;
         virtual const MemoryInterfacePtr & getBuffer() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

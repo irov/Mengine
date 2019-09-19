@@ -2,6 +2,8 @@
 
 #include "Engine/ResourceCursorSystem.h"
 
+#include "Kernel/Content.h"
+
 #include "Metacode/Metacode.h"
 
 namespace Mengine
@@ -22,7 +24,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceCursorSystem::setFilePath );
+        Content * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &Content::setFilePath );
 
         return true;
     }

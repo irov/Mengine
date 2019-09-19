@@ -390,7 +390,12 @@ namespace Mengine
 
         if( _streaming == true )
         {
-            InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, _fileGroup, _doc );
+            InputStreamInterfacePtr stream = m_baseFileGroup->createInputFile( _filePath, true, nullptr, _doc );
+
+            if( _fileGroup != nullptr )
+            {
+                *_fileGroup = this;
+            }
 
             return stream;
         }
@@ -400,7 +405,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        *_fileGroup = this;
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = this;
+        }
 
         return memory;
     }

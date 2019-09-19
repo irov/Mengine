@@ -3,10 +3,11 @@ SET(MENGINE_LIB_PREFIX "lib")
 SET(MENGINE_LIB_SUFFIX ".a")
 set(CMAKE_DEBUG_POSTFIX "")
 
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -posix")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -posix")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -fno-strict-aliasing -fomit-frame-pointer -O0 -D_DEBUG")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -fno-strict-aliasing -fomit-frame-pointer -O3 -DNDEBUG")

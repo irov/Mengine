@@ -40,8 +40,10 @@ namespace Mengine
             , this->getFilePath().c_str()
         );
 
+        const ConstString & codecType = this->getCodecType();
+
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( m_codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "name '%s' - hit file '%s' invalid create decoder '%s'"
             , this->getName().c_str()

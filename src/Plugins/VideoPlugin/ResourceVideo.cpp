@@ -98,7 +98,8 @@ namespace Mengine
         }
         else
         {
-            if( RENDER_SYSTEM()->supportTextureFormat( PF_R8G8B8 ) == true )
+            if( RENDER_SYSTEM()
+                ->supportTextureFormat( PF_R8G8B8 ) == true )
             {
                 videoCodecOptions.pixelFormat = PF_R8G8B8;
             }

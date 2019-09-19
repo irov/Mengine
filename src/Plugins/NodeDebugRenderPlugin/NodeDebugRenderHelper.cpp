@@ -2,6 +2,8 @@
 
 #include "Interface/RenderServiceInterface.h"
 
+#include "Kernel/Document.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -17,7 +19,7 @@ namespace Mengine
                     , _vertices.data()
                     , (uint32_t)_vertices.size()
                     , nullptr
-                    , true );
+                    , true, MENGINE_DOCUMENT_FUNCTION );
         }
         //////////////////////////////////////////////////////////////////////////
         void nodeDebugRenderCircle( const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, uint32_t _color )

@@ -802,7 +802,7 @@ namespace Mengine
 
             const mt::box2f * bb = this->getBoundingBox();
 
-            this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false );
+            this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -384,7 +384,7 @@ namespace Mengine
                 continue;
             }
 
-            this->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false );
+            this->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FUNCTION );
         }
     }
     //////////////////////////////////////////////////////////////////////////

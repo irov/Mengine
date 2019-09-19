@@ -164,7 +164,10 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
-        *_fileGroup = this;
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = this;
+        }
 
         return stream;
     }

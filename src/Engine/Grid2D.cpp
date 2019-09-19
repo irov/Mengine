@@ -244,7 +244,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false );
+        this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_() const

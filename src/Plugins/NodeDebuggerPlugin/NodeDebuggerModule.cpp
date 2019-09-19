@@ -451,7 +451,7 @@ namespace Mengine
                 , vertices.data(), vertices.size()
                 , indices.data(), indices.size()
                 , &bbox
-                , false );
+                , false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::privateInit()

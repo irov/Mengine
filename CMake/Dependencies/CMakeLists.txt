@@ -74,11 +74,32 @@ PROJECT(Dependencies)
 
 message("============@@##START##@@============")
 
+#dependencies jansson
+if(MENGINE_DEPENDENCE_JANSSON)
+    message("================jansson================")
+    set(USE_URANDOM OFF CACHE BOOL "USE_URANDOM" FORCE)
+    set(USE_WINDOWS_CRYPTOAPI OFF CACHE BOOL "USE_URANDOM" FORCE)
+    set(JANSSON_STATIC_CRT ON CACHE BOOL "JANSSON_STATIC_CRT" FORCE)
+    set(JANSSON_EXAMPLES OFF CACHE BOOL "USE_URANDOM" FORCE)
+    set(JANSSON_BUILD_DOCS OFF CACHE BOOL "JANSSON_BUILD_DOCS" FORCE)
+    set(JANSSON_WITHOUT_TESTS ON CACHE BOOL "JANSSON_WITHOUT_TESTS" FORCE)    
+    set(JANSSON_INSTALL OFF CACHE BOOL "JANSSON_INSTALL" FORCE)    
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/jansson.h ${THIRDPARTY_DIR}/jansson/include/jansson.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/jansson_config.h ${THIRDPARTY_DIR}/jansson/include/jansson_config.h COPYONLY)
+
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/CMakeLists.txt ${THIRDPARTY_DIR}/jansson/CMakeLists.txt COPYONLY)
+
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/jansson ${CMAKE_TEMP_DIR}/jansson)
+endif()
+
+#dependencies lz4
 if(MENGINE_DEPENDENCE_LZ4)
     message("================lz4================")
     ADD_SUBDIRECTORY(lz4)
 endif()
 
+#dependencies ogg
 if(MENGINE_DEPENDENCE_OGG)
     message("================libogg================")
     SET(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS" FORCE)
@@ -91,6 +112,7 @@ if(MENGINE_DEPENDENCE_OGG)
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libogg ${CMAKE_TEMP_DIR}/libogg)
 endif()
 
+#dependencies vorbis
 if(MENGINE_DEPENDENCE_VORBIS)
     message("================libvorbis================")
     ADD_SUBDIRECTORY(libvorbis)
@@ -220,25 +242,6 @@ if(MENGINE_DEPENDENCE_LIBMOVIE)
     set(LIBMOVIE_MEMORY_DEBUG OFF CACHE BOOL "LIBMOVIE_MEMORY_DEBUG" FORCE)    
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libmovie ${CMAKE_TEMP_DIR}/libmovie)
-endif()
-
-#dependencies jansson
-if(MENGINE_DEPENDENCE_JANSSON)
-    message("================jansson================")
-    set(USE_URANDOM OFF CACHE BOOL "USE_URANDOM" FORCE)
-    set(USE_WINDOWS_CRYPTOAPI OFF CACHE BOOL "USE_URANDOM" FORCE)
-    set(JANSSON_STATIC_CRT ON CACHE BOOL "JANSSON_STATIC_CRT" FORCE)
-    set(JANSSON_EXAMPLES OFF CACHE BOOL "USE_URANDOM" FORCE)
-    set(JANSSON_BUILD_DOCS OFF CACHE BOOL "JANSSON_BUILD_DOCS" FORCE)
-    set(JANSSON_WITHOUT_TESTS ON CACHE BOOL "JANSSON_WITHOUT_TESTS" FORCE)    
-    set(JANSSON_INSTALL OFF CACHE BOOL "JANSSON_INSTALL" FORCE)    
-
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/jansson.h ${THIRDPARTY_DIR}/jansson/include/jansson.h COPYONLY)
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/jansson_config.h ${THIRDPARTY_DIR}/jansson/include/jansson_config.h COPYONLY)
-
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jansson/CMakeLists.txt ${THIRDPARTY_DIR}/jansson/CMakeLists.txt COPYONLY)
-
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/jansson ${CMAKE_TEMP_DIR}/jansson)
 endif()
 
 #dependencies jpp

@@ -3,8 +3,8 @@
 #include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/Surface.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -25,7 +25,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderQuad( _context, material, vertices, 4, bb, false );
+        this->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

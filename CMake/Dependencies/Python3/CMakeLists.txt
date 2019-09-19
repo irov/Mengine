@@ -5,11 +5,8 @@ project(python3)
 SET(SOURCE_DIR ${THIRDPARTY_DIR}/Python3)
 
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-#configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-#configure_file(Modified/_iomodule.c ${SOURCE_DIR}/Modules/_io/_iomodule.c COPYONLY)
-#configure_file(Modified/mpdecimal.c ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c COPYONLY)
+configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 
-ADD_DEFINITIONS(-D_PYTHONFRAMEWORK="CPython")
 ADD_DEFINITIONS(-D_Py_HAVE_ZLIB)
 
 REMOVE_DEFINITIONS(-Doverride)

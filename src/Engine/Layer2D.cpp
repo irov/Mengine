@@ -203,7 +203,7 @@ namespace Mengine
 
                 const mt::box2f * bb = m_layer->getBoundingBox();
 
-                this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false );
+                this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false, MENGINE_DOCUMENT_FUNCTION );
             }
 
         protected:

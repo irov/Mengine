@@ -2500,7 +2500,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -2541,7 +2541,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -2656,7 +2656,7 @@ namespace Mengine
                         {
                             RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
-                            this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                            this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                         }
                         else
                         {
@@ -2705,7 +2705,7 @@ namespace Mengine
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                            this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -2754,7 +2754,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 default:
                     break;
@@ -2863,7 +2863,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
@@ -2969,7 +2969,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 default:
                     break;

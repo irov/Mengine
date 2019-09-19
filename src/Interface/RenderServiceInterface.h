@@ -65,34 +65,34 @@ namespace Mengine
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount ) = 0;
+            , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc ) = 0;
 
         virtual void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _programVariable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug ) = 0;
+            , const mt::box2f * _bb, bool _debug, const Char * _doc ) = 0;
 
         virtual void addRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug ) = 0;
+            , const mt::box2f * _bb, bool _debug, const Char * _doc ) = 0;
 
         virtual void addRenderLine( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug ) = 0;
+            , const mt::box2f * _bb, bool _debug, const Char * _doc ) = 0;
 
     public:
         virtual void addDebugRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount ) = 0;
+            , const RenderIndex * _indices, uint32_t _indexCount, const Char * _doc ) = 0;
 
         virtual void addDebugRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount ) = 0;
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const Char * _doc ) = 0;
 
     public:
         virtual VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) = 0;

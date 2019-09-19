@@ -412,7 +412,7 @@ namespace Mengine
             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                 ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, mesh.textures, textures, MENGINE_DOCUMENT_FUNCTION );
 
-            this->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false );
+            this->addRenderObject( _context, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
         }
     }
     //////////////////////////////////////////////////////////////////////////

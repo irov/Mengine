@@ -329,9 +329,8 @@ namespace Mengine
             s_printChildren2( _node, 0 );
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
+        uint32_t s_getGroupResourcesMemoryUse( const ConstString & _group )
         {
-            MENGINE_UNUSED( _category );
             MENGINE_UNUSED( _group );
 
             return 0U;

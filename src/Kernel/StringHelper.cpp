@@ -1,16 +1,42 @@
 #include "StringHelper.h"
 
+#include "Kernel/Assertion.h"
+
 #include "Config/Typedef.h"
 #include "Config/Vector.h"
 #include "Config/VectorString.h"
 #include "Config/Stringstream.h"
+#include "Config/StdIO.h"
 
+#include <stdarg.h>
 #include <clocale>
 
 namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        String stringFormat( const Char * _format, ... )
+        {
+            va_list args;
+            va_start( args, _format );
+
+            Char str[2048] = { 0 };
+            int size = MENGINE_VSNPRINTF( str, 2047, _format, args );
+
+            MENGINE_ASSERTION_FATAL( size >= 0, "invalid string format '%s'"
+                , _format
+            );
+
+            va_end( args );
+
+            if( size == 0 )
+            {
+                return String();
+            }
+
+            return String( str, size );
+        }
         //////////////////////////////////////////////////////////////////////////
         void split( VectorString & _outStrings, const String & _str, bool _trimDelims, const String & _delim )
         {

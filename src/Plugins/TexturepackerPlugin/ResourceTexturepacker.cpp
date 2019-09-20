@@ -15,8 +15,6 @@
 #include "Kernel/Document.h"
 #include "Kernel/PathHelper.h"
 
-#include "jpp/jpp.hpp"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

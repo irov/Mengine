@@ -1441,7 +1441,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            bool result = account->hasSetting( _setting );
+            bool result = account->hasSetting( _setting, nullptr );
 
             return result;
         }
@@ -1455,7 +1455,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -1492,7 +1492,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -1518,7 +1518,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -1545,7 +1545,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -1572,7 +1572,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -1599,7 +1599,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -1626,7 +1626,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 LOGGER_ERROR( "account '%s' not found setting '%s'"
                     , _accountID.c_str()
@@ -2319,7 +2319,7 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            if( account->hasSetting( _setting ) == false )
+            if( account->hasSetting( _setting, nullptr ) == false )
             {
                 return _default;
             }

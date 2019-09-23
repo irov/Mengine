@@ -95,7 +95,7 @@ namespace Mengine
             String utf8;
             if( Helper::unicodeToUtf8Size( _unicode.c_str(), _unicode.size(), utf8 ) == false )
             {
-                return FilePath( ConstString::none() );
+                return FilePath::none();
             }
 
             FilePath fp = Helper::stringizeFilePath( utf8 );

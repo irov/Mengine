@@ -371,6 +371,8 @@ Core
     PathHelper.h
     PathHelper.cpp
     
+    MapHelper.h
+    
     StreamLogger.cpp
     StreamLogger.h
         

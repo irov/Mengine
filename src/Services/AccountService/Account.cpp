@@ -139,13 +139,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::hasSetting( const ConstString & _setting ) const
+    bool Account::hasSetting( const ConstString & _setting, Char * _value ) const
     {
         MapSettings::const_iterator it_found = m_settings.find( _setting );
 
         if( it_found == m_settings.end() )
         {
             return false;
+        }
+
+        if( _value != nullptr )
+        {
+            const Setting & st = it_found->second;
+
+            const Char * value_str = st.value.c_str();
+
+            strcpy( _value, value_str );
         }
 
         return true;

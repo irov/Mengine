@@ -117,10 +117,9 @@ namespace Mengine
             return count != 0;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
+        static void s_unfetchResources( const ConstString & _groupName )
         {
-            LOGGER_STATISTIC( "unfetch resources category '%s' group '%s'"
-                , _category.c_str()
+            LOGGER_STATISTIC( "unfetch resources category group '%s'"
                 , _groupName.c_str()
             );
 

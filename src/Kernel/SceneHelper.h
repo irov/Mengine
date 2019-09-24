@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        ScenePtr makeScene( const SceneEventReceiverPtr & _eventReceiver );
+        ScenePtr makeScene( const SceneEventReceiverPtr & _eventReceiver, const Char * _doc );
     }
 }

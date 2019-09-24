@@ -19,11 +19,13 @@ extern PyObject* PyInit__md5(void);
 extern PyObject* PyInit_nt(void);
 extern PyObject* PyInit__operator(void);
 extern PyObject* PyInit__signal(void);
+extern PyObject* PyInit__socket(void);
 extern PyObject* PyInit__sha1(void);
 extern PyObject* PyInit__sha256(void);
 extern PyObject* PyInit__sha512(void);
 extern PyObject* PyInit__sha3(void);
 extern PyObject* PyInit__blake2(void);
+extern PyObject* PyInit_select(void);
 extern PyObject* PyInit_time(void);
 extern PyObject* PyInit__thread(void);
 #ifdef WIN32
@@ -97,6 +99,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"nt", PyInit_nt}, /* Use the NT os functions, not posix */
     {"_operator", PyInit__operator},
     {"_signal", PyInit__signal},
+    {"_socket", PyInit__socket},
+    {"select", PyInit_select},    
     {"_md5", PyInit__md5},
     {"_sha1", PyInit__sha1},
     {"_sha256", PyInit__sha256},

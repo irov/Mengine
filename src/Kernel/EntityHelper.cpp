@@ -20,7 +20,7 @@ namespace Mengine
 
             EventationInterface * eventation = eventable->getEventation();
 
-            eventation->setReceiver( RECEIVER_MASK_FULL, _eventReceiver );
+            eventation->setReceiver( EVENTATION_RECEIVER_MASK_FULL, _eventReceiver );
 
             entity->setBehaviorEventable( eventable );
 

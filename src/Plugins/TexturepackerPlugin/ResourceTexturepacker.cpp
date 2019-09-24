@@ -14,6 +14,7 @@
 #include "Kernel/Content.h"
 #include "Kernel/Document.h"
 #include "Kernel/PathHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -124,27 +125,10 @@ namespace Mengine
             , m_resourceJSONName.c_str()
         );
 
-        jpp::object root_meta = root["meta"];
-
-        jpp::object root_meta_size = root_meta["size"];
-
-        uint32_t atlas_width = root_meta_size["w"];
-        uint32_t atlas_height = root_meta_size["h"];
-
-        uint32_t atlas_width_pow2 = Helper::getTexturePOW2( atlas_width );
-        uint32_t atlas_height_pow2 = Helper::getTexturePOW2( atlas_height );
-
-        m_atlasWidth = atlas_width_pow2;
-        m_atlasHeight = atlas_height_pow2;
-
-        float atlas_width_inv = 1.f / (float)atlas_width_pow2;
-        float atlas_height_inv = 1.f / (float)atlas_height_pow2;
-
-        m_atlasWidthInv = atlas_width_inv;
-        m_atlasHeightInv = atlas_height_inv;
-
         if( m_resourceImageName.empty() == true )
         {
+            jpp::object root_meta = root["meta"];
+
             const Char * root_meta_image = (const Char *)root_meta["image"];
             (void)root_meta_image;
 
@@ -157,7 +141,6 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
             
-
             Content * resource_content = resource->getContent();
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
@@ -170,14 +153,57 @@ namespace Mengine
 
             resource_content->setCodecType( codecType );
 
-            mt::vec2f size( (float)atlas_width, (float)atlas_height );
-            resource->setMaxSize( size );
-            resource->setSize( size );
+            jpp::object root_meta_size = root_meta["size"];
+            mt::vec2f atlasSize;
+            if( root_meta_size.invalid() == false )
+            {
+                atlasSize.x = root_meta_size["w"];
+                atlasSize.y = root_meta_size["h"];
+            }
+            else
+            {
+                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, MENGINE_DOCUMENT_FUNCTION );
+
+                ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
+                    ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( decoder, false );
+
+                if( decoder->prepareData( stream ) == false )
+                {
+                    return false;
+                }
+
+                const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+                atlasSize.x = (float)dataInfo->width;
+                atlasSize.y = (float)dataInfo->height;
+            }
+
+            resource->setMaxSize( atlasSize );
+            resource->setSize( atlasSize );
 
             resource->compile();
 
             m_resourceImage = resource;
         }
+
+        const mt::vec2f & resourceImageMaxsize = m_resourceImage->getMaxSize();
+
+        uint32_t atlas_width = (uint32_t)(resourceImageMaxsize.x + 0.5f);
+        uint32_t atlas_height = (uint32_t)(resourceImageMaxsize.y + 0.5f);
+
+        uint32_t atlas_width_pow2 = Helper::getTexturePOW2( atlas_width );
+        uint32_t atlas_height_pow2 = Helper::getTexturePOW2( atlas_height );
+
+        m_atlasWidth = atlas_width_pow2;
+        m_atlasHeight = atlas_height_pow2;
+
+        float atlas_width_inv = 1.f / (float)atlas_width_pow2;
+        float atlas_height_inv = 1.f / (float)atlas_height_pow2;
+
+        m_atlasWidthInv = atlas_width_inv;
+        m_atlasHeightInv = atlas_height_inv;
 
         bool atlasHasAlpha = m_resourceImage->hasAlpha();
         bool atlasIsPremultiply = m_resourceImage->isPremultiply();

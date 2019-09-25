@@ -74,13 +74,13 @@ namespace Mengine
         const FilePath & filePath = metadata->get_KeyFramesPackPath_Path();
         resource->setFilePath( filePath );
 
-        metadata->getm_KeyFramesPackPath_Codec( resource, &Content::setDataflowType );
+        metadata->getm_KeyFramesPackPath_Codec( resource, &Content::setCodecType );
         metadata->getm_KeyFramesPackPath_Converter( resource, &Content::setConverterType );
 
-        const ConstString & dataflowType = resource->getDataflowType();
+        const ConstString & codecType = resource->getCodecType();
 
         //FIX THIS
-        if( dataflowType.empty() == true )
+        if( codecType.empty() == true )
         {
             resource->setConverterType( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
         }

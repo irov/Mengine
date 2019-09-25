@@ -2373,8 +2373,6 @@ namespace Mengine
             .def( "getCodecType", &Content::getCodecType )
             .def( "setConverterType", &Content::setConverterType )
             .def( "getConverterType", &Content::getConverterType )
-            .def( "setDataflowType", &Content::setDataflowType )
-            .def( "getDataflowType", &Content::getDataflowType )
             .def( "setValidNoExist", &Content::setValidNoExist )
             .def( "isValidNoExist", &Content::isValidNoExist )
             ;

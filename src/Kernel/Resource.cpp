@@ -5,6 +5,7 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Content.h"
 
 namespace Mengine
 {
@@ -49,7 +50,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Resource::_initialize()
     {
+        //Empty
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::finalize()
+    {
+        this->_finalize();
+
+        Content * content = this->getContent();
+
+        if( content != nullptr )
+        {
+            content->setFileGroup( nullptr );
+            content->setDataflow( nullptr );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::_finalize()
+    {
+        //Empty 
     }
     //////////////////////////////////////////////////////////////////////////
     bool Resource::compile()

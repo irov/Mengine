@@ -52,14 +52,14 @@ namespace Mengine
         return m_converterType;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setDataflowType( const ConstString & _dataflowType )
+    void Content::setDataflow( const DataflowInterfacePtr & _dataflow )
     {
-        m_dataflowType = _dataflowType;
+        m_dataflow = _dataflow;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Content::getDataflowType() const
+    const DataflowInterfacePtr & Content::getDataflow() const
     {
-        return m_dataflowType;
+        return m_dataflow;
     }
     //////////////////////////////////////////////////////////////////////////
     void Content::setValidNoExist( bool _validNoExist )

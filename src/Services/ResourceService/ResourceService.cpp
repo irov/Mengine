@@ -375,6 +375,8 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _resource, false );
 
+        _resource->finalize();
+
         const ConstString & name = _resource->getName();
 
         if( m_resources.erase( name ) == nullptr )

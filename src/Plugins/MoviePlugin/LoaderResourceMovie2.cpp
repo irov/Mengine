@@ -1,8 +1,11 @@
 #include "LoaderResourceMovie2.h"
 
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "ResourceMovie2.h"
 
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/ConstStringHelper.h"
 
 #include "Metacode/Metacode.h"
 
@@ -26,10 +29,15 @@ namespace Mengine
 
         metadata->getm_File_Path( resource, &ResourceMovie2::setFilePath );
 
-        if( metadata->getm_File_Dataflow( resource, &ResourceMovie2::setDataflowType ) == false )
+        ConstString dataflowType;
+        if( metadata->get_File_Dataflow( &dataflowType ) == false )
         {
-            resource->setDataflowType( STRINGIZE_FILEPATH_LOCAL( "aezMovie" ) );
+            dataflowType = STRINGIZE_FILEPATH_LOCAL( "aezMovie" );
         }
+
+        const DataflowInterfacePtr & dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+
+        resource->setDataflow( dataflow );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();
 

@@ -196,9 +196,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
-        const ConstString & dataflowType = content->getDataflowType();
-
-        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+        const DataflowInterfacePtr & dataflow = content->getDataflow();
 
         DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FUNCTION );
 

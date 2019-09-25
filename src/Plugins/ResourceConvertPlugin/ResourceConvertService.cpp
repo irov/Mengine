@@ -86,7 +86,10 @@ namespace Mengine
         const ConstString & codecType = CODEC_SERVICE()
             ->findCodecType( newFilePath );
 
-        content->setDataflowType( codecType );
         content->setCodecType( codecType );
+
+        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), codecType );
+
+        content->setDataflow( dataflow );
     }
 }

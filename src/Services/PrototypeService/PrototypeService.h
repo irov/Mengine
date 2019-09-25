@@ -35,9 +35,22 @@ namespace Mengine
     protected:
         struct CategoryKey
         {
-            HashType hash;
+            CategoryKey()
+                : hash( ~0ULL )
+            {
+            }
+
+            CategoryKey( const ConstString & _category, const ConstString & _prototype )
+                : category( _category )
+                , prototype( _prototype )
+                , hash( _category.hash() ^ _prototype.hash() )
+            {
+            }
+
             ConstString category;
             ConstString prototype;
+
+            HashType hash;
 
             bool operator == ( const CategoryKey & _key ) const
             {

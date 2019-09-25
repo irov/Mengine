@@ -10,6 +10,8 @@ Application
     ArrowPrototypeGenerator.h
     ScenePrototypeGenerator.cpp
     ScenePrototypeGenerator.h
+    SpritePrototypeGenerator.cpp
+    SpritePrototypeGenerator.h
 )
 
 SOURCE_GROUP( Engine )
@@ -112,6 +114,13 @@ Object\\\\Line
 	Line.h
 )
 
+ADD_FILTER(
+Sprite
+	Sprite.cpp
+	Sprite.h
+    SpriteCache.cpp
+    SpriteCache.h
+)
 
 ADD_FILTER(
 Object\\\\SoundEmitter

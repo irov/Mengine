@@ -91,6 +91,7 @@
 #include "Engine/Layer2D.h"
 #include "Engine/Meshget.h"
 #include "Engine/Window.h"
+#include "Engine/Sprite.h"
 
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
@@ -2212,6 +2213,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
+        SCRIPT_CLASS_WRAPPING( Sprite );
 
         SCRIPT_CLASS_WRAPPING( ShapePacMan );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );

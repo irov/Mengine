@@ -410,6 +410,9 @@ Core
     TagsHelper.h
     TagsHelper.cpp
     
+    BufferHelper.h
+    BufferHelper.cpp
+    
     StringFormat.h
 	StringFormat.cpp
     

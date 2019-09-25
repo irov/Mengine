@@ -19,16 +19,12 @@ namespace Mengine
             return true;
         }
 
-        m_compile = true;
-
         if( this->_compile() == false )
         {
-            //Force release
-            //release();
-            m_compile = false;
-
             return false;
         }
+
+        m_compile = true;
 
         return m_compile;
     }

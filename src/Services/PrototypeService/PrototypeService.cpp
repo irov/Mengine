@@ -60,10 +60,7 @@ namespace Mengine
             return false;
         }
 
-        CategoryKey key;
-        key.hash = _category.hash() + _prototype.hash();
-        key.category = _category;
-        key.prototype = _prototype;
+        CategoryKey key{ _category, _prototype };
 
         MENGINE_ASSERTION_FATAL_RETURN( m_generators.exist( key ) == false, false, "prototype '%s:%s' alredy exist"
             , _category.c_str()
@@ -82,10 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::removePrototype( const ConstString & _category, const ConstString & _prototype )
     {
-        CategoryKey key;
-        key.hash = _category.hash() + _prototype.hash();
-        key.category = _category;
-        key.prototype = _prototype;
+        CategoryKey key{ _category, _prototype };
 
         PrototypeGeneratorInterfacePtr generator = m_generators.erase( key );
 
@@ -100,10 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const PrototypeGeneratorInterfacePtr & PrototypeService::getGenerator( const ConstString & _category, const ConstString & _prototype ) const
     {
-        CategoryKey key;
-        key.hash = _category.hash() + _prototype.hash();
-        key.category = _category;
-        key.prototype = _prototype;
+        CategoryKey key{ _category, _prototype };
 
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
 
@@ -117,10 +108,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const Char * _doc )
     {
-        CategoryKey key;
-        key.hash = _category.hash() + _prototype.hash();
-        key.category = _category;
-        key.prototype = _prototype;
+        CategoryKey key{ _category, _prototype };
 
         const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
 

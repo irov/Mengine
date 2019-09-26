@@ -46,6 +46,9 @@ namespace Mengine
     public:
         const VectorResourceImages & getFrames() const override;
 
+    public:
+        void setStripFrameNameExtension( bool _value ) override;
+
     protected:
         bool _compile() override;
         void _release() override;
@@ -62,6 +65,8 @@ namespace Mengine
 
         ConstString m_resourceImageName;
         ResourceImagePtr m_resourceImage;
+
+        bool m_needStripFrameNameExtension;
 
         typedef Hashtable<ConstString, ResourceImagePtr> HashtableTexturepackerFrames;
         HashtableTexturepackerFrames m_hashtableFrames;

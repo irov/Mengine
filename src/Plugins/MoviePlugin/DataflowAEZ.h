@@ -42,6 +42,7 @@ namespace Mengine
 
     protected:
         const aeMovieInstance * m_movieInstance;
+
         ArchivatorInterfacePtr m_archivator;
 
         FactoryPtr m_factoryMovieData;

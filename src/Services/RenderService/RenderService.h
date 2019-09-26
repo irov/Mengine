@@ -293,17 +293,16 @@ namespace Mengine
 
         RenderVertexBufferInterfacePtr m_currentRenderVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentRenderIndexBuffer;
-        RenderProgramVariableInterfacePtr m_currentProgramVariable;
+        RenderProgramVariableInterfacePtr m_currentRenderProgramVariable;
+        RenderProgramVariableInterfacePtr m_defaultRenderProgramVariable;
 
-        RenderProgramVariableInterfacePtr m_defaultProgramVariable;
+        uint32_t m_currentRenderTextureStage;
+        RenderTextureStage m_renderTextureStages[MENGINE_MAX_TEXTURE_STAGES];
 
-        uint32_t m_currentTextureStage;
-        RenderTextureStage m_textureStages[MENGINE_MAX_TEXTURE_STAGES];
-
-        RenderTextureStage m_defaultTextureStage;
+        RenderTextureStage m_defaultRenderTextureStage;
 
         uint32_t m_currentMaterialId;
-        const RenderMaterialStage * m_currentStage;
+        const RenderMaterialStage * m_currentRenderMaterialStage;
 
         uint32_t m_currentTexturesID[MENGINE_MAX_TEXTURE_STAGES];
 
@@ -315,8 +314,7 @@ namespace Mengine
         RenderCameraInterfacePtr m_currentRenderCamera;
         RenderTransformationInterfacePtr m_currentRenderTransformation;
         RenderScissorInterfacePtr m_currentRenderScissor;
-
-        RenderProgramInterfacePtr m_currentProgram;
+        RenderProgramInterfacePtr m_currentRenderProgram;
 
         RenderServiceDebugInfo m_debugInfo;	    // debug info
 

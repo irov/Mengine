@@ -28,7 +28,6 @@
 #ifndef MENGINE_RENDER_VERTEX_MAX_BATCH
 #define MENGINE_RENDER_VERTEX_MAX_BATCH (65000U)
 #endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderService, Mengine::RenderService );
 //////////////////////////////////////////////////////////////////////////
@@ -40,7 +39,7 @@ namespace Mengine
         , m_windowCreated( false )
         , m_vsync( false )
         , m_fullscreen( false )
-        , m_currentTextureStage( 0 )
+        , m_currentRenderTextureStage( 0 )
         , m_maxVertexCount( 0 )
         , m_maxIndexCount( 0 )
         , m_depthBufferTestEnable( false )
@@ -49,7 +48,7 @@ namespace Mengine
         , m_debugFillrateCalcMode( false )
         , m_debugStepRenderMode( false )
         , m_debugRedAlertMode( false )
-        , m_currentStage( nullptr )
+        , m_currentRenderMaterialStage( nullptr )
         , m_batchMode( ERBM_NORMAL )
         , m_currentMaterialId( 0 )
         , m_iterateRenderObjects( 0 )
@@ -169,9 +168,9 @@ namespace Mengine
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
-        m_currentProgramVariable = nullptr;
-        m_defaultProgramVariable = nullptr;
-        m_currentProgram = nullptr;
+        m_currentRenderProgramVariable = nullptr;
+        m_defaultRenderProgramVariable = nullptr;
+        m_currentRenderProgram = nullptr;
 
         m_currentRenderViewport = nullptr;
         m_currentRenderCamera = nullptr;
@@ -193,8 +192,7 @@ namespace Mengine
         this->restoreRenderSystemStates_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-        int32_t _FSAAType, int32_t _FSAAQuality )
+    bool RenderService::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, int32_t _FSAAType, int32_t _FSAAQuality )
     {
         m_windowResolution = _resolution;
         m_contentResolution = _contentResolution;
@@ -242,13 +240,13 @@ namespace Mengine
             return false;
         }
 
-        m_defaultTextureStage.mipmap = RENDERMATERIAL_SERVICE()
+        m_defaultRenderTextureStage.mipmap = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMipmap();
 
-        m_defaultTextureStage.minification = RENDERMATERIAL_SERVICE()
+        m_defaultRenderTextureStage.minification = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMinification();
 
-        m_defaultTextureStage.magnification = RENDERMATERIAL_SERVICE()
+        m_defaultRenderTextureStage.magnification = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMagnification();
 
         return true;
@@ -524,17 +522,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::updateStage_( const RenderMaterialStage * _stage )
     {
-        if( m_currentStage == _stage )
+        if( m_currentRenderMaterialStage == _stage )
         {
             return;
         }
 
-        m_currentStage = _stage;
+        m_currentRenderMaterialStage = _stage;
 
-        for( uint32_t stageId = 0; stageId != m_currentTextureStage; ++stageId )
+        for( uint32_t stageId = 0; stageId != m_currentRenderTextureStage; ++stageId )
         {
-            RenderTextureStage & current_texture_stage = m_textureStages[stageId];
-            const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
+            RenderTextureStage & current_texture_stage = m_renderTextureStages[stageId];
+            const RenderTextureStage & texture_stage = m_currentRenderMaterialStage->textureStage[stageId];
 
             if( current_texture_stage.addressU != texture_stage.addressU
                 || current_texture_stage.addressV != texture_stage.addressV
@@ -567,43 +565,43 @@ namespace Mengine
             }
         }
 
-        if( m_alphaBlendEnable != m_currentStage->alphaBlendEnable )
+        if( m_alphaBlendEnable != m_currentRenderMaterialStage->alphaBlendEnable )
         {
-            m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
+            m_alphaBlendEnable = m_currentRenderMaterialStage->alphaBlendEnable;
 
             m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
         }
 
-        if( m_depthBufferTestEnable != m_currentStage->depthBufferTestEnable )
+        if( m_depthBufferTestEnable != m_currentRenderMaterialStage->depthBufferTestEnable )
         {
-            m_depthBufferTestEnable = m_currentStage->depthBufferTestEnable;
+            m_depthBufferTestEnable = m_currentRenderMaterialStage->depthBufferTestEnable;
 
             m_renderSystem->setDepthBufferTestEnable( m_depthBufferTestEnable );
         }
 
-        if( m_depthBufferWriteEnable != m_currentStage->depthBufferWriteEnable )
+        if( m_depthBufferWriteEnable != m_currentRenderMaterialStage->depthBufferWriteEnable )
         {
-            m_depthBufferWriteEnable = m_currentStage->depthBufferWriteEnable;
+            m_depthBufferWriteEnable = m_currentRenderMaterialStage->depthBufferWriteEnable;
 
             m_renderSystem->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
         }
 
-        if( m_currentBlendSrc != m_currentStage->blendSrc ||
-            m_currentBlendDst != m_currentStage->blendDst ||
-            m_currentBlendOp != m_currentStage->blendOp )
+        if( m_currentBlendSrc != m_currentRenderMaterialStage->blendSrc ||
+            m_currentBlendDst != m_currentRenderMaterialStage->blendDst ||
+            m_currentBlendOp != m_currentRenderMaterialStage->blendOp )
         {
-            m_currentBlendSrc = m_currentStage->blendSrc;
-            m_currentBlendDst = m_currentStage->blendDst;
-            m_currentBlendOp = m_currentStage->blendOp;
+            m_currentBlendSrc = m_currentRenderMaterialStage->blendSrc;
+            m_currentBlendDst = m_currentRenderMaterialStage->blendDst;
+            m_currentBlendOp = m_currentRenderMaterialStage->blendOp;
 
             m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
         }
 
-        if( m_currentProgram != m_currentStage->program )
+        if( m_currentRenderProgram != m_currentRenderMaterialStage->program )
         {
-            m_currentProgram = m_currentStage->program;
+            m_currentRenderProgram = m_currentRenderMaterialStage->program;
 
-            m_renderSystem->setProgram( m_currentProgram );
+            m_renderSystem->setProgram( m_currentRenderProgram );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -635,17 +633,17 @@ namespace Mengine
 
         uint32_t textureCount = _material->getTextureCount();
 
-        if( m_currentTextureStage > textureCount )
+        if( m_currentRenderTextureStage > textureCount )
         {
-            for( uint32_t stageId = textureCount; stageId != m_currentTextureStage; ++stageId )
+            for( uint32_t stageId = textureCount; stageId != m_currentRenderTextureStage; ++stageId )
             {
                 this->restoreTextureStage_( stageId );
             }
         }
 
-        m_currentTextureStage = textureCount;
+        m_currentRenderTextureStage = textureCount;
 
-        for( uint32_t stageId = 0; stageId != m_currentTextureStage; ++stageId )
+        for( uint32_t stageId = 0; stageId != m_currentRenderTextureStage; ++stageId )
         {
             const RenderTextureInterfacePtr & texture = _material->getTexture( stageId );
 
@@ -677,15 +675,15 @@ namespace Mengine
 
         this->updateMaterial_( material );
 
-        m_renderSystem->updateProgram( m_currentProgram );
+        m_renderSystem->updateProgram( m_currentRenderProgram );
 
-        if( m_currentProgramVariable != nullptr )
+        if( m_currentRenderProgramVariable != nullptr )
         {
-            m_renderSystem->setProgramVariable( m_currentProgramVariable, m_currentProgram );
+            m_renderSystem->setProgramVariable( m_currentRenderProgramVariable, m_currentRenderProgram );
         }
         else
         {
-            m_renderSystem->setProgramVariable( nullptr, m_currentProgram );
+            m_renderSystem->setProgramVariable( nullptr, m_currentRenderProgram );
         }
 
         EPrimitiveType primitiveType = material->getPrimitiveType();
@@ -706,22 +704,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreTextureStage_( uint32_t _stage )
     {
-        m_textureStages[_stage] = m_defaultTextureStage;
+        m_renderTextureStages[_stage] = m_defaultRenderTextureStage;
 
         m_currentTexturesID[_stage] = 0;
 
         m_renderSystem->setTexture( _stage, nullptr );
 
         m_renderSystem->setTextureAddressing( _stage
-            , m_defaultTextureStage.addressU
-            , m_defaultTextureStage.addressV
-            , m_defaultTextureStage.addressBorder
+            , m_defaultRenderTextureStage.addressU
+            , m_defaultRenderTextureStage.addressV
+            , m_defaultRenderTextureStage.addressBorder
         );
 
         m_renderSystem->setTextureStageFilter( _stage
-            , m_defaultTextureStage.minification
-            , m_defaultTextureStage.mipmap
-            , m_defaultTextureStage.magnification
+            , m_defaultRenderTextureStage.minification
+            , m_defaultRenderTextureStage.mipmap
+            , m_defaultRenderTextureStage.magnification
         );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -797,8 +795,8 @@ namespace Mengine
         m_renderSystem->removeScissor();
 
         m_currentMaterialId = 0;
-        m_currentTextureStage = 0;
-        m_currentStage = nullptr;
+        m_currentRenderTextureStage = 0;
+        m_currentRenderMaterialStage = nullptr;
 
         m_currentBlendSrc = BF_ONE;
         m_currentBlendDst = BF_ZERO;
@@ -817,12 +815,12 @@ namespace Mengine
 
         m_currentRenderVertexBuffer = nullptr;
         m_currentRenderIndexBuffer = nullptr;
-        m_currentProgramVariable = nullptr;
-        m_currentProgram = nullptr;
+        m_currentRenderProgramVariable = nullptr;
+        m_currentRenderProgram = nullptr;
 
         m_renderSystem->setVertexBuffer( m_currentRenderVertexBuffer );
         m_renderSystem->setIndexBuffer( m_currentRenderIndexBuffer );
-        m_renderSystem->setProgram( m_currentProgram );
+        m_renderSystem->setProgram( m_currentRenderProgram );
         m_renderSystem->setCullMode( CM_CULL_NONE );
         //m_renderSystem->setFillMode( FM_SOLID );
         //m_renderSystem->setFillMode( FM_WIREFRAME );
@@ -1064,9 +1062,9 @@ namespace Mengine
             }
         }
 
-        if( m_currentProgramVariable != _renderPass->programVariable )
+        if( m_currentRenderProgramVariable != _renderPass->programVariable )
         {
-            m_currentProgramVariable = _renderPass->programVariable;
+            m_currentRenderProgramVariable = _renderPass->programVariable;
         }
 
         this->renderObjects_( _renderPass );

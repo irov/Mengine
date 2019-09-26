@@ -360,12 +360,12 @@ namespace Mengine
 
             MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( insert_group );
 
-            VectorResources::iterator it_remove_found = std::remove(
-                it_remove_cache_found->second.begin(),
-                it_remove_cache_found->second.end(),
-                prev_resource );
+            MENGINE_ASSERTION_RETURN( it_remove_cache_found != m_resourcesCache.end(), nullptr );
 
-            it_remove_cache_found->second.erase( it_remove_found );
+            VectorResources & cache_resources = it_remove_cache_found->second;
+
+            VectorResources::iterator it_remove_found = std::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
+            cache_resources.erase( it_remove_found, cache_resources.end() );
         }
 
         return resource;
@@ -388,17 +388,12 @@ namespace Mengine
 
         MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( group );
 
-        if( it_remove_cache_found == m_resourcesCache.end() )
-        {
-            return false;
-        }
+        MENGINE_ASSERTION_RETURN( it_remove_cache_found != m_resourcesCache.end(), false );
 
-        VectorResources::iterator it_found = std::remove(
-            it_remove_cache_found->second.begin(),
-            it_remove_cache_found->second.end(),
-            _resource );
+        VectorResources & cache_resources = it_remove_cache_found->second;
 
-        it_remove_cache_found->second.erase( it_found );
+        VectorResources::iterator it_found = std::remove( cache_resources.begin(), cache_resources.end(), _resource );
+        cache_resources.erase( it_found, cache_resources.end() );
 
         return true;
     }

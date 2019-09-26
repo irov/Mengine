@@ -65,7 +65,7 @@ namespace Mengine
             return element;
         }
 
-        const element_type_ptr & change( const key_type & _key, const element_type_ptr & _element )
+        element_type_ptr change( const key_type & _key, const element_type_ptr & _element )
         {
             uint32_t test_size = m_size * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;
@@ -76,7 +76,7 @@ namespace Mengine
 
             hash_type hash = hashgen_type()(_key);
 
-            const element_type_ptr & prev = Hashtable::change_( m_buffer, m_capacity, hash, _key, _element );
+            element_type_ptr prev = Hashtable::change_( m_buffer, m_capacity, hash, _key, _element );
 
             if( prev == nullptr )
             {
@@ -97,7 +97,10 @@ namespace Mengine
 
             element_type_ptr element = Hashtable::pop_( m_buffer, m_capacity, hash, _key );
 
-            --m_size;
+            if( element != nullptr )
+            {
+                --m_size;
+            }
 
             return element;
         }
@@ -437,10 +440,20 @@ namespace Mengine
 
                 MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0)), "hash push" );
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr )
                 {
                     record->hash = _hash;
                     record->key = _key;
+                    record->element = _element;
+
+                    return record->element;
+                }
+
+                if( record->element == reinterpret_cast<const element_type *>(~0) )
+                {
+                    record->hash = _hash;
+                    record->key = _key;
+                    record->element.set( nullptr );
                     record->element = _element;
 
                     return record->element;
@@ -450,7 +463,7 @@ namespace Mengine
             }
         }
 
-        static const element_type_ptr & change_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
+        static element_type_ptr change_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
         {
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
@@ -459,21 +472,32 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                if( record->hash == _hash && record->key == _key && record->element != nullptr && record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->hash == _hash && record->key == _key )
                 {
-                    const element_type_ptr & prev = record->element;
-                    record->element = _element;
+                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    {
+                        record->element.set( nullptr );
+                        record->element = _element;
 
-                    return prev;
+                        return nullptr;
+                    }
+
+                    if( record->element != nullptr )
+                    {
+                        element_type_ptr prev = record->element;
+                        record->element = _element;
+
+                        return prev;
+                    }
                 }
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr )
                 {
                     record->hash = _hash;
                     record->key = _key;
                     record->element = _element;
 
-                    return element_type_ptr::none();
+                    return nullptr;
                 }
 
                 mask = (mask << 2) + mask + (size_type)probe + 1;
@@ -660,7 +684,10 @@ namespace Mengine
 
             element_type_ptr element = Hashtable::pop_( m_buffer, m_capacity, hash, _key );
 
-            --m_size;
+            if( element != nullptr )
+            {
+                --m_size;
+            }
 
             return element;
         }
@@ -1024,15 +1051,25 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                if( record->hash == _hash && record->key == _key && record->element != nullptr && record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->hash == _hash && record->key == _key )
                 {
-                    element_type_ptr prev = record->element;
-                    record->element = _element;
+                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    {
+                        record->element = _element;
 
-                    return prev;
+                        return nullptr;
+                    }
+
+                    if( record->element != nullptr )
+                    {
+                        element_type_ptr prev = record->element;
+                        record->element = _element;
+
+                        return prev;
+                    }
                 }
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr )
                 {
                     record->hash = _hash;
                     record->key = _key;

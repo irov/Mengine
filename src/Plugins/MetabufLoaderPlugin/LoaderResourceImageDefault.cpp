@@ -24,20 +24,24 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 
-        const FilePath & filePath = metadata->get_File_Path();
+        ContentInterface * content = resource->getContent();
 
-        resource->setFilePath( filePath );
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
 
         ConstString codecType;
         if( metadata->get_File_Codec( &codecType ) == false )
         {
+            const FilePath & filePath = content->getFilePath();
+
             codecType = CODEC_SERVICE()
                 ->findCodecType( filePath );
         }
 
-        resource->setCodecType( codecType );
+        content->setCodecType( codecType );
 
-        metadata->getm_File_Converter( resource, &ResourceImageDefault::setConverterType );
+        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
+        metadata->getm_File_NoExist( content, &ContentInterface::setValidNoExist );
+
         metadata->getm_File_Alpha( resource, &ResourceImageDefault::setAlpha );
         metadata->getm_File_Premultiply( resource, &ResourceImageDefault::setPremultiply );
 
@@ -54,8 +58,7 @@ namespace Mengine
             resource->setSize( maxSize );
         }
 
-        metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );
-        metadata->getm_File_NoExist( resource, &ResourceImageDefault::setValidNoExist );
+        metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );        
 
         resource->correctUVTexture();
 

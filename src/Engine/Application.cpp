@@ -2146,7 +2146,7 @@ namespace Mengine
             const ConstString & name = m_cursorResource->getName();
             const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
-            Content * content = m_cursorResource->getContent();
+            ContentInterface * content = m_cursorResource->getContent();
 
             PLATFORM_SERVICE()
                 ->notifyCursorIconSetup( name, content, buffer );
@@ -2184,7 +2184,7 @@ namespace Mengine
         const ConstString & name = m_cursorResource->getName();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
-        Content * content = m_cursorResource->getContent();
+        ContentInterface * content = m_cursorResource->getContent();
 
         PLATFORM_SERVICE()
             ->notifyCursorIconSetup( name, content, buffer );

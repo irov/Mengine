@@ -87,14 +87,14 @@ namespace Mengine
         pybind::interface_<ResourceSpineAtlas, pybind::bases<Resource> >( _kernel, "ResourceSpineAtlas", false )
             ;
 
-        pybind::interface_<ResourceSpineAtlasDefault, pybind::bases<ResourceSpineAtlas, Content> >( _kernel, "ResourceSpineAtlasDefault", false )
+        pybind::interface_<ResourceSpineAtlasDefault, pybind::bases<ResourceSpineAtlas>>( _kernel, "ResourceSpineAtlasDefault", false )
             .def( "addResourceImageDesc", &ResourceSpineAtlasDefault::addResourceImageDesc )
             ;
 
-        pybind::interface_<ResourceSpineAtlasTexturepacker, pybind::bases<ResourceSpineAtlas> >( _kernel, "ResourceSpineAtlasTexturepacker", false )
+        pybind::interface_<ResourceSpineAtlasTexturepacker, pybind::bases<ResourceSpineAtlas>>( _kernel, "ResourceSpineAtlasTexturepacker", false )
             ;
 
-        pybind::interface_<ResourceSpineSkeleton, pybind::bases<Resource, Content> >( _kernel, "ResourceSpineSkeleton", false )
+        pybind::interface_<ResourceSpineSkeleton, pybind::bases<Resource>>( _kernel, "ResourceSpineSkeleton", false )
             .def( "setResourceSpineAtlasName", &ResourceSpineSkeleton::setResourceSpineAtlasName )
             .def( "getResourceSpineAtlasName", &ResourceSpineSkeleton::getResourceSpineAtlasName )
             ;

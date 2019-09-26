@@ -22,7 +22,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorICO * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorICO *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceCursorICO::setFilePath );
+        ContentInterface * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
 
         return true;
     }

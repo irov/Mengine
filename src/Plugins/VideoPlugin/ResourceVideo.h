@@ -3,7 +3,7 @@
 #include "VideoInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 #include "Kernel/ResourceCacher.h"
 
 #include "math/vec2.h"
@@ -12,7 +12,7 @@ namespace Mengine
 {
     class ResourceVideo
         : public Resource
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

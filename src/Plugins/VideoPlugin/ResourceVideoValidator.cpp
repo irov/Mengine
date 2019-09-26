@@ -29,7 +29,7 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
                 , dataInfo->frameWidth
                 , dataInfo->frameHeight
                 , (dataInfo->frameWidth / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
@@ -48,7 +48,7 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid size %d:%d limit %d:%d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
                 , dataInfo->width
                 , dataInfo->height
                 , limitVideoWidth
@@ -65,7 +65,7 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid Frame rate %f more that %f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
                 , dataInfo->fps
                 , Limit_VideoFrameRate
             );
@@ -85,7 +85,7 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' can't create decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , _resource->getContent()->getFilePath().c_str()
             );
 
             return false;

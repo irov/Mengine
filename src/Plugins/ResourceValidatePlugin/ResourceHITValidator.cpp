@@ -22,8 +22,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHITValidator::_validate( const ResourceHITPtr & _resource )
     {
-        const FilePath & filePath = _resource->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const ContentInterface * content = _resource->getContent();
+
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         if( fileGroup->existFile( filePath, true ) == false )
         {
@@ -35,11 +37,11 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "resource '%s' group '%s' invalid open file '%s:%s'"
             , _resource->getName().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getFileGroup()->getName().c_str()
-            , _resource->getFilePath().c_str()
+            , content->getFileGroup()->getName().c_str()
+            , content->getFilePath().c_str()
         );
 
-        const ConstString & codecType = _resource->getCodecType();
+        const ConstString & codecType = content->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
@@ -47,9 +49,9 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
             , _resource->getName().c_str()
             , _resource->getGroupName().c_str()
-            , _resource->getFileGroup()->getName().c_str()
-            , _resource->getFilePath().c_str()
-            , _resource->getCodecType().c_str()
+            , content->getFileGroup()->getName().c_str()
+            , content->getFilePath().c_str()
+            , content->getCodecType().c_str()
         );
 
         if( decoder->prepareData( stream ) == false )
@@ -57,9 +59,9 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
-                , _resource->getCodecType().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
+                , content->getCodecType().c_str()
             );
 
             return false;

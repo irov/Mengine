@@ -4,13 +4,18 @@
 
 namespace Mengine
 {
-    class Content;
+    class ContentInterface;
 
     class Contentable
         : public Mixin
     {
     public:
-        virtual Content * getContent()
+        virtual ContentInterface * getContent()
+        {
+            return nullptr;
+        };
+
+        virtual const ContentInterface * getContent() const
         {
             return nullptr;
         };
@@ -19,5 +24,6 @@ namespace Mengine
 
 #define DECLARE_CONTENTABLE()\
 public:\
-    Mengine::Content * getContent() override{ return this; }\
+    Mengine::ContentInterface * getContent() override{ return this; }\
+    const Mengine::ContentInterface * getContent() const override{ return this; }\
 protected:

@@ -1746,9 +1746,10 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceFile, false );
 
-            const FileGroupInterfacePtr & fileGroup = resourceFile->getFileGroup();
+            const ContentInterface * content = resourceFile->getContent();
 
-            const FilePath & filePath = resourceFile->getFilePath();
+            const FilePath & filePath = content->getFilePath();
+            const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
             InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_PYBIND );
 

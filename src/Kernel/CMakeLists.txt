@@ -261,8 +261,8 @@ Resource\\\\Image
 ADD_FILTER(
 Resource\\\\Content
     Contentable.h
-	Content.cpp
-	Content.h
+	BaseContent.cpp
+	BaseContent.h
 )
 
 ADD_FILTER(

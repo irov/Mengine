@@ -98,7 +98,9 @@ namespace Mengine
             }
         }
 
-        const FilePath & filePath = _resource->getFilePath();
+        const ContentInterface * content = _resource->getContent();
+
+        const FilePath & filePath = content->getFilePath();
 
         if( filePath.empty() == true )
         {
@@ -110,7 +112,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -119,13 +121,13 @@ namespace Mengine
             LOGGER_ERROR( "'%s' group '%s' invalid open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
         }
 
-        DataflowInterfacePtr dataflow = _resource->getDataflow();
+        DataflowInterfacePtr dataflow = content->getDataflow();
 
         if( dataflow == nullptr )
         {
@@ -137,7 +139,7 @@ namespace Mengine
                 LOGGER_ERROR( "'%s' group '%s' you must determine codec for file '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , _resource->getFilePath().c_str()
+                    , content->getFilePath().c_str()
                 );
 
                 return false;

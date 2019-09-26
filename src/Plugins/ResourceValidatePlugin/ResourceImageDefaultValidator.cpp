@@ -93,12 +93,14 @@ namespace Mengine
     {
         const ResourceImageDefaultPtr & resource = stdex::intrusive_static_cast<ResourceImageDefaultPtr>(_resource);
 
-        const FilePath & filePath = _resource->getFilePath();
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const ContentInterface * content = _resource->getContent();
+
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         if( fileGroup->existFile( filePath, true ) == false )
         {
-            bool validNoExist = resource->isValidNoExist();
+            bool validNoExist = content->isValidNoExist();
 
             if( validNoExist == true )
             {
@@ -108,8 +110,8 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' not exist file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -122,14 +124,14 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
         }
 
-        const ConstString & codecType = _resource->getCodecType();
+        const ConstString & codecType = content->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
             ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
@@ -139,9 +141,9 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
-                , _resource->getCodecType().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
+                , content->getCodecType().c_str()
             );
 
             return false;
@@ -152,9 +154,9 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
-                , _resource->getCodecType().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
+                , content->getCodecType().c_str()
             );
 
             return false;
@@ -173,8 +175,8 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid limit '%d:%d' texture size '%d:%d'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
                 , limitTextureWidth
                 , limitTextureHeight
                 , dataInfo->width
@@ -204,8 +206,8 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %d:%d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
                 , test_size.x
                 , test_size.y
                 , width
@@ -239,9 +241,9 @@ namespace Mengine
                 LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid optionizing"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , _resource->getFileGroup()->getName().c_str()
-                    , _resource->getFilePath().c_str()
-                    , _resource->getCodecType().c_str()
+                    , content->getFileGroup()->getName().c_str()
+                    , content->getFilePath().c_str()
+                    , content->getCodecType().c_str()
                 );
 
                 return false;
@@ -252,9 +254,9 @@ namespace Mengine
                 LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decode '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , _resource->getFileGroup()->getName().c_str()
-                    , _resource->getFilePath().c_str()
-                    , _resource->getCodecType().c_str()
+                    , content->getFileGroup()->getName().c_str()
+                    , content->getFilePath().c_str()
+                    , content->getCodecType().c_str()
                 );
 
                 return false;
@@ -265,9 +267,9 @@ namespace Mengine
                 LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' all pixels transparency!"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
-                    , _resource->getFileGroup()->getName().c_str()
-                    , _resource->getFilePath().c_str()
-                    , _resource->getCodecType().c_str()
+                    , content->getFileGroup()->getName().c_str()
+                    , content->getFilePath().c_str()
+                    , content->getCodecType().c_str()
                 );
 
                 return false;
@@ -282,9 +284,9 @@ namespace Mengine
                     LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' row or column pixels transparency!"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
-                        , _resource->getFileGroup()->getName().c_str()
-                        , _resource->getFilePath().c_str()
-                        , _resource->getCodecType().c_str()
+                        , content->getFileGroup()->getName().c_str()
+                        , content->getFilePath().c_str()
+                        , content->getCodecType().c_str()
                     );
 
                     return false;

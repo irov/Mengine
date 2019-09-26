@@ -1,8 +1,8 @@
 #include "LoaderResourceCursorSystem.h"
 
-#include "Engine/ResourceCursorSystem.h"
+#include "Interface/ContentInterface.h"
 
-#include "Kernel/Content.h"
+#include "Engine/ResourceCursorSystem.h"
 
 #include "Metacode/Metacode.h"
 
@@ -24,9 +24,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);
 
-        Content * content = resource->getContent();
+        ContentInterface * content = resource->getContent();
 
-        metadata->getm_File_Path( content, &Content::setFilePath );
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
 
         return true;
     }

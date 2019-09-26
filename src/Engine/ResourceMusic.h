@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 #include "Config/Vector.h"
 
@@ -10,7 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMusic
         : public Resource
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

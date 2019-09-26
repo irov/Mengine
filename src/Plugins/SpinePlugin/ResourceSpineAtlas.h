@@ -1,9 +1,6 @@
 #pragma once
 
-#include "SpineInterface.h"
-
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
 
 #include "spine/spine.h"
 

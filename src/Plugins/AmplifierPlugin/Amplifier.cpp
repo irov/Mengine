@@ -105,9 +105,12 @@ namespace Mengine
             , _resourceName.c_str()
         );
 
-        const FileGroupInterfacePtr & fileGroup = resourceMusic->getFileGroup();
-        const FilePath & filePath = resourceMusic->getFilePath();
-        const ConstString & codecType = resourceMusic->getCodecType();
+        const ContentInterface * content = resourceMusic->getContent();
+
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+        const ConstString & codecType = content->getCodecType();
+
         bool external = resourceMusic->isExternal();
         float volume = resourceMusic->getVolume();
 

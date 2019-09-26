@@ -67,16 +67,16 @@ namespace Mengine
     {
         pybind::def_function( _kernel, "createOzzSampler", &Detail::s_createOzzSampler );
 
-        pybind::interface_<ResourceOzzAnimation, pybind::bases<Resource, Content> >( _kernel, "ResourceOzzAnimation", false )
+        pybind::interface_<ResourceOzzAnimation, pybind::bases<Resource>>( _kernel, "ResourceOzzAnimation", false )
             ;
 
-        pybind::interface_<ResourceOzzMesh, pybind::bases<Resource, Content> >( _kernel, "ResourceOzzMesh", false )
+        pybind::interface_<ResourceOzzMesh, pybind::bases<Resource>>( _kernel, "ResourceOzzMesh", false )
             ;
 
-        pybind::interface_<ResourceOzzSkeleton, pybind::bases<Resource, Content> >( _kernel, "ResourceOzzSkeleton", false )
+        pybind::interface_<ResourceOzzSkeleton, pybind::bases<Resource>>( _kernel, "ResourceOzzSkeleton", false )
             ;
 
-        pybind::interface_<SamplerOzzAnimationInterface, pybind::bases<Animatable, Eventable, Scriptable> >( _kernel, "SamplerOzzAnimationInterface" )
+        pybind::interface_<SamplerOzzAnimationInterface, pybind::bases<Animatable, Eventable, Scriptable>>( _kernel, "SamplerOzzAnimationInterface" )
             .def( "setResourceOzzAnimation", &SamplerOzzAnimationInterface::setResourceOzzAnimation )
             .def( "getResourceOzzAnimation", &SamplerOzzAnimationInterface::getResourceOzzAnimation )
             .def( "setResourceOzzSkeleton", &SamplerOzzAnimationInterface::setResourceOzzSkeleton )

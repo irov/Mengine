@@ -93,6 +93,7 @@ namespace Mengine
             config->hasValue( frameworkPack.c_str(), "Type", &pack.type );
             config->hasValue( frameworkPack.c_str(), "Locale", &pack.locale );
             config->hasValue( frameworkPack.c_str(), "Platform", &pack.platform );
+            config->hasValue( frameworkPack.c_str(), "Tag", &pack.tags );
             config->hasValue( frameworkPack.c_str(), "Category", &pack.fileGroupName );
             config->hasValue( frameworkPack.c_str(), "Parent", &pack.parent );
             config->hasValue( frameworkPack.c_str(), "Description", &pack.descriptionPath );
@@ -140,11 +141,12 @@ namespace Mengine
             config->hasValue( resourcePack.c_str(), "Type", &pack.type );
             config->hasValue( resourcePack.c_str(), "Locale", &pack.locale );
             config->hasValue( resourcePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( resourcePack.c_str(), "Tag", &pack.tags );
             config->hasValue( resourcePack.c_str(), "Category", &pack.fileGroupName );
             config->hasValue( resourcePack.c_str(), "FileGroup", &pack.fileGroupName );
             config->hasValue( resourcePack.c_str(), "Parent", &pack.parent );
             config->hasValue( resourcePack.c_str(), "Description", &pack.descriptionPath );
-            config->hasValue( resourcePack.c_str(), "Path", &pack.path );            
+            config->hasValue( resourcePack.c_str(), "Path", &pack.path );
             config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
             config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
 
@@ -185,9 +187,10 @@ namespace Mengine
             }
 
             config->hasValue( languagePack.c_str(), "Name", &pack.name );
-            config->hasValue( languagePack.c_str(), "Type", &pack.type );            
+            config->hasValue( languagePack.c_str(), "Type", &pack.type );
             config->hasValue( languagePack.c_str(), "Locale", &pack.locale );
             config->hasValue( languagePack.c_str(), "Platform", &pack.platform );
+            config->hasValue( languagePack.c_str(), "Tag", &pack.tags );
             config->hasValue( languagePack.c_str(), "Category", &pack.fileGroupName );
             config->hasValue( languagePack.c_str(), "FileGroup", &pack.fileGroupName );
             config->hasValue( languagePack.c_str(), "Parent", &pack.parent );
@@ -252,6 +255,7 @@ namespace Mengine
             , _desc.type
             , _desc.locale
             , _desc.platform
+            , _desc.tags
             , _desc.descriptionPath
             , baseFileGroup
             , _desc.path
@@ -330,6 +334,14 @@ namespace Mengine
         }
 
         return PackageInterfacePtr::none();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PackageService::visitPackages( const LambdaPackage & _lambda ) const
+    {
+        for( const PackagePtr & package : m_packages )
+        {
+            _lambda( package );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::loadLocalePacksByName_( VectorPackages & _packs, const ConstString & _locale, const Tags & _platformTags ) const

@@ -17,6 +17,11 @@ namespace Mengine
         {
             return nullptr;
         };
+
+        virtual const AnimationInterface * getAnimation() const
+        {
+            return nullptr;
+        };
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Animatable> AnimatablePtr;
@@ -26,5 +31,6 @@ namespace Mengine
 #define DECLARE_ANIMATABLE()\
 public:\
     Mengine::AnimationInterface * getAnimation() override{ return this; }\
+    const Mengine::AnimationInterface * getAnimation() const override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

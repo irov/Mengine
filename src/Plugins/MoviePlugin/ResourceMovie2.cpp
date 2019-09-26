@@ -180,7 +180,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_compile()
     {
-        Content * content = this->getContent();
+        ContentInterface * content = this->getContent();
 
         const FilePath & filePath = content->getFilePath();
 

@@ -3,7 +3,7 @@
 #include "MovieKeyFrameInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Polygon.h"
 
@@ -186,7 +186,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie
         : public Resource
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

@@ -1,73 +1,73 @@
-#include "Content.h"
+#include "BaseContent.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Content::Content()
+    BaseContent::BaseContent()
         : m_validNoExist( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Content::~Content()
+    BaseContent::~BaseContent()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    void BaseContent::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
     {
         m_fileGroup = _fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FileGroupInterfacePtr & Content::getFileGroup() const
+    const FileGroupInterfacePtr & BaseContent::getFileGroup() const
     {
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setFilePath( const FilePath & _filePath )
+    void BaseContent::setFilePath( const FilePath & _filePath )
     {
         m_filePath = _filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Content::getFilePath() const
+    const FilePath & BaseContent::getFilePath() const
     {
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setCodecType( const ConstString & _codecType )
+    void BaseContent::setCodecType( const ConstString & _codecType )
     {
         m_codecType = _codecType;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Content::getCodecType() const
+    const ConstString & BaseContent::getCodecType() const
     {
         return m_codecType;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setConverterType( const ConstString & _converterType )
+    void BaseContent::setConverterType( const ConstString & _converterType )
     {
         m_converterType = _converterType;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Content::getConverterType() const
+    const ConstString & BaseContent::getConverterType() const
     {
         return m_converterType;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setDataflow( const DataflowInterfacePtr & _dataflow )
+    void BaseContent::setDataflow( const DataflowInterfacePtr & _dataflow )
     {
         m_dataflow = _dataflow;
     }
     //////////////////////////////////////////////////////////////////////////
-    const DataflowInterfacePtr & Content::getDataflow() const
+    const DataflowInterfacePtr & BaseContent::getDataflow() const
     {
         return m_dataflow;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Content::setValidNoExist( bool _validNoExist )
+    void BaseContent::setValidNoExist( bool _validNoExist )
     {
         m_validNoExist = _validNoExist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Content::isValidNoExist() const
+    bool BaseContent::isValidNoExist() const
     {
         return m_validNoExist;
     }

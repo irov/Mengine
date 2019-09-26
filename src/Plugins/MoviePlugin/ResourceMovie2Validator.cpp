@@ -181,7 +181,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource )
     {
-        const FilePath & filePath = _resource->getFilePath();
+        const ContentInterface * content = _resource->getContent();
+
+        const FilePath & filePath = content->getFilePath();
 
         if( filePath.empty() == true )
         {
@@ -193,7 +195,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
@@ -202,7 +204,7 @@ namespace Mengine
             LOGGER_ERROR( "movie2 '%s' group '%s' can`t open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -215,7 +217,7 @@ namespace Mengine
             LOGGER_ERROR( "movie2 '%s' group '%s' can`t load stream archive file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -253,7 +255,7 @@ namespace Mengine
             LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFilePath().c_str()
                 , result_string_info
                 , AE_MOVIE_SDK_MAJOR_VERSION
                 , AE_MOVIE_SDK_MINOR_VERSION

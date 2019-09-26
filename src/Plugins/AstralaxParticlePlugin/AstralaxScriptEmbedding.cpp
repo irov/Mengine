@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<ResourceAstralax, pybind::bases<Resource, Content> >( _kernel, "ResourceAstralax", false )
+        pybind::interface_<ResourceAstralax, pybind::bases<Resource> >( _kernel, "ResourceAstralax", false )
             .def( "getResourceImageCount", &ResourceAstralax::getResourceImageCount )
             .def( "getResourceImage", &ResourceAstralax::getResourceImage )
             ;

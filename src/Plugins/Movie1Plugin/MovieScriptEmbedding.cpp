@@ -1374,7 +1374,7 @@ namespace Mengine
             .def( "getResourceImage", &MovieMesh2D::getResourceImage )
             ;
 
-        pybind::interface_<ResourceMovie, pybind::bases<Resource, Content> >( _kernel, "ResourceMovie", false )
+        pybind::interface_<ResourceMovie, pybind::bases<Resource>>( _kernel, "ResourceMovie", false )
             .def( "getSize", &ResourceMovie::getSize )
             .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
             .def( "getFrameCount", &ResourceMovie::getFrameCount )

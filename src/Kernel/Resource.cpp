@@ -3,9 +3,9 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Content.h"
 
 namespace Mengine
 {
@@ -59,7 +59,7 @@ namespace Mengine
     {
         this->_finalize();
 
-        Content * content = this->getContent();
+        ContentInterface * content = this->getContent();
 
         if( content != nullptr )
         {

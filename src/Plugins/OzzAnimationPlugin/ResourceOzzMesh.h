@@ -5,7 +5,7 @@
 #include "OzzDetail.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 #include "Config/Vector.h"
 
@@ -15,7 +15,7 @@ namespace Mengine
 {
     class ResourceOzzMesh
         : public Resource
-        , public Content
+        , private BaseContent
         , public UnknownResourceOzzMeshInterface
     {
         DECLARE_VISITABLE( Resource );

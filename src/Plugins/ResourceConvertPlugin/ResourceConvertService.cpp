@@ -5,9 +5,9 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Kernel/AssertionVocabulary.h"
-#include "Kernel/Content.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertService::convertResource_( const ResourcePtr & _resource )
     {
-        Content * content = _resource->getContent();
+        ContentInterface * content = _resource->getContent();
 
         if( content == nullptr )
         {

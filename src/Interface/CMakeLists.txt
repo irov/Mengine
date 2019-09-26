@@ -108,6 +108,7 @@ src
     PluginServiceInterface.h
     DynamicLibraryInterface.h
     ScriptWrapperInterface.h
+    ContentInterface.h
     
 	dummy.cpp
 )

@@ -4,13 +4,13 @@
 
 #include "ResourceTestPick.h"
 
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 namespace Mengine
 {
     class ResourceHIT
         : public ResourceTestPick
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( ResourceTestPick );
         DECLARE_CONTENTABLE();

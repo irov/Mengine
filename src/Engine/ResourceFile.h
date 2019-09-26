@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 #include "Kernel/FilePath.h"
 
@@ -9,7 +9,7 @@ namespace Mengine
 {
     class ResourceFile
         : public Resource
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

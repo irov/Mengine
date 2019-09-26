@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceFileValidator::_validate( const ResourceFilePtr & _resource )
     {
-        Content * content = _resource->getContent();
+        ContentInterface * content = _resource->getContent();
 
         MENGINE_ASSERTION_MEMORY_PANIC( content, false, "resource '%s' is not contentable"
             , _resource->getType().c_str()
@@ -31,8 +31,8 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' file group '%s' not found file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;

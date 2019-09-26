@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/FileGroupInterface.h"
+#include "Interface/DataflowInterface.h"
 
 #include "Kernel/Mixin.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
@@ -29,8 +29,8 @@ namespace Mengine
         void setConverterType( const ConstString & _converterType );
         const ConstString & getConverterType() const;
 
-        void setDataflowType( const ConstString & _dataflowType );
-        const ConstString & getDataflowType() const;
+        void setDataflow( const DataflowInterfacePtr & _dataflow );
+        const DataflowInterfacePtr & getDataflow() const;
 
     public:
         void setValidNoExist( bool _valid );
@@ -42,7 +42,8 @@ namespace Mengine
         FilePath m_filePath;
         ConstString m_codecType;
         ConstString m_converterType;
-        ConstString m_dataflowType;
+
+        DataflowInterfacePtr m_dataflow;
 
         bool m_validNoExist;
     };

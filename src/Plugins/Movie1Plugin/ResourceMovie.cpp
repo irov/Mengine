@@ -217,13 +217,10 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        Content * content = this->getContent();
 
-        const ConstString & dataflowType = this->getDataflowType();
-
-        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( dataflow, false );
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+        const DataflowInterfacePtr & dataflow = content->getDataflow();
 
         DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FUNCTION );
 

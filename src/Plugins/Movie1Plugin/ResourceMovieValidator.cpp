@@ -125,11 +125,11 @@ namespace Mengine
             return false;
         }
 
-        ConstString dataflowType = _resource->getDataflowType();
+        DataflowInterfacePtr dataflow = _resource->getDataflow();
 
-        if( dataflowType.empty() == true )
+        if( dataflow == nullptr )
         {
-            dataflowType = CODEC_SERVICE()
+            const ConstString & dataflowType = CODEC_SERVICE()
                 ->findCodecType( filePath );
 
             if( dataflowType.empty() == true )
@@ -142,13 +142,13 @@ namespace Mengine
 
                 return false;
             }
-        }
 
-        DataflowInterfacePtr dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+            dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
-        if( dataflow == nullptr )
-        {
-            return false;
+            if( dataflow == nullptr )
+            {
+                return false;
+            }
         }
 
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()

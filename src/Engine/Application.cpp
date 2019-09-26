@@ -117,7 +117,6 @@
 #include "EntityPrototypeGenerator.h"
 #include "ScenePrototypeGenerator.h"
 #include "ArrowPrototypeGenerator.h"
-#include "SpritePrototypeGenerator.h"
 
 #include "stdex/allocator.h"
 #include "stdex/allocator_report.h"
@@ -320,37 +319,11 @@ namespace Mengine
 
         m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
 
-        SpriteCachePtr spriteCache = Helper::makeFactorableUnique<SpriteCache>();
-
-        MENGINE_ASSERTION_MEMORY_PANIC( spriteCache, false );
-
-        if( spriteCache->initialize() == false )
-        {
-            return false;
-        }
-
-        m_spriteCache = spriteCache;
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Sprite" ), Helper::makeFactorableUnique<SpritePrototypeGenerator>( spriteCache ) ) == false )
-        {
-            return false;
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalizeService()
     {
-        PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Sprite" ) );
-
-        if( m_spriteCache != nullptr )
-        {
-            m_spriteCache->finalize();
-            m_spriteCache = nullptr;
-        }
-
         if( m_debugFileOpen == true )
         {
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_OPEN_FILE );

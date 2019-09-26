@@ -2,13 +2,13 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 namespace Mengine
 {
     class ResourceImageDefault
         : public ResourceImage
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( ResourceImage );
         DECLARE_CONTENTABLE();

@@ -2,6 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -11,7 +12,6 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Content.h"
 #include "Kernel/Document.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -145,11 +145,11 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
 
-            Content * json_content = m_resourceJSON->getContent();
+            const ContentInterface * json_content = m_resourceJSON->getContent();
             const FileGroupInterfacePtr & fileGroup = json_content->getFileGroup();
             const FilePath & filePath = json_content->getFilePath();
             
-            Content * resource_content = resource->getContent();
+            ContentInterface * resource_content = resource->getContent();
 
             FilePath newFilePath = Helper::replaceFileSpec( filePath, root_meta_image );
 

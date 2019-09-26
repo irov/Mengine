@@ -3,13 +3,13 @@
 #include "Interface/SoundBufferInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 namespace Mengine
 {
     class ResourceSound
         : public Resource
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

@@ -22,8 +22,10 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlas * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlas *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceSpineAtlasDefault::setFilePath );
-        metadata->getm_File_Converter( resource, &ResourceSpineAtlasDefault::setConverterType );
+        ContentInterface * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineAtlas::VectorMeta_Image & includes_images = metadata->get_Includes_Image();
 

@@ -3,13 +3,13 @@
 #include "JSONInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 namespace Mengine
 {
     class ResourceJSON
         : public Resource
-        , public Content
+        , private BaseContent
         , public UnknownResourceJSONInterface
     {
         DECLARE_VISITABLE( Resource );

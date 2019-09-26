@@ -32,14 +32,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Button::isBlock() const
     {
-        int value = m_semaphoreBlock->getValue();
+        int32_t value = m_semaphoreBlock->getValue();
 
         return value == 1 ? true : false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::setPickerable( const PickerablePtr & _pickerable )
+    void Button::setPickerable( const PickerablePtr & _pickerable, bool _attach )
     {
         m_pickerable = _pickerable;
+
+        if( _attach == true )
+        {
+            this->addChild( _pickerable );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const PickerablePtr & Button::getPickerable() const
@@ -47,9 +52,14 @@ namespace Mengine
         return m_pickerable;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::setStateNode( EButtonState _state, const NodePtr & _node )
+    void Button::setStateNode( EButtonState _state, const NodePtr & _node, bool _attach )
     {
         m_nodes[_state] = _node;
+
+        if( _attach == true )
+        {
+            this->addChild( _node );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Button::getStateNode( EButtonState _state ) const

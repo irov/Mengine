@@ -3,7 +3,7 @@
 #include "ResourceSpineAtlas.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 #include "Kernel/ResourceImage.h"
 
 #include "spine/spine.h"
@@ -12,7 +12,7 @@ namespace Mengine
 {
     class ResourceSpineAtlasDefault
         : public ResourceSpineAtlas
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( ResourceSpineAtlas );
         DECLARE_CONTENTABLE();

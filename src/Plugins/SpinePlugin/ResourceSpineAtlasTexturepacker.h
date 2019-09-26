@@ -5,7 +5,6 @@
 #include "ResourceSpineAtlas.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
 
 #include "Plugins/TexturepackerPlugin/TexturepackerInterface.h"
 

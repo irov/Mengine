@@ -7,6 +7,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ContentInterface.h"
 
 #include "Metacode/Metacode.h"
 
@@ -14,7 +15,6 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
@@ -163,7 +163,7 @@ namespace Mengine
 
             resource->setTags( _tags );
 
-            Content * content = resource->getContent();
+            ContentInterface * content = resource->getContent();
 
             if( content != nullptr )
             {

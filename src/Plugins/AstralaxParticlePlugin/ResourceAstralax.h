@@ -3,7 +3,7 @@
 #include "AstralaxInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/Polygon.h"
@@ -14,7 +14,7 @@ namespace Mengine
 {
     class ResourceAstralax
         : public Resource
-        , public Content
+        , public BaseContent
     {
         DECLARE_VISITABLE( Resource );
         DECLARE_CONTENTABLE();

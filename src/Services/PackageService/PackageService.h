@@ -31,6 +31,9 @@ namespace Mengine
         bool removePackage( const ConstString & _name ) override;
         const PackageInterfacePtr & getPackage( const ConstString & _name ) const override;
 
+    public:        
+        void visitPackages( const LambdaPackage & _lambda ) const override;
+
     public:
         bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;
 

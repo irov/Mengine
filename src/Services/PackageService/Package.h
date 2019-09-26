@@ -24,6 +24,7 @@ namespace Mengine
             , const ConstString & _type
             , const ConstString & _locale
             , const Tags & _platform
+            , const Tags & _tags
             , const FilePath & _descriptionPath
             , const FileGroupInterfacePtr & _baseFileGroup
             , const FilePath & _filePath
@@ -43,6 +44,9 @@ namespace Mengine
 
         void setPlatfromTags( const Tags & _tags ) override;
         const Tags & getPlatfromTags() const override;
+
+        void setTags( const Tags & _tags ) override;
+        const Tags & getTags() const override;
 
         void setPathPath( const FilePath & _filePath ) override;
         const FilePath & getPathPath() const override;
@@ -111,6 +115,7 @@ namespace Mengine
         FileGroupInterfacePtr m_baseFileGroup;
 
         Tags m_platform;
+        Tags m_tags;
         FilePath m_descriptionPath;
 
         FileGroupInterfacePtr m_fileGroup;

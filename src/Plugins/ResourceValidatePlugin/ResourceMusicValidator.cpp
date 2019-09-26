@@ -25,16 +25,17 @@ namespace Mengine
             return true;
         }
 
-        const FilePath & filePath = _resource->getFilePath();
+        const ContentInterface * content = _resource->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
         if( fileGroup->existFile( filePath, true ) == false )
         {
             LOGGER_ERROR( "resource '%s' group '%s' music '%s' not exist"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;

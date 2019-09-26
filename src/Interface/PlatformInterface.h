@@ -7,7 +7,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
-#include "Kernel/Content.h"
 #include "Kernel/Params.h"
 #include "Kernel/LambdaFilePath.h"
 
@@ -15,6 +14,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/DynamicLibraryInterface.h"
 #include "Interface/DateTimeProviderInterface.h"
+#include "Interface/ContentInterface.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -22,9 +22,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void()> LambdaTimer;
-    //////////////////////////////////////////////////////////////////////////
     class PlatformInterface
         : public ServiceInterface
     {
@@ -36,6 +33,7 @@ namespace Mengine
         virtual void stopPlatform() = 0;
 
     public:
+        typedef Lambda<void()> LambdaTimer;
         virtual uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) = 0;
         virtual void removeTimer( uint32_t _id ) = 0;
 
@@ -84,7 +82,7 @@ namespace Mengine
         virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
-        virtual bool notifyCursorIconSetup( const ConstString & _name, const Content * _content, const MemoryInterfacePtr & _memory ) = 0;
+        virtual bool notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _memory ) = 0;
 
     public:
         virtual void onEvent( const ConstString & _event, const MapWParams & _params ) = 0;

@@ -22,8 +22,10 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineSkeleton * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSpineSkeleton *>(_meta);
 
-        metadata->getm_File_Path( resource, &Content::setFilePath );
-        metadata->getm_File_Converter( resource, &Content::setConverterType );
+        ContentInterface * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
         metadata->getm_Atlas_Name( resource, &ResourceSpineSkeleton::setResourceSpineAtlasName );
 

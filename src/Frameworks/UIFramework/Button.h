@@ -42,11 +42,11 @@ namespace Mengine
         bool isBlock() const;
 
     public:
-        void setPickerable( const PickerablePtr & _pickerable );
+        void setPickerable( const PickerablePtr & _pickerable, bool _attach );
         const PickerablePtr & getPickerable() const;
 
     public:
-        void setStateNode( EButtonState _state, const NodePtr & _node );
+        void setStateNode( EButtonState _state, const NodePtr & _node, bool _attach );
         const NodePtr & getStateNode( EButtonState _state ) const;
 
     protected:

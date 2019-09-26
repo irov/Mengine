@@ -24,17 +24,22 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData *>(_meta);
 
-        const FilePath & filePath = metadata->get_File_Path();
-        resource->setFilePath( filePath );
+        ContentInterface * content = resource->getContent();
 
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        
         ConstString codecType;
         if( metadata->get_File_Codec( &codecType ) == false )
         {
+            const FilePath & filePath = content->getFilePath();
+
             codecType = CODEC_SERVICE()
                 ->findCodecType( filePath );
         }
 
-        resource->setCodecType( codecType );
+        content->setCodecType( codecType );
+
+        metadata->getm_File_NoExist( content, &ContentInterface::setValidNoExist );
 
         const mt::vec2f & maxSize = metadata->get_File_MaxSize();
 
@@ -43,9 +48,7 @@ namespace Mengine
 
         resource->setImageMaxSize( maxSize );
         resource->setImageWidth( width );
-        resource->setImageHeight( height );
-
-        metadata->getm_File_NoExist( resource, &ResourceImageData::setValidNoExist );
+        resource->setImageHeight( height );        
 
         return true;
     }

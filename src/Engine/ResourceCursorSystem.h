@@ -2,13 +2,13 @@
 
 #include "ResourceCursor.h"
 
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 namespace Mengine
 {
     class ResourceCursorSystem
         : public ResourceCursor
-        , public Content
+        , private BaseContent
     {
         DECLARE_VISITABLE( ResourceCursor );
         DECLARE_CONTENTABLE();

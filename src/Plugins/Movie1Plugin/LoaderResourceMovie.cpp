@@ -71,18 +71,18 @@ namespace Mengine
         metadata->getm_Anchor_Point( resource, &ResourceMovie::setAnchorPoint );
         metadata->getm_Offset_Point( resource, &ResourceMovie::setOffsetPoint );
 
-        const FilePath & filePath = metadata->get_KeyFramesPackPath_Path();
-        resource->setFilePath( filePath );
+        ContentInterface * content = resource->getContent();
 
-        metadata->getm_KeyFramesPackPath_Codec( resource, &Content::setCodecType );
-        metadata->getm_KeyFramesPackPath_Converter( resource, &Content::setConverterType );
+        metadata->getm_KeyFramesPackPath_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_KeyFramesPackPath_Codec( content, &ContentInterface::setCodecType );
+        metadata->getm_KeyFramesPackPath_Converter( content, &ContentInterface::setConverterType );
 
-        const ConstString & codecType = resource->getCodecType();
+        const ConstString & codecType = content->getCodecType();
 
         //FIX THIS
         if( codecType.empty() == true )
         {
-            resource->setConverterType( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
+            content->setConverterType( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
         }
 
         VectorMovieLayers layers;

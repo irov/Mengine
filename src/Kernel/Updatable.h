@@ -15,6 +15,11 @@ namespace Mengine
         {
             return nullptr;
         }
+
+        virtual const UpdationInterface * getUpdation() const
+        {
+            return nullptr;
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Updatable> UpdatablePtr;
@@ -24,5 +29,6 @@ namespace Mengine
 #define DECLARE_UPDATABLE()\
 public:\
     Mengine::UpdationInterface * getUpdation() override{ return this; }\
+    const Mengine::UpdationInterface * getUpdation() const override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

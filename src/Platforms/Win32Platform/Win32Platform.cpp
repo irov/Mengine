@@ -1621,7 +1621,7 @@ namespace Mengine
         ::SetCursor( m_cursor );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const Content * _content, const MemoryInterfacePtr & _buffer )
+    bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
     {
         const FilePath & filePath = _content->getFilePath();
 

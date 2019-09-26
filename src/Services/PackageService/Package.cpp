@@ -34,6 +34,7 @@ namespace Mengine
         , const ConstString & _type
         , const ConstString & _locale
         , const Tags & _platform
+        , const Tags & _tags
         , const FilePath & _descriptionPath
         , const FileGroupInterfacePtr & _baseFileGroup
         , const FilePath & _filePath
@@ -43,6 +44,7 @@ namespace Mengine
         m_type = _type;
         m_locale = _locale;
         m_platform = _platform;
+        m_tags = _tags;
         m_descriptionPath = _descriptionPath;
         m_baseFileGroup = _baseFileGroup;
         m_filePath = _filePath;
@@ -87,6 +89,16 @@ namespace Mengine
     const Tags & Package::getPlatfromTags() const
     {
         return m_platform;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::setTags( const Tags & _tags )
+    {
+        m_tags = _tags;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Tags & Package::getTags() const
+    {
+        return m_tags;
     }
     //////////////////////////////////////////////////////////////////////////
     void Package::setPathPath( const FilePath & _filePath )

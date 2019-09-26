@@ -22,10 +22,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSoundValidator::_validate( const ResourceSoundPtr & _resource )
     {
-        const FilePath & filePath = _resource->getFilePath();
-        bool streamable = _resource->isStreamable();
+        const ContentInterface * content = _resource->getContent();
 
-        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
+
+        bool streamable = _resource->isStreamable();
 
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, MENGINE_DOCUMENT_FUNCTION );
 
@@ -34,14 +36,14 @@ namespace Mengine
             LOGGER_MESSAGE( "resource '%s' group '%s' can't open sound file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
         }
 
-        const ConstString & codecType = _resource->getCodecType();
+        const ConstString & codecType = content->getCodecType();
 
         SoundDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<SoundDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
@@ -51,8 +53,8 @@ namespace Mengine
             LOGGER_MESSAGE( "resource '%s' group '%s' can't create sound decoder for file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -63,8 +65,8 @@ namespace Mengine
             LOGGER_MESSAGE( "resource '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -81,8 +83,8 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , limitMinimalStreamSoundDuration
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -97,8 +99,8 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , limitNoStreamSoundDurationWarning
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
         }
 
@@ -111,8 +113,8 @@ namespace Mengine
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
                 , limitNoStreamSoundDurationError
-                , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFileGroup()->getName().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;
@@ -128,7 +130,7 @@ namespace Mengine
             LOGGER_MESSAGE( "resource '%s' group '%s' can't create buffer '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getFilePath().c_str()
+                , content->getFilePath().c_str()
             );
 
             return false;

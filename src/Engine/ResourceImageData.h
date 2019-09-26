@@ -3,7 +3,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/UnknownResourceImageDataInterface.h"
 
-#include "Kernel/Content.h"
+#include "Kernel/BaseContent.h"
 
 #include "math/vec2.h"
 
@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceImageData
         : public Resource
-        , public Content
+        , private BaseContent
         , public UnknownResourceImageDataInterface
     {
         DECLARE_UNKNOWABLE();

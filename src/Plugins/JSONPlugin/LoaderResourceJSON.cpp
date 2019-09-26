@@ -24,8 +24,10 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceJSON * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceJSON *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceJSON::setFilePath );
-        metadata->getm_File_Converter( resource, &ResourceJSON::setConverterType );
+        ContentInterface * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
+        metadata->getm_File_Converter( content, &ContentInterface::setConverterType );
 
         return true;
     }

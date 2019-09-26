@@ -27,7 +27,9 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
 
-        metadata->getm_File_Path( resource, &ResourceMovie2::setFilePath );
+        ContentInterface * content = resource->getContent();
+
+        metadata->getm_File_Path( content, &ContentInterface::setFilePath );
 
         ConstString dataflowType;
         if( metadata->get_File_Dataflow( &dataflowType ) == false )
@@ -37,7 +39,7 @@ namespace Mengine
 
         const DataflowInterfacePtr & dataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
-        resource->setDataflow( dataflow );
+        content->setDataflow( dataflow );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();
 

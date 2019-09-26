@@ -217,7 +217,7 @@ namespace Mengine
             return false;
         }
 
-        Content * content = this->getContent();
+        ContentInterface * content = this->getContent();
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const DataflowInterfacePtr & dataflow = content->getDataflow();

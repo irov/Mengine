@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::interface_<ResourceVideo, pybind::bases<Resource, Content> >( _kernel, "ResourceVideo", false )
+        pybind::interface_<ResourceVideo, pybind::bases<Resource>>( _kernel, "ResourceVideo", false )
             ;
 
         pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( _kernel, "SurfaceVideo", false )

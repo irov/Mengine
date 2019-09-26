@@ -358,7 +358,7 @@ namespace Mengine
             LOGGER_ERROR( "name '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
-                , m_resourceMovie2->getFilePath().c_str()
+                , m_resourceMovie2->getContent()->getFilePath().c_str()
                 , m_compositionName.c_str()
                 , ss.str().c_str()
             );

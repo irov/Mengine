@@ -17,6 +17,7 @@ namespace Mengine
 
         ConstString locale;
         Tags platform;
+        Tags tags;
 
         ConstString fileGroupName;
         ConstString parent;
@@ -46,6 +47,9 @@ namespace Mengine
 
         virtual void setPlatfromTags( const Tags & _platform ) = 0;
         virtual const Tags & getPlatfromTags() const = 0;
+
+        virtual void setTags( const Tags & _tags ) = 0;
+        virtual const Tags & getTags() const = 0;
 
         virtual void setPathPath( const FilePath & _filePath ) = 0;
         virtual const FilePath & getPathPath() const = 0;

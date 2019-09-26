@@ -31,7 +31,6 @@ namespace Mengine
             node->setType( prototype );
 
             uint32_t uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
-
             node->setUniqueIdentity( uniqueIdentity );
 
             this->setupScriptable( node );

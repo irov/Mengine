@@ -47,7 +47,7 @@ namespace Mengine
         }
 
     public:
-        void emplace( const key_type & _key, const element_type_ptr & _element )
+        const element_type_ptr & emplace( const key_type & _key, const element_type_ptr & _element )
         {
             uint32_t test_size = m_size * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;
@@ -58,9 +58,11 @@ namespace Mengine
 
             hash_type hash = hashgen_type()(_key);
 
-            Hashtable::push_( m_buffer, m_capacity, hash, _key, _element );
+            const element_type_ptr & element = Hashtable::push_( m_buffer, m_capacity, hash, _key, _element );
 
             ++m_size;
+
+            return element;
         }
 
         const element_type_ptr & change( const key_type & _key, const element_type_ptr & _element )
@@ -424,7 +426,7 @@ namespace Mengine
             m_buffer = new_buffer;
         }
 
-        static void push_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
+        static const element_type_ptr & push_( value_type * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
         {
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
@@ -441,7 +443,7 @@ namespace Mengine
                     record->key = _key;
                     record->element = _element;
 
-                    break;
+                    return record->element;
                 }
 
                 mask = (mask << 2) + mask + (size_type)probe + 1;
@@ -608,7 +610,7 @@ namespace Mengine
         }
 
     public:
-        void emplace( const key_type & _key, element_type_ptr _element )
+        element_type_ptr emplace( const key_type & _key, element_type_ptr _element )
         {
             uint32_t test_size = m_size * 3 + 1;
             uint32_t test_capacity = m_capacity * 2;
@@ -622,6 +624,8 @@ namespace Mengine
             Hashtable::push_( m_buffer, m_capacity, hash, _key, _element );
 
             ++m_size;
+
+            return _element;
         }
 
         element_type_ptr change( const key_type & _key, element_type_ptr _element )

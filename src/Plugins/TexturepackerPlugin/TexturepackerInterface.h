@@ -31,9 +31,12 @@ namespace Mengine
         virtual void setResourceJSONName( const ConstString & _resourceJSONName ) = 0;
         virtual const ConstString & getResourceJSONName() const = 0;
         
-
     public:
         virtual void setResourceImageName( const ConstString & _resourceImageName ) = 0;
         virtual const ConstString & getResourceImageName() const = 0;
+
+    public:
+        // means that from each frame name will be stripped extension (i.e. "some_frame.png" -> "some_frame")
+        virtual void setStripFrameNameExtension( bool _value ) = 0;
     };
 }

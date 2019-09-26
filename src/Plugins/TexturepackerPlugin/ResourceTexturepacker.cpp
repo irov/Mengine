@@ -16,6 +16,8 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
+#include <string.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -24,6 +26,7 @@ namespace Mengine
         , m_atlasHeight( 0 )
         , m_atlasWidthInv( 0.f )
         , m_atlasHeightInv( 0.f )
+        , m_needStripFrameNameExtension( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -86,6 +89,11 @@ namespace Mengine
     const VectorResourceImages & ResourceTexturepacker::getFrames() const
     {
         return m_frames;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceTexturepacker::setStripFrameNameExtension( bool _value )
+    {
+        m_needStripFrameNameExtension = _value;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
@@ -230,7 +238,26 @@ namespace Mengine
             int32_t sourceSize_w = sourceSize["w"];
             int32_t sourceSize_h = sourceSize["h"];
 
-            ConstString c_name = Helper::stringizeString( name );
+            ConstString c_name;
+
+            if( m_needStripFrameNameExtension == false )
+            {
+                c_name = Helper::stringizeString( name );
+            }
+            else
+            {
+                const Char * ext_delimiter = ::strrchr( name, '.' );
+
+                if( ext_delimiter == nullptr )
+                {
+                    c_name = Helper::stringizeString( name );
+                }
+                else
+                {
+                    size_t size_full_name = ext_delimiter - name;
+                    c_name = Helper::stringizeStringSize( name, size_full_name );
+                }
+            }
 
             ResourceImagePtr image = RESOURCE_SERVICE()
                 ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImage" ), MENGINE_DOCUMENT_FUNCTION );

@@ -23,6 +23,11 @@ namespace Mengine
         m_mutex = _mutex;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ThreadMutexInterfacePtr & FactoryWithMutex::getMutex() const
+    {
+        return m_mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
     FactorablePointer FactoryWithMutex::createObject( const Char * _doc )
     {
         MENGINE_UNUSED( _doc );

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadWorkerInterface.h"
+#include "Interface/DateTimeProviderInterface.h"
 
 #include "Kernel/ThreadJob.h"
 #include "Kernel/Factorable.h"
@@ -30,6 +31,8 @@ namespace Mengine
 
     protected:
         ThreadJobPtr m_threadJob;
+
+        DateTimeProviderInterfacePtr m_dateTimeProvider;
 
         uint32_t m_seconds;
         uint32_t m_workerId;

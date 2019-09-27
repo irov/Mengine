@@ -65,6 +65,13 @@ namespace Mengine
 
         m_workerId = workerId;
 
+        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+            ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, false );
+
+        m_dateTimeProvider = dateTimeProvider;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -117,11 +124,8 @@ namespace Mengine
         processDumpPath += "Antifreeze";
         processDumpPath += "_";
 
-        DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
-
         PlatformDateTime dateTime;
-        dateTimeProvider->getDateTime( &dateTime );
+        m_dateTimeProvider->getDateTime( &dateTime );
 
         Stringstream ss_date;
         ss_date << dateTime.year

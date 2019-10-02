@@ -19,6 +19,8 @@
 #include "Interface/RenderFragmentShaderInterface.h"
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/RenderProgramVariableInterface.h"
+#include "Interface/RenderBatchInterface.h"
+#include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -29,6 +31,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/PixelFormat.h"
 #include "Kernel/Pointer.h"
+#include "Kernel/RenderPrimitive.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"
 #include "Kernel/RenderContext.h"
@@ -60,47 +63,8 @@ namespace Mengine
         SERVICE_DECLARE( "RenderService" )
 
     public:
-        virtual void addRenderMesh( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderVertexBufferInterfacePtr & _vertexBuffer
-            , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc ) = 0;
-
-        virtual void addRenderObject( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug, const Char * _doc ) = 0;
-
-        virtual void addRenderQuad( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const Char * _doc ) = 0;
-
-        virtual void addRenderLine( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const Char * _doc ) = 0;
-
-    public:
-        virtual void addDebugRenderObject( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount, const Char * _doc ) = 0;
-
-        virtual void addDebugRenderQuad( const RenderContext * _context
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount, const Char * _doc ) = 0;
-
-    public:
         virtual VectorRenderVertex2D & getDebugRenderVertex2D( uint32_t _count ) = 0;
         virtual VectorRenderIndex & getDebugRenderIndex( uint32_t _count ) = 0;
-
-    public:
-        virtual void setBatchMode( ERenderBatchMode _mode ) = 0;
-        virtual ERenderBatchMode getBatchMode() const = 0;
 
     public:
         virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
@@ -111,25 +75,31 @@ namespace Mengine
         virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 
     public:
-        virtual bool beginScene() = 0;
-        virtual void endScene() = 0;
-        virtual void swapBuffers() = 0;
-        virtual void setVSync( bool _vSync ) = 0;
-        virtual bool getVSync() const = 0;
+        virtual const RenderBatchInterfacePtr & requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount ) = 0;
 
     public:
-        virtual void enableDebugFillrateCalcMode( bool _enable ) = 0;
-        virtual bool isDebugFillrateCalcMode() const = 0;
+        virtual bool beginScene( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;
+        virtual void endScene( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;
 
-        virtual void enableDebugStepRenderMode( bool _enable ) = 0;
-        virtual bool isDebugStepRenderMode() const = 0;
+        virtual bool beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer,
+            const RenderIndexBufferInterfacePtr & _indexBuffer,
+            const RenderViewportInterfacePtr & _viewport,
+            const RenderCameraInterfacePtr _camera,
+            const RenderTransformationInterfacePtr _transformation,
+            const RenderScissorInterfacePtr _scissor,
+            const RenderTargetInterfacePtr _target,
+            const RenderProgramVariableInterfacePtr & _programVariable ) = 0;
 
-        virtual void enableRedAlertMode( bool _enable ) = 0;
-        virtual bool isRedAlertMode() const = 0;
+        virtual void endRenderPass( const RenderTargetInterfacePtr & _target ) = 0;
 
-        virtual void endLimitRenderObjects() = 0;
-        virtual void increfLimitRenderObjects() = 0;
-        virtual bool decrefLimitRenderObjects() = 0;
+        virtual void renderPrimitives( RenderPrimitive * _primitives, uint32_t _count ) = 0;
+
+    public:
+        virtual void swapBuffers() = 0;
+
+    public:
+        virtual void setVSync( bool _vSync ) = 0;
+        virtual bool getVSync() const = 0;
 
     public:
         virtual void onWindowClose() = 0;

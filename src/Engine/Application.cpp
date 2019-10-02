@@ -319,6 +319,25 @@ namespace Mengine
 
         m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
 
+
+        ConstString EngineRenderPipeline = CONFIG_VALUE( "Engine", "RenderPipeline", STRINGIZE_STRING_LOCAL( "Batch" ) );
+
+        RenderPipelineInterfacePtr renderPipeline = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), EngineRenderPipeline, MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline, false );
+
+        if( renderPipeline->initialize() == false )
+        {
+            LOGGER_ERROR( "render pipeline '%s' invalid initialize"
+                , EngineRenderPipeline.c_str()
+            );
+
+            return false;
+        }
+
+        m_renderPipeline = renderPipeline;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -349,6 +368,12 @@ namespace Mengine
         this->unregisterEntityGenerator_();
         this->unregisterSceneGenerator_();
         this->unregisterArrowGenerator_();
+
+        if( m_renderPipeline != nullptr )
+        {
+            m_renderPipeline->finalize();
+            m_renderPipeline = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseTypes_()
@@ -356,7 +381,7 @@ namespace Mengine
         LOGGER_MESSAGE( "Register Base Generator..." );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeFactorableUnique<DefaultPrototypeGenerator<EntityEventable, 128> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>() ) == false )
         {
             return false;
         }
@@ -880,13 +905,11 @@ namespace Mengine
 
             if( _event.code == KC_OEM_MINUS && _event.isDown == true )
             {
-                if( RENDER_SERVICE()
-                    ->decrefLimitRenderObjects() == false )
+                if( m_renderPipeline->decrefDebugLimitRenderObjects() == false )
                 {
                     m_debugPause = false;
 
-                    RENDER_SERVICE()
-                        ->enableDebugStepRenderMode( false );
+                    m_renderPipeline->enableDebugStepRenderMode( false );
                 }
             }
 
@@ -897,26 +920,24 @@ namespace Mengine
 
             if( _event.code == KC_OEM_PLUS && _event.isDown == true )
             {
-                RENDER_SERVICE()
-                    ->increfLimitRenderObjects();
+                m_renderPipeline->increfDebugLimitRenderObjects();
 
                 if( m_debugPause == false )
                 {
-                    RENDER_SERVICE()
-                        ->enableDebugStepRenderMode( true );
+                    m_renderPipeline->enableDebugStepRenderMode( true );
                 }
 
                 m_debugPause = true;
             }
 
-            if( _event.code == KC_F12 && _event.isDown == true )
-            {
-                bool enable = RENDER_SERVICE()
-                    ->isRedAlertMode();
+            //if( _event.code == KC_F12 && _event.isDown == true )
+            //{
+            //    bool enable = RENDER_SERVICE()
+            //        ->isRedAlertMode();
 
-                RENDER_SERVICE()
-                    ->enableRedAlertMode( !enable );
-            }
+            //    RENDER_SERVICE()
+            //        ->enableRedAlertMode( !enable );
+            //}
 
             if( _event.code == KC_F4 && _event.isDown == true )
             {
@@ -977,30 +998,30 @@ namespace Mengine
                     ->setLocale( locale );
             }
 
-            if( _event.code == KC_0 && _event.isDown == true )
-            {
-                static uint32_t batchMode = RENDER_SERVICE()
-                    ->getBatchMode();
+            //if( _event.code == KC_0 && _event.isDown == true )
+            //{
+            //    static uint32_t batchMode = RENDER_SERVICE()
+            //        ->getBatchMode();
 
-                ++batchMode;
+            //    ++batchMode;
 
-                ERenderBatchMode mode = ERBM_NONE;
-                switch( batchMode % 3 )
-                {
-                case 0:
-                    mode = ERBM_NONE;
-                    break;
-                case 1:
-                    mode = ERBM_NORMAL;
-                    break;
-                case 2:
-                    mode = ERBM_SMART;
-                    break;
-                }
+            //    ERenderBatchMode mode = ERBM_NONE;
+            //    switch( batchMode % 3 )
+            //    {
+            //    case 0:
+            //        mode = ERBM_NONE;
+            //        break;
+            //    case 1:
+            //        mode = ERBM_NORMAL;
+            //        break;
+            //    case 2:
+            //        mode = ERBM_SMART;
+            //        break;
+            //    }
 
-                RENDER_SERVICE()
-                    ->setBatchMode( mode );
-            }
+            //    RENDER_SERVICE()
+            //        ->setBatchMode( mode );
+            //}
 
             if( _event.code == KC_F3 && _event.isDown == true )
             {
@@ -1445,16 +1466,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::render()
     {
-        if( RENDER_SERVICE()->beginScene() == false )
+        if( RENDER_SERVICE()
+            ->beginScene( m_renderPipeline ) == false )
         {
             return false;
         }
 
         GAME_SERVICE()
-            ->render();
+            ->render( m_renderPipeline );
 
         RENDER_SERVICE()
-            ->endScene();
+            ->endScene( m_renderPipeline );
 
         return true;
     }
@@ -1927,13 +1949,14 @@ namespace Mengine
             return;
         }
 
-        if( RENDER_SERVICE()->beginScene() == true )
+        if( RENDER_SERVICE()
+            ->beginScene( m_renderPipeline ) == true )
         {
             GAME_SERVICE()
-                ->render();
+                ->render( m_renderPipeline );
 
             RENDER_SERVICE()
-                ->endScene();
+                ->endScene( m_renderPipeline );
 
             RENDER_SERVICE()
                 ->swapBuffers();

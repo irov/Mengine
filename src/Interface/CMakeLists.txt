@@ -108,7 +108,7 @@ src
     PluginServiceInterface.h
     DynamicLibraryInterface.h
     ScriptWrapperInterface.h
-    ContentInterface.h
+    ContentInterface.h    
     
 	dummy.cpp
 )
@@ -162,7 +162,9 @@ Render
 	RenderVertexShaderInterface.h
 	RenderFragmentShaderInterface.h
 	RenderVertexAttributeInterface.h
-	RenderMaterialInterface.h   
+	RenderMaterialInterface.h
+    RenderBatchInterface.h
+    RenderPipelineInterface.h    
 )
 
 ADD_FILTER(

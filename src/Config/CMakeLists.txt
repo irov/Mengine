@@ -6,6 +6,7 @@ src
     ArrayString.h
     Blobject.h
     Char.h
+    DynamicArray.h
     String.h
     StringRegex.h
     VectorString.h

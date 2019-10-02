@@ -7,12 +7,12 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void nodeRenderChildren( const Node * _node, const RenderContext * _context, bool _external )
+        void nodeRenderChildren( const Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external )
         {
             const RenderInterface * selfRender = _node->getRender();
 
 #ifdef MENGINE_NEW_RENDER
-            selfRender->renderWithChildren( _context, _external );
+            selfRender->renderWithChildren( _renderPipeline, _context, _external );
 #else
             if( selfRender != nullptr )
             {

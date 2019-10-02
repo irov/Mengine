@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygonDebugRender::_render( const RenderContext * _context, HotSpotPolygon * _node )
+    void HotSpotPolygonDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotPolygon * _node )
     {
         const Polygon & polygon = _node->getPolygon();
 
@@ -81,6 +81,6 @@ namespace Mengine
             }
         }
 
-        Helper::nodeDebugRenderLine( _context, vertices );
+        Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices );
     }
 }

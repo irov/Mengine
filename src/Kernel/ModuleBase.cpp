@@ -83,9 +83,9 @@ namespace Mengine
         this->_tick( _context );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::render( const RenderContext * _context )
+    void ModuleBase::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
-        this->_render( _context );
+        this->_render( _renderPipeline, _context );
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::_tick( const UpdateContext * _context )
@@ -95,8 +95,9 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::_render( const RenderContext * _context )
+    void ModuleBase::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
+        MENGINE_UNUSED( _renderPipeline );
         MENGINE_UNUSED( _context );
 
         //Empty

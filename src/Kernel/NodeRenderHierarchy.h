@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderInterface.h"
+#include "Interface/RenderPipelineInterface.h"
 #include "Interface/RenderViewportInterface.h"
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderScissorInterface.h"
@@ -12,7 +13,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        void nodeRenderChildren( const Node * _node, const RenderContext * _context, bool _external );
+        void nodeRenderChildren( const Node * _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external );
         bool hasNodeRenderInheritance( Node * _node );
         RenderInterface * getNodeRenderInheritance( Node * _node, Node ** _nodeRender );
         const RenderViewportInterfacePtr & getRenderViewportInheritance( RenderInterface * _render );

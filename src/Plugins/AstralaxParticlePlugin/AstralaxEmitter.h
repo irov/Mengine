@@ -95,7 +95,7 @@ namespace Mengine
         void _release() override;
 
         void update( const UpdateContext * _context ) override;
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 

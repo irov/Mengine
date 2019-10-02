@@ -3,6 +3,8 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
+#include "Layer2DRenderTarget.h"
+
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/Scene.h"
 #include "Kernel/RenderViewport.h"
@@ -179,38 +181,6 @@ namespace Mengine
         this->clearRenderTarget_();
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        class RenderLayer2DTarget
-            : public Factorable
-            , public BaseRender
-        {
-        public:
-            RenderLayer2DTarget( Layer2D * _layer )
-                : m_layer( _layer )
-            {
-            }
-
-            ~RenderLayer2DTarget() override
-            {
-            }
-
-        protected:
-            void render( const RenderContext * _context ) const override
-            {
-                const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
-                const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
-
-                const mt::box2f * bb = m_layer->getBoundingBox();
-
-                this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false, MENGINE_DOCUMENT_FUNCTION );
-            }
-
-        protected:
-            Layer2D * m_layer;
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Layer2D::createRenderTarget_()
     {
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
@@ -278,7 +248,7 @@ namespace Mengine
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
 
-        m_renderTarget = Helper::makeFactorableUnique<RenderLayer2DTarget>( this );
+        m_renderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( this );
 
         return true;
     }

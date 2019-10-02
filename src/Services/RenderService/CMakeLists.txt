@@ -2,6 +2,8 @@ SET(MY_LIB_NAME RenderService)
 
 ADD_FILTER(
 src
+    RenderBatch.h
+    RenderBatch.cpp
     RenderService.h
 	RenderService.cpp	
 	RenderTexture.h
@@ -16,6 +18,8 @@ src
     RenderMaterial.cpp
     RenderMaterialService.h
     RenderMaterialService.cpp
+    BatchRenderPipeline.h
+    BatchRenderPipeline.cpp
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

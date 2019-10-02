@@ -41,7 +41,7 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
         void _invalidateColor() override;

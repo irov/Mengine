@@ -12,14 +12,14 @@ namespace Mengine
         , public Factorable
     {
     protected:
-        void render( const RenderContext * _context, Node * _node ) override
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, Node * _node ) override
         {
             T * t = Helper::staticNodeCast<T *>( _node );
 
-            this->_render( _context, t );
+            this->_render( _renderPipeline, _context, t );
         }
 
     protected:
-        virtual void _render( const RenderContext * _context, T * _t ) = 0;
+        virtual void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, T * _t ) = 0;
     };
 }

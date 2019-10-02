@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotCircleDebugRender::_render( const RenderContext * _context, HotSpotCircle * _node )
+    void HotSpotCircleDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotCircle * _node )
     {
         uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
@@ -30,6 +30,6 @@ namespace Mengine
 
         float radius = _node->getRadius();
 
-        Helper::nodeDebugRenderCircle( _context, wm, radius, 32, debugColor );
+        Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, debugColor );
     }
 }

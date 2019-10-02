@@ -20,7 +20,7 @@ namespace Mengine
         ~Interender() override;
 
     protected:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
         const RenderViewportInterfacePtr & getPickerViewport() const override;

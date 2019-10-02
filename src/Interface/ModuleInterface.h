@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/UpdateContext.h"
 #include "Kernel/RenderContext.h"
@@ -28,7 +29,7 @@ namespace Mengine
 
     public:
         virtual void tick( const UpdateContext * _context ) = 0;
-        virtual void render( const RenderContext * _context ) = 0;
+        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) = 0;
 
     public:
         virtual void message( const ConstString & _messageName, const MapWParams & _params ) = 0;

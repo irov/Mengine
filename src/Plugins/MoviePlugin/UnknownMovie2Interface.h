@@ -38,8 +38,8 @@ namespace Mengine
         virtual bool getWorldBoundingBox( mt::box2f * _bb ) const = 0;
 
     public:
-        typedef Lambda<void( Node * _node, const RenderContext * _context )> LambdaMovieRenderSlot;
-        virtual void foreachRenderSlots( const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) = 0;
+        typedef Lambda<void( Node * _node, const RenderPipelineInterfacePtr &, const RenderContext * _context )> LambdaMovieRenderSlot;
+        virtual void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownMovie2Interface> UnknownMovie2InterfacePtr;

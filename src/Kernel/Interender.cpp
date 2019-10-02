@@ -11,8 +11,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Interender::render( const RenderContext * _context ) const
+    void Interender::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        MENGINE_UNUSED( _renderPipeline );
         MENGINE_UNUSED( _context );
 
         //Empty

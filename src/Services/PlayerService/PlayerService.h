@@ -6,6 +6,7 @@
 #include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/RenderTargetInterface.h"
+#include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
@@ -79,7 +80,7 @@ namespace Mengine
         bool update() override;
 
     public:
-        void render() override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;
 
     public:
         bool handleKeyEvent( const InputKeyEvent & _event ) override;

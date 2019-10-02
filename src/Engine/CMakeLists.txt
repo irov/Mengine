@@ -18,6 +18,8 @@ ADD_FILTER(
 Layer2D
 	Layer2D.cpp
 	Layer2D.h
+    Layer2DRenderTarget.cpp
+    Layer2DRenderTarget.h
 )
 
 ADD_FILTER(

@@ -144,7 +144,8 @@ namespace Mengine
     void BaseRender::addRelationRenderChildrenBack_( BaseRender * _childRender )
     {
         m_renderChildren.push_back( _childRender );
-    }    //////////////////////////////////////////////////////////////////////////
+    }    
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )
     {
         VectorBaseRender::iterator it_erase = std::find( m_renderChildren.begin(), m_renderChildren.end(), _childRender );
@@ -204,7 +205,7 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::renderWithChildren( const RenderContext * _context, bool _external ) const
+    void BaseRender::renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const
     {
         if( this->isRendering() == false )
         {
@@ -226,12 +227,12 @@ namespace Mengine
 
         if( m_localHide == false && this->isPersonalTransparent() == false )
         {
-            this->render( &context );
+            this->render( _renderPipeline, &context );
         }
 
         for( const BaseRender * child : m_renderChildren )
         {
-            child->renderWithChildren( &context, false );
+            child->renderWithChildren( _renderPipeline, &context, false );
         }
 
         if( context.target != nullptr )
@@ -240,7 +241,7 @@ namespace Mengine
 
             if( targetRender != nullptr )
             {
-                targetRender->render( _context );
+                targetRender->render( _renderPipeline, _context );
             }
         }
     }
@@ -269,50 +270,6 @@ namespace Mengine
         MENGINE_UNUSED( _externalRender );
 
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRenderMesh( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-        , const RenderProgramVariableInterfacePtr & _programVariable
-        , const RenderVertexBufferInterfacePtr & _vertexBuffer
-        , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc ) const
-    {
-        RENDER_SERVICE()
-            ->addRenderMesh( _context, _material, _programVariable, _vertexBuffer, _indexBuffer, _vertexCount, _indexCount, _doc );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-        , const RenderProgramVariableInterfacePtr & _programVariable
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const RenderIndex * _indices, uint32_t _indexCount
-        , const mt::box2f * _bb, bool _debug, const Char * _doc ) const
-    {
-        RENDER_SERVICE()
-            ->addRenderObject( _context, _material, _programVariable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug, _doc );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const Char * _doc ) const
-    {
-        RENDER_SERVICE()
-            ->addRenderQuad( _context, _material, _vertices, _vertexCount, _bb, _debug, _doc );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRenderLine( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const Char * _doc ) const
-    {
-        RENDER_SERVICE()
-            ->addRenderLine( _context, _material, _vertices, _vertexCount, _bb, _debug, _doc );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & BaseRender::getDebugMaterial() const
-    {
-        const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-            ->getDebugLineMaterial();
-
-        return debugMaterial;
     }
     //////////////////////////////////////////////////////////////////////////
     const Color & BaseRender::getWorldColor() const

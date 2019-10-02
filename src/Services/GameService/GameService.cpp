@@ -278,10 +278,10 @@ namespace Mengine
             ->tick( &gameContext );
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameService::render()
+    void GameService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         PLAYER_SERVICE()
-            ->render();
+            ->render( _renderPipeline );
 
         EVENTABLE_METHOD( EVENT_GAME_FRAME_END )
             ->onGameFrameEnd();

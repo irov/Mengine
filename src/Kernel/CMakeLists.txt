@@ -444,6 +444,8 @@ Core
     RenderUtils.h
 	RenderUtils.cpp
     
+    RenderPrimitive.h
+    
     ThreadMutexDummy.h
     ThreadMutexDummy.cpp
     

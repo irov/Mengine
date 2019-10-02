@@ -37,7 +37,7 @@ namespace Mengine
         void tick( const UpdateContext * _context ) override;
 
     public:
-        void render() override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;
 
     public:
         void initializeRenderResources() override;

@@ -868,9 +868,9 @@ namespace Mengine
         SERVICE_FINALIZE( CodecService );
         SERVICE_FINALIZE( SoundService );
         SERVICE_FINALIZE( SoundSystem );
-        SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( ConverterService );
         SERVICE_FINALIZE( RenderService );
+        SERVICE_FINALIZE( PrototypeService );
         SERVICE_FINALIZE( RenderMaterialService );
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( RenderSystem );

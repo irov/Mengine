@@ -542,6 +542,16 @@ namespace Mengine
         return font;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TextService::removeFont( const ConstString & _fontName )
+    {
+        if( m_fonts.erase( _fontName ) == nullptr )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TextService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()

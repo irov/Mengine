@@ -252,6 +252,10 @@ namespace Mengine
                 {
                     c_name = Helper::stringizeString( name );
                 }
+                else if( ::strcmp( ext_delimiter, ".png" ) != 0 )
+                {
+                    c_name = Helper::stringizeString( name );
+                }
                 else
                 {
                     size_t size_full_name = ext_delimiter - name;

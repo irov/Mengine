@@ -232,7 +232,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::render( const RenderContext * _context ) const
+    void Grid2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const RenderIndex * indices = &m_indices[0];
         uint32_t indicesCount = (uint32_t)m_indices.size();
@@ -244,7 +244,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_() const

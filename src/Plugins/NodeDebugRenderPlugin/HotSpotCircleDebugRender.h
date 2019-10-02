@@ -14,6 +14,6 @@ namespace Mengine
         ~HotSpotCircleDebugRender() override;
 
     protected:
-        void _render( const RenderContext * _context, HotSpotCircle * _node ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotCircle * _node ) override;
     };
 }

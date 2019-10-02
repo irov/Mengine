@@ -1189,14 +1189,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_renderOneFrame()
         {
-            RENDER_SERVICE()
-                ->beginScene();
-
-            GAME_SERVICE()
-                ->render();
-
-            RENDER_SERVICE()
-                ->endScene();
         }
         //////////////////////////////////////////////////////////////////////////
         void s_writeImageToFile( const ConstString & _resource, const FilePath & _filePath )
@@ -3552,7 +3544,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "getFixedDisplayResolution", nodeScriptMethod, &EngineScriptMethod::s_getFixedDisplayResolution );
 
 
-        pybind::def_functor( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::s_renderOneFrame );
+        pybind::def_functor_deprecated( _kernel, "renderOneFrame", nodeScriptMethod, &EngineScriptMethod::s_renderOneFrame, "don't use" );
         pybind::def_functor( _kernel, "writeImageToFile", nodeScriptMethod, &EngineScriptMethod::s_writeImageToFile );
         pybind::def_functor( _kernel, "createImageResource", nodeScriptMethod, &EngineScriptMethod::s_createImageResource );
         pybind::def_functor( _kernel, "createImageSolidResource", nodeScriptMethod, &EngineScriptMethod::s_createImageSolidResource );
@@ -3766,7 +3758,7 @@ namespace Mengine
             ;
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<MT19937Randomizer, 8> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>() ) == false )
         {
             return false;
         }

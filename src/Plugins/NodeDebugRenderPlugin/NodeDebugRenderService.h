@@ -24,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external ) override;
+        void renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) override;
 
     public:
         void addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _nodeDebugRender ) override;
@@ -32,7 +32,7 @@ namespace Mengine
 
     public:
         void updateDebugInfo( const UpdateContext * _context ) override;
-        void renderDebugInfo( const RenderContext * _context ) override;
+        void renderDebugInfo( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
         void toggleDebugText_();

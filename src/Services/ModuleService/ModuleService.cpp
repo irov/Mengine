@@ -123,11 +123,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::render( const RenderContext * _context )
+    void ModuleService::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->render( _context );
+            module->render( _renderPipeline, _context );
         }
     }
     //////////////////////////////////////////////////////////////////////////

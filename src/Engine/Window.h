@@ -50,7 +50,7 @@ namespace Mengine
         void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const override;
 
     protected:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
         ResourceWindowPtr m_resourceWindow;

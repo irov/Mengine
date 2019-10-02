@@ -75,7 +75,7 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void renderWithChildren( const RenderContext * _context, bool _external ) const override;
+        void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
 
     public:
         const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;
@@ -86,30 +86,6 @@ namespace Mengine
 
     protected:
         virtual void _setExternalRender( bool _externalRender );
-
-    protected:
-        void addRenderMesh( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _programVariable
-            , const RenderVertexBufferInterfacePtr & _vertexBuffer
-            , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc ) const;
-
-        void addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-            , const RenderProgramVariableInterfacePtr & _variable
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indexCount
-            , const mt::box2f * _bb, bool _debug, const Char * _doc ) const;
-
-        void addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const Char * _doc ) const;
-
-        void addRenderLine( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug, const Char * _doc ) const;
-
-    protected:
-        const RenderMaterialInterfacePtr & getDebugMaterial() const;
 
     protected:
         const Color & getWorldColor() const override;

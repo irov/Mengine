@@ -94,7 +94,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::render( const RenderContext * _context ) const
+    void MovieMesh2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         if( m_vertexCount == 0 )
         {
@@ -106,7 +106,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

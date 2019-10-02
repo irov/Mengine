@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextFieldDebugRender::_render( const RenderContext * _context, TextField * _node )
+    void TextFieldDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, TextField * _node )
     {
         Viewport viewport;
         if( _node->calcTextViewport( viewport ) == false )
@@ -37,6 +37,6 @@ namespace Mengine
 
         const mt::mat4f & wm = _node->getWorldMatrix();
 
-        Helper::nodeDebugRenderPolygon( _context, wm, polygon, 0xFF0000FF );
+        Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF );
     }
 }

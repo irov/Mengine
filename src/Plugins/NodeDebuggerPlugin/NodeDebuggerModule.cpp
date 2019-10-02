@@ -356,7 +356,7 @@ namespace Mengine
         return successul;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::_render( const RenderContext * _context )
+    void NodeDebuggerModule::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         if( m_selectedNodePath.empty() == true )
         {
@@ -444,8 +444,7 @@ namespace Mengine
         indices[3 * 6 + 1 * 3 + 1] = 0;
         indices[3 * 6 + 1 * 3 + 2] = 4;
 
-        RENDER_SERVICE()
-            ->addRenderObject( &node_context
+        _renderPipeline->addRenderObject( &node_context
                 , debugMaterial
                 , nullptr
                 , vertices.data(), vertices.size()

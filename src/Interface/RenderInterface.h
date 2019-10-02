@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/Interface.h"
+#include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/Colorable.h"
 #include "Kernel/BoundingBox.h"
@@ -69,8 +70,8 @@ namespace Mengine
         virtual bool isExternalRender() const = 0;
 
     public:
-        virtual void render( const RenderContext * _context ) const = 0;
-        virtual void renderWithChildren( const RenderContext * _context, bool _external ) const = 0;
+        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const = 0;
+        virtual void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const = 0;
 
     public:
         virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const = 0;

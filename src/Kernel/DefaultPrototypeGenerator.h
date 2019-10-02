@@ -2,6 +2,7 @@
 
 #include "FactoryPrototypeGenerator.h"
 
+#include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FactoryPool.h"
@@ -13,8 +14,17 @@ namespace Mengine
     class DefaultPrototypeGenerator
         : public FactoryPrototypeGenerator
     {
-    protected:
+    public:
         typedef IntrusivePtr<Type> TypePtr;
+
+    public:
+        DefaultPrototypeGenerator()
+        {
+        }
+
+        ~DefaultPrototypeGenerator() override
+        {
+        }
 
     protected:
         FactoryPtr _initializeFactory() override
@@ -45,4 +55,15 @@ namespace Mengine
             return object;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        template<class Type, uint32_t Count>
+        FactoryPrototypeGeneratorPtr makeDefaultPrototypeGenerator()
+        {
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<DefaultPrototypeGenerator<Type, Count>>();
+
+            return generator;
+        }
+    }
 }

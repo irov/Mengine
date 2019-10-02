@@ -588,7 +588,7 @@ namespace Mengine
         return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::render()
+    void PlayerService::render( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
@@ -606,36 +606,35 @@ namespace Mengine
         {
             if( debugMask == 0 )
             {
-                Helper::nodeRenderChildren( scene.get(), &context, false );
+                Helper::nodeRenderChildren( scene.get(), _renderPipeline, &context, false );
             }
             else
             {
                 if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( scene, &context, false );
+                        ->renderDebugNode( scene, _renderPipeline, &context, false );
                 }
             }
         }
 
         MODULE_SERVICE()
-            ->render( &context );
+            ->render( _renderPipeline, &context );
 
-        RENDER_SERVICE()
-            ->endLimitRenderObjects();
+        _renderPipeline->endDebugLimitRenderObjects();
 
         if( m_arrow != nullptr )
         {
             if( debugMask == 0 )
             {
-                Helper::nodeRenderChildren( m_arrow.get(), &context, false );
+                Helper::nodeRenderChildren( m_arrow.get(), _renderPipeline, &context, false );
             }
             else
             {
                 if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( m_arrow, &context, false );
+                        ->renderDebugNode( m_arrow, _renderPipeline, &context, false );
                 }
             }
         }
@@ -643,7 +642,7 @@ namespace Mengine
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
             NODEDEBUGRENDER_SERVICE()
-                ->renderDebugInfo( &context );
+                ->renderDebugInfo( _renderPipeline, &context );
         }
     }
     //////////////////////////////////////////////////////////////////////////

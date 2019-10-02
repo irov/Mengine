@@ -205,7 +205,7 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::render( const RenderContext * _context ) const
+    void Vectorizator::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         if( m_invalidateLocalVertex2D == true )
         {
@@ -226,7 +226,7 @@ namespace Mengine
         VectorRenderIndex::value_type * indexData = m_renderIndices.data();
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
 
-        this->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::_invalidateWorldMatrix()

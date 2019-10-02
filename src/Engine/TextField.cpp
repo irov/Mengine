@@ -344,7 +344,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::render( const RenderContext * _context ) const
+    void TextField::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         if( m_textId.empty() == true )
         {
@@ -384,7 +384,7 @@ namespace Mengine
                 continue;
             }
 
-            this->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FUNCTION );
+            _renderPipeline->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FUNCTION );
         }
     }
     //////////////////////////////////////////////////////////////////////////

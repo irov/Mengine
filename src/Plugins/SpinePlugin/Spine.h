@@ -71,7 +71,7 @@ namespace Mengine
         void update( const UpdateContext * _context ) override;
 
     protected:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
         void _afterActivate() override;

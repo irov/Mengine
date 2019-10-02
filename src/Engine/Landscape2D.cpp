@@ -71,7 +71,7 @@ namespace Mengine
         m_verticesWM.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::render( const RenderContext * _context ) const
+    void Landscape2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const VectorLandscape2DElements & elementsWM = this->getElementWM();
 
@@ -140,7 +140,7 @@ namespace Mengine
             {
                 const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-                this->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false, MENGINE_DOCUMENT_FUNCTION );
+                _renderPipeline->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false, MENGINE_DOCUMENT_FUNCTION );
             }
 
             elementVertexOffset += 4;

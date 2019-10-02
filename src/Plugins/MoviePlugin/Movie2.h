@@ -98,8 +98,7 @@ namespace Mengine
         bool getWorldBoundingBox( mt::box2f * _bb ) const override;
 
     public:
-        typedef Lambda<void( Node * _node, const RenderContext * _context )> LambdaMovieRenderSlot;
-        void foreachRenderSlots( const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) override;
+        void foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda ) override;
 
     protected:
         bool _play( uint32_t _playId, float _time ) override;
@@ -133,7 +132,7 @@ namespace Mengine
         void update( const UpdateContext * _context ) override;
 
     protected:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
         void _changeParent( Node * _oldParent, Node * _newParent ) override;

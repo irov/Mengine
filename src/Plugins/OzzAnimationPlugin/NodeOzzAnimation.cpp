@@ -528,7 +528,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeOzzAnimation::render( const RenderContext * _context ) const
+    void NodeOzzAnimation::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
@@ -575,6 +575,6 @@ namespace Mengine
         new_context.scissor = _context->scissor;
         new_context.target = _context->target;
 
-        this->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FUNCTION );
     }
 }

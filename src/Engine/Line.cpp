@@ -53,7 +53,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Line::render( const RenderContext * _context ) const
+    void Line::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -104,7 +104,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        this->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
     }
     //////////////////////////////////////////////////////////////////////////
 

@@ -47,7 +47,7 @@ namespace Mengine
         void _setLocalHide( bool _hide ) override;
 
     protected:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
         ResourceInternalObjectPtr m_resourceInternalObject;

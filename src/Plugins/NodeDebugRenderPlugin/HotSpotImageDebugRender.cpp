@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImageDebugRender::_render( const RenderContext * _context, HotSpotImage * _node )
+    void HotSpotImageDebugRender::_render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, HotSpotImage * _node )
     {
         VectorRenderVertex2D & vertices = RENDER_SERVICE()
             ->getDebugRenderVertex2D( 8 );
@@ -62,6 +62,6 @@ namespace Mengine
             vertices[i].uv[1].y = 0.f;
         }
 
-        Helper::nodeDebugRenderLine( _context, vertices );
+        Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices );
     }
 }

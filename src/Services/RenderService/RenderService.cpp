@@ -5,7 +5,11 @@
 #include "Interface/WatchdogInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
+#include "BatchRenderPipeline.h"
+
+#include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/RenderUtils.h"
@@ -13,10 +17,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/Logger.h"
 
 #include "math/convex8.h"
-
-#include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
 #include "stdex/intrusive_ptr_base.h"
@@ -24,10 +27,6 @@
 #include <math.h>
 #include <memory.h>
 
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_RENDER_VERTEX_MAX_BATCH
-#define MENGINE_RENDER_VERTEX_MAX_BATCH (65000U)
-#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderService, Mengine::RenderService );
 //////////////////////////////////////////////////////////////////////////
@@ -45,15 +44,8 @@ namespace Mengine
         , m_depthBufferTestEnable( false )
         , m_depthBufferWriteEnable( false )
         , m_alphaBlendEnable( false )
-        , m_debugFillrateCalcMode( false )
-        , m_debugStepRenderMode( false )
-        , m_debugRedAlertMode( false )
         , m_currentRenderMaterialStage( nullptr )
-        , m_batchMode( ERBM_NORMAL )
         , m_currentMaterialId( 0 )
-        , m_iterateRenderObjects( 0 )
-        , m_limitRenderObjects( 0 )
-        , m_stopRenderObjects( false )
         , m_currentBlendSrc( BF_ONE )
         , m_currentBlendDst( BF_ONE )
         , m_currentBlendOp( BOP_ADD )
@@ -69,67 +61,18 @@ namespace Mengine
         m_maxVertexCount = CONFIG_VALUE( "Engine", "RenderMaxVertexCount", 32000U );
         m_maxIndexCount = CONFIG_VALUE( "Engine", "RenderMaxIndexCount", 48000U );
 
-        uint32_t maxObjects = CONFIG_VALUE( "Engine", "RenderMaxObject", 8000U );
-        uint32_t maxPasses = CONFIG_VALUE( "Engine", "RenderMaxPass", 200U );
-
-        uint32_t maxQuadBatch = CONFIG_VALUE( "Engine", "RenderMaxQuadBatch", 2000U );
-        uint32_t maxLineBatch = CONFIG_VALUE( "Engine", "RenderMaxLineBatch", 4000U );
-
-        m_renderObjects.reserve( maxObjects );
-        m_renderPasses.reserve( maxPasses );
-
-        m_indicesQuad.resize( maxQuadBatch * 6 );
-        m_indicesLine.resize( maxLineBatch * 1 );
-
-        for( uint32_t i = 0; i != maxQuadBatch; ++i )
-        {
-            uint32_t indexOffset = i * 6;
-
-            RenderIndex vertexOffset = (RenderIndex)i * 4;
-
-            m_indicesQuad[indexOffset + 0] = vertexOffset + 0;
-            m_indicesQuad[indexOffset + 1] = vertexOffset + 3;
-            m_indicesQuad[indexOffset + 2] = vertexOffset + 1;
-            m_indicesQuad[indexOffset + 3] = vertexOffset + 1;
-            m_indicesQuad[indexOffset + 4] = vertexOffset + 3;
-            m_indicesQuad[indexOffset + 5] = vertexOffset + 2;
-        }
-
-        for( uint32_t i = 0; i != maxLineBatch; ++i )
-        {
-            RenderIndex vertexOffset = (RenderIndex)i;
-
-            m_indicesLine[i] = vertexOffset;
-        }
-
         m_debugInfo.dips = 0;
         m_debugInfo.frameCount = 0;
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
 
-        uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );
-
-        switch( batchMode )
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), Helper::makeDefaultPrototypeGenerator<BatchRenderPipeline, 8>() ) == false )
         {
-        case 0U:
-            {
-                m_batchMode = ERBM_NONE;
-            }break;
-        case 1U:
-            {
-                m_batchMode = ERBM_NORMAL;
-            }break;
-        case 2U:
-            {
-                m_batchMode = ERBM_SMART;
-            }break;
-        default:
-            {
-                m_batchMode = ERBM_SMART;
-            }break;
+            return false;
         }
-
+        
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>();
 
         m_renderSystem = RENDER_SYSTEM();
@@ -139,29 +82,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::_finalizeService()
     {
-        for( RenderObject & ro : m_renderObjects )
-        {
-            IntrusivePtrBase::intrusive_ptr_release( ro.material );
-        }
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ) );
 
-        for( RenderPass * pass : m_renderPasses )
-        {
-            m_poolRenderPass.destroyT( pass );
-        }
-
-        m_indicesQuad.clear();
-        m_indicesLine.clear();
-
-        m_renderObjects.clear();
         m_renderBatches.clear();
-        m_poolRenderPass.clear();
-        m_renderPasses.clear();
+        m_cacheRenderBatches.clear();
 
-        m_debugRenderObjects.clear();
         m_debugRenderVertices.clear();
         m_debugRenderIndices.clear();
-
-        m_cacheRenderBatches.clear();
 
         m_nullTexture = nullptr;
         m_whitePixelTexture = nullptr;
@@ -458,9 +386,11 @@ namespace Mengine
         this->createWhitePixelTexture_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderService::beginScene()
+    bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         this->restoreRenderSystemStates_();
+
+        _renderPipeline->prepare();
 
         if( m_renderSystem->beginScene() == false )
         {
@@ -492,18 +422,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::endScene()
+    void RenderService::endScene( const RenderPipelineInterfacePtr & _renderPipeline )
     {
-#ifndef MENGINE_MASTER_RELEASE
-        for( const DebugRenderObject & dro : m_debugRenderObjects )
-        {
-            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_FUNCTION );
-        }
+        _renderPipeline->flush();
 
-        m_debugRenderObjects.clear();
-#endif
-
-        this->flushRender_();
+        this->flushRender_( _renderPipeline );
 
         m_renderSystem->endScene();
 
@@ -662,16 +585,17 @@ namespace Mengine
         this->updateStage_( stage );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderObject_( RenderObject * _renderObject )
+    void RenderService::renderPrimitive_( RenderPrimitive * _renderPrimitive )
     {
-        if( _renderObject->dipIndiciesCount == 0 )
+        if( _renderPrimitive->indexCount == 0 )
         {
-            IntrusivePtrBase::intrusive_ptr_release( _renderObject->material );
+            IntrusivePtrBase::intrusive_ptr_release( _renderPrimitive->material );
+            _renderPrimitive->material = nullptr;
 
             return;
         }
 
-        RenderMaterialInterface * material = _renderObject->material;
+        RenderMaterialInterface * material = _renderPrimitive->material;
 
         this->updateMaterial_( material );
 
@@ -690,14 +614,15 @@ namespace Mengine
 
         m_renderSystem->drawIndexedPrimitive(
             primitiveType,
-            _renderObject->baseVertexIndex,
-            _renderObject->minIndex,
-            _renderObject->dipVerticesCount,
-            _renderObject->startIndex,
-            _renderObject->dipIndiciesCount
+            _renderPrimitive->baseVertexIndex,
+            _renderPrimitive->minIndex,
+            _renderPrimitive->vertexCount,
+            _renderPrimitive->startIndex,
+            _renderPrimitive->indexCount
         );
 
-        IntrusivePtrBase::intrusive_ptr_release( _renderObject->material );
+        IntrusivePtrBase::intrusive_ptr_release( _renderPrimitive->material );
+        _renderPrimitive->material = nullptr;
 
         ++m_debugInfo.dips;
     }
@@ -726,23 +651,6 @@ namespace Mengine
     void RenderService::restoreRenderFrameStates_()
     {
         m_renderBatches.clear();
-        m_renderObjects.clear();
-
-        for( RenderPass * rp : m_renderPasses )
-        {
-            m_poolRenderPass.destroyT( rp );
-        }
-
-        m_renderPasses.clear();
-
-        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
-        {
-            batch->vertexCount = 0U;
-            batch->indexCount = 0U;
-
-            batch->vbPos = 0U;
-            batch->ibPos = 0U;
-        }
 
         m_debugRenderVertices.clear();
         m_debugRenderIndices.clear();
@@ -750,9 +658,6 @@ namespace Mengine
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
-
-        m_iterateRenderObjects = 0;
-        m_stopRenderObjects = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreRenderSystemStates_()
@@ -913,47 +818,41 @@ namespace Mengine
         m_debugInfo.frameCount = 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPasses_()
+    bool RenderService::beginRenderPass( const RenderVertexBufferInterfacePtr & _vertexBuffer,
+        const RenderIndexBufferInterfacePtr & _indexBuffer,
+        const RenderViewportInterfacePtr & _viewport,
+        const RenderCameraInterfacePtr _camera,
+        const RenderTransformationInterfacePtr _transformation,
+        const RenderScissorInterfacePtr _scissor,
+        const RenderTargetInterfacePtr _target,
+        const RenderProgramVariableInterfacePtr & _programVariable )
     {
-        if( m_renderPasses.empty() == true )	// nothing to render
+        if( m_currentRenderVertexBuffer != _vertexBuffer )
         {
-            return;
-        }
-
-        for( const RenderPass * renderPass : m_renderPasses )
-        {
-            this->renderPass_( renderPass );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPass_( const RenderPass * _renderPass )
-    {
-        if( m_currentRenderVertexBuffer != _renderPass->vertexBuffer )
-        {
-            m_currentRenderVertexBuffer = _renderPass->vertexBuffer;
+            m_currentRenderVertexBuffer = _vertexBuffer;
 
             m_renderSystem->setVertexBuffer( m_currentRenderVertexBuffer );
         }
 
-        if( m_currentRenderIndexBuffer != _renderPass->indexBuffer )
+        if( m_currentRenderIndexBuffer != _indexBuffer )
         {
-            m_currentRenderIndexBuffer = _renderPass->indexBuffer;
+            m_currentRenderIndexBuffer = _indexBuffer;
 
             m_renderSystem->setIndexBuffer( m_currentRenderIndexBuffer );
         }
 
-        if( _renderPass->viewport != nullptr )
+        if( _viewport != nullptr )
         {
-            if( m_currentRenderViewport != _renderPass->viewport )
+            if( m_currentRenderViewport != _viewport )
             {
-                const Viewport & viewport = _renderPass->viewport->getViewport();
+                const Viewport & viewport = _viewport->getViewport();
 
                 Viewport renderViewport;
                 this->calcRenderViewport_( viewport, renderViewport );
 
                 m_renderSystem->setViewport( renderViewport );
 
-                m_currentRenderViewport = _renderPass->viewport;
+                m_currentRenderViewport = _viewport;
             }
         }
         else
@@ -975,19 +874,19 @@ namespace Mengine
             }
         }
 
-        if( _renderPass->camera != nullptr )
+        if( _camera != nullptr )
         {
-            if( m_currentRenderCamera != _renderPass->camera )
+            if( m_currentRenderCamera != _camera )
             {
-                const mt::mat4f & viewMatrix = _renderPass->camera->getCameraViewMatrix();
+                const mt::mat4f & viewMatrix = _camera->getCameraViewMatrix();
 
                 m_renderSystem->setViewMatrix( viewMatrix );
 
-                const mt::mat4f & projectionMatrix = _renderPass->camera->getCameraProjectionMatrix();
+                const mt::mat4f & projectionMatrix = _camera->getCameraProjectionMatrix();
 
                 m_renderSystem->setProjectionMatrix( projectionMatrix );
 
-                m_currentRenderCamera = _renderPass->camera;
+                m_currentRenderCamera = _camera;
             }
         }
         else
@@ -1008,15 +907,15 @@ namespace Mengine
             }
         }
 
-        if( _renderPass->transformation != nullptr )
+        if( _transformation != nullptr )
         {
-            if( m_currentRenderTransformation != _renderPass->transformation )
+            if( m_currentRenderTransformation != _transformation )
             {
-                const mt::mat4f & worldMatrix = _renderPass->transformation->getTransformationWorldMatrix();
+                const mt::mat4f & worldMatrix = _transformation->getTransformationWorldMatrix();
 
                 m_renderSystem->setWorldMatrix( worldMatrix );
 
-                m_currentRenderTransformation = _renderPass->transformation;
+                m_currentRenderTransformation = _transformation;
             }
         }
         else
@@ -1031,15 +930,15 @@ namespace Mengine
             }
         }
 
-        if( _renderPass->scissor != nullptr )
+        if( _scissor != nullptr )
         {
-            if( m_currentRenderScissor != _renderPass->scissor )
+            if( m_currentRenderScissor != _scissor )
             {
-                const Viewport & viewport = _renderPass->scissor->getScissorViewport();
+                const Viewport & viewport = _scissor->getScissorViewport();
 
                 m_renderSystem->setScissor( viewport );
 
-                m_currentRenderScissor = _renderPass->scissor;
+                m_currentRenderScissor = _scissor;
             }
         }
         else
@@ -1052,54 +951,45 @@ namespace Mengine
             }
         }
 
-        if( _renderPass->target != nullptr )
+        if( _target != nullptr )
         {
-            const RenderTargetInterfacePtr & target = _renderPass->target;
-
-            if( target->begin() == false )
+            if( _target->begin() == false )
             {
-                return;
+                return false;
             }
         }
 
-        if( m_currentRenderProgramVariable != _renderPass->programVariable )
+        if( m_currentRenderProgramVariable != _programVariable )
         {
-            m_currentRenderProgramVariable = _renderPass->programVariable;
+            m_currentRenderProgramVariable = _programVariable;
         }
 
-        this->renderObjects_( _renderPass );
-
-        if( _renderPass->target != nullptr )
-        {
-            const RenderTargetInterfacePtr & target = _renderPass->target;
-
-            target->end();
-        }
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderObjects_( const RenderPass * _renderPass )
+    void RenderService::endRenderPass( const RenderTargetInterfacePtr & _target )
     {
-        ArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
-        ArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
-
-        for( ; it_begin != it_end; ++it_begin )
+        if( _target != nullptr )
         {
-            RenderObject * renderObject = it_begin;
-
-            this->renderObject_( renderObject );
+            _target->end();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderBatchPtr & RenderService::requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount )
+    void RenderService::renderPrimitives( RenderPrimitive * _primitives, uint32_t _count )
+    {
+        for( uint32_t index = 0 ; index != _count; ++index )
+        {
+            RenderPrimitive * renderPrimitive = _primitives + index;
+
+            this->renderPrimitive_( renderPrimitive );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderBatchInterfacePtr & RenderService::requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount )
     {
         for( const RenderBatchPtr & batch : m_renderBatches )
         {
-            if( batch->vertexAttribute != _vertexAttribute )
-            {
-                continue;
-            }
-
-            if( batch->vertexCount + _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
+            if( batch->process( _vertexAttribute, _vertexCount, _indexCount ) == false )
             {
                 continue;
             }
@@ -1109,12 +999,7 @@ namespace Mengine
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
-            if( batch->vertexAttribute != _vertexAttribute )
-            {
-                continue;
-            }
-
-            if( batch->vertexCount + _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
+            if( batch->process( _vertexAttribute, _vertexCount, _indexCount ) == false )
             {
                 continue;
             }
@@ -1126,469 +1011,39 @@ namespace Mengine
 
         RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        new_batch->vertexAttribute = _vertexAttribute;
+        new_batch->setVertexAttribute( _vertexAttribute );
 
         uint32_t elementSize = _vertexAttribute->getElementSize();
 
-        new_batch->vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
+        RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
 
-        new_batch->vertexCount = 0;
-        new_batch->vertexMemory = nullptr;
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, RenderBatchInterfacePtr::none() );
+
+        vertexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
+
+        new_batch->setVertexBuffer( vertexBuffer );
 
         uint32_t indexSize = sizeof( RenderIndex );
 
-        new_batch->indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
+        RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
 
-        new_batch->indexCount = 0;
-        new_batch->indexMemory = nullptr;
+        MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, RenderBatchInterfacePtr::none() );
 
-        new_batch->vbPos = 0;
-        new_batch->ibPos = 0;
+        indexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
 
-        new_batch->vertexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
-        new_batch->indexBuffer->resize( MENGINE_RENDER_VERTEX_MAX_BATCH / 2 );
+        new_batch->setIndexBuffer( indexBuffer );
 
         m_cacheRenderBatches.emplace_back( new_batch );
 
         const RenderBatchPtr & batch = m_cacheRenderBatches.back();
 
+        if( batch->process( _vertexAttribute, _vertexCount, _indexCount ) == false )
+        {
+            return RenderBatchInterfacePtr::none();
+        }
+
         return batch;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::testRenderPass_( const RenderContext * _context
-        , const RenderVertexBufferInterfacePtr & _vertexBuffer
-        , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , const RenderVertexAttributeInterfacePtr & _vertexAttribute
-        , const RenderProgramVariableInterfacePtr & _programVariable ) const
-    {
-        if( m_renderPasses.empty() == true )
-        {
-            return true;
-        }
-
-        const RenderPass * pass = m_renderPasses.back();
-
-        if( pass->vertexBuffer != _vertexBuffer ||
-            pass->indexBuffer != _indexBuffer ||
-            pass->vertexAttribute != _vertexAttribute ||
-            pass->programVariable != _programVariable ||
-            pass->viewport != _context->viewport ||
-            pass->camera != _context->camera ||
-            pass->transformation != _context->transformation ||
-            pass->scissor != _context->scissor ||
-            pass->target != _context->target )
-        {
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    RenderPass * RenderService::requestRenderPass_( const RenderContext * _context
-        , const RenderBatchPtr & _batch
-        , const RenderVertexBufferInterfacePtr & _vertexBuffer
-        , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , const RenderVertexAttributeInterfacePtr & _vertexAttribute
-        , const RenderProgramVariableInterfacePtr & _programVariable )
-    {
-        if( this->testRenderPass_( _context, _vertexBuffer, _indexBuffer, _vertexAttribute, _programVariable ) == true )
-        {
-            RenderPass * pass = m_poolRenderPass.createT();
-
-            pass->batch = _batch;
-            pass->vertexBuffer = _vertexBuffer;
-            pass->indexBuffer = _indexBuffer;
-            pass->vertexAttribute = _vertexAttribute;
-            pass->beginRenderObject = (uint32_t)m_renderObjects.size();
-            pass->countRenderObject = 0U;
-
-            pass->viewport = _context->viewport;
-            pass->camera = _context->camera;
-            pass->transformation = _context->transformation;
-            pass->scissor = _context->scissor;
-            pass->target = _context->target;
-            pass->programVariable = _programVariable;
-
-            if( m_batchMode == ERBM_SMART )
-            {
-                for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
-                {
-                    pass->materialEnd[i] = nullptr;
-                }
-            }
-
-            pass->flags = RENDER_PASS_FLAG_NONE;
-
-            m_renderPasses.emplace_back( pass );
-        }
-
-        RenderPass * rp = m_renderPasses.back();
-
-        return rp;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::addRenderMesh( const RenderContext * _context
-        , const RenderMaterialInterfacePtr & _material
-        , const RenderProgramVariableInterfacePtr & _programVariable
-        , const RenderVertexBufferInterfacePtr & _vertexBuffer
-        , const RenderIndexBufferInterfacePtr & _indexBuffer
-        , uint32_t _vertexCount, uint32_t _indexCount, const Char * _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, "_vertexBuffer == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, "_indexBuffer == nullptr (doc: %s)", _doc );
-
-        if( m_renderObjects.full() == true )
-        {
-            LOGGER_ERROR( "max render objects %u"
-                , m_renderObjects.size()
-            );
-
-            return;
-        }
-
-        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
-        {
-            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-            {
-                return;
-            }
-        }
-
-        const RenderMaterialStage * materialStage = _material->getStage();
-
-        const RenderProgramInterfacePtr & program = materialStage->program;
-
-        const RenderVertexAttributeInterfacePtr & vertexAttribute = program->getVertexAttribute();
-
-        RenderPass * rp = this->requestRenderPass_( _context, nullptr, _vertexBuffer, _indexBuffer, vertexAttribute, _programVariable );
-
-        rp->flags |= RENDER_PASS_FLAG_SINGLE;
-
-        ++rp->countRenderObject;
-
-        RenderObject & ro = m_renderObjects.emplace();
-
-        IntrusivePtrBase::intrusive_ptr_setup( ro.material, _material.get() );
-
-        ro.vertexData = nullptr;
-        ro.vertexCount = 0;
-
-        ro.indexData = nullptr;
-        ro.indexCount = 0;
-
-        if( m_batchMode == ERBM_SMART )
-        {
-            ro.materialSmartId = 0;
-
-            mt::box2f bb;
-            bb.minimum.x = (std::numeric_limits<float>::lowest)();
-            bb.minimum.y = (std::numeric_limits<float>::lowest)();
-            bb.maximum.x = (std::numeric_limits<float>::max)();
-            bb.maximum.y = (std::numeric_limits<float>::max)();
-
-            ro.bb = bb;
-        }
-
-        ro.minIndex = 0;
-        ro.startIndex = 0;
-
-        ro.dipVerticesCount = _vertexCount;
-        ro.dipIndiciesCount = _indexCount;
-
-        ro.baseVertexIndex = 0;
-
-        ro.flags = RENDER_OBJECT_FLAG_NONE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::addRenderObject( const RenderContext * _context
-        , const RenderMaterialInterfacePtr & _material
-        , const RenderProgramVariableInterfacePtr & _programVariable
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const RenderIndex * _indices, uint32_t _indexCount
-        , const mt::box2f * _bb, bool _debug, const Char * _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", _doc );
-
-        if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
-        {
-            LOGGER_ERROR( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
-                , _vertexCount
-                , MENGINE_RENDER_VERTEX_MAX_BATCH
-            );
-
-            return;
-        }
-
-        if( m_renderObjects.full() == true )
-        {
-            LOGGER_ERROR( "max render objects '%u'"
-                , m_renderObjects.size()
-            );
-
-            return;
-        }
-
-#ifdef MENGINE_DEBUG
-        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
-        {
-            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-            {
-                return;
-            }
-        }
-#endif
-
-        const RenderMaterialStage * materialStage = _material->getStage();
-
-        const RenderProgramInterfacePtr & program = materialStage->program;
-
-        const RenderVertexAttributeInterfacePtr & vertexAttribute = program->getVertexAttribute();
-
-        const RenderBatchPtr & batch = this->requestRenderBatch_( vertexAttribute, _vertexCount );
-
-        batch->vertexCount += _vertexCount;
-        batch->indexCount += _indexCount;
-
-        RenderPass * rp = this->requestRenderPass_( _context, batch, batch->vertexBuffer, batch->indexBuffer, vertexAttribute, _programVariable );
-
-#ifdef MENGINE_DEBUG
-        m_debugInfo.object += 1;
-
-        if( m_debugFillrateCalcMode == true && _debug == false )
-        {
-            EPrimitiveType primitiveType = _material->getPrimitiveType();
-
-            switch( primitiveType )
-            {
-            case PT_TRIANGLELIST:
-                {
-                    const RenderViewportInterfacePtr & viewport = rp->viewport;
-                    const Viewport & vp = viewport->getViewport();
-
-                    this->calcQuadSquare_( _vertices, _vertexCount, vp );
-                }break;
-            default:
-                {
-                }break;
-            }
-        }
-#endif
-
-        RenderMaterialInterfacePtr ro_material = _material;
-
-#ifdef MENGINE_DEBUG
-        if( m_debugStepRenderMode == true && _debug == false )
-        {
-            if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-            {
-                //const RenderTextureInterfacePtr & texture = _material->getTexture( 0 );
-
-                //if( texture != nullptr )
-                //{
-                //    LOGGER_ERROR( "texture: '%s' material '%s'"
-                //        , texture->getFilePath().c_str()
-                //        , _material->getName().c_str()
-                //    );
-                //}
-
-                EPrimitiveType primitiveType = _material->getPrimitiveType();
-
-                const RenderMaterialInterfacePtr & new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
-
-                if( new_material == nullptr )
-                {
-                    return;
-                }
-
-                ro_material = new_material;
-            }
-        }
-#endif
-
-        ++rp->countRenderObject;
-
-        RenderObject & ro = m_renderObjects.emplace();
-
-        IntrusivePtrBase::intrusive_ptr_setup( ro.material, ro_material.get() );
-
-        ro.vertexData = _vertices;
-        ro.vertexCount = _vertexCount;
-
-        ro.indexData = _indices;
-        ro.indexCount = _indexCount;
-
-        if( m_batchMode == ERBM_SMART )
-        {
-            uint32_t materialId = ro.material->getId();
-            ro.materialSmartId = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
-
-            rp->materialEnd[ro.materialSmartId] = &ro;
-
-            mt::box2f bb;
-
-            if( _bb != nullptr )
-            {
-                bb = *_bb;
-            }
-            else
-            {
-                Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
-            }
-
-            const RenderCameraInterfacePtr & camera = rp->camera;
-            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
-
-            const RenderViewportInterfacePtr & viewport = rp->viewport;
-            const Viewport & vp = viewport->getViewport();
-
-            mt::box2f bb_homogenize;
-            mt::set_box_homogenize( bb_homogenize, bb.minimum, bb.maximum, vpm );
-
-            mt::vec2f vp_scale;
-            vp.calcSize( vp_scale );
-
-            mt::scale_box( bb_homogenize, vp_scale );
-            mt::transpose_box( bb_homogenize, vp.begin );
-
-            ro.bb = bb_homogenize;
-        }
-
-        ro.minIndex = 0;
-        ro.startIndex = 0;
-        ro.baseVertexIndex = 0;
-
-        ro.dipVerticesCount = 0;
-        ro.dipIndiciesCount = 0;
-        ro.flags = RENDER_OBJECT_FLAG_NONE;
-
-        if( _debug == true )
-        {
-            ro.flags |= RENDER_OBJECT_FLAG_DEBUG;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::addDebugRenderObject( const RenderContext * _context
-        , const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const RenderIndex * _indices, uint32_t _indexCount, const Char * _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", _doc );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", _doc );
-
-        if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
-        {
-            LOGGER_ERROR( "_vertexCount(%u) >= MENGINE_RENDER_VERTEX_MAX_BATCH(%u)"
-                , _vertexCount
-                , MENGINE_RENDER_VERTEX_MAX_BATCH
-            );
-
-            return;
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        DebugRenderObject dro;
-        dro.context = *_context;
-        dro.material = _material;
-        dro.vertices = _vertices;
-        dro.vertexCount = _vertexCount;
-        dro.indices = _indices;
-        dro.indexCount = _indexCount;
-
-        m_debugRenderObjects.push_back( dro );
-#else
-        MENGINE_UNUSED( _context );
-        MENGINE_UNUSED( _material );
-        MENGINE_UNUSED( _vertices );
-        MENGINE_UNUSED( _vertexCount );
-        MENGINE_UNUSED( _indices );
-        MENGINE_UNUSED( _indexCount );
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::addDebugRenderQuad( const RenderContext * _context
-        , const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount, const Char * _doc )
-    {
-        uint32_t indicesCount = (_vertexCount / 4) * 6;
-
-        if( indicesCount >= m_indicesQuad.size() )
-        {
-            LOGGER_ERROR( "count %d > max count %d"
-                , indicesCount
-                , m_indicesQuad.size()
-            );
-
-            return;
-        }
-
-        RenderIndex * indices = m_indicesQuad.buff();
-
-        this->addDebugRenderObject( _context, _material, _vertices, _vertexCount, indices, indicesCount, _doc );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::addRenderQuad( const RenderContext * _context
-        , const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const Char * _doc )
-    {
-        uint32_t indicesCount = (_vertexCount / 4) * 6;
-
-        if( indicesCount >= m_indicesQuad.size() )
-        {
-            LOGGER_ERROR( "count %d > max count %d"
-                , indicesCount
-                , m_indicesQuad.size()
-            );
-
-            return;
-        }
-
-        RenderIndex * indices = m_indicesQuad.buff();
-
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::addRenderLine( const RenderContext * _context
-        , const RenderMaterialInterfacePtr & _material
-        , const RenderVertex2D * _vertices, uint32_t _vertexCount
-        , const mt::box2f * _bb, bool _debug, const Char * _doc )
-    {
-        uint32_t indicesCount = _vertexCount;
-
-        if( indicesCount >= m_indicesLine.size() )
-        {
-            LOGGER_ERROR( "count %d > max count %d"
-                , indicesCount
-                , m_indicesLine.size()
-            );
-
-            return;
-        }
-
-        RenderIndex * indices = m_indicesLine.buff();
-
-        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesCount, _bb, _debug, _doc );
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( uint32_t _count )
     {
@@ -1608,77 +1063,25 @@ namespace Mengine
         return indices_array;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::setBatchMode( ERenderBatchMode _mode )
-    {
-        m_batchMode = _mode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ERenderBatchMode RenderService::getBatchMode() const
-    {
-        return m_batchMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::makeBatches_()
+    bool RenderService::makeBatches_( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
-            const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
-
-            if( vertexBuffer->resize( batch->vertexCount ) == false )
+            if( batch->lock() == false )
             {
-                LOGGER_ERROR( "failed to resize vertex buffer '%u'"
-                    , batch->vertexCount
-                );
+                LOGGER_ERROR( "failed to lock batch" );
 
                 return false;
             }
-
-            MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount, MENGINE_DOCUMENT_FUNCTION );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, false, "failed to lock vertex buffer '%u'"
-                , batch->vertexCount
-            );
-
-            batch->vertexMemory = vertexMemory;
-
-            const RenderIndexBufferInterfacePtr & indexBuffer = batch->indexBuffer;
-
-            if( indexBuffer->resize( batch->indexCount ) == false )
-            {
-                LOGGER_ERROR( "failed to resize index buffer '%u'"
-                    , batch->indexCount
-                );
-
-                return false;
-            }
-
-            MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount, MENGINE_DOCUMENT_FUNCTION );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( indexMemory, false, "failed to lock index buffer '%u'",
-                batch->indexCount
-            );
-
-            batch->indexMemory = indexMemory;
         }
 
-        this->insertRenderPasses_();
+        _renderPipeline->batch();
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
-            const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
-
-            if( vertexBuffer->unlock() == false )
+            if( batch->unlock() == false )
             {
-                LOGGER_ERROR( "failed to unlock vertex buffer" );
-
-                return false;
-            }
-
-            const RenderIndexBufferInterfacePtr & indexBuffer = batch->indexBuffer;
-
-            if( indexBuffer->unlock() == false )
-            {
-                LOGGER_ERROR( "failed to unlock index buffer" );
+                LOGGER_ERROR( "failed to lock batch" );
 
                 return false;
             }
@@ -1687,274 +1090,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::insertRenderPasses_()
-    {
-        for( const RenderPass * pass : m_renderPasses )
-        {
-            if( (pass->flags & RENDER_PASS_FLAG_SINGLE) == RENDER_PASS_FLAG_SINGLE )
-            {
-                continue;
-            }
-
-            const RenderBatchPtr & batch = pass->batch;
-
-            const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
-
-            uint32_t vertexSize = vertexBuffer->getVertexSize();
-
-            this->insertRenderObjects_( pass, batch->vertexMemory, vertexSize, batch->indexMemory, batch->vbPos, batch->ibPos );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::batchRenderObjectNormal_( ArrayRenderObject::iterator _begin, ArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
-    {
-        uint32_t vbPos = _vbPos;
-        uint32_t ibPos = _ibPos;
-
-        ArrayRenderObject::iterator it_batch_begin = _begin;
-        ++it_batch_begin;
-
-        RenderMaterialInterface * ro_material = _ro->material;
-
-        for( ; it_batch_begin != _end; ++it_batch_begin )
-        {
-            RenderObject * ro_bath_begin = it_batch_begin;
-
-            if( ro_bath_begin->indexCount == 0 )
-            {
-                continue;
-            }
-
-            RenderMaterialInterface * batch_material = ro_bath_begin->material;
-
-            if( ro_material != batch_material )
-            {
-                break;
-            }
-
-            if( this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos ) == false )
-            {
-                break;
-            }
-
-            vbPos += ro_bath_begin->vertexCount;
-            ibPos += ro_bath_begin->indexCount;
-
-            _ro->dipVerticesCount += ro_bath_begin->vertexCount;
-            _ro->dipIndiciesCount += ro_bath_begin->indexCount;
-
-            IntrusivePtrBase::intrusive_ptr_release( ro_bath_begin->material );
-
-            ro_bath_begin->dipVerticesCount = 0;
-            ro_bath_begin->dipIndiciesCount = 0;
-            ro_bath_begin->vertexCount = 0;
-            ro_bath_begin->indexCount = 0;
-
-            ++m_debugInfo.batch;
-        }
-
-        _vbPos = vbPos;
-        _ibPos = ibPos;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static bool s_testRenderBB( const RenderObject * _begin, const RenderObject * _end, const RenderObject * _ro )
-    {
-        for( const RenderObject * it = _begin; it != _end; ++it )
-        {
-            const RenderObject * ro_bath = it;
-
-            if( ro_bath->vertexCount == 0 )
-            {
-                continue;
-            }
-
-            if( mt::is_intersect( ro_bath->bb, _ro->bb ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::batchRenderObjectSmart_( const RenderPass * _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
-    {
-        uint32_t vbPos = _vbPos;
-        uint32_t ibPos = _ibPos;
-
-        ArrayRenderObject::iterator it_batch_start_end = _begin;
-        ++it_batch_start_end;
-
-        ArrayRenderObject::iterator it_batch = _begin;
-        ++it_batch;
-
-        uint32_t materialSmartId = _ro->materialSmartId;
-        ArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialSmartId];
-
-        if( _begin == it_end )
-        {
-            return;
-        }
-
-        const RenderMaterialInterface * ro_material = _ro->material;
-
-        for( ; it_batch != it_end; ++it_batch )
-        {
-            RenderObject * ro_bath = it_batch;
-
-            if( ro_bath->vertexCount == 0 )
-            {
-                continue;
-            }
-
-            const RenderMaterialInterface * ro_bath_material = ro_bath->material;
-
-            if( ro_material != ro_bath_material )
-            {
-                continue;
-            }
-
-            if( s_testRenderBB( it_batch_start_end, it_batch, ro_bath ) == true )
-            {
-                break;
-            }
-
-            if( this->insertRenderObject_( ro_bath, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos ) == false )
-            {
-                break;
-            }
-
-            _ro->dipVerticesCount += ro_bath->vertexCount;
-            _ro->dipIndiciesCount += ro_bath->indexCount;
-
-            IntrusivePtrBase::intrusive_ptr_release( ro_bath->material );
-
-            ro_bath->dipVerticesCount = 0;
-            ro_bath->dipIndiciesCount = 0;
-
-            vbPos += ro_bath->vertexCount;
-            ibPos += ro_bath->indexCount;
-
-            ro_bath->vertexCount = 0;
-            ro_bath->indexCount = 0;
-
-            ++m_debugInfo.batch;
-        }
-
-        _vbPos = vbPos;
-        _ibPos = ibPos;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
-    {
-        uint32_t vbPos = _vbPos;
-        uint32_t ibPos = _ibPos;
-
-        ArrayRenderObject::iterator it = m_renderObjects.advance( _renderPass->beginRenderObject );
-        ArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
-
-        for( ; it != it_end; ++it )
-        {
-            RenderObject * ro = it;
-
-            if( ro->vertexCount == 0 )
-            {
-                continue;
-            }
-
-            ro->startIndex = ibPos;
-            ro->minIndex = vbPos;
-
-            if( this->insertRenderObject_( ro, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos ) == false )
-            {
-                break;
-            }
-
-            ro->dipVerticesCount = ro->vertexCount;
-            ro->dipIndiciesCount = ro->indexCount;
-
-            vbPos += ro->vertexCount;
-            ibPos += ro->indexCount;
-
-            ro->vertexCount = 0;
-            ro->indexCount = 0;
-
-            switch( m_batchMode )
-            {
-            case ERBM_NONE:
-                {
-                }break;
-            case ERBM_NORMAL:
-                {
-                    this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos );
-                }break;
-            case ERBM_SMART:
-                {
-                    this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos );
-
-                    this->batchRenderObjectSmart_( _renderPass, it, ro, _vertexBuffer, _vertexSize, _indexBuffer, vbPos, ibPos );
-                }break;
-            }
-        }
-
-        _vbPos = vbPos;
-        _ibPos = ibPos;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t _vbPos, uint32_t _ibPos ) const
-    {
-        void * memory_buffer = _vertexBuffer->getBuffer();
-        size_t memory_size = _vertexBuffer->getSize();
-
-        if( stdex::memorycopy_safe( memory_buffer, _vbPos * _vertexSize, memory_size, _renderObject->vertexData, _renderObject->vertexCount * _vertexSize ) == false )
-        {
-            LOGGER_ERROR( "vertex buffer overrlow!"
-            );
-
-            return false;
-        }
-
-        //if( m_debugRedAlertMode == true && hasRenderObjectFlag( _renderObject, RENDER_OBJECT_FLAG_DEBUG ) == false )
-        //{
-        //    for( uint32_t i = 0; i != _renderObject->vertexCount; ++i )
-        //    {
-        //        RenderVertex2D & v = _vertexBuffer[_vbPos + i];
-
-        //        v.color = Helper::makeARGB( 1.f, 0.f, 0.f, 0.1f );
-        //    }
-        //}
-
-        RenderIndex * indexMemory = _indexBuffer->getBuffer();
-
-        RenderIndex * offsetIndicesBuffer = indexMemory + _ibPos;
-
-        RenderIndex * src = offsetIndicesBuffer;
-        RenderIndex * src_end = offsetIndicesBuffer + _renderObject->indexCount;
-        const RenderIndex * dst = _renderObject->indexData;
-
-        RenderIndex indices_offset = (RenderIndex)_vbPos;
-        while( src != src_end )
-        {
-            *src = *dst + indices_offset;
-            ++src;
-            ++dst;
-        }
-
-        //_renderObject->baseVertexIndex = 0;
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::flushRender_()
+    void RenderService::flushRender_( const RenderPipelineInterfacePtr & _renderPipeline )
     {
         m_debugInfo.batch = 0;
         m_debugInfo.dips = 0;
 
-        if( this->makeBatches_() == false )
+        if( this->makeBatches_( _renderPipeline ) == false )
         {
             return;
         }
 
-        this->renderPasses_();
+        _renderPipeline->render();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setVSync( bool _vSync )
@@ -1975,58 +1121,6 @@ namespace Mengine
     bool RenderService::getVSync() const
     {
         return m_vsync;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::enableDebugFillrateCalcMode( bool _enable )
-    {
-        m_debugFillrateCalcMode = _enable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::isDebugFillrateCalcMode() const
-    {
-        return m_debugFillrateCalcMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::enableDebugStepRenderMode( bool _enable )
-    {
-        m_debugStepRenderMode = _enable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::isDebugStepRenderMode() const
-    {
-        return m_debugStepRenderMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::enableRedAlertMode( bool _enable )
-    {
-        m_debugRedAlertMode = _enable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::isRedAlertMode() const
-    {
-        return m_debugRedAlertMode;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::endLimitRenderObjects()
-    {
-        m_stopRenderObjects = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderService::increfLimitRenderObjects()
-    {
-        ++m_limitRenderObjects;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderService::decrefLimitRenderObjects()
-    {
-        if( m_limitRenderObjects == 0 )
-        {
-            return false;
-        }
-
-        --m_limitRenderObjects;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const Viewport & RenderService::getRenderViewport() const

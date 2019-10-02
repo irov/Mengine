@@ -736,7 +736,7 @@ namespace Mengine
         ae_set_movie_composition_nodes_enable_any( m_composition, _name.c_str(), _enable ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::foreachRenderSlots( const RenderContext * _context, const LambdaMovieRenderSlot & _lambda )
+    void Movie2::foreachRenderSlots( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const LambdaMovieRenderSlot & _lambda )
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -786,31 +786,31 @@ namespace Mengine
                     {
                         Movie2Slot * node = Helper::reinterpretNodeCast<Movie2Slot *>( mesh.element_userdata );
 
-                        _lambda( node, &context );
+                        _lambda( node, _renderPipeline, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
                         HotSpotPolygon * node = Helper::reinterpretNodeCast<HotSpotPolygon *>( mesh.element_userdata );
 
-                        _lambda( node, &context );
+                        _lambda( node, _renderPipeline, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = Helper::reinterpretNodeCast<ShapeQuadFixed *>( mesh.element_userdata );
 
-                        _lambda( node, &context );
+                        _lambda( node, _renderPipeline, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = Helper::reinterpretNodeCast<TextField *>( mesh.element_userdata );
 
-                        _lambda( node, &context );
+                        _lambda( node, _renderPipeline, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         Node * node = Helper::reinterpretNodeCast<Node *>( mesh.element_userdata );
 
-                        _lambda( node, &context );
+                        _lambda( node, _renderPipeline, &context );
                     }break;
                 default:
                     break;
@@ -2368,7 +2368,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::render( const RenderContext * _context ) const
+    void Movie2::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
@@ -2433,7 +2433,7 @@ namespace Mengine
                     {
                         Movie2Slot * node = Helper::reinterpretNodeCast<Movie2Slot *>( mesh.element_userdata );
 
-                        Helper::nodeRenderChildren( node, &context, true );
+                        Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -2447,19 +2447,19 @@ namespace Mengine
                     {
                         ShapeQuadFixed * node = Helper::reinterpretNodeCast<ShapeQuadFixed *>( mesh.element_userdata );
 
-                        Helper::nodeRenderChildren( node, &context, true );
+                        Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = Helper::reinterpretNodeCast<TextField *>( mesh.element_userdata );
 
-                        Helper::nodeRenderChildren( node, &context, true );
+                        Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         Node * node = Helper::reinterpretNodeCast<Node *>( mesh.element_userdata );
 
-                        Helper::nodeRenderChildren( node, &context, true );
+                        Helper::nodeRenderChildren( node, _renderPipeline, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
@@ -2500,7 +2500,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -2541,7 +2541,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -2656,7 +2656,7 @@ namespace Mengine
                         {
                             RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
-                            this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                         }
                         else
                         {
@@ -2705,7 +2705,7 @@ namespace Mengine
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -2754,7 +2754,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 default:
                     break;
@@ -2863,7 +2863,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
@@ -2969,7 +2969,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
                     }break;
                 default:
                     break;

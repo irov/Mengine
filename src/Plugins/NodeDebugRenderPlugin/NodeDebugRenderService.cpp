@@ -113,7 +113,7 @@ namespace Mengine
             ->removeTimer( m_timerFPS );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external )
+    void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external )
     {
         if( _node->isActivate() == false )
         {
@@ -192,7 +192,7 @@ namespace Mengine
 
             if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
             {
-                selfRender->render( &self_context );
+                selfRender->render( _renderPipeline, &self_context );
 
                 const ConstString & type = _node->getType();
 
@@ -200,14 +200,14 @@ namespace Mengine
 
                 if( nodeDebugRender != nullptr )
                 {
-                    nodeDebugRender->render( &self_context, _node.get() );
+                    nodeDebugRender->render( _renderPipeline, &self_context, _node.get() );
                 }
             }
 
             const RenderContext * children_context = &self_context;
-            _node->foreachChildrenUnslug( [this, children_context]( const NodePtr & _child )
+            _node->foreachChildrenUnslug( [this, &_renderPipeline, children_context]( const NodePtr & _child )
             {
-                this->renderDebugNode( _child, children_context, false );
+                this->renderDebugNode( _child, _renderPipeline, children_context, false );
             } );
 
             if( self_context.target != nullptr )
@@ -216,15 +216,15 @@ namespace Mengine
 
                 if( targetRender != nullptr )
                 {
-                    targetRender->render( _context );
+                    targetRender->render( _renderPipeline, _context );
                 }
             }
         }
         else
         {
-            _node->foreachChildrenUnslug( [this, _context]( const NodePtr & _child )
+            _node->foreachChildrenUnslug( [this, &_renderPipeline, _context]( const NodePtr & _child )
             {
-                this->renderDebugNode( _child, _context, false );
+                this->renderDebugNode( _child, _renderPipeline, _context, false );
             } );
 
             const ConstString & type = _node->getType();
@@ -233,7 +233,7 @@ namespace Mengine
 
             if( nodeDebugRender != nullptr )
             {
-                nodeDebugRender->render( _context, _node.get() );
+                nodeDebugRender->render( _renderPipeline, _context, _node.get() );
             }
         }
     }
@@ -255,7 +255,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderService::renderDebugInfo( const RenderContext * _context )
+    void NodeDebugRenderService::renderDebugInfo( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context )
     {
         MENGINE_UNUSED( _context );
 
@@ -268,8 +268,8 @@ namespace Mengine
 
         if( m_showDebugText == 0 )
         {
-            RENDER_SERVICE()
-                ->enableDebugFillrateCalcMode( false );
+            //RENDER_SERVICE()
+            //    ->enableDebugFillrateCalcMode( false );
         }
 
         if( m_showDebugText != 0 )
@@ -283,8 +283,8 @@ namespace Mengine
 
             if( m_showDebugText > 1 )
             {
-                RENDER_SERVICE()
-                    ->enableDebugFillrateCalcMode( true );
+                //RENDER_SERVICE()
+                //    ->enableDebugFillrateCalcMode( true );
 
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
@@ -294,10 +294,10 @@ namespace Mengine
                 ss << "Fillrate " << std::setiosflags( std::ios::fixed ) << std::setprecision( 2 ) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
                 ss << "DIP: " << rdi.dips << std::endl;
 
-                ERenderBatchMode mode = RENDER_SERVICE()
-                    ->getBatchMode();
+                //ERenderBatchMode mode = RENDER_SERVICE()
+                //    ->getBatchMode();
 
-                ss << "Smart Batch: " << mode << " " << rdi.batch << std::endl;
+                //ss << "Smart Batch: " << mode << " " << rdi.batch << std::endl;
 
                 uint32_t textureMemoryUse = RENDER_SYSTEM()
                     ->getTextureMemoryUse();
@@ -645,7 +645,7 @@ namespace Mengine
 
             //m_debugText->render( _context );
 
-            Helper::drawTextDebug( _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), "%s"
+            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), "%s"
                 , text.c_str()
             );
         }

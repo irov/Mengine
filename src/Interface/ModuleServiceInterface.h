@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ModuleInterface.h"
+#include "Interface/RenderPipelineInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
@@ -25,7 +26,7 @@ namespace Mengine
 
     public:
         virtual void tick( const UpdateContext * _context ) = 0;
-        virtual void render( const RenderContext * _context ) = 0;
+        virtual void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) = 0;
 
     public:
         virtual void message( const ConstString & _name, const ConstString & _messageName, const MapWParams & _params ) = 0;

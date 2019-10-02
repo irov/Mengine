@@ -82,8 +82,9 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSlot::render( const RenderContext * _context ) const
+    void MovieSlot::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        MENGINE_UNUSED( _renderPipeline );
         MENGINE_UNUSED( _context );
 
         //Empty

@@ -133,8 +133,9 @@ namespace Mengine
         Entity::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::render( const RenderContext * _context ) const
+    void Arrow::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        MENGINE_UNUSED( _renderPipeline );
         MENGINE_UNUSED( _context );
 
         //Empty

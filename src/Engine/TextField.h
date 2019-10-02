@@ -129,7 +129,7 @@ namespace Mengine
         uint32_t getCharCount() const;
 
     public:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
         bool _activate() override;

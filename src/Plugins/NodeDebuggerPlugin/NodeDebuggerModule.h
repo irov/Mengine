@@ -71,7 +71,7 @@ namespace Mengine
 
     public:
         void _update( bool _focus ) override;
-        void _render( const RenderContext * _context ) override;
+        void _render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) override;
 
     protected:
         bool absorbBoundingBox( const NodePtr & node, mt::box2f & _bb ) const;

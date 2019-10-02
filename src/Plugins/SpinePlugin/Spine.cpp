@@ -679,7 +679,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::render( const RenderContext * _context ) const
+    void Spine::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -802,7 +802,7 @@ namespace Mengine
 
             const mt::box2f * bb = this->getBoundingBox();
 
-            this->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+            _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -13,9 +13,9 @@ namespace Mengine
         ~DummyRender() override;
 
     public:
-        void render( const RenderContext * _context ) const override;
+        void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     public:
-        void renderWithChildren( const RenderContext * _context, bool _external ) const override;
+        void renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const override;
     };
 }

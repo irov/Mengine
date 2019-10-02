@@ -2303,8 +2303,9 @@ namespace Mengine
         this->updateForward_( _context->current );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::render( const RenderContext * _context ) const
+    void Movie::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        MENGINE_UNUSED( _renderPipeline );
         MENGINE_UNUSED( _context );
 
         //Empty

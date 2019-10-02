@@ -13,14 +13,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyRender::render( const RenderContext * _context ) const
+    void DummyRender::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
+        MENGINE_UNUSED( _renderPipeline );
         MENGINE_UNUSED( _context );
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummyRender::renderWithChildren( const RenderContext * _context, bool _external ) const
+    void DummyRender::renderWithChildren( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) const
     {
         if( this->isRendering() == false )
         {
@@ -42,7 +43,7 @@ namespace Mengine
 
         for( const BaseRender * child : m_renderChildren )
         {
-            child->renderWithChildren( &context, false );
+            child->renderWithChildren( _renderPipeline, &context, false );
         }
 
         if( context.target != nullptr )
@@ -51,7 +52,7 @@ namespace Mengine
 
             if( targetRender != nullptr )
             {
-                targetRender->render( _context );
+                targetRender->render( _renderPipeline, _context );
             }
         }
     }

@@ -1,24 +1,20 @@
 #pragma once
 
-#include "Interface/FrameworkInterface.h"
-
-#include "Kernel/ServiceBase.h"
+#include "Kernel/FrameworkBase.h"
+#include "Kernel/Observable.h"
 
 namespace Mengine
 {
     class MyGameFramework
-        : public ServiceBase<FrameworkInterface>
+        : public FrameworkBase
+        , public Observable
     {
     public:
         MyGameFramework();
         ~MyGameFramework() override;
 
-    public:
-        bool _initializeService() override;
-        void _finalizeService() override;
-
     protected:
-        bool onFrameworkInitialize() override;
-        void onFrameworkFinalize() override;
+        bool _initializeFramework() override;
+        void _finalizeFramework() override;
     };
 }

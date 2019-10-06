@@ -14,8 +14,6 @@
 #include "MySceneEventReceiver.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Framework, Mengine::MyGameFramework );
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -27,23 +25,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MyGameFramework::_initializeService()
-    {
-        //ToDo
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MyGameFramework::_finalizeService()
-    {
-        //ToDo
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MyGameFramework::onFrameworkInitialize()
+    bool MyGameFramework::_initializeFramework()
     {
         MySceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<MySceneEventReceiver>();
 
-        ScenePtr scene = Helper::makeScene( sceneEventReceiver );
+        ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
 
         scene->setName( STRINGIZE_STRING_LOCAL( "MyGameScene" ) );
 
@@ -53,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MyGameFramework::onFrameworkFinalize()
+    void MyGameFramework::_finalizeFramework()
     {
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );

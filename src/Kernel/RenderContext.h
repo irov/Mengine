@@ -10,10 +10,10 @@ namespace Mengine
 {
     struct RenderContext
     {
-        RenderViewportInterface * viewport;
-        RenderCameraInterface * camera;
-        RenderTransformationInterface * transformation;
-        RenderScissorInterface * scissor;
-        RenderTargetInterface * target;
+        const RenderViewportInterface * viewport;
+        const RenderCameraInterface * camera;
+        const RenderTransformationInterface * transformation;
+        const RenderScissorInterface * scissor;
+        const RenderTargetInterface * target;
     };
 }

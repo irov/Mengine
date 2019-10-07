@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonFrameworkPlugin::_finalizePlugin()
     {
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "LandbaseFramework" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PythonFramework" ) );
 
         SERVICE_FINALIZE( ScriptService );
         SERVICE_FINALIZE( ScriptProviderService );

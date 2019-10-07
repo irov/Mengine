@@ -1,9 +1,13 @@
 #include "MyGameFrameworkPlugin.h"
 
-#include "Interface/FrameworkInterface.h"
+#include "Interface/FrameworkFactoryInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
-//////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( Framework );
+#include "MyGameFramework.h"
+
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/FrameworkFactory.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MyGameFramework, Mengine::MyGameFrameworkPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -20,18 +24,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MyGameFrameworkPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( Framework );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "MyGameFramework" ), Helper::makeFrameworkFactory<MyGameFramework>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MyGameFrameworkPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Framework );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MyGameFrameworkPlugin::_destroyPlugin()
-    {
-        SERVICE_DESTROY( Framework );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "MyGameFramework" ) );
     }
 }

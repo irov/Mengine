@@ -4,16 +4,17 @@
 #include "Kernel/DummyRender.h"
 #include "Kernel/DummyPicker.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderViewport.h"
 
 #include "Kernel/Viewport.h"
 #include "Kernel/RenderVertex2D.h"
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
-    typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class Layer2D
         : public Layer
         , public DummyRender

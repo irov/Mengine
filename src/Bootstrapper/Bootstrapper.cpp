@@ -838,12 +838,12 @@ namespace Mengine
                 ->stopTasks();
         }
 
+        SERVICE_FINALIZE( SceneService );
         SERVICE_FINALIZE( GameService );
         SERVICE_FINALIZE( Application );
 
-        SERVICE_FINALIZE( SecureService );        
+        SERVICE_FINALIZE( SecureService );
         SERVICE_FINALIZE( AccountService );
-        SERVICE_FINALIZE( SceneService );
         SERVICE_FINALIZE( ChronometerService );
         SERVICE_FINALIZE( PrefetcherService );
         SERVICE_FINALIZE( PackageService );

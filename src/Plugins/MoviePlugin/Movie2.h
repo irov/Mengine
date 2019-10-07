@@ -30,8 +30,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Movie2> Movie2Ptr;
-    //////////////////////////////////////////////////////////////////////////
     class Movie2EventReceiverInterface
         : public AnimationEventReceiverInterface
     {
@@ -257,6 +255,6 @@ namespace Mengine
         static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Movie2> Movie2Ptr;
+    typedef IntrusiveNodePtr<Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
 }

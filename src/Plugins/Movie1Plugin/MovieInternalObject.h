@@ -9,7 +9,7 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class Movie> MoviePtr;
+    typedef IntrusiveNodePtr<class Movie> MoviePtr;
 
     class MovieInternalObject
         : public Node
@@ -57,6 +57,6 @@ namespace Mengine
         NodePtr m_internalNode;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MovieInternalObject> MovieInternalObjectPtr;
+    typedef IntrusiveNodePtr<MovieInternalObject> MovieInternalObjectPtr;
     //////////////////////////////////////////////////////////////////////////
 }

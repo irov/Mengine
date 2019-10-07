@@ -356,6 +356,12 @@ namespace Mengine
 
         m_cursorResource = nullptr;
 
+        if( m_renderPipeline != nullptr )
+        {
+            m_renderPipeline->finalize();
+            m_renderPipeline = nullptr;
+        }
+
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
@@ -365,12 +371,6 @@ namespace Mengine
         this->unregisterEntityGenerator_();
         this->unregisterSceneGenerator_();
         this->unregisterArrowGenerator_();
-
-        if( m_renderPipeline != nullptr )
-        {
-            m_renderPipeline->finalize();
-            m_renderPipeline = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseTypes_()

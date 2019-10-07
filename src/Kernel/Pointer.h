@@ -174,24 +174,24 @@ namespace Mengine
             }
 #endif
 
-            return std::move( m_pointer );
+            return IntrusivePtr<U>( std::move( m_pointer ) );
         }
 
-        template<class UD>
-        operator IntrusivePtr<T, UD>() &&
+        template<class D>
+        operator IntrusivePtr<T, D>() &&
         {
-            return std::move( m_pointer );
+            return IntrusivePtr<T, D>( std::move( m_pointer ) );
         }
 
-        template<class U, class UD>
-        operator IntrusivePtr<U, UD>() &&
+        template<class U, class D>
+        operator IntrusivePtr<U, D>() &&
         {
 #ifdef MENGINE_DEBUG
             T * p = m_pointer.get();
 
             if( p == nullptr )
             {
-                return IntrusivePtr<U, UD>();
+                return IntrusivePtr<U, D>();
             }
 
             if( stdex::mpl::is_dynamic_cast<U *>::test( p ) == false )
@@ -200,7 +200,7 @@ namespace Mengine
             }
 #endif
 
-            return std::move( m_pointer );
+            return IntrusivePtr<U, D>( std::move( m_pointer ) );
         }
 
     protected:

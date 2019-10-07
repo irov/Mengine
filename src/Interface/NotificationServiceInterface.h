@@ -47,12 +47,10 @@ namespace Mengine
             : m_self( _self )
             , m_method( _method )
         {
-            IntrusivePtrBase::intrusive_ptr_add_ref( m_self );
         }
 
         ~MethodObserverCallable()
         {
-            IntrusivePtrBase::intrusive_ptr_dec_ref( m_self );
         }
 
     protected:
@@ -127,8 +125,8 @@ namespace Mengine
         SERVICE_DECLARE( "NotificationService" )
 
     public:
-        virtual void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) = 0;
-        virtual void removeObserver( uint32_t _id, const ObservablePtr & _observer ) = 0;
+        virtual void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) = 0;
+        virtual void removeObserver( uint32_t _id, Observable * _observer ) = 0;
 
     public:
         template<uint32_t ID, class C, class L>
@@ -136,7 +134,7 @@ namespace Mengine
         {
             ObserverCallableInterfacePtr callable( new LambdaObserverCallable<ID, L>( _lambda ) );
 
-            this->addObserver( ID, ObservablePtr( _self ), callable, _doc );
+            this->addObserver( ID, _self, callable, _doc );
         }
 
     public:
@@ -145,7 +143,7 @@ namespace Mengine
         {
             ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
 
-            this->addObserver( ID, ObservablePtr( _self ), callable, _doc );
+            this->addObserver( ID, _self, callable, _doc );
         }
 
     public:
@@ -192,7 +190,7 @@ namespace Mengine
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER_THIS( ID )\
-    NOTIFICATION_SERVICE()->removeObserver( ID, Mengine::ObservablePtr(this) )
+    NOTIFICATION_SERVICE()->removeObserver( ID, this )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_NOTIFY( ID, ... )\
     NOTIFICATION_SERVICE()->notify<ID>( __VA_ARGS__ )

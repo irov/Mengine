@@ -154,7 +154,7 @@ namespace Mengine
 
             if( renderViewport != nullptr )
             {
-                self_context.viewport = renderViewport;
+                self_context.viewport = renderViewport.get();
             }
             else
             {
@@ -165,18 +165,29 @@ namespace Mengine
 
             if( renderCamera != nullptr )
             {
-                self_context.camera = renderCamera;
+                self_context.camera = renderCamera.get();
             }
             else
             {
                 self_context.camera = _context->camera;
             }
 
+            const RenderTransformationInterfacePtr & renderTransformation = selfRender->getRenderTransformation();
+
+            if( renderTransformation != nullptr )
+            {
+                self_context.transformation = renderTransformation.get();
+            }
+            else
+            {
+                self_context.transformation = _context->transformation;
+            }
+
             const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
 
             if( renderScissor != nullptr )
             {
-                self_context.scissor = renderScissor;
+                self_context.scissor = renderScissor.get();
             }
             else
             {
@@ -187,7 +198,7 @@ namespace Mengine
 
             if( renderTarget != nullptr )
             {
-                self_context.target = renderTarget;
+                self_context.target = renderTarget.get();
             }
             else
             {

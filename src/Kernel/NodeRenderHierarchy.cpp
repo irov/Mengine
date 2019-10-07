@@ -44,11 +44,11 @@ namespace Mengine
                 const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
                 const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
 
-                self_context.viewport = renderViewport != nullptr ? renderViewport : _context->viewport;
-                self_context.camera = renderCamera != nullptr ? renderCamera : _context->camera;
-                self_context.transformation = renderTransformation != nullptr ? renderTransformation : _context->transformation;
-                self_context.scissor = renderScissor != nullptr ? renderScissor : _context->scissor;
-                self_context.target = renderTarget != nullptr ? renderTarget : _context->target;
+                self_context.viewport = renderViewport != nullptr ? renderViewport.get() : _context->viewport;
+                self_context.camera = renderCamera != nullptr ? renderCamera.get() : _context->camera;
+                self_context.transformation = renderTransformation != nullptr ? renderTransformation.get() : _context->transformation;
+                self_context.scissor = renderScissor != nullptr ? renderScissor.get() : _context->scissor;
+                self_context.target = renderTarget != nullptr ? renderTarget.get() : _context->target;
 
                 if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
@@ -236,35 +236,35 @@ namespace Mengine
 
             if( viewport != nullptr )
             {
-                _context->viewport = viewport;
+                _context->viewport = viewport.get();
             }
 
             const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _node.get() );
 
             if( camera != nullptr )
             {
-                _context->camera = camera;
+                _context->camera = camera.get();
             }
 
             const RenderTransformationInterfacePtr & transformation = Helper::getNodeRenderTransformationInheritance( _node.get() );
 
             if( transformation != nullptr )
             {
-                _context->transformation = transformation;
+                _context->transformation = transformation.get();
             }
 
             const RenderScissorInterfacePtr & scissor = Helper::getNodeRenderScissorInheritance( _node.get() );
 
             if( camera != nullptr )
             {
-                _context->scissor = scissor;
+                _context->scissor = scissor.get();
             }
 
             const RenderTargetInterfacePtr & target = Helper::getNodeRenderTargetInheritance( _node.get() );
 
             if( camera != nullptr )
             {
-                _context->target = target;
+                _context->target = target.get();
             }
 
         }

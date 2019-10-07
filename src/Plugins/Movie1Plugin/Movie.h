@@ -25,13 +25,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Movie> MoviePtr;
+    class Movie;
     //////////////////////////////////////////////////////////////////////////
     class VisitorMovieNodeInterface
         : public Mixin
     {
     public:
-        virtual void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) = 0;
+        virtual void visitMovieNode( Movie * _movie, const NodePtr & _node ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<VisitorMovieNodeInterface> VisitorMovieNodeInterfacePtr;
@@ -278,7 +278,7 @@ namespace Mengine
         bool m_parentMovie;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Movie> MoviePtr;
+    typedef IntrusiveNodePtr<Movie> MoviePtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const NodePtr & Movie::getLayerNode_( const MovieLayer & _layer ) const
     {

@@ -44,6 +44,6 @@ namespace Mengine
         mt::vec3f m_rotation;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MovieSceneEffect> MovieSceneEffectPtr;
+    typedef IntrusiveNodePtr<MovieSceneEffect> MovieSceneEffectPtr;
     //////////////////////////////////////////////////////////////////////////
 }

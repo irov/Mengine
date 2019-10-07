@@ -85,7 +85,7 @@ namespace Mengine
         mutable bool m_invalidateVerticesColor;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MovieMesh2D> MovieMesh2DPtr;
+    typedef IntrusiveNodePtr<MovieMesh2D> MovieMesh2DPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const RenderVertex2D * MovieMesh2D::getVerticesWM() const
     {

@@ -112,9 +112,10 @@ namespace Mengine
             m_poolRenderPass.destroyT( pass );
         }
 
+        m_renderPasses.clear();
+
         m_renderObjects.clear();
         m_renderPrimitives.clear();
-        m_renderPasses.clear();
 
         m_debugRenderObjects.clear();
 
@@ -531,9 +532,10 @@ namespace Mengine
             m_poolRenderPass.destroyT( pass );
         }
 
+        m_renderPasses.clear();
+
         m_renderObjects.clear();
         m_renderPrimitives.clear();
-        m_renderPasses.clear();
 
         m_debugRenderObjects.clear();
 
@@ -599,7 +601,7 @@ namespace Mengine
             RENDER_SERVICE()
                 ->endRenderPass( renderPass->target );
         }
-
+        
         m_renderPrimitives.clear();
     }
     //////////////////////////////////////////////////////////////////////////

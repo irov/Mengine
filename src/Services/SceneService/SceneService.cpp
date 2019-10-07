@@ -33,6 +33,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::_finalizeService()
     {
+        for( SceneCommandDesc & desc : m_commands )
+        {
+            switch( desc.type )
+            {
+            case ESCT_SET:
+                {
+                    desc.scene->onDestroy();
+                    desc.scene = nullptr;
+                }break;
+            case ESCT_RESTART:
+                {
+                    //Empty
+                }break;
+            case ESCT_REMOVE:
+                {
+                    //Empty
+                }break;
+            }
+        }
+
         m_commands.clear();
 
         this->destroyCurrentScene();

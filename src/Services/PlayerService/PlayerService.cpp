@@ -300,8 +300,8 @@ namespace Mengine
 
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
+        m_renderTransformation = nullptr;
         m_renderScissor = nullptr;
-
         m_renderTarget = nullptr;
 
         if( m_globalInputHandler != nullptr )
@@ -594,10 +594,11 @@ namespace Mengine
             ->getDebugMask();
 
         RenderContext context;
-        context.viewport = m_renderViewport;
-        context.camera = m_renderCamera;
-        context.scissor = m_renderScissor;
-        context.target = m_renderTarget;
+        context.viewport = m_renderViewport.get();
+        context.camera = m_renderCamera.get();
+        context.transformation = m_renderTransformation.get();
+        context.scissor = m_renderScissor.get();
+        context.target = m_renderTarget.get();
 
         const ScenePtr & scene = SCENE_SERVICE()
             ->getCurrentScene();

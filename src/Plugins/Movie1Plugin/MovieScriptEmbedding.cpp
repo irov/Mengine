@@ -267,7 +267,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
+            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
             {
                 MovieSlotPtr slot = stdex::intrusive_static_cast<MovieSlotPtr>(_node);
 
@@ -313,7 +313,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
+            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
             {
                 HotSpotPtr hotspot = stdex::intrusive_static_cast<HotSpotPtr>(_node);
 
@@ -355,7 +355,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
+            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
             {
                 MoviePtr subMovie = stdex::intrusive_static_cast<MoviePtr>(_node);
 
@@ -400,7 +400,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
+            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
             {
                 m_list.append( pybind::make_tuple_t( m_kernel, _movie, _node ) );
             }

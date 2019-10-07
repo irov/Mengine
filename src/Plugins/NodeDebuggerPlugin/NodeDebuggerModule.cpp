@@ -379,7 +379,7 @@ namespace Mengine
             return;
         }
 
-        RenderCameraInterface * camera = node_context.camera;
+        const RenderCameraInterface * camera = node_context.camera;
 
         const mt::mat4f & vpminv = camera->getCameraViewProjectionMatrixInv();
 

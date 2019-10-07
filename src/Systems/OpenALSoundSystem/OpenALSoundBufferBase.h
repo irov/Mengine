@@ -13,7 +13,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class OpenALSoundBufferBase
         : public SoundBufferInterface
-        , public Factorable
     {
     public:
         OpenALSoundBufferBase();

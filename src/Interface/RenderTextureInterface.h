@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderImageInterface.h"
 
@@ -11,7 +12,7 @@
 namespace Mengine
 {
     class RenderTextureInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
         virtual void release() = 0;

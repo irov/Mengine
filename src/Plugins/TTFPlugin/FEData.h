@@ -2,14 +2,11 @@
 
 #include "FEDataInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class FEData
         : public FEDataInterface
-        , public Factorable
     {
     public:
         FEData();

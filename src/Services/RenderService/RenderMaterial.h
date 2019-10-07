@@ -2,8 +2,6 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#include "Kernel/Factorable.h"
-
 #include "stdex/intrusive_linked.h"
 
 namespace Mengine
@@ -11,7 +9,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterial
         : public RenderMaterialInterface
-        , public Factorable
         , public stdex::intrusive_linked<RenderMaterial>
     {
     public:

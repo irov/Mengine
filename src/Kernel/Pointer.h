@@ -117,6 +117,11 @@ namespace Mengine
         {
         }
 
+        PointerT( PointerT && _pointer )
+            : m_pointer( std::forward<PointerT &&>( _pointer.m_pointer ) )
+        {
+        }
+
         PointerT( const IntrusivePtr<T> & _pointer )
             : m_pointer( _pointer )
         {
@@ -128,24 +133,36 @@ namespace Mengine
         {
         }
 
+        template<class U>
+        PointerT( IntrusivePtr<U> && _pointer )
+            : m_pointer( std::forward<IntrusivePtr<U> &&>( _pointer ) )
+        {
+        }
+
         template<class U, class D>
         PointerT( const IntrusivePtr<U, D> & _pointer )
             : m_pointer( _pointer )
         {
         }
 
-    public:
-        operator IntrusivePtr<T>() const
+        template<class U, class D>
+        PointerT( IntrusivePtr<U, D> && _pointer )
+            : m_pointer( std::forward<IntrusivePtr<U, D> &&>( _pointer ) )
         {
-            return m_pointer;
+        }
+
+    public:
+        operator IntrusivePtr<T>() &&
+        {
+            return std::move( m_pointer );
         }
 
         template<class U>
-        operator IntrusivePtr<U>() const
-        {
+        operator IntrusivePtr<U>() &&
+        {            
+#ifdef MENGINE_DEBUG
             T * p = m_pointer.get();
 
-#ifdef MENGINE_DEBUG
             if( p == nullptr )
             {
                 return IntrusivePtr<U>();
@@ -157,23 +174,21 @@ namespace Mengine
             }
 #endif
 
-            U * t = static_cast<U *>(p);
-
-            return IntrusivePtr<U>( t );
+            return std::move( m_pointer );
         }
 
         template<class UD>
-        operator IntrusivePtr<T, UD>() const
+        operator IntrusivePtr<T, UD>() &&
         {
-            return IntrusivePtr<T, UD>( m_pointer );
+            return std::move( m_pointer );
         }
 
         template<class U, class UD>
-        operator IntrusivePtr<U, UD>() const
+        operator IntrusivePtr<U, UD>() &&
         {
+#ifdef MENGINE_DEBUG
             T * p = m_pointer.get();
 
-#ifdef MENGINE_DEBUG
             if( p == nullptr )
             {
                 return IntrusivePtr<U, UD>();
@@ -185,9 +200,7 @@ namespace Mengine
             }
 #endif
 
-            U * u = static_cast<U *>(p);
-
-            return IntrusivePtr<U, UD>( u );
+            return std::move( m_pointer );
         }
 
     protected:

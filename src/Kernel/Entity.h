@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/EventationInterface.h"
 
 #include "Kernel/Node.h"
@@ -10,8 +11,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EntityBehaviorInterface
-        : public Mixin
+        : public ServantInterface
     {
+    public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityBehaviorInterface> EntityBehaviorInterfacePtr;

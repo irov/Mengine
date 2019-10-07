@@ -98,6 +98,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::_finalizeService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderService::_stopService()
+    {
         const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
             ->getGlobalInputHandler();
 

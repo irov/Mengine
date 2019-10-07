@@ -23,6 +23,7 @@ namespace Mengine
 
     public:
         virtual bool isAvailableModule() const = 0;
+        virtual bool isInitializeModule() const = 0;
 
     public:
         virtual void update( bool _focus ) = 0;

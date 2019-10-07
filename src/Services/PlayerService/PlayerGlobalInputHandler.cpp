@@ -29,21 +29,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerGlobalInputHandler::finalize()
     {
+        m_handlers.insert( m_handlers.end(), m_handlersAdd.begin(), m_handlersAdd.end() );
+        m_handlersAdd.clear();
+
         m_handlers.erase( std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle )
         {
             return _handle.dead;
         } ), m_handlers.end() );
 
-        m_handlersAdd.erase( std::remove_if( m_handlersAdd.begin(), m_handlersAdd.end(), []( const GlobalHandlerDesc & _handle )
+#ifdef MENGINE_DEBUG
+        for( const GlobalHandlerDesc & desc : m_handlers )
         {
-            return _handle.dead;
-        } ), m_handlersAdd.end() );
+            LOGGER_ERROR( "Forgot remove player global input handler [%d] (doc: %s)"
+                , desc.id
+                , desc.doc.c_str()
+            );
+        }
+#endif
 
-        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has hadlers" );
-        MENGINE_ASSERTION( m_handlersAdd.empty() == true, "finalized player global input has add hadlers" );
+        MENGINE_ASSERTION( m_handlers.empty() == true, "finalized player global input has [%d] hadlers"
+            , m_handlers.size()
+        );
 
         m_handlers.clear();
-        m_handlersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )

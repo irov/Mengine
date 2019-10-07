@@ -9,11 +9,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PythonEntityBehavior
         : public EntityBehaviorInterface
-        , public Factorable
     {
     public:
         PythonEntityBehavior();
         ~PythonEntityBehavior() override;
+
+    public:
+        bool initialize() override;
+        void finalize() override;
 
     public:
         void setScriptObject( const pybind::object & _obj );

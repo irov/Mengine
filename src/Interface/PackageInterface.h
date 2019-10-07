@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ConstString.h"
@@ -32,7 +32,7 @@ namespace Mengine
     typedef IntrusivePtr<class PackageInterface> PackageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PackageInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void setName( const ConstString & _name ) = 0;

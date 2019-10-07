@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 #include "Interface/RenderVertexAttributeInterface.h"
 #include "Interface/RenderVertexBufferInterface.h"
 #include "Interface/RenderIndexBufferInterface.h"
@@ -26,7 +26,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderBatchInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute ) = 0;

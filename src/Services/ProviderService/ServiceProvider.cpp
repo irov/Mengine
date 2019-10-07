@@ -473,6 +473,34 @@ namespace Mengine
 
             desc.service = nullptr;
         }
+
+        for( uint32_t index = 0; index != m_waitsCount; ++index )
+        {
+            WaitDesc & desc = m_waits[index];
+
+            if( desc.lambda == nullptr )
+            {
+                continue;
+            }
+
+            MENGINE_ASSERTION_FATAL( false, "service forgot wait '%s'"
+                , desc.name
+            );
+        }
+
+        for( uint32_t index = 0; index != m_leaveCount; ++index )
+        {
+            LeaveDesc & desc = m_leaving[index];
+
+            if( desc.lambda == nullptr )
+            {
+                continue;
+            }
+
+            MENGINE_ASSERTION_FATAL( false, "service forgot leave '%s'"
+                , desc.name
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::stopServices()
@@ -485,9 +513,9 @@ namespace Mengine
             desc.name[0] = '\0';
         }
 
-        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        for( uint32_t index = m_servicesCount; index != 0; --index )
         {
-            ServiceDesc & desc = m_services[index];
+            ServiceDesc & desc = m_services[index - 1];
 
             if( desc.service == nullptr )
             {

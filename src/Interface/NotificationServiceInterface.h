@@ -35,7 +35,7 @@ namespace Mengine
         : public ObserverCallableInterface
     {
     public:
-        virtual void call( const typename Notificator<ID>::args_type & _args ) = 0;
+        virtual void call( typename Notificator<ID>::args_type && _args ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     template<uint32_t ID, class C, class M, class ... Args>
@@ -56,13 +56,13 @@ namespace Mengine
         }
 
     protected:
-        void call( const typename Notificator<ID>::args_type & _args ) override
+        void call( typename Notificator<ID>::args_type && _args ) override
         {
-            this->call_with_tuple( _args, std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
+            this->call_with_tuple( std::forward<typename Notificator<ID>::args_type && >( _args ), std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
         }
 
         template<uint32_t ... I>
-        void call_with_tuple( const typename Notificator<ID>::args_type & _args, std::integer_sequence<uint32_t, I...> )
+        void call_with_tuple( typename Notificator<ID>::args_type && _args, std::integer_sequence<uint32_t, I...> )
         {
             (m_self->*m_method)(std::get<I>( _args )...);
         }
@@ -87,9 +87,9 @@ namespace Mengine
         }
 
     protected:
-        void call( const typename Notificator<ID>::args_type & _args ) override
+        void call( typename Notificator<ID>::args_type && _args ) override
         {
-            std::apply( m_lambda, _args );
+            std::apply( m_lambda, std::forward<typename Notificator<ID>::args_type && >( _args ) );
         }
 
     protected:
@@ -156,22 +156,22 @@ namespace Mengine
         template<uint32_t ID, class ... Args>
         bool notify( Args && ... _args )
         {
-            bool successful = this->notify_tuple<ID>( std::make_tuple( std::forward<Args>( _args ) ... ) );
+            bool successful = this->notify_tuple<ID>( std::forward_as_tuple( std::forward<Args &&>( _args ) ... ) );
 
             return successful;
         }
 
     protected:
         template<uint32_t ID>
-        bool notify_tuple( const typename Notificator<ID>::args_type & _args )
+        bool notify_tuple( typename Notificator<ID>::args_type && _args )
         {
             typedef ArgsObserverCallable<ID> args_observer_type;
 
-            bool successful = this->visitObservers( ID, [&_args]( const ObserverCallableInterfacePtr & _observer )
+            bool successful = this->visitObservers( ID, [args = std::forward<typename Notificator<ID>::args_type &&>( _args )]( const ObserverCallableInterfacePtr & _observer ) mutable
             {
                 args_observer_type * args_observer = _observer.getT<args_observer_type *>();
 
-                args_observer->call( _args );
+                args_observer->call( std::forward<typename Notificator<ID>::args_type &&>( args ) );
             } );
 
             return successful;

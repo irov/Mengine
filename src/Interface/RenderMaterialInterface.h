@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/RenderEnumInterface.h"
 #include "Interface/RenderProgramInterface.h"
 #include "Interface/RenderTextureInterface.h"
@@ -59,7 +60,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
         virtual const ConstString & getName() const = 0;

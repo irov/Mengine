@@ -5,7 +5,6 @@
 
 #include "IniUtil.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/Tags.h"
 
 namespace Mengine
@@ -22,7 +21,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class MemoryConfig
         : public ConfigInterface
-        , public Factorable
     {
     public:
         MemoryConfig();

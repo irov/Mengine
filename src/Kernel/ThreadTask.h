@@ -4,7 +4,6 @@
 
 #include "Interface/ThreadTaskInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/Visitable.h"
 
 namespace Mengine
@@ -12,7 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ThreadTask
         : public ThreadTaskInterface
-        , public Factorable
         , public Visitable
     {
         DECLARE_VISITABLE_BASE();

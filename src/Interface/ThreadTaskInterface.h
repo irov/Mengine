@@ -1,8 +1,7 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/ThreadMutexInterface.h"
-
-#include "Kernel/Mixin.h"
 
 #include "Config/Config.h"
 
@@ -10,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ThreadTaskInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
         virtual bool isRun() const = 0;

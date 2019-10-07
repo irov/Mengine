@@ -129,6 +129,30 @@ namespace Mengine
 
         for( PluginDesc & desc : reverse_plugins )
         {
+            if( desc.dynamicLibrary != nullptr )
+            {
+                continue;
+            }
+
+            if( desc.plugin->isSystemPlugin() == true &&
+                this->isInitializeService() == true )
+            {
+                m_plugins.emplace_back( desc );
+
+                continue;
+            }
+
+            desc.plugin->finalizePlugin();
+            desc.plugin = nullptr;
+        }
+
+        for( PluginDesc & desc : reverse_plugins )
+        {
+            if( desc.dynamicLibrary == nullptr )
+            {
+                continue;
+            }
+
             if( desc.plugin->isSystemPlugin() == true &&
                 this->isInitializeService() == true )
             {

@@ -1,16 +1,17 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
+
+#include "Kernel/Pointer.h"
+
 #include "Config/Config.h"
 #include "Config/Typedef.h"
-
-#include "Interface/Interface.h"
-#include "Kernel/Pointer.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DataInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual bool acquire() = 0;

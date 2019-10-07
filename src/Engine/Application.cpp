@@ -359,9 +359,6 @@ namespace Mengine
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
-        m_locale.clear();
-        m_projectCodename.clear();
-
         this->unregisterBaseTypes_();
         this->unregisterBaseNodeTypes_();
         this->unregisterBaseResourceTypes_();

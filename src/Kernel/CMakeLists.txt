@@ -485,6 +485,7 @@ Core
     
     IntrusivePtr.h
     IntrusivePtrBase.h
+    IntrusivePtrView.h
     
     IntrusiveSlug.h
     IntrusiveSlugIterator.h

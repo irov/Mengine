@@ -4,7 +4,6 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 
 #include "Config/String.h"
@@ -13,7 +12,6 @@ namespace Mengine
 {
     class Package
         : public PackageInterface
-        , public Factorable
     {
     public:
         Package();

@@ -22,6 +22,7 @@ namespace Mengine
         void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         void renderDebugNode( const NodePtr & _node, const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, bool _external ) override;

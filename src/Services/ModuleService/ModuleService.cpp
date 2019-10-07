@@ -43,6 +43,9 @@ namespace Mengine
 #endif
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Module" ) );
+
+        m_waits.clear();
+        m_leaves.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::hasModule( const ConstString & _name ) const
@@ -73,6 +76,18 @@ namespace Mengine
             return false;
         }
 
+        for( const WaitModuleDesc & desc : m_waits )
+        {
+            if( desc.name != _name )
+            {
+                continue;
+            }
+
+            desc.lambda();
+
+            break;
+        }
+
         m_modules.emplace_back( module );
 
         return true;
@@ -85,6 +100,18 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( module, false, "not found module '%s'"
             , _name.c_str()
         );
+
+        for( const LeaveModuleDesc & desc : m_leaves )
+        {
+            if( desc.name != _name )
+            {
+                continue;
+            }
+
+            desc.lambda();
+
+            break;
+        }
 
         module->finalizeModule();
 
@@ -105,6 +132,62 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::waitModule( const ConstString & _name, const LambdaWaitModule & _lambda )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            const ConstString & name = module->getName();
+
+            if( name != _name )
+            {
+                continue;
+            }
+
+            if( module->isInitializeModule() == false )
+            {
+                break;
+            }
+
+            _lambda();
+
+            return;
+        }
+
+        WaitModuleDesc desc;
+        desc.name = _name;
+        desc.lambda = _lambda;
+
+        m_waits.push_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ModuleService::leaveModule( const ConstString & _name, const LambdaLeaveModule & _lambda )
+    {
+        for( const ModuleInterfacePtr & module : m_modules )
+        {
+            const ConstString & name = module->getName();
+
+            if( name != _name )
+            {
+                continue;
+            }
+
+            if( module->isInitializeModule() == true )
+            {
+                break;
+            }
+
+            _lambda();
+
+            return;
+        }
+
+        LeaveModuleDesc desc;
+        desc.name = _name;
+        desc.lambda = _lambda;
+
+        m_leaves.push_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::update( bool _focus )

@@ -12,7 +12,6 @@ namespace Mengine
 {
     class ThreadQueue
         : public ThreadQueueInterface
-        , public Factorable
     {
     public:
         ThreadQueue();

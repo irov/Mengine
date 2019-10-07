@@ -24,6 +24,7 @@ namespace Mengine
 
     public:
         bool isAvailableModule() const override;
+        bool isInitializeModule() const override;
 
     protected:
         virtual bool _initializeModule();
@@ -57,6 +58,7 @@ namespace Mengine
     protected:
         ConstString m_name;
 
-        bool m_available;
+        bool m_availableModule;
+        bool m_initializeModule;
     };
 }

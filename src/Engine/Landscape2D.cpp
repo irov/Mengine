@@ -78,7 +78,7 @@ namespace Mengine
         mt::vec2f min_screen( 0.f, 0.f );
         mt::vec2f max_screen( 1.f, 1.f );
 
-        const RenderCameraInterfacePtr & camera = _context->camera;
+        const RenderCameraInterface * camera = _context->camera;
 
         const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 

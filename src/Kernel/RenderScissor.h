@@ -49,7 +49,7 @@ namespace Mengine
         mutable bool m_invalidateViewport;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderScissor> RenderScissorPtr;
+    typedef IntrusiveNodePtr<RenderScissor> RenderScissorPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void RenderScissor::invalidateViewport_()
     {

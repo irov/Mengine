@@ -261,7 +261,7 @@ namespace Mengine
         float getHorizontAlignOffset_( const VectorTextLines2 & _lines ) const;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TextField> TextFieldPtr;
+    typedef IntrusiveNodePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font ) const
     {

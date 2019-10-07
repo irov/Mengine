@@ -93,7 +93,7 @@ namespace Mengine
         mutable bool m_invalidateVerticesWM;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Grid2D> Grid2DPtr;
+    typedef IntrusiveNodePtr<class Grid2D> Grid2DPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const RenderVertex2D * Grid2D::getVerticesWM() const
     {

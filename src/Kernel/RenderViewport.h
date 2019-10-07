@@ -55,7 +55,7 @@ namespace Mengine
         mutable bool m_invalidateViewport;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderViewport> RenderViewportPtr;
+    typedef IntrusiveNodePtr<RenderViewport> RenderViewportPtr;
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE void RenderViewport::invalidateViewport_()
     {

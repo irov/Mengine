@@ -754,8 +754,9 @@ namespace Mengine
             {
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
-                context.camera = camera->projection;
-                context.viewport = camera->viewport;
+                context.camera = camera->projection.get();
+                context.viewport = camera->viewport.get();
+
                 context.transformation = _context->transformation;
                 context.scissor = _context->scissor;
                 context.target = _context->target;
@@ -765,13 +766,14 @@ namespace Mengine
                 context = *_context;
             }
 
+            Movie2ScissorPtr scissor;
             if( mesh.viewport != nullptr )
             {
-                Movie2ScissorPtr scissor = Helper::makeFactorableUnique<Movie2Scissor>();
+                scissor = Helper::makeFactorableUnique<Movie2Scissor>();
 
                 scissor->setViewport( wm, mesh.viewport );
 
-                context.scissor = scissor;
+                context.scissor = scissor.get();
             }
             else
             {
@@ -2400,8 +2402,8 @@ namespace Mengine
             {
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
-                context.camera = camera->projection;
-                context.viewport = camera->viewport;
+                context.camera = camera->projection.get();
+                context.viewport = camera->viewport.get();
 
                 context.transformation = _context->transformation;
                 context.scissor = _context->scissor;
@@ -2412,13 +2414,14 @@ namespace Mengine
                 context = *_context;
             }
 
+            Movie2ScissorPtr scissor;
             if( mesh.viewport != nullptr )
             {
-                Movie2ScissorPtr scissor = Helper::makeFactorableUnique<Movie2Scissor>();
+                scissor = Helper::makeFactorableUnique<Movie2Scissor>();
 
                 scissor->setViewport( wm, mesh.viewport );
 
-                context.scissor = scissor;
+                context.scissor = scissor.get();
             }
             else
             {

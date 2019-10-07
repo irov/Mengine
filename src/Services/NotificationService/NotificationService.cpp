@@ -72,7 +72,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
+    void NotificationService::addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
@@ -97,7 +97,7 @@ namespace Mengine
         this->addObserver_( _id, _observer, _callable, _doc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::removeObserver( uint32_t _id, const ObservablePtr & _observer )
+    void NotificationService::removeObserver( uint32_t _id, Observable * _observer )
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
@@ -167,7 +167,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
+    void NotificationService::addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -186,7 +186,7 @@ namespace Mengine
         observers.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::removeObserver_( uint32_t _id, const ObservablePtr & _observer )
+    void NotificationService::removeObserver_( uint32_t _id, Observable * _observer )
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 

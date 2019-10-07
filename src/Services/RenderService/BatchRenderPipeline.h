@@ -45,13 +45,13 @@ namespace Mengine
         RenderVertexAttributeInterfacePtr vertexAttribute;
         RenderVertexBufferInterfacePtr vertexBuffer;
         RenderIndexBufferInterfacePtr indexBuffer;
+        RenderProgramVariableInterfacePtr programVariable;
 
         RenderViewportInterfacePtr viewport;
         RenderCameraInterfacePtr camera;
         RenderTransformationInterfacePtr transformation;
         RenderScissorInterfacePtr scissor;
         RenderTargetInterfacePtr target;
-        RenderProgramVariableInterfacePtr programVariable;
 
         const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 

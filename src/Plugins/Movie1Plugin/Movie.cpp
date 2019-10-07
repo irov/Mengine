@@ -513,7 +513,7 @@ namespace Mengine
 
             const NodePtr & node = this->getLayerNode_( layer );
 
-            _visitor->visitMovieNode( MoviePtr( this ), node );
+            _visitor->visitMovieNode( this, node );
         }
 
         for( const MovieLayer & layer : layers )

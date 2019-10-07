@@ -8,6 +8,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ModuleServiceInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
@@ -225,7 +226,20 @@ namespace Mengine
             return true;
         } );
 
-        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>() );
+        SERVICE_LEAVE( LoaderServiceInterface, []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+        } );
+
+        MODULE_WAIT( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ), []()
+        {
+            VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<Movie2DebuggerBoundingBox>() );
+        } );
+
+        MODULE_LEAVE( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" ), []()
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
+        } );        
 
         return true;
     }
@@ -268,13 +282,6 @@ namespace Mengine
         {
             VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
-
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
-        {
-            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
-        }
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
 
 #ifdef STDEX_ALLOCATOR_REPORT_ENABLE
         uint32_t report_count = stdex_get_allocator_report_count( "movie" );

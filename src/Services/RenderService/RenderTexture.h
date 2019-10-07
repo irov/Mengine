@@ -5,13 +5,10 @@
 
 #include "math/vec4.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class RenderTexture
         : public RenderTextureInterface
-        , public Factorable
     {
     public:
         RenderTexture();

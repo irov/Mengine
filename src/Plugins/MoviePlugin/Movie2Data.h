@@ -6,7 +6,6 @@
 
 #include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
-#include "Kernel/Factorable.h"
 #include "Kernel/Pool.h"
 
 namespace Mengine
@@ -21,7 +20,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie2Data
         : public Movie2DataInterface
-        , public Factorable
     {
     public:
         Movie2Data();

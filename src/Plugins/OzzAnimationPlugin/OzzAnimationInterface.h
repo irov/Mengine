@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/UnknownInterface.h"
 
 #include "Kernel/FilePath.h"
@@ -51,7 +52,8 @@ namespace Mengine
     typedef IntrusivePtr<UnknownResourceOzzMeshInterface> UnknownResourceOzzMeshInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SamplerOzzAnimationInterface
-        : public Identity
+        : public ServantInterface
+        , public Identity
         , public Compilable
         , public Updatable
         , public Animatable

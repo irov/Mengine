@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
@@ -97,9 +98,11 @@ namespace Mengine
             return false;
         }
 
-        m_initializePlugin = successful;
+        m_initializePlugin = true;
 
         m_systemPlugin = this->_systemPlugin();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_INITIALIZE, this->getPluginName() );
 
         return m_initializePlugin;
     }
@@ -112,6 +115,8 @@ namespace Mengine
         }
 
         m_initializePlugin = false;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_PLUGIN_FINALIZE, this->getPluginName() );
 
         this->_finalizePlugin();
 

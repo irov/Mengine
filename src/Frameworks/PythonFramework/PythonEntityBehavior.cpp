@@ -11,6 +11,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PythonEntityBehavior::initialize()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonEntityBehavior::finalize()
+    {
+        m_obj = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void PythonEntityBehavior::setScriptObject( const pybind::object & _obj )
     {
         m_obj = _obj;

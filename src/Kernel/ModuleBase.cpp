@@ -1,10 +1,13 @@
 #include "ModuleBase.h"
 
+#include "Interface/NotificationServiceInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ModuleBase::ModuleBase()
-        : m_available( false )
+        : m_availableModule( false )
+        , m_initializeModule( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -24,7 +27,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::isAvailableModule() const
     {
-        return m_available;
+        return m_availableModule;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ModuleBase::isInitializeModule() const
+    {
+        return m_initializeModule;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::_availableModule() const
@@ -34,24 +42,42 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::initializeModule()
     {
-        m_available = this->_availableModule();
+        m_availableModule = this->_availableModule();
 
-        if( m_available == false )
+        if( m_availableModule == false )
         {
             return false;
         }
 
         bool successful = this->_initializeModule();
 
-        return successful;
+        if( successful == false )
+        {
+            return false;
+        }
+
+        m_initializeModule = true;
+         
+        NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_INITIALIZE, m_name );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleBase::finalizeModule()
     {
-        if( m_available == false )
+        if( m_availableModule == false )
         {
             return;
         }
+
+        if( m_initializeModule == false )
+        {
+            return;
+        }
+
+        m_initializeModule = false;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_MODULE_FINALIZE, m_name );
 
         this->_finalizeModule();
     }

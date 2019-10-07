@@ -10,6 +10,7 @@
 #include "Kernel/VectorAuxScope.h"
 #include "Kernel/Logger.h"
 #include "Kernel/VectorAuxScope.h"
+#include "Kernel/IntrusivePtrView.h"
 
 #include <algorithm>
 
@@ -40,7 +41,7 @@ namespace Mengine
             }
 
         public:
-            void visit( PickerInterface * _picker, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera )
+            void visit( PickerInterface * _picker, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
             {
                 if( m_exclusive == true && _picker->isPickerExclusive() == false )
                 {
@@ -55,7 +56,7 @@ namespace Mengine
 
                 if( pickerViewport != nullptr )
                 {
-                    desc.viewport = pickerViewport;
+                    desc.viewport = pickerViewport.get();
                 }
                 else
                 {
@@ -66,7 +67,7 @@ namespace Mengine
 
                 if( pickerCamera != nullptr )
                 {
-                    desc.camera = pickerCamera;
+                    desc.camera = pickerCamera.get();
                 }
                 else
                 {
@@ -75,11 +76,11 @@ namespace Mengine
 
                 if( _picker->isPickerDummy() == false )
                 {
-                    m_states.push_back( desc );
+                    m_states.emplace_back( desc );
                 }
 
-                RenderViewportInterfacePtr visitViewport = desc.viewport;
-                RenderCameraInterfacePtr visitCamera = desc.camera;
+                const RenderViewportInterface * visitViewport = desc.viewport;
+                const RenderCameraInterface * visitCamera = desc.camera;
 
                 _picker->foreachPickerChildrenEnabled( [this, &visitViewport, &visitCamera]( PickerInterface * _picker )
                 {
@@ -183,7 +184,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerPicked() == false )
             {
@@ -246,7 +247,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -283,7 +284,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -320,7 +321,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -337,11 +338,11 @@ namespace Mengine
             //	continue;
             //}
 
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const RenderViewportInterface * viewport = desc.viewport;
+            const RenderCameraInterface * camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
+            m_arrow->calcPointClick( Helper::makeIntrusivePtrView( camera ), Helper::makeIntrusivePtrView( viewport ), mt::vec2f( _event.x, _event.y ), &wp );
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -378,7 +379,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -399,11 +400,11 @@ namespace Mengine
             //	continue;
             //}
 
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const RenderViewportInterface * viewport = desc.viewport;
+            const RenderCameraInterface * camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
+            m_arrow->calcPointClick( Helper::makeIntrusivePtrView( camera ), Helper::makeIntrusivePtrView( viewport ), mt::vec2f( _event.x, _event.y ), &wp );
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -440,7 +441,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -464,11 +465,11 @@ namespace Mengine
                 }
             }
 
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const RenderViewportInterface * viewport = desc.viewport;
+            const RenderCameraInterface * camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
+            m_arrow->calcPointClick( Helper::makeIntrusivePtrView( camera ), Helper::makeIntrusivePtrView( viewport ), mt::vec2f( _event.x, _event.y ), &wp );
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -505,7 +506,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -517,14 +518,14 @@ namespace Mengine
                 continue;
             }
 
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const RenderViewportInterface * viewport = desc.viewport;
+            const RenderCameraInterface * camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
+            m_arrow->calcPointClick( Helper::makeIntrusivePtrView( camera ), Helper::makeIntrusivePtrView( viewport ), mt::vec2f( _event.x, _event.y ), &wp );
 
             mt::vec2f dp;
-            m_arrow->calcPointDeltha( camera, mt::vec2f( _event.dx, _event.dy ), &dp );
+            m_arrow->calcPointDeltha( Helper::makeIntrusivePtrView( camera ), mt::vec2f( _event.dx, _event.dy ), &dp );
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -562,7 +563,7 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -574,11 +575,11 @@ namespace Mengine
                 continue;
             }
 
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const RenderViewportInterface * viewport = desc.viewport;
+            const RenderCameraInterface * camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
+            m_arrow->calcPointClick( Helper::makeIntrusivePtrView( camera ), Helper::makeIntrusivePtrView( viewport ), mt::vec2f( _event.x, _event.y ), &wp );
 
             InputHandlerInterface * inputHandler = picker->getPickerInputHandler();
 
@@ -630,7 +631,7 @@ namespace Mengine
         {
             PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
@@ -657,7 +658,7 @@ namespace Mengine
         PickerInterface * picker = m_scene->getPicker();
 
         Detail::PickerVisitor visitor( _states, false );
-        visitor.visit( picker, m_viewport, m_camera );
+        visitor.visit( picker, m_viewport.get(), m_camera.get() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PickerService::proccesStates_( float _x, float _y, uint32_t _touchId, float _pressure, VectorPickerStates & _states )
@@ -705,19 +706,19 @@ namespace Mengine
         {
             const PickerStateDesc & desc = *it;
 
-            const PickerInterfacePtr & picker = desc.picker;
+            PickerInterface * picker = desc.picker;
 
             if( picker->isPickerEnable() == false )
             {
                 continue;
             }
 
-            const RenderViewportInterfacePtr & viewport = desc.viewport;
-            const RenderCameraInterfacePtr & camera = desc.camera;
+            const RenderViewportInterface * viewport = desc.viewport;
+            const RenderCameraInterface * camera = desc.camera;
 
             if( handle == false || m_handleValue == false )
             {
-                bool picked = picker->pick( adapt_screen_position, viewport, camera, contentResolution, m_arrow );
+                bool picked = picker->pick( adapt_screen_position, Helper::makeIntrusivePtrView( viewport ), Helper::makeIntrusivePtrView( camera ), contentResolution, m_arrow );
 
                 if( m_block == false && picked == true )
                 {

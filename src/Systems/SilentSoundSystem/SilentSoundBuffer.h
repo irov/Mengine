@@ -8,7 +8,6 @@ namespace Mengine
 {
     class SilentSoundBuffer
         : public SoundBufferInterface
-        , public Factorable
     {
     public:
         SilentSoundBuffer();

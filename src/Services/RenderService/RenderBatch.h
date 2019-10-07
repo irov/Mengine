@@ -2,13 +2,10 @@
 
 #include "Interface/RenderBatchInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     class RenderBatch
         : public RenderBatchInterface
-        , public Factorable
     {
     public:
         RenderBatch();

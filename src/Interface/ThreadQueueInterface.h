@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/ThreadTaskInterface.h"
 
 #include "Kernel/Mixin.h"
@@ -9,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ThreadQueueInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
         virtual bool initialize() = 0;

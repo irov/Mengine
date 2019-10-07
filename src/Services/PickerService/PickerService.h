@@ -11,10 +11,10 @@ namespace Mengine
 {
     struct PickerStateDesc
     {
-        PickerInterfacePtr picker;
+        PickerInterface * picker;
 
-        RenderViewportInterfacePtr viewport;
-        RenderCameraInterfacePtr camera;
+        const RenderViewportInterface * viewport;
+        const RenderCameraInterface * camera;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<PickerStateDesc> VectorPickerStates;

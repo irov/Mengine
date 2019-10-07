@@ -2,14 +2,11 @@
 
 #include "Interface/ScriptCodeDataInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonScriptCodeData
         : public ScriptCodeDataInterface
-        , public Factorable
     {
     public:
         PythonScriptCodeData();

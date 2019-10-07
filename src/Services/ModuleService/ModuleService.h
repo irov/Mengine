@@ -27,6 +27,10 @@ namespace Mengine
         bool isRunModule( const ConstString & _name ) const override;
 
     public:
+        void waitModule( const ConstString & _name, const LambdaWaitModule & _lambda ) override;
+        void leaveModule( const ConstString & _name, const LambdaLeaveModule & _lambda ) override;
+
+    public:
         void update( bool _focus ) override;
 
     public:
@@ -44,5 +48,23 @@ namespace Mengine
     protected:
         typedef Vector<ModuleInterfacePtr> VectorModules;
         VectorModules m_modules;
+
+        struct WaitModuleDesc
+        {
+            ConstString name;
+            LambdaWaitModule lambda;
+        };
+
+        typedef Vector<WaitModuleDesc> VectorModuleWaits;
+        VectorModuleWaits m_waits;
+
+        struct LeaveModuleDesc
+        {
+            ConstString name;
+            LambdaLeaveModule lambda;
+        };
+
+        typedef Vector<LeaveModuleDesc> VectorModuleLeaves;
+        VectorModuleLeaves m_leaves;
     };
 }

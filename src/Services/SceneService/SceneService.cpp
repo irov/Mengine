@@ -239,22 +239,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::destroyCurrentScene()
     {
-        if( m_scene == nullptr )
-        {
-            return;
-        }
-
         ScenePtr destroyScene = m_scene;
         m_scene = nullptr;
 
         if( destroyScene != nullptr )
         {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, (destroyScene) );
+
             destroyScene->release();
             destroyScene->onDestroy();
             destroyScene = nullptr;
 
             NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & SceneService::getCurrentScene() const

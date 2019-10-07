@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
@@ -19,7 +19,7 @@
 namespace Mengine
 {
     class ConfigInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void setPlatformTags( const Tags & _name ) = 0;

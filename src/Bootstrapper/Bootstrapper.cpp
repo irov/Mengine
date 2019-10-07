@@ -824,11 +824,12 @@ namespace Mengine
             NOTIFICATION_NOTIFY( NOTIFICATOR_ENGINE_FINALIZE );
         }
 
-        SERVICE_PROVIDER_STOP();
-
-        this->stopFrameworks_();
-        this->stopModules_();
         this->stopDevModules_();
+        this->stopModules_();
+        this->stopFrameworks_();
+
+        SERVICE_PROVIDER_STOP();
+        
         this->finalizeFrameworks_();
 
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )

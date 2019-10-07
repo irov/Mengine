@@ -2,14 +2,11 @@
 
 #include "TTFDataInterface.h"
 
-#include "Kernel/Factorable.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class TTFData
         : public TTFDataInterface
-        , public Factorable
     {
     public:
         TTFData();

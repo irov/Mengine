@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Interface/Interface.h"
+#include "Interface/ServantInterface.h"
 
 #include "Kernel/DateTime.h"
 
 namespace Mengine
 {
     class DateTimeProviderInterface
-        : public Interface
+        : public ServantInterface
     {
     public:
         virtual void getDateTime( PlatformDateTime * _dateTime ) const = 0;

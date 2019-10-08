@@ -19,12 +19,11 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define WATCHDOG_SERVICE()\
-	SERVICE_GET(Mengine::WatchdogInterface)
+    ((Mengine::WatchdogInterface*)SERVICE_GET(Mengine::WatchdogInterface))
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_MASTER_RELEASE
-#	define WATCHDOG( tag ) (0.0)
+#   define WATCHDOG( tag ) (0.0)
 #else
-#	define WATCHDOG( tag )\
-	(SERVICE_EXIST(Mengine::WatchdogInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.0)
+#   define WATCHDOG( tag ) (SERVICE_EXIST(Mengine::WatchdogInterface) ? WATCHDOG_SERVICE()->watch(tag) : 0.0)
 #endif
 //////////////////////////////////////////////////////////////////////////

@@ -68,7 +68,7 @@ namespace Mengine
                 );
             }
 
-            ERROR_FATAL( "invalid python event receiver '%s:%s'"
+            MENGINE_ERROR_FATAL( "invalid python event receiver '%s:%s'"
                 , _identity->getType().c_str()
                 , _identity->getName().c_str()
             );

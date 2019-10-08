@@ -149,7 +149,7 @@ namespace Mengine
         bool hasSound( const ConstString & _resourceName )
         {
             if( RESOURCE_SERVICE()
-                ->hasResourceWithType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ) ) == false )
+                ->hasResourceWithType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ), nullptr ) == false )
             {
                 return false;
             }

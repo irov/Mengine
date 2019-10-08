@@ -18,6 +18,8 @@
 
 namespace Mengine
 {
+    class ResourceServiceInterface;
+
     class Resource
         : public Factorable
         , public Compilable
@@ -36,11 +38,21 @@ namespace Mengine
         ~Resource() override;
 
     public:
+        void setResourceService( ResourceServiceInterface * _service );
+        MENGINE_INLINE ResourceServiceInterface * getResourceService() const;
+
+    public:
         void setLocale( const ConstString & _locale );
         MENGINE_INLINE const ConstString & getLocale() const;
 
         void setGroupName( const ConstString & _groupName );
         MENGINE_INLINE const ConstString & getGroupName() const;
+
+        void setGroupCache( bool _groupCache );
+        MENGINE_INLINE bool getGroupCache() const;
+
+        void setGlobal( bool _global );
+        MENGINE_INLINE bool getGlobal() const;
 
     public:
         void setTags( const Tags & _tags );
@@ -80,6 +92,11 @@ namespace Mengine
         virtual void _uncache();
 
     protected:
+        void _destroy() override;
+
+    protected:
+        ResourceServiceInterface * m_service;
+
         uint32_t m_compileReferenceCount;
         uint32_t m_prefetchReferenceCount;
 
@@ -88,9 +105,16 @@ namespace Mengine
         Tags m_tags;
 
         bool m_cache;
+        bool m_groupCache;
+        bool m_global;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE ResourceServiceInterface * Resource::getResourceService() const
+    {
+        return m_service;
+    }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ConstString & Resource::getLocale() const
     {
@@ -100,6 +124,16 @@ namespace Mengine
     MENGINE_INLINE const ConstString & Resource::getGroupName() const
     {
         return m_groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Resource::getGroupCache() const
+    {
+        return m_groupCache;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Resource::getGlobal() const
+    {
+        return m_global;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const

@@ -68,6 +68,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void BitmapFont::finalize()
+    {
+        m_glyph = nullptr;
+
+        m_fileGroup = nullptr;
+
+        m_textureFont = nullptr;
+        m_textureOutline = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::isValid()
     {
         if( m_fileGroup->existFile( m_pathFontImage, true ) == false )

@@ -6,6 +6,7 @@
 #include "Kernel/Resource.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Hashtable.h"
 
 #include "Config/Typedef.h"
@@ -34,12 +35,12 @@ namespace Mengine
     public:
         PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const override;
 
-        PointerResourceReference createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc ) override;
+        PointerResourceReference createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _global, const Char * _doc ) override;
         bool removeResource( const ResourcePtr & _resource ) override;
 
     public:
         bool hasResource( const ConstString & _name, ResourcePtr * _resource ) const override;
-        bool hasResourceWithType( const ConstString & _name, const ConstString & _type ) const override;
+        bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const override;
 
         const ResourcePtr & getResource( const ConstString & _name ) const override;
         const ResourcePtr & getResourceReference( const ConstString & _name ) const override;
@@ -58,11 +59,11 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
-        typedef Hashtable<ConstString, ResourcePtr> HashtableResources;
+        typedef IntrusivePtrView<Resource> ResourcePtrView;
+        typedef Hashtable<ConstString, ResourcePtrView> HashtableResources;
         HashtableResources m_resources;
-
-        typedef Pair<ConstString, ConstString> ResourceCacheKey;
-        typedef Vector<ResourcePtr> VectorResources;
+                
+        typedef Vector<ResourcePtrView> VectorResources;
         typedef Map<ConstString, VectorResources> MapResourceCache;
         MapResourceCache m_resourcesCache;
     };

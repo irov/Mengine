@@ -70,22 +70,22 @@ namespace Mengine
     } DDS_HEADER;
 #pragma pack(pop)
     //////////////////////////////////////////////////////////////////////////
-#define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
+#define MENGINE_FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE EPixelFormat s_convertFourCCFormat( uint32_t fourcc )
     {
         // convert dxt pixel format
         switch( fourcc )
         {
-        case FOURCC( 'D', 'X', 'T', '1' ):
+        case MENGINE_FOURCC( 'D', 'X', 'T', '1' ):
             return PF_DXT1;
-        case FOURCC( 'D', 'X', 'T', '2' ):
+        case MENGINE_FOURCC( 'D', 'X', 'T', '2' ):
             return PF_DXT2;
-        case FOURCC( 'D', 'X', 'T', '3' ):
+        case MENGINE_FOURCC( 'D', 'X', 'T', '3' ):
             return PF_DXT3;
-        case FOURCC( 'D', 'X', 'T', '4' ):
+        case MENGINE_FOURCC( 'D', 'X', 'T', '4' ):
             return PF_DXT4;
-        case FOURCC( 'D', 'X', 'T', '5' ):
+        case MENGINE_FOURCC( 'D', 'X', 'T', '5' ):
             return PF_DXT5;
         }
 
@@ -98,19 +98,19 @@ namespace Mengine
         switch( _format )
         {
         case PF_DXT1:
-            return FOURCC( 'D', 'X', 'T', '1' );
+            return MENGINE_FOURCC( 'D', 'X', 'T', '1' );
         case PF_DXT2:
-            return FOURCC( 'D', 'X', 'T', '2' );
+            return MENGINE_FOURCC( 'D', 'X', 'T', '2' );
         case PF_DXT3:
-            return FOURCC( 'D', 'X', 'T', '3' );
+            return MENGINE_FOURCC( 'D', 'X', 'T', '3' );
         case PF_DXT4:
-            return FOURCC( 'D', 'X', 'T', '4' );
+            return MENGINE_FOURCC( 'D', 'X', 'T', '4' );
         case PF_DXT5:
-            return FOURCC( 'D', 'X', 'T', '5' );
+            return MENGINE_FOURCC( 'D', 'X', 'T', '5' );
         default:
             break;
         }
 
-        return FOURCC( 'U', 'N', 'K', 'N' );
+        return MENGINE_FOURCC( 'U', 'N', 'K', 'N' );
     };
 }

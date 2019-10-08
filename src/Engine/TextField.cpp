@@ -460,9 +460,8 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         if( _fontName.empty() == false )
         {
-            TextFontInterfacePtr font;
             if( TEXT_SERVICE()
-                ->existFont( _fontName, &font ) == false )
+                ->existFont( _fontName, nullptr ) == false )
             {
                 LOGGER_ERROR( "'%s' not found font '%s'"
                     , this->getName().c_str()

@@ -72,5 +72,5 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define ACCOUNT_SERVICE()\
-    ((AccountServiceInterface*)SERVICE_GET(Mengine::AccountServiceInterface))
+    ((Mengine::AccountServiceInterface*)SERVICE_GET(Mengine::AccountServiceInterface))
 //////////////////////////////////////////////////////////////////////////

@@ -17,5 +17,6 @@ namespace Mengine
 #define ENUMERATOR_SERVICE()\
     ((Mengine::EnumeratorServiceInterface*)SERVICE_GET(Mengine::EnumeratorServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define GENERATE_UNIQUE_IDENTITY() ENUMERATOR_SERVICE()->generateUniqueIdentity()
+#define GENERATE_UNIQUE_IDENTITY()\
+    ENUMERATOR_SERVICE()->generateUniqueIdentity()
 //////////////////////////////////////////////////////////////////////////

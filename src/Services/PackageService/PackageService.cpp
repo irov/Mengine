@@ -42,6 +42,11 @@ namespace Mengine
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_CHANGE_LOCALE, this );
 
+        for( const PackagePtr & package : m_packages )
+        {
+            package->finalize();
+        }
+
         m_packages.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPackage );
@@ -251,7 +256,7 @@ namespace Mengine
 
         PackagePtr package = m_factoryPackage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-        package->initialize( _desc.name
+        if( package->initialize( _desc.name
             , _desc.type
             , _desc.locale
             , _desc.platform
@@ -259,8 +264,15 @@ namespace Mengine
             , _desc.descriptionPath
             , baseFileGroup
             , _desc.path
-            , _desc.preload
-        );
+            , _desc.preload ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize package '%s' path '%s'"
+                , _desc.name.c_str()
+                , _desc.path.c_str()
+            );
+
+            return false;
+        }
 
         if( _desc.parent.empty() == false )
         {
@@ -310,6 +322,8 @@ namespace Mengine
             }
 
             package->disable();
+
+            package->finalize();
 
             m_packages.erase( it );
 

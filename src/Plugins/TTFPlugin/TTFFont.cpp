@@ -136,6 +136,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TTFFont::finalize()
+    {
+        m_dataTTF = nullptr;
+        m_ttfFileGroup = nullptr;
+
+        m_ttfFEFileGroup = nullptr;
+        m_dataFE = nullptr;
+
+        for( uint32_t index = 0; index != MENGINE_TTF_FONT_GLYPH_HASH_SIZE; ++index )
+        {
+            VectorTTFGlyphs & glyphs = m_glyphsHash[index];
+
+            glyphs.clear();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TTFFont::isValid()
     {
         if( m_ttfFEPath.empty() == false )
@@ -223,7 +239,6 @@ namespace Mengine
         m_dataTTF = data;
 
         FT_Face face;
-
         if( this->loadFaceGlyph_( 'A', &face ) == false )
         {
             return false;

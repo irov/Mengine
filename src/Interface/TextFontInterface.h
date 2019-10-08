@@ -56,6 +56,7 @@ namespace Mengine
 
     public:
         virtual bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) = 0;
+        virtual void finalize() = 0;
 
     public:
         virtual bool isValid() = 0;

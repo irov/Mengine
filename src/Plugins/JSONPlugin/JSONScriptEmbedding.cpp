@@ -81,7 +81,7 @@ namespace Mengine
                 }break;
             }
 
-            ERROR_FATAL( "invalid jpp type '%d'"
+            MENGINE_ERROR_FATAL( "invalid jpp type '%d'"
                 , type
             );
 

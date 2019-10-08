@@ -1,5 +1,6 @@
 #include "Resource.h"
 
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
@@ -11,14 +12,22 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Resource::Resource()
-        : m_compileReferenceCount( 0 )
+        : m_service( nullptr )
+        , m_compileReferenceCount( 0 )
         , m_prefetchReferenceCount( 0 )
         , m_cache( false )
+        , m_groupCache( false )
+        , m_global( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Resource::~Resource()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::setResourceService( ResourceServiceInterface * _service )
+    {
+        m_service = _service;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setLocale( const ConstString & _locale )
@@ -29,6 +38,16 @@ namespace Mengine
     void Resource::setGroupName( const ConstString & _groupName )
     {
         m_groupName = _groupName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::setGroupCache( bool _groupCache )
+    {
+        m_groupCache = _groupCache;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::setGlobal( bool _global )
+    {
+        m_global = _global;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setTags( const Tags & _tags )
@@ -186,5 +205,13 @@ namespace Mengine
     void Resource::_uncache()
     {
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::_destroy()
+    {
+        if( m_service != nullptr )
+        {
+            m_service->removeResource( ResourcePtr::from( this ) );
+        }
     }
 }

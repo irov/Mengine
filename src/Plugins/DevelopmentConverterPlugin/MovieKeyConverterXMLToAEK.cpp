@@ -413,7 +413,7 @@ namespace Mengine
             {
                 const VectorMovieFrameSource & frames = frame.frames;
 
-#define WRITE_FRAME_SOURCE( Type, Member )\
+#define MENGINE_WRITE_FRAME_SOURCE( Type, Member )\
 												{ \
 					Type value = frames[0].Member; \
 					\
@@ -448,14 +448,14 @@ namespace Mengine
 													} \
 												}
 
-                WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
-                WRITE_FRAME_SOURCE( mt::vec3f, position );
-                WRITE_FRAME_SOURCE( float, rotation.x );
-                WRITE_FRAME_SOURCE( float, rotation.y );
-                WRITE_FRAME_SOURCE( float, rotation.z );
-                WRITE_FRAME_SOURCE( mt::vec3f, scale );
-                WRITE_FRAME_SOURCE( float, opacity );
-                WRITE_FRAME_SOURCE( float, volume );
+                MENGINE_WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
+                MENGINE_WRITE_FRAME_SOURCE( mt::vec3f, position );
+                MENGINE_WRITE_FRAME_SOURCE( float, rotation.x );
+                MENGINE_WRITE_FRAME_SOURCE( float, rotation.y );
+                MENGINE_WRITE_FRAME_SOURCE( float, rotation.z );
+                MENGINE_WRITE_FRAME_SOURCE( mt::vec3f, scale );
+                MENGINE_WRITE_FRAME_SOURCE( float, opacity );
+                MENGINE_WRITE_FRAME_SOURCE( float, volume );
 
 #	undef WRITE_FRAME_SOURCE
             }

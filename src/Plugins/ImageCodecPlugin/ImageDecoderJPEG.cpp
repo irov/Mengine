@@ -2,8 +2,11 @@
 
 #include "Kernel/Logger.h"
 
-#define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
-
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_DECODER_JPEG_INPUT_BUF_SIZE
+#define MENGINE_DECODER_JPEG_INPUT_BUF_SIZE 4096
+#endif
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -56,7 +59,7 @@ namespace Mengine
     {
         DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
-        size_t nbytes = src->stream->read( src->buffer, INPUT_BUF_SIZE );
+        size_t nbytes = src->stream->read( src->buffer, MENGINE_DECODER_JPEG_INPUT_BUF_SIZE );
 
         if( nbytes <= 0 )
         {
@@ -109,7 +112,7 @@ namespace Mengine
                 ((j_common_ptr)cinfo, JPOOL_PERMANENT, SIZEOF( DecoderJPEGSourceManager ));
 
             manager->buffer = (JOCTET *)(*cinfo->mem->alloc_small)
-                ((j_common_ptr)cinfo, JPOOL_PERMANENT, INPUT_BUF_SIZE * SIZEOF( JOCTET ));
+                ((j_common_ptr)cinfo, JPOOL_PERMANENT, MENGINE_DECODER_JPEG_INPUT_BUF_SIZE * SIZEOF( JOCTET ));
 
             cinfo->src = (struct jpeg_source_mgr *)manager;
         }

@@ -3121,6 +3121,8 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
+        UNSCRIPT_CLASS_WRAPPING( Vectorizator );
+
         UNSCRIPT_CLASS_WRAPPING( Window );
 
         UNSCRIPT_CLASS_WRAPPING( RenderViewport );

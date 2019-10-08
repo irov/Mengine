@@ -9,7 +9,9 @@
 
 #include "stdex/allocator.h"
 
-#define PNG_BYTES_TO_CHECK 8
+#ifndef MENGINE_DECODER_PNG_BYTES_TO_CHECK
+#define MENGINE_DECODER_PNG_BYTES_TO_CHECK 8
+#endif
 
 namespace Mengine
 {
@@ -102,10 +104,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPNG::_prepareData()
     {
-        uint8_t png_check[PNG_BYTES_TO_CHECK];
-        m_stream->read( &png_check, PNG_BYTES_TO_CHECK );
+        uint8_t png_check[MENGINE_DECODER_PNG_BYTES_TO_CHECK];
+        m_stream->read( &png_check, MENGINE_DECODER_PNG_BYTES_TO_CHECK );
 
-        if( png_sig_cmp( png_check, (png_size_t)0, PNG_BYTES_TO_CHECK ) != 0 )
+        if( png_sig_cmp( png_check, (png_size_t)0, MENGINE_DECODER_PNG_BYTES_TO_CHECK ) != 0 )
         {
             LOGGER_ERROR( "Bad or not PNG file"
             );
@@ -117,7 +119,7 @@ namespace Mengine
 
         png_set_read_fn( m_png_ptr, m_stream.get(), &s_readProc );
 
-        png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
+        png_set_sig_bytes( m_png_ptr, MENGINE_DECODER_PNG_BYTES_TO_CHECK );
 
 #if defined(PNG_SETJMP_SUPPORTED) && !defined(MENGINE_SETJMP_UNSUPPORTED)
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING

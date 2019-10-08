@@ -484,10 +484,10 @@ namespace Mengine
 
                     if( record->element != nullptr )
                     {
-                        element_type_ptr prev = record->element;
+                        element_type_ptr prev = std::move( record->element );
                         record->element = _element;
 
-                        return prev;
+                        return std::move( prev );
                     }
                 }
 
@@ -520,11 +520,11 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key && record->element != reinterpret_cast<const element_type *>(~0) )
                 {
-                    element_type_ptr pop_element = record->element;
+                    element_type_ptr pop_element = std::move( record->element );
 
                     record->element.set( reinterpret_cast<element_type *>(~0) );
 
-                    return pop_element;
+                    return std::move( pop_element );
                 }
 
                 mask = (mask << 2) + mask + (size_type)probe + 1;

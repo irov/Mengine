@@ -17,5 +17,6 @@ namespace Mengine
 #define TIME_SYSTEM()\
     ((Mengine::TimeSystemInterface*)SERVICE_GET(Mengine::TimeSystemInterface))
 //////////////////////////////////////////////////////////////////////////
-#define GET_TIME_MILLISECONDS() TIME_SYSTEM()->getTimeMilliseconds();
+#define GET_TIME_MILLISECONDS()\
+    TIME_SYSTEM()->getTimeMilliseconds();
 //////////////////////////////////////////////////////////////////////////

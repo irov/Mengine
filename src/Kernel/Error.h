@@ -21,6 +21,5 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define ERROR_FATAL\
-	Mengine::ErrorOperator( MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )
+#define MENGINE_ERROR_FATAL(...) Mengine::ErrorOperator( MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE )(__VA_ARGS__)
 //////////////////////////////////////////////////////////////////////////

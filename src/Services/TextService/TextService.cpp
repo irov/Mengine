@@ -47,6 +47,12 @@ namespace Mengine
         m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>();
         m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>();
 
+        uint32_t TextServiceReserveTexts = CONFIG_VALUE( "Engine", "TextServiceReserveTexts", 1024U );
+        uint32_t TextServiceReserveFonts = CONFIG_VALUE( "Engine", "TextServiceReserveFonts", 64U );
+
+        m_texts.reserve( TextServiceReserveTexts );
+        m_fonts.reserve( TextServiceReserveFonts );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -544,10 +550,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::removeFont( const ConstString & _fontName )
     {
-        if( m_fonts.erase( _fontName ) == nullptr )
+        TextFontInterfacePtr textFont = m_fonts.erase( _fontName );
+        
+        if( textFont == nullptr )
         {
             return false;
         }
+
+        textFont->finalize();
 
         return true;
     }
@@ -825,7 +835,10 @@ namespace Mengine
             return false;
         }
 
-        *_font = font;
+        if( _font != nullptr )
+        {
+            *_font = font;
+        }
 
         return true;
     }

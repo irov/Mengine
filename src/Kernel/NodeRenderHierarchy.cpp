@@ -1,7 +1,5 @@
 #include "NodeRenderHierarchy.h"
 
-#define MENGINE_NEW_RENDER
-
 namespace Mengine
 {
     namespace Helper
@@ -11,74 +9,7 @@ namespace Mengine
         {
             const RenderInterface * selfRender = _node->getRender();
 
-#ifdef MENGINE_NEW_RENDER
             selfRender->renderWithChildren( _renderPipeline, _context, _external );
-#else
-            if( selfRender != nullptr )
-            {
-                if( selfRender->isRenderEnable() == false )
-                {
-                    return;
-                }
-
-                if( selfRender->isExternalRender() == true && _external == false )
-                {
-                    return;
-                }
-
-                if( selfRender->isHide() == true )
-                {
-                    return;
-                }
-
-                if( selfRender->isLocalTransparent() == true )
-                {
-                    return;
-                }
-
-                RenderContext self_context;
-
-                const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
-                const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
-                const RenderTransformationInterfacePtr & renderTransformation = selfRender->getRenderTransformation();
-                const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
-                const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
-
-                self_context.viewport = renderViewport != nullptr ? renderViewport.get() : _context->viewport;
-                self_context.camera = renderCamera != nullptr ? renderCamera.get() : _context->camera;
-                self_context.transformation = renderTransformation != nullptr ? renderTransformation.get() : _context->transformation;
-                self_context.scissor = renderScissor != nullptr ? renderScissor.get() : _context->scissor;
-                self_context.target = renderTarget != nullptr ? renderTarget.get() : _context->target;
-
-                if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
-                {
-                    selfRender->render( &self_context );
-                }
-
-                const RenderContext * children_context = &self_context;
-                _node->foreachChildrenUnslug( [children_context]( const Node * _child )
-                {
-                    Helper::nodeRenderChildren( _child, children_context, false );
-                } );
-
-                if( self_context.target != nullptr )
-                {
-                    const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
-
-                    if( targetRender != nullptr )
-                    {
-                        targetRender->render( _context );
-                    }
-                }
-            }
-            else
-            {
-                _node->foreachChildrenUnslug( [_context]( const Node * _child )
-                {
-                    Helper::nodeRenderChildren( _child, _context, false );
-                } );
-            }
-#endif
         }
         //////////////////////////////////////////////////////////////////////////
         bool hasNodeRenderInheritance( Node * _node )

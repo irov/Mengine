@@ -33,7 +33,7 @@ namespace Mengine
 
         size_t write_size = 0;
 
-        uint32_t magic = FOURCC( 'D', 'D', 'S', ' ' );
+        uint32_t magic = MENGINE_FOURCC( 'D', 'D', 'S', ' ' );
         write_size += m_stream->write( &magic, sizeof( magic ) );
 
         uint32_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->channels, imageInfo->depth, imageInfo->format );

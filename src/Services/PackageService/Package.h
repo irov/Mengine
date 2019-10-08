@@ -18,7 +18,7 @@ namespace Mengine
         ~Package() override;
 
     public:
-        void initialize( const ConstString & _name
+        bool initialize( const ConstString & _name
             , const ConstString & _type
             , const ConstString & _locale
             , const Tags & _platform
@@ -26,8 +26,9 @@ namespace Mengine
             , const FilePath & _descriptionPath
             , const FileGroupInterfacePtr & _baseFileGroup
             , const FilePath & _filePath
-            , bool _preload
-        );
+            , bool _preload );
+
+        void finalize();
 
     public:
         void setName( const ConstString & _name ) override;

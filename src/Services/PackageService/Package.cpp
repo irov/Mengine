@@ -30,7 +30,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::initialize( const ConstString & _name
+    bool Package::initialize( const ConstString & _name
         , const ConstString & _type
         , const ConstString & _locale
         , const Tags & _platform
@@ -49,6 +49,23 @@ namespace Mengine
         m_baseFileGroup = _baseFileGroup;
         m_filePath = _filePath;
         m_preload = _preload;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::finalize()
+    {
+        m_resourcesDesc.clear();
+
+        m_parentPackage = nullptr;
+        m_baseFileGroup = nullptr;
+        m_fileGroup = nullptr;
+
+        m_scriptsPackages.clear();
+        m_fontsDesc.clear();
+        m_textsDesc.clear();
+        m_datasDesc.clear();
+        m_materialsDesc.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void Package::setPreload( bool _value )

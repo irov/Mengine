@@ -18,6 +18,7 @@ namespace Mengine
 
     protected:
         bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
+        void finalize() override;
 
     protected:
         bool isValid() override;

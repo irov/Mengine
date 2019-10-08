@@ -28,7 +28,7 @@ namespace Mengine
         uint32_t magic;
         m_stream->read( &magic, sizeof( magic ) );
 
-        if( magic != FOURCC( 'D', 'D', 'S', ' ' ) )
+        if( magic != MENGINE_FOURCC( 'D', 'D', 'S', ' ' ) )
         {
             LOGGER_ERROR( "invalid dds magic"
             );

@@ -156,7 +156,7 @@ namespace Mengine
             resource_content->setFileGroup( fileGroup );
             resource_content->setFilePath( newFilePath );
 
-            ConstString codecType = CODEC_SERVICE()
+            const ConstString & codecType = CODEC_SERVICE()
                 ->findCodecType( newFilePath );
 
             resource_content->setCodecType( codecType );

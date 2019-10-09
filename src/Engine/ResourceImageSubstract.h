@@ -31,6 +31,6 @@ namespace Mengine
         ResourceImagePtr m_resourceImage;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceImageSubstract> ResourceImageSubstractPtr;
+    typedef IntrusiveResourcePtr<ResourceImageSubstract> ResourceImageSubstractPtr;
     //////////////////////////////////////////////////////////////////////////
 }

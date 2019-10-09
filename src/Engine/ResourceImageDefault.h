@@ -30,6 +30,6 @@ namespace Mengine
         void prepareImageFrame_();        
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceImageDefault> ResourceImageDefaultPtr;
+    typedef IntrusiveResourcePtr<ResourceImageDefault> ResourceImageDefaultPtr;
     //////////////////////////////////////////////////////////////////////////
 }

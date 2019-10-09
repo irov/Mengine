@@ -37,5 +37,6 @@ namespace Mengine
         Detail::Mesh m_mesh;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceOzzMesh, Resource> ResourceOzzMeshPtr;
+    typedef IntrusiveResourcePtr<IntrusiveResourcePtr> ResourceOzzMeshPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

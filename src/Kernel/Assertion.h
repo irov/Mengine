@@ -103,7 +103,7 @@ namespace Mengine
 #   define MENGINE_ASSERTION(Condition, ...)
 #   define MENGINE_ASSERTION_RETURN(Condition, Ret, ...)
 #   define MENGINE_ASSERTION_FATAL(Condition, ...)
-#   define MENGINE_ASSERTION_FATAL_RETURN(Condition, ...)
+#   define MENGINE_ASSERTION_FATAL_RETURN(Condition, Ret, ...)
 #   define MENGINE_ASSERTION_CRITICAL(Condition, ...)
 #endif
 //////////////////////////////////////////////////////////////////////////

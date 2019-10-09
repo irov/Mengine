@@ -29,6 +29,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_compile()
     {
+        if( ResourceImage::_compile() == false )
+        {
+            LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         if( m_resourceImageName.empty() == true )
         {
             LOGGER_ERROR( "'%s' not setup image resource"

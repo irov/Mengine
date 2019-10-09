@@ -21,6 +21,6 @@ namespace Mengine
         const MemoryInterfacePtr & getBuffer() const override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceCursorSystem> ResourceCursorSystemPtr;
+    typedef IntrusiveResourcePtr<ResourceCursorSystem> ResourceCursorSystemPtr;
     //////////////////////////////////////////////////////////////////////////
 }

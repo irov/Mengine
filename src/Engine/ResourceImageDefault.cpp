@@ -25,6 +25,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
     {
+        if( ResourceImage::_compile() == false )
+        {
+            LOGGER_ERROR( "'%s' invalid compile base ResourceImage class"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         LOGGER_INFO( "name '%s' load texture '%s'"
             , this->getName().c_str()
             , this->getFilePath().c_str()

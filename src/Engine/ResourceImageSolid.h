@@ -20,6 +20,6 @@ namespace Mengine
         bool _compile() override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceImageSolid> ResourceImageSolidPtr;
+    typedef IntrusiveResourcePtr<ResourceImageSolid> ResourceImageSolidPtr;
     //////////////////////////////////////////////////////////////////////////
 }

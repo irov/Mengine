@@ -1,34 +1,34 @@
-#include "NodeLeakDetectorPlugin.h"
+#include "FactoryLeakDetectorPlugin.h"
 
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#include "NodeLeakDetectorServiceInterface.h"
+#include "FactoryLeakDetectorServiceInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( NodeLeakDetectorService );
+SERVICE_EXTERN( FactoryLeakDetectorService );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( NodeLeakDetector, Mengine::NodeLeakDetectorPlugin );
+PLUGIN_FACTORY( FactoryLeakDetector, Mengine::FactoryLeakDetectorPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    NodeLeakDetectorPlugin::NodeLeakDetectorPlugin()
+    FactoryLeakDetectorPlugin::FactoryLeakDetectorPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    NodeLeakDetectorPlugin::~NodeLeakDetectorPlugin()
+    FactoryLeakDetectorPlugin::~FactoryLeakDetectorPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeLeakDetectorPlugin::_availablePlugin() const
+    bool FactoryLeakDetectorPlugin::_availablePlugin() const
     {
         if( HAS_OPTION( "memleak" ) == true )
         {
             return true;
         }
 
-        if( CONFIG_VALUE( "NodeLeakDetector", "Enable", false ) == true )
+        if( CONFIG_VALUE( "FactoryLeakDetector", "Enable", false ) == true )
         {
             return true;
         }
@@ -36,25 +36,25 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeLeakDetectorPlugin::_systemPlugin() const
+    bool FactoryLeakDetectorPlugin::_systemPlugin() const
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeLeakDetectorPlugin::_initializePlugin()
+    bool FactoryLeakDetectorPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( NodeLeakDetectorService );
+        SERVICE_CREATE( FactoryLeakDetectorService );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorPlugin::_finalizePlugin()
+    void FactoryLeakDetectorPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( NodeLeakDetectorService );
+        SERVICE_FINALIZE( FactoryLeakDetectorService );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorPlugin::_destroy()
+    void FactoryLeakDetectorPlugin::_destroy()
     {
-        SERVICE_DESTROY( NodeLeakDetectorService );
+        SERVICE_DESTROY( FactoryLeakDetectorService );
     }
 }

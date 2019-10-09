@@ -43,7 +43,10 @@ namespace Mengine
         m_mutex->unlock();
 
 #ifdef MENGINE_DEBUG
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (Factory *)this, object, _doc );
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, (Factory *)this, object, _doc );
+        }
 #endif
 
         return object;
@@ -52,7 +55,10 @@ namespace Mengine
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
 #ifdef MENGINE_DEBUG
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, (Factory *)this, _object );
+        if( SERVICE_EXIST( NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (Factory *)this, _object );
+        }
 #endif
 
         m_mutex->lock();

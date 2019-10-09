@@ -1,0 +1,2 @@
+LIBRARY		"FactoryLeakDetectorPlugin"
+EXPORTS 	dllCreatePlugin 	@1

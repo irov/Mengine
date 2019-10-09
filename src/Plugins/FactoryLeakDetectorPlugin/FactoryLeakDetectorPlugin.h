@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class NodeLeakDetectorPlugin
+    class FactoryLeakDetectorPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "NodeLeakDetector" )
+        PLUGIN_DECLARE( "FactoryLeakDetector" )
 
     public:
-        NodeLeakDetectorPlugin();
-        ~NodeLeakDetectorPlugin() override;
+        FactoryLeakDetectorPlugin();
+        ~FactoryLeakDetectorPlugin() override;
 
     protected:
         bool _availablePlugin() const override;

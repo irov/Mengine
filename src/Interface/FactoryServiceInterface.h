@@ -5,10 +5,10 @@
 #include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/Factory.h"
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class Factory;
     //////////////////////////////////////////////////////////////////////////
     class VisitorFactoryInterface
         : public Interface
@@ -30,6 +30,17 @@ namespace Mengine
 
     public:
         virtual void visitFactories( const VisitorFactoryServicePtr & _visitor ) = 0;
+
+    public:
+        virtual void increfFactoryGeneration() = 0;
+        virtual uint32_t getFactoryGeneration() const = 0;
+
+        typedef Lambda<void( const Factory * _factory, const Factorable *, const Char * _name, const Char * _doc )> LambdaFactoryLeaks;
+        virtual void visitFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const = 0;
+
+    public:
+        virtual void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const Char * _doc ) = 0;
+        virtual void debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

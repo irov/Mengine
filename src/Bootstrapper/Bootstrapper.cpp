@@ -99,10 +99,6 @@ PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( NodeDebugRender );
 #endif
 
-#ifdef MENGINE_PLUGIN_FACTORYLEAKDETECTOR_STATIC
-PLUGIN_EXPORT( FactoryLeakDetector );
-#endif
-
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
@@ -321,11 +317,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
-        SERVICE_CREATE( SecureService );
-        SERVICE_CREATE( FactoryService );
-        SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( OptionsService );
+        SERVICE_CREATE( FactoryService );
+        SERVICE_CREATE( SecureService );
+        SERVICE_CREATE( MemoryService );
+        SERVICE_CREATE( UnicodeSystem );        
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( VocabularyService );
@@ -413,10 +409,6 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_FACTORYLEAKDETECTOR_STATIC
-        MENGINE_ADD_PLUGIN( FactoryLeakDetector, "initialize Plugin Factory Leak Detector..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
@@ -867,7 +859,6 @@ namespace Mengine
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( CodecService );
-        SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( SoundService );
         SERVICE_FINALIZE( SoundSystem );
         SERVICE_FINALIZE( ConverterService );
@@ -887,11 +878,11 @@ namespace Mengine
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
-        SERVICE_FINALIZE( Platform );
-        SERVICE_FINALIZE( OptionsService );
+        SERVICE_FINALIZE( Platform );        
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( StringizeService );
         SERVICE_FINALIZE( FactoryService );
+        SERVICE_FINALIZE( OptionsService );
     }
 }

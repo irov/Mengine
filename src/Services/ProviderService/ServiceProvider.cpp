@@ -214,7 +214,7 @@ namespace Mengine
                 break;
             }
 
-            desc.service->finalizeService();            
+            desc.service->finalizeService();
 
             return true;
         }
@@ -254,8 +254,6 @@ namespace Mengine
 
             desc.service->finalizeService();
             desc.service = nullptr;
-
-            --m_servicesCount;
 
             return true;
         }

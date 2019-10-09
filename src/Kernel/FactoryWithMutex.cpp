@@ -1,5 +1,7 @@
 #include "FactoryWithMutex.h"
 
+#include "Interface/FactoryServiceInterface.h"
+
 #ifdef MENGINE_DEBUG
 #   include "Interface/NotificationServiceInterface.h"
 #   include "Kernel/Logger.h"
@@ -43,6 +45,9 @@ namespace Mengine
         m_mutex->unlock();
 
 #ifdef MENGINE_DEBUG
+        FACTORY_SERVICE()
+            ->debugFactoryCreateObject( this, object, _doc );
+
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, (Factory *)this, object, _doc );
@@ -55,6 +60,9 @@ namespace Mengine
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
 #ifdef MENGINE_DEBUG
+        FACTORY_SERVICE()
+            ->debugFactoryDestroyObject( this, _object );
+
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (Factory *)this, _object );

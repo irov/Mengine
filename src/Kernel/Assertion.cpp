@@ -85,8 +85,11 @@ namespace Mengine
 
             if( _level == ASSERTION_LEVEL_FATAL )
             {
-                PLATFORM_SERVICE()
-                    ->abort();
+                if( SERVICE_IS_INITIALIZE( PlatformInterface ) == true )
+                {
+                    PLATFORM_SERVICE()
+                        ->abort();
+                }
             }
 
             if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level >= ASSERTION_LEVEL_WARNING )

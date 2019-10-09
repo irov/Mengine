@@ -28,6 +28,6 @@ namespace Mengine
         MemoryInterfacePtr m_buffer;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceCursorICO> ResourceCursorICOPtr;
+    typedef IntrusiveResourcePtr<ResourceCursorICO> ResourceCursorICOPtr;
     //////////////////////////////////////////////////////////////////////////
 }

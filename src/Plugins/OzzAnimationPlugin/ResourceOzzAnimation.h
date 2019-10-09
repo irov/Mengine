@@ -33,5 +33,6 @@ namespace Mengine
         ozz::animation::Animation m_animation;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceOzzAnimation, Resource> ResourceOzzAnimationPtr;
+    typedef IntrusiveResourcePtr<ResourceOzzAnimation> ResourceOzzAnimationPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

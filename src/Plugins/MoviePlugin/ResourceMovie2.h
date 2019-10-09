@@ -96,6 +96,6 @@ namespace Mengine
         MapCompositions m_compositions;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceMovie2, Resource> ResourceMovie2Ptr;
+    typedef IntrusiveResourcePtr<ResourceMovie2> ResourceMovie2Ptr;
     //////////////////////////////////////////////////////////////////////////
 }

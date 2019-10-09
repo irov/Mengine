@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceImage::ResourceImage()
-        : m_maxSize( 0.f, 0.f )
+        : m_maxSize( -1.f, -1.f )
         , m_size( 0.f, 0.f )
         , m_offset( 0.f, 0.f )
         , m_uvImageRotate( false )
@@ -31,6 +31,16 @@ namespace Mengine
     void ResourceImage::setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha )
     {
         m_textureAlpha = _textureAlpha;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceImage::_compile()
+    {
+        MENGINE_ASSERTION_FATAL_RETURN( m_maxSize.x >= 0.f && m_maxSize.y >= 0.f, false, "Image '%s:%s' not set max size"
+            , this->getType().c_str()
+            , this->getName().c_str()
+        );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()

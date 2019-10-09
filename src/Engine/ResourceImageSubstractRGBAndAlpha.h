@@ -37,6 +37,6 @@ namespace Mengine
         ResourceImagePtr m_resourceImageAlpha;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceImageSubstractRGBAndAlpha> ResourceImageSubstractRGBAndAlphaPtr;
+    typedef IntrusiveResourcePtr<ResourceImageSubstractRGBAndAlpha> ResourceImageSubstractRGBAndAlphaPtr;
     //////////////////////////////////////////////////////////////////////////
 }

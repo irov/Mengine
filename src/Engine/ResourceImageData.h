@@ -48,6 +48,6 @@ namespace Mengine
         uint8_t * m_buffer;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceImageData> ResourceImageDataPtr;
+    typedef IntrusiveResourcePtr<ResourceImageData> ResourceImageDataPtr;
     //////////////////////////////////////////////////////////////////////////
 }

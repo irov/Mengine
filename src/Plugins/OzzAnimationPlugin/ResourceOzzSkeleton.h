@@ -33,5 +33,6 @@ namespace Mengine
         ozz::animation::Skeleton m_skeleton;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceOzzSkeleton, Resource> ResourceOzzSkeletonPtr;
+    typedef IntrusiveResourcePtr<ResourceOzzSkeleton> ResourceOzzSkeletonPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

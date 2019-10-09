@@ -1,37 +1,41 @@
-#include "NodeLeakDetectorService.h"
+#include "FactoryLeakDetectorService.h"
 
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/CRC32.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( NodeLeakDetectorService, Mengine::NodeLeakDetectorService );
+SERVICE_FACTORY( FactoryLeakDetectorService, Mengine::FactoryLeakDetectorService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    NodeLeakDetectorService::NodeLeakDetectorService()
+    FactoryLeakDetectorService::FactoryLeakDetectorService()
         : m_generation( 0 )
+        , m_fatalAssertion( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    NodeLeakDetectorService::~NodeLeakDetectorService()
+    FactoryLeakDetectorService::~FactoryLeakDetectorService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeLeakDetectorService::_initializeService()
+    bool FactoryLeakDetectorService::_initializeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_CREATE_OBJECT, this, &NodeLeakDetectorService::notifyDebugCreateObject );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_DESTROY_OBJECT, this, &NodeLeakDetectorService::notifyDebugDestroyObject );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT, this, &FactoryLeakDetectorService::notifyDebugCreateObject );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, this, &FactoryLeakDetectorService::notifyDebugDestroyObject );
+
+        m_fatalAssertion = CONFIG_VALUE( "FactoryLeakDetector", "Fatal", false );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorService::_finalizeService()
+    void FactoryLeakDetectorService::_finalizeService()
     {
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_CREATE_OBJECT, this, &NodeLeakDetectorService::notifyDebugCreateObject );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_DEBUG_DESTROY_OBJECT, this, &NodeLeakDetectorService::notifyDebugDestroyObject );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_FACTORY_CREATE_OBJECT );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT );
 
         LOGGER_STATISTIC( "==================================================================" );
         LOGGER_STATISTIC( "==================================================================" );
@@ -39,7 +43,9 @@ namespace Mengine
         LOGGER_STATISTIC( "==================================================================" );
         LOGGER_STATISTIC( "==================================================================" );
 
-        this->getNodeLeak( 0, []( const Factory * _factory, const Factorable *, const Char * _doc )
+        uint32_t leakcount = 0;
+
+        this->getNodeLeak( 0, [&leakcount]( const Factory * _factory, const Factorable *, const Char * _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _doc );
@@ -48,23 +54,32 @@ namespace Mengine
                 , _factory->getName()
                 , _doc
             );
+
+            ++leakcount;
         } );
 
         LOGGER_STATISTIC( "==================================================================" );
         LOGGER_STATISTIC( "==================================================================" );
+
+        if( m_fatalAssertion == true )
+        {
+            MENGINE_ASSERTION_FATAL( leakcount == 0, "detect factory leak [%d]"
+                , leakcount
+            );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorService::increfGeneration()
+    void FactoryLeakDetectorService::increfGeneration()
     {
         ++m_generation;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t NodeLeakDetectorService::getGeneration() const
+    uint32_t FactoryLeakDetectorService::getGeneration() const
     {
         return m_generation;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorService::getNodeLeak( uint32_t _generation, const LambdaNodeLeaks & _leaks ) const
+    void FactoryLeakDetectorService::getNodeLeak( uint32_t _generation, const LambdaNodeLeaks & _leaks ) const
     {
         for( uint32_t index = 0; index != MENGINE_NODELEAKDETECTOR_HASHSIZE; ++index )
         {
@@ -82,7 +97,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorService::notifyDebugCreateObject( Factory * _factory, Factorable * _factorable, const Char * _doc )
+    void FactoryLeakDetectorService::notifyDebugCreateObject( Factory * _factory, Factorable * _factorable, const Char * _doc )
     {
         uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 
@@ -95,7 +110,7 @@ namespace Mengine
         m_nodeLeakDescs[hash].push_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeLeakDetectorService::notifyDebugDestroyObject( Factory * _factory, Factorable * _factorable )
+    void FactoryLeakDetectorService::notifyDebugDestroyObject( Factory * _factory, Factorable * _factorable )
     {
         uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 

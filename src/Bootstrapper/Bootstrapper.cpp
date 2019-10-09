@@ -99,8 +99,8 @@ PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( NodeDebugRender );
 #endif
 
-#ifdef MENGINE_PLUGIN_NODELEAKDETECTOR_STATIC
-PLUGIN_EXPORT( NodeLeakDetector );
+#ifdef MENGINE_PLUGIN_FACTORYLEAKDETECTOR_STATIC
+PLUGIN_EXPORT( FactoryLeakDetector );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
@@ -415,9 +415,9 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_NODELEAKDETECTOR_STATIC
-        MENGINE_ADD_PLUGIN( NodeLeakDetector, "initialize Plugin Node Leak Detector..." );
-#endif        
+#ifdef MENGINE_PLUGIN_FACTORYLEAKDETECTOR_STATIC
+        MENGINE_ADD_PLUGIN( FactoryLeakDetector, "initialize Plugin Factory Leak Detector..." );
+#endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
@@ -867,6 +867,7 @@ namespace Mengine
         SERVICE_FINALIZE( InputService );
         SERVICE_FINALIZE( UnicodeSystem );
         SERVICE_FINALIZE( CodecService );
+        SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( SoundService );
         SERVICE_FINALIZE( SoundSystem );
         SERVICE_FINALIZE( ConverterService );

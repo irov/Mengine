@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NodeLeakDetectorServiceInterface.h"
+#include "FactoryLeakDetectorServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Observable.h"
@@ -14,13 +14,13 @@
 
 namespace Mengine
 {
-    class NodeLeakDetectorService
-        : public ServiceBase<NodeLeakDetectorServiceInterface>
+    class FactoryLeakDetectorService
+        : public ServiceBase<FactoryLeakDetectorServiceInterface>
         , public Observable
     {
     public:
-        NodeLeakDetectorService();
-        ~NodeLeakDetectorService() override;
+        FactoryLeakDetectorService();
+        ~FactoryLeakDetectorService() override;
 
     public:
         bool _initializeService() override;
@@ -37,6 +37,7 @@ namespace Mengine
 
     protected:
         uint32_t m_generation;
+        bool m_fatalAssertion;
 
         struct NodeLeakDesc
         {
@@ -50,7 +51,3 @@ namespace Mengine
         VectorNodeLeakDesc m_nodeLeakDescs[MENGINE_NODELEAKDETECTOR_HASHSIZE];
     };
 }
-//////////////////////////////////////////////////////////////////////////
-#   define NODELEAKDETECTOR_SERVICE()\
-	((NodeLeakDetectorServiceInterface *)SERVICE_GET(Mengine::NodeLeakDetectorServiceInterface))
-//////////////////////////////////////////////////////////////////////////

@@ -106,45 +106,67 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        bool existService()
+        bool isExistService()
         {
             static bool s_exist = SERVICE_PROVIDER_GET()
-                ->existService( T::getStaticServiceID() );
+                ->isExistService( T::getStaticServiceID() );
             
             return s_exist;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        bool isAvailableService()
+        {
+            static bool s_available = SERVICE_PROVIDER_GET()
+                ->isAvailableService( T::getStaticServiceID() );
+
+            return s_available;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        bool isInitializeService()
+        {
+            //without static 
+            bool initialize = SERVICE_PROVIDER_GET()
+                ->isInitializeService( T::getStaticServiceID() );
+
+            return initialize;
         }
     }
 }
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_GET( Type )\
-	(Mengine::Helper::getService<Type>(MENGINE_CODE_FILE, MENGINE_CODE_LINE))
+    (Mengine::Helper::getService<Type>(MENGINE_CODE_FILE, MENGINE_CODE_LINE))
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXIST( Type )\
-	(Mengine::Helper::existService<Type>())
+    (Mengine::Helper::isExistService<Type>())
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_IS_AVAILABLE( Type )\
+    (Mengine::Helper::isAvailableService<Type>())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_IS_INITIALIZE( Type )\
-	(SERVICE_EXIST( Type ) == true && SERVICE_PROVIDER_GET()->getService( Type::getStaticServiceID() )->isInitializeService() == true)
+    (Mengine::Helper::isInitializeService<Type>())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FUNCTION_CREATE(Name)\
-	__createMengineService##Name
+    __createMengineService##Name
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FUNCTION_NOMINATION(Name)\
-	__nominationMengineService##Name
+    __nominationMengineService##Name
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
         MENGINE_INLINE static const Char * getStaticServiceID(){ return ID; };\
-		MENGINE_INLINE const Char * getServiceID() const override { return ID; };\
+        MENGINE_INLINE const Char * getServiceID() const override { return ID; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\
     bool SERVICE_FUNCTION_CREATE(Name)(Mengine::ServiceInterface**_service){\
     if(_service==nullptr){return false;}\
-	try{*_service=new Implement();}catch(...){return false;}\
+    try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
     const Mengine::Char * SERVICE_FUNCTION_NOMINATION(Name)(){\
     return Implement::getStaticServiceID();}\
-	struct __mengine_dummy_factory##Name{}
+    struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DEPENDENCY( Type, Dependency )\
     SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
@@ -170,7 +192,4 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define SERVICE_LEAVE( Type, Lambda )\
     SERVICE_PROVIDER_GET()->leaveService(Type::getStaticServiceID(), Lambda)
-//////////////////////////////////////////////////////////////////////////
-#define SERVICE_AVAILABLE( Type )\
-    [](){ static bool available = SERVICE_GET(Type)->isAvailableService(); return available;}()
 //////////////////////////////////////////////////////////////////////////

@@ -1,2 +1,0 @@
-LIBRARY		"NodeLeakDetectorPlugin"
-EXPORTS 	dllCreatePlugin 	@1

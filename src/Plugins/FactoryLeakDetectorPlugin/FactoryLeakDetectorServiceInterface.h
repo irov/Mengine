@@ -13,10 +13,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Lambda<void( const Factory * _factory, const Factorable *, const Char * _doc )> LambdaNodeLeaks;
     //////////////////////////////////////////////////////////////////////////
-    class NodeLeakDetectorServiceInterface
+    class FactoryLeakDetectorServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "NodeLeakDetectorService" );
+        SERVICE_DECLARE( "FactoryLeakDetectorService" );
 
     public:
         virtual void increfGeneration() = 0;
@@ -26,6 +26,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#   define NODELEAKDETECTOR_SERVICE()\
-	((NodeLeakDetectorServiceInterface *)SERVICE_GET(Mengine::NodeLeakDetectorServiceInterface))
+#define FACTORYLEAKDETECTOR_SERVICE()\
+    ((Mengine::FactoryLeakDetectorServiceInterface *)SERVICE_GET(Mengine::FactoryLeakDetectorServiceInterface))
 //////////////////////////////////////////////////////////////////////////

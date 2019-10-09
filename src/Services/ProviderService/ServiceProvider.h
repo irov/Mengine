@@ -32,7 +32,9 @@ namespace Mengine
         ~ServiceProvider() override;
 
     public:
-        bool existService( const Char * _name ) const override;
+        bool isExistService( const Char * _name ) const override;
+        bool isAvailableService( const Char * _name ) const override;
+        bool isInitializeService( const Char * _name ) const override;
 
     protected:
         const ServiceInterfacePtr & getService( const Char * _name ) const override;

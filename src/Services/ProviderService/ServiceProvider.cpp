@@ -388,7 +388,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::existService( const Char * _name ) const
+    bool ServiceProvider::isExistService( const Char * _name ) const
     {
 #ifdef MENGINE_DEBUG
         MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
@@ -409,6 +409,62 @@ namespace Mengine
             }
 
             return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::isAvailableService( const Char * _name ) const
+    {
+#ifdef MENGINE_DEBUG
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
+#endif
+
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        {
+            const ServiceDesc & desc = m_services[index];
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
+
+            bool available = desc.service->isAvailableService();
+
+            return available;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ServiceProvider::isInitializeService( const Char * _name ) const
+    {
+#ifdef MENGINE_DEBUG
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
+#endif
+
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
+        {
+            const ServiceDesc & desc = m_services[index];
+
+            if( desc.service == nullptr )
+            {
+                continue;
+            }
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
+
+            bool available = desc.service->isInitializeService();
+
+            return available;
         }
 
         return false;

@@ -23,8 +23,8 @@ namespace Mengine
         const EventReceiverInterfacePtr & getReceiver() const override;
 
     public:
-        bool addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override;
-        void removeEventReceiver( uint32_t _event ) override;
+        EventReceiverInterfacePtr addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override;
+        EventReceiverInterfacePtr removeEventReceiver( uint32_t _event ) override;
 
     public:
         const EventReceiverInterfacePtr & getEventReciever( uint32_t _event ) const override;

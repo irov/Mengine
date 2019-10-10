@@ -22,8 +22,8 @@ namespace Mengine
         virtual const EventReceiverInterfacePtr & getReceiver() const = 0;
 
     public:
-        virtual bool addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;
-        virtual void removeEventReceiver( uint32_t _event ) = 0;
+        virtual EventReceiverInterfacePtr addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;
+        virtual EventReceiverInterfacePtr removeEventReceiver( uint32_t _event ) = 0;
 
     public:
         virtual const EventReceiverInterfacePtr & getEventReciever( uint32_t _event ) const = 0;

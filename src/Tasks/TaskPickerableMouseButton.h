@@ -3,6 +3,7 @@
 #include "Kernel/Pickerable.h"
 
 #include "Interface/InputHandlerInterface.h"
+#include "Interface/EventationInterface.h"
 
 #include "GOAP/Task.h"
 
@@ -32,6 +33,8 @@ namespace Mengine
         bool m_isPressed;
 
         LambdaPickerMouseButtonEvent m_filter;
+
+        EventReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskPickerableMouseButton> TaskPickerableMouseButtonPtr;

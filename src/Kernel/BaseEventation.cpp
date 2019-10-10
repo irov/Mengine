@@ -29,7 +29,7 @@ namespace Mengine
         return m_receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
+    EventReceiverInterfacePtr BaseEventation::addEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
         MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
         MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
@@ -45,23 +45,24 @@ namespace Mengine
 
             EventReceiverDesc & desc = *it_found;
 
-            desc.receiver = _receiver;
-        }
-        else
-        {
-            EventReceiverDesc desc;
-            desc.event = _event;
+            EventReceiverInterfacePtr oldreceiver = desc.receiver;
             desc.receiver = _receiver;
 
-            m_receivers.emplace_back( desc );
-
-            m_receiversMask |= (1ULL << _event);
+            return oldreceiver;
         }
 
-        return true;
+        EventReceiverDesc desc;
+        desc.event = _event;
+        desc.receiver = _receiver;
+
+        m_receivers.emplace_back( desc );
+
+        m_receiversMask |= (1ULL << _event);
+
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseEventation::removeEventReceiver( uint32_t _event )
+    EventReceiverInterfacePtr BaseEventation::removeEventReceiver( uint32_t _event )
     {
         MENGINE_ASSERTION_FATAL( _event < (sizeof( m_receiversMask ) * 8 - 1) );
         MENGINE_ASSERTION_FATAL( (m_receiverMask & (1ULL << _event)) == 0 );
@@ -73,12 +74,18 @@ namespace Mengine
 
         if( it_found == m_receivers.end() )
         {
-            return;
+            return nullptr;
         }
+
+        const EventReceiverDesc & desc = *it_found;
+
+        EventReceiverInterfacePtr delreceiver = desc.receiver;
 
         m_receivers.erase( it_found );
 
         m_receiversMask &= ~(1ULL << _event);
+
+        return delreceiver;
     }
     //////////////////////////////////////////////////////////////////////////
     const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const

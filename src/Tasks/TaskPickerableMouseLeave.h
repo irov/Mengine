@@ -3,6 +3,7 @@
 #include "Kernel/Pickerable.h"
 
 #include "Interface/InputHandlerInterface.h"
+#include "Interface/EventationInterface.h"
 
 #include "GOAP/Task.h"
 
@@ -29,6 +30,8 @@ namespace Mengine
         PickerablePtr m_pickerable;
 
         LambdaPickerMouseLeaveEvent m_filter;
+
+        EventReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskPickerableMouseLeave> TaskPickerableMouseLeavePtr;

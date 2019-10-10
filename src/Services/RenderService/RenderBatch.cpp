@@ -47,6 +47,12 @@ namespace Mengine
         return m_indexBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderBatch::restore()
+    {
+        m_vertexCount = 0U;
+        m_indexCount = 0U;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::process( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount )
     {
         if( m_vertexAttribute != _vertexAttribute )
@@ -111,7 +117,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderBatch::unlock()
-    {
+    {        
+        m_lockData.vertexMemory = nullptr;
+        m_lockData.indexMemory = nullptr;
+
+        m_lockData.vertexSize = 0U;
+        m_lockData.indexSize = 0U;
+
+        m_lockData.vbPos = 0U;
+        m_lockData.ibPos = 0U;
+
         if( m_vertexBuffer->unlock() == false )
         {
             LOGGER_ERROR( "failed to unlock vertex buffer" );

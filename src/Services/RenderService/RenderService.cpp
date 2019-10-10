@@ -652,6 +652,11 @@ namespace Mengine
     {
         m_renderBatches.clear();
 
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
+        {
+            batch->restore();
+        }
+
         m_debugRenderVertices.clear();
         m_debugRenderIndices.clear();
 

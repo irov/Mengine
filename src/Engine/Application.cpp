@@ -231,7 +231,7 @@ namespace Mengine
 
         if( HAS_OPTION( "locale" ) == true )
         {
-            const Char * option_locale = GET_OPTION_VALUE( "locale" );
+            const Char * option_locale = GET_OPTION_VALUE( "locale", nullptr );
 
             m_locale = Helper::stringizeString( option_locale );
         }

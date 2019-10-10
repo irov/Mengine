@@ -30,6 +30,8 @@ namespace Mengine
     {
 #ifdef MENGINE_DEBUG
         m_memleakDetection = HAS_OPTION( "memleak" );
+
+        m_memleakLogFileName = GET_OPTION_VALUE( "memleaklog", "" );
 #endif
 
         return true;
@@ -66,14 +68,77 @@ namespace Mengine
             ++leakcount;
         } );
 
+#ifdef MENGINE_PLATFORM_WINDOWS
+        if( m_memleakLogFileName.empty() == false )
+        {
+            FILE * f = fopen( m_memleakLogFileName.c_str(), "wb" );
+
+            if( f != NULL )
+            {
+                for( auto && [name, objects] : objectLeaks )
+                {
+                    const Char * factory_delimiter = "##########################################################\n";
+                    fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
+
+                    Char factorymsg[2048];
+                    int factorymsg_length = snprintf( factorymsg, 2048, "Factory '%s' [%u]:\n"
+                        , name.c_str()
+                        , objects.size()
+                    );
+
+                    fwrite( factorymsg, factorymsg_length, 1, f );
+
+                    for( const String & obj : objects )
+                    {
+                        const Char * obj_delimiter = "**********************************************************\n";
+                        fwrite( obj_delimiter, strlen( obj_delimiter ), 1, f );
+
+                        Char objmsg[16384];
+                        int objmsg_length = snprintf( objmsg, 16384, "    doc: %s\n"
+                            , obj.c_str()
+                        );
+
+                        fwrite( objmsg, objmsg_length, 1, f );
+                    }
+
+                    fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
+                }
+
+                Char finalmsg[1024];
+                int finalmsg_length = sprintf( finalmsg
+                    , "**********************************************************\n"
+                      "<<<<<                OBJECT LEAK [%.7u]           >>>>>\n"
+                      "**********************************************************\n"
+                    , leakcount
+                );
+
+                fwrite( finalmsg, finalmsg_length, 1, f );
+
+                fclose( f );
+            }
+        }
+#endif
+
         MENGINE_ASSERTION_CRITICAL( leakcount == 0, "detect factory leak [%d]"
             , leakcount
         );
+
+        for( uint32_t index = 0; index != MENGINE_NODELEAKDETECTOR_HASHSIZE; ++index )
+        {
+            VectorObjectLeakDesc & nodeLeakDescs = m_objectLeakDescs[index];
+
+            nodeLeakDescs.clear();
+        }
+
+
+
 #endif
 
         MENGINE_ASSERTION_CRITICAL( m_factories.empty() == true, "detect factory leak [%d]"
             , m_factories.size()
         );
+
+        m_factories.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::registerFactory( const Factory * _factory )

@@ -40,6 +40,8 @@ namespace Mengine
         }
 #endif
 
+        m_frameworks.clear();
+
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Framework" ) );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -104,7 +106,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FrameworkService::stopFrameworks()
     {
-        for( const FrameworkInterfacePtr & framework : m_frameworks )
+        VectorFrameworks reverse_frameworks = m_frameworks;
+        std::reverse( reverse_frameworks.begin(), reverse_frameworks.end() );
+
+        for( const FrameworkInterfacePtr & framework : reverse_frameworks )
         {
             framework->stopFramework();
         }

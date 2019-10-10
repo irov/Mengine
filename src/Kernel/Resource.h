@@ -49,10 +49,10 @@ namespace Mengine
         MENGINE_INLINE const ConstString & getGroupName() const;
 
         void setGroupCache( bool _groupCache );
-        MENGINE_INLINE bool getGroupCache() const;
+        MENGINE_INLINE bool isGroupCache() const;
 
         void setGlobal( bool _global );
-        MENGINE_INLINE bool getGlobal() const;
+        MENGINE_INLINE bool isGlobal() const;
 
     public:
         void setTags( const Tags & _tags );
@@ -126,12 +126,12 @@ namespace Mengine
         return m_groupName;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool Resource::getGroupCache() const
+    MENGINE_INLINE bool Resource::isGroupCache() const
     {
         return m_groupCache;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool Resource::getGlobal() const
+    MENGINE_INLINE bool Resource::isGlobal() const
     {
         return m_global;
     }

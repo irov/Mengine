@@ -38,6 +38,9 @@ namespace Mengine
         virtual void removeTimer( uint32_t _id ) = 0;
 
     public:
+        virtual uint64_t getTicks() const = 0;
+
+    public:
         virtual void setIcon( uint32_t _icon ) = 0;
         virtual uint32_t getIcon() const = 0;
 

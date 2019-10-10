@@ -205,7 +205,7 @@ namespace Mengine
         }
 
         PlatformDateTime dateTime;
-        m_dateTimeProvider->getDateTime( &dateTime );
+        m_dateTimeProvider->getLocalDateTime( &dateTime );
 
         int size = snprintf( _buffer + _offset, _capacity - _offset, "[%02u:%02u:%02u:%04u] "
             , dateTime.hour

@@ -306,7 +306,7 @@ namespace Mengine
             ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
 
         PlatformDateTime dateTime;
-        dateTimeProvider->getDateTime( &dateTime );
+        dateTimeProvider->getLocalDateTime( &dateTime );
 
         Stringstream ss_date;
         ss_date << dateTime.year

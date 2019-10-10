@@ -119,7 +119,7 @@ namespace Mengine
         }
 #endif
 
-        MENGINE_ASSERTION_CRITICAL( leakcount == 0, "detect factory leak [%d]"
+        MENGINE_ASSERTION_FATAL( leakcount == 0, "detect factory leak [%d]"
             , leakcount
         );
 
@@ -129,12 +129,9 @@ namespace Mengine
 
             nodeLeakDescs.clear();
         }
-
-
-
 #endif
 
-        MENGINE_ASSERTION_CRITICAL( m_factories.empty() == true, "detect factory leak [%d]"
+        MENGINE_ASSERTION_FATAL( m_factories.empty() == true, "detect factory leak [%d]"
             , m_factories.size()
         );
 

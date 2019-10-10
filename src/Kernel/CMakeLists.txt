@@ -439,7 +439,10 @@ Core
     VectorResourceImages.h
     
     UID.h
-    UID.cpp        
+    UID.cpp
+    
+    Base64.h
+    Base64.cpp
         
     RenderUtils.h
 	RenderUtils.cpp

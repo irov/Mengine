@@ -6,6 +6,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -195,7 +196,13 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, lambda ) );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, lambda );
+
+        EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
+
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "pickerable override" );
+
+        m_receiver = newreceiver;
 
         return false;
     }
@@ -208,9 +215,12 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON );
-        m_pickerable = nullptr;
+        EventReceiverInterfacePtr delreceiver = eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON );
 
+        MENGINE_ASSERTION_FATAL( m_receiver == delreceiver, "pickerable miss remove" );
+        m_receiver = nullptr;
+
+        m_pickerable = nullptr;
         m_filter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -125,7 +125,7 @@ namespace Mengine
         processDumpPath += "_";
 
         PlatformDateTime dateTime;
-        m_dateTimeProvider->getDateTime( &dateTime );
+        m_dateTimeProvider->getLocalDateTime( &dateTime );
 
         Stringstream ss_date;
         ss_date << dateTime.year

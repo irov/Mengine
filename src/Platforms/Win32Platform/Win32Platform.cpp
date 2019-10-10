@@ -61,6 +61,7 @@ namespace Mengine
     Win32Platform::Win32Platform()
         : m_hInstance( NULL )
         , m_hWnd( NULL )
+        , m_performanceSupport( false )
         , m_active( false )
         , m_update( false )
         , m_enumerator( 0 )
@@ -80,7 +81,7 @@ namespace Mengine
         , m_lastMouseX( 0 )
         , m_lastMouseY( 0 )
         , m_touchpad( false )
-        , m_fullscreen( false )
+        , m_fullscreen( false )        
     {
         m_projectTitle[0] = '\0';
     }
@@ -92,6 +93,11 @@ namespace Mengine
     bool Win32Platform::_initializeService()
     {
         m_hInstance = GetModuleHandle( NULL );
+
+        if( QueryPerformanceFrequency( &m_performanceFrequency ) == TRUE )
+        {
+            m_performanceSupport = true;
+        }
 
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_ARROW" )] = LoadCursor( NULL, IDC_ARROW );
         m_cursors[STRINGIZE_STRING_LOCAL( "IDC_UPARROW" )] = LoadCursor( NULL, IDC_UPARROW );
@@ -247,7 +253,7 @@ namespace Mengine
                     this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
 
                 PlatformDateTime dateTime;
-                dateTimeProvider->getDateTime( &dateTime );
+                dateTimeProvider->getLocalDateTime( &dateTime );
 
                 Stringstream ss_date;
                 ss_date << dateTime.year
@@ -271,7 +277,7 @@ namespace Mengine
             this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
 
         PlatformDateTime dateTime;
-        dateTimeProvider->getDateTime( &dateTime );
+        dateTimeProvider->getLocalDateTime( &dateTime );
 
         LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
             , dateTime.day
@@ -455,6 +461,21 @@ namespace Mengine
 
         desc.id = 0;
     }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t Win32Platform::getTicks() const
+    {
+        if( m_performanceSupport == false )
+        {
+            return 0ULL;
+        }
+
+        LARGE_INTEGER performanceCount;
+        QueryPerformanceCounter( &performanceCount );
+
+        LONGLONG ticks = performanceCount.QuadPart / m_performanceFrequency.QuadPart;
+
+        return (uint64_t)ticks;
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::runPlatform()
     {

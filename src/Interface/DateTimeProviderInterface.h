@@ -10,7 +10,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void getDateTime( PlatformDateTime * _dateTime ) const = 0;
+        virtual void getLocalDateTime( PlatformDateTime * _dateTime ) const = 0;
+
+    public:
+        virtual uint64_t getLocalDateMilliseconds() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DateTimeProviderInterface> DateTimeProviderInterfacePtr;

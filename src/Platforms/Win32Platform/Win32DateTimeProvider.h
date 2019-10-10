@@ -8,7 +8,10 @@ namespace Mengine
         : public DateTimeProviderInterface
     {
     protected:
-        void getDateTime( PlatformDateTime * _dateTime ) const override;
+        void getLocalDateTime( PlatformDateTime * _dateTime ) const override;
+
+    protected:
+        uint64_t getLocalDateMilliseconds() const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32DateTimeProvider, DateTimeProviderInterface> Win32DateTimeProviderPtr;

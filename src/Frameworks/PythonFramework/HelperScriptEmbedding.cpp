@@ -30,6 +30,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/Base64.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -631,6 +632,45 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
+        String s_generateUniqueIdentity( uint32_t _length )
+        {
+            MENGINE_UNUSED( _length );
+
+            DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+
+            uint64_t milliseconds = dateTimeProvider->getLocalDateMilliseconds();
+
+            uint64_t ticks = PLATFORM_SERVICE()
+                ->getTicks();
+
+            uint64_t total = (uint32_t)milliseconds + (ticks << 32);
+
+            size_t total_base64_size;
+            Char total_base64[16];
+            Helper::base64_encode( (const uint8_t *)& total, sizeof( total ), false, total_base64, 16, &total_base64_size );
+            total_base64[total_base64_size] = '\0';
+
+            Stringstream ss;
+
+            ss << total_base64;
+
+            if( _length > total_base64_size )
+            {
+                uint32_t uid_size = _length - total_base64_size;
+
+                Char uid[40];
+                Helper::makeUID( uid_size, uid );
+                uid[uid_size] = '\0';
+
+                ss << uid;
+            }
+
+            String str = ss.str();
+
+            return str;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -1168,15 +1208,16 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String s_getTimeString()
         {
-            std::time_t ctTime;
-            std::time( &ctTime );
+            DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
+                ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
 
-            std::tm * sTime = std::localtime( &ctTime );
+            PlatformDateTime dateTime;
+            dateTimeProvider->getLocalDateTime( &dateTime );
 
             Stringstream str;
-            str << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_hour
-                << ":" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_min
-                << ":" << std::setw( 2 ) << std::setfill( '0' ) << sTime->tm_sec;
+            str << std::setw( 2 ) << std::setfill( '0' ) << dateTime.hour
+                << ":" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.minute
+                << ":" << std::setw( 2 ) << std::setfill( '0' ) << dateTime.second;
 
             return str.str();
         }
@@ -3626,6 +3667,8 @@ namespace Mengine
         pybind::def_functor( _kernel, "crashEngine", helperScriptMethod, &HelperScriptMethod::s_crashEngine );
         pybind::def_functor( _kernel, "freezeEngine", helperScriptMethod, &HelperScriptMethod::s_freezeEngine );
         pybind::def_functor( _kernel, "memleakEngine", helperScriptMethod, &HelperScriptMethod::s_memleakEngine );
+
+        pybind::def_functor( _kernel, "generateUniqueIdentity", helperScriptMethod, &HelperScriptMethod::s_generateUniqueIdentity );
 
 
         m_implement = helperScriptMethod;

@@ -60,6 +60,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/EntityEventable.h"
+#include "Kernel/MT19937Randomizer.h"
 
 #include "Config/Config.h"
 #include "Config/String.h"
@@ -383,6 +384,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>() ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -392,6 +399,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none() );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
@@ -776,7 +786,7 @@ namespace Mengine
                     ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
 
                 PlatformDateTime dateTime;
-                dateTimeProvider->getDateTime( &dateTime );
+                dateTimeProvider->getLocalDateTime( &dateTime );
 
                 Stringstream ss_date;
                 ss_date << dateTime.year

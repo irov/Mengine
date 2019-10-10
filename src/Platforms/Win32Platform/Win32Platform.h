@@ -29,6 +29,9 @@ namespace Mengine
         void removeTimer( uint32_t _id ) override;
 
     public:
+        uint64_t getTicks() const override;
+
+    public:
         bool runPlatform() override;
         void updatePlatform() override;
         void stopPlatform() override;
@@ -154,6 +157,9 @@ namespace Mengine
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;
+
+        LARGE_INTEGER m_performanceFrequency;
+        bool m_performanceSupport;
 
         FactoryPtr m_factoryDynamicLibraries;
         FactoryPtr m_factoryDateTimeProviders;

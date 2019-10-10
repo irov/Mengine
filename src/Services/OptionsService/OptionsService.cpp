@@ -103,7 +103,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * OptionsService::getOptionValue( const Char * _key ) const
+    const Char * OptionsService::getOptionValue( const Char * _key, const Char * _default ) const
     {
         for( const Option & op : m_options )
         {
@@ -115,7 +115,16 @@ namespace Mengine
             return op.value;
         }
 
-        return nullptr;
+        if( _default == nullptr )
+        {
+            LOGGER_ERROR( "option '%s' not found"
+                , _key
+            );
+
+            return nullptr;
+        }
+
+        return _default;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OptionsService::getOptionUInt32( const Char * _key ) const
@@ -150,12 +159,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {
-        const Char * value = this->getOptionValue( _key );
-
-        if( value == nullptr )
+        if( this->hasOption( _key ) == false )
         {
             return false;
         }
+
+        const Char * value = this->getOptionValue( _key, "" );
 
         if( strcmp( value, _value ) != 0 )
         {

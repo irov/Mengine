@@ -56,6 +56,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         uint32_t m_generation;
         bool m_memleakDetection;
+        String m_memleakLogFileName;
 
         struct ObjectLeakDesc
         {

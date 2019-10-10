@@ -73,6 +73,22 @@ namespace Mengine
         }
 #endif
 
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtr & resource = value.element;
+
+            if( resource->isGlobal() == false )
+            {
+                continue;
+            }
+
+            resource->setResourceService( nullptr );
+
+            resource->finalize();
+
+            IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
+        }
+
         m_resources.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -408,7 +424,7 @@ namespace Mengine
 
         _resource->finalize();
 
-        if( _resource->getGroupCache() == true )
+        if( _resource->isGroupCache() == true )
         {
             const ConstString & group = _resource->getGroupName();
 
@@ -422,7 +438,7 @@ namespace Mengine
             cache_resources.erase( it_found, cache_resources.end() );
         }
 
-        if( _resource->getGlobal() == true )
+        if( _resource->isGlobal() == true )
         {
             IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
         }

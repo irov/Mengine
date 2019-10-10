@@ -157,7 +157,7 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        const Char * option_platform = GET_OPTION_VALUE( "platform" );
+        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
 
         if( option_platform != nullptr )
         {
@@ -1480,7 +1480,7 @@ namespace Mengine
 
         m_mouseEvent.initialize( m_hWnd );
 
-        const Char * option_fps = GET_OPTION_VALUE( "fps" );
+        const Char * option_fps = GET_OPTION_VALUE( "fps", nullptr );
 
         float activeFrameTimeDefault = 1000.f / 60.f;
 

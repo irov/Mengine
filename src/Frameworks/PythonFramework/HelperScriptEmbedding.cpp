@@ -595,7 +595,7 @@ namespace Mengine
         const Char * s_getOptionValue( const ConstString & _option )
         {
             const Char * value = OPTIONS_SERVICE()
-                ->getOptionValue( _option.c_str() );
+                ->getOptionValue( _option.c_str(), "" );
 
             return value;
         }

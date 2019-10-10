@@ -32,8 +32,8 @@ namespace Mengine
 
     public:
         bool hasOption( const Char * _key ) const override;
-        const Char * getOptionValue( const Char * _key ) const override;
-        uint32_t getOptionUInt32( const Char * _key ) const override;
+        const Char * getOptionValue( const Char * _key, const Char * _default ) const override;
+        uint32_t getOptionUInt32( const Char * _key ) const override;        
         bool testOptionValue( const Char * _key, const Char * _value ) const override;
 
     protected:

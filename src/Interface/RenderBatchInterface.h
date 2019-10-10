@@ -39,13 +39,6 @@ namespace Mengine
         virtual const RenderIndexBufferInterfacePtr & getIndexBuffer() = 0;
 
     public:
-        virtual bool process( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount ) = 0;
-
-    public:
-        virtual bool lock() = 0;
-        virtual bool unlock() = 0;
-
-    public:
         virtual RenderBatchLockData * getLockData() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

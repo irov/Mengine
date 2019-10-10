@@ -22,11 +22,14 @@ namespace Mengine
         const RenderIndexBufferInterfacePtr & getIndexBuffer() override;
 
     public:
-        bool process( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount ) override;
+        void restore();
 
     public:
-        bool lock() override;
-        bool unlock() override;
+        bool process( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount );
+
+    public:
+        bool lock();
+        bool unlock();
 
     public:
         RenderBatchLockData * getLockData() override;

@@ -2,6 +2,8 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -48,5 +50,44 @@ namespace Mengine
             + milliseconds_year64;
 
         return total;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    int32_t Win32DateTimeProvider::getTimeZoneOffset() const
+    {
+        TIME_ZONE_INFORMATION TimeZoneInformation;
+        
+        DWORD zoneId = GetTimeZoneInformation( &TimeZoneInformation );
+
+        switch( zoneId )
+        {
+        case TIME_ZONE_ID_UNKNOWN:
+        case TIME_ZONE_ID_STANDARD:
+            {
+                LONG zoneBias = TimeZoneInformation.Bias + TimeZoneInformation.StandardBias;
+
+                return zoneBias;
+            }break;
+        case TIME_ZONE_ID_DAYLIGHT:
+            {
+                LONG zoneBias = TimeZoneInformation.Bias + TimeZoneInformation.DaylightBias;
+
+                return zoneBias;
+            }break;
+        case TIME_ZONE_ID_INVALID:
+            {
+                DWORD err = GetLastError();
+                LOGGER_ERROR( "GetTimeZoneInformation get error [%d]"
+                    , err
+                );
+
+                return 0;
+            }break;
+        }
+
+        LOGGER_ERROR( "GetTimeZoneInformation unknown zone ID [%d]"
+            , zoneId
+        );
+
+        return 0;
     }
 }

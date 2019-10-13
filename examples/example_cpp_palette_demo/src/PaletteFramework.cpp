@@ -1,4 +1,4 @@
-#include "MyGameFramework.h"
+#include "PaletteFramework.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -11,23 +11,23 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "MySceneEventReceiver.h"
+#include "PaletteSceneEventReceiver.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MyGameFramework::MyGameFramework()
+    PaletteFramework::PaletteFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MyGameFramework::~MyGameFramework()
+    PaletteFramework::~PaletteFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MyGameFramework::_initializeFramework()
+    bool PaletteFramework::_initializeFramework()
     {
-        MySceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<MySceneEventReceiver>();
+        PaletteSceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<PaletteSceneEventReceiver>();
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
 
@@ -39,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MyGameFramework::_finalizeFramework()
+    void PaletteFramework::_finalizeFramework()
     {
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );

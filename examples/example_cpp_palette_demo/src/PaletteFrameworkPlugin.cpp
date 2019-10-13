@@ -1,36 +1,36 @@
-#include "MyGameFrameworkPlugin.h"
+#include "PaletteFrameworkPlugin.h"
 
 #include "Interface/FrameworkFactoryInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
-#include "MyGameFramework.h"
+#include "PaletteFramework.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MyGameFramework, Mengine::MyGameFrameworkPlugin )
+PLUGIN_FACTORY( PaletteFramework, Mengine::PaletteFrameworkPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {    
     //////////////////////////////////////////////////////////////////////////
-    MyGameFrameworkPlugin::MyGameFrameworkPlugin()
+    PaletteFrameworkPlugin::PaletteFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MyGameFrameworkPlugin::~MyGameFrameworkPlugin()
+    PaletteFrameworkPlugin::~PaletteFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MyGameFrameworkPlugin::_initializePlugin()
+    bool PaletteFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "MyGameFramework" ), Helper::makeFrameworkFactory<MyGameFramework>() );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PaletteFramework" ), Helper::makeFrameworkFactory<PaletteFramework>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MyGameFrameworkPlugin::_finalizePlugin()
+    void PaletteFrameworkPlugin::_finalizePlugin()
     {
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "MyGameFramework" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "PaletteFramework" ) );
     }
 }

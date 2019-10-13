@@ -112,6 +112,6 @@ namespace Mengine
         Scene * m_scene;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TicTacToeSceneEventReceiver> MySceneEventReceiverPtr;
+    typedef IntrusivePtr<TicTacToeSceneEventReceiver> TicTacToeSceneEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

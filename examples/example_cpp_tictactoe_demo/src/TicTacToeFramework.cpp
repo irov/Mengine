@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TicTacToeFramework::_initializeFramework()
     {
-        MySceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<TicTacToeSceneEventReceiver>();
+        TicTacToeSceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<TicTacToeSceneEventReceiver>();
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
 

@@ -1,16 +1,16 @@
-set(MY_LIB_NAME MyGameFramework)
+set(MY_LIB_NAME PaletteFramework)
 
 ADD_FILTER(
-MyGameFramework
-    MyGameFramework.cpp
-    MyGameFramework.h
-    MyGameFrameworkPlugin.cpp
-    MyGameFrameworkPlugin.h
-    MySceneEventReceiver.cpp
-    MySceneEventReceiver.h
+PaletteFramework
+    PaletteFramework.cpp
+    PaletteFramework.h
+    PaletteFrameworkPlugin.cpp
+    PaletteFrameworkPlugin.h
+    PaletteSceneEventReceiver.cpp
+    PaletteSceneEventReceiver.h
 )
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MYGAMEFRAMEWORK)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_PALETTEFRAMEWORK)
 
 set_target_properties(${MY_LIB_NAME} PROPERTIES
     FOLDER Frameworks

@@ -1,19 +1,19 @@
-set(MY_LIB_NAME MyGameFramework)
+set(MY_LIB_NAME TicTacToeFramework)
 
 ADD_FILTER(
-MyGameFramework
-    MyGameFramework.cpp
-    MyGameFramework.h
-    MyGameFrameworkPlugin.cpp
-    MyGameFrameworkPlugin.h
-    MySceneEventReceiver.cpp
-    MySceneEventReceiver.h
+TicTacToeFramework
+    TicTacToeFramework.cpp
+    TicTacToeFramework.h
+    TicTacToeFrameworkPlugin.cpp
+    TicTacToeFrameworkPlugin.h
+    TicTacToeSceneEventReceiver.cpp
+    TicTacToeSceneEventReceiver.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)
 
-ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_MYGAMEFRAMEWORK)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_TICTACTOEFRAMEWORK)
 
 set_target_properties(${MY_LIB_NAME} PROPERTIES
     FOLDER Frameworks

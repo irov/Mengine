@@ -1,4 +1,4 @@
-#include "MyGameFramework.h"
+#include "TicTacToeFramework.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
@@ -11,27 +11,27 @@
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "MySceneEventReceiver.h"
+#include "TicTacToeSceneEventReceiver.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MyGameFramework::MyGameFramework()
+    TicTacToeFramework::TicTacToeFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MyGameFramework::~MyGameFramework()
+    TicTacToeFramework::~TicTacToeFramework()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MyGameFramework::_initializeFramework()
+    bool TicTacToeFramework::_initializeFramework()
     {
-        MySceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<MySceneEventReceiver>();
+        MySceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<TicTacToeSceneEventReceiver>();
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
 
-        scene->setName( STRINGIZE_STRING_LOCAL( "MyGameScene" ) );
+        scene->setName( STRINGIZE_STRING_LOCAL( "TicTacToe" ) );
 
         SCENE_SERVICE()
             ->setCurrentScene( scene, false, false, nullptr );
@@ -39,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MyGameFramework::_finalizeFramework()
+    void TicTacToeFramework::_finalizeFramework()
     {
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );

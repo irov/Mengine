@@ -60,6 +60,8 @@ Tasks
     TaskHttpPost.cpp
     TaskHttpHeaderData.h
     TaskHttpHeaderData.cpp
+    TaskHttpDownloadAsset.h
+    TaskHttpDownloadAsset.cpp
     TaskNotify.h
     TaskEventable.h
     TaskEventable.cpp

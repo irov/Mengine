@@ -1,6 +1,6 @@
 @echo off
 
-set "NAME=MyGame"
+set "NAME=TicTacToe"
 set "VERSION=16"
 set "CONFIGURATION=Debug"
 set "SOLUTION_DIR=..\solutions\msvc%VERSION%\%CONFIGURATION%"

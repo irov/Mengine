@@ -5,13 +5,13 @@
 
 namespace Mengine
 {
-    class MyGameFramework
+    class TicTacToeFramework
         : public FrameworkBase
         , public Observable
     {
     public:
-        MyGameFramework();
-        ~MyGameFramework() override;
+        TicTacToeFramework();
+        ~TicTacToeFramework() override;
 
     protected:
         bool _initializeFramework() override;

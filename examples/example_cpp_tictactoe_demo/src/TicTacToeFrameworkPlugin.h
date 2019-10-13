@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class MyGameFrameworkPlugin
+    class TicTacToeFrameworkPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "MyGameFramework" )
+        PLUGIN_DECLARE( "TicTacToeFramework" )
 
     public:
-        MyGameFrameworkPlugin();
-        ~MyGameFrameworkPlugin() override;
+        TicTacToeFrameworkPlugin();
+        ~TicTacToeFrameworkPlugin() override;
 
     protected:
         bool _initializePlugin() override;

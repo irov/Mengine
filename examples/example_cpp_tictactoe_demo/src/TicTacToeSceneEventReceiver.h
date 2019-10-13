@@ -4,6 +4,8 @@
 #include "Kernel/Resource.h"
 
 #include "Engine/HotSpotPolygon.h"
+#include "Engine/ShapeQuadFixed.h"
+#include "Engine/ResourceImageDefault.h"
 
 #include "Config/Vector.h"
 
@@ -15,14 +17,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Resource> ResourcePtr;
-    typedef IntrusivePtr<class ShapeQuadFixed> ShapeQuadFixedPtr;
-    typedef IntrusiveResourcePtr<class ResourceImageDefault> ResourceImageDefaultPtr;
-    //////////////////////////////////////////////////////////////////////////
     typedef Vector<ShapeQuadFixedPtr> VectorShapeQuadFixedPtr;
     typedef Vector<HotSpotPolygonPtr> VectorHotSpotPolygonPtr;
     //////////////////////////////////////////////////////////////////////////
-    class FilePath;
     //////////////////////////////////////////////////////////////////////////
     enum EPlayerType
     {
@@ -31,15 +28,13 @@ namespace Mengine
         EPlayerType_O
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<EPlayerType> VectorPlayers;
-    //////////////////////////////////////////////////////////////////////////
-    class MySceneEventReceiver
+    class TicTacToeSceneEventReceiver
         : public SceneEventReceiverInterface
         , public Factorable
     {
     public:
-        MySceneEventReceiver();
-        ~MySceneEventReceiver() override;
+        TicTacToeSceneEventReceiver();
+        ~TicTacToeSceneEventReceiver() override;
 
     public:
         bool onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior ) override;
@@ -69,7 +64,7 @@ namespace Mengine
         bool setupGame();
         bool setupBackground();
 
-        bool createPlayerSprite( const EPlayerType & _player, int32_t _position );
+        bool createPlayerSprite( EPlayerType _player, int32_t _position );
 
         void runTaskChains();
     
@@ -103,6 +98,7 @@ namespace Mengine
         VectorShapeQuadFixedPtr m_sprites;
         VectorHotSpotPolygonPtr m_hotspots;
 
+        typedef Vector<EPlayerType> VectorPlayers;
         VectorPlayers m_grid;
 
         mt::vec2f m_gridSize;
@@ -116,6 +112,6 @@ namespace Mengine
         Scene * m_scene;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MySceneEventReceiver> MySceneEventReceiverPtr;
+    typedef IntrusivePtr<TicTacToeSceneEventReceiver> MySceneEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

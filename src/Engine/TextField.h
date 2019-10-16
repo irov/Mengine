@@ -62,6 +62,9 @@ namespace Mengine
         void removeTextFormatArgs();
         const VectorString & getTextFormatArgs() const;
 
+        typedef Lambda<bool( String * )> LambdaFormatArgsContext;
+        void setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context );
+
     public:
         uint32_t getTextExpectedArgument() const;
 
@@ -201,6 +204,9 @@ namespace Mengine
 
         mutable TextEntryInterfacePtr m_textEntry;
         mutable VectorString m_textFormatArgs;
+
+        typedef Vector<LambdaFormatArgsContext> VectorFormatArgsContext;
+        VectorFormatArgsContext m_textFormatArgContexts;
 
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;

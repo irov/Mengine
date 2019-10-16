@@ -16,6 +16,6 @@ namespace Mengine
         void updateVerticesLocal() const override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ShapeQuadFixed> ShapeQuadFixedPtr;
+    typedef IntrusiveNodePtr<ShapeQuadFixed> ShapeQuadFixedPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -79,6 +79,7 @@ SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
+SERVICE_EXTERN( TimepipeService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
@@ -380,6 +381,7 @@ namespace Mengine
         SERVICE_CREATE( AccountService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
+        SERVICE_CREATE( TimepipeService );
         SERVICE_CREATE( EnumeratorService );
 
         return true;
@@ -878,7 +880,8 @@ namespace Mengine
         SERVICE_FINALIZE( PluginService );
         SERVICE_FINALIZE( FileService );
         SERVICE_FINALIZE( ThreadSystem );
-        SERVICE_FINALIZE( Platform );        
+        SERVICE_FINALIZE( TimepipeService );
+        SERVICE_FINALIZE( Platform );
         SERVICE_FINALIZE( NotificationService );
         SERVICE_FINALIZE( LoggerService );
         SERVICE_FINALIZE( StringizeService );

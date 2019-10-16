@@ -1,0 +1,33 @@
+#pragma once
+
+#include "Kernel/Node.h"
+
+//////////////////////////////////////////////////////////////////////////
+#define MENGINE_NODE_GENERATE(X)\
+namespace Mengine{typedef IntrusiveNodePtr<class X> X ## Ptr;}\
+namespace Mengine::Helper{X ## Ptr generate ## X( const Char * _doc );}
+//////////////////////////////////////////////////////////////////////////
+MENGINE_NODE_GENERATE( Grid2D )
+MENGINE_NODE_GENERATE( Gyroscope )
+MENGINE_NODE_GENERATE( HotSpotBubbles )
+MENGINE_NODE_GENERATE( HotSpotCircle )
+MENGINE_NODE_GENERATE( HotSpotGlobal )
+MENGINE_NODE_GENERATE( HotSpotImage )
+MENGINE_NODE_GENERATE( HotSpotPolygon )
+MENGINE_NODE_GENERATE( HotSpotShape )
+MENGINE_NODE_GENERATE( HotSpotShape )
+MENGINE_NODE_GENERATE( Landscape2D )
+MENGINE_NODE_GENERATE( Line )
+MENGINE_NODE_GENERATE( Meshget )
+MENGINE_NODE_GENERATE( Point )
+MENGINE_NODE_GENERATE( SoundEmitter )
+MENGINE_NODE_GENERATE( TextField )
+MENGINE_NODE_GENERATE( Vectorizator )
+MENGINE_NODE_GENERATE( Window )
+MENGINE_NODE_GENERATE( ShapeCircle )
+MENGINE_NODE_GENERATE( ShapePacMan )
+MENGINE_NODE_GENERATE( ShapeQuadFixed )
+MENGINE_NODE_GENERATE( ShapeQuadFlex )
+//////////////////////////////////////////////////////////////////////////
+#undef MENGINE_NODE_GENERATE
+//////////////////////////////////////////////////////////////////////////

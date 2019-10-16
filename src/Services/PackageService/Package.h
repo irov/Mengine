@@ -26,6 +26,8 @@ namespace Mengine
             , const FilePath & _descriptionPath
             , const FileGroupInterfacePtr & _baseFileGroup
             , const FilePath & _filePath
+            , const FilePath & _fontsPath
+            , const FilePath & _textsPath
             , bool _preload );
 
         void finalize();
@@ -119,6 +121,8 @@ namespace Mengine
 
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_filePath;
+        FilePath m_fontsPath;
+        FilePath m_textsPath;
 
         VectorScriptModulePack m_scriptsPackages;
 

@@ -20,11 +20,9 @@ namespace Mengine
         float getAngleTo() const;
 
     protected:
-        void updateVerticesLocal() const;
-
-    protected:
-        void updateVerticesWM() const;
-        void updateVerticesColor() const;
+        void updateVerticesLocal() const override;
+        void updateVerticesWM() const override;
+        void updateVerticesColor() const override;
 
     protected:
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
@@ -47,28 +45,11 @@ namespace Mengine
         mutable uint32_t m_vertexCount;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveNodePtr<ShapePacMan> ShapePacManPtr;
+    //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const RenderVertex2D * ShapePacMan::getVerticesWM() const
     {
-        if( m_invalidateVerticesLocal == true )
-        {
-            m_invalidateVerticesLocal = false;
-
-            this->updateVerticesLocal();
-        }
-
-        if( m_invalidateVerticesWM == true )
-        {
-            m_invalidateVerticesWM = false;
-
-            this->updateVerticesWM();
-        }
-
-        if( m_invalidateVerticesColor == true )
-        {
-            m_invalidateVerticesColor = false;
-
-            this->updateVerticesColor();
-        }
+        this->prepareVerticesWM();
 
         return m_verticesWM;
     }

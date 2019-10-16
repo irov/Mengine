@@ -77,6 +77,7 @@ src
     UserdataServiceInterface.h
     OptionsServiceInterface.h
     TimelineServiceInterface.h
+    TimepipeServiceInterface.h
     SocketInterface.h
 	SocketSystemInterface.h
 	FactoryServiceInterface.h

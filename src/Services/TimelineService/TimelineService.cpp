@@ -53,8 +53,10 @@ namespace Mengine
         return totalTime;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimelineService::tick( float _timing )
+    void TimelineService::tick( const UpdateContext * _context )
     {
+        float time = _context->time;
+
         if( m_offsets.empty() == false )
         {
             LOGGER_ERROR( "invalid complete times" );
@@ -62,6 +64,6 @@ namespace Mengine
             return;
         }
 
-        m_time += _timing;
+        m_time += time;
     }
 }

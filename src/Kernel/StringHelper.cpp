@@ -267,91 +267,91 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        bool intToString( int32_t _value, String & _str )
+        bool intToString( int32_t _value, String * _str )
         {
             Stringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unsignedToString( uint32_t _value, String & _str )
+        bool unsignedToString( uint32_t _value, String * _str )
         {
             Stringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unsigned64ToString( uint64_t _value, String & _str )
+        bool unsigned64ToString( uint64_t _value, String * _str )
         {
             Stringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool floatToString( float _value, String & _str )
+        bool floatToString( float _value, String * _str )
         {
             Stringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool intToWString( int32_t _value, WString & _str )
+        bool intToWString( int32_t _value, WString * _str )
         {
             WStringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unsignedToWString( uint32_t _value, WString & _str )
+        bool unsignedToWString( uint32_t _value, WString * _str )
         {
             WStringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool unsigned64ToWString( uint64_t _value, WString & _str )
+        bool unsigned64ToWString( uint64_t _value, WString * _str )
         {
             WStringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool floatToWString( float _value, WString & _str )
+        bool floatToWString( float _value, WString * _str )
         {
             WStringstream ss;
             ss << _value;
 
-            _str = ss.str();
+            *_str = ss.str();
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool stringToInt( const String & _str, int32_t & _value )
+        bool stringToInt( const String & _str, int32_t * _value )
         {
             Stringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {
@@ -361,11 +361,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool stringToUnsigned( const String & _str, uint32_t & _value )
+        bool stringToUnsigned( const String & _str, uint32_t * _value )
         {
             Stringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {
@@ -375,11 +375,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool stringToFloat( const String & _str, float & _value )
+        bool stringToFloat( const String & _str, float * _value )
         {
             Stringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {
@@ -389,11 +389,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToInt( const WString & _str, int32_t & _value )
+        bool wstringToInt( const WString & _str, int32_t * _value )
         {
             WStringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {
@@ -403,11 +403,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToInt2( const WString & _str, int32_t & _value1, int32_t & _value2, bool _separator )
+        bool wstringToInt2( const WString & _str, int32_t * _value1, int32_t * _value2, bool _separator )
         {
             WStringstream ss;
             ss << _str;
-            ss >> _value1;
+            ss >> *_value1;
 
             if( ss.fail() == true )
             {
@@ -425,7 +425,7 @@ namespace Mengine
                 }
             }
 
-            ss >> _value2;
+            ss >> *_value2;
 
             if( ss.fail() == true )
             {
@@ -435,11 +435,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToInt4( const WString & _str, int32_t & _value1, int32_t & _value2, int32_t & _value3, int32_t & _value4, bool _separator )
+        bool wstringToInt4( const WString & _str, int32_t * _value1, int32_t * _value2, int32_t * _value3, int32_t * _value4, bool _separator )
         {
             WStringstream ss;
             ss << _str;
-            ss >> _value1;
+            ss >> *_value1;
 
             if( ss.fail() == true )
             {
@@ -457,7 +457,7 @@ namespace Mengine
                 }
             }
 
-            ss >> _value2;
+            ss >> *_value2;
 
             if( ss.fail() == true )
             {
@@ -476,7 +476,7 @@ namespace Mengine
                 }
             }
 
-            ss >> _value3;
+            ss >> *_value3;
 
             if( ss.fail() == true )
             {
@@ -494,7 +494,7 @@ namespace Mengine
                 }
             }
 
-            ss >> _value4;
+            ss >> *_value4;
 
             if( ss.fail() == true )
             {
@@ -515,11 +515,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToUnsigned( const WString & _str, uint32_t & _value )
+        bool wstringToUnsigned( const WString & _str, uint32_t * _value )
         {
             WStringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {
@@ -529,11 +529,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToUnsigned64( const WString & _str, uint64_t & _value )
+        bool wstringToUnsigned64( const WString & _str, uint64_t * _value )
         {
             WStringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {
@@ -543,11 +543,11 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToFloat( const WString & _str, float & _value )
+        bool wstringToFloat( const WString & _str, float * _value )
         {
             WStringstream ss;
             ss << _str;
-            ss >> _value;
+            ss >> *_value;
 
             if( ss.fail() == true )
             {

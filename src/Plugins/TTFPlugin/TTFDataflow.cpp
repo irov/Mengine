@@ -12,6 +12,16 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
+static const char * FT_error_message( FT_Error err )
+{
+#undef __FTERRORS_H__
+#define FT_ERRORDEF( e, v, s )  case e: return s;
+#define FT_ERROR_START_LIST     switch (err) {
+#define FT_ERROR_END_LIST       }
+#include FT_ERRORS_H
+    return "(Unknown error)";
+}
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -97,19 +107,29 @@ namespace Mengine
         MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         FT_Face face;
-        FT_Error err_code = FT_New_Memory_Face( m_library, memory_byte, (FT_Long)memory_size, 0, &face );
-
-        if( err_code != 0 )
+        FT_Error err_code_memory_face = FT_New_Memory_Face( m_library, memory_byte, (FT_Long)memory_size, 0, &face );
+        
+        if( err_code_memory_face != FT_Err_Ok )
         {
-            LOGGER_ERROR( "invalid FT_New_Memory_Face font (doc: %s)"
+            LOGGER_ERROR( "FT_New_Memory_Face font error: %s [%d] (doc: %s)"
+                , FT_error_message( err_code_memory_face )
+                , err_code_memory_face
                 , _doc
             );
 
             return false;
         }
 
-        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        FT_Error err_code_select_charmap = FT_Select_Charmap( face, FT_ENCODING_UNICODE );
+
+        if( err_code_select_charmap != FT_Err_Ok )
         {
+            LOGGER_ERROR( "FT_Select_Charmap font error: %s [%d] (doc: %s)"
+                , FT_error_message( err_code_memory_face )
+                , err_code_memory_face
+                , _doc
+            );
+
             return false;
         }
 

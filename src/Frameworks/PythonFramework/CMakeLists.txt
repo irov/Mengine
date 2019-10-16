@@ -78,7 +78,7 @@ Wrapper
 )
 
 ADD_FILTER(
-Generator
+EntityBehavior
     PythonEntityBehavior.h
     PythonEntityBehavior.cpp    
 	PythonEntityPrototypeGenerator.h

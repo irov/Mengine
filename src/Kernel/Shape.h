@@ -43,6 +43,14 @@ namespace Mengine
         void invalidateVerticesColor();
 
     protected:
+        virtual void updateVerticesLocal() const = 0;
+        virtual void updateVerticesWM() const = 0;
+        virtual void updateVerticesColor() const = 0;
+
+    protected:
+        MENGINE_INLINE void prepareVerticesWM() const;
+
+    protected:
         SurfacePtr m_surface;
 
         mutable bool m_invalidateVerticesLocal;
@@ -52,4 +60,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Shape> ShapePtr;
     //////////////////////////////////////////////////////////////////////////
+    void Shape::prepareVerticesWM() const
+    {
+        if( m_invalidateVerticesLocal == true )
+        {
+            m_invalidateVerticesLocal = false;
+
+            this->updateVerticesLocal();
+        }
+
+        if( m_invalidateVerticesWM == true )
+        {
+            m_invalidateVerticesWM = false;
+
+            this->updateVerticesWM();
+        }
+
+        if( m_invalidateVerticesColor == true )
+        {
+            m_invalidateVerticesColor = false;
+
+            this->updateVerticesColor();
+        }
+    }
 }

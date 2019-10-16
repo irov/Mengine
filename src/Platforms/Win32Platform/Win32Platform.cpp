@@ -1501,11 +1501,11 @@ namespace Mengine
 
         m_mouseEvent.initialize( m_hWnd );
 
-        const Char * option_fps = GET_OPTION_VALUE( "fps", nullptr );
+        const Char * option_fps = GET_OPTION_VALUE( "fps", "" );
 
         float activeFrameTimeDefault = 1000.f / 60.f;
 
-        if( option_fps != nullptr )
+        if( strlen( option_fps ) != 0 )
         {
             float fps;
             Helper::stringalized( option_fps, &fps );

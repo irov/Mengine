@@ -44,6 +44,6 @@ namespace Mengine
         ResourceImagePtr m_resourceImage;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SurfaceImage> SurfaceImagePtr;
+    typedef IntrusiveSurfacePtr<SurfaceImage> SurfaceImagePtr;
     //////////////////////////////////////////////////////////////////////////
 }

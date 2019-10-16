@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/Surface.h"
 
 #include "Kernel/Soundable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class SurfaceSound> SurfaceSoundPtr;
+    typedef IntrusiveSurfacePtr<class SurfaceSound> SurfaceSoundPtr;
     //////////////////////////////////////////////////////////////////////////
     class SoundEmitter
         : public Node

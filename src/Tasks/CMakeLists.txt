@@ -34,6 +34,8 @@ Tasks
     TaskTransformationRotateY.h
     TaskTransformationRotateYTime.cpp
     TaskTransformationRotateYTime.h
+    TaskTransformationScaleTime.cpp
+    TaskTransformationScaleTime.h
     TaskTransformationTranslate.cpp
     TaskTransformationTranslate.h
     TaskTransformationTranslateTime.h

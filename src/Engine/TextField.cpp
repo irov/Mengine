@@ -364,6 +364,24 @@ namespace Mengine
             return;
         }
 
+        bool invalidate = false;
+        uint32_t enumerate = 0;
+        for( const LambdaFormatArgsContext & context : m_textFormatArgContexts )
+        {   
+            if( context != nullptr )
+            {
+                String & arg = m_textFormatArgs[enumerate];
+                invalidate |= context( &arg );
+            }
+
+            ++enumerate;
+        }
+
+        if( invalidate == true )
+        {
+            this->invalidateTextLines();
+        }
+
         const VectorRenderVertex2D & textVertices = this->getTextVertices( font );
 
         if( textVertices.empty() == true )
@@ -1492,6 +1510,8 @@ namespace Mengine
 
         m_textFormatArgs = _args;
 
+        m_textFormatArgContexts.resize( _args.size() );
+            
         this->invalidateFont();
         this->invalidateTextLines();
     }
@@ -1507,6 +1527,11 @@ namespace Mengine
     const VectorString & TextField::getTextFormatArgs() const
     {
         return m_textFormatArgs;
+    }
+    //////////////////////////////////////////////////////////////////////////    
+    void TextField::setTextFormatArgsContext( uint32_t _index, const LambdaFormatArgsContext & _context )
+    {
+        m_textFormatArgContexts[_index] = _context;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const

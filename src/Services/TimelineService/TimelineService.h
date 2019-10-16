@@ -24,7 +24,7 @@ namespace Mengine
         float getTime() const override;
 
     public:
-        void tick( float _offset ) override;
+        void tick( const UpdateContext * _context ) override;
 
     protected:
         float m_time;

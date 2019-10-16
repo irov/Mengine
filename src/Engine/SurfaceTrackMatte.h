@@ -73,6 +73,6 @@ namespace Mengine
         ESurfaceTrackMatteMode m_trackMatteMode;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SurfaceTrackMatte> SurfaceTrackMattePtr;
+    typedef IntrusiveSurfacePtr<SurfaceTrackMatte> SurfaceTrackMattePtr;
     //////////////////////////////////////////////////////////////////////////
 }

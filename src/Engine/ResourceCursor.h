@@ -16,6 +16,6 @@ namespace Mengine
         virtual const MemoryInterfacePtr & getBuffer() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceCursor> ResourceCursorPtr;
+    typedef IntrusiveResourcePtr<ResourceCursor> ResourceCursorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

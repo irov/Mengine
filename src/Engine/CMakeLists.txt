@@ -1,6 +1,21 @@
 set(MY_LIB_NAME Engine)
 
 ADD_FILTER(
+Engine
+    Engine.h
+)
+
+ADD_FILTER(
+Generators
+    NodeGenerators.h
+    NodeGenerators.cpp
+    ResourceGenerators.h
+    ResourceGenerators.cpp
+    SurfaceGenerators.h
+    SurfaceGenerators.cpp
+)
+
+ADD_FILTER(
 Application
 	Application.cpp
 	Application.h
@@ -11,8 +26,6 @@ Application
     ScenePrototypeGenerator.cpp
     ScenePrototypeGenerator.h
 )
-
-SOURCE_GROUP( Engine )
 
 ADD_FILTER(
 Layer2D
@@ -27,9 +40,6 @@ Motor\\\\Motor
 	Motor.cpp
 	Motor.h
 )
-
-SOURCE_GROUP( Surface )
-
 ADD_FILTER(
 Surface\\\\SurfaceSound
 	SurfaceSound.cpp
@@ -60,15 +70,21 @@ Surface\\\\SurfaceTrackMatte
 	SurfaceTrackMatte.h
 )
 
-SOURCE_GROUP( Object )
+ADD_FILTER(
+Object\\\\Shape\\\\ShapeCircle
+	ShapeCircle.cpp
+	ShapeCircle.h
+)
 
-ADD_FILTER(Shape\\\\ShapePacMan
+
+ADD_FILTER(
+Object\\\\Shape\\\\ShapePacMan
     ShapePacMan.cpp
     ShapePacMan.h
 )
 
 ADD_FILTER(
-Shape\\\\ShapeQuad
+Object\\\\Shape\\\\ShapeQuad
 	ShapeQuad.cpp
 	ShapeQuad.h
 	ShapeQuadFixed.cpp
@@ -78,12 +94,10 @@ Shape\\\\ShapeQuad
 )
 
 ADD_FILTER(
-Shape\\\\Vectorizator
+Object\\\\Vectorizator
     Vectorizator.h
 	Vectorizator.cpp
 )
-
-SOURCE_GROUP( Object )
 
 ADD_FILTER(
 Object\\\\HotSpot
@@ -99,7 +113,9 @@ Object\\\\HotSpot
 	HotSpotShape.cpp
 	HotSpotShape.h
     HotSpotCircle.cpp
-    HotSpotCircle.h    
+    HotSpotCircle.h
+    HotSpotGlobal.cpp
+    HotSpotGlobal.h
 )
 
 ADD_FILTER(

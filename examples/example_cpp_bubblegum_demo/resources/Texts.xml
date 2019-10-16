@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Texts>
+    <Text Font="Score" Key="ID_Score" Value="Score: %s" />
+    <Text Font="Score" Key="ID_Finish" Value="You Score: %s" />
+</Texts>

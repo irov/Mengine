@@ -5,13 +5,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class MySceneEventReceiver
+    class PaletteSceneEventReceiver
         : public SceneEventReceiverInterface
         , public Factorable
     {
     public:
-        MySceneEventReceiver();
-        ~MySceneEventReceiver() override;
+        PaletteSceneEventReceiver();
+        ~PaletteSceneEventReceiver() override;
 
     public:
         bool onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior ) override;
@@ -32,6 +32,6 @@ namespace Mengine
         Scene * m_scene;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<MySceneEventReceiver> MySceneEventReceiverPtr;
+    typedef IntrusivePtr<PaletteSceneEventReceiver> PaletteSceneEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

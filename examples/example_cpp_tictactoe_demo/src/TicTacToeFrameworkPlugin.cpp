@@ -1,36 +1,36 @@
-#include "MyGameFrameworkPlugin.h"
+#include "TicTacToeFrameworkPlugin.h"
 
 #include "Interface/FrameworkFactoryInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
-#include "MyGameFramework.h"
+#include "TicTacToeFramework.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FrameworkFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( MyGameFramework, Mengine::MyGameFrameworkPlugin )
+PLUGIN_FACTORY( TicTacToeFramework, Mengine::TicTacToeFrameworkPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {    
     //////////////////////////////////////////////////////////////////////////
-    MyGameFrameworkPlugin::MyGameFrameworkPlugin()
+    TicTacToeFrameworkPlugin::TicTacToeFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MyGameFrameworkPlugin::~MyGameFrameworkPlugin()
+    TicTacToeFrameworkPlugin::~TicTacToeFrameworkPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MyGameFrameworkPlugin::_initializePlugin()
+    bool TicTacToeFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "MyGameFramework" ), Helper::makeFrameworkFactory<MyGameFramework>() );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "TicTacToeFramework" ), Helper::makeFrameworkFactory<TicTacToeFramework>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MyGameFrameworkPlugin::_finalizePlugin()
+    void TicTacToeFrameworkPlugin::_finalizePlugin()
     {
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "MyGameFramework" ) );
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "TicTacToeFramework" ) );
     }
 }

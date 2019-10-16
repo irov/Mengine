@@ -5,13 +5,13 @@
 
 namespace Mengine
 {
-    class MyGameFramework
+    class PaletteFramework
         : public FrameworkBase
         , public Observable
     {
     public:
-        MyGameFramework();
-        ~MyGameFramework() override;
+        PaletteFramework();
+        ~PaletteFramework() override;
 
     protected:
         bool _initializeFramework() override;

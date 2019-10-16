@@ -4,14 +4,14 @@
 
 namespace Mengine
 {
-    class MyGameFrameworkPlugin
+    class PaletteFrameworkPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "MyGameFramework" )
+        PLUGIN_DECLARE( "PaletteFramework" )
 
     public:
-        MyGameFrameworkPlugin();
-        ~MyGameFrameworkPlugin() override;
+        PaletteFrameworkPlugin();
+        ~PaletteFrameworkPlugin() override;
 
     protected:
         bool _initializePlugin() override;

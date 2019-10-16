@@ -2,3 +2,5 @@
 **/*.vso
 **/*.pso
 **/User
+**/solutions
+**/.downloads

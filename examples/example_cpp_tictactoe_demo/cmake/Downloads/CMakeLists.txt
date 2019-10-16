@@ -5,7 +5,7 @@ OPTION(MENGINE_DOWNLOADS_SILENT "Mengine download silent" OFF)
 PROJECT(Downloads)
 
 SET(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
-SET(THIRDPARTY_DIR ${PROJECT_DIR}/dependencies)
+SET(MENGINE_DOWNLOADS_PATH "${PROJECT_DIR}/resources/.downloads" CACHE STRING "MENGINE_DOWNLOADS_PATH" FORCE)
 
 include(./../../../../CMake/Downloads/download_template.cmake)
 

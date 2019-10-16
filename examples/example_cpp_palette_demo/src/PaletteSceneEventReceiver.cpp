@@ -1,4 +1,4 @@
-#include "MySceneEventReceiver.h"
+#include "PaletteSceneEventReceiver.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -22,15 +22,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    MySceneEventReceiver::MySceneEventReceiver()
+    PaletteSceneEventReceiver::PaletteSceneEventReceiver()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MySceneEventReceiver::~MySceneEventReceiver()
+    PaletteSceneEventReceiver::~PaletteSceneEventReceiver()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MySceneEventReceiver::onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior )
+    bool PaletteSceneEventReceiver::onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -41,7 +41,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MySceneEventReceiver::onSceneAppMouseEnter( const EntityBehaviorInterfacePtr & _behavior )
+    bool PaletteSceneEventReceiver::onSceneAppMouseEnter( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -52,7 +52,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MySceneEventReceiver::onSceneAppFocus( const EntityBehaviorInterfacePtr & _behavior, bool _focus )
+    bool PaletteSceneEventReceiver::onSceneAppFocus( const EntityBehaviorInterfacePtr & _behavior, bool _focus )
     {
         MENGINE_UNUSED( _behavior );
         MENGINE_UNUSED( _focus );
@@ -64,7 +64,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
+    void PaletteSceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -75,7 +75,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -86,7 +86,7 @@ namespace Mengine
         m_scene = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -152,7 +152,7 @@ namespace Mengine
         MENGINE_UNUSED( id );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -161,7 +161,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -170,7 +170,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
         
@@ -179,7 +179,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityCompile( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityCompile( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -188,7 +188,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MySceneEventReceiver::onEntityRelease( const EntityBehaviorInterfacePtr & _behavior )
+    void PaletteSceneEventReceiver::onEntityRelease( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 

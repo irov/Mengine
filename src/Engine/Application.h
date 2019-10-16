@@ -7,6 +7,7 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Resource.h"
 
 #include "math/vec4.h"
 
@@ -14,8 +15,9 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class ResourceCursor> ResourceCursorPtr;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveResourcePtr<class ResourceCursor> ResourceCursorPtr;
+    //////////////////////////////////////////////////////////////////////////
     class Application
         : public ServiceBase<ApplicationInterface>
         , public Observable

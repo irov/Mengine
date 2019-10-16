@@ -196,7 +196,7 @@ namespace Mengine
         }
 
         uint32_t projectVersion = 0;
-        if( Helper::stringToUnsigned( projectVersion_s, projectVersion ) == false )
+        if( Helper::stringToUnsigned( projectVersion_s, &projectVersion ) == false )
         {
             LOGGER_ERROR( "account '%s' failed invalid project version '%s'"
                 , m_id.c_str()
@@ -267,7 +267,7 @@ namespace Mengine
         Helper::writeIniSection( file, "[ACCOUNT]" );
 
         String projectVersion_s;
-        if( Helper::unsignedToString( m_projectVersion, projectVersion_s ) == false )
+        if( Helper::unsignedToString( m_projectVersion, &projectVersion_s ) == false )
         {
             return false;
         }

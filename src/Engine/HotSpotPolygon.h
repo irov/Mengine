@@ -36,6 +36,6 @@ namespace Mengine
         mutable bool m_invalidatePolygonWM;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<HotSpotPolygon, HotSpot> HotSpotPolygonPtr;
+    typedef IntrusiveNodePtr<HotSpotPolygon> HotSpotPolygonPtr;
     //////////////////////////////////////////////////////////////////////////
 }

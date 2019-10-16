@@ -106,5 +106,6 @@ namespace Mengine
         Vector<RenderMaterialInterfacePtr> m_materials;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SurfaceImageSequence> SurfaceImageSequencePtr;
+    typedef IntrusiveSurfacePtr<SurfaceImageSequence> SurfaceImageSequencePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

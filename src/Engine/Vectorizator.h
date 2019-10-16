@@ -86,7 +86,7 @@ namespace Mengine
             uint8_t quality;
             float dt;
 
-            float lineWeight;
+            float lineWidth;
             Color lineColor;
         };
 

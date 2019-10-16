@@ -47,6 +47,7 @@
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
+#include "Engine/HotSpotGlobal.h"
 #include "Engine/HotSpotCircle.h"
 #include "Engine/HotSpotBubbles.h"
 #include "Engine/HotSpotImage.h"
@@ -54,6 +55,7 @@
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
+#include "Engine/ShapeCircle.h"
 #include "Engine/ShapePacMan.h"
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
@@ -2194,6 +2196,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Layer2D );
         SCRIPT_CLASS_WRAPPING( HotSpot );
         SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
+        SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         SCRIPT_CLASS_WRAPPING( HotSpotCircle );
         SCRIPT_CLASS_WRAPPING( HotSpotBubbles );
         SCRIPT_CLASS_WRAPPING( HotSpotImage );
@@ -2213,6 +2216,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
 
+        SCRIPT_CLASS_WRAPPING( ShapeCircle );
         SCRIPT_CLASS_WRAPPING( ShapePacMan );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
@@ -2926,6 +2930,9 @@ namespace Mengine
                 .def_proxy_native_kernel( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
                 ;
 
+            pybind::interface_<HotSpotGlobal, pybind::bases<HotSpot>>( _kernel, "HotSpotGlobal", false )
+                ;            
+
             pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot>>( _kernel, "HotSpotPolygon", false )
                 .def( "setPolygon", &HotSpotPolygon::setPolygon )
                 .def( "getPolygon", &HotSpotPolygon::getPolygon )
@@ -2972,6 +2979,10 @@ namespace Mengine
                 .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getWorldImageCenter )
                 ;
 
+            pybind::interface_<ShapeCircle, pybind::bases<Shape>>( _kernel, "ShapeCircle", false )
+                .def( "setQuality", &ShapeCircle::setQuality )
+                .def( "getQuality", &ShapeCircle::getQuality )
+                ;
 
             pybind::interface_<ShapePacMan, pybind::bases<Shape>>( _kernel, "ShapePacMan", false )
                 .def( "setAngleFrom", &ShapePacMan::setAngleFrom )
@@ -3098,6 +3109,7 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( Layer2D );
         UNSCRIPT_CLASS_WRAPPING( HotSpot );
         UNSCRIPT_CLASS_WRAPPING( HotSpotPolygon );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotGlobal );
         UNSCRIPT_CLASS_WRAPPING( HotSpotCircle );
         UNSCRIPT_CLASS_WRAPPING( HotSpotBubbles );
         UNSCRIPT_CLASS_WRAPPING( HotSpotImage );
@@ -3117,6 +3129,7 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( Landscape2D );
         UNSCRIPT_CLASS_WRAPPING( Grid2D );
 
+        UNSCRIPT_CLASS_WRAPPING( ShapeCircle );
         UNSCRIPT_CLASS_WRAPPING( ShapePacMan );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );

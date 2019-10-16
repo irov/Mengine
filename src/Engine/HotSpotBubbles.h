@@ -47,6 +47,6 @@ namespace Mengine
         mutable bool m_invalidateBubbleWM;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<HotSpotBubbles, HotSpot> HotSpotBubblesPtr;
+    typedef IntrusiveNodePtr<HotSpotBubbles> HotSpotBubblesPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -10,6 +10,7 @@ namespace Mengine
     DummyGameEventReceiver::~DummyGameEventReceiver()
     {
     }
+    //////////////////////////////////////////////////////////////////////////
     void DummyGameEventReceiver::onGameFullscreen( bool _fullscreen )
     {
         MENGINE_UNUSED( _fullscreen );

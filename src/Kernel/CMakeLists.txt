@@ -552,6 +552,10 @@ Core
 
 	DummyGameEventReceiver.h
 	DummyGameEventReceiver.cpp
+    DummyEntityEventReceiver.h
+    DummyEntityEventReceiver.cpp
+    DummySceneEventReceiver.h
+    DummySceneEventReceiver.cpp
     
     FileStreamHelper.h
     FileStreamHelper.cpp

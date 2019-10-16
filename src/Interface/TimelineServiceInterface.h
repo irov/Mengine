@@ -2,6 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/UpdateContext.h"
+
 namespace Mengine
 {
     class TimelineServiceInterface
@@ -18,7 +20,7 @@ namespace Mengine
         virtual float getTime() const = 0;
 
     public:
-        virtual void tick( float _time ) = 0;
+        virtual void tick( const UpdateContext * _context ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

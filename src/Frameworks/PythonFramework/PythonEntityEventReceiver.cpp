@@ -8,11 +8,11 @@ namespace Mengine
     namespace Detail
     {
         template<class ... Args>
-        void callBehavior( const pybind::object & _cb, const EntityBehaviorInterfacePtr & _behavior, Args ... _args )
+        void callBehavior( const pybind::object & _cb, const EntityBehaviorInterfacePtr & _behavior, Args && ... _args )
         {
             PythonEntityBehavior * py_behavior = _behavior.getT<PythonEntityBehavior *>();
 
-            py_behavior->call( _cb, _args ... );
+            py_behavior->call( _cb, std::forward<Args &&>( _args ) ... );
         }
     }
     //////////////////////////////////////////////////////////////////////////

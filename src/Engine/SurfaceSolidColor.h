@@ -42,5 +42,6 @@ namespace Mengine
         mt::vec2f m_size;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SurfaceSolidColor> SurfaceSolidColorPtr;
+    typedef IntrusiveSurfacePtr<SurfaceSolidColor> SurfaceSolidColorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

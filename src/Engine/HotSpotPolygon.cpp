@@ -1,14 +1,11 @@
 #include "HotSpotPolygon.h"
 
-#include "Interface/PickerServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ApplicationInterface.h"
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderViewportInterface.h"
 
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Config.h"

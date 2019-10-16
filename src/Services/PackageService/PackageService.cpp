@@ -203,6 +203,8 @@ namespace Mengine
             config->hasValue( languagePack.c_str(), "Path", &pack.path );
             config->hasValue( languagePack.c_str(), "Dev", &pack.dev );
             config->hasValue( languagePack.c_str(), "PreLoad", &pack.preload );
+            config->hasValue( languagePack.c_str(), "Fonts", &pack.fontsPath );
+            config->hasValue( languagePack.c_str(), "Texts", &pack.textsPath );
 
             if( this->addPackage( pack, _doc ) == false )
             {
@@ -263,7 +265,9 @@ namespace Mengine
             , _desc.tags
             , _desc.descriptionPath
             , baseFileGroup
-            , _desc.path
+            , _desc.path            
+            , _desc.fontsPath
+            , _desc.textsPath
             , _desc.preload ) == false )
         {
             LOGGER_ERROR( "invalid initialize package '%s' path '%s'"
@@ -281,23 +285,34 @@ namespace Mengine
             package->setParent( parent_package );
         }
 
-        if( package->load( _doc ) == false )
-        {
-            LOGGER_ERROR( "invalid load package '%s' path '%s'"
-                , package->getName().c_str()
-                , package->getPathPath().c_str()
-            );
+        const Tags & platformTags = PLATFORM_SERVICE()
+            ->getPlatformTags();
 
-            return false;
+        const Tags & packageTags = package->getPlatfromTags();
+        
+        if( packageTags.empty() == true || platformTags.hasTags( packageTags ) )
+        {
+            if( package->load( _doc ) == false )
+            {
+                LOGGER_ERROR( "invalid load package '%s' path '%s'"
+                    , package->getName().c_str()
+                    , package->getPathPath().c_str()
+                );
+
+                return false;
+            }
         }
 
         m_packages.emplace_back( package );
 
         if( _desc.immediately == true )
         {
-            if( package->enable() == false )
-            {
-                return false;
+            if( packageTags.empty() == true || platformTags.hasTags( packageTags ) )
+            {            
+                if( package->enable() == false )
+                {
+                    return false;
+                }
             }
         }
 

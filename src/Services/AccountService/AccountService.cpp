@@ -689,7 +689,7 @@ namespace Mengine
         }
 
         String AccountEnumerator;
-        Helper::unsignedToString( m_playerEnumerator, AccountEnumerator );
+        Helper::unsignedToString( m_playerEnumerator, &AccountEnumerator );
 
         Helper::writeIniSetting( file, "AccountEnumerator", AccountEnumerator );
 

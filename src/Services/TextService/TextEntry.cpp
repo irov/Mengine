@@ -33,7 +33,15 @@ namespace Mengine
         , uint32_t _params )
     {
         m_key = _key;
-        m_text.assign( _text, _size );
+
+        if( _size != ~0U )
+        {
+            m_text.assign( _text, _size );
+        }
+        else
+        {
+            m_text = _text;
+        }
 
         m_fontName = _fontName;
 

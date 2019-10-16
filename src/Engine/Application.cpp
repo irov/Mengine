@@ -25,6 +25,7 @@
 #include "Interface/GraveyardServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
+#include "Interface/TimepipeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ModuleServiceInterface.h"
@@ -70,6 +71,7 @@
 // All Node type
 #include "HotSpot.h"
 #include "HotSpotPolygon.h"
+#include "HotSpotGlobal.h"
 #include "HotSpotCircle.h"
 #include "HotSpotBubbles.h"
 #include "HotSpotImage.h"
@@ -85,6 +87,7 @@
 #include "Window.h"
 #include "Landscape2D.h"
 
+#include "ShapeCircle.h"
 #include "ShapePacMan.h"
 #include "ShapeQuadFixed.h"
 #include "ShapeQuadFlex.h"
@@ -423,6 +426,7 @@ namespace Mengine
         NODE_FACTORY( Isometric );
         NODE_FACTORY( MatrixProxy );
         NODE_FACTORY( HotSpotPolygon );
+        NODE_FACTORY( HotSpotGlobal );
         NODE_FACTORY( HotSpotCircle );
         NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
@@ -442,6 +446,7 @@ namespace Mengine
         NODE_FACTORY( RenderCameraProjection );
         NODE_FACTORY( RenderCameraOrthogonalTarget );
         NODE_FACTORY( Window );
+        NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
@@ -483,6 +488,7 @@ namespace Mengine
         NODE_FACTORY( Isometric );
         NODE_FACTORY( MatrixProxy );
         NODE_FACTORY( HotSpotPolygon );
+        NODE_FACTORY( HotSpotGlobal );
         NODE_FACTORY( HotSpotCircle );
         NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
@@ -502,6 +508,7 @@ namespace Mengine
         NODE_FACTORY( RenderCameraProjection );
         NODE_FACTORY( RenderCameraOrthogonalTarget );
         NODE_FACTORY( Window );
+        NODE_FACTORY( ShapeCircle );
         NODE_FACTORY( ShapePacMan );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
@@ -1462,7 +1469,10 @@ namespace Mengine
         }
 
         TIMELINE_SERVICE()
-            ->tick( time );
+            ->tick( &applicationContext );
+
+        TIMEPIPE_SERVICE()
+            ->tick( &applicationContext );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()

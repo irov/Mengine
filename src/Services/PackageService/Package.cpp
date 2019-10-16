@@ -38,6 +38,8 @@ namespace Mengine
         , const FilePath & _descriptionPath
         , const FileGroupInterfacePtr & _baseFileGroup
         , const FilePath & _filePath
+        , const FilePath & _fontsPath
+        , const FilePath & _textsPath
         , bool _preload )
     {
         m_name = _name;
@@ -48,6 +50,8 @@ namespace Mengine
         m_descriptionPath = _descriptionPath;
         m_baseFileGroup = _baseFileGroup;
         m_filePath = _filePath;
+        m_fontsPath = _fontsPath;
+        m_textsPath = _textsPath;
         m_preload = _preload;
 
         return true;
@@ -205,6 +209,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadPackage_()
     {
+        if( m_fontsPath.empty() == false )
+        {
+            this->addFontPath_( m_fontsPath, Tags() );
+        }
+
+        if( m_textsPath.empty() == false )
+        {
+            this->addTextPath_( m_textsPath, Tags() );
+        }
+
         MENGINE_ASSERTION_RETURN( SERVICE_EXIST( LoaderServiceInterface ) == true, false );
 
         if( m_descriptionPath.empty() == true )

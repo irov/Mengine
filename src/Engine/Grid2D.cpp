@@ -234,13 +234,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        const RenderIndex * indices = &m_indices[0];
+        const RenderIndex * indices = m_indices.data();
         uint32_t indicesCount = (uint32_t)m_indices.size();
 
-        const RenderVertex2D * vertices = this->getVerticesWM();
-        const RenderMaterialInterfacePtr & material = this->getMaterial();
-
         uint32_t verticesCount = (uint32_t)m_verticesWM.size();
+        const RenderVertex2D * vertices = this->getVerticesWM();
+
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
 
         const mt::box2f * bb = this->getBoundingBox();
 

@@ -1570,7 +1570,7 @@ namespace Mengine
             }
 
             String setting_value;
-            Helper::intToString( _value, setting_value );
+            Helper::intToString( _value, &setting_value );
 
             bool result = account->changeSetting( _setting, setting_value.c_str() );
 
@@ -1597,7 +1597,7 @@ namespace Mengine
             }
 
             String setting_value;
-            Helper::unsignedToString( _value, setting_value );
+            Helper::unsignedToString( _value, &setting_value );
 
             bool result = account->changeSetting( _setting, setting_value.c_str() );
 
@@ -1624,7 +1624,7 @@ namespace Mengine
             }
 
             String setting_value;
-            Helper::unsigned64ToString( _value, setting_value );
+            Helper::unsigned64ToString( _value, &setting_value );
 
             bool result = account->changeSetting( _setting, setting_value.c_str() );
 
@@ -1651,7 +1651,7 @@ namespace Mengine
             }
 
             String setting_value;
-            Helper::floatToString( _value, setting_value );
+            Helper::floatToString( _value, &setting_value );
 
             bool result = account->changeSetting( _setting, setting_value.c_str() );
 

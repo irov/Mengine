@@ -24,6 +24,9 @@ namespace Mengine
         FilePath descriptionPath;
         FilePath path;
 
+        FilePath fontsPath;
+        FilePath textsPath;
+
         bool dev;
         bool immediately;
         bool preload;

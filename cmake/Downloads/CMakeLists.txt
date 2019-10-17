@@ -7,7 +7,7 @@ PROJECT(Downloads)
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
-include(download_template.cmake)
+include(../download_template.cmake)
 
 DOWNLOAD_URL_HASH(boost https://dl.bintray.com/boostorg/release/1.70.0/source/boost_1_70_0.7z SHA256 ae2bb1b35d1f238e72e3f819b42336f4bd27c9ed2092aab5d87818ccb0c9161a)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)

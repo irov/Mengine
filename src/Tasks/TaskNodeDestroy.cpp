@@ -1,0 +1,27 @@
+#include "TaskNodeDestroy.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    TaskNodeDestroy::TaskNodeDestroy( const NodePtr & _node )
+        : m_node( _node )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TaskNodeDestroy::~TaskNodeDestroy()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TaskNodeDestroy::_onRun()
+    {
+        m_node->removeFromParent();
+        m_node->release();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TaskNodeDestroy::_onFinally()
+    {
+        m_node = nullptr;
+    }
+}

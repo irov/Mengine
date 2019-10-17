@@ -4,7 +4,7 @@
 
 @mkdir %~dp0..\..\solutions\downloads
 @pushd %~dp0..\..\solutions\downloads
-@call CMake.exe "%CD%\..\..\CMake\Downloads" -DMENGINE_DOWNLOADS_SILENT=ON
+@call CMake.exe "%CD%\..\..\cmake\Downloads" -DMENGINE_DOWNLOADS_SILENT=ON
 @popd
 
 @pushd %~dp0..\..\solutions\downloads

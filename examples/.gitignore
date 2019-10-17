@@ -1,6 +1,7 @@
 **/*.bin
 **/*.vso
 **/*.pso
+**/bin
 **/User
 **/solutions
 **/.downloads

@@ -301,8 +301,8 @@ namespace Mengine
         // setup some settings
         m_gridSize = mt::vec2f( 3, 3 );
 
-        GOAP::EventPtr eventGameOver = GOAP::EventPtr::from( new GOAP::Event() );
-        m_semaphoreGameOver = GOAP::SemaphorePtr::from( new GOAP::Semaphore( eventGameOver, 0 ) );
+        GOAP::EventPtr eventGameOver = GOAP::Helper::makeEvent();
+        m_semaphoreGameOver = GOAP::Helper::makeSemaphore( eventGameOver, 0 );
 
         m_currentPlayer = EPlayerType::EPlayerType_X;
 
@@ -478,23 +478,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TicTacToeSceneEventReceiver::isGameOver()
     {
-        bool result = this->checkWin( m_grid[0], m_grid[1], m_grid[2] )
-            || this->checkWin( m_grid[3], m_grid[4], m_grid[5] )
-            || this->checkWin( m_grid[6], m_grid[7], m_grid[8] )
-
-            || this->checkWin( m_grid[0], m_grid[3], m_grid[6] )
-            || this->checkWin( m_grid[1], m_grid[4], m_grid[7] )
-            || this->checkWin( m_grid[2], m_grid[5], m_grid[8] )
-
-            || this->checkWin( m_grid[0], m_grid[4], m_grid[8] )
-            || this->checkWin( m_grid[6], m_grid[4], m_grid[2] );
+        bool result = this->checkWin( 0, 1, 2 )
+            || this->checkWin( 3, 4, 5 )
+            || this->checkWin( 6, 7, 8 )
+            || this->checkWin( 0, 3, 6 )
+            || this->checkWin( 1, 4, 7 )
+            || this->checkWin( 2, 5, 8 )
+            || this->checkWin( 0, 4, 8 )
+            || this->checkWin( 6, 4, 2 );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TicTacToeSceneEventReceiver::checkWin( EPlayerType _cell1, EPlayerType _cell2, EPlayerType _cell3 )
+    bool TicTacToeSceneEventReceiver::checkWin( uint32_t _cell1, uint32_t _cell2, uint32_t _cell3 )
     {
-        bool result = _cell1 == _cell2 && _cell2 == _cell3 && _cell3 != EPlayerType::EPlayerType_NONE;
+        bool result = m_grid[_cell1] == m_grid[_cell2] && m_grid[_cell2] == m_grid[_cell3] && m_grid[_cell3] != EPlayerType::EPlayerType_NONE;
 
         return result;
     }

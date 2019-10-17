@@ -7,6 +7,6 @@ PROJECT(Downloads)
 SET(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 SET(MENGINE_DOWNLOADS_PATH "${PROJECT_DIR}/resources/.downloads" CACHE STRING "MENGINE_DOWNLOADS_PATH" FORCE)
 
-include(./../../../../CMake/Downloads/download_template.cmake)
+include(./../../../../CMake/download_template.cmake)
 
 DOWNLOAD_FILE(fonts https://github.com/google/fonts/blob/master/apache/roboto/Roboto-Black.ttf?raw=true Roboto-Black.ttf)

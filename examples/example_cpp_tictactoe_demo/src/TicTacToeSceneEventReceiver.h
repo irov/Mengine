@@ -72,7 +72,7 @@ namespace Mengine
         void makeTurn( int32_t _position );
         void changePlayer();
         bool isGameOver();
-        bool checkWin( EPlayerType _cell1, EPlayerType _cell2, EPlayerType _cell3 );
+        bool checkWin( uint32_t _cell1, uint32_t _cell2, uint32_t _cell3 );
 
         void enableSprites( bool _value );
 

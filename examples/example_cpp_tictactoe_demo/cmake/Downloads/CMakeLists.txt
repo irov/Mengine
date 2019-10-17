@@ -7,7 +7,7 @@ PROJECT(Downloads)
 SET(PROJECT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 SET(MENGINE_DOWNLOADS_PATH "${PROJECT_DIR}/resources/.downloads" CACHE STRING "MENGINE_DOWNLOADS_PATH" FORCE)
 
-include(./../../../../CMake/download_template.cmake)
+include(./../../../../cmake/download_template.cmake)
 
 DOWNLOAD_FILE(assets https://raw.githubusercontent.com/LazoCoder/Tic-Tac-Toe/master/TicTacToe/Assets/background.png background.png)
 DOWNLOAD_FILE(assets https://raw.githubusercontent.com/LazoCoder/Tic-Tac-Toe/master/TicTacToe/Assets/o.png o.png)

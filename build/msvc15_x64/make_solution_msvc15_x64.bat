@@ -14,7 +14,7 @@ set "CONFIGURATION=%1"
 @popd
 
 @pushd ..
-@call make_solution.bat "%CD%\..\CMake\Win64" solution_msvc15_x64\%CONFIGURATION% "Visual Studio 15 2017 Win64" %CONFIGURATION% build_msvc15_x64\%CONFIGURATION%
+@call make_solution.bat "%CD%\..\cmake\Win64" solution_msvc15_x64\%CONFIGURATION% "Visual Studio 15 2017 Win64" %CONFIGURATION% build_msvc15_x64\%CONFIGURATION%
 @popd
 
 :done

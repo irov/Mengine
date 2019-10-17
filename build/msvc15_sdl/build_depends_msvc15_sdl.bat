@@ -17,7 +17,7 @@ set "YEAR=2017"
 @popd
 
 @pushd %~dp0..
-@call build_depends.bat "SOLUTION_NAME=build_msvc%VERSION%_sdl" "SOURCE_DIRECTORY=%CD%\..\CMake\Depends_WIN32_SDL" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "VERBOSITY=minimal"
+@call build_depends.bat "SOLUTION_NAME=build_msvc%VERSION%_sdl" "SOURCE_DIRECTORY=%CD%\..\cmake\Depends_WIN32_SDL" "GENERATOR=Visual Studio %VERSION% %YEAR%" "CONFIGURATION=%CONFIGURATION%" "VERBOSITY=minimal"
 @popd
 
 :end

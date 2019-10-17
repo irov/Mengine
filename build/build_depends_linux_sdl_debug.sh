@@ -1,1 +1,1 @@
-cmake -G Makefiles "..\CMake\Depends_SDL" -DCMAKE_BUILD_TYPE:STRING='Debug' -DCMAKE_CONFIGURATION_TYPES:STRING='Debug'
+cmake -G Makefiles "..\cmake\Depends_SDL" -DCMAKE_BUILD_TYPE:STRING='Debug' -DCMAKE_CONFIGURATION_TYPES:STRING='Debug'

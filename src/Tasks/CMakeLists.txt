@@ -6,6 +6,8 @@ Tasks
     TaskNodeEnable.cpp
     TaskNodeDisable.h
     TaskNodeDisable.cpp
+    TaskNodeDestroy.h
+    TaskNodeDestroy.cpp
     TaskDelay.cpp
     TaskDelay.h
     TaskLocalDelay.h

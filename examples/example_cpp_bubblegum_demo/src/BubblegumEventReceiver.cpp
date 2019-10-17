@@ -25,6 +25,7 @@
 #include "Tasks/TaskPickerableMouseButton.h"
 #include "Tasks/TaskNodeDisable.h"
 #include "Tasks/TaskNodeEnable.h"
+#include "Tasks/TaskNodeDestroy.h"
 #include "Tasks/TaskGlobalDelay.h"
 
 #include "Config/Vector.h"
@@ -215,7 +216,7 @@ namespace Mengine
 
         source_burst->addSemaphoreEqual( m_semaphoreBurst, 1 );
 
-        _source->addTask<TaskNodeDisable>( shape );
+        _source->addTask<TaskNodeDestroy>( shape );
     }
     //////////////////////////////////////////////////////////////////////////
     void BubblegumEventReceiver::addScore_( const NodePtr & _shape, uint32_t _iterator )

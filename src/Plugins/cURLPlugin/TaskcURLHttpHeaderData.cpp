@@ -1,24 +1,24 @@
-#include "TaskHttpHeaderData.h"
+#include "TaskcURLHttpHeaderData.h"
 
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskHttpHeaderData::TaskHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const LambdacURLReceiver & _lambda )
-        : TaskHttpBase( _url, _timeout, _lambda )
+    TaskcURLHttpHeaderData::TaskcURLHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
+        : TaskcURLHttpBase( _url, _timeout, _receiver )
         , m_headers( _headers )
         , m_data( _data )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskHttpHeaderData::~TaskHttpHeaderData()
+    TaskcURLHttpHeaderData::~TaskcURLHttpHeaderData()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskHttpHeaderData::_onRun()
+    bool TaskcURLHttpHeaderData::_onRun( GOAP::NodeInterface * _node )
     {
-        cURLReceiverInterfacePtr receiver = this->createHttpReceiver_();
+        cURLReceiverInterfacePtr receiver = this->createHttpReceiver_( _node );
 
         HttpRequestID requestId = CURL_SERVICE()
             ->headerData( m_url, m_headers, m_data, m_timeout, receiver );

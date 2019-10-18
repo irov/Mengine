@@ -28,6 +28,7 @@ src
     Export.h
 	Secure.h
     StdIO.h
+    Metaprogramming.h
 	cmake_dummy.cpp
 )
 

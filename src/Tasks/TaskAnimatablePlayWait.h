@@ -15,7 +15,7 @@ namespace Mengine
         ~TaskAnimatablePlayWait() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         bool _onSkipable() const override;
         void _onSkip() override;
         void _onFinally() override;

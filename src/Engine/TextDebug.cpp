@@ -170,15 +170,15 @@ namespace Mengine
             {
                 uint32_t argb = _color.getAsARGB();
 
-                va_list args;
-                va_start( args, _format );
+                MENGINE_VA_LIST_TYPE args;
+                MENGINE_VA_LIST_START( args, _format );
 
                 Char msg[2048] = { 0 };
                 int size = MENGINE_VSNPRINTF( msg, 2047, _format, args );
 
                 drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size );
 
-                va_end( args );
+                MENGINE_VA_LIST_END( args );
             }
 
             font->releaseFont();

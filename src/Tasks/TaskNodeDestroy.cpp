@@ -12,8 +12,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskNodeDestroy::_onRun()
+    bool TaskNodeDestroy::_onRun( GOAP::NodeInterface * _node )
     {
+        MENGINE_UNUSED( _node );
+
         m_node->removeFromParent();
         m_node->release();
 

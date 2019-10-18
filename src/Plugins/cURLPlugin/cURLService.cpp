@@ -10,6 +10,8 @@
 #include "cURLHeaderDataThreadTask.h"
 #include "cURLGetAssetThreadTask.h"
 
+#include "cURLSource.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -112,6 +114,8 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
+        m_factorySource = Helper::makeFactoryPool<cURLSource, 8>();
+
         m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLGetMessageThreadTask, 8>();
         m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLPostMessageThreadTask, 8>();
         m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 8>();
@@ -122,10 +126,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySource );
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
+
+        m_factorySource = nullptr;
 
         m_factoryTaskDownloadAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
@@ -334,6 +342,15 @@ namespace Mengine
         );
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    cURLSourceInterfacePtr cURLService::makeSource( const GOAP::SourcePtr & _source )
+    {
+        cURLSourcePtr curl_source = m_factorySource->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        curl_source->setSource( _source );
+
+        return curl_source;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )

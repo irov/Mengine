@@ -12,8 +12,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskNodeEnable::_onRun()
+    bool TaskNodeEnable::_onRun( GOAP::NodeInterface * _node )
     {
+        MENGINE_UNUSED( _node );
+
         m_node->enable();
 
         return true;

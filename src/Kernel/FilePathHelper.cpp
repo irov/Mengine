@@ -64,8 +64,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePathFormat( const Char * _format, ... )
         {
-            va_list args;
-            va_start( args, _format );
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _format );
 
             Char str[MENGINE_MAX_PATH] = { 0 };
             int size = MENGINE_VSNPRINTF( str, MENGINE_MAX_PATH - 1, _format, args );
@@ -74,7 +74,7 @@ namespace Mengine
                 , _format
             );
 
-            va_end( args );
+            MENGINE_VA_LIST_END( args );
 
             if( size == 0 )
             {

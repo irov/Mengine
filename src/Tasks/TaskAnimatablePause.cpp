@@ -16,8 +16,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskAnimatablePause::_onRun()
+    bool TaskAnimatablePause::_onRun( GOAP::NodeInterface * _node )
     {
+        MENGINE_UNUSED( _node );
+
         AnimationInterface * animation = m_animatable->getAnimation();
 
         if( animation == nullptr )

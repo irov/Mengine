@@ -8,6 +8,8 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -152,16 +154,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPickerableMouseLeave::_onRun()
+    bool TaskPickerableMouseLeave::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this]( const InputMouseLeaveEvent & _event )
+        auto lambda = [this, _node]( const InputMouseLeaveEvent & _event )
         {
             if( m_filter != nullptr )
             {
                 m_filter( _event );
             }
 
-            this->complete();
+            _node->complete();
         };
 
         PickerInterface * picker = m_pickerable->getPicker();

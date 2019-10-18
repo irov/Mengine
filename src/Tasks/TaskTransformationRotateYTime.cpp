@@ -5,6 +5,8 @@
 #include "math/angle.h"
 #include "math/utils.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,8 +16,8 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationRotateYTimeAffector( TaskTransformationRotateYTime * _task, const TransformationPtr & _transformation, float _from, float _to, float _time )
-                : m_task( _task )
+            TaskTransformationRotateYTimeAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, float _from, float _to, float _time )
+                : m_node( _node )
                 , m_transformation( _transformation )
                 , m_from( _from )
                 , m_to( _to )
@@ -60,16 +62,16 @@ namespace Mengine
             {
                 if( _isEnd == true )
                 {
-                    m_task->complete();
+                    m_node->complete();
                 }
                 else
                 {
-                    m_task->skip();
+                    m_node->skip();
                 }
             }
 
         protected:
-            TaskTransformationRotateYTime * m_task;
+            GOAP::NodeInterfacePtr m_node;
 
             TransformationPtr m_transformation;
 
@@ -80,9 +82,10 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationRotateYTime::TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _time )
+    TaskTransformationRotateYTime::TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time )
         : m_transformation( _transformation )
         , m_affectorable( _affectorable )
+        , m_easing( _easing )
         , m_to( _to )
         , m_time( _time )
         , m_id( 0 )
@@ -93,7 +96,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationRotateYTime::_onRun()
+    bool TaskTransformationRotateYTime::_onRun( GOAP::NodeInterface * _node )
     {
         float orientationY = m_transformation->getLocalOrientationY();
 
@@ -101,7 +104,9 @@ namespace Mengine
         float correct_rotate_to;
         mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationRotateYTimeAffector>( this, m_transformation, correct_rotate_from, correct_rotate_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationRotateYTimeAffector>( _node, m_transformation, correct_rotate_from, correct_rotate_to, m_time );
+
+        affector->setEasing( m_easing );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

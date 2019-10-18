@@ -14,7 +14,7 @@ namespace Mengine
         ~TaskAnimatablePause() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onFinally() override;
 
     protected:

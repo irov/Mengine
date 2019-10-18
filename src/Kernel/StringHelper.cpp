@@ -8,7 +8,6 @@
 #include "Config/Stringstream.h"
 #include "Config/StdIO.h"
 
-#include <stdarg.h>
 #include <clocale>
 
 namespace Mengine
@@ -18,8 +17,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         String stringFormat( const Char * _format, ... )
         {
-            va_list args;
-            va_start( args, _format );
+            MENGINE_VA_LIST_TYPE args;
+            MENGINE_VA_LIST_START( args, _format );
 
             Char str[2048] = { 0 };
             int size = MENGINE_VSNPRINTF( str, 2047, _format, args );
@@ -28,7 +27,7 @@ namespace Mengine
                 , _format
             );
 
-            va_end( args );
+            MENGINE_VA_LIST_END( args );
 
             if( size == 0 )
             {

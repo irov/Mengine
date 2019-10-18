@@ -4,7 +4,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/FactorableUnique.h"
 
-#include "GOAP/Task.h"
+#include "GOAP/NodeInterface.h"
 
 namespace Mengine
 {
@@ -17,7 +17,7 @@ namespace Mengine
         ~TaskAnimatablePlayReceiver() override;
 
     public:
-        void setTask( GOAP::Task * _task );
+        void setGOAPNode( GOAP::NodeInterface * _node );
 
     protected:
         void onAnimationPlay( uint32_t _enumerator, float _time ) override;
@@ -29,7 +29,7 @@ namespace Mengine
         void onAnimationInterrupt( uint32_t _enumerator ) override;
 
     protected:
-        GOAP::Task * m_task;
+        GOAP::NodeInterfacePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TaskAnimatablePlayReceiver> TaskAnimatablePlayReceiverPtr;

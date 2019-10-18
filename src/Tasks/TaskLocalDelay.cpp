@@ -5,6 +5,8 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,8 +15,9 @@ namespace Mengine
         , public Mengine::Factorable
     {
     public:
-        explicit ScheduleEvent( TaskLocalDelay * _task )
+        explicit ScheduleEvent( TaskLocalDelay * _task, GOAP::NodeInterface * _node )
             : m_task( _task )
+            , m_node( _node )
         {
         }
 
@@ -26,15 +29,20 @@ namespace Mengine
         void onSchedulerComplete( uint32_t _id ) override
         {
             m_task->schedulerComplete( _id );
+
+            m_node->complete();
         }
 
         void onSchedulerStop( uint32_t _id ) override
         {
             m_task->schedulerComplete( _id );
+
+            m_node->complete();
         }
 
     protected:
         TaskLocalDelay * m_task;
+        GOAP::NodeInterfacePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
     TaskLocalDelay::TaskLocalDelay( float _time )
@@ -55,13 +63,11 @@ namespace Mengine
         }
 
         m_id = 0;
-
-        this->complete();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskLocalDelay::_onRun()
+    bool TaskLocalDelay::_onRun( GOAP::NodeInterface * _node )
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskLocalDelay::ScheduleEvent>( this );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskLocalDelay::ScheduleEvent>( this, _node );
 
         const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
             ->getScheduler();

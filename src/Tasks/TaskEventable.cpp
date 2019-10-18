@@ -7,8 +7,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskEventable::_onRun()
+    bool TaskEventable::_onRun( GOAP::NodeInterface * _node )
     {
+        MENGINE_UNUSED( _node );
+
         EventationInterface * eventation = m_eventable->getEventation();
 
         if( eventation == nullptr )

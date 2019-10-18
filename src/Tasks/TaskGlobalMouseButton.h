@@ -11,24 +11,24 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaMouseButtonEvent;
+    typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaInputMouseButtonEvent;
     //////////////////////////////////////////////////////////////////////////
     class TaskGlobalMouseButton
         : public GOAP::Task
     {
     public:
-        TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaMouseButtonEvent & _filter );
+        TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter );
         ~TaskGlobalMouseButton() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onFinally() override;
 
     protected:
         EMouseCode m_code;
         bool m_isDown;
 
-        LambdaMouseButtonEvent m_filter;
+        LambdaInputMouseButtonEvent m_filter;
 
         uint32_t m_id;
     };

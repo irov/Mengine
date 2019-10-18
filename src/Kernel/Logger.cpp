@@ -50,17 +50,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... ) const
     {
-        va_list args;
-        va_start( args, _format );
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
 
         this->logMessageArgs( _format, args );
 
-        va_end( args );
+        MENGINE_VA_LIST_END( args );
 
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerOperator::logMessageArgs( const Char * _format, va_list _args ) const
+    void LoggerOperator::logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const
     {
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
 

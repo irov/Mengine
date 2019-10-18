@@ -2,6 +2,8 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,8 +13,8 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationTranslateTimeAffector( const TaskTransformationTranslateTimePtr & _task, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
-                : m_task( _task )
+            TaskTransformationTranslateTimeAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
+                : m_node( _node )
                 , m_transformation( _transformation )
                 , m_from( _from )
                 , m_to( _to )
@@ -62,16 +64,16 @@ namespace Mengine
             {
                 if( _isEnd == true )
                 {
-                    m_task->complete();
+                    m_node->complete();
                 }
                 else
                 {
-                    m_task->skip();
+                    m_node->skip();
                 }
             }
 
         protected:
-            TaskTransformationTranslateTimePtr m_task;
+            GOAP::NodeInterfacePtr m_node;
 
             TransformationPtr m_transformation;
 
@@ -96,11 +98,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationTranslateTime::_onRun()
+    bool TaskTransformationTranslateTime::_onRun( GOAP::NodeInterface * _node )
     {
         const mt::vec3f & position = m_transformation->getLocalPosition();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( TaskTransformationTranslateTimePtr::from( this ), m_transformation, position, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( _node, m_transformation, position, m_to, m_time );
 
         affector->setEasing( m_easing );
 

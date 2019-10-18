@@ -1,5 +1,6 @@
 #include "Checkbox.h"
 
+#include "Tasks/EngineSource.h"
 #include "Tasks/TaskNodeEnable.h"
 #include "Tasks/TaskNodeDisable.h"
 #include "Tasks/TaskLocalDelay.h"
@@ -118,7 +119,7 @@ namespace Mengine
             m_nodes[1][ECS_OVER] = m_nodes[1][ECS_IDLE];
         }
 
-        GOAP::SourcePtr source = GOAP::Helper::makeSource();
+        EngineSourcePtr source = Helper::makeEngineSource();
 
         auto fn = [this]( const GOAP::SourcePtr & _source )
         {

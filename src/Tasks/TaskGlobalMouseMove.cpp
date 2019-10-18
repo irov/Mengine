@@ -4,10 +4,12 @@
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalMouseMove::TaskGlobalMouseMove( const LambdaMouseMoveEvent & _filter )
+    TaskGlobalMouseMove::TaskGlobalMouseMove( const LambdaInputMouseMoveEvent & _filter )
         : m_filter( _filter )
         , m_id( 0 )
     {
@@ -17,16 +19,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskGlobalMouseMove::_onRun()
+    bool TaskGlobalMouseMove::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this]( const InputMouseMoveEvent & _event )
+        auto lambda = [this, _node]( const InputMouseMoveEvent & _event )
         {
             if( m_filter( _event ) == false )
             {
                 return;
             }
 
-            this->complete();
+            _node->complete();
         };
 
         uint32_t id = Helper::addGlobalMouseMoveEvent( lambda, MENGINE_DOCUMENT_FUNCTION );

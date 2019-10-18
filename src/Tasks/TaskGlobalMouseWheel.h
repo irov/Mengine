@@ -10,21 +10,21 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaMouseWheelEvent;
+    typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
     //////////////////////////////////////////////////////////////////////////
     class TaskGlobalMouseWheel
         : public GOAP::Task
     {
     public:
-        explicit TaskGlobalMouseWheel( const LambdaMouseWheelEvent & _filter );
+        explicit TaskGlobalMouseWheel( const LambdaInputMouseWheelEvent & _filter );
         ~TaskGlobalMouseWheel() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onFinally() override;
 
     protected:
-        LambdaMouseWheelEvent m_filter;
+        LambdaInputMouseWheelEvent m_filter;
 
         uint32_t m_id;
     };

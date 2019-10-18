@@ -11,17 +11,18 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _time );
+        TaskTransformationRotateYTime( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float _to, float _time );
         ~TaskTransformationRotateYTime() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onSkip() override;
         void _onFinally() override;
 
     protected:
         TransformationPtr m_transformation;
         AffectorablePtr m_affectorable;
+        EasingInterfacePtr m_easing;
 
         float m_to;
         float m_time;

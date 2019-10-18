@@ -19,7 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskAnimatablePlayWait::_onRun()
+    bool TaskAnimatablePlayWait::_onRun( GOAP::NodeInterface * _node )
     {
         AnimationInterface * animation = m_animatable->getAnimation();
 
@@ -43,7 +43,7 @@ namespace Mengine
         eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );
         eventation->addEventReceiver( EVENT_ANIMATION_INTERRUPT, receiver );
 
-        receiver->setTask( this );
+        receiver->setGOAPNode( _node );
 
         animation->play( 0.f );
 

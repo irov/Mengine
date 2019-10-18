@@ -13,7 +13,7 @@ namespace Mengine
     public:
         template<class ... Args>
         FactorableUnique( Args && ... _args )
-            : Base( std::forward<Args>( _args ) ... )
+            : Base( std::forward<Args &&>( _args ) ... )
         {
         }
 
@@ -35,7 +35,7 @@ namespace Mengine
         template<class Type, class ... Args>
         IntrusivePtr<Type> makeFactorableUnique( Args && ... _args )
         {
-            Type * factorable = new FactorableUnique<Type>( std::forward<Args>( _args ) ... );
+            Type * factorable = new FactorableUnique<Type>( std::forward<Args &&>( _args ) ... );
 
             return IntrusivePtr<Type>( factorable );
         }

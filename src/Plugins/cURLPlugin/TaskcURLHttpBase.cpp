@@ -28,9 +28,12 @@ namespace Mengine
     protected:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
         {
-            GOAP::SourcePtr source = m_node->makeSource();
+            GOAP::SourceInterfacePtr source = m_node->makeSource();
 
-            m_receiver->onResponse( source, _status, _error, _response, _code, _successful );
+            cURLSourceInterfacePtr curl_source = CURL_SERVICE()
+                ->makeSource( source );
+
+            m_receiver->onResponse( curl_source, _status, _error, _response, _code, _successful );
             m_receiver = nullptr;
 
             const GOAP::SourceProviderInterfacePtr & provider = source->getSourceProvider();

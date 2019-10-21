@@ -35,7 +35,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     EngineSource::EngineSource( const GOAP::SourceProviderInterfacePtr & _provider )
-        : GOAP::Source( _provider )
+        : GOAP::SourceProxy<EngineSource>( _provider )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -171,6 +171,11 @@ namespace Mengine
     void EngineSource::addGlobalMouseWheel( const LambdaInputMouseWheelEvent & _filter )
     {
         this->addTask<TaskGlobalMouseWheel>( _filter );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    GOAP::SourceInterfacePtr EngineSource::_makeSource()
+    {
+        return Helper::makeEngineSource();
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

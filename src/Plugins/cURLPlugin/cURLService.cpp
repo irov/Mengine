@@ -344,7 +344,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    cURLSourceInterfacePtr cURLService::makeSource( const GOAP::SourcePtr & _source )
+    cURLSourceInterfacePtr cURLService::makeSource( const EngineSourcePtr & _source )
     {
         cURLSourcePtr curl_source = m_factorySource->createObject( MENGINE_DOCUMENT_FUNCTION );
 

@@ -38,7 +38,7 @@ namespace Mengine
         bool cancelRequest( HttpRequestID _id ) override;
 
     protected:
-        cURLSourceInterfacePtr makeSource( const GOAP::SourcePtr & _source ) override;
+        cURLSourceInterfacePtr makeSource( const EngineSourcePtr & _source ) override;
 
     private:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override;

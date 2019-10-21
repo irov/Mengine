@@ -15,12 +15,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLSource::setSource( const GOAP::SourcePtr & _source )
+    void cURLSource::setSource( const EngineSourcePtr & _source )
     {
         m_source = _source;
     }
     //////////////////////////////////////////////////////////////////////////
-    const GOAP::SourcePtr & cURLSource::getSource() const
+    const EngineSourcePtr & cURLSource::getSource() const
     {
         return m_source;
     }

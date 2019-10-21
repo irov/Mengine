@@ -5,14 +5,14 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#include "Tasks/EngineSource.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FactorableUnique.h"
 
 #include "Config/String.h"
 #include "Config/VectorString.h"
-
-#include "GOAP/Source.h"
 
 namespace Mengine
 {
@@ -40,16 +40,18 @@ namespace Mengine
     uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful
     ************************************************************************/
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class cURLSourceInterface> cURLSourceInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class cURLTaskReceiverInterface
         : public ServantInterface
     {
     public:
-        virtual void onResponse( const GOAP::SourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onResponse( const cURLSourceInterfacePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const GOAP::SourcePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdaTaskReceiver;
+    typedef Lambda<void( const cURLSourceInterfacePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdaTaskReceiver;
     //////////////////////////////////////////////////////////////////////////
     class cURLTaskReceiverF
         : public cURLTaskReceiverInterface
@@ -65,7 +67,7 @@ namespace Mengine
         }
 
     protected:
-        MENGINE_INLINE void onResponse( const GOAP::SourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
+        MENGINE_INLINE void onResponse( const cURLSourceInterfacePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
         {
             m_f( _source, _status, _error, _response, _code, _successful );
         }
@@ -118,7 +120,7 @@ namespace Mengine
         virtual bool cancelRequest( HttpRequestID _id ) = 0;
 
     public:
-        virtual cURLSourceInterfacePtr makeSource( const GOAP::SourcePtr & _source ) = 0;
+        virtual cURLSourceInterfacePtr makeSource( const EngineSourcePtr & _source ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

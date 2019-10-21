@@ -2,13 +2,16 @@
 
 #include "cURLInterface.h"
 
+#include "Tasks/EngineSource.h"
+
 #include "Config/String.h"
 #include "Config/VectorString.h"
 
-#include "GOAP/Source.h"
-
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class cURLSource> cURLSourcePtr;
+    //////////////////////////////////////////////////////////////////////////
     class cURLSource
         : public cURLSourceInterface
     {
@@ -17,11 +20,11 @@ namespace Mengine
         ~cURLSource();
 
     public:
-        void setSource( const GOAP::SourcePtr & _source );
-        const GOAP::SourcePtr & getSource() const;
+        void setSource( const EngineSourcePtr & _source );
+        const EngineSourcePtr & getSource() const;
 
     public:
-        typedef Lambda<void( const GOAP::SourcePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdacURLReceiver;
+        typedef Lambda<void( const cURLSourcePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdacURLReceiver;
 
     public:
         void addHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) override;
@@ -29,7 +32,7 @@ namespace Mengine
         void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) override;
 
     protected:
-        GOAP::SourcePtr m_source;
+        EngineSourcePtr m_source;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLSource> cURLSourcePtr;

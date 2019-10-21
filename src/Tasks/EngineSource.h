@@ -12,6 +12,7 @@
 
 #include "Config/Metaprogramming.h"
 
+#include "GOAP/Semaphore.h"
 #include "GOAP/Source.h"
 
 namespace Mengine
@@ -25,7 +26,7 @@ namespace Mengine
     using ArrayEngineSources = GOAP::Array<EngineSourcePtr, Count>;
     //////////////////////////////////////////////////////////////////////////
     class EngineSource
-        : public GOAP::Source
+        : public GOAP::SourceProxy<EngineSource>
     {
     public:
         EngineSource( const GOAP::SourceProviderInterfacePtr & _provider );
@@ -75,126 +76,8 @@ namespace Mengine
         {
             this->addTask<TaskEventable>( _eventable, _event, _method, std::forward<Args &&>( _args ) ... );
         }
-
-        using GOAP::Source::addFunction;
-
-        template<class P, class D, class M, class ... Args>
-        void addFunction( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
-        {
-            GOAP::FunctionProviderPtr provider = GOAP::Helper::makeFunctionProvider( [&, _self, _method, _args ...](){ P * p = _self.get(); (p->*_method)(_args ...); } );
-
-            this->addFunctionProvider( provider );
-        }
-
-        using GOAP::Source::addFunctionContext;
-
-        template<class P, class D, class M, class ... Args>
-        void addFunctionContext( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
-        {
-            GOAP::FunctionContextProviderPtr provider = GOAP::Helper::makeFunctionContextProvider( [&, _self, _method, _args ...]( bool _skip ){ P * p = _self.get(); (p->*_method)(_skip, _args ...); } );
-
-            this->addFunctionContextProvider( provider );
-        }
-
-        using GOAP::Source::addCallback;
-
-        template<class P, class D, class M, class ... Args>
-        void addCallback( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
-        {
-            GOAP::CallbackProviderPtr provider = GOAP::Helper::makeCallbackProvider( [&, _self, _method, _args ...]( const GOAP::CallbackObserverPtr & _callback, bool _skip ){ P * p = _self.get(); (p->*_method)(_callback, _skip, _args ...); } );
-
-            this->addCallbackProvider( provider );
-        }
-
-        using GOAP::Source::addScope;
-
-        template<class P, class D, class M, class ... Args>
-        void addScope( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
-        {
-            GOAP::ScopeProviderPtr provider = GOAP::Helper::makeScopeProvider( [&, _self, _method, _args ...]( const GOAP::SourcePtr & _source ){ P * p = _self.get(); (p->*_method)(_source, _args ...); } );
-
-            this->addScopeProvider( provider );
-        }
-
-        template<class F>
-        ArrayEngineSources<2> addIf( F _f )
-        {
-            GOAP::IfProviderPtr provider = GOAP::Helper::makeIfProvider( _f );
-
-            GOAP::ArraySources<2> desc = this->addIfProvider( provider );
-
-            return mpl::array_cast<EngineSourcePtr>(desc);
-        }
-
-        template<class P, class D, class M, class ... Args>
-        ArrayEngineSources<2> addIf( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
-        {
-            GOAP::IfProviderPtr provider = GOAP::Helper::makeIfProvider( [&, _self, _method, _args ...](){ P * p = _self.get(); return (p->*_method)(_args ...); } );
-
-            GOAP::ArraySources<2> desc = this->addIfProvider( provider );
-
-            return mpl::array_cast<EngineSourcePtr>(desc);
-        }
-
-        using GOAP::Source::addRace;
-
-        template<size_t Count>
-        ArrayEngineSources<Count> addRace()
-        {
-            GOAP::ArraySources<Count> sources;
-
-            for( GOAP::SourcePtr & source : sources )
-            {
-                source = Helper::makeEngineSource();
-            }
-
-            GOAP::TranscriptorRaceArrayPtr<Count> transcriptor = GOAP::Helper::makeTranscriptorRaceArray( std::move( sources ) );
-
-            m_provider->addTranscriptor( transcriptor );
-
-            const GOAP::ArraySources<Count> & transcriptor_sources = transcriptor->getSources();
-
-            return mpl::array_cast<EngineSourcePtr>(transcriptor_sources);
-        }
-
-        template<class C>
-        GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::iterator> addParallelZip( C & _c )
-        {
-            typename C::size_type zip_size = _c.size();
-            const GOAP::VectorSources & parallel_sources = this->addParallel( (uint32_t)zip_size );
-
-            GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::iterator> z( parallel_sources.begin(), parallel_sources.end(), _c.begin(), _c.end() );
-
-            return z;
-        }
-
-        template<class C>
-        GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::const_iterator> addParallelZip( const C & _c )
-        {
-            typename C::size_type zip_size = _c.size();
-            const GOAP::VectorSources & parallel_sources = this->addParallel( (uint32_t)zip_size );
-
-            return GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::const_iterator>( parallel_sources.begin(), parallel_sources.end(), _c.begin(), _c.end() );
-        }
-
-        template<class C>
-        GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::iterator> addRaceZip( C & _c )
-        {
-            typename C::size_type zip_size = _c.size();
-            const GOAP::VectorSources & parallel_sources = this->addRace( (uint32_t)zip_size );
-
-            return GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::iterator>( parallel_sources.begin(), parallel_sources.end(), _c.begin(), _c.end() );
-        }
-
-        template<class C>
-        GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::const_iterator> addRaceZip( const C & _c )
-        {
-            typename C::size_type zip_size = _c.size();
-            const GOAP::VectorSources & parallel_sources = this->addRace( (uint32_t)zip_size );
-
-            return GOAP::Zip<EngineSourcePtr, GOAP::VectorSources::const_iterator, typename C::const_iterator>( parallel_sources.begin(), parallel_sources.end(), _c.begin(), _c.end() );
-        }
-
+       
+    public:
         typedef Lambda<bool( const InputKeyEvent & )> LambdaInputKeyEvent;
         void addGlobalKeyPress( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _filter );
 
@@ -206,6 +89,76 @@ namespace Mengine
 
         typedef Lambda<bool( const InputMouseWheelEvent & )> LambdaInputMouseWheelEvent;
         void addGlobalMouseWheel( const LambdaInputMouseWheelEvent & _filter );
+
+    public:
+        using GOAP::SourceProxy<EngineSource>::addFunction;
+
+        template<class P, class D, class M, class ... Args>
+        void addFunction( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
+        {
+            GOAP::FunctionProviderPtr provider = GOAP::Helper::makeFunctionProvider( [&, _self, _method, _args ...](){ P * p = _self.get(); (p->*_method)(_args ...); } );
+
+            this->addFunctionProvider( provider );
+        }
+
+        using GOAP::SourceProxy<EngineSource>::addFunctionContext;
+
+        template<class P, class D, class M, class ... Args>
+        void addFunctionContext( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
+        {
+            GOAP::FunctionContextProviderPtr provider = GOAP::Helper::makeFunctionContextProvider( [&, _self, _method, _args ...]( bool _skip ){ P * p = _self.get(); (p->*_method)(_skip, _args ...); } );
+
+            this->addFunctionContextProvider( provider );
+        }
+
+        using GOAP::SourceProxy<EngineSource>::addCallback;
+
+        template<class P, class D, class M, class ... Args>
+        void addCallback( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
+        {
+            GOAP::CallbackProviderPtr provider = GOAP::Helper::makeCallbackProvider( [&, _self, _method, _args ...]( const GOAP::CallbackObserverPtr & _callback, bool _skip ){ P * p = _self.get(); (p->*_method)(_callback, _skip, _args ...); } );
+
+            this->addCallbackProvider( provider );
+        }
+
+        using GOAP::SourceProxy<EngineSource>::addScope;
+
+        template<class P, class D, class M, class ... Args>
+        void addScope( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
+        {
+            GOAP::ScopeProviderPtr provider = GOAP::Helper::makeScopeProvider( [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source ){ P * p = _self.get(); (p->*_method)(_source, _args ...); } );
+
+            this->addScopeProvider( provider );
+        }
+
+        using GOAP::SourceProxy<EngineSource>::addIf;
+
+        template<class P, class D, class M, class ... Args>
+        GOAP::ArrayTypeSources<EngineSource, 2> addIf( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
+        {
+            GOAP::IfProviderPtr provider = GOAP::Helper::makeIfProvider( [&, _self, _method, _args ...](){ P * p = _self.get(); return (p->*_method)(_args ...); } );
+
+            GOAP::ArraySources<2> desc = this->addIfProvider( provider );
+
+            return GOAP::Helper::ArraySourcesCast<EngineSource>( desc );
+        }
+
+        using GOAP::SourceProxy<EngineSource>::addRepeat;
+
+        template<class P, class D, class M, class ... Args>
+        EngineSourcePtr addRepeat( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
+        {
+            WhileProviderPtr provider = Helper::makeWhileProvider( [&, _self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source ){ P * p = _self.get(); return (p->*_method)((EngineSourcePtr)_source, _args ...); } );
+
+            TypeSourcePtr source_until = this->makeSource();
+
+            this->addTaskRepeat( provider, source_until );
+
+            return source_until;
+        }
+
+    protected:
+        GOAP::SourceInterfacePtr _makeSource() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<EngineSource> EngineSourcePtr;

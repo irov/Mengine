@@ -93,6 +93,7 @@ src
 	AccountProviderInterface.h
 	AccountServiceInterface.h
     EventationInterface.h
+    EventReceiverInterface.h
     UnknownInterface.h    
     RenderProgramVariableInterface.h
     RenderServiceInterface.h

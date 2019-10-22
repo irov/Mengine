@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ScriptablePrototypeGenerator.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
 
 #include "Interface/EnumeratorServiceInterface.h"
 

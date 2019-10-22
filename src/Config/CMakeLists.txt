@@ -15,6 +15,7 @@ src
     Floats.h
     Vector.h
     Deque.h
+    Set.h
     Map.h
     Pair.h
     UnorderedMap.h

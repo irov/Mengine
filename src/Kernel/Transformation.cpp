@@ -564,7 +564,7 @@ namespace Mengine
     {
         m_invalidateLocalMatrix = false;
 
-        this->makeLocalMatrix_( m_localMatrix, m_transformationFlag, m_position, m_origin, m_scale, m_skew, m_orientation );
+        Transformation::makeLocalMatrix_( m_localMatrix, m_transformationFlag, m_position, m_origin, m_scale, m_skew, m_orientation );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::makeLocalMatrix_( mt::mat4f & _lm, uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f & _origin, const mt::vec3f & _scale, const mt::vec2f & _skew, const mt::vec3f & _orientation )

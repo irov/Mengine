@@ -6,15 +6,24 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class TimepipeInterface
+        : public Mixin
+    {
+    public:
+         virtual void onTimepipe( const UpdateContext * _contet ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<TimepipeInterface> TimepipeInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class TimepipeServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "TimepipeService" )
 
     public:
-        typedef Lambda<void( const UpdateContext * )> LambdaTimepipe;
-        virtual uint32_t addTime( const LambdaTimepipe & _timepipe ) = 0;
-        virtual void removeTime( uint32_t _id ) = 0;
+        virtual uint32_t addTimepipe( const TimepipeInterfacePtr & _timepipe ) = 0;
+        virtual TimepipeInterfacePtr removeTimepipe( uint32_t _id ) = 0;
 
     public:
         virtual void tick( const UpdateContext * _context ) = 0;

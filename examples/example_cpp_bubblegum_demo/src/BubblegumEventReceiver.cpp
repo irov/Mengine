@@ -3,7 +3,6 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/TimepipeServiceInterface.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -20,6 +19,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/StringHelper.h"
+#include "Kernel/TimepipeHelper.h"
 
 #include "Tasks/TaskTransformationScaleTime.h"
 #include "Tasks/TaskPickerableMouseButton.h"
@@ -250,8 +250,7 @@ namespace Mengine
 
         GOAP::TimerPtr timer = GOAP::Helper::makeTimer();
 
-        TIMEPIPE_SERVICE()
-            ->addTime( [timer]( const UpdateContext * _context )
+        Helper::addTimepipe( [timer]( const UpdateContext * _context )
         {
             float time = _context->time;
 

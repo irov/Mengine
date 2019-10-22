@@ -11,7 +11,6 @@
 
 #include <algorithm>
 #include <stdio.h>
-#include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundSystem, Mengine::OpenALSoundSystem );

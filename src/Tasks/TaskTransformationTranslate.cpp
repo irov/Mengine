@@ -2,6 +2,8 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,8 +13,8 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationTranslateAffector( TaskTransformationTranslate * _task, const TransformationPtr & _transformation, const mt::vec3f & _deltha, const mt::vec3f & _to, float _speed )
-                : m_task( _task )
+            TaskTransformationTranslateAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, const mt::vec3f & _deltha, const mt::vec3f & _to, float _speed )
+                : m_node( _node )
                 , m_transformation( _transformation )
                 , m_deltha( _deltha )
                 , m_to( _to )
@@ -57,16 +59,16 @@ namespace Mengine
             {
                 if( _isEnd == true )
                 {
-                    m_task->complete();
+                    m_node->complete();
                 }
                 else
                 {
-                    m_task->skip();
+                    m_node->skip();
                 }
             }
 
         protected:
-            TaskTransformationTranslate * m_task;
+            GOAP::NodeInterfacePtr m_node;
 
             TransformationPtr m_transformation;
 
@@ -89,7 +91,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationTranslate::_onRun()
+    bool TaskTransformationTranslate::_onRun( GOAP::NodeInterface * _node )
     {
         const mt::vec3f & position = m_transformation->getLocalPosition();
 
@@ -98,7 +100,7 @@ namespace Mengine
 
         mt::vec3f deltha = dir * m_speed;
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( this, m_transformation, deltha, m_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( _node, m_transformation, deltha, m_to, m_speed );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

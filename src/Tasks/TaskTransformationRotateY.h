@@ -15,7 +15,7 @@ namespace Mengine
         ~TaskTransformationRotateY() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onSkip() override;
         void _onFinally() override;
 

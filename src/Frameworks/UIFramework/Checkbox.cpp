@@ -1,5 +1,6 @@
 #include "Checkbox.h"
 
+#include "Tasks/EngineSource.h"
 #include "Tasks/TaskNodeEnable.h"
 #include "Tasks/TaskNodeDisable.h"
 #include "Tasks/TaskLocalDelay.h"
@@ -118,11 +119,11 @@ namespace Mengine
             m_nodes[1][ECS_OVER] = m_nodes[1][ECS_IDLE];
         }
 
-        GOAP::SourcePtr source = GOAP::Helper::makeSource();
+        EngineSourcePtr source = Helper::makeEngineSource();
 
-        auto fn = [this]( const GOAP::SourcePtr & _source )
+        auto fn = [this]( const EngineSourcePtr & _source )
         {
-            typedef void (Checkbox:: * TF)(const GOAP::SourcePtr &, const NodePtr &, bool);
+            typedef void (Checkbox:: * TF)(const EngineSourcePtr &, const NodePtr &, bool);
 
             const TF stateFunctions[] =
             {
@@ -178,7 +179,7 @@ namespace Mengine
         m_state = _state;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateAppear( const GOAP::SourcePtr & _source, const NodePtr & _nodeAppear, bool _value )
+    void Checkbox::__stateAppear( const EngineSourcePtr & _source, const NodePtr & _nodeAppear, bool _value )
     {
         if( _nodeAppear == nullptr )
         {
@@ -214,7 +215,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeAppear );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateIdle( const GOAP::SourcePtr & _source, const NodePtr & _nodeIdle, bool _value )
+    void Checkbox::__stateIdle( const EngineSourcePtr & _source, const NodePtr & _nodeIdle, bool _value )
     {
         _source->addTask<TaskNodeEnable>( _nodeIdle );
         _source->addTask<TaskLocalDelay>( 0.f );
@@ -233,7 +234,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeIdle );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateOver( const GOAP::SourcePtr & _source, const NodePtr & _nodeOver, bool _value )
+    void Checkbox::__stateOver( const EngineSourcePtr & _source, const NodePtr & _nodeOver, bool _value )
     {
         _source->addTask<TaskNodeEnable>( _nodeOver );
         _source->addTask<TaskLocalDelay>( 0.f );
@@ -252,7 +253,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeOver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateEnter( const GOAP::SourcePtr & _source, const NodePtr & _nodeEnter, bool _value )
+    void Checkbox::__stateEnter( const EngineSourcePtr & _source, const NodePtr & _nodeEnter, bool _value )
     {
         if( _nodeEnter == nullptr )
         {
@@ -279,7 +280,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateLeave( const GOAP::SourcePtr & _source, const NodePtr & _nodeLeave, bool _value )
+    void Checkbox::__stateLeave( const EngineSourcePtr & _source, const NodePtr & _nodeLeave, bool _value )
     {
         if( _nodeLeave == nullptr )
         {
@@ -303,7 +304,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeLeave );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__statePush( const GOAP::SourcePtr & _source, const NodePtr & _nodePush, bool _value )
+    void Checkbox::__statePush( const EngineSourcePtr & _source, const NodePtr & _nodePush, bool _value )
     {
         if( _nodePush == nullptr )
         {
@@ -330,7 +331,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodePush );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__statePressed( const GOAP::SourcePtr & _source, const NodePtr & _nodePressed, bool _value )
+    void Checkbox::__statePressed( const EngineSourcePtr & _source, const NodePtr & _nodePressed, bool _value )
     {
         if( _nodePressed == nullptr )
         {
@@ -358,7 +359,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodePressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateRelease( const GOAP::SourcePtr & _source, const NodePtr & _nodeRelease, bool _value )
+    void Checkbox::__stateRelease( const EngineSourcePtr & _source, const NodePtr & _nodeRelease, bool _value )
     {
         if( _nodeRelease == nullptr )
         {
@@ -382,7 +383,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeRelease );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateClick( const GOAP::SourcePtr & _source, const NodePtr & _nodeClick, bool _value )
+    void Checkbox::__stateClick( const EngineSourcePtr & _source, const NodePtr & _nodeClick, bool _value )
     {
         bool changeValue = !_value;
 
@@ -403,7 +404,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeClick );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateBlockEnter( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlockEnter, bool _value )
+    void Checkbox::__stateBlockEnter( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnter, bool _value )
     {
         if( _nodeBlockEnter == nullptr )
         {
@@ -419,7 +420,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeBlockEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateBlock( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlock, bool _value )
+    void Checkbox::__stateBlock( const EngineSourcePtr & _source, const NodePtr & _nodeBlock, bool _value )
     {
         if( _nodeBlock == nullptr )
         {
@@ -437,7 +438,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeBlock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateBlockEnd( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlockEnd, bool _value )
+    void Checkbox::__stateBlockEnd( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnd, bool _value )
     {
         if( _nodeBlockEnd == nullptr )
         {

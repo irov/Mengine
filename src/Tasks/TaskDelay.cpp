@@ -3,6 +3,8 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,8 +13,9 @@ namespace Mengine
         , public Mengine::Factorable
     {
     public:
-        explicit ScheduleEvent( TaskDelay * _task )
+        explicit ScheduleEvent( TaskDelay * _task, GOAP::NodeInterface * _node )
             : m_task( _task )
+            , m_node( _node )
         {
         }
 
@@ -24,15 +27,20 @@ namespace Mengine
         void onSchedulerComplete( uint32_t _id ) override
         {
             m_task->schedulerComplete( _id );
+
+            m_node->complete();
         }
 
         void onSchedulerStop( uint32_t _id ) override
         {
             m_task->schedulerComplete( _id );
+
+            m_node->complete();
         }
 
     protected:
         TaskDelay * m_task;
+        GOAP::NodeInterfacePtr m_node;
     };
     //////////////////////////////////////////////////////////////////////////
     TaskDelay::TaskDelay( const SchedulerInterfacePtr & _scheduler, float _time )
@@ -54,13 +62,11 @@ namespace Mengine
         }
 
         m_id = 0;
-
-        this->complete();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskDelay::_onRun()
+    bool TaskDelay::_onRun( GOAP::NodeInterface * _node )
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( this );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( this, _node );
 
         uint32_t id = m_scheduler->event( m_time, ev );
 

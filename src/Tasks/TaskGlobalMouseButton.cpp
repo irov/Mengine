@@ -4,10 +4,12 @@
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    TaskGlobalMouseButton::TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaMouseButtonEvent & _filter )
+    TaskGlobalMouseButton::TaskGlobalMouseButton( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _filter )
         : m_code( _code )
         , m_isDown( _isDown )
         , m_filter( _filter )
@@ -19,20 +21,20 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskGlobalMouseButton::_onRun()
+    bool TaskGlobalMouseButton::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this]( const InputMouseButtonEvent & _event )
+        auto lambda = [this, _node]( const InputMouseButtonEvent & _event )
         {
             if( m_filter != nullptr )
             {
                 if( m_filter( _event ) == true )
                 {
-                    this->complete();
+                    _node->complete();
                 }
             }
             else
             {
-                this->complete();
+                _node->complete();
             }
 
             return false;

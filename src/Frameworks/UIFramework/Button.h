@@ -3,7 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
 
-#include "GOAP/GOAP.h"
+#include "Tasks/EngineSource.h"
 
 namespace Mengine
 {
@@ -57,19 +57,19 @@ namespace Mengine
         void __setState( EButtonState _state );
 
     protected:
-        void __stateAppear( const GOAP::SourcePtr & _source, const NodePtr & _nodeAppear );
-        void __stateIdle( const GOAP::SourcePtr & _source, const NodePtr & _nodeIdle );
-        void __stateOver( const GOAP::SourcePtr & source, const NodePtr & _nodeOver );
-        void __stateEnter( const GOAP::SourcePtr & _source, const NodePtr & _nodeEnter );
-        void __stateLeave( const GOAP::SourcePtr & _source, const NodePtr & _nodeLeave );
-        void __statePush( const GOAP::SourcePtr & _source, const NodePtr & _nodePush );
-        void __statePressed( const GOAP::SourcePtr & _source, const NodePtr & _nodePressed );
-        void __stateRelease( const GOAP::SourcePtr & _source, const NodePtr & _nodeRelease );
-        void __stateReleasePlay( const GOAP::SourcePtr & _source, const NodePtr & _nodeRelease );
-        void __stateClick( const GOAP::SourcePtr & _source, const NodePtr & _nodeClick );
-        void __stateBlockEnter( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlockEnter );
-        void __stateBlock( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlock );
-        void __stateBlockEnd( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlockEnd );
+        void __stateAppear( const EngineSourcePtr & _source, const NodePtr & _nodeAppear );
+        void __stateIdle( const EngineSourcePtr & _source, const NodePtr & _nodeIdle );
+        void __stateOver( const EngineSourcePtr & source, const NodePtr & _nodeOver );
+        void __stateEnter( const EngineSourcePtr & _source, const NodePtr & _nodeEnter );
+        void __stateLeave( const EngineSourcePtr & _source, const NodePtr & _nodeLeave );
+        void __statePush( const EngineSourcePtr & _source, const NodePtr & _nodePush );
+        void __statePressed( const EngineSourcePtr & _source, const NodePtr & _nodePressed );
+        void __stateRelease( const EngineSourcePtr & _source, const NodePtr & _nodeRelease );
+        void __stateReleasePlay( const EngineSourcePtr & _source, const NodePtr & _nodeRelease );
+        void __stateClick( const EngineSourcePtr & _source, const NodePtr & _nodeClick );
+        void __stateBlockEnter( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnter );
+        void __stateBlock( const EngineSourcePtr & _source, const NodePtr & _nodeBlock );
+        void __stateBlockEnd( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnd );
 
     protected:
         EButtonState m_state;

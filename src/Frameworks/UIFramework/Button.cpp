@@ -1,5 +1,6 @@
 #include "Button.h"
 
+#include "Tasks/EngineSource.h"
 #include "Tasks/TaskNodeEnable.h"
 #include "Tasks/TaskNodeDisable.h"
 #include "Tasks/TaskLocalDelay.h"
@@ -96,11 +97,11 @@ namespace Mengine
             m_state = EBS_IDLE;
         }
 
-        GOAP::SourcePtr source = GOAP::Helper::makeSource();
+        EngineSourcePtr source = Helper::makeEngineSource();
 
-        auto fn = [this]( const GOAP::SourcePtr & _source )
+        auto fn = [this]( const EngineSourcePtr & _source )
         {
-            typedef void (Button:: * TF)(const GOAP::SourcePtr &, const NodePtr &);
+            typedef void (Button:: * TF)(const EngineSourcePtr &, const NodePtr &);
 
             const TF stateFunctions[] =
             {
@@ -154,7 +155,7 @@ namespace Mengine
         m_state = _state;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateAppear( const GOAP::SourcePtr & _source, const NodePtr & _nodeAppear )
+    void Button::__stateAppear( const EngineSourcePtr & _source, const NodePtr & _nodeAppear )
     {
         if( _nodeAppear == nullptr )
         {
@@ -190,7 +191,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeAppear );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateIdle( const GOAP::SourcePtr & _source, const NodePtr & _nodeIdle )
+    void Button::__stateIdle( const EngineSourcePtr & _source, const NodePtr & _nodeIdle )
     {
         _source->addTask<TaskNodeEnable>( _nodeIdle );
         _source->addTask<TaskLocalDelay>( 0.f );
@@ -209,7 +210,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeIdle );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateOver( const GOAP::SourcePtr & _source, const NodePtr & _nodeOver )
+    void Button::__stateOver( const EngineSourcePtr & _source, const NodePtr & _nodeOver )
     {
         _source->addTask<TaskNodeEnable>( _nodeOver );
         _source->addTask<TaskLocalDelay>( 0.f );
@@ -228,7 +229,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeOver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateEnter( const GOAP::SourcePtr & _source, const NodePtr & _nodeEnter )
+    void Button::__stateEnter( const EngineSourcePtr & _source, const NodePtr & _nodeEnter )
     {
         if( _nodeEnter == nullptr )
         {
@@ -254,7 +255,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateLeave( const GOAP::SourcePtr & _source, const NodePtr & _nodeLeave )
+    void Button::__stateLeave( const EngineSourcePtr & _source, const NodePtr & _nodeLeave )
     {
         if( _nodeLeave == nullptr )
         {
@@ -278,7 +279,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeLeave );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__statePush( const GOAP::SourcePtr & _source, const NodePtr & _nodePush )
+    void Button::__statePush( const EngineSourcePtr & _source, const NodePtr & _nodePush )
     {
         if( _nodePush == nullptr )
         {
@@ -305,7 +306,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodePush );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__statePressed( const GOAP::SourcePtr & _source, const NodePtr & _nodePressed )
+    void Button::__statePressed( const EngineSourcePtr & _source, const NodePtr & _nodePressed )
     {
         if( _nodePressed == nullptr )
         {
@@ -333,7 +334,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodePressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateRelease( const GOAP::SourcePtr & _source, const NodePtr & _nodeRelease )
+    void Button::__stateRelease( const EngineSourcePtr & _source, const NodePtr & _nodeRelease )
     {
         if( _nodeRelease == nullptr )
         {
@@ -357,7 +358,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeRelease );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateReleasePlay( const GOAP::SourcePtr & _source, const NodePtr & _nodeRelease )
+    void Button::__stateReleasePlay( const EngineSourcePtr & _source, const NodePtr & _nodeRelease )
     {
         if( _nodeRelease == nullptr )
         {
@@ -373,7 +374,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeRelease );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateClick( const GOAP::SourcePtr & _source, const NodePtr & _nodeClick )
+    void Button::__stateClick( const EngineSourcePtr & _source, const NodePtr & _nodeClick )
     {
         if( _nodeClick == nullptr )
         {
@@ -396,7 +397,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeClick );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateBlockEnter( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlockEnter )
+    void Button::__stateBlockEnter( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnter )
     {
         if( _nodeBlockEnter == nullptr )
         {
@@ -412,7 +413,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeBlockEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateBlock( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlock )
+    void Button::__stateBlock( const EngineSourcePtr & _source, const NodePtr & _nodeBlock )
     {
         if( _nodeBlock == nullptr )
         {
@@ -430,7 +431,7 @@ namespace Mengine
         _source->addTask<TaskNodeDisable>( _nodeBlock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateBlockEnd( const GOAP::SourcePtr & _source, const NodePtr & _nodeBlockEnd )
+    void Button::__stateBlockEnd( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnd )
     {
         if( _nodeBlockEnd == nullptr )
         {

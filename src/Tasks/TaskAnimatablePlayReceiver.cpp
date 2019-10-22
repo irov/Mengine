@@ -1,10 +1,11 @@
 #include "TaskAnimatablePlayReceiver.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TaskAnimatablePlayReceiver::TaskAnimatablePlayReceiver()
-        : m_task( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -12,9 +13,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskAnimatablePlayReceiver::setTask( GOAP::Task * _task )
+    void TaskAnimatablePlayReceiver::setGOAPNode( GOAP::NodeInterface * _node )
     {
-        m_task = _task;
+        m_node = GOAP::NodeInterfacePtr::from( _node );
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskAnimatablePlayReceiver::onAnimationPlay( uint32_t _enumerator, float _time )
@@ -44,20 +45,20 @@ namespace Mengine
     {
         MENGINE_UNUSED( _enumerator );
 
-        m_task->complete();
+        m_node->complete();
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskAnimatablePlayReceiver::onAnimationEnd( uint32_t _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 
-        m_task->complete();
+        m_node->complete();
     }
     //////////////////////////////////////////////////////////////////////////
     void TaskAnimatablePlayReceiver::onAnimationInterrupt( uint32_t _enumerator )
     {
         MENGINE_UNUSED( _enumerator );
 
-        m_task->complete();
+        m_node->complete();
     }
 }

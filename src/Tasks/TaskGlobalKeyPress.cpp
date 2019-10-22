@@ -4,6 +4,8 @@
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -19,20 +21,20 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskGlobalKeyPress::_onRun()
+    bool TaskGlobalKeyPress::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this]( const InputKeyEvent & _event )
+        auto lambda = [this, _node]( const InputKeyEvent & _event )
         {
             if( m_filter != nullptr )
             {
                 if( m_filter( _event ) == true )
                 {
-                    this->complete();
+                    _node->complete();
                 }
             }
             else
             {
-                this->complete();
+                _node->complete();
             }
 
             return false;

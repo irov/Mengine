@@ -1,25 +1,26 @@
-#include "TaskHttpGet.h"
+#include "TaskcURLHttpPost.h"
 
 #include "Kernel/Logger.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
-    TaskHttpGet::TaskHttpGet( const String & _url, int32_t _timeout, const LambdacURLReceiver & _lambda )
-        : TaskHttpBase( _url, _timeout, _lambda )
+    TaskcURLHttpPost::TaskcURLHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
+        : TaskcURLHttpBase( _url, _timeout, _receiver )
+        , m_params( _params )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskHttpGet::~TaskHttpGet()
+    TaskcURLHttpPost::~TaskcURLHttpPost()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskHttpGet::_onRun()
+    bool TaskcURLHttpPost::_onRun( GOAP::NodeInterface * _node )
     {
-        cURLReceiverInterfacePtr receiver = this->createHttpReceiver_();
+        cURLReceiverInterfacePtr receiver = this->createHttpReceiver_( _node );
 
         HttpRequestID requestId = CURL_SERVICE()
-            ->getMessage( m_url, m_timeout, receiver );
+            ->postMessage( m_url, m_params, m_timeout, receiver );
 
         if( requestId == 0 )
         {

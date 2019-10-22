@@ -8,6 +8,8 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -159,9 +161,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPickerableMouseButton::_onRun()
+    bool TaskPickerableMouseButton::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this]( const InputMouseButtonEvent & _event )
+        auto lambda = [this, _node]( const InputMouseButtonEvent & _event )
         {
             if( _event.code != m_code )
             {
@@ -185,7 +187,7 @@ namespace Mengine
                 handle = m_filter( _event );
             }
 
-            this->complete();
+            _node->complete();
 
             return handle;
         };

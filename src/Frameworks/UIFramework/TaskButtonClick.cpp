@@ -82,11 +82,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskButtonClick::_onRun()
+    bool TaskButtonClick::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this]()
+        auto lambda = [_node]()
         {
-            this->complete();
+            _node->complete();
         };
 
         EventationInterface * eventation = m_button->getEventation();

@@ -9,23 +9,33 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TaskPrint::TaskPrint( const Char * _format, ... )
     {
-        va_list args;
-        va_start( args, _format );
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
 
         Char message[2048] = { 0 };
         int message_size = MENGINE_VSNPRINTF( message, 2047, _format, args );
 
         m_message.assign( message, message_size );
 
-        va_end( args );
+        MENGINE_VA_LIST_END( args );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TaskPrint::TaskPrint( const Char * _format, MENGINE_VA_LIST_TYPE _args )
+    {
+        Char message[2048] = {0};
+        int message_size = MENGINE_VSNPRINTF( message, 2047, _format, _args );
+
+        m_message.assign( message, message_size );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskPrint::~TaskPrint()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskPrint::_onRun()
+    bool TaskPrint::_onRun( GOAP::NodeInterface * _node )
     {
+        MENGINE_UNUSED( _node );
+
         LOGGER_MESSAGE( "%s"
             , m_message.c_str()
         );

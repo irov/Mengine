@@ -1,6 +1,12 @@
 SET(MY_LIB_NAME Tasks)
 
 ADD_FILTER(
+EngineSource
+    EngineSource.h
+    EngineSource.cpp
+)
+
+ADD_FILTER(
 Tasks
     TaskNodeEnable.h
     TaskNodeEnable.cpp
@@ -28,8 +34,6 @@ Tasks
     TaskGlobalMouseMove.h
     TaskGlobalMouseWheel.cpp
     TaskGlobalMouseWheel.h
-    TaskGlobalMouseWheel.h
-    TaskGlobalMouseWheel.cpp
 	TaskGlobalKeyPress.h
 	TaskGlobalKeyPress.cpp
     TaskTransformationRotateY.cpp
@@ -56,14 +60,6 @@ Tasks
 	TaskAnimatablePlayReceiver.cpp
     TaskAnimatableRewind.h
     TaskAnimatableRewind.cpp
-    TaskHttpBase.h
-    TaskHttpBase.cpp
-    TaskHttpGet.h
-    TaskHttpGet.cpp
-    TaskHttpPost.h
-    TaskHttpPost.cpp
-    TaskHttpHeaderData.h
-    TaskHttpHeaderData.cpp
     TaskNotify.h
     TaskEventable.h
     TaskEventable.cpp

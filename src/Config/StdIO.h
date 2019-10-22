@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#define MENGINE_VA_LIST_TYPE( Args ) va_list Args
+#define MENGINE_VA_LIST_TYPE va_list
 #define MENGINE_VA_LIST_START( Args, Format ) va_start( Args, Format )
 #define MENGINE_VA_LIST_END( Args ) va_end( Args )
 

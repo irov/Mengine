@@ -7,8 +7,10 @@
 #include "Config/Vector.h"
 #include "Config/String.h"
 
+#include "stdex/thread_guard.h"
+
 #ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
-#define MENGINE_NODELEAKDETECTOR_HASHSIZE 1021
+#define MENGINE_NODELEAKDETECTOR_HASHSIZE 1001
 #endif
 
 namespace Mengine
@@ -69,6 +71,8 @@ namespace Mengine
 
         typedef Vector<ObjectLeakDesc> VectorObjectLeakDesc;
         VectorObjectLeakDesc m_objectLeakDescs[MENGINE_NODELEAKDETECTOR_HASHSIZE];
+
+        STDEX_THREAD_GUARD_INIT;
 #endif
     };
 }

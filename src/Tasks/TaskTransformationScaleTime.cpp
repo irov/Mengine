@@ -2,6 +2,8 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,8 +13,8 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationScaleTimeAffector( const TaskTransformationScaleTimePtr & _task, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
-                : m_task( _task )
+            TaskTransformationScaleTimeAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, const mt::vec3f & _from, const mt::vec3f & _to, float _time )
+                : m_node( _node )
                 , m_transformation( _transformation )
                 , m_from( _from )
                 , m_to( _to )
@@ -69,16 +71,16 @@ namespace Mengine
             {
                 if( _isEnd == true )
                 {
-                    m_task->complete();
+                    m_node->complete();
                 }
                 else
                 {
-                    m_task->skip();
+                    m_node->skip();
                 }
             }
 
         protected:
-            TaskTransformationScaleTimePtr m_task;
+            GOAP::NodeInterfacePtr m_node;
 
             TransformationPtr m_transformation;
 
@@ -104,11 +106,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationScaleTime::_onRun()
+    bool TaskTransformationScaleTime::_onRun( GOAP::NodeInterface * _node )
     {
         const mt::vec3f & scale = m_transformation->getLocalScale();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( TaskTransformationScaleTimePtr::from( this ), m_transformation, scale, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( _node, m_transformation, scale, m_to, m_time );
 
         affector->setEasing( m_easing );
 

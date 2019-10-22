@@ -2,6 +2,8 @@
 
 #include "Kernel/Node.h"
 
+#include "Config/Tuple.h"
+
 #include "GOAP/Task.h"
 
 namespace Mengine
@@ -12,7 +14,7 @@ namespace Mengine
     {
     public:
         TaskNotify( Args && ... _args )
-            : m_args( std::forward<Forwards &&>( _args ) ... )
+            : m_args( std::forward<Args &&>( _args ) ... )
         {
 
         }

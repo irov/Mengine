@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityBehaviorInterface> EntityBehaviorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    enum EntityEventFlag
+    enum EEntityEventFlag
     {
         EVENT_ENTITY_CREATE = 0,
         EVENT_ENTITY_DESTROY,

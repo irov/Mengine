@@ -1,126 +1,88 @@
 #pragma once
 
-#include "Factory/Factorable.h"
+#include "Box2DInterface.h"
 
-#include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/Servant.h"
-
-#include "Core/Polygon.h"
 
 #include "Box2D/Box2D.h"
 
-#include "pybind/pybind.hpp"
-
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	enum Box2DBodyEventFlag
-	{
-		EVENT_BOX2DBODY_BEGIN_CONTACT,
-		EVENT_BOX2DBODY_END_CONTACT,
-		EVENT_BOX2DBODY_PRE_SOLVE,
-		EVENT_BOX2DBODY_POST_SOLVE,
-		EVENT_BOX2DBODY_UPDATE_CONTACT,
-	};
-    //////////////////////////////////////////////////////////////////////////
-    class Box2DBodyEventReceiver
-        : public EventReceiver
-    {
-    public:
-        virtual void onBox2DBodyBeginContact( class Box2DBody * _other, b2Contact * _contact ) = 0;
-		virtual void onBox2DBodyEndContact( class Box2DBody * _other, b2Contact * _contact ) = 0;
-
-		virtual void onBox2DBodyPreSolve( class Box2DBody * _other, b2Contact * _contact, const b2Manifold* _manifold ) = 0;
-		virtual void onBox2DBodyPostSolve( class Box2DBody * _other, b2Contact * _contact, const b2ContactImpulse* _impulse ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
-    //////////////////////////////////////////////////////////////////////////
     class Box2DBody
-		: public Servant
-		, public Scriptable
-		, public Eventable
+        : public Box2DBodyInterface
     {
-        EVENT_RECEIVER( Box2DBodyEventReceiver );
+    public:
+        Box2DBody();
+        ~Box2DBody() override;
 
     public:
-		Box2DBody();
-		~Box2DBody() override;
-
-	public:
-		void setWorld( b2World * _world );
-		b2World * getWorld() const;
-
-	public:
-		void setUserData( const pybind::object & _userData );
-		const pybind::object & getUserData() const;
-
-	public:
-		void onBeginContact( Box2DBody * _body, b2Contact * _contact );		
-		void onEndContact( Box2DBody * _body, b2Contact * _contact );
-		void onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold* _oldManifold );
-		void onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse* _impulse );
+        bool initialize( b2World * _world, b2BodyDef * _bodyDef );
 
     public:
-		void setBody( b2Body * _body );
-		b2Body * getBody() const;
+        void setEventable( const EventablePtr & _eventable );
+        const EventablePtr & getEventable() const;
+
+    public:        
+        b2World * getWorld() const;
+        b2Body * getBody() const;
 
     public:
-		bool addShapeConvex( const Polygon & _vertices, float _density, float _friction, float _restitution, bool _isSensor
-			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
-        bool addShapeCircle( float _radius, const mt::vec2f& _localPos
-			, float _density, float _friction, float _restitution, bool _isSensor
-			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
-		bool addShapeBox( float _width, float _height, const mt::vec2f& _localPos, float _angle
-			, float _density, float _friction, float _restitution, bool _isSensor
-			, unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex );
-
-	public:
-		mt::vec2f GetPosition() const;
-		float GetAngle() const;
+        bool addShapeConvex( const Polygon & _polygon, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
+        bool addShapeCircle( float _radius, const mt::vec2f & _localPos, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
+        bool addShapeBox( float _width, float _height, const mt::vec2f & _localPos, float _angle, float _density, float _friction, float _restitution, bool _isSensor, uint16_t _collisionMask, uint16_t _categoryBits, uint16_t _groupIndex ) override;
 
     public:
-        float getMass() const;
-        float getInertia() const;
-
-		void setLinearVelocity( const mt::vec2f & _velocity );
-        mt::vec2f getLinearVelocity() const;
-
-        void setAngularVelocity( float _w );
-        float getAngularVelocity() const;
-
-		void applyForce( const mt::vec2f & _force, const mt::vec2f & _point );
-		void applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point );
-        void applyTorque( float _torque );
+        mt::vec2f getPosition() const override;
+        float getAngle() const override;
 
     public:
-        bool isFrozen() const;
-		bool isSleeping() const;
-        bool isStatic() const;
+        float getMass() const override;
+        float getInertia() const override;
 
-        void setLinearDumping( float _dumping );
-        float getLinearDumping() const;
-        void setAngularDumping( float _dumping );
-        float getAngularDumping() const;
-        void setFixedRotation( bool _rotation );
-        bool getFixedRotation() const;
-        void setIsBullet( bool _isBullet ); 
-        bool getIsBullet() const; 
+        void setLinearVelocity( const mt::vec2f & _velocity ) override;
+        mt::vec2f getLinearVelocity() const override;
 
-        void sleep();
-        void wakeUp();
+        void setAngularVelocity( float _w ) override;
+        float getAngularVelocity() const override;
 
-		void updateFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex );
+        void applyForce( const mt::vec2f & _force, const mt::vec2f & _point ) override;
+        void applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point ) override;
+        void applyTorque( float _torque ) override;
 
-		void filterContactList( const pybind::object & _filter, const pybind::args & _args );
+    public:
+        bool isFrozen() const override;
+        bool isSleeping() const override;
+        bool isStatic() const override;
 
-	protected:
-        b2World* m_world;
-        b2Body* m_body;		
+        void setLinearDumping( float _dumping ) override;
+        float getLinearDumping() const override;
+        void setAngularDumping( float _dumping ) override;
+        float getAngularDumping() const override;
+        void setFixedRotation( bool _rotation ) override;
+        bool getFixedRotation() const override;
+        void setIsBullet( bool _isBullet ) override;
+        bool getIsBullet() const override;
 
-		pybind::object m_userData;
+        void sleep() override;
+        void wakeUp() override;
+
+        void setFilterData( uint16_t _categoryBits, uint16_t _collisionMask, int16_t _groupIndex ) override;
+
+    protected:
+        void onBeginContact( Box2DBody * _body, b2Contact * _contact );
+        void onEndContact( Box2DBody * _body, b2Contact * _contact );
+        void onPreSolve( Box2DBody * _body, b2Contact * _contact, const b2Manifold * _oldManifold );
+        void onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse * _impulse );
+
+    protected:
+        b2World * m_world;
+        b2Body * m_body;
+
+        EventablePtr m_eventable;
+
+        friend class Box2DWorld;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<Box2DBody> Box2DBodyPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Box2DBody, Box2DBodyInterface> Box2DBodyPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

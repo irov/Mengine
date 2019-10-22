@@ -19,7 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t TimepipeService::addTime( const LambdaTimepipe & _timepipe )
+    uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe )
     {
         uint32_t newid = ++m_enumerator;
 
@@ -32,7 +32,7 @@ namespace Mengine
         return newid;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimepipeService::removeTime( uint32_t _id )
+    TimepipeInterfacePtr TimepipeService::removeTimepipe( uint32_t _id )
     {
         VectorTimepipe::iterator it_find = std::find_if( m_timepipe.begin(), m_timepipe.end(), [_id]( const TimepipeDesc & _desc )
         {
@@ -45,7 +45,10 @@ namespace Mengine
 
             desc.id = ~0U;
 
-            return;
+            TimepipeInterfacePtr old_timepipe = desc.timepipe;
+            desc.timepipe = nullptr;
+
+            return old_timepipe;
         }
 
         VectorTimepipe::iterator it_add_find = std::find_if( m_timepipeAdd.begin(), m_timepipeAdd.end(), [_id]( const TimepipeDesc & _desc )
@@ -53,10 +56,18 @@ namespace Mengine
             return _desc.id == _id;
         } );
 
-        if( it_add_find != m_timepipeAdd.end() )
+        if( it_add_find == m_timepipeAdd.end() )
         {
-            m_timepipeAdd.erase( it_add_find );
+            return nullptr;
         }
+
+        TimepipeDesc & add_desc = *it_add_find;
+
+        TimepipeInterfacePtr old_timepipe = add_desc.timepipe;
+
+        m_timepipeAdd.erase( it_add_find );
+        
+        return old_timepipe;
     }
     //////////////////////////////////////////////////////////////////////////
     void TimepipeService::tick( const UpdateContext * _context )
@@ -71,7 +82,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.timepipe( _context );
+            desc.timepipe->onTimepipe( _context );
         }
 
         m_timepipe.erase( std::remove_if( m_timepipe.begin(), m_timepipe.end(), []( const TimepipeDesc & _desc )

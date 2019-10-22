@@ -16,8 +16,8 @@ namespace Mengine
         ~TimepipeService() override;
 
     public:
-        uint32_t addTime( const LambdaTimepipe & _timepipe ) override;
-        void removeTime( uint32_t _id ) override;
+        uint32_t addTimepipe( const TimepipeInterfacePtr & _timepipe ) override;
+        TimepipeInterfacePtr removeTimepipe( uint32_t _id ) override;
 
     public:
         void tick( const UpdateContext * _context ) override;
@@ -28,7 +28,7 @@ namespace Mengine
         struct TimepipeDesc
         {
             uint32_t id;
-            LambdaTimepipe timepipe;
+            TimepipeInterfacePtr timepipe;
         };
 
         typedef Vector<TimepipeDesc> VectorTimepipe;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/PluginBase.h"
+#include "Kernel/PluginBase.h"
 
 namespace Mengine
 {
@@ -12,9 +12,11 @@ namespace Mengine
 
 	public:
 		Box2DPlugin();
+        ~Box2DPlugin() override;
 
 	protected:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializePlugin() override;
+		void _finalizePlugin() override;
+        void _destroyPlugin() override;
 	};
 }

@@ -12,7 +12,6 @@ namespace Mengine
         : public PluginBase
         , public Observable
     {
-    public:
         PLUGIN_DECLARE( "cURL" );
 
     public:

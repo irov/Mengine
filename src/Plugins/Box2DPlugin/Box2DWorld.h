@@ -1,157 +1,172 @@
 #pragma once
 
-#include "Factory/Factorable.h"
+#include "Box2DInterface.h"
 
-#include "Kernel/Scriptable.h"
-#include "Kernel/Servant.h"
-
-#include "Core/ModuleBase.h"
+#include "Interface/TimepipeServiceInterface.h"
 
 #include "Box2D/Box2D.h"
 
 #include "Config/Vector.h"
 
-#include "pybind/object.hpp"
-
-#include "math/vec2.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<class Box2DBody> Box2DBodyPtr;
-	typedef IntrusivePtr<class Box2DJoint> Box2DJointPtr;
+    typedef IntrusivePtr<class Box2DBody, Box2DBodyInterface> Box2DBodyPtr;
+    typedef IntrusivePtr<class Box2DJoint, Box2DJointInterface> Box2DJointPtr;
     //////////////////////////////////////////////////////////////////////////
-	class Box2DWorld
-		: public Servant
-		, public Scriptable
-		, public b2DestructionListener
-		, public b2ContactFilter
-		, public b2ContactListener
+    class Box2DWorld
+        : public Box2DWorldInterface
+        , public TimepipeInterface
+        , public b2DestructionListener
+        , public b2ContactFilter
+        , public b2ContactListener
     {
     public:
-		Box2DWorld();
-		~Box2DWorld() override;
-
-	public:
-		void setDead();
-		bool isDead() const;
+        Box2DWorld();
+        ~Box2DWorld() override;
 
     public:
-		bool initialize( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args );
-		void finalize();
+        bool initialize( const mt::vec2f & _gravity );
+        void finalize();
 
-	public:
-		void update( float _time, float _timing );
+    protected:
+        void onTimepipe( const UpdateContext * _contet );
 
-	public:
-		void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations );
+    public:
+        void setDead();
+        bool isDead() const;
 
-	public:
-		Box2DBodyPtr createBody( bool _static, const mt::vec2f& _pos, float _angle, float _linearDamping, float _angularDamping,
-			bool _allowSleep, bool _isBullet, bool _fixedRotation );
+    public:
+        void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations );
 
-	public:
-		Box2DJointPtr createDistanceJoint( const Box2DBodyPtr & _body1,
-			const Box2DBodyPtr & _body2,
-            const mt::vec2f& _offsetBody1,
-            const mt::vec2f& _offsetBody2,
-            bool _collideBodies );
+    public:
+        Box2DBodyInterfacePtr createBody( bool _static
+            , const mt::vec2f & _pos
+            , float _angle
+            , float _linearDamping
+            , float _angularDamping
+            , bool _allowSleep
+            , bool _isBullet
+            , bool _fixedRotation
+            , const Char * _doc ) override;
 
-		Box2DJointPtr createHingeJoint( const Box2DBodyPtr & _body1,
-			const Box2DBodyPtr & _body2,
-            const mt::vec2f& _offsetBody1,
-            const mt::vec2f& _limits,
-            bool _collideBodies );
+    public:
+        Box2DJointInterfacePtr createDistanceJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _offsetBody1
+            , const mt::vec2f & _offsetBody2
+            , bool _collideBodies
+            , const Char * _doc ) override;
 
-		Box2DJointPtr createPrismaticJoint( const Box2DBodyPtr & _body1
-			, const Box2DBodyPtr & _body2
-            , const mt::vec2f& _unitsWorldAxis
-            , bool _collideConnected 
+        Box2DJointInterfacePtr createHingeJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _offsetBody1
+            , const mt::vec2f & _limits
+            , bool _collideBodies
+            , const Char * _doc ) override;
+
+        Box2DJointInterfacePtr createPrismaticJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _unitsWorldAxis
+            , bool _collideConnected
             , bool _enableLimit
-            , const mt::vec2f& _translation 
+            , const mt::vec2f & _translation
             , bool _enableMotor
             , float _maxMotorForce
-            , float _motorSpeed);
+            , float _motorSpeed 
+            , const Char * _doc ) override;
 
-		Box2DJointPtr createPulleyJoint( const Box2DBodyPtr & _body1
-			, const Box2DBodyPtr & _body2
-            , const mt::vec2f& _offsetBody1
-            , const mt::vec2f& _offsetBody2
-            , const mt::vec2f& _offsetGroundBody1
-            , const mt::vec2f& _offsetGroundBody2
+        Box2DJointInterfacePtr createPulleyJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _offsetBody1
+            , const mt::vec2f & _offsetBody2
+            , const mt::vec2f & _offsetGroundBody1
+            , const mt::vec2f & _offsetGroundBody2
             , float _ratio
-            , bool _collideConnected );
+            , bool _collideConnected
+            , const Char * _doc ) override;
 
-		Box2DJointPtr createGearJoint( const Box2DBodyPtr & _body1
-			, const Box2DBodyPtr & _body2
-			, const Box2DJointPtr & _joint1
-			, const Box2DJointPtr & _joint2
+        Box2DJointInterfacePtr createGearJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const Box2DJointInterfacePtr & _joint1
+            , const Box2DJointInterfacePtr & _joint2
             , float _ratio
-            , bool _collideConnected );	
+            , bool _collideConnected
+            , const Char * _doc ) override;
 
-		Box2DJointPtr createRopeJoint( const Box2DBodyPtr & _body1
-			, const Box2DBodyPtr & _body2
+        Box2DJointInterfacePtr createRopeJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
             , const mt::vec2f & _offsetBody1
             , const mt::vec2f & _offsetBody2
             , float _maxlength
-            , bool _collideConnected );	
+            , bool _collideConnected
+            , const Char * _doc ) override;
 
 
-		Box2DJointPtr createWheelJoint( const Box2DBodyPtr & _body1
-			, const Box2DBodyPtr & _body2
-            , const mt::vec2f & _localAnchor1
-            , const mt::vec2f & _localAnchor2
-            , const mt::vec2f & _localAxis1
+        Box2DJointInterfacePtr createWheelJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _offsetBody
+            , const mt::vec2f & _localAxis
             , float _frequencyHz
             , float _dampingRatio
-            , bool _collideConnected 
+            , bool _collideConnected
             , float _maxMotorTorque
-            , float _motorSpeed		
-            );	
+            , float _motorSpeed
+            , const Char * _doc ) override;
 
-	public:
-		void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const pybind::object & _cb, const pybind::args & _args ) const;
+        Box2DJointInterfacePtr createRevoluteJoint( const Box2DBodyInterfacePtr & _body1
+            , const Box2DBodyInterfacePtr & _body2
+            , const mt::vec2f & _localAnchor
+            , bool _enableLimit
+            , float _lowerAngle
+            , float _upperAngle
+            , bool _enableMotor
+            , float _motorSpeed
+            , float _maxMotorTorque
+            , const Char * _doc ) override;
 
-	protected:
-		void SayGoodbye( b2Joint * joint ) override;
-		void SayGoodbye( b2Fixture * fixture ) override;
+    public:
+        void rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const Box2DRayCastInterfacePtr & _response ) const override;
 
-	protected:
-		bool ShouldCollide( b2Fixture * fixtureA, b2Fixture * fixtureB ) override;
+    protected:
+        void SayGoodbye( b2Joint * joint ) override;
+        void SayGoodbye( b2Fixture * fixture ) override;
 
-	protected:
-		void BeginContact( b2Contact * contact ) override;
-		void EndContact( b2Contact * contact ) override;
-		void PreSolve( b2Contact * contact, const b2Manifold * oldManifold ) override;
-		void PostSolve( b2Contact * contact, const b2ContactImpulse * impulse ) override;
+    protected:
+        bool ShouldCollide( b2Fixture * fixtureA, b2Fixture * fixtureB ) override;
 
-	protected:
-		Box2DJointPtr createJoint_( const b2JointDef * _jointDef );
+    protected:
+        void BeginContact( b2Contact * contact ) override;
+        void EndContact( b2Contact * contact ) override;
+        void PreSolve( b2Contact * contact, const b2Manifold * oldManifold ) override;
+        void PostSolve( b2Contact * contact, const b2ContactImpulse * impulse ) override;
 
-	protected:
-		bool m_dead;
+    protected:
+        Box2DJointInterfacePtr createJoint_( const b2JointDef * _jointDef, const Char * _doc );
 
-		float m_timing;
+    protected:
+        uint32_t m_timepipeId;
+
+        bool m_dead;
+
+        float m_time;
 
         b2World * m_world;
 
-		pybind::object m_update;
-		pybind::args m_update_args;
+        float m_timeStep;
+        uint32_t m_velocityIterations;
+        uint32_t m_positionIterations;
 
-		float m_timeStep;
-		uint32_t m_velocityIterations;
-		uint32_t m_positionIterations;
-       
         struct JoinDef
         {
             b2JointDef * def;
             Box2DJoint * join;
         };
 
-        typedef Vector<JoinDef> TVectorJoints;
-        TVectorJoints m_joints;
+        typedef Vector<JoinDef> VectorJoints;
+        VectorJoints m_joints;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Box2DWorld> Box2DWorldPtr;
+    typedef IntrusivePtr<Box2DWorld, Box2DWorldInterface> Box2DWorldPtr;
     //////////////////////////////////////////////////////////////////////////
 }

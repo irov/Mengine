@@ -10,12 +10,12 @@
 
 namespace Mengine
 {
-    class TaskTransformationAlphaTime
+    class TaskColorableAlphaTime
         : public GOAP::Task
     {
     public:
-        TaskTransformationAlphaTime( const RenderInterfacePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time );
-        ~TaskTransformationAlphaTime() override;
+        TaskColorableAlphaTime( const ColorablePtr & _transformation, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time );
+        ~TaskColorableAlphaTime() override;
 
     protected:
         bool _onRun() override;
@@ -23,7 +23,7 @@ namespace Mengine
         void _onFinally() override;
 
     protected:
-        RenderInterfacePtr m_renderable;
+        ColorablePtr m_colorable;
         AffectorablePtr m_affectorable;
         EasingInterfacePtr m_easing;
 
@@ -33,6 +33,6 @@ namespace Mengine
         uint32_t m_id;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef GOAP::IntrusivePtr<TaskTransformationAlphaTime> TaskTransformationAlphaTimePtr;
+    typedef GOAP::IntrusivePtr<TaskColorableAlphaTime> TaskColorableAlphaTimePtr;
     //////////////////////////////////////////////////////////////////////////
 }

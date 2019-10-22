@@ -38,8 +38,8 @@ Tasks
     TaskTransformationTranslate.h
     TaskTransformationTranslateTime.h
     TaskTransformationTranslateTime.cpp
-	TaskTransformationAlphaTime.h
-	TaskTransformationAlphaTime.cpp
+	TaskColorableAlphaTime.h
+	TaskColorableAlphaTime.cpp
     TaskAnimatablePlay.cpp
     TaskAnimatablePlay.h
     TaskAnimatablePlayWait.cpp

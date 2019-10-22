@@ -1,4 +1,4 @@
-#include "TaskTransformationAlphaTime.h"
+#include "TaskColorableAlphaTime.h"
 
 #include "Kernel/FactorableUnique.h"
 
@@ -7,13 +7,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        class TaskTransformationAlphaTimeAffector
+        class TaskColorableAlphaTimeAffector
             : public Affector
         {
         public:
-            TaskTransformationAlphaTimeAffector( const TaskTransformationAlphaTimePtr & _task, const RenderInterfacePtr & _renderable, float _from, float _to, float _time )
+            TaskColorableAlphaTimeAffector( const TaskColorableAlphaTimePtr & _task, const ColorablePtr & _colorable, const float & _from, const float & _to, float _time )
                 : m_task( _task )
-                , m_renderable( _renderable )
+                , m_colorable( _colorable )
                 , m_from( _from )
                 , m_to( _to )
                 , m_progress( 0.f )
@@ -21,7 +21,7 @@ namespace Mengine
             {
             }
 
-            ~TaskTransformationAlphaTimeAffector() override
+            ~TaskColorableAlphaTimeAffector() override
             {
             }
 
@@ -43,14 +43,14 @@ namespace Mengine
                     float t_easing = easing->easing( t );
                     MENGINE_UNUSED( t_easing );
 
-                    m_renderable->setLocalAlpha( m_from );
+                    m_colorable->setLocalAlpha( m_from );
 
                     return false;
                 }
 
                 *_used = m_time - m_progress;
 
-                m_renderable->setLocalAlpha( m_to );
+                m_colorable->setLocalAlpha( m_to );
 
                 return true;
             }
@@ -69,9 +69,9 @@ namespace Mengine
             }
 
         protected:
-            TaskTransformationAlphaTimePtr m_task;
+            TaskColorableAlphaTimePtr m_task;
 
-            RenderInterfacePtr m_renderable;
+            ColorablePtr m_colorable;
 
             float m_from;
             float m_to;
@@ -81,8 +81,8 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationAlphaTime::TaskTransformationAlphaTime( const RenderInterfacePtr & _renderable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, float  _to, float _time )
-        : m_renderable( _renderable )
+    TaskColorableAlphaTime::TaskColorableAlphaTime( const ColorablePtr & _colorable, const AffectorablePtr & _affectorable, const EasingInterfacePtr & _easing, const float _to, float _time )
+        : m_colorable( _colorable )
         , m_affectorable( _affectorable )
         , m_easing( _easing )
         , m_to( _to )
@@ -91,15 +91,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    TaskTransformationAlphaTime::~TaskTransformationAlphaTime()
+    TaskColorableAlphaTime::~TaskColorableAlphaTime()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationAlphaTime::_onRun()
+    bool TaskColorableAlphaTime::_onRun()
     {
-        const float alpha = m_renderable->getLocalAlpha();
+        const float alpha = m_colorable->getLocalAlpha();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationAlphaTimeAffector>( TaskTransformationAlphaTimePtr::from( this ), m_renderable, alpha, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( TaskColorableAlphaTimePtr::from( this ), m_colorable, alpha, m_to, m_time );
 
         affector->setEasing( m_easing );
 
@@ -115,7 +115,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskTransformationAlphaTime::_onSkip()
+    void TaskColorableAlphaTime::_onSkip()
     {
         if( m_id != 0 )
         {
@@ -123,10 +123,10 @@ namespace Mengine
             m_id = 0;
         }
 
-        m_renderable->setLocalAlpha( m_to );
+        m_colorable->setLocalAlpha( m_to );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TaskTransformationAlphaTime::_onFinally()
+    void TaskColorableAlphaTime::_onFinally()
     {
         if( m_id != 0 )
         {
@@ -135,6 +135,6 @@ namespace Mengine
         }
 
         m_affectorable = nullptr;
-        m_renderable = nullptr;
+        m_colorable = nullptr;
     }
 }

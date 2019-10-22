@@ -16,8 +16,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskAnimatableRewind::_onRun()
+    bool TaskAnimatableRewind::_onRun( GOAP::NodeInterface * _node )
     {
+        MENGINE_UNUSED( _node );
+
         AnimationInterface * animation = m_animatable->getAnimation();
 
         if( animation == nullptr )

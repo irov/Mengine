@@ -38,10 +38,11 @@
 #include "ResourceMovie2Validator.h"
 #include "Movie2DebuggerBoundingBox.h"
 
+#include "Config/StdIO.h"
+
 #include "stdex/allocator_report.h"
 
 #include <stdlib.h>
-#include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )
@@ -94,12 +95,11 @@ namespace Mengine
             }break;
         }
 
-        va_list argList;
-
-        va_start( argList, _format );
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
         Char msg[4096];
-        vsprintf( msg, _format, argList );
-        va_end( argList );
+        vsprintf( msg, _format, args );
+        MENGINE_VA_LIST_END( args );
 
         LOGGER_ERROR( "error '%s' code '%d'"
             , msg

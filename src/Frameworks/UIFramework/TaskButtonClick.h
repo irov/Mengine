@@ -14,7 +14,7 @@ namespace Mengine
         ~TaskButtonClick() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onFinally() override;
         bool _onSkipable() const override;
 

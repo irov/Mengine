@@ -4,8 +4,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
-
-#include <stdarg.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -29,7 +28,7 @@ namespace Mengine
         const LoggerOperator & operator()( const Char * _format, ... ) const;
 
     public:
-        void logMessageArgs( const Char * _format, va_list _args ) const;
+        void logMessageArgs( const Char * _format, MENGINE_VA_LIST_TYPE _args ) const;
         void logMessage( const Char * _msg, uint32_t _size ) const;
 
     protected:

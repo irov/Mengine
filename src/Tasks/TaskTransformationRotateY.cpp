@@ -4,6 +4,8 @@
 
 #include "math/angle.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,8 +15,8 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskTransformationRotateYAffector( TaskTransformationRotateY * _task, const TransformationPtr & _transformation, float _from, float _to, float _speed )
-                : m_task( _task )
+            TaskTransformationRotateYAffector( GOAP::NodeInterface * _node, const TransformationPtr & _transformation, float _from, float _to, float _speed )
+                : m_node( _node )
                 , m_transformation( _transformation )
                 , m_from( _from )
                 , m_to( _to )
@@ -61,16 +63,16 @@ namespace Mengine
             {
                 if( _isEnd == true )
                 {
-                    m_task->complete();
+                    m_node->complete();
                 }
                 else
                 {
-                    m_task->skip();
+                    m_node->skip();
                 }
             }
 
         protected:
-            TaskTransformationRotateY * m_task;
+            GOAP::NodeInterfacePtr m_node;
 
             TransformationPtr m_transformation;
 
@@ -94,7 +96,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskTransformationRotateY::_onRun()
+    bool TaskTransformationRotateY::_onRun( GOAP::NodeInterface * _node )
     {
         float orientationY = m_transformation->getLocalOrientationY();
 
@@ -102,7 +104,7 @@ namespace Mengine
         float correct_rotate_to;
         mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationRotateYAffector>( this, m_transformation, correct_rotate_from, correct_rotate_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationRotateYAffector>( _node, m_transformation, correct_rotate_from, correct_rotate_to, m_speed );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

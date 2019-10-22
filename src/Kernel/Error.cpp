@@ -3,7 +3,7 @@
 
 #include "Interface/PlatformInterface.h"
 
-#include <stdarg.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -20,13 +20,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ErrorOperator::operator () ( const Char * _format, ... ) const
     {
-        va_list args;
-        va_start( args, _format );
+        MENGINE_VA_LIST_TYPE args;
+        MENGINE_VA_LIST_START( args, _format );
 
         LoggerOperator( LM_CRITICAL, 0, m_file, m_line )
             .logMessageArgs( _format, args );
 
-        va_end( args );
+        MENGINE_VA_LIST_END( args );
 
         PLATFORM_SERVICE()
             ->abort();

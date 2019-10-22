@@ -117,6 +117,8 @@ namespace Mengine
                 fclose( f );
             }
         }
+
+        m_memleakLogFileName.clear();
 #endif
 
         MENGINE_ASSERTION_FATAL( leakcount == 0, "detect factory leak [%d]"
@@ -193,6 +195,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::visitFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const
     {
+        MENGINE_UNUSED( _generation );
+        MENGINE_UNUSED( _leaks );
+
 #ifdef MENGINE_DEBUG
         for( uint32_t index = 0; index != MENGINE_NODELEAKDETECTOR_HASHSIZE; ++index )
         {
@@ -213,11 +218,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const Char * _doc )
     {
+        MENGINE_UNUSED( _factory );
+        MENGINE_UNUSED( _factorable );
+        MENGINE_UNUSED( _doc );
+
 #ifdef MENGINE_DEBUG
         if( m_memleakDetection == false )
         {
             return;
         }
+
+        if( this->isInitializeService() == false )
+        {
+            return;
+        }
+
+        STDEX_THREAD_GUARD_CHECK( this, "debugFactoryCreateObject" );
 
         uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 
@@ -236,11 +252,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable )
     {
+        MENGINE_UNUSED( _factory );
+        MENGINE_UNUSED( _factorable );
+
 #ifdef MENGINE_DEBUG
         if( m_memleakDetection == false )
         {
             return;
         }
+
+        if( this->isInitializeService() == false )
+        {
+            return;
+        }
+
+        STDEX_THREAD_GUARD_CHECK( this, "debugFactoryDestroyObject" );
 
         uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 

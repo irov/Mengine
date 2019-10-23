@@ -1644,7 +1644,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
     {
-        const FilePath & filePath = _content->getFilePath();
+        const FilePath & filePath = _content->getFilePath();        
 
         MapCursors::iterator it_found = m_cursors.find( filePath );
 
@@ -1659,16 +1659,22 @@ namespace Mengine
                 return false;
             }
 
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
             PathString icoFile;
-            icoFile += "IconCache";
-            icoFile += '/';
+            icoFile += ".icon_cache/";
             icoFile += filePath;
             icoFile += ".ico";
 
             FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
 
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+            if( fileGroup->createDirectory( c_icoFile ) == false )
+            {
+                LOGGER_ERROR( "invalid create directory '.icon_cache'" );
+
+                return false;
+            }
 
             OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
 
@@ -1828,6 +1834,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _directoryPath ) const
     {
+        MENGINE_ASSERTION_FATAL_RETURN( strlen( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[strlen( _directoryPath ) - 1] == '/'), false );
+
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
@@ -1863,6 +1871,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
+        MENGINE_ASSERTION_FATAL_RETURN( strlen( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[strlen( _directoryPath ) - 1] == '/'), false );
+
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {

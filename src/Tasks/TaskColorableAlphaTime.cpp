@@ -41,9 +41,10 @@ namespace Mengine
                     const EasingInterfacePtr & easing = this->getEasing();
 
                     float t_easing = easing->easing( t );
-                    MENGINE_UNUSED( t_easing );
 
-                    m_colorable->setLocalAlpha( m_from );
+                    float result = mt::linerp_f1( m_from, m_to, t_easing );
+
+                    m_colorable->setLocalAlpha( result );
 
                     return false;
                 }

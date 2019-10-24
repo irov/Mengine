@@ -36,6 +36,9 @@ namespace Mengine
         float getAngle() const override;
 
     public:
+        mt::vec2f getWorldVector( const mt::vec2f & _localVector ) override;        
+
+    public:
         float getMass() const override;
         float getInertia() const override;
 
@@ -47,6 +50,7 @@ namespace Mengine
 
         void applyForce( const mt::vec2f & _force, const mt::vec2f & _point ) override;
         void applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point ) override;
+        void applyAngularImpulse( float _impulse ) override;
         void applyTorque( float _torque ) override;
 
     public:

@@ -1,11 +1,9 @@
 #include "RenderMaterialService.h"
 
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/LoaderServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
@@ -13,8 +11,6 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
-#include "Metacode/Metacode.h"
 
 #include "stdex/hash.h"
 
@@ -208,410 +204,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
         m_factoryMaterial = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialService::loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
-    {
-        Metacode::Meta_Data::Meta_DataBlock datablock;
-
-        bool exist = false;
-        if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
-        {
-            if( exist == false )
-            {
-                LOGGER_ERROR( "materials '%s:%s' not found"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
-                );
-            }
-            else
-            {
-                LOGGER_ERROR( "invalid parse materials '%s:%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
-                );
-            }
-
-            return false;
-        }
-
-        const ConstString & renderPlatformName = RENDER_SYSTEM()
-            ->getRenderPlatformName();
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader & includes_FragmentShader = datablock.get_Includes_FragmentShader();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader : includes_FragmentShader )
-        {
-            const ConstString & name = meta_FragmentShader.get_Name();
-            const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
-            const FilePath & filePath = meta_FragmentShader.get_File_Path();
-
-            ConstString fileConverterType;
-            meta_FragmentShader.get_File_Converter( &fileConverterType );
-
-            bool isCompile = false;
-            meta_FragmentShader.get_File_Compile( &isCompile );
-
-            RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, fileConverterType, isCompile );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' fragment shader '%s' compile %d"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , filePath.c_str()
-                , name.c_str()
-                , isCompile
-            );
-
-            MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( name ) == false, false, "material '%s:%s' already has fragment shader '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-            );
-
-            m_fragmentShaders.emplace( name, shader );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader & includes_VertexShader = datablock.get_Includes_VertexShader();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexShader & meta_VertexShader : includes_VertexShader )
-        {
-            const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
-            const ConstString & name = meta_VertexShader.get_Name();
-
-            const FilePath & filePath = meta_VertexShader.get_File_Path();
-
-            ConstString fileConverter;
-            meta_VertexShader.get_File_Converter( &fileConverter );
-
-            bool isCompile = false;
-            meta_VertexShader.get_File_Compile( &isCompile );
-
-            RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _fileGroup, filePath, fileConverter, isCompile );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' vertex shader '%s' compile %d"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , filePath.c_str()
-                , name.c_str()
-                , isCompile
-            );
-
-            MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( name ) == false, false, "material '%s:%s' already has vertex shader '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-            );
-
-            m_vertexShaders.emplace( name, shader );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexAttribute & includes_VertexAttribute = datablock.get_Includes_VertexAttribute();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute & meta_VertexAttribute : includes_VertexAttribute )
-        {
-            const ConstString & renderPlatform = meta_VertexAttribute.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
-            uint32_t elementSize = meta_VertexAttribute.get_Element_Size();
-
-            const ConstString & name = meta_VertexAttribute.get_Name();
-
-            RenderVertexAttributeInterfacePtr vertexAttribute = this->createVertexAttribute_( name, elementSize );
-
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::VectorMeta_Attribute & includes_Attributes = meta_VertexAttribute.get_Includes_Attribute();
-
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::Meta_Attribute & meta_Attribute : includes_Attributes )
-            {
-                const ConstString & attribute_uniform = meta_Attribute.get_Uniform();
-                uint32_t attribute_size = meta_Attribute.get_Size();
-                EVertexAttributeType attribute_type = meta_Attribute.get_Type();
-                bool attribute_normalized = meta_Attribute.get_Normalized();
-                uint32_t attribute_stride = meta_Attribute.get_Stride();
-                uint32_t attribute_offset = meta_Attribute.get_Offset();
-
-                vertexAttribute->addAttribute( attribute_uniform, attribute_size, attribute_type, attribute_normalized, attribute_stride, attribute_offset );
-            }
-
-            MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( name ) == false, false, "material '%s:%s' already has vertex attribute '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-            );
-
-            m_vertexAttributes.emplace( name, vertexAttribute );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program & includes_Program = datablock.get_Includes_Program();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Program & meta_Program : includes_Program )
-        {
-            ConstString renderPlatform;
-            if( meta_Program.get_RenderPlatform( &renderPlatform ) == true )
-            {
-                if( renderPlatform != renderPlatformName )
-                {
-                    continue;
-                }
-            }
-
-            const ConstString & name = meta_Program.get_Name();
-
-            const ConstString & vertexShaderName = meta_Program.get_VertexShader_Name();
-            const ConstString & fragmentShaderName = meta_Program.get_FragmentShader_Name();
-            const ConstString & vertexAttributeName = meta_Program.get_VertexAttribute_Name();
-            uint32_t samplerCount = meta_Program.get_Sampler_Count();
-
-            const RenderVertexShaderInterfacePtr & vertexShader = this->getVertexShader( vertexShaderName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, false, "material '%s:%s' program '%s' not found vertex shader '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-                , vertexShaderName.c_str()
-            );
-
-            const RenderFragmentShaderInterfacePtr & fragmentShader = this->getFragmentShader( fragmentShaderName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, false, "material '%s:%s' program '%s' not found fragment shader '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-                , fragmentShaderName.c_str()
-            );
-
-            const RenderVertexAttributeInterfacePtr & vertexAttribute = this->getVertexAttribute( vertexAttributeName );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, false, "material '%s:%s' program '%s' not found vertex attribute '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-                , vertexAttributeName.c_str()
-            );
-
-            RenderProgramInterfacePtr program = RENDER_SYSTEM()
-                ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount, MENGINE_DOCUMENT_FUNCTION );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( program, false, "material '%s:%s' invalid create program vertex '%s' fragment '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , vertexShaderName.c_str()
-                , fragmentShaderName.c_str()
-            );
-
-            MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( name ) == false, false, "material '%s:%s' already has vertex attribute '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-            );
-
-            m_programs.emplace( name, program );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material & includes_Material = datablock.get_Includes_Material();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material : includes_Material )
-        {
-            const ConstString & name = meta_Material.get_Name();
-
-            ConstString renderPlatform;
-            if( meta_Material.get_RenderPlatform( &renderPlatform ) == true )
-            {
-                if( renderPlatform != renderPlatformName )
-                {
-                    continue;
-                }
-            }
-
-            bool is_debug = false;
-            meta_Material.get_Debug( &is_debug );
-
-            RenderMaterialStage stage;
-            stage.alphaBlendEnable = meta_Material.get_AlphaBlend_Enable();
-            stage.depthBufferTestEnable = meta_Material.get_DepthBufferTest_Enable();
-            stage.depthBufferWriteEnable = meta_Material.get_DepthBufferWrite_Enable();
-
-            meta_Material.get_BlendFactor_Source( &stage.blendSrc );
-            meta_Material.get_BlendFactor_Dest( &stage.blendDst );
-            meta_Material.get_BlendFactor_Op( &stage.blendOp );
-
-            ConstString programName;
-            if( meta_Material.get_Program_Name( &programName ) == true )
-            {
-                const RenderProgramInterfacePtr & program = this->getProgram( programName );
-
-                MENGINE_ASSERTION_MEMORY_PANIC( program, false, "material '%s:%s' invalid get program '%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
-                    , programName.c_str()
-                );
-
-                stage.program = program;
-            }
-
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::VectorMeta_TextureStages & include_TextureStages = meta_Material.get_Includes_TextureStages();
-
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages : include_TextureStages )
-            {
-                uint32_t index = meta_TextureStages.get_Stage();
-
-                RenderTextureStage & textureStage = stage.textureStage[index];
-
-                textureStage.mipmap = m_defaultTextureFilterMipmap;
-                textureStage.magnification = m_defaultTextureFilterMagnification;
-                textureStage.minification = m_defaultTextureFilterMinification;
-
-                meta_TextureStages.get_AddressMode_U( &textureStage.addressU );
-                meta_TextureStages.get_AddressMode_V( &textureStage.addressV );
-                meta_TextureStages.get_AddressMode_Border( &textureStage.addressBorder );
-            }
-
-            const RenderMaterialStage * cache_stage = this->createRenderStageGroup( name, stage );
-
-            MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, false, "material '%s:%s' invalid create stage group '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , name.c_str()
-            );
-
-            MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( name );
-
-            if( it_stage_found != m_defaultStagesEnum.end() )
-            {
-                EMaterial materialId = it_stage_found->second;
-
-                m_defaultStages[materialId] = cache_stage;
-            }
-
-            if( is_debug == true )
-            {
-                const RenderMaterialInterfacePtr & debugLineMaterial =
-                    this->getMaterial( name, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
-
-                this->setDebugLineMaterial( debugLineMaterial );
-
-                const RenderMaterialInterfacePtr & debugTriangleMaterial =
-                    this->getMaterial( name, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
-
-                this->setDebugTriangleMaterial( debugTriangleMaterial );
-
-            }
-        }
-
-        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialService::unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
-    {
-        Metacode::Meta_Data::Meta_DataBlock datablock;
-
-        bool exist = false;
-        if( LOADER_SERVICE()
-            ->load( _fileGroup, _filePath, &datablock, Metacode::Meta_Data::getVersion(), &exist ) == false )
-        {
-            if( exist == false )
-            {
-                LOGGER_ERROR( "materials '%s:%s' not found"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
-                );
-            }
-            else
-            {
-                LOGGER_ERROR( "invalid parse materials '%s:%s'"
-                    , _fileGroup->getName().c_str()
-                    , _filePath.c_str()
-                );
-            }
-
-            return false;
-        }
-
-        const ConstString & renderPlatformName = RENDER_SYSTEM()
-            ->getRenderPlatformName();
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_FragmentShader & includes_FragmentShader = datablock.get_Includes_FragmentShader();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader : includes_FragmentShader )
-        {
-            const ConstString & renderPlatform = meta_FragmentShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
-            const ConstString & name = meta_FragmentShader.get_Name();
-
-            m_fragmentShaders.erase( name );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader & includes_VertexShader = datablock.get_Includes_VertexShader();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexShader & meta_VertexShader : includes_VertexShader )
-        {
-            const ConstString & renderPlatform = meta_VertexShader.get_RenderPlatform();
-
-            if( renderPlatform != renderPlatformName )
-            {
-                continue;
-            }
-
-            const ConstString & name = meta_VertexShader.get_Name();
-
-            m_vertexShaders.erase( name );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program & includes_Program = datablock.get_Includes_Program();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Program & meta_Program : includes_Program )
-        {
-            ConstString renderPlatform;
-            if( meta_Program.get_RenderPlatform( &renderPlatform ) == true )
-            {
-                if( renderPlatform != renderPlatformName )
-                {
-                    continue;
-                }
-            }
-
-            const ConstString & name = meta_Program.get_Name();
-
-            m_programs.erase( name );
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material & includes_Material = datablock.get_Includes_Material();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material : includes_Material )
-        {
-            const ConstString & name = meta_Material.get_Name();
-
-            m_materialStageIndexer.erase( name );
-        }
-
-        return true;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     static bool s_equalMaterial( const RenderMaterial * _material
         , EPrimitiveType _primitiveType
@@ -726,14 +319,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::getMaterialStage( const ConstString & _materialName ) const
+    const RenderMaterialStage * RenderMaterialService::removeMaterialStage( const ConstString & _name )
     {
-        const RenderMaterialStage * stage = m_materialStageIndexer.find( _materialName );
+        MENGINE_ASSERTION_FATAL_RETURN( m_materialStageIndexer.exist( _name ) == true, nullptr, "absent material stage '%s'"
+            , _name.c_str()
+        );
+
+        const RenderMaterialStage * stage = m_materialStageIndexer.erase( _name );
+
+        return stage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialStage * RenderMaterialService::getMaterialStage( const ConstString & _name ) const
+    {
+        const RenderMaterialStage * stage = m_materialStageIndexer.find( _name );
 
         if( stage == nullptr )
         {
             LOGGER_ERROR( "stage '%s' not found"
-                , _materialName.c_str()
+                , _name.c_str()
             );
 
             return nullptr;
@@ -742,7 +346,7 @@ namespace Mengine
         return stage;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::cacheStage( const RenderMaterialStage & _other )
+    const RenderMaterialStage * RenderMaterialService::cacheMaterialStage( const RenderMaterialStage & _other )
     {
         for( uint32_t it = 0; it != m_stageCount; ++it )
         {
@@ -770,6 +374,14 @@ namespace Mengine
         cache_other.id = m_stageCount;
 
         return &cache_other;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderMaterialService::updateSolidRenderMaterial()
+    {
+        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial( const ConstString & _materialName
@@ -818,7 +430,7 @@ namespace Mengine
             , _materialName.c_str()
         );
 
-        uint32_t material_hash = this->makeMaterialHash( _materialName, _textureCount, _textures );
+        uint32_t material_hash = this->makeMaterialHash_( _materialName, _textureCount, _textures );
 
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
@@ -866,7 +478,7 @@ namespace Mengine
 
         const ConstString & materialName = m_defaultStageNames[_materialId];
 
-        uint32_t material_hash = this->makeMaterialHash( materialName, _textureCount, _textures );
+        uint32_t material_hash = this->makeMaterialHash_( materialName, _textureCount, _textures );
 
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
@@ -949,19 +561,28 @@ namespace Mengine
         m_materialEnumerators.emplace_back( materialId );
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * RenderMaterialService::createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage )
+    const RenderMaterialStage * RenderMaterialService::createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage )
     {
         MENGINE_ASSERTION( m_materialStageIndexer.find( _name ) == nullptr, nullptr, "'%s' is already created"
             , _name.c_str()
         );
 
-        const RenderMaterialStage * cache_stage = this->cacheStage( _stage );
+        const RenderMaterialStage * cache_stage = this->cacheMaterialStage( _stage );
 
         MENGINE_ASSERTION_MEMORY_PANIC( cache_stage, nullptr, "'%s' invalid cache"
             , _name.c_str()
         );
 
         m_materialStageIndexer.emplace( _name, cache_stage );
+
+        MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( _name );
+
+        if( it_stage_found != m_defaultStagesEnum.end() )
+        {
+            EMaterial materialId = it_stage_found->second;
+
+            m_defaultStages[materialId] = cache_stage;
+        }
 
         return cache_stage;
     }
@@ -979,7 +600,7 @@ namespace Mengine
         return ++m_materialEnumerator;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t RenderMaterialService::makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const
+    uint32_t RenderMaterialService::makeMaterialHash_( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const
     {
         uint32_t material_hash = (uint32_t)_materialName.hash();
 
@@ -993,66 +614,152 @@ namespace Mengine
         return material_hash;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr RenderMaterialService::createVertexAttribute_( const ConstString & _name, uint32_t _elementSize )
+    RenderVertexAttributeInterfacePtr RenderMaterialService::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const Char * _doc )
     {
+        MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( _name ) == false, nullptr, "already has vertex attribute '%s' (doc: %s)"
+            , _name.c_str()
+            , _doc
+        );
+
         RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
-            ->createVertexAttribute( _name, _elementSize, MENGINE_DOCUMENT_FUNCTION );
+            ->createVertexAttribute( _name, _elementSize, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexAttribute, nullptr );
+
+        m_vertexAttributes.emplace( _name, vertexAttribute );
 
         return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile )
+    RenderVertexAttributeInterfacePtr RenderMaterialService::removeVertexAttribute( const ConstString & _name )
     {
-        MENGINE_UNUSED( _converterType );
+        MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( _name ) == true, nullptr, "absent vertex attribute '%s'"
+            , _name.c_str()
+        );
 
-        FilePath outFilePath = _filePath;
+        RenderVertexAttributeInterfacePtr vertexAttribute = m_vertexAttributes.erase( _name );
 
-#ifndef MENGINE_MASTER_RELEASE
-        if( CONVERTER_SERVICE()
-            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-        {
-            return nullptr;
-        }
-#endif
-
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
-
-        RenderVertexShaderInterfacePtr shader = RENDER_SYSTEM()
-            ->createVertexShader( _name, memory, _compile, MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr );
-
-        return shader;
+        return vertexAttribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile )
+    RenderVertexShaderInterfacePtr RenderMaterialService::createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc )
     {
         MENGINE_UNUSED( _converterType );
+
+        MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( _name ) == false, nullptr, "material '%s:%s' already has vertex shader '%s' (doc: %s)"
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
+            , _name.c_str()
+            , _doc
+        );
 
         FilePath outFilePath = _filePath;
 
 #ifndef MENGINE_MASTER_RELEASE
         if( CONVERTER_SERVICE()
-            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, _doc ) == false )
         {
             return nullptr;
         }
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        RenderFragmentShaderInterfacePtr shader = RENDER_SYSTEM()
-            ->createFragmentShader( _name, memory, _compile, MENGINE_DOCUMENT_FUNCTION );
+        RenderVertexShaderInterfacePtr vertexShader = RENDER_SYSTEM()
+            ->createVertexShader( _name, memory, _compile, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( vertexShader, nullptr );
 
-        return shader;
+        m_vertexShaders.emplace( _name, vertexShader );
+
+        return vertexShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderVertexShaderInterfacePtr RenderMaterialService::removeVertexShader( const ConstString & _name )
+    {
+        MENGINE_ASSERTION_FATAL_RETURN( m_vertexShaders.exist( _name ) == true, nullptr, "absent vertex shader '%s'"
+            , _name.c_str()
+        );
+
+        RenderVertexShaderInterfacePtr vertexShader = m_vertexShaders.erase( _name );
+
+        return vertexShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderFragmentShaderInterfacePtr RenderMaterialService::createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc )
+    {
+        MENGINE_UNUSED( _converterType );
+
+        MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( _name ) == false, nullptr, "material '%s:%s' already has fragment shader '%s' (doc: %s)"
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
+            , _name.c_str()
+            , _doc
+        );
+
+        FilePath outFilePath = _filePath;
+
+#ifndef MENGINE_MASTER_RELEASE
+        if( CONVERTER_SERVICE()
+            ->convert( _converterType, _fileGroup, _filePath, &outFilePath, _doc ) == false )
+        {
+            return nullptr;
+        }
+#endif
+
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        RenderFragmentShaderInterfacePtr fragmentShader = RENDER_SYSTEM()
+            ->createFragmentShader( _name, memory, _compile, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, nullptr );
+
+        m_fragmentShaders.emplace( _name, fragmentShader );
+
+        return fragmentShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderFragmentShaderInterfacePtr RenderMaterialService::removeFragmentShader( const ConstString & _name )
+    {
+        MENGINE_ASSERTION_FATAL_RETURN( m_fragmentShaders.exist( _name ) == true, nullptr, "absent fragment shader '%s'"
+            , _name.c_str()
+        );
+
+        RenderFragmentShaderInterfacePtr fragmentShader = m_fragmentShaders.erase( _name );
+
+        return fragmentShader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramInterfacePtr RenderMaterialService::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc )
+    {
+        MENGINE_ASSERTION_FATAL_RETURN( m_programs.exist( _name ) == false, nullptr, "already has program '%s' (doc: %s)"
+            , _name.c_str()
+            , _doc
+        );
+
+        RenderProgramInterfacePtr program = RENDER_SYSTEM()
+            ->createProgram( _name, _vertexShader, _fragmentShader, _vertexAttribute, _samplerCount, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr );
+
+        m_programs.emplace( _name, program );
+
+        return program;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramInterfacePtr RenderMaterialService::removeProgram( const ConstString & _name )
+    {
+        MENGINE_ASSERTION_FATAL_RETURN( m_programs.exist( _name ) == true, nullptr, "absent program '%s'"
+            , _name.c_str()
+        );
+
+        RenderProgramInterfacePtr program = m_programs.erase( _name );
+
+        return program;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderVertexShaderInterfacePtr & RenderMaterialService::getVertexShader( const ConstString & _name ) const

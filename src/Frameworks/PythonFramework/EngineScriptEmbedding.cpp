@@ -80,7 +80,6 @@
 #include "Engine/SurfaceSolidColor.h"
 
 
-#include "Kernel/Isometric.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -91,7 +90,7 @@
 #include "Kernel/PolygonHelper.h"
 
 #include "Engine/Meshget.h"
-
+#include "Engine/Isometric.h"
 #include "Engine/Window.h"
 
 

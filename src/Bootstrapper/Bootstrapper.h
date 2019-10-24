@@ -33,9 +33,6 @@ namespace Mengine
         void finalizeFrameworks_();
 
     protected:
-        bool loadRenderMaterials_();
-
-    protected:
         bool runModules_();
         bool runDevModules_();        
         bool runFrameworks_();

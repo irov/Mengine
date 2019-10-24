@@ -35,9 +35,18 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
-    public:
-        bool loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
-        bool unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+    protected:
+        RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const Char * _doc ) override;
+        RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) override;
+
+        RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) override;
+        RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) override;
+
+        RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) override;
+        RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) override;
+
+        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc ) override;
+        RenderProgramInterfacePtr removeProgram( const ConstString & _name ) override;
 
     protected:
         const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const override;
@@ -50,9 +59,14 @@ namespace Mengine
         void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
 
     public:
-        const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const override;
+        const RenderMaterialStage * createMaterialStage( const ConstString & _name, const RenderMaterialStage & _stage ) override;
+        const RenderMaterialStage * removeMaterialStage( const ConstString & _name ) override;
 
-        const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) override;
+        const RenderMaterialStage * getMaterialStage( const ConstString & _name ) const override;
+        const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other ) override;
+
+    public:
+        void updateSolidRenderMaterial() override;
 
     public:
         RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
@@ -90,16 +104,8 @@ namespace Mengine
         void onRenderMaterialDestroy_( RenderMaterial * _material );
 
     protected:
-        const RenderMaterialStage * createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage );
-
-    protected:
         uint32_t makeMaterialIndex_();
-        uint32_t makeMaterialHash( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
-
-    protected:
-        RenderVertexAttributeInterfacePtr createVertexAttribute_( const ConstString & _name, uint32_t elementSize );
-        RenderVertexShaderInterfacePtr createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile );
-        RenderFragmentShaderInterfacePtr createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile );
+        uint32_t makeMaterialHash_( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
     protected:
         uint32_t m_materialEnumerator;

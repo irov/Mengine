@@ -275,11 +275,6 @@ namespace Mengine
             return false;
         }
 
-        if( this->loadRenderMaterials_() == false )
-        {
-            return false;
-        }
-
         if( this->createFrameworks_() == false )
         {
             return false;
@@ -677,27 +672,6 @@ namespace Mengine
                         , name.c_str()
                     );
                 }
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::loadRenderMaterials_()
-    {
-        FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", FilePath::none() );
-
-        if( renderMaterialsPath.empty() == false )
-        {
-            LOGGER_MESSAGE( "load Render Materials..." );
-
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getDefaultFileGroup();
-
-            if( RENDERMATERIAL_SERVICE()
-                ->loadMaterials( fileGroup, renderMaterialsPath ) == false )
-            {
-                return false;
             }
         }
 

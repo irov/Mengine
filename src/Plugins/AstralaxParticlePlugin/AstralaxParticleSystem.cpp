@@ -321,7 +321,7 @@ namespace Mengine
 
 
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
-                ->cacheStage( rs );
+                ->cacheMaterialStage( rs );
 
             m_stages[i] = cache_stage;
         }

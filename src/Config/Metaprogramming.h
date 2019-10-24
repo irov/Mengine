@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Char.h"
+
 #include <type_traits>
 
 namespace Mengine
@@ -17,5 +19,10 @@ namespace Mengine
         {
             return array_cast<T>(arr, std::make_index_sequence<N>{});
         }
+
+        template<class T>
+        T decltype_string( T t );
+
+        const Char * decltype_string( const Char * t );
     }
 }

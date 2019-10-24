@@ -2,8 +2,6 @@
 
 #include "GOAP/Task.h"
 
-#include "Interface/RenderInterface.h"
-
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Colorable.h"
@@ -18,7 +16,7 @@ namespace Mengine
         ~TaskColorableAlphaTime() override;
 
     protected:
-        bool _onRun() override;
+        bool _onRun( GOAP::NodeInterface * _node ) override;
         void _onSkip() override;
         void _onFinally() override;
 

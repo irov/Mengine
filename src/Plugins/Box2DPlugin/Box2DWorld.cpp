@@ -55,8 +55,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::finalize()
     {
-        TIMEPIPE_SERVICE()
-            ->removeTimepipe( m_timepipeId );
+        if( m_timepipeId != 0 )
+        {
+            TIMEPIPE_SERVICE()
+                ->removeTimepipe( m_timepipeId );
+            m_timepipeId = 0;
+        }
 
         delete m_world;
         m_world = nullptr;

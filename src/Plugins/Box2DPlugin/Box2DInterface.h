@@ -128,7 +128,6 @@ namespace Mengine
     class Box2DJointInterface
         : public ServantInterface
     {
-
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DJointInterface> Box2DJointInterfacePtr;

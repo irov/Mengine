@@ -4,8 +4,10 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 
 #include "PhysicalPlaceholder.h"
+#include "Box2DBody.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Box2DService );
@@ -33,6 +35,14 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), Helper::makeDefaultPrototypeGenerator<Box2DBody, 128>() ) == false )
+        {
+            return false;
+        }
+
+
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -42,6 +52,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DPlugin::_destroyPlugin()

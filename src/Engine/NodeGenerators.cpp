@@ -4,6 +4,14 @@
 
 #include "Kernel/ConstStringHelper.h"
 
+#include "Kernel/Interender.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderCameraOrthogonalTarget.h"
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderScissor.h"
+
+#include "Isometric.h"
 #include "Grid2D.h"
 #include "Gyroscope.h"
 #include "HotSpotBubbles.h"
@@ -27,13 +35,33 @@
 #include "ShapeQuadFlex.h"
 
 //////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    namespace Helper
+    {
+        NodePtr generateNode( const Char * _doc )
+        {
+            NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), _doc );
+
+            return node;
+        }
+    }
+}
+//////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
 namespace Mengine::Helper{\
         X ## Ptr generate ## X( const Char * _doc ){\
-            X ## Ptr text = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( #X ), _doc );\
-            return text;\
+            X ## Ptr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( #X ), _doc );\
+            return node;\
         }}
 //////////////////////////////////////////////////////////////////////////
+MENGINE_NODE_GENERATE( Interender )
+MENGINE_NODE_GENERATE( Isometric )
+MENGINE_NODE_GENERATE( RenderCameraOrthogonal )
+MENGINE_NODE_GENERATE( RenderCameraOrthogonalTarget )
+MENGINE_NODE_GENERATE( RenderCameraProjection )
+MENGINE_NODE_GENERATE( RenderViewport )
+MENGINE_NODE_GENERATE( RenderScissor )
 MENGINE_NODE_GENERATE( Grid2D )
 MENGINE_NODE_GENERATE( Gyroscope )
 MENGINE_NODE_GENERATE( HotSpotBubbles )

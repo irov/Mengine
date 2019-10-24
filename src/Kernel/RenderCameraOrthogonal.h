@@ -60,6 +60,6 @@ namespace Mengine
         bool m_fixedOrthogonalViewport;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
+    typedef IntrusiveNodePtr<RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
     //////////////////////////////////////////////////////////////////////////
 }

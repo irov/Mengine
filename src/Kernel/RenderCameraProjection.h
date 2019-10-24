@@ -45,6 +45,6 @@ namespace Mengine
         float m_cameraFar;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderCameraProjection> RenderCameraProjectionPtr;
+    typedef IntrusiveNodePtr<RenderCameraProjection> RenderCameraProjectionPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -73,14 +73,6 @@ namespace Mengine
             this->toggleDebugText_();
         }, "NodeDebugRenderService" );
 
-        //m_debugText = PROTOTYPE_SERVICE()
-        //    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), "TextField"_c, MENGINE_DOCUMENT_FUNCTION );
-
-        //m_debugText->setFontName( "__CONSOLE_FONT__"_c );
-        //m_debugText->setTextID( "__ID_TEXT_CONSOLE"_c );
-        //m_debugText->setLocalColor( Color( 1.0, 0.0, 0.0, 1.0 ) );
-        //m_debugText->enable();
-
         m_timerFPS = PLATFORM_SERVICE()
             ->addTimer( 1000.f, [this]()
         {

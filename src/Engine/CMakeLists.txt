@@ -71,11 +71,16 @@ Surface\\\\SurfaceTrackMatte
 )
 
 ADD_FILTER(
+Object\\\\Isometric
+    Isometric.cpp
+    Isometric.h
+)
+
+ADD_FILTER(
 Object\\\\Shape\\\\ShapeCircle
 	ShapeCircle.cpp
 	ShapeCircle.h
 )
-
 
 ADD_FILTER(
 Object\\\\Shape\\\\ShapePacMan

@@ -86,6 +86,9 @@ namespace Mengine
         virtual float getAngle() const = 0;
 
     public:
+        virtual mt::vec2f getWorldVector( const mt::vec2f & _localVector ) = 0;     
+
+    public:
         virtual float getMass() const = 0;
         virtual float getInertia() const = 0;
 
@@ -98,6 +101,7 @@ namespace Mengine
     public:
         virtual void applyForce( const mt::vec2f & _force, const mt::vec2f & _point ) = 0;
         virtual void applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point ) = 0;
+        virtual void applyAngularImpulse( float _impulse ) = 0;
         virtual void applyTorque( float _torque ) = 0;
 
     public:

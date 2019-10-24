@@ -40,9 +40,17 @@ namespace Mengine
 
                     const EasingInterfacePtr & easing = this->getEasing();
 
-                    float t_easing = easing == nullptr ? t : easing->easing( t );
+                    float easing_value = 0.f;
+                    if( easing == nullptr )
+                    {
+                        easing_value = t;
+                    }
+                    else
+                    {
+                        easing_value = easing->easing( t );
+                    }
 
-                    float result = mt::linerp_f1( m_from, m_to, t_easing );
+                    float result = mt::linerp_f1( m_from, m_to, easing_value );
 
                     m_colorable->setLocalAlpha( result );
 

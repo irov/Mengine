@@ -2,6 +2,8 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "GOAP/Node.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,8 +13,8 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskColorableAlphaTimeAffector( const TaskColorableAlphaTimePtr & _task, const ColorablePtr & _colorable, float  _from, float _to, float _time )
-                : m_task( _task )
+            TaskColorableAlphaTimeAffector( GOAP::NodeInterface * _node, const ColorablePtr & _colorable, float  _from, float _to, float _time )
+                : m_node( _node )
                 , m_colorable( _colorable )
                 , m_from( _from )
                 , m_to( _to )
@@ -69,16 +71,16 @@ namespace Mengine
             {
                 if( _isEnd == true )
                 {
-                    m_task->complete();
+                    m_node->complete();
                 }
                 else
                 {
-                    m_task->skip();
+                    m_node->skip();
                 }
             }
 
         protected:
-            TaskColorableAlphaTimePtr m_task;
+            GOAP::NodeInterfacePtr m_node;
 
             ColorablePtr m_colorable;
 
@@ -104,11 +106,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TaskColorableAlphaTime::_onRun()
+    bool TaskColorableAlphaTime::_onRun( GOAP::NodeInterface * _node )
     {
         const float alpha = m_colorable->getLocalAlpha();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( TaskColorableAlphaTimePtr::from( this ), m_colorable, alpha, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( _node, m_colorable, alpha, m_to, m_time );
 
         affector->setEasing( m_easing );
 

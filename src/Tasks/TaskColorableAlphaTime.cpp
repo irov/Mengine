@@ -11,7 +11,7 @@ namespace Mengine
             : public Affector
         {
         public:
-            TaskColorableAlphaTimeAffector( const TaskColorableAlphaTimePtr & _task, const ColorablePtr & _colorable, const float & _from, const float & _to, float _time )
+            TaskColorableAlphaTimeAffector( const TaskColorableAlphaTimePtr & _task, const ColorablePtr & _colorable, float  _from, float _to, float _time )
                 : m_task( _task )
                 , m_colorable( _colorable )
                 , m_from( _from )
@@ -40,7 +40,7 @@ namespace Mengine
 
                     const EasingInterfacePtr & easing = this->getEasing();
 
-                    float t_easing = easing->easing( t );
+                    float t_easing = easing == nullptr ? t : easing->easing( t );
 
                     float result = mt::linerp_f1( m_from, m_to, t_easing );
 

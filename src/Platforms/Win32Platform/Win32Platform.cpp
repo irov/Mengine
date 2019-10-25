@@ -163,12 +163,15 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
+        if( HAS_OPTION( "platform" ) == true )
         {
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+            const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
+
+            if( strcmp( option_platform, "" ) != 0 )
+            {
+                m_platformTags.clear();
+                m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+            }
         }
 
         if( HAS_OPTION( "touchpad" ) )

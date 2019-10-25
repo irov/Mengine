@@ -246,7 +246,7 @@ namespace Mengine
         SERVICE_DECLARE( "Box2DService" );
 
     public:
-        virtual Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, const Char * _doc ) = 0;
+        virtual Box2DWorldInterfacePtr createWorld( const mt::vec2f & _gravity, float _scaler, const Char * _doc ) = 0;
         virtual void destroyWorld( const Box2DWorldInterfacePtr & _world ) = 0;
     };
 }

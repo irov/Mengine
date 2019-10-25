@@ -21,8 +21,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DBody::initialize( b2World * _world, b2BodyDef * _bodyDef )
+    bool Box2DBody::initialize( const Box2DScaler & _scaler, b2World * _world, b2BodyDef * _bodyDef )
     {
+        m_scaler = _scaler;
+
         b2Body * b2_body = _world->CreateBody( _bodyDef );
 
         MENGINE_ASSERTION_MEMORY_PANIC( b2_body, false );
@@ -76,7 +78,7 @@ namespace Mengine
         {
             const mt::vec2f & v = _polygon[i];
 
-            vertices[i] = Box2DScalerToWorld( v );
+            vertices[i] = m_scaler.toBox2DWorld( v );
         }
 
         b2PolygonShape shape;
@@ -109,8 +111,8 @@ namespace Mengine
         unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
     {
         b2CircleShape shape;
-        shape.m_radius = Box2DScalerToWorld( _radius );
-        b2Vec2 b2_position = Box2DScalerToWorld( _position );
+        shape.m_radius = m_scaler.toBox2DWorld( _radius );
+        b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
         shape.m_p = b2_position;
 
         b2FixtureDef fd;
@@ -137,10 +139,12 @@ namespace Mengine
         float _density, float _friction, float _restitution, bool _isSensor,
         unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
     {
-        b2Vec2 b2_position = Box2DScalerToWorld( _position );
+        b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
+        float32 b2_width = _width;
+        float32 b2_height = _height;
 
         b2PolygonShape shape;
-        shape.SetAsBox( Box2DScalerToWorld( _width ), Box2DScalerToWorld( _height )
+        shape.SetAsBox( b2_width, b2_height
             , b2_position
             , _angle
         );
@@ -170,7 +174,7 @@ namespace Mengine
     {
         const b2Vec2 & b2_position = m_body->GetPosition();
 
-        mt::vec2f position = Box2DScalerFromWorld( b2_position );
+        mt::vec2f position = m_scaler.toEngineWorld( b2_position );
 
         return position;
     }
@@ -200,7 +204,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::setLinearVelocity( const mt::vec2f & _velocity )
     {
-        b2Vec2 b2_velocity = Box2DScalerToWorld( _velocity );
+        b2Vec2 b2_velocity = m_scaler.toBox2DWorld( _velocity );
 
         m_body->SetLinearVelocity( b2_velocity );
     }
@@ -209,7 +213,7 @@ namespace Mengine
     {
         const b2Vec2 & b2_velocity = m_body->GetLinearVelocity();
 
-        mt::vec2f velocity = Box2DScalerFromWorld( b2_velocity );
+        mt::vec2f velocity = m_scaler.toEngineWorld( b2_velocity );
 
         return velocity;
     }
@@ -226,8 +230,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::applyForce( const mt::vec2f & _force, const mt::vec2f & _point )
     {
-        b2Vec2 b2_force = Box2DScalerToWorld( _force );
-        b2Vec2 b2_point = Box2DScalerToWorld( _point );
+        b2Vec2 b2_force = m_scaler.toBox2DWorld( _force );
+        b2Vec2 b2_point = m_scaler.toBox2DWorld( _point );
 
         b2Vec2 b2_world_center = m_body->GetWorldCenter();
 
@@ -237,8 +241,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::applyImpulse( const mt::vec2f & _impulse, const mt::vec2f & _point )
     {
-        b2Vec2 b2_impulse = Box2DScalerToWorld( _impulse );
-        b2Vec2 b2_point = Box2DScalerToWorld( _point );
+        b2Vec2 b2_impulse = m_scaler.toBox2DWorld( _impulse );
+        b2Vec2 b2_point = m_scaler.toBox2DWorld( _point );
 
         b2Vec2 b2_world_center = m_body->GetWorldCenter();
         b2Vec2 b2_total_point = b2_world_center + b2_point;
@@ -267,7 +271,7 @@ namespace Mengine
 
         Box2DManifold oldManifold;
 
-        oldManifold.localPoint = Box2DScalerFromWorld( _oldManifold->localPoint );
+        oldManifold.localPoint = m_scaler.toEngineWorld( _oldManifold->localPoint );
         oldManifold.localNormal = {_oldManifold->localNormal.x, _oldManifold->localNormal.y};
 
         EBox2DManifoldType oldManifoldType;
@@ -283,7 +287,7 @@ namespace Mengine
                     const b2ManifoldPoint * b2_point = _oldManifold->points + index;
 
                     Box2DManifoldPoint point;
-                    point.localPoint = Box2DScalerFromWorld( b2_point->localPoint );
+                    point.localPoint = m_scaler.toEngineWorld( b2_point->localPoint );
                     point.normalImpulse = b2_point->normalImpulse;
                     point.tangentImpulse = b2_point->tangentImpulse;
 

@@ -22,6 +22,7 @@ namespace Mengine
         , m_timeStep( 1000.f / 60.f )
         , m_velocityIterations( 10 )
         , m_positionIterations( 10 )
+        , m_scaler( 128.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -29,9 +30,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Box2DWorld::initialize( const mt::vec2f & _gravity )
+    bool Box2DWorld::initialize( const mt::vec2f & _gravity, float _scaler )
     {
-        b2Vec2 b2_gravity = Box2DScalerToWorld( _gravity );
+        m_scaler = Box2DScaler( _scaler );
+
+        b2Vec2 b2_gravity = m_scaler.toBox2DWorld( _gravity );
 
         m_world = new b2World( b2_gravity );
         m_world->SetAllowSleeping( true );
@@ -87,7 +90,7 @@ namespace Mengine
     {
         b2BodyDef bodyDef;
 
-        bodyDef.position = Box2DScalerToWorld( _pos );
+        bodyDef.position = m_scaler.toBox2DWorld( _pos );
         bodyDef.angle = _angle;
         bodyDef.linearDamping = _linearDamping;
         bodyDef.angularDamping = _angularDamping;
@@ -100,7 +103,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( body, nullptr );
 
-        if( body->initialize( m_world, &bodyDef ) == false )
+        if( body->initialize( m_scaler, m_world, &bodyDef ) == false )
         {
             return nullptr;
         }
@@ -126,8 +129,9 @@ namespace Mengine
             : public b2RayCastCallback
         {
         public:
-            MyRayCastCallback( const Box2DRayCastInterfacePtr & _response )
-                : m_response( _response )
+            MyRayCastCallback( const Box2DScaler & _scaler, const Box2DRayCastInterfacePtr & _response )
+                : m_scaler( _scaler )
+                , m_response( _response )
                 , m_index( 0 )
             {
             }
@@ -139,18 +143,22 @@ namespace Mengine
 
                 const Box2DBody * body = static_cast<const Box2DBody *>(b2_body->GetUserData());
 
-                mt::vec2f contact_point = Box2DScalerFromWorld( b2_point );
-                mt::vec2f contact_normal = Box2DScalerFromWorld( b2_normal );
+                mt::vec2f contact_point = m_scaler.toEngineWorld( b2_point );
+                mt::vec2f contact_normal = m_scaler.toEngineWorld( b2_normal );
                 float fraction = (float)b2_fraction;
 
                 float result = m_response->onResponse( m_index, body, contact_point, contact_normal, fraction );
 
                 ++m_index;
 
-                return (float32)result;
+                float b2_result = m_scaler.toBox2DWorld( result );
+
+                return b2_result;
             }
 
         protected:
+            Box2DScaler m_scaler;
+
             Box2DRayCastInterfacePtr m_response;
 
             uint32_t m_index;
@@ -159,10 +167,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Box2DWorld::rayCast( const mt::vec2f & _point1, const mt::vec2f & _point2, const Box2DRayCastInterfacePtr & _response ) const
     {
-        b2Vec2 b2_point1 = Box2DScalerToWorld( _point1 );
-        b2Vec2 b2_point2 = Box2DScalerToWorld( _point2 );
+        b2Vec2 b2_point1 = m_scaler.toBox2DWorld( _point1 );
+        b2Vec2 b2_point2 = m_scaler.toBox2DWorld( _point2 );
 
-        Detail::MyRayCastCallback rayCast_cb( _response );
+        Detail::MyRayCastCallback rayCast_cb( m_scaler, _response );
         m_world->RayCast( &rayCast_cb, b2_point1, b2_point2 );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -264,8 +272,8 @@ namespace Mengine
         b2DistanceJointDef jointDef;
         jointDef.collideConnected = _collideBodies;
 
-        b2Vec2 offsetBody1 = Box2DScalerToWorld( _offsetBody1 );
-        b2Vec2 offsetBody2 = Box2DScalerToWorld( _offsetBody2 );
+        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
+        b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
 
         b2Vec2 positionBody1 = b2_body1->GetPosition();
         b2Vec2 positionBody2 = b2_body2->GetPosition();
@@ -293,7 +301,7 @@ namespace Mengine
         b2RevoluteJointDef jointDef;
         jointDef.collideConnected = _collideBodies;
 
-        b2Vec2 offsetBody1 = Box2DScalerToWorld( _offsetBody1 );
+        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
         b2Vec2 positionBody1 = b2_body1->GetPosition();
 
         b2Vec2 anchor1 = positionBody1 + offsetBody1;
@@ -326,7 +334,7 @@ namespace Mengine
 
         b2PrismaticJointDef jointDef;
 
-        b2Vec2 worldAxis = Box2DScalerToWorld( _unitsWorldAxis );
+        b2Vec2 worldAxis = m_scaler.toBox2DWorld( _unitsWorldAxis );
 
         const b2Vec2 & body1_position = b2_body1->GetPosition();
 
@@ -336,8 +344,8 @@ namespace Mengine
 
         if( jointDef.enableLimit == true )
         {
-            jointDef.lowerTranslation = Box2DScalerToWorld( _translation.x );
-            jointDef.upperTranslation = Box2DScalerToWorld( _translation.y );
+            jointDef.lowerTranslation = m_scaler.toBox2DWorld( _translation.x );
+            jointDef.upperTranslation = m_scaler.toBox2DWorld( _translation.y );
         }
 
         jointDef.collideConnected = _collideConnected;
@@ -368,10 +376,10 @@ namespace Mengine
         b2Vec2 centerBody1 = b2_body1->GetWorldCenter();
         b2Vec2 centerBody2 = b2_body2->GetWorldCenter();
 
-        b2Vec2 offsetBody1 = Box2DScalerToWorld( _offsetBody1 );
-        b2Vec2 offsetBody2 = Box2DScalerToWorld( _offsetBody2 );
-        b2Vec2 groundOffsetBody1 = Box2DScalerToWorld( _offsetGroundBody1 );
-        b2Vec2 groundOffsetBody2 = Box2DScalerToWorld( _offsetGroundBody2 );
+        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
+        b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
+        b2Vec2 groundOffsetBody1 = m_scaler.toBox2DWorld( _offsetGroundBody1 );
+        b2Vec2 groundOffsetBody2 = m_scaler.toBox2DWorld( _offsetGroundBody2 );
 
         b2Vec2 anchor1 = centerBody1 + offsetBody1;
         b2Vec2 anchor2 = centerBody2 + offsetBody2;
@@ -426,15 +434,15 @@ namespace Mengine
         b2Body * b2_body1 = body1->getBody();
         b2Body * b2_body2 = body2->getBody();
 
-        b2Vec2 offsetBody1 = Box2DScalerToWorld( _offsetBody1 );
-        b2Vec2 offsetBody2 = Box2DScalerToWorld( _offsetBody2 );
+        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody1 );
+        b2Vec2 offsetBody2 = m_scaler.toBox2DWorld( _offsetBody2 );
 
         b2RopeJointDef jointDef;
 
         jointDef.localAnchorA = offsetBody1;
         jointDef.localAnchorB = offsetBody2;
         jointDef.collideConnected = _collideConnected;
-        jointDef.maxLength = Box2DScalerToWorld( _maxlength );
+        jointDef.maxLength = m_scaler.toBox2DWorld( _maxlength );
         jointDef.bodyA = b2_body1;
         jointDef.bodyB = b2_body2;
 
@@ -454,9 +462,8 @@ namespace Mengine
         b2Body * b2_body1 = body1->getBody();
         b2Body * b2_body2 = body2->getBody();
 
-        b2Vec2 localAxis = Box2DScalerToWorld( _localAxis );
-
-        b2Vec2 offsetBody1 = Box2DScalerToWorld( _offsetBody );
+        b2Vec2 localAxis = m_scaler.toBox2DWorld( _localAxis );
+        b2Vec2 offsetBody1 = m_scaler.toBox2DWorld( _offsetBody );
 
         b2Vec2 positionBody1 = b2_body1->GetPosition();
         b2Vec2 anchor1 = offsetBody1;
@@ -494,7 +501,7 @@ namespace Mengine
         b2Body * b2_body1 = body1->getBody();
         b2Body * b2_body2 = body2->getBody();
 
-        b2Vec2 b2_localAnchor = Box2DScalerToWorld( _localAnchor );
+        b2Vec2 b2_localAnchor = m_scaler.toBox2DWorld( _localAnchor );
 
         b2RevoluteJointDef jointDef;
 

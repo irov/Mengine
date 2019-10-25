@@ -4,6 +4,8 @@
 
 #include "Kernel/Eventable.h"
 
+#include "Box2DScaler.h"
+
 #include "Box2D/Box2D.h"
 
 namespace Mengine
@@ -16,7 +18,7 @@ namespace Mengine
         ~Box2DBody() override;
 
     public:
-        bool initialize( b2World * _world, b2BodyDef * _bodyDef );
+        bool initialize( const Box2DScaler & _scaler, b2World * _world, b2BodyDef * _bodyDef );
 
     public:
         void setEventable( const EventablePtr & _eventable );
@@ -75,6 +77,8 @@ namespace Mengine
         void onPostSolve( Box2DBody * _body, b2Contact * _contact, const b2ContactImpulse * _impulse );
 
     protected:
+        Box2DScaler m_scaler;
+
         b2World * m_world;
         b2Body * m_body;
 

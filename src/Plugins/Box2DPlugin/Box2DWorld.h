@@ -4,6 +4,8 @@
 
 #include "Interface/TimepipeServiceInterface.h"
 
+#include "Box2DScaler.h"
+
 #include "Box2D/Box2D.h"
 
 #include "Config/Vector.h"
@@ -26,7 +28,7 @@ namespace Mengine
         ~Box2DWorld() override;
 
     public:
-        bool initialize( const mt::vec2f & _gravity );
+        bool initialize( const mt::vec2f & _gravity, float _scaler );
         void finalize();
 
     protected:
@@ -165,6 +167,8 @@ namespace Mengine
 
         typedef Vector<JoinDef> VectorJoints;
         VectorJoints m_joints;
+
+        Box2DScaler m_scaler;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Box2DWorld, Box2DWorldInterface> Box2DWorldPtr;

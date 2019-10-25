@@ -20,23 +20,36 @@ namespace Mengine
         SERVICE_DECLARE( "RenderMaterialService" )
 
     public:
-        virtual bool loadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
-        virtual bool unloadMaterials( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const Char * _doc ) = 0;
+        virtual RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) = 0;
+
+        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) = 0;
+        virtual RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) = 0;
+
+        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) = 0;
+        virtual RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) = 0;
+
+        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc ) = 0;
+        virtual RenderProgramInterfacePtr removeProgram( const ConstString & _name ) = 0;
 
     public:
         virtual const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const = 0;
         virtual const RenderFragmentShaderInterfacePtr & getFragmentShader( const ConstString & _name ) const = 0;
         virtual const RenderVertexAttributeInterfacePtr & getVertexAttribute( const ConstString & _name ) const = 0;
-
         virtual const RenderProgramInterfacePtr & getProgram( const ConstString & _name ) const = 0;
 
     public:
         virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;
 
     public:
-        virtual const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const = 0;
+        virtual const RenderMaterialStage * createMaterialStage( const ConstString & _materialName, const RenderMaterialStage & _stage ) = 0;
+        virtual const RenderMaterialStage * removeMaterialStage( const ConstString & _materialName ) = 0;
 
-        virtual const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) = 0;
+        virtual const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const = 0;
+        virtual const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other ) = 0;
+
+    public:
+        virtual void updateSolidRenderMaterial() = 0;
 
     public:
         virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName

@@ -212,12 +212,6 @@ MatrixProxy
 )
 
 ADD_FILTER(
-Isometric
-	Isometric.cpp
-	Isometric.h
-)
-
-ADD_FILTER(
 RenderCamera
 	RenderCamera.cpp
 	RenderCamera.h

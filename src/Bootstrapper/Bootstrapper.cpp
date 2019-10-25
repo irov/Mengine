@@ -180,6 +180,10 @@ PLUGIN_EXPORT( UIFramework );
 PLUGIN_EXPORT( JSON );
 #endif
 
+#ifdef MENGINE_PLUGIN_BOX2D_STATIC
+PLUGIN_EXPORT( Box2D );
+#endif
+
 #ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
 PLUGIN_EXPORT( Texturepacker );
 #endif
@@ -267,11 +271,6 @@ namespace Mengine
         }
 
         if( this->runDevModules_() == false )
-        {
-            return false;
-        }
-
-        if( this->loadRenderMaterials_() == false )
         {
             return false;
         }
@@ -439,6 +438,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_JSON_STATIC
         MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_BOX2D_STATIC
+        MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
@@ -669,27 +672,6 @@ namespace Mengine
                         , name.c_str()
                     );
                 }
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::loadRenderMaterials_()
-    {
-        FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", FilePath::none() );
-
-        if( renderMaterialsPath.empty() == false )
-        {
-            LOGGER_MESSAGE( "load Render Materials..." );
-
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getDefaultFileGroup();
-
-            if( RENDERMATERIAL_SERVICE()
-                ->loadMaterials( fileGroup, renderMaterialsPath ) == false )
-            {
-                return false;
             }
         }
 

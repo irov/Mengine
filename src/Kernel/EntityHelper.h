@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        EntityPtr makeEntity( const EntityEventReceiverPtr & _eventReceiver );
+        EntityPtr generateEntity( const EntityEventReceiverPtr & _eventReceiver );
     }
 }

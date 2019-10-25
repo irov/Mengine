@@ -48,7 +48,13 @@ namespace Mengine
 
                 ScriptWrapperInterfacePtr scriptWrapper = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
 
-                MENGINE_ASSERTION_MEMORY_PANIC_VOID( scriptWrapper );
+                if( scriptWrapper == nullptr )
+                {
+                    LOGGER_WARNING( "Scriptable category '%s' prototype '%s' generetor not found ClassWrapping"
+                        , this->getCategory().c_str()
+                        , prototype.c_str() 
+                    );
+                }
 
                 m_scriptWrapper = scriptWrapper;
             } );

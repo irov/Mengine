@@ -26,10 +26,6 @@ namespace Mengine
         SERVICE_DECLARE( "ResourceService" )
 
     public:
-        virtual bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored ) = 0;
-        virtual bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
-
-    public:
         virtual PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const = 0;
 
     public:

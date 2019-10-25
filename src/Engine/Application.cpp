@@ -42,7 +42,6 @@
 #include "Kernel/Entity.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/Interender.h"
-#include "Kernel/Isometric.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
@@ -69,6 +68,7 @@
 #include "Config/List.h"
 
 // All Node type
+#include "Isometric.h"
 #include "HotSpot.h"
 #include "HotSpotPolygon.h"
 #include "HotSpotGlobal.h"

@@ -91,8 +91,10 @@ namespace Mengine
         bool unloadFont_( const FilePath & _filePath );
         bool addUserData_( const ConstString & _name, const FilePath & _filePath );
         bool removeUserData_( const ConstString & _name );
-        bool loadMaterials_( const FilePath & _filePath );
-        bool unloadMaterials_( const FilePath & _filePath );
+        bool loadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored );
+        bool unloadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool loadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool unloadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
 
     protected:
         struct PackageResourceDesc

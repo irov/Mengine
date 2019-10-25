@@ -316,6 +316,8 @@ namespace Mengine
             image->setPremultiply( atlasIsPremultiply );
             image->setPow2( atlasIsPow2 );
 
+            image->compile();
+
             m_hashtableFrames.emplace( c_name, image );
             m_frames.push_back( image );
         }
@@ -338,6 +340,12 @@ namespace Mengine
         }
 
         m_hashtableFrames.clear();
+        
+        for( const ResourceImagePtr & frame : m_frames )
+        {
+            frame->release();
+        }
+
         m_frames.clear();
     }
 }

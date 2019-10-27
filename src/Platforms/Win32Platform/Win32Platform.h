@@ -119,6 +119,9 @@ namespace Mengine
         DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
 
     public:
+        bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
+
+    public:
         bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) override;
 

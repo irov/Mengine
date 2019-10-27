@@ -1763,6 +1763,21 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool s_updateUserWallpaper( const String & _filePath )
+        {
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+            APPLICATION_SERVICE()
+                ->getProjectName( projectName );
+
+            if( PLATFORM_SERVICE()
+                ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool s_copyUserPicture( const ConstString & _resourceFilePath, const String & _filePath )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
@@ -3673,6 +3688,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "hotspotCorrect", nodeScriptMethod, &EngineScriptMethod::s_hotspotCorrect );
 
+        pybind::def_functor( _kernel, "updateUserWallpaper", nodeScriptMethod, &EngineScriptMethod::s_updateUserWallpaper );
         pybind::def_functor( _kernel, "copyUserPicture", nodeScriptMethod, &EngineScriptMethod::s_copyUserPicture );
         pybind::def_functor( _kernel, "copyUserMusic", nodeScriptMethod, &EngineScriptMethod::s_copyUserMusic );
 

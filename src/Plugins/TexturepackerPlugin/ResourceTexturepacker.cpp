@@ -98,10 +98,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceTexturepacker::_compile()
     {
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
         if( m_resourceImageName.empty() == false )
         {
-            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
-                ->getResource( m_resourceImageName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResource( m_resourceImageName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
@@ -112,8 +113,7 @@ namespace Mengine
             m_resourceImage = resourceImage;
         }
 
-        const ResourcePtr & resourceJSON = RESOURCE_SERVICE()
-            ->getResource( m_resourceJSONName );
+        const ResourcePtr & resourceJSON = resourceBank->getResource( m_resourceJSONName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceJSON, false, "'%s' group '%s' invalid get image resource '%s'"
             , this->getName().c_str()
@@ -133,6 +133,9 @@ namespace Mengine
             , m_resourceJSONName.c_str()
         );
 
+        const ConstString & locale = this->getLocale();
+        const ConstString & groupName = this->getGroupName();
+
         if( m_resourceImageName.empty() == true )
         {
             jpp::object root_meta = root["meta"];
@@ -140,8 +143,7 @@ namespace Mengine
             const Char * root_meta_image = (const Char *)root_meta["image"];
             (void)root_meta_image;
 
-            ResourceImagePtr resource = RESOURCE_SERVICE()
-                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_FUNCTION );
+            ResourceImagePtr resource = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
 
@@ -170,10 +172,10 @@ namespace Mengine
             }
             else
             {
-                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, MENGINE_DOCUMENT_FUNCTION );
+                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, newFilePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
                 ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-                    ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+                    ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( decoder, false );
 
@@ -263,8 +265,7 @@ namespace Mengine
                 }
             }
 
-            ResourceImagePtr image = RESOURCE_SERVICE()
-                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImage" ), MENGINE_DOCUMENT_FUNCTION );
+            ResourceImagePtr image = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImage" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( image, false );
 

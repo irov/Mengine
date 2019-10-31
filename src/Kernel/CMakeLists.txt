@@ -6,6 +6,12 @@ Mixin\\\\Unknowable
 )
 
 ADD_FILTER(
+Mixin\\\\Documentable
+	Documentable.h
+    Documentable.cpp
+)
+
+ADD_FILTER(
 Mixin\\\\Eventable
 	Eventable.h
     EventableHelper.h
@@ -531,6 +537,7 @@ Core
     MouseCode.h
     
     Document.h
+    Document.cpp
     
     Ravingcode.h
     Ravingcode.cpp

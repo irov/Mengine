@@ -168,7 +168,7 @@ namespace Mengine
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( nullptr, false, false );
+            _desc.cb->onSceneChange( nullptr, false, false, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_INITIALIZE, _desc.scene );
@@ -179,12 +179,22 @@ namespace Mengine
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, false, false );
+            _desc.cb->onSceneChange( m_scene, false, false, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, m_scene );
 
-        m_scene->enableForce();
+        if( m_scene->enableForce() == false )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ERROR, m_scene );
+        
+            if( _desc.cb != nullptr )
+            {
+                _desc.cb->onSceneChange( m_scene, false, false, true );
+            }
+
+            return;
+        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ENABLE, m_scene );
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, m_scene );
@@ -192,7 +202,7 @@ namespace Mengine
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, true, false );
+            _desc.cb->onSceneChange( m_scene, true, false, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_COMPLETE, m_scene );
@@ -208,19 +218,29 @@ namespace Mengine
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( nullptr, false, false );
+            _desc.cb->onSceneChange( nullptr, false, false, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_INITIALIZE, m_scene );
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, false, false );
+            _desc.cb->onSceneChange( m_scene, false, false, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, m_scene );
 
-        m_scene->enableForce();
+        if( m_scene->enableForce() == false )
+        {
+            NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ERROR, m_scene );
+
+            if( _desc.cb != nullptr )
+            {
+                _desc.cb->onSceneChange( m_scene, false, false, true );
+            }
+
+            return;
+        }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE, m_scene );
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, m_scene );
@@ -228,7 +248,7 @@ namespace Mengine
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( m_scene, true, false );
+            _desc.cb->onSceneChange( m_scene, true, false, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_RESTART_SCENE_COMPLETE, m_scene );
@@ -251,7 +271,7 @@ namespace Mengine
 
         if( _desc.cb != nullptr )
         {
-            _desc.cb->onSceneChange( nullptr, false, true );
+            _desc.cb->onSceneChange( nullptr, false, true, false );
         }
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_COMPLETE );

@@ -25,6 +25,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/FactorableUnique.h"
 
 #include <string.h>
 

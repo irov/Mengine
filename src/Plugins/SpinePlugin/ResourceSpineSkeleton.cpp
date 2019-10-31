@@ -43,8 +43,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineSkeleton::_compile()
     {
-        ResourceSpineAtlasPtr resourceSpineAtlas = RESOURCE_SERVICE()
-            ->getResource( m_resourceSpineAtlasName );
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
+        ResourceSpineAtlasPtr resourceSpineAtlas = resourceBank->getResource( m_resourceSpineAtlasName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceSpineAtlas, false );
 
@@ -53,7 +54,7 @@ namespace Mengine
         const FilePath & filePath = this->getFilePath();
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr skeleton_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( skeleton_memory, false );
 

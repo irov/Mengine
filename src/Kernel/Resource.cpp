@@ -12,12 +12,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Resource::Resource()
-        : m_service( nullptr )
+        : m_resourceBank( nullptr )
         , m_compileReferenceCount( 0 )
         , m_prefetchReferenceCount( 0 )
         , m_cache( false )
         , m_groupCache( false )
-        , m_global( false )
+        , m_keep( false )
+        , m_mapping( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,9 +26,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::setResourceService( ResourceServiceInterface * _service )
+    void Resource::setResourceBank( ResourceBankInterface * _bank )
     {
-        m_service = _service;
+        m_resourceBank = _bank;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setLocale( const ConstString & _locale )
@@ -45,9 +46,14 @@ namespace Mengine
         m_groupCache = _groupCache;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::setGlobal( bool _global )
+    void Resource::setKeep( bool _keep )
     {
-        m_global = _global;
+        m_keep = _keep;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::setMapping( bool _mapping )
+    {
+        m_mapping = _mapping;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setTags( const Tags & _tags )
@@ -209,9 +215,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Resource::_destroy()
     {
-        if( m_service != nullptr )
+        if( m_resourceBank != nullptr )
         {
-            m_service->removeResource( ResourcePtr::from( this ) );
+            m_resourceBank->destroyResource( this );
         }
     }
 }

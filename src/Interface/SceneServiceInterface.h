@@ -12,7 +12,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) = 0;
+        virtual void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SceneChangeCallbackInterface> SceneChangeCallbackInterfacePtr;

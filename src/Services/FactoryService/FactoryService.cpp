@@ -2,9 +2,12 @@
 
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/CRC32.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include <algorithm>
 
@@ -31,6 +34,21 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         m_memleakDetection = HAS_OPTION( "memleak" );
 
+        if( m_memleakDetection == true )
+        {
+            SERVICE_WAIT( ThreadServiceInterface, [this]()
+            {
+                ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                    ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+                MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
+
+                m_mutex = mutex;
+
+                return true;
+            } );
+        }
+
         m_memleakLogFileName = GET_OPTION_VALUE( "memleaklog", "" );
 #endif
 
@@ -52,6 +70,8 @@ namespace Mengine
         {
             return;
         }
+
+        m_mutex = nullptr;
 
         uint32_t leakcount = 0;
 
@@ -75,6 +95,16 @@ namespace Mengine
 
             if( f != NULL )
             {
+                Char objectleakmsg[1024];
+                int objectleakmsg_length = sprintf( objectleakmsg
+                    , "**********************************************************\n"
+                    "<<<<<                OBJECT LEAK [% .7u]           >>>>>\n"
+                    "**********************************************************\n"
+                    , leakcount
+                );
+
+                fwrite( objectleakmsg, objectleakmsg_length, 1, f );
+
                 for( auto && [name, objects] : objectLeaks )
                 {
                     const Char * factory_delimiter = "##########################################################\n";
@@ -88,6 +118,8 @@ namespace Mengine
 
                     fwrite( factorymsg, factorymsg_length, 1, f );
 
+                    fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
+
                     for( const String & obj : objects )
                     {
                         const Char * obj_delimiter = "**********************************************************\n";
@@ -100,19 +132,7 @@ namespace Mengine
 
                         fwrite( objmsg, objmsg_length, 1, f );
                     }
-
-                    fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
                 }
-
-                Char finalmsg[1024];
-                int finalmsg_length = sprintf( finalmsg
-                    , "**********************************************************\n"
-                      "<<<<<                OBJECT LEAK [%.7u]           >>>>>\n"
-                      "**********************************************************\n"
-                    , leakcount
-                );
-
-                fwrite( finalmsg, finalmsg_length, 1, f );
 
                 fclose( f );
             }
@@ -233,7 +253,7 @@ namespace Mengine
             return;
         }
 
-        STDEX_THREAD_GUARD_CHECK( this, "debugFactoryCreateObject" );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 
@@ -266,7 +286,7 @@ namespace Mengine
             return;
         }
 
-        STDEX_THREAD_GUARD_CHECK( this, "debugFactoryDestroyObject" );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         uint32_t hash = Helper::make_crc32_mod_pod( _factorable, MENGINE_NODELEAKDETECTOR_HASHSIZE );
 

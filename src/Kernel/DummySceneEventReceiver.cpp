@@ -33,12 +33,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummySceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity )
+    bool DummySceneEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
         MENGINE_UNUSED( _entity );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DummySceneEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
@@ -48,18 +50,22 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummySceneEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    bool DummySceneEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DummySceneEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    bool DummySceneEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
         //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DummySceneEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )

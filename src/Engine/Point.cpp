@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Point::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
         return material;
     }
@@ -135,7 +135,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        _renderPipeline->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
 }

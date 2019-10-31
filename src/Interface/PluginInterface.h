@@ -40,42 +40,42 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_DECLARE( Name )\
     public:\
-		MENGINE_INLINE const Char * getPluginName() const override { return Name; };\
+        MENGINE_INLINE const Char * getPluginName() const override { return Name; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\
-	initPlugin##Name
+    initPlugin##Name
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
-	extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic ){\
-	if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();}\
-	Mengine::PluginInterface * plugin = new Mengine::FactorablePlugin<Type>();\
-	if( plugin == nullptr ){ return false; }\
-	plugin->setDynamicLoad( _dynamic );\
-	*_plugin = plugin;\
-	return true;}}
+    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic ){\
+    if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();}\
+    Mengine::PluginInterface * plugin = new Mengine::FactorablePlugin<Type>();\
+    if( plugin == nullptr ){ return false; }\
+    plugin->setDynamicLoad( _dynamic );\
+    *_plugin = plugin;\
+    return true;}}
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
-	extern "C"\
-	{\
-		DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin )\
-		{\
-			return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
-		}\
-	}
+    extern "C"\
+    {\
+        DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin )\
+        {\
+            return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
+        }\
+    }
 //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_PLUGIN_DLL
 #   define PLUGIN_FACTORY(Name, Type)\
-	PLUGIN_FACTORY_STATIC(Name, Type)\
-	PLUGIN_FACTORY_DYNAMIC(Name, Type)
+    PLUGIN_FACTORY_STATIC(Name, Type)\
+    PLUGIN_FACTORY_DYNAMIC(Name, Type)
 #else
-#	define PLUGIN_FACTORY(Name, Type)\
-	PLUGIN_FACTORY_STATIC(Name, Type)
+#   define PLUGIN_FACTORY(Name, Type)\
+    PLUGIN_FACTORY_STATIC(Name, Type)
 #endif
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_EXPORT(Name)\
-	extern "C"\
-	{\
-		extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic );\
-	}
+    extern "C"\
+    {\
+        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic );\
+    }
 //////////////////////////////////////////////////////////////////////////

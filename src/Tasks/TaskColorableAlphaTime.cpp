@@ -1,6 +1,7 @@
 #include "TaskColorableAlphaTime.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Assertion.h"
 
 #include "GOAP/Node.h"
 
@@ -100,6 +101,8 @@ namespace Mengine
         , m_time( _time )
         , m_id( 0 )
     {
+        MENGINE_ASSERTION_FATAL( m_colorable != nullptr );
+        MENGINE_ASSERTION_FATAL( m_affectorable != nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     TaskColorableAlphaTime::~TaskColorableAlphaTime()
@@ -108,7 +111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskColorableAlphaTime::_onRun( GOAP::NodeInterface * _node )
     {
-        const float alpha = m_colorable->getLocalAlpha();
+        float alpha = m_colorable->getLocalAlpha();
 
         AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( _node, m_colorable, alpha, m_to, m_time );
 

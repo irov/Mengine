@@ -54,7 +54,7 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         LOGGER_INFO( "Packages load... %s:%s"
             , _fileGroup->getName().c_str()
@@ -62,7 +62,7 @@ namespace Mengine
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, _doc );
+            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load resource settings '%s'"
             , _filePath.c_str()
@@ -106,7 +106,7 @@ namespace Mengine
             config->hasValue( frameworkPack.c_str(), "Dev", &pack.dev );
             config->hasValue( frameworkPack.c_str(), "PreLoad", &pack.preload );
 
-            if( this->addPackage( pack, _doc ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT( "framework '%s'", frameworkPack.c_str() ) ) == false )
             {
                 LOGGER_CRITICAL( "invalid add framework pack '%s'"
                     , pack.name.c_str()
@@ -155,7 +155,7 @@ namespace Mengine
             config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
             config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
 
-            if( this->addPackage( pack, _doc ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT( "framework '%s'", resourcePack.c_str() ) ) == false )
             {
                 LOGGER_CRITICAL( "invalid add resource pack '%s'"
                     , pack.name.c_str()
@@ -206,7 +206,7 @@ namespace Mengine
             config->hasValue( languagePack.c_str(), "Fonts", &pack.fontsPath );
             config->hasValue( languagePack.c_str(), "Texts", &pack.textsPath );
 
-            if( this->addPackage( pack, _doc ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT( "framework '%s'", languagePack.c_str() ) ) == false )
             {
                 LOGGER_CRITICAL( "invalid add language pack '%s'"
                     , pack.name.c_str()
@@ -256,7 +256,7 @@ namespace Mengine
             return false;
         }
 
-        PackagePtr package = m_factoryPackage->createObject( MENGINE_DOCUMENT_FUNCTION );
+        PackagePtr package = m_factoryPackage->createObject( _doc );
 
         if( package->initialize( _desc.name
             , _desc.type

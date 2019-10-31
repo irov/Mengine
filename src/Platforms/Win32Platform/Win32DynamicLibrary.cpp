@@ -22,12 +22,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32DynamicLibrary::setName( const String & _name )
+    void Win32DynamicLibrary::setName( const Char * _name )
     {
-        m_name = _name;
+        strcpy( m_name, _name );
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & Win32DynamicLibrary::getName() const
+    const Char * Win32DynamicLibrary::getName() const
     {
         return m_name;
     }
@@ -47,7 +47,7 @@ namespace Mengine
             DWORD le = GetLastError();
 
             LOGGER_ERROR( "invalid load '%s' error code %d"
-                , m_name.c_str()
+                , m_name
                 , le
             );
 

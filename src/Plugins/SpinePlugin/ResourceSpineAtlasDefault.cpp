@@ -89,10 +89,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineAtlasDefault::_compile()
     {
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
         for( ImageDesc & desc : m_images )
         {
-            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
-                ->getResource( desc.resourceImageName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResource( desc.resourceImageName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
@@ -112,7 +113,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
         const FilePath & filePath = this->getFilePath();
 
-        MemoryInterfacePtr atlas_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr atlas_memory = Helper::createMemoryCacheFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas_memory, false );
 

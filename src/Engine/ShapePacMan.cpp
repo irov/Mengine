@@ -420,7 +420,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, bb, false, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

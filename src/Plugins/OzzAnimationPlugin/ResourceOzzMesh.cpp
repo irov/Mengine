@@ -32,11 +32,11 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 
-        MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = Helper::createMemoryStream( stream, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 

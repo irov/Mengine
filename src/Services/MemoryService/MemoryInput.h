@@ -5,9 +5,11 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Config/String.h"
-
 #include "stdex/thread_guard.h"
+
+#ifdef MENGINE_DEBUG
+#include "Kernel/Document.h"
+#endif
 
 namespace Mengine
 {
@@ -48,7 +50,7 @@ namespace Mengine
         uint8_t * m_end;
 
 #ifdef MENGINE_DEBUG
-        String m_doc;
+        Document m_doc;
 #endif
 
         STDEX_THREAD_GUARD_INIT;

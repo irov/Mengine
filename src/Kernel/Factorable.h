@@ -10,6 +10,10 @@
 #   define MENGINE_FACTORABLE_DEBUG
 #endif
 
+#ifdef MENGINE_DEBUG
+#include "Kernel/Documentable.h"
+#endif
+
 //typedef IntrusivePtr<Type> TypePtr;
 
 namespace Mengine
@@ -17,7 +21,11 @@ namespace Mengine
     class Factory;
 
     class Factorable
+#ifdef MENGINE_DEBUG
+        : public Documentable
+#else
         : public Mixin
+#endif
     {
     public:
         Factorable();

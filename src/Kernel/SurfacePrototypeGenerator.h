@@ -27,6 +27,15 @@ namespace Mengine
             const ConstString & prototype = this->getPrototype();
             surface->setType( prototype );
 
+#ifdef MENGINE_DEBUG
+            const Char * doc = MENGINE_DOCUMENT( "Surface '%s' type '%s' create '%s'"
+                , surface->getName().c_str()
+                , surface->getType().c_str()
+                , _doc );
+
+            surface->setDocument( doc );
+#endif
+
             this->setupScriptable( surface );
 
             if( surface->initialize() == false )

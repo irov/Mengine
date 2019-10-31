@@ -308,7 +308,7 @@ namespace Mengine
 
                         line.advanceCharOffset( cd, charScale * m_autoScaleFactor, offset2 );
 
-                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
+                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FACTORABLE );
 
                         if( chunk.material == material )
                         {
@@ -402,7 +402,7 @@ namespace Mengine
                 continue;
             }
 
-            _renderPipeline->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FUNCTION );
+            _renderPipeline->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FACTORABLE );
         }
     }
     //////////////////////////////////////////////////////////////////////////

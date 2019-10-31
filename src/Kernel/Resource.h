@@ -18,7 +18,7 @@
 
 namespace Mengine
 {
-    class ResourceServiceInterface;
+    class ResourceBankInterface;
 
     class Resource
         : public Factorable
@@ -38,8 +38,8 @@ namespace Mengine
         ~Resource() override;
 
     public:
-        void setResourceService( ResourceServiceInterface * _service );
-        MENGINE_INLINE ResourceServiceInterface * getResourceService() const;
+        void setResourceBank( ResourceBankInterface * _bank );
+        MENGINE_INLINE ResourceBankInterface * getResourceBank() const;
 
     public:
         void setLocale( const ConstString & _locale );
@@ -51,8 +51,11 @@ namespace Mengine
         void setGroupCache( bool _groupCache );
         MENGINE_INLINE bool isGroupCache() const;
 
-        void setGlobal( bool _global );
-        MENGINE_INLINE bool isGlobal() const;
+        void setKeep( bool _keep );
+        MENGINE_INLINE bool isKeep() const;
+
+        void setMapping( bool _mapping );
+        MENGINE_INLINE bool isMapping() const;
 
     public:
         void setTags( const Tags & _tags );
@@ -95,7 +98,7 @@ namespace Mengine
         void _destroy() override;
 
     protected:
-        ResourceServiceInterface * m_service;
+        ResourceBankInterface * m_resourceBank;
 
         uint32_t m_compileReferenceCount;
         uint32_t m_prefetchReferenceCount;
@@ -106,14 +109,15 @@ namespace Mengine
 
         bool m_cache;
         bool m_groupCache;
-        bool m_global;
+        bool m_keep;
+        bool m_mapping;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE ResourceServiceInterface * Resource::getResourceService() const
+    MENGINE_INLINE ResourceBankInterface * Resource::getResourceBank() const
     {
-        return m_service;
+        return m_resourceBank;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE const ConstString & Resource::getLocale() const
@@ -131,9 +135,14 @@ namespace Mengine
         return m_groupCache;
     }
     //////////////////////////////////////////////////////////////////////////
-    MENGINE_INLINE bool Resource::isGlobal() const
+    MENGINE_INLINE bool Resource::isKeep() const
     {
-        return m_global;
+        return m_keep;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Resource::isMapping() const
+    {
+        return m_mapping;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const

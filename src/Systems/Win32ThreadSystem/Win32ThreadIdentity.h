@@ -8,9 +8,12 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
-#include "Config/String.h"
 #include "Config/Char.h"
 #include "Config/Atomic.h"
+
+#ifdef MENGINE_DEBUG
+#include "Kernel/Document.h"
+#endif
 
 namespace Mengine
 {
@@ -54,7 +57,7 @@ namespace Mengine
         AtomicBool m_exit;
 
 #ifdef MENGINE_DEBUG
-        String m_doc;
+        Document m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

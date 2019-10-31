@@ -74,7 +74,7 @@ namespace Mengine
         void render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const override;
 
     protected:
-        void _afterActivate() override;
+        bool _afterActivate() override;
 
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;

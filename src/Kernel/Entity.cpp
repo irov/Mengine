@@ -85,20 +85,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
-        EVENTABLE_METHOD( EVENT_ENTITY_PREPARATION )
-            ->onEntityPreparation( m_behavior );
+        if( Node::_activate() == false )
+        {
+            return false;
+        }
 
-        bool successful = Node::_activate();
+        bool successful = EVENTABLE_METHODR( EVENT_ENTITY_PREPARATION, true )
+            ->onEntityPreparation( m_behavior );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::_afterActivate()
+    bool Entity::_afterActivate()
     {
-        Node::_afterActivate();
+        if( Node::_afterActivate() == false )
+        {
+            return false;
+        }
 
-        EVENTABLE_METHOD( EVENT_ENTITY_ACTIVATE )
+        bool successful = EVENTABLE_METHODR( EVENT_ENTITY_ACTIVATE, true )
             ->onEntityActivate( m_behavior );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
@@ -131,10 +139,12 @@ namespace Mengine
             ->onEntityRelease( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::onCreate()
+    bool Entity::onCreate()
     {
-        EVENTABLE_METHOD( EVENT_ENTITY_CREATE )
+        bool successful = EVENTABLE_METHODR( EVENT_ENTITY_CREATE, true )
             ->onEntityCreate( m_behavior, this );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::onDestroy()

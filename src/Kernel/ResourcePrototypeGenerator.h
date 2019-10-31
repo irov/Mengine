@@ -28,6 +28,15 @@ namespace Mengine
             const ConstString & prototype = this->getPrototype();
             resource->setType( prototype );
 
+#ifdef MENGINE_DEBUG
+            const Char * doc = MENGINE_DOCUMENT( "Resource '%s' type '%s' create '%s'"
+                , resource->getName().c_str()
+                , resource->getType().c_str()
+                , _doc );
+
+            resource->setDocument( doc );
+#endif
+
             this->setupScriptable( resource );
 
             return resource;

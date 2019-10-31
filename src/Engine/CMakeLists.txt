@@ -9,8 +9,6 @@ ADD_FILTER(
 Generators
     NodeGenerators.h
     NodeGenerators.cpp
-    ResourceGenerators.h
-    ResourceGenerators.cpp
     SurfaceGenerators.h
     SurfaceGenerators.cpp
 )

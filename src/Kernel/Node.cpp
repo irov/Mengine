@@ -75,7 +75,12 @@ namespace Mengine
 
             if( single != nullptr )
             {
-                single->activate();
+                if( single->activate() == false )
+                {
+                    m_active = false;
+
+                    return false;
+                }
             }
             else
             {
@@ -85,7 +90,12 @@ namespace Mengine
 
                     it.next_shuffle();
 
-                    children->activate();
+                    if( children->activate() == false )
+                    {
+                        m_active = false;
+
+                        return false;
+                    }
                 }
             }
         }
@@ -94,7 +104,11 @@ namespace Mengine
         {
             m_afterActive = true;
 
-            this->_afterActivate();
+            if( this->_afterActivate() == false )
+            {
+                m_afterActive = false;
+                m_active = false;
+            }
         }
         else
         {
@@ -179,6 +193,8 @@ namespace Mengine
 
         if( this->activate() == false )
         {
+            m_enable = false;
+
             return false;
         }
 
@@ -211,6 +227,8 @@ namespace Mengine
 
         if( this->activate() == false )
         {
+            m_enable = false;
+
             return false;
         }
 
@@ -1046,7 +1064,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_afterActivate()
+    bool Node::_afterActivate()
     {
         UpdationInterface * updation = this->getUpdation();
 
@@ -1070,6 +1088,8 @@ namespace Mengine
         {
             picker->setPickerEnable( true );
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_deactivate()

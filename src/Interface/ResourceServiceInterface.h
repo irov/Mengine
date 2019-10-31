@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileGroupInterface.h"
+#include "Interface/ResourceBankInterface.h"
 
 #include "Kernel/Visitor.h"
 
@@ -10,26 +10,20 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/Pointer.h"
-#include "Kernel/Factory.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Resource> ResourcePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef PointerT<ResourcePtr> PointerResourceReference;
-    //////////////////////////////////////////////////////////////////////////
     class ResourceServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "ResourceService" )
 
     public:
-        virtual PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const = 0;
+        virtual ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const Char * _doc ) = 0;
+
 
     public:
-        virtual PointerResourceReference createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _global, const Char * _doc ) = 0;
+        virtual ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const Char * _doc ) = 0;
 
     public:
         virtual bool removeResource( const ResourcePtr & _resource ) = 0;

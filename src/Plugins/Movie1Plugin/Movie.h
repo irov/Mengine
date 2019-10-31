@@ -139,7 +139,7 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        void _afterActivate() override;
+        bool _afterActivate() override;
 
     protected:
         void _destroy() override;

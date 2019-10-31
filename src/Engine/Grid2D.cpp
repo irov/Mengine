@@ -223,7 +223,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Grid2D::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' m_material is NULL"
             , this->getName().c_str()
@@ -244,7 +244,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_() const

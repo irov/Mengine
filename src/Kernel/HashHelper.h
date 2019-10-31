@@ -1,13 +1,15 @@
 #pragma once
 
 #include "Kernel/HashType.h"
+
+#include "Config/Config.h"
 #include "Config/Char.h"
 
 namespace Mengine
 {
     namespace Helper
     {
-        constexpr uint64_t xmul12864( uint64_t a, uint64_t b )
+        MENGINE_CONSTEXPR uint64_t xmul12864( uint64_t a, uint64_t b )
         {
             const uint64_t a32 = a >> 32;
             const uint64_t b32 = b >> 32;
@@ -28,7 +30,7 @@ namespace Mengine
             return x4;
         }
 
-        constexpr HashType makeHash( const Char * _data, const HashType _len )
+        MENGINE_CONSTEXPR HashType makeHash( const Char * _data, const HashType _len )
         {
             if( _len == 0 )
             {
@@ -63,7 +65,7 @@ namespace Mengine
     namespace Literals
     {
         //////////////////////////////////////////////////////////////////////////
-        constexpr HashType operator "" _hash( const Char * _value, size_t _size )
+        MENGINE_CONSTEXPR HashType operator "" _hash( const Char * _value, size_t _size )
         {
             return Helper::makeHash( _value, _size );
         }

@@ -24,7 +24,10 @@ namespace Mengine
 
             entity->setBehaviorEventable( eventable );
 
-            entity->onCreate();
+            if( entity->onCreate() == false )
+            {
+                return nullptr;
+            }
 
             return entity;
         }

@@ -1,0 +1,11 @@
+#pragma once
+
+#include "Interface/RandomizerInterface.h"
+
+namespace Mengine
+{
+    namespace Helper
+    {
+        void randomizerShuffle( const RandomizerInterfacePtr & _randomizer, uint32_t * _indices, uint32_t _capacity, uint32_t _count );
+    }
+}

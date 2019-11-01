@@ -20,8 +20,9 @@ namespace Mengine
             , public Factorable
         {
         public:
-            TaskPickerableMouseLeaveEventReceiver( const LambdaPickerMouseLeaveEvent & _filter )
-                : m_filter( _filter )
+            TaskPickerableMouseLeaveEventReceiver( GOAP::NodeInterface * _node, const LambdaPickerMouseLeaveEvent & _filter )
+                : m_node( _node )
+                , m_filter( _filter )
             {
             }
 
@@ -32,7 +33,15 @@ namespace Mengine
         protected:
             void onHotSpotMouseLeave( const InputMouseLeaveEvent & _event ) override
             {
-                m_filter( _event );
+                if( m_filter != nullptr )
+                {
+                    if( m_filter( _event ) == false )
+                    {
+                        return;
+                    }
+                }
+
+                m_node->complete();
             }
 
         protected:
@@ -140,6 +149,8 @@ namespace Mengine
             }
 
         protected:
+            GOAP::NodeInterface * m_node;
+
             LambdaPickerMouseLeaveEvent m_filter;
         };
     }
@@ -156,23 +167,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskPickerableMouseLeave::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this, _node]( const InputMouseLeaveEvent & _event )
-        {
-            if( m_filter != nullptr )
-            {
-                m_filter( _event );
-            }
-
-            _node->complete();
-        };
-
         PickerInterface * picker = m_pickerable->getPicker();
 
         Eventable * eventable = picker->getPickerEventable();
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( lambda );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( _node, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE, newreceiver );
 

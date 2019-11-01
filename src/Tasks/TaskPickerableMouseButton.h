@@ -12,7 +12,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaPickerMouseButtonEvent;
+    typedef Lambda<bool( const InputMouseButtonEvent &, bool * )> LambdaPickerMouseButtonEvent;
     //////////////////////////////////////////////////////////////////////////
     class TaskPickerableMouseButton
         : public GOAP::Task

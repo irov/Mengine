@@ -562,6 +562,9 @@ Core
     
     FileStreamHelper.h
     FileStreamHelper.cpp
+    
+    RandomizerHelper.h
+    RandomizerHelper.cpp
 )
 
 ADD_FILTER(

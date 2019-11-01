@@ -34,7 +34,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BubblegumEventReceiver::BubblegumEventReceiver()
-        : m_score( 0 )
+        : m_scene( nullptr )
+        , m_score( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -279,7 +280,7 @@ namespace Mengine
             }
             else if( _iterator > 25 )
             {
-                return 500.f;
+                return 500.f;   
             }
             else if( _iterator > 10 )
             {

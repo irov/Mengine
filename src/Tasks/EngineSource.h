@@ -44,13 +44,13 @@ namespace Mengine
         void addNodeDisable( const NodePtr & _node );
         void addNodeEnable( const NodePtr & _node );
 
-        typedef Lambda<bool( const InputMouseButtonEvent & )> LambdaPickerMouseButtonEvent;
+        typedef Lambda<bool( const InputMouseButtonEvent &, bool * )> LambdaPickerMouseButtonEvent;
         void addPickerableMouseButton( const PickerablePtr & _pickerable, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter );
 
-        typedef Lambda<bool( const InputMouseEnterEvent & )> LambdaPickerMouseEnterEvent;
+        typedef Lambda<bool( const InputMouseEnterEvent &, bool * )> LambdaPickerMouseEnterEvent;
         void addPickerableMouseEnter( const PickerablePtr & _pickerable, const LambdaPickerMouseEnterEvent & _filter );
 
-        typedef Lambda<void( const InputMouseLeaveEvent & )> LambdaPickerMouseLeaveEvent;
+        typedef Lambda<bool( const InputMouseLeaveEvent & )> LambdaPickerMouseLeaveEvent;
         void addPickerableMouseLeave( const PickerablePtr & _pickerable, const LambdaPickerMouseLeaveEvent & _filter );
 
         void addTransformationRotateY( const TransformationPtr & _transformation, const AffectorablePtr & _affectorable, float _to, float _speed );

@@ -40,6 +40,6 @@ namespace Mengine
         uint32_t m_score;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BubblegumEventReceiver> MySceneEventReceiverPtr;
+    typedef IntrusivePtr<BubblegumEventReceiver> BubblegumEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

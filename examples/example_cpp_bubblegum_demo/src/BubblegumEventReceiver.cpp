@@ -42,7 +42,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BubblegumEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
+    bool BubblegumEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -51,6 +51,8 @@ namespace Mengine
         LOGGER_MESSAGE( "Scene onEntityCreate [%s]"
             , m_scene->getName().c_str()
         );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BubblegumEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )
@@ -69,7 +71,7 @@ namespace Mengine
         m_textFinish = nullptr;
     }    
     //////////////////////////////////////////////////////////////////////////
-    void BubblegumEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    bool BubblegumEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -140,6 +142,8 @@ namespace Mengine
         m_textFinish = textFinish;
 
         m_scene->addChild( m_textFinish );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void BubblegumEventReceiver::spawnBubble_( const GOAP::SourcePtr & _source, uint32_t _iterator )
@@ -240,7 +244,7 @@ namespace Mengine
         m_score += addscore;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BubblegumEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    bool BubblegumEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
 
@@ -303,5 +307,7 @@ namespace Mengine
 
         GOAP::ChainPtr chain = GOAP::Helper::makeChain( source );
         chain->run();
+
+        return true;
     }
 };

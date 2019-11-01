@@ -335,7 +335,7 @@ namespace Mengine
             this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
 
         PlatformDateTime dateTime;
-        dateTimeProvider->getDateTime( &dateTime );
+        dateTimeProvider->getLocalDateTime( &dateTime );
 
         LOGGER_MESSAGE( "Date: %02d.%02d.%d, %02d:%02d:%02d"
             , dateTime.day
@@ -622,6 +622,13 @@ namespace Mengine
         TimerDesc & desc = *it_found;
 
         desc.id = 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t SDLPlatform::getTicks() const
+    {
+        Uint32 ticks = SDL_GetTicks();
+
+        return (uint64_t)ticks;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setIcon( uint32_t _icon )
@@ -1360,22 +1367,36 @@ namespace Mengine
         return dateTimeProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )
+    bool SDLPlatform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
-        MENGINE_UNUSED( _path );
-        MENGINE_UNUSED( _file );
-        MENGINE_UNUSED( _data );
-        MENGINE_UNUSED( _size );
+        MENGINE_UNUSED( _directoryPath );
+        MENGINE_UNUSED( _filePath );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size )
+    bool SDLPlatform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
-        MENGINE_UNUSED( _path );
-        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _directoryPath );
+        MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _data );
         MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
+    {
+        MENGINE_UNUSED( _directoryPath );
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _data );
+        MENGINE_UNUSED( _size );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }

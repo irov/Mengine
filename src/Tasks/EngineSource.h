@@ -148,7 +148,7 @@ namespace Mengine
         template<class P, class D, class M, class ... Args>
         EngineSourcePtr addRepeat( const IntrusivePtr<P, D> & _self, M _method, Args && ... _args )
         {
-            WhileProviderPtr provider = Helper::makeWhileProvider( [_self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source ){ P * p = _self.get(); return (p->*_method)((EngineSourcePtr)_source, _args ...); } );
+            GOAP::WhileProviderPtr provider = GOAP::Helper::makeWhileProvider( [_self, _method, _args ...]( const GOAP::SourceInterfacePtr & _source ){ P * p = _self.get(); return (p->*_method)(_source, _args ...); } );
 
             TypeSourcePtr source_until = this->makeSource();
 

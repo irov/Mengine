@@ -4,23 +4,54 @@
 
 namespace Mengine
 {
-	inline static float32 Box2DScalerToWorld( float _v )
-	{
-		return (float32)_v * 0.01f;
-	}
+    class Box2DScaler
+    {
+    public:
+        MENGINE_INLINE Box2DScaler()
+            : m_value( 0.f )
+            , m_valueInv( 0.f )
+        {
+        }
 
-	inline static float Box2DScalerFromWorld( float32 _v )
-	{
-		return (float32)_v * 100.f;
-	}
+        MENGINE_INLINE Box2DScaler( float _value )
+            : m_value( _value )
+            , m_valueInv( 1.f / _value )
+        {
+        }
 
-	inline static b2Vec2 Box2DScalerToWorld( const mt::vec2f & _v )
-	{
-		return b2Vec2( Box2DScalerToWorld( _v.x ), Box2DScalerToWorld( _v.y ) );
-	}
+        MENGINE_INLINE ~Box2DScaler()
+        {
+        }
 
-	inline static mt::vec2f Box2DScalerFromWorld( const b2Vec2 & _v )
-	{
-		return mt::vec2f( Box2DScalerFromWorld( _v.x ), Box2DScalerFromWorld( _v.y ) );
-	}
+    public:
+        MENGINE_INLINE float32 toBox2DWorld( float _v ) const
+        {
+            return (float32)_v * m_valueInv;
+        }
+
+        MENGINE_INLINE float toEngineWorld( float32 _v ) const
+        {
+            return (float32)_v * m_value;
+        }
+
+        MENGINE_INLINE b2Vec2 toBox2DWorld( const mt::vec2f & _v ) const
+        {
+            float32 x = this->toBox2DWorld( _v.x );
+            float32 y = this->toBox2DWorld( _v.y );
+
+            return b2Vec2( x, y );
+        }
+
+        MENGINE_INLINE mt::vec2f toEngineWorld( const b2Vec2 & _v ) const
+        {
+            float x = this->toEngineWorld( _v.x );
+            float y = this->toEngineWorld( _v.y );
+
+            return mt::vec2f( x, y );
+        }
+
+    protected:
+        float m_value;
+        float m_valueInv;
+    };
 }

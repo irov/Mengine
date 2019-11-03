@@ -11,7 +11,7 @@
 #include "Kernel/ConstString.h"
 
 #ifdef MENGINE_DEBUG
-#include "Config/String.h"
+#include "Kernel/Document.h"
 #endif
 
 namespace Mengine
@@ -51,7 +51,7 @@ namespace Mengine
         size_t m_size;
 
 #ifdef MENGINE_DEBUG
-        String m_doc;
+        Document m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////	

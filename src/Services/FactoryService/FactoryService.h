@@ -1,13 +1,12 @@
 #pragma once
 
 #include "Interface/FactoryServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
 #include "Config/Vector.h"
 #include "Config/String.h"
-
-#include "stdex/thread_guard.h"
 
 #ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
 #define MENGINE_NODELEAKDETECTOR_HASHSIZE 1001
@@ -56,6 +55,8 @@ namespace Mengine
         VectorFactories m_factories;
 
 #ifdef MENGINE_DEBUG
+        ThreadMutexInterfacePtr m_mutex;
+
         uint32_t m_generation;
         bool m_memleakDetection;
         String m_memleakLogFileName;
@@ -71,8 +72,6 @@ namespace Mengine
 
         typedef Vector<ObjectLeakDesc> VectorObjectLeakDesc;
         VectorObjectLeakDesc m_objectLeakDescs[MENGINE_NODELEAKDETECTOR_HASHSIZE];
-
-        STDEX_THREAD_GUARD_INIT;
 #endif
     };
 }

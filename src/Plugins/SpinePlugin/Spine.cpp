@@ -518,7 +518,7 @@ namespace Mengine
             break;
         }
 
-        RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( _resourceImage ), ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialInterfacePtr material = Helper::makeImageMaterial( ResourceImagePtr::from( _resourceImage ), ConstString::none(), blendMode, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' resource '%s' image '%s' m_material is NULL"
             , this->getName().c_str()
@@ -802,7 +802,7 @@ namespace Mengine
 
             const mt::box2f * bb = this->getBoundingBox();
 
-            _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+            _renderPipeline->addRenderObject( _context, material, nullptr, vertices, verticesCount, indices, trianglesCount, bb, false, MENGINE_DOCUMENT_FACTORABLE );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -839,9 +839,12 @@ namespace Mengine
         stdex::memorycopy_pod( _indices, 0, _triangles, _count );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Spine::_afterActivate()
+    bool Spine::_afterActivate()
     {
-        Node::_afterActivate();
+        if( Node::_afterActivate() == false )
+        {
+            return false;
+        }
 
         bool autoPlay = this->isAutoPlay();
 
@@ -857,9 +860,11 @@ namespace Mengine
                     , this->m_resourceSpineSkeleton->getName().c_str()
                 );
 
-                return;
+                return false;
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Spine::_play( uint32_t _enumerator, float _time )

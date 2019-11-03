@@ -4,8 +4,6 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Config/String.h"
-
 #include "Environment/Windows/WindowsIncluder.h"
 
 namespace Mengine
@@ -19,8 +17,8 @@ namespace Mengine
         ~Win32DynamicLibrary() override;
 
     public:
-        void setName( const String & _name );
-        const String & getName() const;
+        void setName( const Char * _name );
+        const Char * getName() const;
 
     public:
         bool load() override;
@@ -29,7 +27,7 @@ namespace Mengine
         TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     protected:
-        String m_name;
+        Char m_name[MENGINE_MAX_PATH];
         HINSTANCE m_hInstance;
     };
     //////////////////////////////////////////////////////////////////////////

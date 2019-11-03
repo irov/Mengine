@@ -653,8 +653,10 @@ namespace Mengine
             }
 
         public:
-            void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) override
+            void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
             {
+                MENGINE_UNUSED( _error );
+
                 if( _remove == false )
                 {
                     if( _scene == nullptr )
@@ -1046,7 +1048,7 @@ namespace Mengine
         ResourcePtr s_createResource( const ConstString & _type )
         {
             ResourcePtr resource = RESOURCE_SERVICE()
-                ->generateResource( _type, MENGINE_DOCUMENT_PYBIND );
+                ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), _type, false, false, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid create resource '%s'"
                 , _type.c_str()
@@ -1256,7 +1258,7 @@ namespace Mengine
             }
 
             ResourceImageDefaultPtr resource = RESOURCE_SERVICE()
-                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), MENGINE_DOCUMENT_PYBIND );
+                ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, false, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
@@ -1276,7 +1278,7 @@ namespace Mengine
         ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
         {
             ResourceImageSolidPtr resource = RESOURCE_SERVICE()
-                ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), MENGINE_DOCUMENT_PYBIND );
+                ->createResource( ConstString::none(), ConstString::none(), ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ), false, false, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
@@ -1759,6 +1761,21 @@ namespace Mengine
             }
 
             resourceFile->release();
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_updateUserWallpaper( const String & _filePath )
+        {
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+            APPLICATION_SERVICE()
+                ->getProjectName( projectName );
+
+            if( PLATFORM_SERVICE()
+                ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
+            {
+                return false;
+            }
 
             return true;
         }
@@ -3673,6 +3690,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "hotspotCorrect", nodeScriptMethod, &EngineScriptMethod::s_hotspotCorrect );
 
+        pybind::def_functor( _kernel, "updateUserWallpaper", nodeScriptMethod, &EngineScriptMethod::s_updateUserWallpaper );
         pybind::def_functor( _kernel, "copyUserPicture", nodeScriptMethod, &EngineScriptMethod::s_copyUserPicture );
         pybind::def_functor( _kernel, "copyUserMusic", nodeScriptMethod, &EngineScriptMethod::s_copyUserMusic );
 

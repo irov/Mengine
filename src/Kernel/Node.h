@@ -155,7 +155,7 @@ namespace Mengine
 
     protected:
         virtual bool _activate();
-        virtual void _afterActivate();
+        virtual bool _afterActivate();
 
         virtual void _deactivate();
         virtual void _afterDeactivate();
@@ -335,4 +335,3 @@ namespace Mengine
     using IntrusiveNodePtr = IntrusivePtr<T, Node>;
     //////////////////////////////////////////////////////////////////////////
 }
-

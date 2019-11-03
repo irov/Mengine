@@ -389,7 +389,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapGlyph::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open file '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -398,7 +398,7 @@ namespace Mengine
 
         size_t xml_buffer_size = stream->size();
 
-        MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
 

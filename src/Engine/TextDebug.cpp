@@ -18,7 +18,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size )
+        static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size, const Char * _doc )
         {
             U32String cacheText = _font->prepareText( _message, _size );
 
@@ -93,7 +93,7 @@ namespace Mengine
                     tl.advanceCharOffset( cd, 1.f, offset );
 
                     RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial3( EM_TEXTURE_BLEND, PT_TRIANGLELIST, 1, &cd.texture, MENGINE_DOCUMENT_FUNCTION );
+                        ->getMaterial3( EM_TEXTURE_BLEND, PT_TRIANGLELIST, 1, &cd.texture, _doc );
 
                     if( new_chunk.material == material )
                     {
@@ -131,12 +131,12 @@ namespace Mengine
                         continue;
                     }
 
-                    _renderPipeline->addDebugRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, MENGINE_DOCUMENT_FUNCTION );
+                    _renderPipeline->addDebugRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, _doc );
                 }
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const Char * _format, ... )
+        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const Char * _doc, const Char * _format, ... )
         {
             ConstString fontName = _fontName;
 
@@ -176,7 +176,7 @@ namespace Mengine
                 Char msg[2048] = { 0 };
                 int size = MENGINE_VSNPRINTF( msg, 2047, _format, args );
 
-                drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size );
+                drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size, _doc );
 
                 MENGINE_VA_LIST_END( args );
             }

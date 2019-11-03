@@ -33,12 +33,12 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
         const FilePath & filePath = this->getFilePath();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 
         JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSON( stream, MENGINE_DOCUMENT_FUNCTION );
+            ->loadJSON( stream, MENGINE_DOCUMENT_FACTORABLE );
         
         if( storage == nullptr )
         {

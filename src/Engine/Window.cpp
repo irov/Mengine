@@ -167,7 +167,7 @@ namespace Mengine
             }
 
             RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures, MENGINE_DOCUMENT_FUNCTION );
+                ->getMaterial3( materialId, PT_TRIANGLELIST, textureCount, textures, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( material, false );
 
@@ -201,14 +201,14 @@ namespace Mengine
         {
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
-            _renderPipeline->addRenderQuad( _context, edge.material, &vertices[0 * 4], 4, bb, false, MENGINE_DOCUMENT_FUNCTION );
+            _renderPipeline->addRenderQuad( _context, edge.material, &vertices[0 * 4], 4, bb, false, MENGINE_DOCUMENT_FACTORABLE );
         }
 
         for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
         {
             const WindowEdge & edge = m_edge[i];
 
-            _renderPipeline->addRenderQuad( _context, edge.material, &vertices[i * 4], 4, bb, false, MENGINE_DOCUMENT_FUNCTION );
+            _renderPipeline->addRenderQuad( _context, edge.material, &vertices[i * 4], 4, bb, false, MENGINE_DOCUMENT_FACTORABLE );
         }
     }
     //////////////////////////////////////////////////////////////////////////

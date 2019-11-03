@@ -3,6 +3,8 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
+#include "ResourceBank.h"
+
 #include "Kernel/Resource.h"
 
 #include "Kernel/ServiceBase.h"
@@ -29,9 +31,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        PointerResourceReference generateResource( const ConstString & _type, const Char * _doc ) const override;
+        ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const Char * _doc ) override;
 
-        PointerResourceReference createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _global, const Char * _doc ) override;
+    public:
+        ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const Char * _doc ) override;
         bool removeResource( const ResourcePtr & _resource ) override;
 
     public:
@@ -55,12 +58,13 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
+        ResourceBankPtr m_globalBank;
+
         typedef IntrusivePtrView<Resource> ResourcePtrView;
-        typedef Hashtable<ConstString, ResourcePtrView> HashtableResources;
-        HashtableResources m_resources;
-                
         typedef Vector<ResourcePtrView> VectorResources;
         typedef Map<ConstString, VectorResources> MapResourceCache;
         MapResourceCache m_resourcesCache;
+
+        FactoryPtr m_factoryResourceBank;
     };
 }

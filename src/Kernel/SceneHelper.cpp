@@ -31,7 +31,10 @@ namespace Mengine
 
             scene->setBehaviorEventable( eventable );
 
-            scene->onCreate();
+            if( scene->onCreate() == false )
+            {
+                return nullptr;
+            }
 
             return scene;
         }

@@ -6,11 +6,14 @@
 #include "Kernel/ThreadTask.h"
 
 #include "Config/Atomic.h"
-#include "Config/String.h"
 #include "Config/Char.h"
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
 #define MENGINE_THREAD_JOB_WORK_COUNT 32
+#endif
+
+#ifdef MENGINE_DEBUG
+#include "Kernel/Document.h"
 #endif
 
 namespace Mengine
@@ -60,7 +63,7 @@ namespace Mengine
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 
 #ifdef MENGINE_DEBUG
-        String m_doc;
+        Document m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

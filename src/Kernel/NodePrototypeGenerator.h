@@ -33,6 +33,15 @@ namespace Mengine
             uint32_t uniqueIdentity = GENERATE_UNIQUE_IDENTITY();
             node->setUniqueIdentity( uniqueIdentity );
 
+#ifdef MENGINE_DEBUG
+            const Char * doc = MENGINE_DOCUMENT( "Node '%s' type '%s' create '%s'"
+                , node->getName().c_str()
+                , node->getType().c_str()
+                , _doc );
+
+            node->setDocument( doc );
+#endif
+
             this->setupScriptable( node );
 
             return node;

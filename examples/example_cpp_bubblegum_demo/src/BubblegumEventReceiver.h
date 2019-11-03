@@ -19,10 +19,10 @@ namespace Mengine
         ~BubblegumEventReceiver() override;
 
     public:
-        void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity ) override;
+        bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity ) override;
         void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) override;
-        void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
-        void onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
+        bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
+        bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     protected:
         void spawnBubble_( const GOAP::SourcePtr & _source, uint32_t _iterator );
@@ -40,6 +40,6 @@ namespace Mengine
         uint32_t m_score;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BubblegumEventReceiver> MySceneEventReceiverPtr;
+    typedef IntrusivePtr<BubblegumEventReceiver> BubblegumEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 }

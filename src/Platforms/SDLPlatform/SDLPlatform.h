@@ -52,6 +52,9 @@ namespace Mengine
         void removeTimer( uint32_t _id ) override;
 
     public:
+        uint64_t getTicks() const override;
+
+    public:
         void setIcon( uint32_t _icon ) override;
         uint32_t getIcon() const override;
 
@@ -132,8 +135,11 @@ namespace Mengine
         DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
 
     public:
-        bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
-        bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
+        bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
+
+    public:
+        bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
+        bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _file, const void * _data, size_t _size ) override;
 
     public:
         bool getErrorMessage( uint32_t _messageId, Char * _out, size_t _capacity ) const override;

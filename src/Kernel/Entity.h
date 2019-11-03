@@ -37,10 +37,10 @@ namespace Mengine
         : public EventReceiverInterface
     {
     public:
-        virtual void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity ) = 0;
+        virtual bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity ) = 0;
         virtual void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) = 0;
-        virtual void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) = 0;
-        virtual void onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
         virtual void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) = 0;
@@ -92,12 +92,12 @@ namespace Mengine
         const RenderCameraInterfacePtr & getPickerCamera() const override;
 
     public:
-        void onCreate();
+        bool onCreate();
         void onDestroy();
 
     protected:
         bool _activate() override;
-        void _afterActivate() override;
+        bool _afterActivate() override;
 
         void _deactivate() override;
         void _afterDeactivate() override;

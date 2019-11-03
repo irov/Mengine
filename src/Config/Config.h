@@ -7,6 +7,8 @@
 #define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MENGINE_MIN(a, b) ((a) < (b) ? (a) : (b))
 
+#define MENGINE_STRING_EMPTY ""
+
 #define MENGINE_PP_STRINGIZE_I(X) #X
 #define MENGINE_PP_STRINGIZE(X) MENGINE_PP_STRINGIZE_I(X)
 

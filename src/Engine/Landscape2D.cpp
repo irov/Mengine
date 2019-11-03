@@ -121,7 +121,7 @@ namespace Mengine
                         return;
                     }
 
-                    RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false, MENGINE_DOCUMENT_FUNCTION );
+                    RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false, MENGINE_DOCUMENT_FACTORABLE );
 
                     MENGINE_ASSERTION_MEMORY_PANIC_VOID( material, "'%s' invalid get material"
                         , this->getName().c_str()
@@ -140,7 +140,7 @@ namespace Mengine
             {
                 const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-                _renderPipeline->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false, MENGINE_DOCUMENT_FUNCTION );
+                _renderPipeline->addRenderQuad( _context, el.material, vertices, 4, &el.bb_wm, false, MENGINE_DOCUMENT_FACTORABLE );
             }
 
             elementVertexOffset += 4;

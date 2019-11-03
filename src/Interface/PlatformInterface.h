@@ -121,6 +121,9 @@ namespace Mengine
         virtual DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) = 0;
 
     public:
+        virtual bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) = 0;
+
+    public:
         virtual bool createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) = 0;
         virtual bool createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size ) = 0;
 

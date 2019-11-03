@@ -37,6 +37,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSpineAtlasTexturepacker::_compile()
     {
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
         spAtlas * atlas = NEW( spAtlas );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas, false );
@@ -61,8 +63,7 @@ namespace Mengine
 
             lastPage = page;
 
-            ResourcePtr resourceTexturepacker = RESOURCE_SERVICE()
-                ->getResource( desc.resourceTexturepackerName );
+            ResourcePtr resourceTexturepacker = resourceBank->getResource( desc.resourceTexturepackerName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceTexturepacker, false );
 

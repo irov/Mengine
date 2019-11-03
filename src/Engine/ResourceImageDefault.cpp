@@ -51,7 +51,7 @@ namespace Mengine
         const ConstString & codecType = this->getCodecType();
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, codecType, DF_NONE, MENGINE_DOCUMENT_FUNCTION );
+            ->loadTexture( fileGroup, filePath, codecType, DF_NONE, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "name '%s' category '%s' group '%s' can't load image file '%s'"
             , this->getName().c_str()

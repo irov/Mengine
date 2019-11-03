@@ -1,0 +1,252 @@
+#include "ResourceBank.h"
+
+#include "Interface/PrototypeServiceInterface.h"
+
+#include "Kernel/Resource.h"
+#include "Kernel/Logger.h"
+#include "Kernel/Error.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionMainThreadGuard.h"
+#include "Kernel/ThreadMutexScope.h"
+
+#include <algorithm>
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    ResourceBank::ResourceBank()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ResourceBank::~ResourceBank()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceBank::initialize( const ThreadMutexInterfacePtr & _mutex, uint32_t _reserved )
+    {
+        m_mutex = _mutex;
+
+        m_resources.reserve( _reserved );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceBank::finalize()
+    {
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtrView & resource = value.element;
+
+            ResourceBankInterface * resourceBank = resource->getResourceBank();
+            MENGINE_UNUSED( resourceBank );
+
+            resource->setResourceBank( nullptr );
+            resource->finalize();
+
+            if( resource->isKeep() == true )
+            {
+                IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
+            }
+        }
+
+        m_resources.clear();
+
+        m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** _override, const Char * _doc )
+    {
+        LOGGER_INFO( "create resource '%s'"
+            , _type.c_str()
+        );
+
+        ResourcePtr resource = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not registered resource type '%s'"
+            , _type.c_str()
+        );
+
+        if( resource->initialize() == false )
+        {
+            LOGGER_ERROR( "resource '%s' invalid initialize (doc: %s)"
+                , _type.c_str()
+                , _doc
+            );
+
+            return nullptr;
+        }
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
+            , _locale.c_str()
+            , _groupName.c_str()
+            , _name.c_str()
+            , _type.c_str()
+            , _doc
+        );
+
+        resource->setResourceBank( this );
+        resource->setLocale( _locale );
+        resource->setGroupName( _groupName );
+        resource->setName( _name );
+        resource->setKeep( _keep );
+
+        if( _name.empty() == false )
+        {
+            resource->setMapping( true );
+
+            ResourcePtrView prev_resource = m_resources.change( _name, resource );
+
+            if( prev_resource != nullptr )
+            {
+                prev_resource->setResourceBank( nullptr );
+                prev_resource->finalize();
+                prev_resource->setMapping( false );
+
+                if( prev_resource->isKeep() == false )
+                {
+                    IntrusivePtrBase::intrusive_ptr_add_ref( prev_resource.get() );
+                }
+            }
+
+            if( _override != nullptr )
+            {
+                *_override = prev_resource.get();
+            }
+        }
+
+        if( _keep == true )
+        {
+            IntrusivePtrBase::intrusive_ptr_add_ref( resource.get() );
+        }
+
+        return resource;
+    }
+    //////////////////////////////////////////////////////////////////////////    
+    void ResourceBank::removeResource( const ResourcePtr & _resource )
+    {
+        Resource * resource = _resource.get();
+
+        this->destroyResource( resource );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceBank::destroyResource( Resource * _resource )
+    {
+        MENGINE_ASSERTION_FATAL( _resource->isMapping() == false || m_resources.exist( _resource->getName() ) == true, "resource '%s' type '%s' not found (maybe already remove)"
+            , _resource->getName().c_str()
+            , _resource->getType().c_str()
+        );
+
+        _resource->setResourceBank( nullptr );
+
+        _resource->finalize();
+
+        const ConstString & name = _resource->getName();
+
+        if( _resource->isMapping() == true )
+        {
+            m_resources.erase( name );
+        }
+
+        if( _resource->isKeep() == true )
+        {
+            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourcePtr & ResourceBank::getResource( const ConstString & _name ) const
+    {
+        MENGINE_ASSERTION_MAIN_THREAD_GUARD();
+
+        const ResourcePtr & resource = m_resources.find( _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
+            , _name.c_str()
+        );
+
+        if( resource->compile() == false )
+        {
+            LOGGER_ERROR( "resource '%s' '%s' is not compile!"
+                , _name.c_str()
+                , resource->getType().c_str()
+            );
+
+            return ResourcePtr::none();
+        }
+
+        return resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourcePtr & ResourceBank::getResourceReference( const ConstString & _name ) const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        const ResourcePtr & resource = m_resources.find( _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
+            , _name.c_str()
+        );
+
+        return resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceBank::getResourceType( const ConstString & _name ) const
+    {
+        const ResourcePtr & resource = m_resources.find( _name );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( resource, ConstString::none(), "resource '%s' does not exist"
+            , _name.c_str()
+        );
+
+        const ConstString & type = resource->getType();
+
+        return type;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceBank::hasResource( const ConstString & _name, ResourcePtr * _resource ) const
+    {
+        const ResourcePtr & resource = m_resources.find( _name );
+
+        if( resource == nullptr )
+        {
+            return false;
+        }
+
+        if( _resource != nullptr )
+        {
+            *_resource = resource;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceBank::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const
+    {
+        const ResourcePtr & resource = m_resources.find( _name );
+
+        if( resource == nullptr )
+        {
+            return false;
+        }
+
+        const ConstString & resourceType = resource->getType();
+
+        if( resourceType != _type )
+        {
+            return false;
+        }
+
+        if( _resource != nullptr )
+        {
+            *_resource = resource;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceBank::HashtableResources & ResourceBank::getResources() const
+    {
+        return m_resources;
+    }
+}

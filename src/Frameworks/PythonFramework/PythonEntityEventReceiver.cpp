@@ -24,14 +24,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonEntityEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
+    bool PythonEntityEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
         Detail::callBehavior( m_cb, _behavior );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonEntityEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
+    bool PythonEntityEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         Detail::callBehavior( m_cb, _behavior );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonEntityEventReceiver::onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior )
@@ -54,9 +58,11 @@ namespace Mengine
         Detail::callBehavior( m_cb, _behavior );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonEntityEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
+    bool PythonEntityEventReceiver::onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity )
     {
         Detail::callBehavior( m_cb, _behavior, _entity );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonEntityEventReceiver::onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior )

@@ -56,7 +56,7 @@ namespace Mengine
         bool turn;
 
 #ifdef MENGINE_DEBUG
-        String doc;
+        Document doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

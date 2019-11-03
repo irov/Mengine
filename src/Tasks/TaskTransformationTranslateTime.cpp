@@ -42,7 +42,16 @@ namespace Mengine
 
                     const EasingInterfacePtr & easing = this->getEasing();
 
-                    float t_easing = easing->easing( t );
+                    float t_easing = 0.f;
+
+                    if( easing == nullptr )
+                    {
+                        t_easing = t;
+                    }
+                    else
+                    {
+                        t_easing = easing->easing( t );
+                    }
 
                     mt::vec3f position;
                     mt::linerp_v3( position, m_from, m_to, t_easing );

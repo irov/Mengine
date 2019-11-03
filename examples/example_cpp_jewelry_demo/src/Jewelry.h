@@ -26,6 +26,15 @@ namespace Mengine
         void finalize();
 
     public:
+        void makeNodeActive_();
+        void makeNodeBlock_();
+        void makePickerable_();
+
+    public:
+        void block();
+        bool isBlock() const;
+
+    public:
         uint32_t getLine() const;
         uint32_t getType() const;
         const NodePtr & getNode() const;
@@ -39,6 +48,8 @@ namespace Mengine
         uint32_t m_type;
 
         NodePtr m_node;
+        NodePtr m_nodeActive;
+        NodePtr m_nodeBlock;
         PickerablePtr m_pickerable;
 
         bool m_dead;

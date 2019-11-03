@@ -4,6 +4,8 @@ ADD_FILTER(
 JewelryFramework
     Jewelry.cpp
     Jewelry.h
+    JewelryChain.cpp
+    JewelryChain.h
     JewelryFramework.cpp
     JewelryFramework.h
     JewelryFrameworkPlugin.cpp

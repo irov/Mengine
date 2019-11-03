@@ -134,11 +134,12 @@ android {
        pickFirst 'lib/arm64-v8a/libjsc.so'
        pickFirst 'lib/arm64-v8a/libc++_shared.so'
        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-   }
-    afterEvaluate {
-        assembleDebug.finalizedBy(crashlyticsUploadSymbolsDebug)
-        assembleRelease.finalizedBy(crashlyticsUploadSymbolsRelease)
     }
+    
+    //afterEvaluate {
+    //    assembleDebug.finalizedBy(crashlyticsUploadSymbolsDebug)
+    //    assembleRelease.finalizedBy(crashlyticsUploadSymbolsRelease)
+    //}
 }
 
 crashlytics {

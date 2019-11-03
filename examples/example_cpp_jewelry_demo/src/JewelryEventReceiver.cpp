@@ -93,7 +93,7 @@ namespace Mengine
 
         for( JewelrySlot & slot : m_jewelrySlots )
         {
-            slot.block = false;
+            slot.jewelry = nullptr;
         }
 
         m_eventFall = GOAP::Helper::makeEvent();
@@ -115,7 +115,7 @@ namespace Mengine
 
         JewelrySlot & now_slot = m_jewelrySlots[jewerly_line];
 
-        if( now_slot.block == true )
+        if( now_slot.jewelry != nullptr )
         {
             return;
         }
@@ -167,6 +167,11 @@ namespace Mengine
                     return;
                 }
 
+                if( jewelry->isBlock() == true )
+                {
+                    return;
+                }
+
                 if( std::find( m_jewelryHand.begin(), m_jewelryHand.end(), jewelry ) != m_jewelryHand.end() )
                 {
                     return;
@@ -208,12 +213,14 @@ namespace Mengine
                 uint32_t next_index = jewerly_line + m_column * _iterator;
                 JewelrySlot & next_slot = m_jewelrySlots[next_index];
 
-                if( next_slot.block == true )
+                if( next_slot.jewelry != nullptr )
                 {
-                    return false;
-                }
+                    jewelry->block();
 
-                next_slot.block = true;
+                    return false;
+                }                
+
+                next_slot.jewelry = jewelry;
 
                 jewelry->setIterator( _iterator );
 
@@ -222,7 +229,7 @@ namespace Mengine
                     uint32_t prev_index = jewerly_line + m_column * (_iterator - 1);
                     JewelrySlot & prev_slot = m_jewelrySlots[prev_index];
 
-                    prev_slot.block = false;
+                    prev_slot.jewelry = nullptr;
 
                     m_eventFall->call();
                 }
@@ -235,9 +242,14 @@ namespace Mengine
             new_position.y = offset.y + float( _iterator + 1 ) * 60.f;
             new_position.z = 0.f;
 
-            _source_fall->addTask<TaskTransformationTranslateTime>( jewelry_node, jewelry_node, nullptr, new_position, 250.f );
+            _source_fall->addTask<TaskTransformationTranslateTime>( jewelry_node, jewelry_node, nullptr, new_position, 750.f );
 
             return true;
+        } );
+
+        source_fall->addFunction( [jewelry]()
+        {
+            jewelry->block();
         } );
 
         source_fall->addBlock();
@@ -283,6 +295,11 @@ namespace Mengine
             _source_boom->addTask<TaskGlobalMouseButton>( MC_LBUTTON, false, nullptr );
             _source_boom->addFunction( [this]()
             {
+                m_jewelryHand.erase( std::remove_if( m_jewelryHand.begin(), m_jewelryHand.end(), []( const JewelryPtr & _jewelry )
+                {
+                    return _jewelry->isBlock();
+                } ), m_jewelryHand.end() );
+
                 if( m_jewelryHand.size() < 3 )
                 {
                     m_jewelryHand.clear();
@@ -305,7 +322,7 @@ namespace Mengine
                     uint32_t jewerly_index = jewerly_line + m_column * jewerly_iterator;
                     JewelrySlot & jewerly_slot = m_jewelrySlots[jewerly_index];
 
-                    jewerly_slot.block = false;
+                    jewerly_slot.jewelry = nullptr;
                 }
 
                 m_eventFall->call();

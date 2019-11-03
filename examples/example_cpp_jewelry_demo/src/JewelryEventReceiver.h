@@ -43,7 +43,7 @@ namespace Mengine
 
         struct JewelrySlot
         {
-            bool block;
+            JewelryPtr jewelry;
         };
 
         typedef Vector<JewelrySlot> VectorJewelrySlots;

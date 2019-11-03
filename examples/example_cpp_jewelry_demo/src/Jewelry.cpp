@@ -4,6 +4,7 @@
 
 #include "Engine/SurfaceSolidColor.h"
 #include "Engine/ShapeCircle.h"
+#include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotCircle.h"
 
 namespace Mengine
@@ -37,37 +38,94 @@ namespace Mengine
         return m_dead;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Jewelry::initialize( uint32_t _line, uint32_t _type )
+    void Jewelry::makeNodeActive_()
     {
-        m_line = _line;
-        m_type = _type;
-
-        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
-
         Color colors[6] = {
             Color( 1.f, 0.f, 0.f, 1.f ), Color( 0.f, 1.f, 0.f, 1.f ), Color( 0.f, 0.f, 1.f, 1.f ),
             Color( 1.f, 1.f, 0.f, 1.f ), Color( 0.f, 1.f, 1.f, 1.f ), Color( 1.f, 0.f, 1.f, 1.f )
         };
 
-        Color jewelry_color = colors[_type];
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+
+        Color jewelry_color = colors[m_type];
 
         surface->setSolidColor( jewelry_color );
 
         float width = m_size * 0.5f;
-        surface->setSolidSize( {width, width} );
+        surface->setSolidSize( { width, width } );
 
         ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FUNCTION );
 
         shape->setSurface( surface );
 
+        m_node->addChild( shape );
+
+        m_nodeActive = shape;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::makeNodeBlock_()
+    {
+        Color colors[6] = {
+            Color( 1.f, 0.f, 0.f, 1.f ), Color( 0.f, 1.f, 0.f, 1.f ), Color( 0.f, 0.f, 1.f, 1.f ),
+            Color( 1.f, 1.f, 0.f, 1.f ), Color( 0.f, 1.f, 1.f, 1.f ), Color( 1.f, 0.f, 1.f, 1.f )
+        };
+
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+
+        Color jewelry_color = colors[m_type] * 0.5f;
+
+        surface->setSolidColor( jewelry_color );
+
+        float full_size = m_size + 10.f;
+        surface->setSolidSize( { full_size, full_size } );
+
+        ShapeQuadFixedPtr shape = Helper::generateShapeQuadFixed( MENGINE_DOCUMENT_FUNCTION );
+
+        shape->setSurface( surface );
+
+        shape->setLocalOrigin( { full_size * 0.5f, full_size * 0.5f, 0.f } );
+
+        shape->disable();
+
+        m_node->addChild( shape );
+
+        m_nodeBlock = shape;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::makePickerable_()
+    {
         HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FUNCTION );
 
-        hotspot->setRadius( 25.f );
+        float radius = m_size * 0.5f;
+        hotspot->setRadius( radius );
 
-        shape->addChild( hotspot );
+        m_node->addChild( hotspot );
 
-        m_node = shape;
         m_pickerable = hotspot;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::block()
+    {
+        m_nodeBlock->enable();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Jewelry::isBlock() const
+    {
+        return m_nodeBlock->isEnable();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Jewelry::initialize( uint32_t _line, uint32_t _type )
+    {
+        m_line = _line;
+        m_type = _type;
+
+        NodePtr node = Helper::generateNode( MENGINE_DOCUMENT_FUNCTION );
+
+        m_node = node;
+
+        this->makeNodeActive_();
+        this->makeNodeBlock_();
+        this->makePickerable_();
 
         return true;
     }

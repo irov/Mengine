@@ -93,7 +93,7 @@ namespace Mengine
         //ToDo MaterialContex
         //bool solid = m_color.isSolid();
 
-        const RenderMaterialInterfacePtr & material = this->makeSolidMaterial( false, MENGINE_DOCUMENT_FUNCTION );
+        const RenderMaterialInterfacePtr & material = this->makeSolidMaterial( false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' m_material is NULL"
             , this->getName().c_str()

@@ -726,7 +726,7 @@ namespace Mengine
         for( const FilePath & packagePath : _packagesPaths )
         {
             if( PACKAGE_SERVICE()
-                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->loadPackages( _fileGroup, packagePath ) == false )
             {
                 LOGGER_CRITICAL( "invalid load resource pack '%s'"
                     , packagePath.c_str()

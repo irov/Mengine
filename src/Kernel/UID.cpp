@@ -32,7 +32,9 @@ namespace Mengine
 
             std::generate_n( _uid, _length, [&dist, &rng]()
             {
-                uint32_t e = dist( rng ); return char_array[e];
+                uint32_t e = dist( rng ); 
+                
+                return char_array[e];
             } );
         }
     }

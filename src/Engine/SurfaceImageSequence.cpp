@@ -157,7 +157,7 @@ namespace Mengine
                 return false;
             }
 
-            RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, false, MENGINE_DOCUMENT_FUNCTION );
+            RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( material, false, "'%s' resource '%s' m_material is NULL"
                 , this->getName().c_str()

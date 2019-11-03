@@ -524,8 +524,10 @@ namespace Mengine
             }
 
         public:
-            void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) override
+            void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove, bool _error ) override
             {
+                MENGINE_UNUSED( _error );
+
                 if( _remove == false )
                 {
                     if( _scene == nullptr )

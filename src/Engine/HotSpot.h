@@ -50,7 +50,7 @@ namespace Mengine
 
     protected:
         bool _activate() override;
-        void _afterActivate() override;
+        bool _afterActivate() override;
         void _deactivate() override;
 
     protected:

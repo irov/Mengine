@@ -20,8 +20,9 @@ namespace Mengine
             , public Factorable
         {
         public:
-            TaskPickerableMouseEnterEventReceiver( const LambdaPickerMouseEnterEvent & _filter )
-                : m_filter( _filter )
+            TaskPickerableMouseEnterEventReceiver( GOAP::NodeInterface * _node, const LambdaPickerMouseEnterEvent & _filter )
+                : m_node( _node )
+                , m_filter( _filter )
             {
             }
 
@@ -32,7 +33,17 @@ namespace Mengine
         protected:
             bool onHotSpotMouseEnter( const InputMouseEnterEvent & _event ) override
             {
-                bool handle = m_filter( _event );
+                bool handle = false;
+
+                if( m_filter != nullptr )
+                {
+                    if( m_filter( _event, &handle ) == false )
+                    {
+                        return false;
+                    }
+                }
+
+                m_node->complete();
 
                 return handle;
             }
@@ -140,6 +151,7 @@ namespace Mengine
             }
 
         protected:
+            GOAP::NodeInterface * m_node;
             LambdaPickerMouseEnterEvent m_filter;
         };
     }
@@ -156,27 +168,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskPickerableMouseEnter::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this, _node]( const InputMouseEnterEvent & _event )
-        {
-            bool handle = false;
-
-            if( m_filter != nullptr )
-            {
-                handle = m_filter( _event );
-            }
-
-            _node->complete();
-
-            return handle;
-        };
-
         PickerInterface * picker = m_pickerable->getPicker();
 
         Eventable * eventable = picker->getPickerEventable();
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseEnterEventReceiver>( lambda );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseEnterEventReceiver>( _node, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_ENTER, newreceiver );
 

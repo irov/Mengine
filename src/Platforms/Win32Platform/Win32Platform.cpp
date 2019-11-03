@@ -163,12 +163,15 @@ namespace Mengine
             m_touchpad = true;
         }
 
-        const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
-
-        if( option_platform != nullptr )
+        if( HAS_OPTION( "platform" ) == true )
         {
-            m_platformTags.clear();
-            m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+            const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
+
+            if( strcmp( option_platform, "" ) != 0 )
+            {
+                m_platformTags.clear();
+                m_platformTags.addTag( Helper::stringizeString( option_platform ) );
+            }
         }
 
         if( HAS_OPTION( "touchpad" ) )
@@ -1644,7 +1647,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
     {
-        const FilePath & filePath = _content->getFilePath();
+        const FilePath & filePath = _content->getFilePath();        
 
         MapCursors::iterator it_found = m_cursors.find( filePath );
 
@@ -1659,16 +1662,22 @@ namespace Mengine
                 return false;
             }
 
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
             PathString icoFile;
-            icoFile += "IconCache";
-            icoFile += '/';
+            icoFile += ".icon_cache/";
             icoFile += filePath;
             icoFile += ".ico";
 
             FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
 
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+            if( fileGroup->createDirectory( c_icoFile ) == false )
+            {
+                LOGGER_ERROR( "invalid create directory '.icon_cache'" );
+
+                return false;
+            }
 
             OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
 
@@ -1828,6 +1837,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _directoryPath ) const
     {
+        MENGINE_ASSERTION_FATAL_RETURN( strlen( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[strlen( _directoryPath ) - 1] == '/'), false );
+
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
@@ -1863,6 +1874,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
+        MENGINE_ASSERTION_FATAL_RETURN( strlen( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[strlen( _directoryPath ) - 1] == '/'), false );
+
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
@@ -2306,16 +2319,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )
+    bool Win32Platform::updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath )
     {
-        WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        WChar unicode_directoryPath[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        WChar unicode_file[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _file, unicode_file, MENGINE_MAX_PATH ) == false )
+        WChar unicode_filePath[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _filePath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2329,8 +2342,70 @@ namespace Mengine
             , szPath ) ) )
         {
             LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
-                , _path
-                , _file
+                , _directoryPath
+                , _filePath
+            );
+
+            return false;
+        }
+
+        WChar unicode_directoryPath_correct[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslashToW( unicode_directoryPath_correct, unicode_directoryPath );
+
+        ::PathAppend( szPath, unicode_directoryPath_correct );
+
+        if( this->existFile_( szPath ) == false )
+        {
+            if( this->createDirectory_( szPath ) == false )
+            {
+                LOGGER_ERROR( "directory '%s:%s' invalid createDirectory '%ls'"
+                    , _directoryPath
+                    , _filePath
+                    , szPath
+                );
+
+                return false;
+            }
+        }
+
+        WChar unicode_filePath_correct[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
+
+        PathAppend( szPath, unicode_filePath_correct );
+
+        if( ::SystemParametersInfo( SPI_SETDESKWALLPAPER, 0, szPath, SPIF_UPDATEINIFILE ) == FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createDirectoryUserPicture( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
+    {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_file[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WCHAR szPath[MENGINE_MAX_PATH];
+
+        if( FAILED( ::SHGetFolderPath( NULL
+            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
+            , NULL
+            , 0
+            , szPath ) ) )
+        {
+            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+                , _directoryPath
+                , _filePath
             );
 
             return false;
@@ -2339,8 +2414,8 @@ namespace Mengine
         if( this->createDirectoryUser_( szPath, unicode_path, unicode_file, _data, _size ) == false )
         {
             LOGGER_ERROR( "'%s:%s' invalid createDirectoryUser_ '%ls'"
-                , _path
-                , _file
+                , _directoryPath
+                , _filePath
                 , szPath
             );
 
@@ -2350,16 +2425,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size )
+    bool Win32Platform::createDirectoryUserMusic( const Char * _directoryPath, const Char * _filePath, const void * _data, size_t _size )
     {
         WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
         WChar unicode_file[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _file, unicode_file, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_file, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2373,8 +2448,8 @@ namespace Mengine
             , szPath ) ) )
         {
             LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
-                , _path
-                , _file
+                , _directoryPath
+                , _filePath
             );
 
             return false;
@@ -2383,8 +2458,8 @@ namespace Mengine
         if( this->createDirectoryUser_( szPath, unicode_path, unicode_file, _data, _size ) == false )
         {
             LOGGER_ERROR( "'%s:%s' invalid createDirectoryUser_ '%ls'"
-                , _path
-                , _file
+                , _directoryPath
+                , _filePath
                 , szPath
             );
 

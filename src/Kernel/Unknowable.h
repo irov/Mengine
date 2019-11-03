@@ -6,13 +6,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef PointerT<class UnknownInterface> PointerUnknown;
+    typedef PointerT<class UnknownInterface> UnknownPointer;
     //////////////////////////////////////////////////////////////////////////
     class Unknowable
         : public Mixin
     {
     public:
-        virtual PointerUnknown getUnknown()
+        virtual UnknownPointer getUnknown()
         {
             return nullptr;
         };
@@ -21,6 +21,6 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_UNKNOWABLE()\
 public:\
-    Mengine::PointerUnknown getUnknown() override{ return this; }\
+    Mengine::UnknownPointer getUnknown() override{ return this; }\
 protected:
 //////////////////////////////////////////////////////////////////////////

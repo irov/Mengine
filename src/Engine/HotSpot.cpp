@@ -238,14 +238,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_afterActivate()
+    bool HotSpot::_afterActivate()
     {
         if( this->isFreeze() == false )
         {
             this->activatePicker_();
         }
 
-        Node::_afterActivate();
+        if( Node::_afterActivate() == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_deactivate()

@@ -393,7 +393,7 @@ namespace Mengine
                 this->addText_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
 
@@ -411,7 +411,7 @@ namespace Mengine
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie2Slot" ) )
             {
                 Movie2SlotPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
@@ -426,7 +426,7 @@ namespace Mengine
                 this->addSlot_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" ), MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
 
@@ -532,7 +532,7 @@ namespace Mengine
                 surface->setResourceImage( resourceImage );
 
                 ShapeQuadFixedPtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type, MENGINE_DOCUMENT_FUNCTION );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type, MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, false, "name '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                     , this->getName().c_str()
@@ -583,7 +583,7 @@ namespace Mengine
         for( const ResourceMovie2CompositionSubComposition & subcomposition : composition->subcompositions )
         {
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
@@ -943,7 +943,7 @@ namespace Mengine
         }
 
         RenderCameraProjectionPtr renderCameraProjection = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
         renderCameraProjection->setName( c_name );
 
@@ -963,7 +963,7 @@ namespace Mengine
         renderCameraProjection->setCameraAspect( aspect );
 
         RenderViewportPtr renderViewport = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
         renderViewport->setName( c_name );
 
@@ -1252,7 +1252,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
                     SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FUNCTION );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, AE_FALSE );
 
@@ -1298,7 +1298,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 {
                     SurfaceTrackMattePtr surfaceTrackMatte = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FUNCTION );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceTrackMatte" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceTrackMatte, AE_FALSE );
 
@@ -1353,7 +1353,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
                     SurfacePtr surface = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FUNCTION );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surface, AE_FALSE );
 
@@ -1384,7 +1384,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_SOUND:
                 {
                     SurfaceSoundPtr surfaceSound = PROTOTYPE_SERVICE()
-                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FUNCTION );
+                        ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceSound" ), MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( surfaceSound, AE_FALSE );
 
@@ -1690,7 +1690,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptrptr_t _sd, ae_voidptr_t _ud )
     {
-        AE_UNUSED( _ud );
+        Movie2 * movie2 = Helper::reinterpretNodeCast<Movie2 *>( _ud );
+        AE_UNUSED( movie2 );
 
         Movie2ShaderDesc * desc = Helper::allocateT<Movie2ShaderDesc>();
 
@@ -1709,7 +1710,7 @@ namespace Mengine
         desc->indexOffset = 1;
 
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
-            ->createProgramVariable( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FUNCTION );
+            ->createProgramVariable( 0, desc->indexOffset + _callbackData->parameter_count, MENGINE_DOCUMENT_FACTORABLE_PTR( movie2 ) );
 
         float shader_uvsl[4] = { 0.f, 0.f, 1.f, 1.f };
         programVariable->setPixelVariableFloats( "uvsl", 0, shader_uvsl, 4, 1 );
@@ -2240,9 +2241,12 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_afterActivate()
+    bool Movie2::_afterActivate()
     {
-        Node::_afterActivate();
+        if( Node::_afterActivate() == false )
+        {
+            return false;
+        }
 
         bool autoPlay = this->isAutoPlay();
 
@@ -2258,9 +2262,11 @@ namespace Mengine
                     , this->m_resourceMovie2->getName().c_str()
                 );
 
-                return;
+                return false;
             }
         }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setLoop( bool _value )
@@ -2503,7 +2509,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -2544,7 +2550,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -2659,7 +2665,7 @@ namespace Mengine
                         {
                             RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
-                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                         }
                         else
                         {
@@ -2704,11 +2710,11 @@ namespace Mengine
                                 }
                             }
 
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resourceImage, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FUNCTION );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resourceImage, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -2757,7 +2763,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                     }break;
                 default:
                     break;
@@ -2866,7 +2872,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
@@ -2972,7 +2978,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FUNCTION );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
                     }break;
                 default:
                     break;

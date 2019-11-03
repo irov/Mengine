@@ -115,7 +115,7 @@ namespace Mengine
         bool _activate() override;
         void _deactivate() override;
 
-        void _afterActivate() override;
+        bool _afterActivate() override;
 
     protected:
         void _setLoop( bool _value ) override;

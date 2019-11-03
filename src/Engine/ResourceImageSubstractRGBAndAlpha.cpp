@@ -66,8 +66,9 @@ namespace Mengine
             return false;
         }
 
-        m_resourceImageRGB = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageRGBName );
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
+        m_resourceImageRGB = resourceBank->getResource( m_resourceImageRGBName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageRGB, false, "'%s' group '%s' invalid get rgb resource '%s'"
             , this->getName().c_str()
@@ -75,8 +76,7 @@ namespace Mengine
             , m_resourceImageRGBName.c_str()
         );
 
-        m_resourceImageAlpha = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageAlphaName );
+        m_resourceImageAlpha = resourceBank->getResource( m_resourceImageAlphaName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceImageAlpha, false, "'%s' group '%s' invalid get alpha resource '%s'"
             , this->getName().c_str()

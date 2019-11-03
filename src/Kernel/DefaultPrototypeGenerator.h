@@ -52,6 +52,13 @@ namespace Mengine
                 , _doc
             );
 
+#ifdef MENGINE_DEBUG
+            const Char * doc = MENGINE_DOCUMENT( "Default create '%s'"
+                , _doc );
+
+            object->setDocument( doc );
+#endif
+
             return object;
         }
     };

@@ -23,6 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceWindow::_compile()
     {
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
         for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
         {
             WindowElement & element = m_elements[i];
@@ -37,8 +39,7 @@ namespace Mengine
                 }
             }
 
-            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
-                ->getResource( m_elements[i].resourceImageName );
+            const ResourceImagePtr & resourceImage = resourceBank->getResource( m_elements[i].resourceImageName );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "window '%s' not found resource '%s'"
                 , this->getName().c_str()

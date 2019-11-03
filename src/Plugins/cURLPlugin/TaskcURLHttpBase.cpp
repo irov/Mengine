@@ -93,7 +93,7 @@ namespace Mengine
             return;
         }
 
-        m_requestId = 0;        
+        m_requestId = 0;
     }
 
 }

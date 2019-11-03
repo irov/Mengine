@@ -10,12 +10,14 @@
 
 #include "Kernel/AssertionMainThreadGuard.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Error.h"
+#include "Kernel/FactoryPool.h"
 
 #include <algorithm>
 
@@ -35,12 +37,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::_initializeService()
     {
-        m_mutex = THREAD_SERVICE()
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
+
+        m_mutex = mutex;
+
+        m_factoryResourceBank = Helper::makeFactoryPool<ResourceBank, 8>();
+
+        ResourceBankPtr globalBank = m_factoryResourceBank->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( globalBank, false );
 
         uint32_t ResourceHashTableSize = CONFIG_VALUE( "Engine", "ResourceHashTableSize", 1024 * 32 );
 
-        m_resources.reserve( ResourceHashTableSize );
+        if( globalBank->initialize( m_mutex, ResourceHashTableSize ) == false )
+        {
+            return false;
+        }
+
+        m_globalBank = globalBank;
 
         return true;
     }
@@ -51,8 +68,10 @@ namespace Mengine
 
         m_resourcesCache.clear();
 
+        const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
+
 #ifndef MENGINE_MASTER_RELEASE
-        for( const HashtableResources::value_type & value : m_resources )
+        for( const ResourceBank::HashtableResources::value_type & value : resources )
         {
             const ResourcePtr & resource = value.element;
 
@@ -70,54 +89,34 @@ namespace Mengine
         }
 #endif
 
-        for( const HashtableResources::value_type & value : m_resources )
-        {
-            const ResourcePtr & resource = value.element;
+        m_globalBank->finalize();
+        m_globalBank = nullptr;
+        
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryResourceBank );
 
-            if( resource->isGlobal() == false )
-            {
-                continue;
-            }
-
-            resource->setResourceService( nullptr );
-
-            resource->finalize();
-
-            IntrusivePtrBase::intrusive_ptr_dec_ref( resource.get() );
-        }
-
-        m_resources.clear();
+        m_factoryResourceBank = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceService::generateResource( const ConstString & _type, const Char * _doc ) const
+    ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const Char * _doc )
     {
-        LOGGER_INFO( "generate resource '%s'"
-            , _type.c_str()
-        );
+        ResourceBankPtr bank = m_factoryResourceBank->createObject( _doc );
 
-        ResourcePtr resource = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
+        MENGINE_ASSERTION_MEMORY_PANIC( bank, nullptr );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not registered resource type '%s'"
-            , _type.c_str()
-        );
-
-        if( resource->initialize() == false )
+        if( bank->initialize( m_mutex, _reserved ) == false )
         {
-            LOGGER_ERROR( "resource '%s' invalid initialize (doc: %s)"
-                , _type.c_str()
-                , _doc
-            );
-
             return nullptr;
         }
 
-        return resource;
+        return bank;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _global, const Char * _doc )
+    ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const Char * _doc )
     {
-        ResourcePtr resource = this->generateResource( _type, _doc );
+        MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true), nullptr );
+
+        Resource * prev_resource;
+        ResourcePtr resource = m_globalBank->createResource( _locale, _groupName, _name, _type, _keep, &prev_resource, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"
             , _locale.c_str()
@@ -127,46 +126,42 @@ namespace Mengine
             , _doc
         );
 
-        resource->setResourceService( this );
-        resource->setLocale( _locale );
-        resource->setGroupName( _groupName );
-        resource->setName( _name );
-        resource->setGroupCache( _groupCache );
-        resource->setGlobal( _global );
-
-        ResourcePtrView prev_resource = m_resources.change( _name, resource );
-
-        if( _groupCache == true )
+        if( _name.empty() == false )
         {
-            MapResourceCache::iterator it_cache_found = m_resourcesCache.find( _groupName );
+            resource->setGroupCache( _groupCache );
 
-            if( it_cache_found == m_resourcesCache.end() )
+            if( _groupCache == true )
             {
-                it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( _groupName, VectorResources() ) );
-            }
+                MapResourceCache::iterator it_cache_found = m_resourcesCache.find( _groupName );
 
-            VectorResources & cahce_resources = it_cache_found->second;
+                if( it_cache_found == m_resourcesCache.end() )
+                {
+                    it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( _groupName, VectorResources() ) );
+                }
 
-            cahce_resources.emplace_back( resource );
+                VectorResources & cahce_resources = it_cache_found->second;
 
-            if( prev_resource != nullptr )
-            {
-                const ConstString & insert_group = prev_resource->getGroupName();
+                cahce_resources.emplace_back( resource );
 
-                MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( insert_group );
+                if( prev_resource != nullptr )
+                {
+                    const ConstString & insert_group = prev_resource->getGroupName();
 
-                MENGINE_ASSERTION_RETURN( it_remove_cache_found != m_resourcesCache.end(), nullptr );
+                    MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( insert_group );
 
-                VectorResources & cache_resources = it_remove_cache_found->second;
+                    MENGINE_ASSERTION_RETURN( it_remove_cache_found != m_resourcesCache.end(), nullptr );
 
-                VectorResources::iterator it_remove_found = std::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
-                cache_resources.erase( it_remove_found, cache_resources.end() );
+                    VectorResources & cache_resources = it_remove_cache_found->second;
+
+                    VectorResources::iterator it_remove_found = std::remove( cache_resources.begin(), cache_resources.end(), prev_resource );
+                    cache_resources.erase( it_remove_found, cache_resources.end() );
+                }
             }
         }
 
-        if( _global == true )
+        if( prev_resource != nullptr )
         {
-            IntrusivePtrBase::intrusive_ptr_add_ref( resource.get() );
+            IntrusivePtrBase::intrusive_ptr_dec_ref( prev_resource );
         }
 
         return resource;
@@ -175,22 +170,6 @@ namespace Mengine
     bool ResourceService::removeResource( const ResourcePtr & _resource )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _resource, false );
-
-        const ConstString & name = _resource->getName();
-
-        if( m_resources.erase( name ) == nullptr )
-        {
-            MENGINE_ERROR_FATAL( "resource '%s' type '%s' not found (maybe already remove)"
-                , _resource->getName().c_str()
-                , _resource->getType().c_str()
-            );
-
-            return false;
-        }
-
-        _resource->setResourceService( nullptr );
-
-        _resource->finalize();
 
         if( _resource->isGroupCache() == true )
         {
@@ -206,107 +185,51 @@ namespace Mengine
             cache_resources.erase( it_found, cache_resources.end() );
         }
 
-        if( _resource->isGlobal() == true )
-        {
-            IntrusivePtrBase::intrusive_ptr_dec_ref( _resource.get() );
-        }
+        m_globalBank->removeResource( _resource );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::hasResource( const ConstString & _name, ResourcePtr * _resource ) const
     {
-        const ResourcePtr & resource = m_resources.find( _name );
+        bool exist = m_globalBank->hasResource( _name, _resource );
 
-        if( resource == nullptr )
-        {
-            return false;
-        }
-
-        if( _resource != nullptr )
-        {
-            *_resource = resource;
-        }
-
-        return true;
+        return exist;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const
     {
-        const ResourcePtr & resource = m_resources.find( _name );
+        bool exist = m_globalBank->hasResourceWithType( _name, _type, _resource );
 
-        if( resource == nullptr )
-        {
-            return false;
-        }
-
-        const ConstString & resourceType = resource->getType();
-
-        if( resourceType != _type )
-        {
-            return false;
-        }
-
-        if( _resource != nullptr )
-        {
-            *_resource = resource;
-        }
-
-        return true;
+        return exist;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResource( const ConstString & _name ) const
     {
-        MENGINE_ASSERTION_MAIN_THREAD_GUARD();
-
-        const ResourcePtr & resource = m_resources.find( _name );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
-            , _name.c_str()
-        );
-
-        if( resource->compile() == false )
-        {
-            LOGGER_ERROR( "resource '%s' '%s' is not compile!"
-                , _name.c_str()
-                , resource->getType().c_str()
-            );
-
-            return ResourcePtr::none();
-        }
-
+        const ResourcePtr & resource = m_globalBank->getResource( _name );
+                
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResourceReference( const ConstString & _name ) const
     {
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
-
-        const ResourcePtr & resource = m_resources.find( _name );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "resource '%s' does not exist"
-            , _name.c_str()
-        );
+        const ResourcePtr & resource = m_globalBank->getResourceReference( _name );
 
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceService::getResourceType( const ConstString & _name ) const
     {
-        const ResourcePtr & resource = m_resources.find( _name );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( resource, ConstString::none(), "resource '%s' does not exist"
-            , _name.c_str()
-        );
-
-        const ConstString & type = resource->getType();
+        const ConstString & type = m_globalBank->getResourceType( _name );
 
         return type;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::foreachResources( const LambdaResource & _lambda ) const
     {
-        for( const HashtableResources::value_type & value : m_resources )
+        const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
+
+        for( const ResourceBank::HashtableResources::value_type & value : resources )
         {
             const ResourcePtr & resource = value.element;
 
@@ -333,7 +256,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::foreachTagsResources( const Tags & _tags, const LambdaResource & _lambda ) const
     {
-        for( const HashtableResources::value_type & value : m_resources )
+        const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
+
+        for( const ResourceBank::HashtableResources::value_type & value : resources )
         {
             const ResourcePtr & resource = value.element;
 
@@ -350,7 +275,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::visitResources( const VisitorPtr & _visitor ) const
     {
-        for( const HashtableResources::value_type & value : m_resources )
+        const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
+
+        for( const ResourceBank::HashtableResources::value_type & value : resources )
         {
             const ResourcePtr & resource = value.element;
 

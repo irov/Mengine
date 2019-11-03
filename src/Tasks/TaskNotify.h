@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/NotificationServiceInterface.h"
+
 #include "Kernel/Node.h"
 
 #include "Config/Tuple.h"
@@ -24,8 +26,10 @@ namespace Mengine
         }
 
     protected:
-        bool _onRun() override
+        bool _onRun( GOAP::NodeInterface * _node ) override
         {
+            GOAP_UNUSED( _node );
+
             NotificationServiceInterface * service = NOTIFICATION_SERVICE();
 
             std::apply( &NotificationServiceInterface::notify<ID, Args ...>, std::tuple_cat( std::make_tuple( service ), m_args ) );

@@ -19,9 +19,9 @@ namespace Mengine
     protected:
         Factorable * _createObject() override
         {
-            Type * t = Helper::allocateT<Type>();
+            Type * ptr = Helper::allocateT<Type>();
 
-            return t;
+            return ptr;
         }
 
         void _destroyObject( Factorable * _obj ) override

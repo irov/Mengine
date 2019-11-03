@@ -226,10 +226,10 @@ namespace Mengine
         } );
 
         m_vertexMemory = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
-            ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
+            ->createVertexBuffer( ozz_vertex_stride, BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
@@ -240,7 +240,7 @@ namespace Mengine
         m_vertexBuffer = vertexBuffer;
 
         RenderIndexBufferInterfacePtr indexStream = RENDER_SYSTEM()
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FACTORABLE );
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
@@ -253,7 +253,7 @@ namespace Mengine
         const RenderTextureInterfacePtr & texture = m_resourceImage->getTexture();
 
         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
-            ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture, MENGINE_DOCUMENT_FUNCTION );
+            ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, false );
 
@@ -379,7 +379,7 @@ namespace Mengine
 
         // Reallocate vertex buffer.
         const uint32_t vbo_size = skinned_data_size;
-        void * vbo_map = m_vertexMemory->newBuffer( vbo_size, MENGINE_DOCUMENT_FUNCTION );
+        void * vbo_map = m_vertexMemory->newBuffer( vbo_size, MENGINE_DOCUMENT_FACTORABLE );
 
         // Iterate mesh parts and fills vbo.
         // Runs a skinning job per mesh part. Triangle indices are shared
@@ -546,14 +546,14 @@ namespace Mengine
             mt::vec2f uv;
         };
 
-        m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FUNCTION );
+        m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FACTORABLE );
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
         const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
         size_t indices_count = triangle_indices.size();
 
-        m_indexBuffer->draw( triangle_indices_buffer_data, indices_count, MENGINE_DOCUMENT_FUNCTION );
+        m_indexBuffer->draw( triangle_indices_buffer_data, indices_count, MENGINE_DOCUMENT_FACTORABLE );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -575,6 +575,6 @@ namespace Mengine
         new_context.scissor = _context->scissor;
         new_context.target = _context->target;
 
-        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FACTORABLE );
     }
 }

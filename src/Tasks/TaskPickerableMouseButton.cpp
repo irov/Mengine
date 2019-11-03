@@ -20,9 +20,11 @@ namespace Mengine
             , public Factorable
         {
         public:
-            TaskPickerableMouseButtonEventReceiver( EMouseCode _code, bool _isDown, const LambdaPickerMouseButtonEvent & _filter )
-                : m_code( _code )
+            TaskPickerableMouseButtonEventReceiver( GOAP::NodeInterface * _node, EMouseCode _code, bool _isDown, bool _isPressed, const LambdaPickerMouseButtonEvent & _filter )
+                : m_node(_node)
+                , m_code( _code )
                 , m_isDown( _isDown )
+                , m_isPressed( _isPressed )
                 , m_filter( _filter )
             {
             }
@@ -34,7 +36,32 @@ namespace Mengine
         protected:
             bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
             {
-                bool handle = m_filter( _event );
+                if( _event.code != m_code )
+                {
+                    return false;
+                }
+
+                if( _event.isDown != m_isDown )
+                {
+                    return false;
+                }
+
+                if( _event.isDown != m_isPressed )
+                {
+                    return false;
+                }
+
+                bool handle = false;
+
+                if( m_filter != nullptr )
+                {
+                    if( m_filter( _event, &handle ) == false )
+                    {
+                        return false;
+                    }
+                }
+
+                m_node->complete();
 
                 return handle;
             }
@@ -142,8 +169,10 @@ namespace Mengine
             }
 
         protected:
+            GOAP::NodeInterface * m_node;
             EMouseCode m_code;
             bool m_isDown;
+            bool m_isPressed;
             LambdaPickerMouseButtonEvent m_filter;
         };
     }
@@ -163,42 +192,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskPickerableMouseButton::_onRun( GOAP::NodeInterface * _node )
     {
-        auto lambda = [this, _node]( const InputMouseButtonEvent & _event )
-        {
-            if( _event.code != m_code )
-            {
-                return false;
-            }
-
-            if( _event.isDown != m_isDown )
-            {
-                return false;
-            }
-
-            if( _event.isDown != m_isPressed )
-            {
-                return false;
-            }
-
-            bool handle = false;
-
-            if( m_filter != nullptr )
-            {
-                handle = m_filter( _event );
-            }
-
-            _node->complete();
-
-            return handle;
-        };
-
         PickerInterface * picker = m_pickerable->getPicker();
 
         Eventable * eventable = picker->getPickerEventable();
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( m_code, m_isDown, lambda );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( _node, m_code, m_isDown, m_isPressed, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
 

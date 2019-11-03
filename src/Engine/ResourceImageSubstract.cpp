@@ -47,8 +47,9 @@ namespace Mengine
             return false;
         }
 
-        const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageName );
+        ResourceBankInterface * resourceBank = this->getResourceBank();
+
+        const ResourceImagePtr & resourceImage = resourceBank->getResource( m_resourceImageName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resourceImage, false, "'%s' group '%s' invalid get image resource '%s'"
             , this->getName().c_str()

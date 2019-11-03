@@ -85,7 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr MovieMesh2D::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid, MENGINE_DOCUMENT_FUNCTION );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( material, nullptr, "'%s' m_material is NULL"
             , this->getName().c_str()
@@ -106,7 +106,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false, MENGINE_DOCUMENT_FUNCTION );
+        _renderPipeline->addRenderObject( _context, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

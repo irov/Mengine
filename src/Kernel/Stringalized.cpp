@@ -180,7 +180,7 @@ namespace Mengine
         {
             uint32_t width;
             uint32_t height;
-            if( sscanf( _string, "%u %u", &width, &height ) != 2 )
+            if( sscanf( _string, "%" SCNu32" %" SCNu32, &width, &height ) != 2 )
             {
                 return false;
             }

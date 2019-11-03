@@ -27,11 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BubblegumFramework::_initializeFramework()
     {
-        MySceneEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<BubblegumEventReceiver>();
+        BubblegumEventReceiverPtr sceneEventReceiver = Helper::makeFactorableUnique<BubblegumEventReceiver>();
 
         ScenePtr scene = Helper::makeScene( sceneEventReceiver, MENGINE_DOCUMENT_FUNCTION );
 
-        scene->setName( STRINGIZE_STRING_LOCAL( "MyGameScene" ) );
+        scene->setName( STRINGIZE_STRING_LOCAL( "BubblegumScene" ) );
 
         SCENE_SERVICE()
             ->setCurrentScene( scene, false, false, nullptr );
@@ -44,4 +44,5 @@ namespace Mengine
         SCENE_SERVICE()
             ->removeCurrentScene( true, nullptr );
     }
+    //////////////////////////////////////////////////////////////////////////
 }

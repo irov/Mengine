@@ -4,6 +4,8 @@
 #include "Interface/ServiceProviderInterface.h"
 #include "Interface/PluginInterface.h"
 
+#include "Config/Char.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

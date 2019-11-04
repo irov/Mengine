@@ -117,6 +117,8 @@ if(MENGINE_DEPENDENCE_OGG)
     
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/Modified/os_types.h ${THIRDPARTY_DIR}/libogg/include/ogg/os_types.h COPYONLY)
     
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/CMakeLists.txt ${THIRDPARTY_DIR}/libogg/CMakeLists.txt COPYONLY)
+    
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libogg ${CMAKE_TEMP_DIR}/libogg)
 endif()
 

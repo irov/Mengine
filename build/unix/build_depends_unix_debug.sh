@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sh ./build_depends_unix.sh Debug
+bash ./build_depends_unix.sh Debug

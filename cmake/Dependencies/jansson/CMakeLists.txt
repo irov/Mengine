@@ -86,7 +86,6 @@ set(JANSSON_VERSION "4.11.1")
 set(JANSSON_SOVERSION 4)
 
 # for CheckFunctionKeywords
-message("CMAKE_CURRENT_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include (CheckCSourceCompiles)

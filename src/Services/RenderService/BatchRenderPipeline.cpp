@@ -27,11 +27,13 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
-        : m_debugStepRenderMode( false )
-        , m_batchMode( ERBM_NORMAL )
-        , m_iterateRenderObjects( 0 )
-        , m_debugLimitRenderObjects( 0 )
+        : m_batchMode( ERBM_NORMAL )
+#ifdef MENGINE_DEBUG
+        , m_debugStepRenderMode( false )
         , m_debugStopRenderObjects( false )
+        , m_debugLimitRenderObjects( 0 )
+        , m_iterateRenderObjects( 0 )
+#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -495,32 +497,46 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::enableDebugStepRenderMode( bool _enable )
     {
+        MENGINE_UNUSED( _enable );
+
+#ifdef MENGINE_DEBUG
         m_debugStepRenderMode = _enable;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::isDebugStepRenderMode() const
     {
+#ifdef MENGINE_DEBUG
         return m_debugStepRenderMode;
+#else
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::endDebugLimitRenderObjects()
     {
+#ifdef MENGINE_DEBUG
         m_debugStopRenderObjects = true;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::increfDebugLimitRenderObjects()
     {
+#ifdef MENGINE_DEBUG
         ++m_debugLimitRenderObjects;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool BatchRenderPipeline::decrefDebugLimitRenderObjects()
     {
+#ifdef MENGINE_DEBUG
         if( m_debugLimitRenderObjects == 0 )
         {
             return false;
         }
 
         --m_debugLimitRenderObjects;
+#endif
 
         return true;
     }
@@ -539,8 +555,10 @@ namespace Mengine
 
         m_debugRenderObjects.clear();
 
+#ifdef MENGINE_DEBUG
         m_iterateRenderObjects = 0;
         m_debugStopRenderObjects = false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::flush()

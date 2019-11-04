@@ -38,6 +38,7 @@ namespace Mengine
         uint32_t getLine() const;
         uint32_t getType() const;
         const NodePtr & getNode() const;
+        const NodePtr & getNodeActive() const;
         const PickerablePtr & getPickerable() const;
 
     public:

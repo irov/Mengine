@@ -155,6 +155,11 @@ namespace Mengine
         return m_node;
     }
     //////////////////////////////////////////////////////////////////////////
+    const NodePtr & Jewelry::getNodeActive() const
+    {
+        return m_nodeActive;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const PickerablePtr & Jewelry::getPickerable() const
     {
         return m_pickerable;

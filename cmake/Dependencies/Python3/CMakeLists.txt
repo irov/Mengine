@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 
 project(python3)
 
-SET(SOURCE_DIR ${THIRDPARTY_DIR}/Python3)
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/python3)
 
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)

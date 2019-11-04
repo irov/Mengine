@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET(SOURCE_DIR ${THIRDPARTY_DIR}/Python)
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/python)
 
 REMOVE_DEFINITIONS(-Doverride)
 

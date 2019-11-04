@@ -320,21 +320,36 @@ namespace Mengine
 
                 VectorJewelryHand jewelryHand = std::move( m_jewelryHand );
 
-                for( const JewelryPtr & jewelry : jewelryHand )
+                for( auto && [jewelry_source, jewelry] : _source->addParallelZip( jewelryHand ) )
                 {
-                    jewelry->finalize();
+                    jewelry_source->addFunction( [jewelry]()
+                    {
+                        jewelry->setDead( true );
+                    } );
+
+                    const NodePtr & node = jewelry->getNodeActive();
+
+                    jewelry_source->addTask<TaskTransformationScaleTime>( node, node, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
+
+                    jewelry_source->addFunction( [jewelry]()
+                    {
+                        jewelry->finalize();
+                    } );
                 }
 
-                for( const JewelryPtr & jewelry : jewelryHand )
+                _source->addFunction( [this, jewelryHand]()
                 {
-                    uint32_t jewerly_line = jewelry->getLine();
-                    uint32_t jewerly_iterator = jewelry->getIterator();
+                    for( const JewelryPtr & jewelry : jewelryHand )
+                    {
+                        uint32_t jewerly_line = jewelry->getLine();
+                        uint32_t jewerly_iterator = jewelry->getIterator();
 
-                    uint32_t jewerly_index = jewerly_line + m_column * jewerly_iterator;
-                    JewelrySlot & jewerly_slot = m_jewelrySlots[jewerly_index];
+                        uint32_t jewerly_index = jewerly_line + m_column * jewerly_iterator;
+                        JewelrySlot & jewerly_slot = m_jewelrySlots[jewerly_index];
 
-                    jewerly_slot.jewelry = nullptr;
-                }
+                        jewerly_slot.jewelry = nullptr;
+                    };
+                } );
 
                 m_eventFall->call();
             } );

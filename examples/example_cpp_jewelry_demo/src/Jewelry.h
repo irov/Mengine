@@ -19,6 +19,7 @@ namespace Mengine
         uint32_t getIterator() const;
 
     public:
+        void setDead( bool _dead );
         bool isDead() const;
 
     public:

@@ -7,6 +7,8 @@
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotCircle.h"
 
+#include "Kernel/Document.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -31,6 +33,11 @@ namespace Mengine
     uint32_t Jewelry::getIterator() const
     {
         return m_iterator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::setDead( bool _dead )
+    {
+        m_dead = _dead;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Jewelry::isDead() const

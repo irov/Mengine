@@ -158,37 +158,37 @@ namespace Mengine
                 return true;
             } );
 
-            _source_pick->addFunction( [this, jewelry]()
+            _source_pick->addScope( [this, jewelry]( const GOAP::SourcePtr & _source )
             {
-                if( m_jewelryHand.empty() == true )
-                {
-                    m_jewelryHand.push_back( jewelry );
-
-                    return;
-                }
-
                 if( jewelry->isBlock() == true )
                 {
                     return;
                 }
 
-                if( std::find( m_jewelryHand.begin(), m_jewelryHand.end(), jewelry ) != m_jewelryHand.end() )
+                if( m_jewelryHand.empty() == false )
                 {
-                    return;
-                }
+                    if( std::find( m_jewelryHand.begin(), m_jewelryHand.end(), jewelry ) != m_jewelryHand.end() )
+                    {
+                        return;
+                    }
 
-                const JewelryPtr & hand_jewelry = m_jewelryHand.front();
+                    const JewelryPtr & hand_jewelry = m_jewelryHand.front();
 
-                uint32_t hand_type = hand_jewelry->getType();
+                    uint32_t hand_type = hand_jewelry->getType();
 
-                uint32_t jewelry_type = jewelry->getType();
+                    uint32_t jewelry_type = jewelry->getType();
 
-                if( hand_type != jewelry_type )
-                {
-                    return;
+                    if( hand_type != jewelry_type )
+                    {
+                        return;
+                    }
                 }
 
                 m_jewelryHand.emplace_back( jewelry );
+
+                const NodePtr & nodeActive = jewelry->getNodeActive();
+
+                _source->addTask<TaskTransformationScaleTime>( nodeActive, nodeActive, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
             } );
 
             return true;
@@ -203,7 +203,7 @@ namespace Mengine
                 return false;
             }
 
-            _source_fall->addTrigger( m_eventFall, [this, jewelry, jewelry_node, jewerly_line, _iterator]()
+            _source_fall->addTrigger( m_eventFall, [this, jewelry, jewelry_node, jewerly_line, _iterator]( const GOAP::SourcePtr & _source )
             {
                 if( jewelry->isDead() == true )
                 {
@@ -215,6 +215,10 @@ namespace Mengine
 
                 if( next_slot.jewelry != nullptr )
                 {
+                    const NodePtr & node = jewelry->getNodeActive();
+
+                    _source->addTask<TaskTransformationScaleTime>( node, node, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
+
                     jewelry->block();
 
                     return false;
@@ -293,7 +297,7 @@ namespace Mengine
         source_boom->addWhile( [this]( const GOAP::SourcePtr & _source_boom )
         {
             _source_boom->addTask<TaskGlobalMouseButton>( MC_LBUTTON, false, nullptr );
-            _source_boom->addFunction( [this]()
+            _source_boom->addScope( [this]( const GOAP::SourcePtr & _source )
             {
                 m_jewelryHand.erase( std::remove_if( m_jewelryHand.begin(), m_jewelryHand.end(), []( const JewelryPtr & _jewelry )
                 {
@@ -302,6 +306,13 @@ namespace Mengine
 
                 if( m_jewelryHand.size() < 3 )
                 {
+                    for( const JewelryPtr & jewelry : m_jewelryHand )
+                    {
+                        const NodePtr & node = jewelry->getNodeActive();
+
+                        _source->addTask<TaskTransformationScaleTime>( node, node, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
+                    }
+
                     m_jewelryHand.clear();
 
                     return;

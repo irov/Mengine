@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
-                                             
+
 project(Box2D)
 
 SET(SOURCE_DIR ${THIRDPARTY_DIR}/Box2D)

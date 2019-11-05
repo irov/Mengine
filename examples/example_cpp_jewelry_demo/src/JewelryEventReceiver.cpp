@@ -75,7 +75,7 @@ namespace Mengine
         m_scene = nullptr;
 
         m_factoryJewelry = nullptr;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool JewelryEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
@@ -109,7 +109,7 @@ namespace Mengine
         MENGINE_UNUSED( _iterator );
 
         const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
-             ->getRandomizer();
+            ->getRandomizer();
 
         uint32_t jewerly_line = randomizer->getRandom( m_column );
 
@@ -121,7 +121,7 @@ namespace Mengine
         }
 
         JewelryPtr jewelry = m_factoryJewelry->createObject( MENGINE_DOCUMENT_FUNCTION );
-        
+
         uint32_t jewelry_type = randomizer->getRandom( m_count );
 
         jewelry->initialize( jewerly_line, jewelry_type );
@@ -136,7 +136,7 @@ namespace Mengine
 
         auto && [source_pick, source_fall] = _source->addRace<2>();
 
-        source_pick->addWhile( [this, jewelry](const GOAP::SourcePtr & _source_pick )
+        source_pick->addWhile( [this, jewelry]( const GOAP::SourcePtr & _source_pick )
         {
             const PickerablePtr & jewelry_pickerable = jewelry->getPickerable();
 
@@ -222,7 +222,7 @@ namespace Mengine
                     jewelry->block();
 
                     return false;
-                }                
+                }
 
                 next_slot.jewelry = jewelry;
 

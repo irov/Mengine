@@ -265,7 +265,7 @@ namespace Mengine
             , _desc.tags
             , _desc.descriptionPath
             , baseFileGroup
-            , _desc.path            
+            , _desc.path
             , _desc.fontsPath
             , _desc.textsPath
             , _desc.preload ) == false )

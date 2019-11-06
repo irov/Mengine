@@ -281,23 +281,23 @@ namespace Mengine
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
             m_touchpad = false;
-            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
         }
         else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
         {
             m_touchpad = false;
-            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( strcmp( sdlPlatform, "Android" ) == 0 )
         {
             m_touchpad = true;
-            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
             SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
         }
         else if( strcmp( sdlPlatform, "iOS" ) == 0 )
         {
             m_touchpad = true;
-            m_platformName.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
             SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
         }
 
@@ -469,7 +469,7 @@ namespace Mengine
             m_sdlInput = nullptr;
         }
 
-        m_platformName.clear();
+        m_platformTags.clear();
 
         if( m_accelerometer != nullptr )
         {
@@ -641,23 +641,19 @@ namespace Mengine
         return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::setProjectTitle( const Char * _projectTitle, size_t _projectTitleLen )
+    void SDLPlatform::setProjectTitle( const Char * _projectTitle )
     {
-        m_projectTitle.assign( _projectTitle, _projectTitleLen );
+        ::strcpy( m_projectTitle, _projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getProjectTitle( Char * _projectTitle ) const
+    void SDLPlatform::getProjectTitle( Char * _projectTitle ) const
     {
-        strcpy( _projectTitle, m_projectTitle.c_str() );
-
-        String::size_type projectTitleLen = m_projectTitle.size();
-
-        return (size_t)projectTitleLen;
+        ::strcpy( _projectTitle, m_projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_WARNING( "SDLPlatform::createWindow w %d h %d fullscreen %d"
+        LOGGER_WARNING( "w %d h %d fullscreen %d"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen
@@ -707,12 +703,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const
     {
-        return m_platformName.hasTag( _tag );
+        return m_platformTags.hasTag( _tag );
     }
     //////////////////////////////////////////////////////////////////////////
     const Tags & SDLPlatform::getPlatformTags() const
     {
-        return m_platformName;
+        return m_platformTags;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasTouchpad() const
@@ -776,7 +772,7 @@ namespace Mengine
         SDL_DisplayMode dm;
         if( SDL_GetDesktopDisplayMode( 0, &dm ) != 0 )
         {
-            LOGGER_ERROR( "SDLPlatform::getDesktopResolution failed %s"
+            LOGGER_ERROR( "failed %s"
                 , SDL_GetError()
             );
 
@@ -1105,8 +1101,8 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathCorrect, _path );
 
         Char fullPath[MENGINE_MAX_PATH];
-        strcpy( fullPath, userPath );
-        strcat( fullPath, pathCorrect );
+        ::strcpy( fullPath, userPath );
+        ::strcat( fullPath, pathCorrect );
 
         struct stat sb;
         if( stat( fullPath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
@@ -1126,8 +1122,8 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathCorrect, _path );
 
         Char fullPath[MENGINE_MAX_PATH];
-        strcpy( fullPath, userPath );
-        strcat( fullPath, pathCorrect );
+        ::strcpy( fullPath, userPath );
+        ::strcat( fullPath, pathCorrect );
 
         int result = ::remove( fullPath );
 
@@ -1145,17 +1141,17 @@ namespace Mengine
     {
         {
             WChar sPath[MENGINE_MAX_PATH];
-            wsprintf( sPath, L"%s%s%s", _dir, _path, _mask );
+            ::wsprintf( sPath, L"%s%s%s", _dir, _path, _mask );
 
             WIN32_FIND_DATA fdFile;
-            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+            HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
 
             if( hFind != INVALID_HANDLE_VALUE )
             {
                 do
                 {
-                    if( wcscmp( fdFile.cFileName, L"." ) == 0
-                        || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                    if( ::wcscmp( fdFile.cFileName, L"." ) == 0
+                        || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
                     {
                         continue;
                     }
@@ -1166,7 +1162,7 @@ namespace Mengine
                     }
 
                     WChar unicode_filepath[MENGINE_MAX_PATH];
-                    wsprintf( unicode_filepath, L"%s%s", _path, fdFile.cFileName );
+                    ::wsprintf( unicode_filepath, L"%s%s", _path, fdFile.cFileName );
 
                     Char utf8_filepath[MENGINE_MAX_PATH];
                     if( Helper::unicodeToUtf8( unicode_filepath, utf8_filepath, MENGINE_MAX_PATH ) == false )
@@ -1180,18 +1176,18 @@ namespace Mengine
 
                     _lambda( fp );
 
-                } while( FindNextFile( hFind, &fdFile ) != FALSE );
+                } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
             }
 
-            FindClose( hFind );
+            ::FindClose( hFind );
         }
 
         {
             WChar sPath[MENGINE_MAX_PATH];
-            wsprintf( sPath, L"%s%s*.*", _dir, _path );
+            ::wsprintf( sPath, L"%s%s*.*", _dir, _path );
 
             WIN32_FIND_DATA fdFile;
-            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+            HANDLE hFind = ::FindFirstFile( sPath, &fdFile );
 
             if( hFind == INVALID_HANDLE_VALUE )
             {
@@ -1200,8 +1196,8 @@ namespace Mengine
 
             do
             {
-                if( wcscmp( fdFile.cFileName, L"." ) == 0
-                    || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                if( ::wcscmp( fdFile.cFileName, L"." ) == 0
+                    || ::wcscmp( fdFile.cFileName, L".." ) == 0 )
                 {
                     continue;
                 }
@@ -1212,13 +1208,13 @@ namespace Mengine
                 }
 
                 WChar nextPath[2048];
-                wsprintf( nextPath, L"%s%s/", _path, fdFile.cFileName );
+                ::wsprintf( nextPath, L"%s%s/", _path, fdFile.cFileName );
 
                 s_listDirectoryContents( _dir, _mask, nextPath, _lambda );
 
-            } while( FindNextFile( hFind, &fdFile ) != FALSE );
+            } while( ::FindNextFile( hFind, &fdFile ) != FALSE );
 
-            FindClose( hFind );
+            ::FindClose( hFind );
         }
 
         return true;
@@ -1537,7 +1533,7 @@ namespace Mengine
         int width = static_cast<int>(_resolution.getWidth());
         int height = static_cast<int>(_resolution.getHeight());
 
-        m_window = SDL_CreateWindow( m_projectTitle.c_str()
+        m_window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_CENTERED
             , SDL_WINDOWPOS_CENTERED
             , width

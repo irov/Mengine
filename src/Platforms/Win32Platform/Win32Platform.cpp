@@ -650,16 +650,14 @@ namespace Mengine
         return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::setProjectTitle( const Char * _projectTitle, size_t _projectTitleSize )
+    void Win32Platform::setProjectTitle( const Char * _projectTitle )
     {        
-        Helper::utf8ToUnicodeSize( _projectTitle, _projectTitleSize, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
+    void Win32Platform::getProjectTitle( Char * _projectTitle ) const
     {
-        size_t projectTitleLen = Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
-
-        return projectTitleLen;
+        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const

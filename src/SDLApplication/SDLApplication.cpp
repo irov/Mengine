@@ -473,7 +473,7 @@ namespace Mengine
         }
 
         PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle, projectTitleLen );
+            ->setProjectTitle( projectTitle );
 
         const Resolution & windowResolution = APPLICATION_SERVICE()
             ->getCurrentResolution();

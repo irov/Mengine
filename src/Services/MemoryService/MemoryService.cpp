@@ -111,9 +111,9 @@ namespace Mengine
     CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc )
     {
         size_t minSize = 0U;
-        size_t maxSize = ~0U;
+        size_t maxSize = MENGINE_UNKNOWN_SIZE;
 
-        const VectorCacheBufferMemory::size_type invalidIndex = ~0U;
+        const VectorCacheBufferMemory::size_type invalidIndex = MENGINE_UNKNOWN_SIZE;
 
         VectorCacheBufferMemory::size_type minIndex = invalidIndex;
         VectorCacheBufferMemory::size_type maxIndex = invalidIndex;

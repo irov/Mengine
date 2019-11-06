@@ -12,7 +12,7 @@ namespace Mengine
         ~DummyEntityEventReceiver() override;
 
     public:
-        bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, class Entity * _entity ) override;
+        bool onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Entity * _entity ) override;
         void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;

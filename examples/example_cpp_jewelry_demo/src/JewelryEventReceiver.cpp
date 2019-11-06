@@ -215,11 +215,14 @@ namespace Mengine
 
                 if( next_slot.jewelry != nullptr )
                 {
-                    const NodePtr & node = jewelry->getNodeActive();
+                    if( jewelry->isBlock() == false )
+                    {
+                        const NodePtr & node = jewelry->getNodeActive();
 
-                    _source->addTask<TaskTransformationScaleTime>( node, node, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
+                        _source->addTask<TaskTransformationScaleTime>( node, node, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
 
-                    jewelry->block();
+                        jewelry->block();
+                    }
 
                     return false;
                 }
@@ -250,6 +253,10 @@ namespace Mengine
 
             return true;
         } );
+
+        const NodePtr & node = jewelry->getNodeActive();
+
+        source_fall->addTask<TaskTransformationScaleTime>( node, node, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
 
         source_fall->addFunction( [jewelry]()
         {

@@ -214,8 +214,12 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
-        m_companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
-        m_projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+
+        strcpy( m_companyName, companyName );
+        strcpy( m_projectName, projectName );
+
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
 
@@ -295,8 +299,8 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Application company '%s' project '%s' version '%d' locale '%s'"
-            , m_companyName.c_str()
-            , m_projectName.c_str()
+            , m_companyName
+            , m_projectName
             , m_projectVersion
             , m_locale.c_str()
         );
@@ -1982,12 +1986,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::getCompanyName( Char * _companyName ) const
     {
-        strcpy( _companyName, m_companyName.c_str() );
+        strcpy( _companyName, m_companyName );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::getProjectName( Char * _projectName ) const
     {
-        strcpy( _projectName, m_projectName.c_str() );
+        strcpy( _projectName, m_projectName );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getProjectCodename() const

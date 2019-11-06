@@ -2284,7 +2284,7 @@ namespace Mengine
             }
         }
 
-        PathAppend( szPath, fileCorrect );
+        ::PathAppend( szPath, fileCorrect );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -2328,7 +2328,7 @@ namespace Mengine
         }
 
         WChar unicode_filePath[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _filePath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2354,24 +2354,15 @@ namespace Mengine
 
         ::PathAppend( szPath, unicode_directoryPath_correct );
 
-        if( this->existFile_( szPath ) == false )
-        {
-            if( this->createDirectory_( szPath ) == false )
-            {
-                LOGGER_ERROR( "directory '%s:%s' invalid createDirectory '%ls'"
-                    , _directoryPath
-                    , _filePath
-                    , szPath
-                );
-
-                return false;
-            }
-        }
-
         WChar unicode_filePath_correct[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
-        PathAppend( szPath, unicode_filePath_correct );
+        ::PathAppend( szPath, unicode_filePath_correct );
+
+        if( this->existFile_( szPath ) == false )
+        {
+            return false;
+        }
 
         if( ::SystemParametersInfo( SPI_SETDESKWALLPAPER, 0, szPath, SPIF_UPDATEINIFILE ) == FALSE )
         {

@@ -6,7 +6,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <strcpy.h>
+#include <string.h>
 
 namespace Mengine
 {

@@ -87,7 +87,7 @@ namespace Mengine
 
             Char utf8_ttfPath[MENGINE_MAX_PATH] = { '\0' };
             if( PLATFORM_SERVICE()
-                ->getSystemFontPath( ttfName, utf8_ttfPath ) == ~0U )
+                ->getSystemFontPath( ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
             {
                 LOGGER_ERROR( "invalid font '%s' don't found '%s' path"
                     , m_name.c_str()

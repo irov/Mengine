@@ -508,7 +508,7 @@ namespace Mengine
         }
 
         PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle, projectTitleLen );
+            ->setProjectTitle( projectTitle );
 
         Resolution windowResolution;
         APPLICATION_SERVICE()

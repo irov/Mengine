@@ -92,3 +92,6 @@
 #       define MENGINE_LOGGER_DEBUG
 #   endif
 #endif
+
+#define MENGINE_UNKNOWN_SIZE (~0U)
+#define MENGINE_UNKNOWN_HASH (-1)

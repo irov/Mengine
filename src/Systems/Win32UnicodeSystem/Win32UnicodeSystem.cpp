@@ -31,7 +31,7 @@ namespace Mengine
         int32_t int_unicodeSize = static_cast<int32_t>(_unicodeSize);
         int32_t int_utf8Capacity = static_cast<int32_t>(_utf8Capacity);
 
-        if( int_unicodeSize == MENGINE_UNICODE_UNKNOWN_SIZE && int_utf8Capacity != 0 )
+        if( int_unicodeSize == MENGINE_UNKNOWN_SIZE && int_utf8Capacity != 0 )
         {
             ++int_utf8Capacity;
         }
@@ -56,7 +56,7 @@ namespace Mengine
             return false;
         }
 
-        if( int_unicodeSize == MENGINE_UNICODE_UNKNOWN_SIZE )
+        if( int_unicodeSize == MENGINE_UNKNOWN_SIZE )
         {
             --utf8_size;
         }
@@ -80,7 +80,7 @@ namespace Mengine
         int32_t int_utf8Size = static_cast<int32_t>(_utf8Size);
         int32_t int_unicodeCapacity = static_cast<int32_t>(_unicodeCapacity);
 
-        if( int_utf8Size == MENGINE_UNICODE_UNKNOWN_SIZE && int_unicodeCapacity != 0 )
+        if( int_utf8Size == MENGINE_UNKNOWN_SIZE && int_unicodeCapacity != 0 )
         {
             ++int_unicodeCapacity;
         }
@@ -111,7 +111,7 @@ namespace Mengine
             return false;
         }
 
-        if( int_utf8Size == MENGINE_UNICODE_UNKNOWN_SIZE )
+        if( int_utf8Size == MENGINE_UNKNOWN_SIZE )
         {
             --wc_size;
         }

@@ -45,6 +45,9 @@
 #if defined(WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_PLATFORM_DESKTOP
+#elif defined(__linux__)
+#   define MENGINE_PLATFORM_LINUX
+#   define MENGINE_PLATFORM_DESKTOP
 #elif defined(__APPLE__)
 #   include "TargetConditionals.h"
 #   if defined(TARGET_OS_OSX)

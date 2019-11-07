@@ -517,7 +517,11 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         
         if(MENGINE_TOOLCHAIN_GRADLE)
             SET(LIBTYPE SHARED)
-        endif()    
+        endif()
+        
+        if(MENGINE_TOOLCHAIN_UNIX)
+            SET(LIBTYPE STATIC)
+        endif()
 
         SET(ALSOFT_DLOPEN OFF CACHE BOOL "Check for the dlopen API for loading optional libs" FORCE)
         SET(ALSOFT_WERROR OFF CACHE BOOL "Treat compile warnings as errors" FORCE)

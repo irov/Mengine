@@ -352,8 +352,6 @@ endif()
 if(MENGINE_DEPENDENCE_CURL)
     message("================curl================")
     
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/CMakeLists.txt ${THIRDPARTY_DIR}/curl/CMakeLists.txt COPYONLY)
-    
     set(BUILD_CURL_EXE OFF CACHE BOOL "Set to ON to build curl executable." FORCE)
     if(MENGINE_TOOLCHAIN_MSVC)
         set(CURL_STATIC_CRT ON CACHE BOOL "Set to ON to build libcurl with static CRT on Windows (/MT)." FORCE)
@@ -389,6 +387,8 @@ if(MENGINE_DEPENDENCE_CURL)
     set(CURL_DISABLE_CRYPTO_AUTH ON CACHE BOOL "CURL_DISABLE_CRYPTO_AUTH" FORCE)   
 
     set(CURL_CA_PATH "none" CACHE STRING "CURL_CA_PATH" FORCE)
+    
+    set(ENABLE_IPV6 OFF CACHE BOOL "ENABLE_IPV6" FORCE)
 
     if(MENGINE_TARGET_IOS)
         set(CMAKE_USE_OPENSSL OFF CACHE BOOL "Use CMAKE_USE_OPENSSL code. Experimental" FORCE)

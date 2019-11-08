@@ -51,6 +51,17 @@ namespace Mengine
         return m_dead;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Jewelry::bomb()
+    {
+        m_nodeActive->disable();
+        m_nodeBomb->enable();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Jewelry::isBomb() const
+    {
+        return m_nodeBomb->isEnable();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeActive_()
     {
         SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
@@ -95,6 +106,28 @@ namespace Mengine
         m_nodeBlock = shape;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Jewelry::makeNodeBomb_()
+    {
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+
+        Color jewelry_color = jewelry_colors[m_type] * 0.5f;
+
+        surface->setSolidColor( jewelry_color );
+
+        float full_size = m_size * 0.5f + 5.f;
+        surface->setSolidSize( {full_size, full_size} );
+
+        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FUNCTION );
+
+        shape->setSurface( surface );
+
+        shape->disable();
+
+        m_node->addChild( shape );
+
+        m_nodeBomb = shape;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Jewelry::makePickerable_()
     {
         HotSpotCirclePtr hotspot = Helper::generateHotSpotCircle( MENGINE_DOCUMENT_FUNCTION );
@@ -128,6 +161,7 @@ namespace Mengine
 
         this->makeNodeActive_();
         this->makeNodeBlock_();
+        this->makeNodeBomb_();
         this->makePickerable_();
 
         return true;
@@ -161,6 +195,11 @@ namespace Mengine
     const NodePtr & Jewelry::getNodeActive() const
     {
         return m_nodeActive;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const NodePtr & Jewelry::getNodeBomb() const
+    {
+        return m_nodeBomb;
     }
     //////////////////////////////////////////////////////////////////////////
     const PickerablePtr & Jewelry::getPickerable() const

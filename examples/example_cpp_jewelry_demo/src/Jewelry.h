@@ -23,12 +23,17 @@ namespace Mengine
         bool isDead() const;
 
     public:
+        void bomb();
+        bool isBomb() const;
+
+    public:
         bool initialize( uint32_t _line, uint32_t _type );
         void finalize();
 
     public:
         void makeNodeActive_();
         void makeNodeBlock_();
+        void makeNodeBomb_();
         void makePickerable_();
 
     public:
@@ -40,6 +45,7 @@ namespace Mengine
         uint32_t getType() const;
         const NodePtr & getNode() const;
         const NodePtr & getNodeActive() const;
+        const NodePtr & getNodeBomb() const;
         const PickerablePtr & getPickerable() const;
 
     public:
@@ -52,6 +58,7 @@ namespace Mengine
         NodePtr m_node;
         NodePtr m_nodeActive;
         NodePtr m_nodeBlock;
+        NodePtr m_nodeBomb;
         PickerablePtr m_pickerable;
 
         bool m_dead;

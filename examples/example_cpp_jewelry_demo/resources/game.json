@@ -1,7 +1,8 @@
 {
     "jewelry_column":6,
     "jewelry_row":10,
-    "jewelry_count":5,
-    "jewelry_cell_fall_time_ms":750.0,
+    "jewelry_count":4,
+    "jewelry_cell_fall_time_ms":950.0,
+    "jewelry_cell_explosive_time_ms":250.0,
     "jewelry_spawn_time_ms":450.0
 }

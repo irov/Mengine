@@ -31,7 +31,7 @@ namespace Mengine
                     
                     for( auto && [key, value] : _obj )
                     {
-                        d[key] = jpp2pybind( _kernel, value );
+                        d[key] = Helper::jpp2pybind( _kernel, value );
                     }
 
                     pybind::object ob = pybind::dictobject_new( _kernel, d );

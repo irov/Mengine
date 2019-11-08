@@ -33,6 +33,7 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/AssertionResourceType.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageDefault.h"
@@ -1734,6 +1735,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_copyFile_( const ConstString & _resourceFilePath, const MemoryBufferInterfacePtr & _memory )
         {
+            MENGINE_ASSERTION_RESOURCE_TYPE( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
+                , _resourceFilePath.c_str()
+            );
+
             const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
                 ->getResource( _resourceFilePath );
 

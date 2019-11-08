@@ -4,6 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -85,9 +86,13 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        m_column = 6;
-        m_row = 10;
-        m_count = 6;
+        const SettingInterfacePtr & game_setting = SETTINGS_SERVICE()
+            ->getSetting( STRINGIZE_STRING_LOCAL( "Game" ) );
+
+        m_column = game_setting->getValue( "jewelry_column", 6U );
+        m_row = game_setting->getValue( "jewelry_row", 10U );
+        m_count = game_setting->getValue( "jewelry_count", 6U );
+        m_cell_fall_time_ms = game_setting->getValue( "jewelry_cell_fall_time_ms", 750.f );
 
         m_jewelrySlots.resize( m_column * m_row );
 
@@ -213,7 +218,7 @@ namespace Mengine
                 uint32_t next_index = jewerly_line + m_column * _iterator;
                 JewelrySlot & next_slot = m_jewelrySlots[next_index];
 
-                if( next_slot.jewelry != nullptr )
+                if( next_slot.jewelry != nullptr && next_slot.jewelry->isBlock() == true )
                 {
                     if( jewelry->isBlock() == false )
                     {
@@ -249,7 +254,7 @@ namespace Mengine
             new_position.y = offset.y + float( _iterator + 1 ) * 60.f;
             new_position.z = 0.f;
 
-            _source_fall->addTask<TaskTransformationTranslateTime>( jewelry_node, jewelry_node, nullptr, new_position, 750.f );
+            _source_fall->addTask<TaskTransformationTranslateTime>( jewelry_node, jewelry_node, nullptr, new_position, m_cell_fall_time_ms );
 
             return true;
         } );
@@ -289,7 +294,7 @@ namespace Mengine
 
         auto && [source_spawn, source_boom] = source->addParallel<2>();
 
-        source_spawn->addGenerator( timer, []( uint32_t _iterator )
+        source_spawn->addGenerator( timer, [this]( uint32_t _iterator )
         {
             MENGINE_UNUSED( _iterator );
 

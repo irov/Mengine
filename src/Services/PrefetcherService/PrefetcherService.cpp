@@ -77,22 +77,7 @@ namespace Mengine
             return;
         }
 
-        for( const ConstString & threadName : m_threads )
-        {
-            THREAD_SERVICE()
-                ->destroyThread( threadName );
-        }
-
         m_threads.clear();
-
-        if( m_threadQueue != nullptr )
-        {
-            THREAD_SERVICE()
-                ->cancelTaskQueue( m_threadQueue );
-
-            m_threadQueue = nullptr;
-        }
-
         m_prefetchReceiver.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchImageDecoder );
@@ -106,8 +91,26 @@ namespace Mengine
         m_factoryThreadTaskPrefetchStream = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrefetcherService::update()
+    void PrefetcherService::_stopService()
     {
+        if( this->isAvailableService() == false )
+        {
+            return;
+        }
+
+        for( const ConstString & threadName : m_threads )
+        {
+            THREAD_SERVICE()
+                ->destroyThread( threadName );
+        }
+
+        if( m_threadQueue != nullptr )
+        {
+            THREAD_SERVICE()
+                ->cancelTaskQueue( m_threadQueue );
+
+            m_threadQueue = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )

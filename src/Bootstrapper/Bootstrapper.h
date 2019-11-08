@@ -18,7 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool run( const VectorFilePath & _packagesPaths ) override;
+        bool run() override;
         void stop() override;
 
     protected:
@@ -34,12 +34,16 @@ namespace Mengine
 
     protected:
         bool runModules_();
-        bool runDevModules_();        
+        bool runDevModules_();
         bool runFrameworks_();
 
     protected:
         void stopModules_();
         void stopDevModules_();
         void stopFrameworks_();
+
+    protected:
+        VectorFilePath m_packagesPaths;
+        VectorFilePath m_settingsPaths;
     };
 }

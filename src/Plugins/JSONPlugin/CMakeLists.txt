@@ -19,6 +19,11 @@ src
 	
 	LoaderResourceJSON.cpp
 	LoaderResourceJSON.h
+    
+    JSONSetting.cpp
+    JSONSetting.h
+    JSONSettingPrototypeGenerator.cpp
+    JSONSettingPrototypeGenerator.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

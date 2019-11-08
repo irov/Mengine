@@ -19,6 +19,8 @@ namespace Mengine
         FilePath stringizeFilePathLocal( const Char * _value, FilePath::size_type _size );
         FilePath stringizeFilePathLocal( const PathString & _filePath );
         FilePath stringizeFilePathFormat( const Char * _format, ... );
+
+        ConstString getFilePathExt( const FilePath & _filePath );
     }
 }
 //////////////////////////////////////////////////////////////////////////

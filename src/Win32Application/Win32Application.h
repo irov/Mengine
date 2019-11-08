@@ -41,15 +41,11 @@ namespace Mengine
         void loop();
 
     protected:
-        bool loadApplicationConfig_();
-
-    protected:
         bool initializeFileService_();
         bool initializeUserDirectory_();
         bool initializeLoggerFile_();
         bool initializeOptionsService_();
         bool initializeLoggerService_();
-        bool initializeConfigService_();
         bool initializeArchiveService_();
 
     protected:
@@ -59,9 +55,5 @@ namespace Mengine
 
         LoggerInterfacePtr m_loggerFile;
         LoggerInterfacePtr m_loggerMessageBox;
-
-        VectorFilePath m_configsPaths;
-        VectorFilePath m_credentialsPaths;
-        VectorFilePath m_packagesPaths;
     };
 }

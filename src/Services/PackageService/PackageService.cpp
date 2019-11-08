@@ -54,7 +54,7 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         LOGGER_INFO( "Packages load... %s:%s"
             , _fileGroup->getName().c_str()
@@ -62,9 +62,9 @@ namespace Mengine
         );
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( _fileGroup, _filePath, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load resource settings '%s'"
+        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load packages '%s'"
             , _filePath.c_str()
         );
 

@@ -11,6 +11,9 @@
 #include "ResourceJSON.h"
 #include "LoaderResourceJSON.h"
 
+#include "JSONSetting.h"
+#include "JSONSettingPrototypeGenerator.h"
+
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -52,6 +55,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Setting" ), STRINGIZE_STRING_LOCAL( "json" ), Helper::makeFactorableUnique<JSONSettingPrototypeGenerator>() ) == false )
+        {
+            return false;
+        }
+
         SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), Helper::makeFactorableUnique<LoaderResourceJSON>() );
@@ -76,6 +85,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Setting" ), STRINGIZE_STRING_LOCAL( "json" ) );
 
         SERVICE_FINALIZE( JSONService );
     }

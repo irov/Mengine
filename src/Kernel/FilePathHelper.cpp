@@ -85,5 +85,21 @@ namespace Mengine
 
             return filePath;
         }
+        //////////////////////////////////////////////////////////////////////////
+        ConstString getFilePathExt( const FilePath & _filePath )
+        {
+            const Char * str_filePath = _filePath.c_str();
+
+            const Char * dot_find = strrchr( str_filePath, '.' );
+
+            if( dot_find == nullptr )
+            {
+                return ConstString::none();
+            }
+
+            ConstString ext = Helper::stringizeString( dot_find + 1 );
+
+            return ext;
+        }
     }
 }

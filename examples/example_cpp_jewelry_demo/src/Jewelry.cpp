@@ -12,6 +12,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static const Color jewelry_colors[9] = {
+        Color( 1.f, 0.f, 0.f, 1.f ), Color( 0.f, 1.f, 0.f, 1.f ), Color( 0.f, 0.f, 1.f, 1.f ),
+        Color( 1.f, 1.f, 0.f, 1.f ), Color( 0.f, 1.f, 1.f, 1.f ), Color( 1.f, 0.f, 1.f, 1.f ),
+        Color( 1.f, 0.5f, 0.5f, 1.f ), Color( 0.5f, 1.f, 1.f, 1.f ), Color( 1.f, 0.5f, 1.f, 1.f )
+    };
+    //////////////////////////////////////////////////////////////////////////
     Jewelry::Jewelry()
         : m_size( 50.f )
         , m_iterator( 0 )
@@ -47,14 +53,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeActive_()
     {
-        Color colors[6] = {
-            Color( 1.f, 0.f, 0.f, 1.f ), Color( 0.f, 1.f, 0.f, 1.f ), Color( 0.f, 0.f, 1.f, 1.f ),
-            Color( 1.f, 1.f, 0.f, 1.f ), Color( 0.f, 1.f, 1.f, 1.f ), Color( 1.f, 0.f, 1.f, 1.f )
-        };
-
         SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
 
-        Color jewelry_color = colors[m_type];
+        Color jewelry_color = jewelry_colors[m_type];
 
         surface->setSolidColor( jewelry_color );
 
@@ -72,14 +73,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::makeNodeBlock_()
     {
-        Color colors[6] = {
-            Color( 1.f, 0.f, 0.f, 1.f ), Color( 0.f, 1.f, 0.f, 1.f ), Color( 0.f, 0.f, 1.f, 1.f ),
-            Color( 1.f, 1.f, 0.f, 1.f ), Color( 0.f, 1.f, 1.f, 1.f ), Color( 1.f, 0.f, 1.f, 1.f )
-        };
-
         SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
 
-        Color jewelry_color = colors[m_type] * 0.5f;
+        Color jewelry_color = jewelry_colors[m_type] * 0.5f;
 
         surface->setSolidColor( jewelry_color );
 

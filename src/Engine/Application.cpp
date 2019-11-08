@@ -11,7 +11,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
@@ -32,6 +31,7 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
@@ -725,14 +725,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths )
+    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths )
     {
         for( const FilePath & packagePath : _packagesPaths )
         {
             if( PACKAGE_SERVICE()
-                ->loadPackages( _fileGroup, packagePath ) == false )
+                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
-                LOGGER_CRITICAL( "invalid load resource pack '%s'"
+                LOGGER_CRITICAL( "invalid load package '%s'"
                     , packagePath.c_str()
                 );
 
@@ -756,6 +756,19 @@ namespace Mengine
             );
 
             return false;
+        }
+
+        for( const FilePath & settingPath : _settingsPaths )
+        {
+            if( SETTINGS_SERVICE()
+                ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_CRITICAL( "invalid load setting '%s'"
+                    , settingPath.c_str()
+                );
+
+                return false;
+            }
         }
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -1379,12 +1392,6 @@ namespace Mengine
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
-                ->update();
-        }
-
-        if( SERVICE_EXIST( PrefetcherServiceInterface ) == true )
-        {
-            PREFETCHER_SERVICE()
                 ->update();
         }
 

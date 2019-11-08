@@ -38,7 +38,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 
         JSONStorageInterfacePtr storage = JSON_SERVICE()
-            ->loadJSON( stream, MENGINE_DOCUMENT_FACTORABLE );
+            ->loadJSONStream( stream, MENGINE_DOCUMENT_FACTORABLE );
         
         if( storage == nullptr )
         {

@@ -34,6 +34,8 @@ namespace Mengine
         uint32_t m_row;
         uint32_t m_count;
 
+        float m_cell_fall_time_ms;
+
         FactoryPtr m_factoryJewelry;
 
         typedef Vector<JewelryPtr> VectorJewelryHand;

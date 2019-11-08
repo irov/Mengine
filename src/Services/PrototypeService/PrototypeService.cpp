@@ -92,6 +92,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PrototypeService::hasGenerator( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr * _generator ) const
+    {
+        CategoryKey key{_category, _prototype};
+
+        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
+
+        if( generator == nullptr )
+        {
+            return false;
+        }
+
+        if( _generator != nullptr )
+        {
+            *_generator = generator;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const PrototypeGeneratorInterfacePtr & PrototypeService::getGenerator( const ConstString & _category, const ConstString & _prototype ) const
     {
         CategoryKey key{ _category, _prototype };

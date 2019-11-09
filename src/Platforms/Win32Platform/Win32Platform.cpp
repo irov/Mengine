@@ -1645,7 +1645,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
     {
-        const FilePath & filePath = _content->getFilePath();        
+        const FilePath & filePath = _content->getFilePath();
 
         MapCursors::iterator it_found = m_cursors.find( filePath );
 
@@ -1702,8 +1702,12 @@ namespace Mengine
             stream->flush();
             stream = nullptr;
 
-            WString unicode_icoFile;
-            if( Helper::utf8ToUnicode( c_icoFile, unicode_icoFile ) == false )
+            PathString icoFullFile;
+            icoFullFile += fileGroup->getFolderPath();
+            icoFullFile += icoFile;
+
+            WString unicode_icoFullFile;
+            if( Helper::utf8ToUnicode( icoFullFile, unicode_icoFullFile ) == false )
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
                     , _name.c_str()
@@ -1714,7 +1718,9 @@ namespace Mengine
                 return false;
             }
 
-            HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile.c_str() );
+            const WChar * unicode_icoFile_str = unicode_icoFullFile.c_str();
+
+            HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile_str );
 
             if( cursor == NULL )
             {
@@ -1724,7 +1730,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "icon '%s' for file '%ls' errCode %d"
                         , _name.c_str()
-                        , unicode_icoFile.c_str()
+                        , unicode_icoFullFile.c_str()
                         , errCode
                     );
 

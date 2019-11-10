@@ -5,8 +5,27 @@
 #include "Kernel/Node.h"
 #include "Kernel/Pickerable.h"
 
+#include "GOAP/Source.h"
+
+#include "JewelryMatrix.h"
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    enum EJewelryState
+    {
+        EJS_NONE = 0,
+        EJS_BLOCK = 1 << 0,
+        EJS_PICK = 1 << 1,
+        EJS_DEAD = 1 << 2,
+    };
+    //////////////////////////////////////////////////////////////////////////
+    enum EJewelrySuper
+    {
+        EJSUPER_NORMAL = 0,
+        EJSUPER_BOMB = 1 << 0,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class Jewelry
         : public Factorable
     { 
@@ -15,19 +34,17 @@ namespace Mengine
         ~Jewelry() override;
 
     public:
-        void setIterator( uint32_t _iterator );
-        uint32_t getIterator() const;
+        void setColumn( uint32_t _column );
+        uint32_t getColumn() const;
+
+        void setRow( uint32_t _row );
+        uint32_t getRow() const;
 
     public:
-        void setDead( bool _dead );
-        bool isDead() const;
-
-    public:
-        void bomb();
         bool isBomb() const;
 
     public:
-        bool initialize( uint32_t _line, uint32_t _type );
+        bool initialize( EJewelrySuper _super, uint32_t _type, const JewelryMatrixPtr & _matrix, uint32_t _column, uint32_t _row, float _size, float _stride );
         void finalize();
 
     public:
@@ -37,31 +54,48 @@ namespace Mengine
         void makePickerable_();
 
     public:
-        void block();
-        bool isBlock() const;
+        void move( const GOAP::SourcePtr & _source, uint32_t _row, float _time );
+        void pickHand( const GOAP::SourcePtr & _source );
+        void unpickHand( const GOAP::SourcePtr & _source );
+        void block( const GOAP::SourcePtr & _source );
+        void dead( const GOAP::SourcePtr & _source );
+        void bomb( const GOAP::SourcePtr & _source );
+        void explosive( const GOAP::SourcePtr & _source );
 
     public:
-        uint32_t getLine() const;
+        bool isDead() const;
+        bool isBlock() const;
+
+    public:        
         uint32_t getType() const;
+        EJewelrySuper getSuper() const;
+
+    public:
         const NodePtr & getNode() const;
         const NodePtr & getNodeActive() const;
         const NodePtr & getNodeBomb() const;
         const PickerablePtr & getPickerable() const;
 
     public:
-        float m_size;
+        JewelryMatrixPtr m_matrix;
 
-        uint32_t m_line;
-        uint32_t m_iterator;
+        float m_size;
+        float m_stride;
+
         uint32_t m_type;
+        EJewelrySuper m_super;
+
+        uint32_t m_column;
+        uint32_t m_row;        
 
         NodePtr m_node;
         NodePtr m_nodeActive;
         NodePtr m_nodeBlock;
         NodePtr m_nodeBomb;
+
         PickerablePtr m_pickerable;
 
-        bool m_dead;
+        uint32_t m_state;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Jewelry> JewelryPtr;

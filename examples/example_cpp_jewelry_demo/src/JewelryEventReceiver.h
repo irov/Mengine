@@ -6,6 +6,7 @@
 #include "Kernel/DummySceneEventReceiver.h"
 
 #include "Jewelry.h"
+#include "JewelryMatrix.h"
 
 #include "GOAP/GOAP.h"
 
@@ -27,22 +28,28 @@ namespace Mengine
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     protected:
-        void spawnJewelry_( const GOAP::SourcePtr & _source, uint32_t _iterator );
+        void spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator );
+        void explosiveJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry );
 
     protected:
         NodePtr spawnExplosive_();
 
     protected:
+        JewelryPtr makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const Char * _doc );
+
+    protected:
         Scene * m_scene;
 
-        uint32_t m_column;
-        uint32_t m_row;
-        uint32_t m_count;
+        NodePtr m_base;
 
-        mt::vec3f m_offset;
+        uint32_t m_jewelry_type_count;
+        float m_jewelry_size;
+        float m_jewelry_stride;
 
-        float m_cell_fall_time_ms;
-        float m_cell_explosive_time_ms;
+        float m_jewelry_cell_fall_time_ms;
+        float m_jewelry_cell_explosive_time_ms;
+        uint32_t m_jewelry_cell_explosive_count;
+        float m_jewelry_spawn_time_ms;
 
         FactoryPtr m_factoryJewelry;
 
@@ -51,13 +58,7 @@ namespace Mengine
 
         GOAP::EventPtr m_eventFall;
 
-        struct JewelrySlot
-        {
-            JewelryPtr jewelry;
-        };
-
-        typedef Vector<JewelrySlot> VectorJewelrySlots;
-        VectorJewelrySlots m_jewelrySlots;
+        JewelryMatrixPtr m_jewelryMatrix;
 
         RandomizerInterfacePtr m_randomizer;
     };

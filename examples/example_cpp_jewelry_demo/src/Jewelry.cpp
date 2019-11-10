@@ -9,6 +9,17 @@
 
 #include "Kernel/Document.h"
 
+#include "Tasks/TaskTransformationTranslateTime.h"
+#include "Tasks/TaskTransformationScaleTime.h"
+#include "Tasks/TaskPickerableMouseEnter.h"
+#include "Tasks/TaskPickerableMouseButton.h"
+#include "Tasks/TaskNodeDisable.h"
+#include "Tasks/TaskNodeEnable.h"
+#include "Tasks/TaskNodeDestroy.h"
+#include "Tasks/TaskGlobalMouseButton.h"
+#include "Tasks/TaskGlobalDelay.h"
+
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -20,10 +31,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Jewelry::Jewelry()
         : m_size( 50.f )
-        , m_iterator( 0 )
-        , m_line( 0 )
+        , m_stride( 10.f )
+        , m_row( 0 )
+        , m_column( 0 )
         , m_type( 0 )
-        , m_dead( false )
+        , m_super( EJSUPER_NORMAL )
+        , m_state( EJS_NONE )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,30 +44,44 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::setIterator( uint32_t _iterator )
+    uint32_t Jewelry::getType() const
     {
-        m_iterator = _iterator;
+        return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Jewelry::getIterator() const
+    EJewelrySuper Jewelry::getSuper() const
     {
-        return m_iterator;
+        return m_super;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::setDead( bool _dead )
+    void Jewelry::setColumn( uint32_t _column )
     {
-        m_dead = _dead;
+        m_column = _column;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Jewelry::isDead() const
+    uint32_t Jewelry::getColumn() const
     {
-        return m_dead;
+        return m_column;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::bomb()
+    void Jewelry::setRow( uint32_t _row )
     {
-        m_nodeActive->disable();
-        m_nodeBomb->enable();
+        m_row = _row;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Jewelry::getRow() const
+    {
+        return m_row;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::bomb( const GOAP::SourcePtr & _source )
+    {
+        m_super = EJSUPER_BOMB;
+
+        auto && [source_disappear, source_appear] = _source->addParallel<2>();
+        source_disappear->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
+
+        source_appear->addTask<TaskNodeEnable>( m_nodeBomb );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Jewelry::isBomb() const
@@ -140,20 +167,66 @@ namespace Mengine
         m_pickerable = hotspot;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Jewelry::block()
+    void Jewelry::block( const GOAP::SourcePtr & _source )
     {
-        m_nodeBlock->enable();
+        if( this->isBlock() == true )
+        {
+            return;
+        }
+
+        m_state |= EJS_BLOCK;
+
+        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 100.f );
+        _source->addTask<TaskNodeEnable>( m_nodeBlock );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::dead( const GOAP::SourcePtr & _source )
+    {
+        m_state |= EJS_DEAD;
+
+        m_matrix->removeJewelry( JewelryPtr::from( this ) );        
+
+        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
+
+        _source->addFunction( this, &Jewelry::finalize );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::explosive( const GOAP::SourcePtr & _source )
+    {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
+        m_state |= EJS_DEAD;
+
+        m_matrix->removeJewelry( JewelryPtr::from( this ) );        
+
+        _source->addTask<TaskTransformationScaleTime>( m_nodeBomb, m_nodeBomb, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
+        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
+        _source->addFunction( this, &Jewelry::finalize );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Jewelry::isBlock() const
     {
-        return m_nodeBlock->isEnable();
+        return (m_state & EJS_BLOCK) == EJS_BLOCK;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Jewelry::initialize( uint32_t _line, uint32_t _type )
+    bool Jewelry::isDead() const
     {
-        m_line = _line;
+        return (m_state & EJS_DEAD) == EJS_DEAD;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Jewelry::initialize( EJewelrySuper _super, uint32_t _type, const JewelryMatrixPtr & _matrix, uint32_t _column, uint32_t _row, float _size, float _stride )
+    {
+        m_matrix = _matrix;
+
+        m_column = _column;
+        m_row = _row;
         m_type = _type;
+        m_super = _super;
+        m_size = _size;
+        m_stride = _stride;
 
         NodePtr node = Helper::generateNode( MENGINE_DOCUMENT_FUNCTION );
 
@@ -164,27 +237,19 @@ namespace Mengine
         this->makeNodeBomb_();
         this->makePickerable_();
 
+        m_node->setLocalPosition( { float( _column ) * (m_size + m_stride), float( _row ) * (m_size + m_stride), 0.f } );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::finalize()
     {
-        m_dead = true;
+        m_state |= EJS_DEAD;
 
         m_node->removeFromParent();
         m_node = nullptr;
 
         m_pickerable = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Jewelry::getLine() const
-    {
-        return m_line;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Jewelry::getType() const
-    {
-        return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Jewelry::getNode() const
@@ -205,5 +270,32 @@ namespace Mengine
     const PickerablePtr & Jewelry::getPickerable() const
     {
         return m_pickerable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::move( const GOAP::SourcePtr & _source, uint32_t _row, float _time )
+    {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
+        m_matrix->moveJewelry( m_column, _row, JewelryPtr::from( this ) );
+
+        mt::vec3f new_position;
+        new_position.x = float( m_column ) * 60.f;
+        new_position.y = float( _row ) * 60.f;
+        new_position.z = 0.f;
+
+        _source->addTask<TaskTransformationTranslateTime>( m_node, m_node, nullptr, new_position, _time );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::pickHand( const GOAP::SourcePtr & _source )
+    {
+        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::unpickHand( const GOAP::SourcePtr & _source )
+    {
+        _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
     }
 }

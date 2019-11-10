@@ -190,9 +190,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     mt::vec2f Box2DBody::getWorldVector( const mt::vec2f & _localVector )       
     {       
-        b2Vec2 b2_localVector = Box2DScalerToWorld( _localVector );     
+        b2Vec2 b2_localVector = m_scaler.toBox2DWorld( _localVector );
         b2Vec2 b2_worldVector = m_body->GetWorldVector( b2_localVector );       
-        mt::vec2f worldVector = Box2DScalerFromWorld( b2_worldVector );     
+        mt::vec2f worldVector = m_scaler.toEngineWorld( b2_worldVector );
         return worldVector;     
     }
     //////////////////////////////////////////////////////////////////////////

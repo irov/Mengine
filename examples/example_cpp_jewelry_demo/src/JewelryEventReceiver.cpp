@@ -560,7 +560,32 @@ namespace Mengine
         GOAP::ChainPtr chain = GOAP::Helper::makeChain( source );
         chain->run();
 
+        m_chain = chain;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    {
+        MENGINE_UNUSED( _behavior );
+
+        if( m_chain != nullptr )
+        {
+            m_chain->cancel();
+            m_chain = nullptr;
+        }
+
+        if( m_jewelryMatrix != nullptr )
+        {
+            m_jewelryMatrix->finalize();
+            m_jewelryMatrix = nullptr;
+        }
+
+        if( m_base != nullptr )
+        {
+            m_base->removeFromParent();
+            m_base = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     NodePtr JewelryEventReceiver::spawnExplosive_()

@@ -79,7 +79,7 @@ namespace Mengine
         m_super = EJSUPER_BOMB;
 
         auto && [source_disappear, source_appear] = _source->addParallel<2>();
-        source_disappear->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
+        source_disappear->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.5f, 0.5f, 0.5f ), 200.f );
 
         source_appear->addTask<TaskNodeEnable>( m_nodeBomb );
     }
@@ -141,7 +141,7 @@ namespace Mengine
 
         surface->setSolidColor( jewelry_color );
 
-        float full_size = m_size * 0.5f + 5.f;
+        float full_size = m_size * 0.5f + 10.f;
         surface->setSolidSize( {full_size, full_size} );
 
         ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FUNCTION );
@@ -248,6 +248,15 @@ namespace Mengine
 
         m_node->removeFromParent();
         m_node = nullptr;
+
+        m_nodeActive->removeFromParent();
+        m_nodeActive = nullptr;
+
+        m_nodeBlock->removeFromParent();
+        m_nodeBlock = nullptr;
+
+        m_nodeBomb->removeFromParent();
+        m_nodeBomb = nullptr;
 
         m_pickerable = nullptr;
     }

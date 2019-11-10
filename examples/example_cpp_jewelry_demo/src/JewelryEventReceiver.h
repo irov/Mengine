@@ -26,6 +26,7 @@ namespace Mengine
         void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override;
         bool onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override;
+        void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override;
 
     protected:
         void spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator );
@@ -41,6 +42,8 @@ namespace Mengine
         Scene * m_scene;
 
         NodePtr m_base;
+
+        GOAP::ChainPtr m_chain;
 
         uint32_t m_jewelry_type_count;
         float m_jewelry_size;

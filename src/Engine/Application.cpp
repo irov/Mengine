@@ -885,53 +885,8 @@ namespace Mengine
 
             if( _event.code == KC_F5 && _event.isDown == true )
             {
-                class VisitorPlayerFactoryManager
-                {
-                public:
-                    VisitorPlayerFactoryManager( const ConstString & _category, Stringstream & _ss )
-                        : m_category( _category )
-                        , m_ss( _ss )
-                    {
-                    }
-
-                public:
-                    void visit( const PrototypeGeneratorInterfacePtr & _generator )
-                    {
-                        const ConstString & category = _generator->getCategory();
-                        const ConstString & prototype = _generator->getPrototype();
-
-                        if( m_category != category )
-                        {
-                            return;
-                        }
-
-                        uint32_t count = _generator->count();
-
-                        if( count == 0 )
-                        {
-                            return;
-                        }
-
-                        m_ss << "" << prototype.c_str() << ": " << count << "\n";
-                    }
-
-                protected:
-                    ConstString m_category;
-                    Stringstream & m_ss;
-                };
-
-                Stringstream ss;
-                VisitorPlayerFactoryManager pfmv( STRINGIZE_STRING_LOCAL( "Node" ), ss );
-
-                PROTOTYPE_SERVICE()
-                    ->foreachGenerators( [&pfmv]( const PrototypeGeneratorInterfacePtr & _generator )
-                {
-                    pfmv.visit( _generator );
-                } );
-
-                const String & str = ss.str();
-
-                LOGGER_ERROR( "%s", str.c_str() );
+                SCENE_SERVICE()
+                    ->restartCurrentScene( false, nullptr );
             }
 
             if( _event.code == KC_OEM_MINUS && _event.isDown == true )

@@ -25,11 +25,28 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        template<class T>
+        T get_value( const jpp::object & _j, const Char * _key, T _default )
+        {
+            jpp::object k;
+            if( _j.exist( _key, &k ) == false )
+            {
+                return _default;
+            }
+
+            T value = k.get( "value", _default );
+
+            return value;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool JSONSetting::getValue( const Char * _key, bool _default ) const
     {
         const jpp::object & j = m_storage->getJSON();
 
-        bool value = j.get( _key, _default );
+        bool value = Detail::get_value( j, _key, _default );
 
         return value;
     }
@@ -37,8 +54,8 @@ namespace Mengine
     int32_t JSONSetting::getValue( const Char * _key, int32_t _default ) const
     {
         const jpp::object & j = m_storage->getJSON();
-
-        int32_t value = j.get( _key, _default );
+        
+        int32_t value = Detail::get_value( j, _key, _default );
 
         return value;
     }
@@ -47,7 +64,7 @@ namespace Mengine
     {
         const jpp::object & j = m_storage->getJSON();
 
-        uint32_t value = j.get( _key, _default );
+        uint32_t value = Detail::get_value( j, _key, _default );
 
         return value;
     }
@@ -56,7 +73,7 @@ namespace Mengine
     {
         const jpp::object & j = m_storage->getJSON();
 
-        float value = j.get( _key, _default );
+        float value = Detail::get_value( j, _key, _default );
 
         return value;
     }
@@ -65,7 +82,7 @@ namespace Mengine
     {
         const jpp::object & j = m_storage->getJSON();
 
-        const Char * value = j.get( _key, _default );
+        const Char * value = Detail::get_value( j, _key, _default );
 
         return value;
     }
@@ -74,12 +91,13 @@ namespace Mengine
     {
         const jpp::object & j = m_storage->getJSON();
 
-        if( j.exist( _key ) == false )
+        jpp::object k;
+        if( j.exist( _key, &k ) == false )
         {
             return _default;
         }
 
-        jpp::object jv2 = j[_key];
+        jpp::object jv2 = k["value"];
 
         mt::vec2f value( jv2["x"], jv2["y"] );
 
@@ -90,12 +108,13 @@ namespace Mengine
     {
         const jpp::object & j = m_storage->getJSON();
 
-        if( j.exist( _key ) == false )
+        jpp::object k;
+        if( j.exist( _key, &k ) == false )
         {
             return _default;
         }
 
-        jpp::object jv3 = j[_key];
+        jpp::object jv3 = k["value"];
 
         mt::vec3f value( jv3["x"], jv3["y"], jv3["z"] );
 
@@ -106,12 +125,13 @@ namespace Mengine
     {
         const jpp::object & j = m_storage->getJSON();
 
-        if( j.exist( _key ) == false )
+        jpp::object k;
+        if( j.exist( _key, &k ) == false )
         {
             return _default;
         }
 
-        jpp::object jc = j[_key];
+        jpp::object jc = k["value"];
 
         Color value( jc["r"], jc["g"], jc["b"], jc.get( "a", 1.f ) );
 

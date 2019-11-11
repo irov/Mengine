@@ -99,6 +99,7 @@ namespace Mengine
         m_jewelry_cell_explosive_time_ms = game_setting->getValue( "jewelry_cell_explosive_time_ms", 750.f );
         m_jewelry_cell_explosive_count = game_setting->getValue( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
         m_jewelry_spawn_time_ms = game_setting->getValue( "jewelry_spawn_time_ms", 350.f );
+        m_jewelry_spawn_count = game_setting->getValue( "jewelry_spawn_count", ~0U );
 
         m_jewelryMatrix = Helper::makeFactorableUnique<JewelryMatrix>();
 
@@ -256,7 +257,7 @@ namespace Mengine
                     {
                     case EJSUPER_NORMAL:
                         {
-                            jewelry->block( _source );
+                            this->collapseJewelry_( _source, jewelry );
                         }break;
                     case EJSUPER_BOMB:
                         {
@@ -297,7 +298,7 @@ namespace Mengine
             {
             case EJSUPER_NORMAL:
                 {
-                    jewelry->block( _source );
+                    this->collapseJewelry_( _source, jewelry );
                 }break;
             case EJSUPER_BOMB:
                 {
@@ -314,6 +315,49 @@ namespace Mengine
         } );
 
         source_fall->addBlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::collapseJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry )
+    {
+        if( m_jewelryMatrix->isFall( _jewelry ) == false )
+        {
+            _jewelry->stop();
+            _jewelry->block( _source );
+        }
+
+        uint32_t jewelry_type = _jewelry->getType();
+        uint32_t jewelry_column = _jewelry->getColumn();
+        uint32_t jewelry_row = _jewelry->getRow();
+
+        VectorJewelries jewelries;
+        m_jewelryMatrix->getNeighbours( jewelry_column, jewelry_row, jewelry_type, jewelries, []( const JewelryPtr & _jewelry )
+        {
+            if( _jewelry->isBlock() == false )
+            {
+                return false;
+            }
+
+            if( _jewelry->isMove() == true )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        if( jewelries.size() < 3 )
+        {
+            _jewelry->block( _source );
+
+            return;
+        }
+
+        const GOAP::SourcePtr & source_fork = _source->addFork();
+
+        for( auto && [source_jewelry, jewerly] : source_fork->addParallelZip( jewelries ) )
+        {
+            jewerly->dead( source_jewelry );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void JewelryEventReceiver::explosiveJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry )
@@ -494,7 +538,10 @@ namespace Mengine
 
         source_spawn->addGenerator( timer, [this]( uint32_t _iterator )
         {
-            MENGINE_UNUSED( _iterator );
+            if( m_jewelry_spawn_count == _iterator )
+            {
+                return -1.f;
+            }
 
             return m_jewelry_spawn_time_ms;
         }, [this]( const GOAP::SourcePtr & _source, uint32_t _iterator, float _time )

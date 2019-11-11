@@ -19,6 +19,22 @@
 #define MENGINE_UNUSED(X) ((void)X)
 #endif
 
+#if defined(_MSC_VER)
+#   define MENGINE_COMPILER_MSVC
+#elif defined(__GNUC__)
+#   define MENGINE_COMPILER_GCC
+#elif defined(__clang__)
+#   define MENGINE_COMPILER_CLANG
+#elif defined(__EMSCRIPTEN__)
+#   define MENGINE_COMPILER_EMSCRIPTEN
+#elif defined(__MINGW32__)
+#   define MENGINE_COMPILER_MINGW32
+#elif defined(__MINGW64__)
+#   define MENGINE_COMPILER_MINGW64
+#else
+#   error "undefine compiler"
+#endif
+
 #ifdef __GNUC__
 #define MENGINE_CODE_FILE __FILE__
 #define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__

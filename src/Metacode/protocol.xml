@@ -1,4 +1,4 @@
-<Protocol Version = "140">
+<Protocol Version = "141">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -483,16 +483,22 @@
 
       <Node Name="Pak">
         <Node Name="Scripts">
-          <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
-          <Attribute Name="Module" Type="Mengine::ConstString"/>
-          <Attribute Name="Initializer" Type="Mengine::ConstString"/>
-          <Attribute Name="Finalizer" Type="Mengine::ConstString"/>
-          <Attribute Name="Platform" Type="Mengine::Tags"/>
+		  <Attribute Name="Platform" Type="Mengine::Tags"/>
+		  
+          <Node Name="Script">
+              <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+              <Attribute Name="Module" Type="Mengine::ConstString"/>
+              <Attribute Name="Initializer" Type="Mengine::ConstString"/>
+              <Attribute Name="Finalizer" Type="Mengine::ConstString"/>
+          </Node>
         </Node>
 
-        <Node Name="Fonts">
-          <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+        <Node Name="Fonts">          
           <Attribute Name="Platform" Type="Mengine::Tags"/>
+		  
+		  <Node Name="Font">
+			<Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+		  </Node>
         </Node>
 
         <Node Name="Resources">
@@ -527,6 +533,15 @@
           <Attribute Name="Platform" Type="Mengine::Tags"/>
           
           <Node Name="Material">
+            <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+          </Node>
+        </Node>
+        
+        <Node Name="Settings">
+          <Attribute Name="Platform" Type="Mengine::Tags"/>
+          
+          <Node Name="Setting">
+            <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
           </Node>
         </Node>

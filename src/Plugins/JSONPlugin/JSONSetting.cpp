@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONSetting::loadSetting( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool JSONSetting::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         JSONStorageInterfacePtr storage = JSON_SERVICE()
             ->loadJSON( _fileGroup, _filePath, _doc );
@@ -23,6 +23,11 @@ namespace Mengine
         m_storage = storage;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JSONSetting::finalize()
+    {
+        m_storage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail

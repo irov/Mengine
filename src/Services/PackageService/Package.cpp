@@ -11,6 +11,7 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 
@@ -76,6 +77,7 @@ namespace Mengine
         m_textsDesc.clear();
         m_datasDesc.clear();
         m_materialsDesc.clear();
+        m_settingsDesc.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void Package::setPreload( bool _value )
@@ -253,33 +255,44 @@ namespace Mengine
 
         for( const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts : includes_scripts )
         {
-            const FilePath & Path = meta_scripts.get_Path();
-
-            ConstString Module;
-            meta_scripts.get_Module( &Module );
-
-            ConstString Initializer;
-            meta_scripts.get_Initializer( &Initializer );
-
-            ConstString Finalizer;
-            meta_scripts.get_Finalizer( &Finalizer );
-
             Tags Platform;
             meta_scripts.get_Platform( &Platform );
 
-            this->addScriptPackage_( Path, Module, Initializer, Finalizer, Platform );
+            const Metacode::Meta_Data::Meta_Pak::Meta_Scripts::VectorMeta_Script & includes_script = meta_scripts.get_Includes_Script();
+
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Scripts::Meta_Script & meta_script : includes_script )
+            {
+                const FilePath & Path = meta_script.get_Path();
+
+                ConstString Module;
+                meta_script.get_Module( &Module );
+
+                ConstString Initializer;
+                meta_script.get_Initializer( &Initializer );
+
+                ConstString Finalizer;
+                meta_script.get_Finalizer( &Finalizer );
+
+
+                this->addScriptPackage_( Path, Module, Initializer, Finalizer, Platform );
+            }
         }
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
 
         for( const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts : includes_fonts )
         {
-            const FilePath & Path = meta_fonts.get_Path();
-
             Tags Platform;
             meta_fonts.get_Platform( &Platform );
 
-            this->addFontPath_( Path, Platform );
+            const Metacode::Meta_Data::Meta_Pak::Meta_Fonts::VectorMeta_Font & includes_font = meta_fonts.get_Includes_Font();
+
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Fonts::Meta_Font & meta_font : includes_font )
+            {
+                const FilePath & Path = meta_font.get_Path();
+
+                this->addFontPath_( Path, Platform );
+            }
         }
 
         const Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources & includes_resources = pak.get_Includes_Resources();
@@ -356,6 +369,24 @@ namespace Mengine
                 const FilePath & path = meta_material.get_Path();
 
                 this->addMaterial_( path, platform );
+            }
+        }
+
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Settings & includes_settings = pak.get_Includes_Settings();
+
+        for( const Metacode::Meta_Data::Meta_Pak::Meta_Settings & meta_settings : includes_settings )
+        {
+            Tags platform;
+            meta_settings.get_Platform( &platform );
+
+            const Metacode::Meta_Data::Meta_Pak::Meta_Settings::VectorMeta_Setting & includes_setting = meta_settings.get_Includes_Setting();
+
+            for( const Metacode::Meta_Data::Meta_Pak::Meta_Settings::Meta_Setting & meta_setting : includes_setting )
+            {
+                const ConstString & name = meta_setting.get_Name();
+                const FilePath & path = meta_setting.get_Path();
+
+                this->addSetting_( name, path, platform );
             }
         }
 
@@ -454,7 +485,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->addUserData_( desc.name, desc.path ) == false )
+            if( this->loadData_( desc.name, desc.path ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid load userdata '%s' path '%s'"
                     , m_filePath.c_str()
@@ -479,6 +510,26 @@ namespace Mengine
                 LOGGER_ERROR( "'%s:%s' invalid load material '%s'"
                     , m_filePath.c_str()
                     , m_name.c_str()
+                    , desc.path.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        for( const PackageSettingDesc & desc : m_settingsDesc )
+        {
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
+            {
+                continue;
+            }
+
+            if( this->loadSetting_( desc.name, desc.path ) == false )
+            {
+                LOGGER_ERROR( "'%s:%s' invalid load setting '%s' path '%s'"
+                    , m_filePath.c_str()
+                    , m_name.c_str()
+                    , desc.name.c_str()
                     , desc.path.c_str()
                 );
 
@@ -561,7 +612,7 @@ namespace Mengine
                 continue;
             }
 
-            if( this->removeUserData_( desc.name ) == false )
+            if( this->unloadData_( desc.name ) == false )
             {
                 return false;
             }
@@ -575,6 +626,19 @@ namespace Mengine
             }
 
             if( this->unloadMaterials_( m_fileGroup, desc.path ) == false )
+            {
+                return false;
+            }
+        }
+
+        for( const PackageSettingDesc & desc : m_settingsDesc )
+        {
+            if( desc.platform.empty() == false && desc.platform.hasTags( platformTags ) == false )
+            {
+                continue;
+            }
+
+            if( this->unloadSetting_( desc.name ) == false )
             {
                 return false;
             }
@@ -595,50 +659,66 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadText_( const FilePath & _filePath )
     {
-        bool result = TEXT_SERVICE()
+        bool successful = TEXT_SERVICE()
             ->loadTextEntry( m_fileGroup, _filePath );
 
-        return result;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::unloadText_( const FilePath & _filePath )
     {
-        bool result = TEXT_SERVICE()
+        bool successful = TEXT_SERVICE()
             ->unloadTextEntry( m_fileGroup, _filePath );
 
-        return result;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadFont_( const FilePath & _filePath )
     {
-        bool result = TEXT_SERVICE()
+        bool successful = TEXT_SERVICE()
             ->loadFonts( m_fileGroup, _filePath );
 
-        return result;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::unloadFont_( const FilePath & _filePath )
     {
-        bool result = TEXT_SERVICE()
+        bool successful = TEXT_SERVICE()
             ->unloadFonts( m_fileGroup, _filePath );
 
-        return result;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::addUserData_( const ConstString & _name, const FilePath & _filePath )
+    bool Package::loadData_( const ConstString & _name, const FilePath & _filePath )
     {
-        bool result = USERDATA_SERVICE()
-            ->addUserdata( _name, m_fileGroup, _filePath );
+        bool successful = USERDATA_SERVICE()
+            ->addUserdata( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
 
-        return result;
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::removeUserData_( const ConstString & _name )
+    bool Package::unloadData_( const ConstString & _name )
     {
-        bool result = USERDATA_SERVICE()
+        bool successful = USERDATA_SERVICE()
             ->removeUserdata( _name );
 
-        return result;
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::loadSetting_( const ConstString & _name, const FilePath & _filePath )
+    {
+        bool successful = SETTINGS_SERVICE()
+            ->loadSetting( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::unloadSetting_( const ConstString & _name )
+    {
+        bool successful = SETTINGS_SERVICE()
+            ->unloadSetting( _name );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void Package::addResource_( const FilePath & _filePath, const Tags & _tags, const Tags & _platform, bool _demand, bool _ignored )
@@ -701,6 +781,16 @@ namespace Mengine
         desc.platform = _platform;
 
         m_materialsDesc.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addSetting_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform )
+    {
+        PackageSettingDesc desc;
+        desc.name = _name;
+        desc.path = _filePath;
+        desc.platform = _platform;
+
+        m_settingsDesc.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::loadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored )

@@ -49,6 +49,11 @@ namespace Mengine
 
                 return true;
             } );
+
+            SERVICE_LEAVE( ThreadServiceInterface, [this]()
+            {
+                m_mutex = nullptr;
+            } );
         }
 
         m_memleakLogFileName = GET_OPTION_VALUE( "memleaklog", "" );
@@ -72,8 +77,6 @@ namespace Mengine
         {
             return;
         }
-
-        m_mutex = nullptr;
 
         uint32_t leakcount = 0;
 

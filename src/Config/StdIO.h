@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 #define MENGINE_VA_LIST_TYPE va_list
 #define MENGINE_VA_LIST_START( Args, Format ) va_start( Args, Format )

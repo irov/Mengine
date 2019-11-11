@@ -14,8 +14,10 @@
     #define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsprintf( Buffer, Format, Args )
 #endif
 
-#ifdef MENGINE_TOOLCHAIN_MSVC
-    #define MENGINE_STRICMP _stricmp
+#if defined(MENGINE_COMPILER_MSVC)
+#   define MENGINE_STRICMP _stricmp
+#elif defined(MENGINE_COMPILER_GCC)
+#   define MENGINE_STRICMP strcasecmp
 #else
-    #define MENGINE_STRICMP stricmp
+#   define MENGINE_STRICMP stricmp
 #endif

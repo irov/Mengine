@@ -18,6 +18,9 @@ namespace Mengine
 
     public:
         virtual bool loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
+        virtual bool unloadSetting( const ConstString & _name ) = 0;
+
+    public:
         virtual bool loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
 
     public:

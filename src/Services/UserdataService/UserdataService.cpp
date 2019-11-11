@@ -38,8 +38,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         MapDatas::const_iterator it_found = m_datas.find( _name );
 
         if( it_found != m_datas.end() )
@@ -54,6 +56,10 @@ namespace Mengine
         UserdataDesc desc;
         desc.category = _fileGroup;
         desc.path = _filePath;
+
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
 
         m_datas.emplace( _name, desc );
 
@@ -93,7 +99,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr UserdataService::loadUserdata( const ConstString & _name ) const
+    MemoryInterfacePtr UserdataService::loadUserdata( const ConstString & _name, const Char * _doc ) const
     {
         MapDatas::const_iterator it_found = m_datas.find( _name );
 
@@ -108,14 +114,14 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.category, desc.path, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.category, desc.path, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "data '%s' invalid open file '%s'"
             , _name.c_str()
             , desc.path.c_str()
         );
 
-        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "data '%s' invalid load stream archive '%s'"
             , _name.c_str()

@@ -12,6 +12,8 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "Config/Char.h"
+
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY
 #include "pugixml.hpp"
@@ -311,7 +313,7 @@ namespace Mengine
             const uint8_t * ptr = reinterpret_cast<const uint8_t *>(_data);
             m_buffer.insert( m_buffer.end(), ptr, ptr + _size );
 
-            m_debug.append( (const char *)_data, _size );
+            m_debug.append( (const Char *)_data, _size );
         }
 
     private:

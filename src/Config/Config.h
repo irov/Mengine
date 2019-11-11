@@ -61,7 +61,7 @@
 #if defined(WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
 #   define MENGINE_PLATFORM_DESKTOP
-#elif defined(__linux__)
+#elif defined(__linux__) && !defined(__ANDROID__)
 #   define MENGINE_PLATFORM_LINUX
 #   define MENGINE_PLATFORM_DESKTOP
 #elif defined(__APPLE__)

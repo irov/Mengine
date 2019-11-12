@@ -325,7 +325,7 @@ namespace Mengine
         SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( SecureService );
         SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( UnicodeSystem );        
+        SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( VocabularyService );

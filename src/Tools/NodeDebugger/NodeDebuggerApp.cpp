@@ -458,19 +458,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSettings( const pugi::xml_node & _xmlContainer )
     {
-        pugi::xml_node xmlNode = _xmlContainer.first_child();
+        MENGINE_UNUSED( _xmlContainer );
 
-        if( xmlNode )
-        {
-            //_xmlNode.child( "Render" );
+        //pugi::xml_node xmlNode = _xmlContainer.first_child();
 
-            //DeserializeNode( xmlNode, mSceneRenderable );
-            for( const pugi::xml_node & child : childrenNode.children() )
-            {
-                const Char * name = child["name"].value();
-                const Char * file = child["file"].value();
-            }
-        }
+        //if( xmlNode )
+        //{
+        //    //_xmlNode.child( "Render" );
+
+        //    //DeserializeNode( xmlNode, mSceneRenderable );
+        //    for( const pugi::xml_node & child : childrenNode.children() )
+        //    {
+        //        const Char * name = child["name"].value();
+        //        const Char * file = child["file"].value();
+        //    }
+        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, DebuggerNode* _node )

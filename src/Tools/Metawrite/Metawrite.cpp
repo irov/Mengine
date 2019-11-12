@@ -41,6 +41,7 @@ PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
+SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( StringizeService );
@@ -64,6 +65,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
+        SERVICE_CREATE( OptionsService );
         SERVICE_CREATE( FactoryService );
 
         SERVICE_CREATE( UnicodeSystem );

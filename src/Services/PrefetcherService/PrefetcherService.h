@@ -30,9 +30,7 @@ namespace Mengine
         bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        void update() override;
+        void _stopService() override;
 
     public:
         bool prefetchImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer ) override;

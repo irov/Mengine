@@ -58,8 +58,8 @@ namespace Mengine
         void setIcon( uint32_t _icon ) override;
         uint32_t getIcon() const override;
 
-        void setProjectTitle( const Char * _projectTitle, size_t _projectTitleLen ) override;
-        size_t getProjectTitle( Char * _projectTitle ) const override;
+        void setProjectTitle( const Char * _projectTitle ) override;
+        void getProjectTitle( Char * _projectTitle ) const override;
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
@@ -160,7 +160,7 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
-        Tags m_platformName;
+        Tags m_platformTags;
 
         SDL_Window * m_window;
 
@@ -187,7 +187,7 @@ namespace Mengine
         SDLInputPtr m_sdlInput;
 
         uint32_t m_icon;
-        String m_projectTitle;
+        Char m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
 
         uint64_t m_prevTime;
 

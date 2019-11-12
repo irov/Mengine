@@ -2,9 +2,12 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Logger.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourcePrefetcherService, Mengine::ResourcePrefetcherService );
@@ -29,21 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourcePrefetcherService::_finalizeService()
     {
-        MENGINE_ASSERTION( m_prefetchers.empty() == true, "resource prefetcher service prefetchers not empty '%d'"
-            , m_prefetchers.size()
-        );
-
-        m_prefetchers.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourcePrefetcherService::addResourcePrefetcher( const ConstString & _type, const ResourcePrefetcherInterfacePtr & _prefetcher )
-    {
-        m_prefetchers.emplace( _type, _prefetcher );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourcePrefetcherService::removeResourcePrefetcher( const ConstString & _type )
-    {
-        m_prefetchers.erase( _type );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ) );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourcePrefetcherService::prefetchResource( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
@@ -57,11 +47,11 @@ namespace Mengine
 
         const ConstString & resourceType = _resource->getType();
 
-        const ResourcePrefetcherInterfacePtr & prefetcher = m_prefetchers.find( resourceType );
+        ResourcePrefetcherInterfacePtr prefetcher = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), resourceType );
 
         if( prefetcher == nullptr )
         {
-            return true;
+            return false;
         }
 
         bool successful = prefetcher->prefetch( _resource, _observer );
@@ -80,7 +70,7 @@ namespace Mengine
 
         const ConstString & resourceType = _resource->getType();
 
-        const ResourcePrefetcherInterfacePtr & prefetcher = m_prefetchers.find( resourceType );
+        ResourcePrefetcherInterfacePtr prefetcher = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), resourceType );
 
         if( prefetcher == nullptr )
         {

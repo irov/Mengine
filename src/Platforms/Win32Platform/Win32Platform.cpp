@@ -650,16 +650,14 @@ namespace Mengine
         return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::setProjectTitle( const Char * _projectTitle, size_t _projectTitleSize )
+    void Win32Platform::setProjectTitle( const Char * _projectTitle )
     {        
-        Helper::utf8ToUnicodeSize( _projectTitle, _projectTitleSize, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
+    void Win32Platform::getProjectTitle( Char * _projectTitle ) const
     {
-        size_t projectTitleLen = Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
-
-        return projectTitleLen;
+        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const
@@ -1647,7 +1645,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const ContentInterface * _content, const MemoryInterfacePtr & _buffer )
     {
-        const FilePath & filePath = _content->getFilePath();        
+        const FilePath & filePath = _content->getFilePath();
 
         MapCursors::iterator it_found = m_cursors.find( filePath );
 
@@ -1704,8 +1702,12 @@ namespace Mengine
             stream->flush();
             stream = nullptr;
 
-            WString unicode_icoFile;
-            if( Helper::utf8ToUnicode( c_icoFile, unicode_icoFile ) == false )
+            PathString icoFullFile;
+            icoFullFile += fileGroup->getFolderPath();
+            icoFullFile += icoFile;
+
+            WString unicode_icoFullFile;
+            if( Helper::utf8ToUnicode( icoFullFile, unicode_icoFullFile ) == false )
             {
                 LOGGER_ERROR( "name '%s' path '%s' can't file name '%s' to unicode"
                     , _name.c_str()
@@ -1716,7 +1718,9 @@ namespace Mengine
                 return false;
             }
 
-            HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile.c_str() );
+            const WChar * unicode_icoFile_str = unicode_icoFullFile.c_str();
+
+            HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile_str );
 
             if( cursor == NULL )
             {
@@ -1726,7 +1730,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "icon '%s' for file '%ls' errCode %d"
                         , _name.c_str()
-                        , unicode_icoFile.c_str()
+                        , unicode_icoFullFile.c_str()
                         , errCode
                     );
 
@@ -2284,7 +2288,7 @@ namespace Mengine
             }
         }
 
-        PathAppend( szPath, fileCorrect );
+        ::PathAppend( szPath, fileCorrect );
 
         HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -2328,7 +2332,7 @@ namespace Mengine
         }
 
         WChar unicode_filePath[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _filePath, unicode_directoryPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
@@ -2354,24 +2358,15 @@ namespace Mengine
 
         ::PathAppend( szPath, unicode_directoryPath_correct );
 
-        if( this->existFile_( szPath ) == false )
-        {
-            if( this->createDirectory_( szPath ) == false )
-            {
-                LOGGER_ERROR( "directory '%s:%s' invalid createDirectory '%ls'"
-                    , _directoryPath
-                    , _filePath
-                    , szPath
-                );
-
-                return false;
-            }
-        }
-
         WChar unicode_filePath_correct[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslashToW( unicode_filePath_correct, unicode_filePath );
 
-        PathAppend( szPath, unicode_filePath_correct );
+        ::PathAppend( szPath, unicode_filePath_correct );
+
+        if( this->existFile_( szPath ) == false )
+        {
+            return false;
+        }
 
         if( ::SystemParametersInfo( SPI_SETDESKWALLPAPER, 0, szPath, SPIF_UPDATEINIFILE ) == FALSE )
         {

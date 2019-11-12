@@ -17,6 +17,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/PickerInterface.h"
 #include "Interface/AnimationInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -264,6 +265,7 @@ namespace Mengine
             this->sendScene( m_scene );
             this->sendPickerable( m_scene );
             this->sendRenderable( m_scene );
+            this->sendSettings();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -554,7 +556,7 @@ namespace Mengine
 
             compressPacket( _packet, hdr );
 
-            InsertPacketHeader( _packet.payload, hdr );
+            Detail::InsertPacketHeader( _packet.payload, hdr );
 
             ThreadMutexScope mutexLock( m_dataMutex );
             m_outgoingPackets.emplace_back( _packet );
@@ -835,6 +837,40 @@ namespace Mengine
 
             this->serializeRenderable( render, payloadNode );
         }
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef _DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendSettings()
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Settings" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        SETTINGS_SERVICE()
+            ->visitSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _settings )
+        {
+            const FilePath & filePath = _settings->getFilePath();
+
+            pugi::xml_node xml_setting = payloadNode.append_child( "Setting" );
+
+            xml_setting.append_attribute( "name" ).set_value( _name.c_str() );
+            xml_setting.append_attribute( "file" ).set_value( filePath.c_str() );
+        } );
 
         NodeDebuggerPacket packet;
 

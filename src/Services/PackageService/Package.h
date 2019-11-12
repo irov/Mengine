@@ -83,18 +83,21 @@ namespace Mengine
         void addFontPath_( const FilePath & _filePath, const Tags & _tags );
         void addData_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform );
         void addMaterial_( const FilePath & _filePath, const Tags & _platform );
+        void addSetting_( const ConstString & _name, const FilePath & _filePath, const Tags & _platform );
 
     protected:
         bool loadText_( const FilePath & _filePath );
         bool unloadText_( const FilePath & _filePath );
         bool loadFont_( const FilePath & _filePath );
         bool unloadFont_( const FilePath & _filePath );
-        bool addUserData_( const ConstString & _name, const FilePath & _filePath );
-        bool removeUserData_( const ConstString & _name );
+        bool loadData_( const ConstString & _name, const FilePath & _filePath );
+        bool unloadData_( const ConstString & _name );
         bool loadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Tags & _tags, bool _ignored );
         bool unloadResources_( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
         bool loadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
         bool unloadMaterials_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
+        bool loadSetting_( const ConstString & _name, const FilePath & _filePath );
+        bool unloadSetting_( const ConstString & _name );
 
     protected:
         struct PackageResourceDesc
@@ -164,6 +167,16 @@ namespace Mengine
 
         typedef Vector<PackageMaterialDesc> VectorPackageMaterialDesc;
         VectorPackageMaterialDesc m_materialsDesc;
+
+        struct PackageSettingDesc
+        {
+            ConstString name;
+            FilePath path;
+            Tags platform;
+        };
+
+        typedef Vector<PackageSettingDesc> VectorPackageSettingDesc;
+        VectorPackageSettingDesc m_settingsDesc;
 
         bool m_preload;
         bool m_load;

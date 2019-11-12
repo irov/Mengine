@@ -33,6 +33,7 @@
 #include "Kernel/InputServiceHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/AssertionResourceType.h"
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageDefault.h"
@@ -1734,6 +1735,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_copyFile_( const ConstString & _resourceFilePath, const MemoryBufferInterfacePtr & _memory )
         {
+            MENGINE_ASSERTION_RESOURCE_TYPE( _resourceFilePath, ResourceFilePtr, false, "resource '%s' type does not match 'ResourceFile'"
+                , _resourceFilePath.c_str()
+            );
+
             const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
                 ->getResource( _resourceFilePath );
 
@@ -1767,9 +1772,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_updateUserWallpaper( const String & _filePath )
         {
-            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
+
+            strcat( projectName, "/" );
 
             if( PLATFORM_SERVICE()
                 ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -1792,9 +1799,11 @@ namespace Mengine
                 return false;
             }
 
-            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
+
+            strcat( projectName, "/" );
 
             if( PLATFORM_SERVICE()
                 ->createDirectoryUserPicture( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )
@@ -1817,9 +1826,11 @@ namespace Mengine
                 return false;
             }
 
-            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME + 1] = {'\0'};
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
+
+            strcat( projectName, "/" );
 
             if( PLATFORM_SERVICE()
                 ->createDirectoryUserMusic( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )

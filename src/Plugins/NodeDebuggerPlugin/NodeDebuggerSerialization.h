@@ -12,6 +12,8 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "Config/Char.h"
+
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY
 #include "pugixml.hpp"
@@ -27,15 +29,15 @@ namespace Mengine
         uint32_t uncompressedSize;  // 0 if packed is not compressed
     };
 
-    MENGINE_INLINE void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
-    {
-        const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
-        const uint8_t * end = begin + sizeof( PacketHeader );
-        _payload.insert( _payload.begin(), begin, end );
-    }
-
     namespace Detail
     {
+        MENGINE_INLINE void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
+        {
+            const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
+            const uint8_t * end = begin + sizeof( PacketHeader );
+            _payload.insert( _payload.begin(), begin, end );
+        }
+
         template <typename T>
         void setXmlValue( pugi::xml_attribute & _attrib, const T & _value )
         {
@@ -311,7 +313,7 @@ namespace Mengine
             const uint8_t * ptr = reinterpret_cast<const uint8_t *>(_data);
             m_buffer.insert( m_buffer.end(), ptr, ptr + _size );
 
-            m_debug.append( (const char *)_data, _size );
+            m_debug.append( (const Char *)_data, _size );
         }
 
     private:

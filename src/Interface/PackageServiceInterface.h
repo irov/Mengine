@@ -17,7 +17,7 @@ namespace Mengine
         SERVICE_DECLARE( "PackageService" );
 
     public:
-        virtual bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
+        virtual bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
 
     public:
         virtual bool hasPackage( const ConstString & _name ) const = 0;

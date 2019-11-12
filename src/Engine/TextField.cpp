@@ -29,7 +29,7 @@ namespace Mengine
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
         , m_fontParams( EFP_NONE )
-        , m_maxCharCount( ~0U )
+        , m_maxCharCount( MENGINE_UNKNOWN_SIZE )
         , m_charCount( 0 )
         , m_layoutCount( 0 )
         , m_textSize( 0.f, 0.f )
@@ -717,7 +717,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesMaxCount_( VectorTextLineChunks2 & _textLines ) const
     {
-        if( m_maxCharCount == ~0U )
+        if( m_maxCharCount == MENGINE_UNKNOWN_SIZE )
         {
             return;
         }

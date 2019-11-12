@@ -6,6 +6,8 @@
 
 #include "Kernel/Logger.h"
 
+#include <string.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -36,7 +38,7 @@ namespace Mengine
         template<class T>
         void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, uint32_t _type, T * _values, uint32_t _size, uint32_t _count )
         {
-            strcpy( _variable.uniform, _uniform );
+            ::strcpy( _variable.uniform, _uniform );
             _variable.type = _type;
             _variable.offset = _container.size();
             _variable.size = _size;

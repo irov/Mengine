@@ -82,7 +82,7 @@ namespace Mengine
         PickerablePtr m_pickerable;
         NodePtr m_nodes[2][__ECS_MAX__];
 
-        GOAP::ChainPtr m_chain;
+        GOAP::ChainInterfacePtr m_chain;
         GOAP::SemaphorePtr m_semaphoreBlock;
         GOAP::EventPtr m_eventValue;
     };

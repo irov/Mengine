@@ -11,7 +11,6 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
-#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
@@ -32,6 +31,7 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
@@ -214,8 +214,12 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
         Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
-        m_companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
-        m_projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+
+        strcpy( m_companyName, companyName );
+        strcpy( m_projectName, projectName );
+
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
 
@@ -295,8 +299,8 @@ namespace Mengine
         }
 
         LOGGER_MESSAGE( "Application company '%s' project '%s' version '%d' locale '%s'"
-            , m_companyName.c_str()
-            , m_projectName.c_str()
+            , m_companyName
+            , m_projectName
             , m_projectVersion
             , m_locale.c_str()
         );
@@ -721,14 +725,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths )
+    bool Application::initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths )
     {
         for( const FilePath & packagePath : _packagesPaths )
         {
             if( PACKAGE_SERVICE()
-                ->loadPackages( _fileGroup, packagePath ) == false )
+                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
-                LOGGER_CRITICAL( "invalid load resource pack '%s'"
+                LOGGER_CRITICAL( "invalid load package '%s'"
                     , packagePath.c_str()
                 );
 
@@ -752,6 +756,19 @@ namespace Mengine
             );
 
             return false;
+        }
+
+        for( const FilePath & settingPath : _settingsPaths )
+        {
+            if( SETTINGS_SERVICE()
+                ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_CRITICAL( "invalid load setting '%s'"
+                    , settingPath.c_str()
+                );
+
+                return false;
+            }
         }
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -868,53 +885,8 @@ namespace Mengine
 
             if( _event.code == KC_F5 && _event.isDown == true )
             {
-                class VisitorPlayerFactoryManager
-                {
-                public:
-                    VisitorPlayerFactoryManager( const ConstString & _category, Stringstream & _ss )
-                        : m_category( _category )
-                        , m_ss( _ss )
-                    {
-                    }
-
-                public:
-                    void visit( const PrototypeGeneratorInterfacePtr & _generator )
-                    {
-                        const ConstString & category = _generator->getCategory();
-                        const ConstString & prototype = _generator->getPrototype();
-
-                        if( m_category != category )
-                        {
-                            return;
-                        }
-
-                        uint32_t count = _generator->count();
-
-                        if( count == 0 )
-                        {
-                            return;
-                        }
-
-                        m_ss << "" << prototype.c_str() << ": " << count << "\n";
-                    }
-
-                protected:
-                    ConstString m_category;
-                    Stringstream & m_ss;
-                };
-
-                Stringstream ss;
-                VisitorPlayerFactoryManager pfmv( STRINGIZE_STRING_LOCAL( "Node" ), ss );
-
-                PROTOTYPE_SERVICE()
-                    ->foreachGenerators( [&pfmv]( const PrototypeGeneratorInterfacePtr & _generator )
-                {
-                    pfmv.visit( _generator );
-                } );
-
-                const String & str = ss.str();
-
-                LOGGER_ERROR( "%s", str.c_str() );
+                SCENE_SERVICE()
+                    ->restartCurrentScene( false, nullptr );
             }
 
             if( _event.code == KC_OEM_MINUS && _event.isDown == true )
@@ -1375,12 +1347,6 @@ namespace Mengine
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
             THREAD_SERVICE()
-                ->update();
-        }
-
-        if( SERVICE_EXIST( PrefetcherServiceInterface ) == true )
-        {
-            PREFETCHER_SERVICE()
                 ->update();
         }
 
@@ -1982,12 +1948,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::getCompanyName( Char * _companyName ) const
     {
-        strcpy( _companyName, m_companyName.c_str() );
+        strcpy( _companyName, m_companyName );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::getProjectName( Char * _projectName ) const
     {
-        strcpy( _projectName, m_projectName.c_str() );
+        strcpy( _projectName, m_projectName );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getProjectCodename() const

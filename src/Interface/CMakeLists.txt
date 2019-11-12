@@ -112,6 +112,8 @@ src
     ScriptWrapperInterface.h
     ContentInterface.h
     ResourceBankInterface.h
+    SettingInterface.h
+    SettingsServiceInterface.h
     
 	dummy.cpp
 )

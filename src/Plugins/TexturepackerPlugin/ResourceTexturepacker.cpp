@@ -140,10 +140,9 @@ namespace Mengine
         {
             jpp::object root_meta = root["meta"];
 
-            const Char * root_meta_image = (const Char *)root_meta["image"];
-            (void)root_meta_image;
+            const Char * root_meta_image = root_meta["image"];
 
-            ResourceImagePtr resource = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, false, MENGINE_DOCUMENT_FACTORABLE );
+            ResourceImagePtr resource = resourceBank->createResource( locale, groupName, ConstString::none(), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), false, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false );
 

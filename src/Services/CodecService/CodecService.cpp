@@ -4,6 +4,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -103,16 +104,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & CodecService::findCodecType( const FilePath & _filePath ) const
     {
-        const Char * str_filePath = _filePath.c_str();
-
-        const Char * dot_find = strrchr( str_filePath, '.' );
-
-        if( dot_find == nullptr )
-        {
-            return ConstString::none();
-        }
-
-        ConstString ext = Helper::stringizeString( dot_find + 1 );
+        ConstString ext = Helper::getFilePathExt( _filePath );
 
         MapCodecExts::const_iterator it_found = m_codecExts.find( ext );
 

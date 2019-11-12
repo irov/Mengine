@@ -16,12 +16,14 @@
 #ifndef _OS_TYPES_H
 #define _OS_TYPES_H
 
+#include "stdex/allocator.h"
+
 /* make it easy on the folks that want to compile the libs with a
    different malloc than stdlib */
-#define _ogg_malloc  malloc
-#define _ogg_calloc  calloc
-#define _ogg_realloc realloc
-#define _ogg_free    free
+#define _ogg_malloc(n)  stdex_malloc(n, "ogg")
+#define _ogg_calloc(c,n)  stdex_calloc(c, n, "ogg")
+#define _ogg_realloc(p, n) stdex_realloc(p, n, "ogg")
+#define _ogg_free(p)    stdex_free(p, "ogg")
 
 #if defined(_WIN32)
 
@@ -158,6 +160,16 @@
    typedef uint32_t ogg_uint32_t;
    typedef int64_t ogg_int64_t;
    typedef uint64_t ogg_uint64_t;
+
+#elif defined(__linux__)
+
+#  include <stdint.h>
+typedef int16_t ogg_int16_t;
+typedef uint16_t ogg_uint16_t;
+typedef int32_t ogg_int32_t;
+typedef uint32_t ogg_uint32_t;
+typedef int64_t ogg_int64_t;
+typedef uint64_t ogg_uint64_t;
 
 #else
 

@@ -13,6 +13,7 @@
 #include "Config/Metaprogramming.h"
 
 #include "GOAP/Semaphore.h"
+//#include "GOAP/Chain.h"
 #include "GOAP/Source.h"
 
 namespace Mengine
@@ -166,5 +167,6 @@ namespace Mengine
     namespace Helper
     {
         EngineSourcePtr makeEngineSource();
+        GOAP::ChainInterfacePtr makeEngineChain( const EngineSourcePtr & _source );
     }
 }

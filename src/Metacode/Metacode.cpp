@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 140;
+        return 141;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3423237859; 
+        return 1954752678; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( Metabuf::HeaderError _error )
@@ -4730,6 +4730,15 @@ namespace Metacode
                             metadata.parse( _buff, _size, _read, _userData );
                         }
                     }break;
+                case 7:
+                    {
+                        includes_Meta_Settings.resize( includeCount );
+        
+                        for( Meta_Pak::Meta_Settings & metadata : includes_Meta_Settings )
+                        {
+                            metadata.parse( _buff, _size, _read, _userData );
+                        }
+                    }break;
                 case 4:
                     {
                         includes_Meta_Texts.resize( includeCount );
@@ -4770,6 +4779,10 @@ namespace Metacode
             case 1:
                 {
                     includes_Meta_Scripts.reserve( _count );
+                }break;
+            case 7:
+                {
+                    includes_Meta_Settings.reserve( _count );
                 }break;
             case 4:
                 {
@@ -4821,6 +4834,13 @@ namespace Metacode
                 {
                     includes_Meta_Scripts.emplace_back( Meta_Pak::Meta_Scripts() );
                     Meta_Pak::Meta_Scripts & metadata = includes_Meta_Scripts.back();
+        
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            case 7:
+                {
+                    includes_Meta_Settings.emplace_back( Meta_Pak::Meta_Settings() );
+                    Meta_Pak::Meta_Settings & metadata = includes_Meta_Settings.back();
         
                     metadata.parse( _buff, _size, _read, _userData );
                 }break;
@@ -4959,8 +4979,6 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
-            this->_parseData( _buff, _size, _read, _userData );
-        
             Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
         
             if( m_flagNoRequiredAttribute != 0 )
@@ -4968,12 +4986,20 @@ namespace Metacode
                 this->_parseArguments( _buff, _size, _read, _userData );
             }
         
+            uint32_t includeCount;
+            Metabuf::readSize( _buff, _size, _read, includeCount );
+        
+            if( includeCount != 0 )
+            {
+                includes_Meta_Font.resize( includeCount );
+        
+                for( Meta_Pak::Meta_Fonts::Meta_Font & metadata : includes_Meta_Font )
+                {
+                    metadata.parse( _buff, _size, _read, _userData );
+                }
+            }
+        
             return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Fonts::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
-        {
-            Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Fonts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
@@ -4992,6 +5018,55 @@ namespace Metacode
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_Pak::Meta_Fonts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_id;
+            (void)_userData;
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Font.emplace_back( Meta_Pak::Meta_Fonts::Meta_Font() );
+                    Meta_Pak::Meta_Fonts::Meta_Font & metadata = includes_Meta_Font.back();
+        
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_Pak::Meta_Fonts::Meta_Font::Meta_Font()
+            : Metabuf::Metadata()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_Pak::Meta_Fonts::Meta_Font::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_userData;
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Fonts::Meta_Font::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Fonts::Meta_Font::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            (void)_id;
+            (void)_count;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Fonts::Meta_Font::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             (void)_buff;
             (void)_size;
@@ -5258,6 +5333,78 @@ namespace Metacode
             (void)_size;
             (void)_read;
             (void)_userData;
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
+            uint32_t includeCount;
+            Metabuf::readSize( _buff, _size, _read, includeCount );
+        
+            if( includeCount != 0 )
+            {
+                includes_Meta_Script.resize( includeCount );
+        
+                for( Meta_Pak::Meta_Scripts::Meta_Script & metadata : includes_Meta_Script )
+                {
+                    metadata.parse( _buff, _size, _read, _userData );
+                }
+            }
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Scripts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
+            {
+                Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
+            }
+        
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Scripts::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            (void)_id;
+            (void)_count;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Scripts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_id;
+            (void)_userData;
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Script.emplace_back( Meta_Pak::Meta_Scripts::Meta_Script() );
+                    Meta_Pak::Meta_Scripts::Meta_Script & metadata = includes_Meta_Script.back();
+        
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_Pak::Meta_Scripts::Meta_Script::Meta_Script()
+            : Metabuf::Metadata()
+            , m_flagNoRequiredAttribute(0)
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_Pak::Meta_Scripts::Meta_Script::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_userData;
             this->_parseData( _buff, _size, _read, _userData );
         
             Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
@@ -5270,12 +5417,12 @@ namespace Metacode
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Scripts::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        void Meta_Pak::Meta_Scripts::Meta_Script::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Scripts::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        void Meta_Pak::Meta_Scripts::Meta_Script::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
         {
             if( (m_flagNoRequiredAttribute & EMETA_Finalizer) != 0 )
             {
@@ -5292,6 +5439,61 @@ namespace Metacode
                 Metabuf::read( _buff, _size, _read, _userData, this->m_Module );
             }
         
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Scripts::Meta_Script::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            (void)_id;
+            (void)_count;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Scripts::Meta_Script::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_id;
+            (void)_userData;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_Pak::Meta_Settings::Meta_Settings()
+            : Metabuf::Metadata()
+            , m_flagNoRequiredAttribute(0)
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_Pak::Meta_Settings::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_userData;
+            Metabuf::readSize( _buff, _size, _read, m_flagNoRequiredAttribute );
+        
+            if( m_flagNoRequiredAttribute != 0 )
+            {
+                this->_parseArguments( _buff, _size, _read, _userData );
+            }
+        
+            uint32_t includeCount;
+            Metabuf::readSize( _buff, _size, _read, includeCount );
+        
+            if( includeCount != 0 )
+            {
+                includes_Meta_Setting.resize( includeCount );
+        
+                for( Meta_Pak::Meta_Settings::Meta_Setting & metadata : includes_Meta_Setting )
+                {
+                    metadata.parse( _buff, _size, _read, _userData );
+                }
+            }
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Settings::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
             if( (m_flagNoRequiredAttribute & EMETA_Platform) != 0 )
             {
                 Metabuf::read( _buff, _size, _read, _userData, this->m_Platform );
@@ -5299,13 +5501,63 @@ namespace Metacode
         
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Scripts::_preparationIncludes( uint32_t _id, uint32_t _count )
+        void Meta_Pak::Meta_Settings::_preparationIncludes( uint32_t _id, uint32_t _count )
         {
             (void)_id;
             (void)_count;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_Pak::Meta_Scripts::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        void Meta_Pak::Meta_Settings::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_id;
+            (void)_userData;
+            switch( _id )
+            {
+            case 1:
+                {
+                    includes_Meta_Setting.emplace_back( Meta_Pak::Meta_Settings::Meta_Setting() );
+                    Meta_Pak::Meta_Settings::Meta_Setting & metadata = includes_Meta_Setting.back();
+        
+                    metadata.parse( _buff, _size, _read, _userData );
+                }break;
+            default:
+                break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        //cppcheck-suppress uninitMemberVar
+        Meta_Pak::Meta_Settings::Meta_Setting::Meta_Setting()
+            : Metabuf::Metadata()
+        {
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool Meta_Pak::Meta_Settings::Meta_Setting::parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            (void)_buff;
+            (void)_size;
+            (void)_read;
+            (void)_userData;
+            this->_parseData( _buff, _size, _read, _userData );
+        
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Settings::Meta_Setting::_parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData )
+        {
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Name );
+            Metabuf::read( _buff, _size, _read, _userData, this->m_Path );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Settings::Meta_Setting::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            (void)_id;
+            (void)_count;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_Pak::Meta_Settings::Meta_Setting::_parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData )
         {
             (void)_buff;
             (void)_size;

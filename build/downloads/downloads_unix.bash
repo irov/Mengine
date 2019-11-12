@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 mkdir -p ../../solutions/downloads
 pushd ../../solutions/downloads

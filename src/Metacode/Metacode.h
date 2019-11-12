@@ -8812,17 +8812,6 @@ namespace Metacode
                 uint32_t m_flagNoRequiredAttribute;
                 
             public:
-                template<class C, class M>
-                void getm_Path( C _self, M _method ) const
-                {
-                    (_self->*_method)( this->m_Path );
-                }
-                
-                const Mengine::FilePath & get_Path() const
-                {
-                    return this->m_Path;
-                }
-                
                 bool has_Platform() const
                 {
                     return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
@@ -8870,15 +8859,54 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
+                class Meta_Font
+                    : public Metabuf::Metadata
+                { 
+                public:
+                    Meta_Font();
+                
+                public:
+                    template<class C, class M>
+                    void getm_Path( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Path );
+                    }
+                    
+                    const Mengine::FilePath & get_Path() const
+                    {
+                        return this->m_Path;
+                    }
+                    
+                public:
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                
+                protected:
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                
+                public:
+                protected:
+                    Mengine::FilePath m_Path;
+                };
+                
             protected:
-                Mengine::FilePath m_Path;
                 Mengine::Tags m_Platform;
+            public:
+                typedef Metabuf::Vector<Meta_Font> VectorMeta_Font;
+            
+                const VectorMeta_Font & get_Includes_Font() const
+                {
+                    return this->includes_Meta_Font;
+                }
+            
+            protected:
+                VectorMeta_Font includes_Meta_Font;
             };
             
             class Meta_Materials
@@ -9277,155 +9305,12 @@ namespace Metacode
             protected:
                 enum NoRequiredAttribute
                 {
-                    EMETA_Finalizer = (1 <<2),
-                    EMETA_Initializer = (1 <<1),
-                    EMETA_Module = (1 <<0),
-                    EMETA_Platform = (1 <<3),
+                    EMETA_Platform = (1 <<0),
                 };
                 
                 uint32_t m_flagNoRequiredAttribute;
                 
             public:
-                bool has_Finalizer() const
-                {
-                    return (m_flagNoRequiredAttribute & EMETA_Finalizer) != 0;
-                }
-                
-                template<class C, class M>
-                bool getm_Finalizer( C _self, M _method ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    (_self->*_method)( this->m_Finalizer );
-                
-                    return true;
-                }
-                
-                bool get_Finalizer( Mengine::ConstString * _value ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    *_value = this->m_Finalizer;
-                
-                    return true;
-                }
-                
-                bool getd_Finalizer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
-                    {
-                        *_value = _default;
-                
-                        return false;
-                    }
-                
-                    *_value = this->m_Finalizer;
-                
-                    return true;
-                }
-                bool has_Initializer() const
-                {
-                    return (m_flagNoRequiredAttribute & EMETA_Initializer) != 0;
-                }
-                
-                template<class C, class M>
-                bool getm_Initializer( C _self, M _method ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    (_self->*_method)( this->m_Initializer );
-                
-                    return true;
-                }
-                
-                bool get_Initializer( Mengine::ConstString * _value ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    *_value = this->m_Initializer;
-                
-                    return true;
-                }
-                
-                bool getd_Initializer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
-                    {
-                        *_value = _default;
-                
-                        return false;
-                    }
-                
-                    *_value = this->m_Initializer;
-                
-                    return true;
-                }
-                bool has_Module() const
-                {
-                    return (m_flagNoRequiredAttribute & EMETA_Module) != 0;
-                }
-                
-                template<class C, class M>
-                bool getm_Module( C _self, M _method ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    (_self->*_method)( this->m_Module );
-                
-                    return true;
-                }
-                
-                bool get_Module( Mengine::ConstString * _value ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
-                    {
-                        return false;
-                    }
-                
-                    *_value = this->m_Module;
-                
-                    return true;
-                }
-                
-                bool getd_Module( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
-                {
-                    if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
-                    {
-                        *_value = _default;
-                
-                        return false;
-                    }
-                
-                    *_value = this->m_Module;
-                
-                    return true;
-                }
-                template<class C, class M>
-                void getm_Path( C _self, M _method ) const
-                {
-                    (_self->*_method)( this->m_Path );
-                }
-                
-                const Mengine::FilePath & get_Path() const
-                {
-                    return this->m_Path;
-                }
-                
                 bool has_Platform() const
                 {
                     return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
@@ -9473,18 +9358,321 @@ namespace Metacode
                 bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
             
             protected:
-                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
                 void _preparationIncludes( uint32_t _id, uint32_t _count );
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
             
             public:
+                class Meta_Script
+                    : public Metabuf::Metadata
+                { 
+                public:
+                    Meta_Script();
+                
+                protected:
+                    enum NoRequiredAttribute
+                    {
+                        EMETA_Finalizer = (1 <<2),
+                        EMETA_Initializer = (1 <<1),
+                        EMETA_Module = (1 <<0),
+                    };
+                    
+                    uint32_t m_flagNoRequiredAttribute;
+                    
+                public:
+                    bool has_Finalizer() const
+                    {
+                        return (m_flagNoRequiredAttribute & EMETA_Finalizer) != 0;
+                    }
+                    
+                    template<class C, class M>
+                    bool getm_Finalizer( C _self, M _method ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
+                        {
+                            return false;
+                        }
+                    
+                        (_self->*_method)( this->m_Finalizer );
+                    
+                        return true;
+                    }
+                    
+                    bool get_Finalizer( Mengine::ConstString * _value ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
+                        {
+                            return false;
+                        }
+                    
+                        *_value = this->m_Finalizer;
+                    
+                        return true;
+                    }
+                    
+                    bool getd_Finalizer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Finalizer) == 0 )
+                        {
+                            *_value = _default;
+                    
+                            return false;
+                        }
+                    
+                        *_value = this->m_Finalizer;
+                    
+                        return true;
+                    }
+                    bool has_Initializer() const
+                    {
+                        return (m_flagNoRequiredAttribute & EMETA_Initializer) != 0;
+                    }
+                    
+                    template<class C, class M>
+                    bool getm_Initializer( C _self, M _method ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
+                        {
+                            return false;
+                        }
+                    
+                        (_self->*_method)( this->m_Initializer );
+                    
+                        return true;
+                    }
+                    
+                    bool get_Initializer( Mengine::ConstString * _value ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
+                        {
+                            return false;
+                        }
+                    
+                        *_value = this->m_Initializer;
+                    
+                        return true;
+                    }
+                    
+                    bool getd_Initializer( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Initializer) == 0 )
+                        {
+                            *_value = _default;
+                    
+                            return false;
+                        }
+                    
+                        *_value = this->m_Initializer;
+                    
+                        return true;
+                    }
+                    bool has_Module() const
+                    {
+                        return (m_flagNoRequiredAttribute & EMETA_Module) != 0;
+                    }
+                    
+                    template<class C, class M>
+                    bool getm_Module( C _self, M _method ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
+                        {
+                            return false;
+                        }
+                    
+                        (_self->*_method)( this->m_Module );
+                    
+                        return true;
+                    }
+                    
+                    bool get_Module( Mengine::ConstString * _value ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
+                        {
+                            return false;
+                        }
+                    
+                        *_value = this->m_Module;
+                    
+                        return true;
+                    }
+                    
+                    bool getd_Module( Mengine::ConstString * _value, const Mengine::ConstString & _default ) const
+                    {
+                        if( (m_flagNoRequiredAttribute & EMETA_Module) == 0 )
+                        {
+                            *_value = _default;
+                    
+                            return false;
+                        }
+                    
+                        *_value = this->m_Module;
+                    
+                        return true;
+                    }
+                    template<class C, class M>
+                    void getm_Path( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Path );
+                    }
+                    
+                    const Mengine::FilePath & get_Path() const
+                    {
+                        return this->m_Path;
+                    }
+                    
+                public:
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                
+                protected:
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                
+                public:
+                protected:
+                    Mengine::ConstString m_Finalizer;
+                    Mengine::ConstString m_Initializer;
+                    Mengine::ConstString m_Module;
+                    Mengine::FilePath m_Path;
+                };
+                
             protected:
-                Mengine::ConstString m_Finalizer;
-                Mengine::ConstString m_Initializer;
-                Mengine::ConstString m_Module;
-                Mengine::FilePath m_Path;
                 Mengine::Tags m_Platform;
+            public:
+                typedef Metabuf::Vector<Meta_Script> VectorMeta_Script;
+            
+                const VectorMeta_Script & get_Includes_Script() const
+                {
+                    return this->includes_Meta_Script;
+                }
+            
+            protected:
+                VectorMeta_Script includes_Meta_Script;
+            };
+            
+            class Meta_Settings
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Settings();
+            
+            protected:
+                enum NoRequiredAttribute
+                {
+                    EMETA_Platform = (1 <<0),
+                };
+                
+                uint32_t m_flagNoRequiredAttribute;
+                
+            public:
+                bool has_Platform() const
+                {
+                    return (m_flagNoRequiredAttribute & EMETA_Platform) != 0;
+                }
+                
+                template<class C, class M>
+                bool getm_Platform( C _self, M _method ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_Platform );
+                
+                    return true;
+                }
+                
+                bool get_Platform( Mengine::Tags * _value ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Platform;
+                
+                    return true;
+                }
+                
+                bool getd_Platform( Mengine::Tags * _value, const Mengine::Tags & _default ) const
+                {
+                    if( (m_flagNoRequiredAttribute & EMETA_Platform) == 0 )
+                    {
+                        *_value = _default;
+                
+                        return false;
+                    }
+                
+                    *_value = this->m_Platform;
+                
+                    return true;
+                }
+            public:
+                bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+            
+            protected:
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                void _preparationIncludes( uint32_t _id, uint32_t _count );
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+            
+            public:
+                class Meta_Setting
+                    : public Metabuf::Metadata
+                { 
+                public:
+                    Meta_Setting();
+                
+                public:
+                    template<class C, class M>
+                    void getm_Name( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Name );
+                    }
+                    
+                    const Mengine::ConstString & get_Name() const
+                    {
+                        return this->m_Name;
+                    }
+                    
+                    template<class C, class M>
+                    void getm_Path( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Path );
+                    }
+                    
+                    const Mengine::FilePath & get_Path() const
+                    {
+                        return this->m_Path;
+                    }
+                    
+                public:
+                    bool parse( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                
+                protected:
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read, void * _userData );
+                    void _preparationIncludes( uint32_t _id, uint32_t _count );
+                    void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id, void * _userData );
+                
+                public:
+                protected:
+                    Mengine::ConstString m_Name;
+                    Mengine::FilePath m_Path;
+                };
+                
+            protected:
+                Mengine::Tags m_Platform;
+            public:
+                typedef Metabuf::Vector<Meta_Setting> VectorMeta_Setting;
+            
+                const VectorMeta_Setting & get_Includes_Setting() const
+                {
+                    return this->includes_Meta_Setting;
+                }
+            
+            protected:
+                VectorMeta_Setting includes_Meta_Setting;
             };
             
             class Meta_Texts
@@ -9650,6 +9838,16 @@ namespace Metacode
         
         protected:
             VectorMeta_Scripts includes_Meta_Scripts;
+        public:
+            typedef Metabuf::Vector<Meta_Settings> VectorMeta_Settings;
+        
+            const VectorMeta_Settings & get_Includes_Settings() const
+            {
+                return this->includes_Meta_Settings;
+            }
+        
+        protected:
+            VectorMeta_Settings includes_Meta_Settings;
         public:
             typedef Metabuf::Vector<Meta_Texts> VectorMeta_Texts;
         

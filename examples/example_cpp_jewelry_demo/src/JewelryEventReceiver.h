@@ -30,6 +30,7 @@ namespace Mengine
 
     protected:
         void spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator );
+        void collapseJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry );
         void explosiveJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry );
 
     protected:
@@ -53,6 +54,7 @@ namespace Mengine
         float m_jewelry_cell_explosive_time_ms;
         uint32_t m_jewelry_cell_explosive_count;
         float m_jewelry_spawn_time_ms;
+        uint32_t m_jewelry_spawn_count;
 
         FactoryPtr m_factoryJewelry;
 

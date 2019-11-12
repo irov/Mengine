@@ -145,7 +145,7 @@ namespace Mengine
             return;
         }
 
-#ifdef MENGINE_RENDER_TEXTURE_RGBA		
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
         uint8_t r8 = (m_argb >> 0) & 0xFF;
         uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t b8 = (m_argb >> 16) & 0xFF;

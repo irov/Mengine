@@ -169,6 +169,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::block( const GOAP::SourcePtr & _source )
     {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
         if( this->isBlock() == true )
         {
             return;
@@ -182,9 +187,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::dead( const GOAP::SourcePtr & _source )
     {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
         m_state |= EJS_DEAD;
 
-        m_matrix->removeJewelry( JewelryPtr::from( this ) );        
+        m_matrix->removeJewelry( JewelryPtr::from( this ) );
 
         _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 0.0f, 0.0f, 0.0f ), 200.f );
 
@@ -210,6 +220,11 @@ namespace Mengine
     bool Jewelry::isBlock() const
     {
         return (m_state & EJS_BLOCK) == EJS_BLOCK;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Jewelry::isMove() const
+    {
+        return (m_state & EJS_MOVE) == EJS_MOVE;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Jewelry::isDead() const
@@ -295,16 +310,38 @@ namespace Mengine
         new_position.y = float( _row ) * 60.f;
         new_position.z = 0.f;
 
+        m_state |= EJS_MOVE;
+
         _source->addTask<TaskTransformationTranslateTime>( m_node, m_node, nullptr, new_position, _time );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Jewelry::stop()
+    {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
+        m_state &= ~EJS_MOVE;
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::pickHand( const GOAP::SourcePtr & _source )
     {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
         _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.2f, 1.2f, 1.2f ), 200.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void Jewelry::unpickHand( const GOAP::SourcePtr & _source )
     {
+        if( this->isDead() == true )
+        {
+            return;
+        }
+
         _source->addTask<TaskTransformationScaleTime>( m_nodeActive, m_nodeActive, nullptr, mt::vec3f( 1.0f, 1.0f, 1.0f ), 200.f );
     }
 }

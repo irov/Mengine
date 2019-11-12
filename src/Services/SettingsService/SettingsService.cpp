@@ -54,12 +54,26 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( setting, false );
 
-        if( setting->loadSetting( _fileGroup, _filePath, _doc ) == false )
+        if( setting->initialize( _fileGroup, _filePath, _doc ) == false )
         {
             return false;
         }
 
         m_settings.emplace( _name, setting );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SettingsService::unloadSetting( const ConstString & _name )
+    {
+        SettingInterfacePtr setting = m_settings.erase( _name );
+
+        if( setting == nullptr )
+        {
+            return false;
+        }
+
+        setting->finalize();
 
         return true;
     }

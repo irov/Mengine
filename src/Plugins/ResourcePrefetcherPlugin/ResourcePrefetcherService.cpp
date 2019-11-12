@@ -61,7 +61,7 @@ namespace Mengine
 
         if( prefetcher == nullptr )
         {
-            return true;
+            return false;
         }
 
         bool successful = prefetcher->prefetch( _resource, _observer );

@@ -407,16 +407,6 @@ namespace Mengine
 
         SERVICE_WAIT( ConfigServiceInterface, [this]()
         {
-            if( this->loadApplicationConfig_() == false )
-            {
-                return false;
-            }
-
-            if( this->initializeConfigService_() == false )
-            {
-                return false;
-            }
-
             if( this->initializeUserDirectory_() == false )
             {
                 return false;
@@ -446,7 +436,7 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run( m_packagesPaths ) == false )
+            ->run() == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
             );

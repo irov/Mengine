@@ -27,15 +27,15 @@ namespace Mengine
         uint32_t uncompressedSize;  // 0 if packed is not compressed
     };
 
-    MENGINE_INLINE void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
-    {
-        const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
-        const uint8_t * end = begin + sizeof( PacketHeader );
-        _payload.insert( _payload.begin(), begin, end );
-    }
-
     namespace Detail
     {
+        MENGINE_INLINE void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
+        {
+            const uint8_t * begin = reinterpret_cast<const uint8_t *>(&_hdr);
+            const uint8_t * end = begin + sizeof( PacketHeader );
+            _payload.insert( _payload.begin(), begin, end );
+        }
+
         template <typename T>
         void setXmlValue( pugi::xml_attribute & _attrib, const T & _value )
         {

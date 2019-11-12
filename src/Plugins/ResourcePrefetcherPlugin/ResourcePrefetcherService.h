@@ -20,15 +20,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addResourcePrefetcher( const ConstString & _type, const ResourcePrefetcherInterfacePtr & _prefetcher ) override;
-        void removeResourcePrefetcher( const ConstString & _type ) override;
-
-    public:
         bool prefetchResource( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) override;
         bool unfetchResource( const ResourcePtr & _resource ) override;
-
-    protected:
-        typedef Hashtable<ConstString, ResourcePrefetcherInterfacePtr> HashtableResourcePrefetchers;
-        HashtableResourcePrefetchers m_prefetchers;
     };
 }

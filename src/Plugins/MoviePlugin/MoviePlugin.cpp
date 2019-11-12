@@ -191,10 +191,9 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
-            ResourcePrefetcherInterfacePtr resourcePrefetcher = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
+            ResourcePrefetcherInterfacePtr resourcePrefetcherDataflow = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
 
-            RESOURCEPREFETCHER_SERVICE()
-                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcher );
+            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcherDataflow );
         }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
@@ -268,8 +267,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
-            RESOURCEPREFETCHER_SERVICE()
-                ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )

@@ -4,6 +4,8 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
+#include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
+
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "JSONScriptEmbedding.h"
 #endif
@@ -68,6 +70,13 @@ namespace Mengine
             return true;
         } );
 
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            ResourcePrefetcherInterfacePtr resourcePrefetcherDefault = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcherType" ), STRINGIZE_STRING_LOCAL( "Default" ) );
+
+            VOCABULARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ), resourcePrefetcherDefault );
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -77,6 +86,11 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EJECTING );
 #endif
+
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ResourceJSON" ) );
+        }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

@@ -68,6 +68,7 @@ SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
+SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( UnicodeSystem );
@@ -82,6 +83,7 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( ModuleService );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
@@ -155,11 +157,10 @@ namespace Mengine
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         SERVICE_CREATE( NotificationService );
-        SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( OptionsService );
+        SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( StringizeService );
-        SERVICE_CREATE( ArchiveService );
         SERVICE_CREATE( ArchiveService );
         SERVICE_CREATE( LoggerService );
 
@@ -194,6 +195,7 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
         SERVICE_CREATE( MemoryService );
+        SERVICE_CREATE( ModuleService );
         SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( PrototypeService );

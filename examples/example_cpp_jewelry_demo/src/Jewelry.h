@@ -18,6 +18,7 @@ namespace Mengine
         EJS_BLOCK = 1 << 0,
         EJS_PICK = 1 << 1,
         EJS_DEAD = 1 << 2,
+        EJS_MOVE = 1 << 3,
     };
     //////////////////////////////////////////////////////////////////////////
     enum EJewelrySuper
@@ -55,6 +56,7 @@ namespace Mengine
 
     public:
         void move( const GOAP::SourcePtr & _source, uint32_t _row, float _time );
+        void stop();
         void pickHand( const GOAP::SourcePtr & _source );
         void unpickHand( const GOAP::SourcePtr & _source );
         void block( const GOAP::SourcePtr & _source );
@@ -65,6 +67,7 @@ namespace Mengine
     public:
         bool isDead() const;
         bool isBlock() const;
+        bool isMove() const;
 
     public:        
         uint32_t getType() const;
@@ -86,7 +89,7 @@ namespace Mengine
         EJewelrySuper m_super;
 
         uint32_t m_column;
-        uint32_t m_row;        
+        uint32_t m_row;
 
         NodePtr m_node;
         NodePtr m_nodeActive;

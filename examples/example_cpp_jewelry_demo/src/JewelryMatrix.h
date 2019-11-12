@@ -5,11 +5,13 @@
 #include "GOAP/Event.h"
 
 #include "Config/Vector.h"
+#include "Config/Lambda.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Jewelry> JewelryPtr;
+    typedef Vector<JewelryPtr> VectorJewelries;
     //////////////////////////////////////////////////////////////////////////
     class JewelryMatrix
         : public Factorable
@@ -32,6 +34,12 @@ namespace Mengine
         void moveJewelry( uint32_t _column, uint32_t _row, const JewelryPtr & _jewelry );
         const JewelryPtr & getJewelry( uint32_t _column, uint32_t _row ) const;
         bool existJewelry( uint32_t _column, uint32_t _row ) const;
+
+    public:
+        bool isFall( const JewelryPtr & _jewelry ) const;
+
+        typedef Lambda<bool( const JewelryPtr & )> LambdaJewelry;
+        void getNeighbours( uint32_t _column, uint32_t _row, uint32_t _type, VectorJewelries & _jewelries, const LambdaJewelry & _lambda ) const;
 
     protected:
         uint32_t getIndex_( uint32_t _column, uint32_t _row ) const;

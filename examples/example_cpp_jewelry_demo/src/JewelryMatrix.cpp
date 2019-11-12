@@ -119,6 +119,87 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool JewelryMatrix::isFall( const JewelryPtr & _jewelry ) const
+    {
+        uint32_t jewelry_column = _jewelry->getColumn();
+        uint32_t jewelry_row = _jewelry->getRow();
+
+        if( jewelry_row + 1 == m_rowCount )
+        {
+            return false;
+        }
+
+        const JewelryPtr & bottom_jewelry = this->getJewelry( jewelry_column, jewelry_row + 1 );
+
+        if( bottom_jewelry == nullptr )
+        {
+            return true;
+        }
+
+        if( bottom_jewelry->isMove() == true )
+        {
+            return true;
+        }
+
+        bool result = this->isFall( bottom_jewelry );
+        
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryMatrix::getNeighbours( uint32_t _column, uint32_t _row, uint32_t _type, VectorJewelries & _jewelries, const LambdaJewelry & _lambda ) const
+    {
+        const JewelryPtr & jewelry = this->getJewelry( _column, _row );
+
+        if( jewelry == nullptr )
+        {
+            return;
+        }
+
+        if( jewelry->isDead() == true )
+        {
+            return;
+        }
+        
+        uint32_t jewelry_type = jewelry->getType();
+
+        if( jewelry_type != _type )
+        {
+            return;
+        }
+
+        if( std::find( _jewelries.begin(), _jewelries.end(), jewelry ) != _jewelries.end() )
+        {
+            return;
+        }
+
+        if( _lambda( jewelry ) == false )
+        {
+            return;
+        }
+
+        _jewelries.emplace_back( jewelry );
+
+        if( _column > 0 )
+        {
+            this->getNeighbours( _column - 1, _row, _type, _jewelries, _lambda );
+        }
+
+        if( _column + 1 < m_columnCount )
+        {
+            this->getNeighbours( _column + 1, _row, _type, _jewelries, _lambda );
+        }
+
+        if( _row > 0 )
+        {
+            this->getNeighbours( _column, _row - 1, _type, _jewelries, _lambda );
+        }
+
+        if( _row + 1 < m_rowCount )
+        {
+            this->getNeighbours( _column, _row + 1, _type, _jewelries, _lambda );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t JewelryMatrix::getIndex_( uint32_t _column, uint32_t _row ) const
     {
         uint32_t index = _column + m_columnCount * _row;

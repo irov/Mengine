@@ -20,6 +20,9 @@ namespace Mengine
 
     public:
         bool loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
+        bool unloadSetting( const ConstString & _name ) override;
+
+    public:
         bool loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
 
     public:

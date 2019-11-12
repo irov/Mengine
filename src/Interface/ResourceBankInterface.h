@@ -77,7 +77,7 @@ namespace Mengine
 
         virtual bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const = 0;
 
-    protected:
+    public:
         typedef Lambda<void( const ResourcePtrView & )> LambdaResourceView;
         virtual void foreachResources( const LambdaResourceView & _lambda ) const = 0;
     };

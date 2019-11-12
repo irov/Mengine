@@ -3,6 +3,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/Logger.h"
 
@@ -116,7 +117,18 @@ namespace Mengine
         return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) const
+    {
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
+
+        JSONStorageInterfacePtr storage = this->loadJSONStream( stream, _doc );
+
+        return storage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JSONStorageInterfacePtr JSONService::loadJSONStream( const InputStreamInterfacePtr & _stream, const Char * _doc ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, nullptr );
 

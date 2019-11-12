@@ -21,17 +21,20 @@
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
 #include "Kernel/Document.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/VectorString.h"
 
-#ifndef MENGINE_SETLOCALE
-#define MENGINE_SETLOCALE "C"
-#endif
-
+//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
 #define MENGINE_APPLICATION_INI_PATH "application.ini"
 #endif
-
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_SETLOCALE
+#define MENGINE_SETLOCALE "C"
+#endif
+//////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( SecureService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
@@ -42,6 +45,7 @@ SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( UnicodeSystem );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( SettingsService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
@@ -238,7 +242,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Bootstrapper::run( const VectorFilePath & _packagesPaths )
+    bool Bootstrapper::run()
     {
         if( this->createServices_() == false )
         {
@@ -293,7 +297,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         if( APPLICATION_SERVICE()
-            ->initializeGame( defaultFileGroup, _packagesPaths ) == false )
+            ->initializeGame( defaultFileGroup, m_packagesPaths, m_settingsPaths ) == false )
         {
             LOGGER_CRITICAL( "Application invalid initialize game"
             );
@@ -321,7 +325,7 @@ namespace Mengine
         SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( SecureService );
         SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( UnicodeSystem );        
+        SERVICE_CREATE( UnicodeSystem );
         SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( VocabularyService );
@@ -330,6 +334,64 @@ namespace Mengine
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( FileService );
         SERVICE_CREATE( ConfigService );
+
+        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+        if( fileGroup->existFile( applicationPath, true ) == false )
+        {
+            LOGGER_INFO( "not exist application config '%s'"
+                , applicationPath.c_str()
+            );
+
+            return true;
+        }
+
+        ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
+            ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, false, "invalid open application settings '%s'"
+            , applicationPath.c_str()
+        );
+
+        VectorFilePath configsPaths;
+        applicationConfig->getValues( "Configs", "Path", configsPaths );
+
+        VectorFilePath credentialsPaths;
+        applicationConfig->getValues( "Credentials", "Path", credentialsPaths );
+
+        applicationConfig->getValues( "Packages", "Path", m_packagesPaths );
+        applicationConfig->getValues( "Settings", "Path", m_settingsPaths );
+
+        for( const FilePath & filePath : configsPaths )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_ERROR( "invalid load config '%s'"
+                    , filePath.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        for( const FilePath & filePath : credentialsPaths )
+        {
+            if( CONFIG_SERVICE()
+                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+            {
+                LOGGER_ERROR( "invalid load credential '%s'"
+                    , filePath.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        SERVICE_CREATE( SettingsService );
 
         SERVICE_CREATE( ArchiveService );
 
@@ -774,6 +836,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Bootstrapper::stop()
     {
+        m_packagesPaths.clear();
+        m_settingsPaths.clear();
+
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {
             PLATFORM_SERVICE()
@@ -852,6 +917,7 @@ namespace Mengine
         SERVICE_FINALIZE( RenderTextureService );
         SERVICE_FINALIZE( RenderSystem );
         SERVICE_FINALIZE( ConfigService );
+        SERVICE_FINALIZE( SettingsService );
         SERVICE_FINALIZE( ArchiveService );
         SERVICE_FINALIZE( MemoryService );
         SERVICE_FINALIZE( ThreadService );

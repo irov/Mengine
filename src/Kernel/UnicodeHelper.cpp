@@ -104,7 +104,7 @@ namespace Mengine
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
             size_t unicodeSize;
-            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNICODE_UNKNOWN_SIZE, nullptr, 0, &unicodeSize ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, nullptr, 0, &unicodeSize ) == false )
             {
                 return false;
             }
@@ -118,7 +118,7 @@ namespace Mengine
 
             _unicode.resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNICODE_UNKNOWN_SIZE, &_unicode[0], unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, &_unicode[0], unicodeSize, nullptr ) == false )
             {
                 _unicode.clear();
 

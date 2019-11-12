@@ -1,5 +1,7 @@
 #include "SDLFileHelper.h"
 
+#include <string.h>
+
 namespace Mengine
 {
     namespace Helper
@@ -15,9 +17,9 @@ namespace Mengine
                 return false;
             }
 
-            strcpy( _concatenatePath, _relationPath.c_str() );
-            strcat( _concatenatePath, _folderPath.c_str() );
-            strcat( _concatenatePath, _filePath.c_str() );
+            ::strcpy( _concatenatePath, _relationPath.c_str() );
+            ::strcat( _concatenatePath, _folderPath.c_str() );
+            ::strcat( _concatenatePath, _filePath.c_str() );
 
             return true;
         }

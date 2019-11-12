@@ -376,6 +376,12 @@ namespace Mengine
         this->addGlobalModuleT( "_DESKTOP", false );
 #endif
 
+#if defined(MENGINE_PLATFORM_LINUX)
+        this->addGlobalModuleT( "_LINUX", true );
+#else
+        this->addGlobalModuleT( "_LINUX", false );
+#endif
+
 #if defined(MENGINE_PLATFORM_ANDROID)
         this->addGlobalModuleT( "_ANDROID", true );
 #else

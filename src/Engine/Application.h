@@ -34,7 +34,7 @@ namespace Mengine
         bool getAllowFullscreenSwitchShortcut() const override;
 
     public:
-        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths ) override;
+        bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths ) override;
 
     public:
         void changeWindowResolution( const Resolution & _resolution ) override;
@@ -220,8 +220,8 @@ namespace Mengine
 
         ResourceCursorPtr m_cursorResource;
 
-        String m_companyName;
-        String m_projectName;
+        Char m_companyName[MENGINE_APPLICATION_COMPANY_MAXNAME];
+        Char m_projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
 
         ConstString m_locale;
 

@@ -30,6 +30,7 @@
 #include "Config/StdIO.h"
 
 #include "GOAP/SourceProvider.h"
+#include "GOAP/Chain.h"
 
 namespace Mengine
 {
@@ -187,5 +188,13 @@ namespace Mengine
 
             return EngineSourcePtr::from( new EngineSource( provider ) );
         }
+        //////////////////////////////////////////////////////////////////////////
+        GOAP::ChainInterfacePtr makeEngineChain( const EngineSourcePtr & _source )
+        {
+            GOAP::ChainPtr chain = GOAP::Helper::makeChain( _source );
+
+            return chain;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

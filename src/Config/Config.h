@@ -19,6 +19,22 @@
 #define MENGINE_UNUSED(X) ((void)X)
 #endif
 
+#if defined(_MSC_VER)
+#   define MENGINE_COMPILER_MSVC
+#elif defined(__GNUC__)
+#   define MENGINE_COMPILER_GCC
+#elif defined(__clang__)
+#   define MENGINE_COMPILER_CLANG
+#elif defined(__EMSCRIPTEN__)
+#   define MENGINE_COMPILER_EMSCRIPTEN
+#elif defined(__MINGW32__)
+#   define MENGINE_COMPILER_MINGW32
+#elif defined(__MINGW64__)
+#   define MENGINE_COMPILER_MINGW64
+#else
+#   error "undefine compiler"
+#endif
+
 #ifdef __GNUC__
 #define MENGINE_CODE_FILE __FILE__
 #define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
@@ -44,6 +60,9 @@
 
 #if defined(WIN32)
 #   define MENGINE_PLATFORM_WINDOWS
+#   define MENGINE_PLATFORM_DESKTOP
+#elif defined(__linux__) && !defined(__ANDROID__)
+#   define MENGINE_PLATFORM_LINUX
 #   define MENGINE_PLATFORM_DESKTOP
 #elif defined(__APPLE__)
 #   include "TargetConditionals.h"
@@ -89,3 +108,6 @@
 #       define MENGINE_LOGGER_DEBUG
 #   endif
 #endif
+
+#define MENGINE_UNKNOWN_SIZE (~0U)
+#define MENGINE_UNKNOWN_HASH (-1)

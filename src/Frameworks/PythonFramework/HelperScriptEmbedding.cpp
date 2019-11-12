@@ -226,7 +226,7 @@ namespace Mengine
         PyObject * s_loadGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _pickleTypes )
         {
             MemoryInterfacePtr binaryBuffer = USERDATA_SERVICE()
-                ->loadUserdata( _name );
+                ->loadUserdata( _name, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, _kernel->ret_none(), "data '%s' invalid load"
                 , _name.c_str()

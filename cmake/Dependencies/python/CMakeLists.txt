@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET(SOURCE_DIR ${THIRDPARTY_DIR}/Python)
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/python)
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -99,6 +99,8 @@ configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 
 if(APPLE)
     configure_file(ModifiedMac/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
+elseif(UNIX)
+    configure_file(ModifiedUnix/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 elseif(ANDROID)
     configure_file(ModifiedAndroid/pyconfig.h ${SOURCE_DIR}/pyconfig.h COPYONLY)
 else()

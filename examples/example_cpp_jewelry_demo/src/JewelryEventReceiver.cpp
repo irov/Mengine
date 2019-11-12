@@ -4,6 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
+#include "Interface/SettingsServiceInterface.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -40,8 +41,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JewelryEventReceiver::JewelryEventReceiver()
         : m_scene( nullptr )
-        , m_column( 0 )
-        , m_row( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -61,6 +60,9 @@ namespace Mengine
 
         m_factoryJewelry = Helper::makeFactoryPool<Jewelry, 128>();
 
+        m_randomizer = PLAYER_SERVICE()
+            ->getRandomizer();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -75,7 +77,7 @@ namespace Mengine
         m_scene = nullptr;
 
         m_factoryJewelry = nullptr;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool JewelryEventReceiver::onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior )
     {
@@ -85,58 +87,84 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        m_column = 6;
-        m_row = 10;
-        m_count = 6;
+        const SettingInterfacePtr & game_setting = SETTINGS_SERVICE()
+            ->getSetting( STRINGIZE_STRING_LOCAL( "Game" ) );
 
-        m_jewelrySlots.resize( m_column * m_row );
+        uint32_t column_count = game_setting->getValue( "jewelry_column_count", 6U );
+        uint32_t row_count = game_setting->getValue( "jewelry_row_count", 10U );
+        m_jewelry_type_count = game_setting->getValue( "jewelry_type_count", 6U );
+        m_jewelry_size = game_setting->getValue( "jewelry_size", 50.f );
+        m_jewelry_stride = game_setting->getValue( "jewelry_stride", 10.f );
+        m_jewelry_cell_fall_time_ms = game_setting->getValue( "jewelry_cell_fall_time_ms", 750.f );
+        m_jewelry_cell_explosive_time_ms = game_setting->getValue( "jewelry_cell_explosive_time_ms", 750.f );
+        m_jewelry_cell_explosive_count = game_setting->getValue( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
+        m_jewelry_spawn_time_ms = game_setting->getValue( "jewelry_spawn_time_ms", 350.f );
+        m_jewelry_spawn_count = game_setting->getValue( "jewelry_spawn_count", ~0U );
 
-        for( JewelrySlot & slot : m_jewelrySlots )
-        {
-            slot.block = false;
-        }
+        m_jewelryMatrix = Helper::makeFactorableUnique<JewelryMatrix>();
 
         m_eventFall = GOAP::Helper::makeEvent();
 
+        if( m_jewelryMatrix->initialize( m_eventFall, column_count, row_count ) == false )
+        {
+            return false;
+        }
+
         m_jewelryHand.clear();
+
+        m_base = Helper::generateNode( MENGINE_DOCUMENT_FUNCTION );
+
+        m_base->setLocalPosition( { 300.f, 100.f, 0.f } );
+
+        m_scene->addChild( m_base );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void JewelryEventReceiver::spawnJewelry_( const GOAP::SourcePtr & _source, uint32_t _iterator )
+    JewelryPtr JewelryEventReceiver::makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const Char * _doc )
+    {
+        JewelryPtr jewelry = m_factoryJewelry->createObject( _doc );
+
+        if( jewelry->initialize( _super, _type, m_jewelryMatrix, _column, _row, m_jewelry_size, m_jewelry_stride ) == false )
+        {
+            return nullptr;
+        }
+
+        m_jewelryMatrix->setJewelry( _column, _row, jewelry );
+
+        const NodePtr & node = jewelry->getNode();
+
+        m_base->addChild( node );
+
+        return jewelry;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator )
     {
         MENGINE_UNUSED( _source );
         MENGINE_UNUSED( _iterator );
 
-        const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
-             ->getRandomizer();
+        uint32_t jewelry_matrix_column_count = m_jewelryMatrix->getColumnCount();
 
-        uint32_t jewerly_line = randomizer->getRandom( m_column );
+        uint32_t jewelry_column = m_randomizer->getRandom( jewelry_matrix_column_count );
 
-        JewelrySlot & now_slot = m_jewelrySlots[jewerly_line];
-
-        if( now_slot.block == true )
+        if( m_jewelryMatrix->existJewelry( jewelry_column, 0 ) == true )
         {
             return;
         }
 
-        JewelryPtr jewelry = m_factoryJewelry->createObject( MENGINE_DOCUMENT_FUNCTION );
-        
-        uint32_t jewelry_type = randomizer->getRandom( m_count );
+        if( m_jewelryMatrix->existJewelry( jewelry_column, 1 ) == true )
+        {
+            return;
+        }
 
-        jewelry->initialize( jewerly_line, jewelry_type );
+        uint32_t jewelry_type = m_randomizer->getRandom( m_jewelry_type_count );
 
-        mt::vec3f offset = {300.f, 100.f, 0.f};
-
-        const NodePtr & jewelry_node = jewelry->getNode();
-
-        jewelry_node->setLocalPosition( {offset.x + float( jewerly_line ) * 60.f, offset.y, 0.f} );
-
-        m_scene->addChild( jewelry_node );
+        JewelryPtr jewelry = this->makeJewelry_( _super, jewelry_type, jewelry_column, 0, MENGINE_DOCUMENT_FUNCTION );
 
         auto && [source_pick, source_fall] = _source->addRace<2>();
 
-        source_pick->addWhile( [this, jewelry](const GOAP::SourcePtr & _source_pick )
+        source_pick->addWhile( [this, jewelry]( const GOAP::SourcePtr & _source_pick )
         {
             const PickerablePtr & jewelry_pickerable = jewelry->getPickerable();
 
@@ -158,89 +186,331 @@ namespace Mengine
                 return true;
             } );
 
-            _source_pick->addFunction( [this, jewelry]()
+            _source_pick->addScope( [this, jewelry]( const GOAP::SourcePtr & _source )
             {
-                if( m_jewelryHand.empty() == true )
-                {
-                    m_jewelryHand.push_back( jewelry );
-
-                    return;
-                }
-
-                if( std::find( m_jewelryHand.begin(), m_jewelryHand.end(), jewelry ) != m_jewelryHand.end() )
+                if( jewelry->isBlock() == true )
                 {
                     return;
                 }
 
-                const JewelryPtr & hand_jewelry = m_jewelryHand.front();
-
-                uint32_t hand_type = hand_jewelry->getType();
-
-                uint32_t jewelry_type = jewelry->getType();
-
-                if( hand_type != jewelry_type )
+                if( jewelry->getSuper() != EJSUPER_NORMAL )
                 {
                     return;
+                }
+
+                if( m_jewelryHand.empty() == false )
+                {
+                    if( std::find( m_jewelryHand.begin(), m_jewelryHand.end(), jewelry ) != m_jewelryHand.end() )
+                    {
+                        return;
+                    }
+
+                    const JewelryPtr & hand_jewelry = m_jewelryHand.front();
+
+                    uint32_t hand_type = hand_jewelry->getType();
+
+                    uint32_t jewelry_type = jewelry->getType();
+
+                    if( hand_type != jewelry_type )
+                    {
+                        return;
+                    }
                 }
 
                 m_jewelryHand.emplace_back( jewelry );
+
+                jewelry->pickHand( _source );
             } );
 
             return true;
         } );
 
-        source_fall->addFor( m_row, [this, jewelry, jewelry_node, jewerly_line, offset]( const GOAP::SourcePtr & _source_fall, uint32_t _iterator, uint32_t _count )
+        uint32_t jewelry_matrix_row_count = m_jewelryMatrix->getRowCount();
+
+        source_fall->addFor( jewelry_matrix_row_count - 1, [this, jewelry]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
         {
             MENGINE_UNUSED( _count );
+
+            uint32_t jewelry_next_row = _iterator + 1;
 
             if( jewelry->isDead() == true )
             {
                 return false;
             }
 
-            _source_fall->addTrigger( m_eventFall, [this, jewelry, jewelry_node, jewerly_line, _iterator]()
+            _source->addTrigger( m_eventFall, [this, jewelry, jewelry_next_row]( const GOAP::SourcePtr & _source )
             {
                 if( jewelry->isDead() == true )
                 {
                     return false;
                 }
 
-                uint32_t next_index = jewerly_line + m_column * _iterator;
-                JewelrySlot & next_slot = m_jewelrySlots[next_index];
+                uint32_t jewelry_column = jewelry->getColumn();
 
-                if( next_slot.block == true )
+                const JewelryPtr & jewelry_next = m_jewelryMatrix->getJewelry( jewelry_column, jewelry_next_row );
+
+                if( jewelry_next != nullptr && jewelry_next->isBlock() == true )
                 {
+                    EJewelrySuper super = jewelry->getSuper();
+
+                    switch( super )
+                    {
+                    case EJSUPER_NORMAL:
+                        {
+                            this->collapseJewelry_( _source, jewelry );
+                        }break;
+                    case EJSUPER_BOMB:
+                        {
+                            this->explosiveJewelry_( _source, jewelry );
+
+                            return true;
+                        }break;
+                    default:
+                        {
+                            return false;
+                        }break;
+                    }
+
                     return false;
                 }
-
-                next_slot.block = true;
-
-                jewelry->setIterator( _iterator );
-
-                if( _iterator > 0 )
+                else if( jewelry_next != nullptr )
                 {
-                    uint32_t prev_index = jewerly_line + m_column * (_iterator - 1);
-                    JewelrySlot & prev_slot = m_jewelrySlots[prev_index];
-
-                    prev_slot.block = false;
-
-                    m_eventFall->call();
+                    return false;
                 }
 
                 return true;
             } );
 
-            mt::vec3f new_position;
-            new_position.x = offset.x + float( jewerly_line ) * 60.f;
-            new_position.y = offset.y + float( _iterator + 1 ) * 60.f;
-            new_position.z = 0.f;
+            _source->addScope( [this, jewelry, jewelry_next_row]( const GOAP::SourcePtr & _source )
+            {
+                jewelry->move( _source, jewelry_next_row, m_jewelry_cell_fall_time_ms );
+            } );
 
-            _source_fall->addTask<TaskTransformationTranslateTime>( jewelry_node, jewelry_node, nullptr, new_position, 250.f );
+            return true;
+        } );
+
+
+        source_fall->addScope( [this, jewelry]( const GOAP::SourcePtr & _source )
+        {
+            EJewelrySuper super = jewelry->getSuper();
+
+            switch( super )
+            {
+            case EJSUPER_NORMAL:
+                {
+                    this->collapseJewelry_( _source, jewelry );
+                }break;
+            case EJSUPER_BOMB:
+                {
+                    this->explosiveJewelry_( _source, jewelry );
+
+                    return true;
+                }break;
+            default:
+                {
+                }break;
+            }
 
             return true;
         } );
 
         source_fall->addBlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::collapseJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry )
+    {
+        if( m_jewelryMatrix->isFall( _jewelry ) == false )
+        {
+            _jewelry->stop();
+            _jewelry->block( _source );
+        }
+
+        uint32_t jewelry_type = _jewelry->getType();
+        uint32_t jewelry_column = _jewelry->getColumn();
+        uint32_t jewelry_row = _jewelry->getRow();
+
+        VectorJewelries jewelries;
+        m_jewelryMatrix->getNeighbours( jewelry_column, jewelry_row, jewelry_type, jewelries, []( const JewelryPtr & _jewelry )
+        {
+            if( _jewelry->isBlock() == false )
+            {
+                return false;
+            }
+
+            if( _jewelry->isMove() == true )
+            {
+                return false;
+            }
+
+            return true;
+        } );
+
+        if( jewelries.size() < 3 )
+        {
+            _jewelry->block( _source );
+
+            return;
+        }
+
+        const GOAP::SourcePtr & source_fork = _source->addFork();
+
+        for( auto && [source_jewelry, jewerly] : source_fork->addParallelZip( jewelries ) )
+        {
+            jewerly->dead( source_jewelry );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::explosiveJewelry_( const GOAP::SourcePtr & _source, const JewelryPtr & _jewelry )
+    {
+        if( _jewelry->isDead() == true )
+        {
+            return;
+        }
+
+        uint32_t jewelry_matrix_column_count = m_jewelryMatrix->getColumnCount();
+        uint32_t jewelry_matrix_row_count = m_jewelryMatrix->getRowCount();
+
+        uint32_t jewelry_column = _jewelry->getColumn();
+        uint32_t jewelry_row = _jewelry->getRow();
+
+        _jewelry->explosive( _source );
+
+        auto && [source_left, source_right, source_down] = _source->addParallel<3>();
+
+        {
+            NodePtr explosive = this->spawnExplosive_();
+
+            mt::vec3f explosive_position;
+            explosive_position.x = float( jewelry_column ) * (m_jewelry_size + m_jewelry_stride);
+            explosive_position.y = float( jewelry_row ) * (m_jewelry_size + m_jewelry_stride);
+            explosive_position.z = 0.f;
+
+            explosive->setLocalPosition( explosive_position );
+
+            m_base->addChild( explosive );
+
+            source_left->addFor( 1, MENGINE_MIN( jewelry_column + 1, m_jewelry_cell_explosive_count + 1 ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+            {
+                MENGINE_UNUSED( _count );
+
+                uint32_t explosive_column = jewelry_column - _iterator;
+                uint32_t explosive_row = jewelry_row;
+
+                mt::vec3f explosive_position;
+                explosive_position.x = float( explosive_column ) * (m_jewelry_size + m_jewelry_stride);
+                explosive_position.y = float( explosive_row ) * (m_jewelry_size + m_jewelry_stride);
+                explosive_position.z = 0.f;
+
+                _source->addTask<TaskTransformationTranslateTime>( explosive, explosive, nullptr, explosive_position, m_jewelry_cell_explosive_time_ms );
+                _source->addScope( [this, explosive_column, explosive_row]( const GOAP::SourcePtr & _source )
+                {
+                    const JewelryPtr & jewelry = m_jewelryMatrix->getJewelry( explosive_column, explosive_row );
+
+                    if( jewelry == nullptr || jewelry->isBlock() == false )
+                    {
+                        return;
+                    }
+
+                    const GOAP::SourcePtr & source_fork = _source->addFork();
+
+                    jewelry->dead( source_fork );
+                } );
+
+                return true;
+            } );
+
+            source_left->addTask<TaskNodeDestroy>( explosive );
+        }
+
+        {
+            NodePtr explosive = this->spawnExplosive_();
+
+            mt::vec3f explosive_position;
+            explosive_position.x = float( jewelry_column ) * (m_jewelry_size + m_jewelry_stride);
+            explosive_position.y = float( jewelry_row ) * (m_jewelry_size + m_jewelry_stride);
+            explosive_position.z = 0.f;
+
+            explosive->setLocalPosition( explosive_position );
+
+            m_base->addChild( explosive );
+
+            source_right->addFor( 1, MENGINE_MIN( m_jewelry_cell_explosive_count + 1, jewelry_matrix_column_count - jewelry_column ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+            {
+                MENGINE_UNUSED( _count );
+
+                uint32_t explosive_column = jewelry_column + _iterator;
+                uint32_t explosive_row = jewelry_row;
+
+                mt::vec3f explosive_position;
+                explosive_position.x = float( explosive_column ) * (m_jewelry_size + m_jewelry_stride);
+                explosive_position.y = float( explosive_row ) * (m_jewelry_size + m_jewelry_stride);
+                explosive_position.z = 0.f;
+
+                _source->addTask<TaskTransformationTranslateTime>( explosive, explosive, nullptr, explosive_position, m_jewelry_cell_explosive_time_ms );
+                _source->addScope( [this, explosive_column, explosive_row]( const GOAP::SourcePtr & _source )
+                {
+                    const JewelryPtr & jewelry = m_jewelryMatrix->getJewelry( explosive_column, explosive_row );
+
+                    if( jewelry == nullptr || jewelry->isBlock() == false )
+                    {
+                        return;
+                    }
+
+                    const GOAP::SourcePtr & source_fork = _source->addFork();
+
+                    jewelry->dead( source_fork );
+                } );
+
+                return true;
+            } );
+
+            source_right->addTask<TaskNodeDestroy>( explosive );
+        }
+
+        {
+            NodePtr explosive = this->spawnExplosive_();
+
+            mt::vec3f explosive_position;
+            explosive_position.x = float( jewelry_column ) * (m_jewelry_size + m_jewelry_stride);
+            explosive_position.y = float( jewelry_row ) * (m_jewelry_size + m_jewelry_stride);
+            explosive_position.z = 0.f;
+
+            explosive->setLocalPosition( explosive_position );
+
+            m_base->addChild( explosive );
+
+            source_down->addFor( 1, MENGINE_MIN( m_jewelry_cell_explosive_count + 1, jewelry_matrix_row_count - jewelry_row ), [this, explosive, jewelry_column, jewelry_row]( const GOAP::SourcePtr & _source, uint32_t _iterator, uint32_t _count )
+            {
+                MENGINE_UNUSED( _count );
+
+                uint32_t explosive_column = jewelry_column;
+                uint32_t explosive_row = jewelry_row + _iterator;
+
+                mt::vec3f explosive_position;
+                explosive_position.x = float( explosive_column ) * (m_jewelry_size + m_jewelry_stride);
+                explosive_position.y = float( explosive_row ) * (m_jewelry_size + m_jewelry_stride);
+                explosive_position.z = 0.f;
+
+                _source->addTask<TaskTransformationTranslateTime>( explosive, explosive, nullptr, explosive_position, m_jewelry_cell_explosive_time_ms );
+                _source->addScope( [this, explosive_column, explosive_row]( const GOAP::SourcePtr & _source )
+                {
+                    const JewelryPtr & jewelry = m_jewelryMatrix->getJewelry( explosive_column, explosive_row );
+
+                    if( jewelry == nullptr || jewelry->isBlock() == false )
+                    {
+                        return;
+                    }
+
+                    const GOAP::SourcePtr & source_fork = _source->addFork();
+
+                    jewelry->dead( source_fork );
+                } );
+
+                return true;
+            } );
+
+            source_down->addTask<TaskNodeDestroy>( explosive );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool JewelryEventReceiver::onEntityActivate( const EntityBehaviorInterfacePtr & _behavior )
@@ -266,49 +536,69 @@ namespace Mengine
 
         auto && [source_spawn, source_boom] = source->addParallel<2>();
 
-        source_spawn->addGenerator( timer, []( uint32_t _iterator )
+        source_spawn->addGenerator( timer, [this]( uint32_t _iterator )
         {
-            MENGINE_UNUSED( _iterator );
+            if( m_jewelry_spawn_count == _iterator )
+            {
+                return -1.f;
+            }
 
-            return 350.f;
+            return m_jewelry_spawn_time_ms;
         }, [this]( const GOAP::SourcePtr & _source, uint32_t _iterator, float _time )
         {
             MENGINE_UNUSED( _time );
 
-            _source->addScope( this, &JewelryEventReceiver::spawnJewelry_, _iterator );
+            _source->addScope( this, &JewelryEventReceiver::spawnJewelry_, EJSUPER_NORMAL, _iterator );
         } );
 
         source_boom->addWhile( [this]( const GOAP::SourcePtr & _source_boom )
         {
             _source_boom->addTask<TaskGlobalMouseButton>( MC_LBUTTON, false, nullptr );
-            _source_boom->addFunction( [this]()
+            _source_boom->addScope( [this]( const GOAP::SourcePtr & _source )
             {
-                if( m_jewelryHand.size() < 3 )
+                VectorJewelryHand jewelryHand = std::move( m_jewelryHand );
+
+                jewelryHand.erase( std::remove_if( jewelryHand.begin(), jewelryHand.end(), []( const JewelryPtr & _jewelry )
                 {
+                    return _jewelry->isBlock();
+                } ), jewelryHand.end() );
+
+                uint32_t jewelry_count = jewelryHand.size();
+
+                if( jewelry_count < 3 )
+                {
+                    for( auto && [jewelry_source, jewelry] : _source->addParallelZip( jewelryHand ) )
+                    {
+                        jewelry->unpickHand( jewelry_source );
+                    }
+
                     m_jewelryHand.clear();
 
                     return;
                 }
 
-                VectorJewelryHand jewelryHand = std::move( m_jewelryHand );
-
-                for( const JewelryPtr & jewelry : jewelryHand )
+                if( jewelry_count == 3 )
                 {
-                    jewelry->finalize();
+                    for( auto && [jewelry_source, jewelry] : _source->addParallelZip( jewelryHand ) )
+                    {
+                        jewelry->dead( jewelry_source );
+                    }
                 }
 
-                for( const JewelryPtr & jewelry : jewelryHand )
+                if( jewelry_count >= 4 )
                 {
-                    uint32_t jewerly_line = jewelry->getLine();
-                    uint32_t jewerly_iterator = jewelry->getIterator();
+                    JewelryPtr jewelry_bomb = jewelryHand.back();
+                    jewelryHand.pop_back();
 
-                    uint32_t jewerly_index = jewerly_line + m_column * jewerly_iterator;
-                    JewelrySlot & jewerly_slot = m_jewelrySlots[jewerly_index];
+                    auto && [source_dead, source_bomb] = _source->addParallel<2>();
 
-                    jewerly_slot.block = false;
+                    for( auto && [jewelry_source, jewelry] : source_dead->addParallelZip( jewelryHand ) )
+                    {
+                        jewelry->dead( jewelry_source );
+                    }
+
+                    jewelry_bomb->bomb( source_bomb );
                 }
-
-                m_eventFall->call();
             } );
 
             return true;
@@ -317,6 +607,47 @@ namespace Mengine
         GOAP::ChainPtr chain = GOAP::Helper::makeChain( source );
         chain->run();
 
+        m_chain = chain;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
+    {
+        MENGINE_UNUSED( _behavior );
+
+        if( m_chain != nullptr )
+        {
+            m_chain->cancel();
+            m_chain = nullptr;
+        }
+
+        if( m_jewelryMatrix != nullptr )
+        {
+            m_jewelryMatrix->finalize();
+            m_jewelryMatrix = nullptr;
+        }
+
+        if( m_base != nullptr )
+        {
+            m_base->removeFromParent();
+            m_base = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    NodePtr JewelryEventReceiver::spawnExplosive_()
+    {
+        SurfaceSolidColorPtr surface = Helper::generateSurfaceSolidColor( MENGINE_DOCUMENT_FUNCTION );
+
+        surface->setSolidColor( Color( 1.f, 1.f, 1.f, 0.25f ) );
+
+        float width = 15.f;
+        surface->setSolidSize( {width, width} );
+
+        ShapeCirclePtr shape = Helper::generateShapeCircle( MENGINE_DOCUMENT_FUNCTION );
+
+        shape->setSurface( surface );
+
+        return shape;
     }
 };

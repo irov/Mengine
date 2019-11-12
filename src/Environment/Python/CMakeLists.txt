@@ -4,7 +4,7 @@ ADD_FILTER(
 src     
     PythonScriptWrapper.h
     PythonEventReceiver.h
-	PythonAnimatableEventReceiver.h    
+    PythonAnimatableEventReceiver.h    
 )
 
 ADD_FILTER(

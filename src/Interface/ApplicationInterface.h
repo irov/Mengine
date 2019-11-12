@@ -60,7 +60,7 @@ namespace Mengine
         virtual void paint() = 0;
 
     public:
-        virtual bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths ) = 0;
+        virtual bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _resourcePaths, const VectorFilePath & _settingsPaths ) = 0;
 
     public:
         virtual void getCompanyName( Char * _companyName ) const = 0;

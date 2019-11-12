@@ -3,6 +3,7 @@
 #include "Interface/UnknownInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
+#include "Interface/FileGroupInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "jpp/jpp.hpp"
@@ -35,7 +36,8 @@ namespace Mengine
         virtual JSONStorageInterfacePtr createStorage( const jpp::object & _json, const Char * _doc ) const = 0;
 
     public:
-        virtual JSONStorageInterfacePtr loadJSON( const InputStreamInterfacePtr & _stream, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSONStream( const InputStreamInterfacePtr & _stream, const Char * _doc ) const = 0;
         virtual JSONStorageInterfacePtr createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const = 0;
         virtual JSONStorageInterfacePtr createJSONBuffer( const void * _buffer, size_t _size, const Char * _doc ) const = 0;
     };

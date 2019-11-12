@@ -56,7 +56,7 @@
 
 #include "SDLMessageBoxLogger.h"
 
-#ifdef MENGINE_PLATFORM_ANDROID
+#if defined(MENGINE_PLATFORM_ANDROID)
 #   include "AndroidLogger.h"
 #else
 #   include "SDLStdioLogger.h"
@@ -407,16 +407,6 @@ namespace Mengine
 
         SERVICE_WAIT( ConfigServiceInterface, [this]()
         {
-            if( this->loadApplicationConfig_() == false )
-            {
-                return false;
-            }
-
-            if( this->initializeConfigService_() == false )
-            {
-                return false;
-            }
-
             if( this->initializeUserDirectory_() == false )
             {
                 return false;
@@ -446,7 +436,7 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run( m_packagesPaths ) == false )
+            ->run() == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
             );
@@ -473,7 +463,7 @@ namespace Mengine
         }
 
         PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle, projectTitleLen );
+            ->setProjectTitle( projectTitle );
 
         const Resolution & windowResolution = APPLICATION_SERVICE()
             ->getCurrentResolution();

@@ -23,9 +23,6 @@ namespace Mengine
         SERVICE_DECLARE( "PrefetcherService" )
 
     public:
-        virtual void update() = 0;
-
-    public:
         virtual bool prefetchImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer ) = 0;
         virtual bool getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) = 0;
 

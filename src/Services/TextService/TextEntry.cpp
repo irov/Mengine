@@ -34,7 +34,7 @@ namespace Mengine
     {
         m_key = _key;
 
-        if( _size != ~0U )
+        if( _size != MENGINE_UNKNOWN_SIZE )
         {
             m_text.assign( _text, _size );
         }

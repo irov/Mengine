@@ -24,7 +24,6 @@
 
 namespace Mengine
 {
-
     class SDLApplication
     {
     public:

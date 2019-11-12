@@ -64,10 +64,6 @@
 #define MENGINE_SETLOCALE "C"
 #endif
 
-#ifndef MENGINE_APPLICATION_INI_PATH
-#define MENGINE_APPLICATION_INI_PATH "application.ini"
-#endif
-
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
 SERVICE_EXTERN( Bootstrapper );
@@ -94,72 +90,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32Application::~Win32Application()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::loadApplicationConfig_()
-    {
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
-
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        if( fileGroup->existFile( applicationPath, true ) == false )
-        {
-            LOGGER_INFO( "not exist application config '%s'"
-                , applicationPath.c_str()
-            );
-
-            return true;
-        }
-
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid open application settings '%s'"
-            , applicationPath.c_str()
-        );
-
-        config->getValues( "Configs", "Path", m_configsPaths );
-        config->getValues( "Credentials", "Path", m_credentialsPaths );
-        config->getValues( "Packages", "Path", m_packagesPaths );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::initializeConfigService_()
-    {
-        LOGGER_MESSAGE( "Inititalizing Config Manager..." );
-
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        for( const FilePath & filePath : m_configsPaths )
-        {
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "invalid load config '%s'"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
-        }
-
-        for( const FilePath & filePath : m_credentialsPaths )
-        {
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "invalid load credential '%s'"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeFileService_()
@@ -441,16 +371,6 @@ namespace Mengine
 
         SERVICE_WAIT( ConfigServiceInterface, [this]()
         {
-            if( this->loadApplicationConfig_() == false )
-            {
-                return false;
-            }
-
-            if( this->initializeConfigService_() == false )
-            {
-                return false;
-            }
-
             if( this->initializeUserDirectory_() == false )
             {
                 return false;
@@ -480,15 +400,13 @@ namespace Mengine
         SERVICE_CREATE( Bootstrapper );
 
         if( BOOTSTRAPPER_SERVICE()
-            ->run( m_packagesPaths ) == false )
+            ->run() == false )
         {
             LOGGER_CRITICAL( "invalid bootstrap"
             );
 
             return false;
         }
-
-
 
         LOGGER_MESSAGE( "Creating Render Window..." );
 
@@ -508,7 +426,7 @@ namespace Mengine
         }
 
         PLATFORM_SERVICE()
-            ->setProjectTitle( projectTitle, projectTitleLen );
+            ->setProjectTitle( projectTitle );
 
         Resolution windowResolution;
         APPLICATION_SERVICE()

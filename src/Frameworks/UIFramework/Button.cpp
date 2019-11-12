@@ -122,7 +122,7 @@ namespace Mengine
 
         source->addWhile( fn );
 
-        m_chain = GOAP::Helper::makeChain( source );
+        m_chain = Helper::makeEngineChain( source );
 
         if( m_chain->run() == false )
         {

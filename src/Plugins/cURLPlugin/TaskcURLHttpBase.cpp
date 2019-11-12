@@ -37,6 +37,9 @@ namespace Mengine
             m_receiver = nullptr;
 
             const GOAP::SourceProviderInterfacePtr & provider = source->getSourceProvider();
+
+            bool skip = m_node->isSkip();
+            provider->setSkip( skip );
             
             if( m_node->injectSource( provider ) == false )
             {

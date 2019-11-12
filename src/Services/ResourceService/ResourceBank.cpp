@@ -245,6 +245,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceBank::foreachResources( const LambdaResourceView & _lambda ) const
+    {
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtrView & resource = value.element;
+
+            _lambda( resource );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ResourceBank::HashtableResources & ResourceBank::getResources() const
     {
         return m_resources;

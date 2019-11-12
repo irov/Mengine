@@ -2,7 +2,6 @@
 
 #include "Interface/ResourceBankInterface.h"
 
-#include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Hashtable.h"
 
 namespace Mengine
@@ -62,10 +61,12 @@ namespace Mengine
 
         bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const override;
 
+    protected:        
+        void foreachResources( const LambdaResourceView & _lambda ) const override;
+
     protected:
         ThreadMutexInterfacePtr m_mutex;
         
-        typedef IntrusivePtrView<Resource> ResourcePtrView;
         typedef Hashtable<ConstString, ResourcePtrView> HashtableResources;
         HashtableResources m_resources;
 

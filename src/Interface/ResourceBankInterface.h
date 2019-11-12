@@ -3,15 +3,19 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
+#include "Kernel/IntrusivePtrView.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Pointer.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Resource> ResourcePtr;
+    typedef IntrusivePtrView<class Resource> ResourcePtrView;
     //////////////////////////////////////////////////////////////////////////
     typedef PointerT<ResourcePtr> ResourcePointer;
     //////////////////////////////////////////////////////////////////////////
@@ -72,6 +76,10 @@ namespace Mengine
         }
 
         virtual bool hasResourceWithType( const ConstString & _name, const ConstString & _type, ResourcePtr * _resource ) const = 0;
+
+    protected:
+        typedef Lambda<void( const ResourcePtrView & )> LambdaResourceView;
+        virtual void foreachResources( const LambdaResourceView & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceBankInterface> ResourceBankInterfacePtr;

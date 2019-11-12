@@ -17,6 +17,10 @@ namespace Mengine
         bool loadSetting( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
 
     public:
+        const FileGroupInterfacePtr & getFileGroup() const override;
+        const FilePath & getFilePath() const override;
+
+    public:
         bool getValue( const Char * _key, bool _default ) const override;
         int32_t getValue( const Char * _key, int32_t _default ) const override;
         uint32_t getValue( const Char * _key, uint32_t _default ) const override;
@@ -27,6 +31,9 @@ namespace Mengine
         Color getValue( const Char * _key, const Color & _default ) const override;
 
     protected:
+        FileGroupInterfacePtr m_fileGroup;
+        FilePath m_filePath;
+
         JSONStorageInterfacePtr m_storage;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,10 @@ namespace Mengine
         virtual bool loadSetting( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) = 0;
 
     public:
+        virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
+        virtual const FilePath & getFilePath() const = 0;
+
+    public:
         virtual bool getValue( const Char * _key, bool _default ) const = 0;
         virtual int32_t getValue( const Char * _key, int32_t _default ) const = 0;
         virtual uint32_t getValue( const Char * _key, uint32_t _default ) const = 0;

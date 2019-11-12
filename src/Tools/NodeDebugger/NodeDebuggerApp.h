@@ -300,93 +300,96 @@ namespace Mengine
         NodeDebuggerApp();
         ~NodeDebuggerApp();
 
-        bool                        Initialize( const String & _address, const uint16_t _port );
-        void                        Loop();
-        void                        Shutdown();
+        bool Initialize( const String & _address, const uint16_t _port );
+        void Loop();
+        void Shutdown();
 
-    private:
-        void                        Resize( const int _width, const int _height );
-        void                        Update( const double _dt );
-        void                        CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
-        void                        UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
-        void                        ProcessPacket( const NodeDebuggerPacket & _packet );
-        void                        ReceiveScene( const pugi::xml_node & _xmlContainer );
-        void                        ReceivePickerable( const pugi::xml_node & _xmlContainer );
-        void                        ReceiveRenderable( const pugi::xml_node & _xmlContainer );
-        void                        DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
-        Vector<uint32_t>            CollectNodePath( const DebuggerNode * _node );
-        String                      PathToString( const Vector<uint32_t> & _path );
-        Vector<uint32_t>            StringToPath( String & _pathStr );
-        DebuggerNode *              PathToNode( const Vector<uint32_t> & _path );
-        void                        DestroyNode( DebuggerNode * _node );
+    protected:
+        void Resize( const int _width, const int _height );
+        void Update( const double _dt );
+        void CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
+        void UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
+        void ProcessPacket( const NodeDebuggerPacket & _packet );
+        void ReceiveScene( const pugi::xml_node & _xmlContainer );
+        void ReceivePickerable( const pugi::xml_node & _xmlContainer );
+        void ReceiveRenderable( const pugi::xml_node & _xmlContainer );
+        void ReceiveSettings( const pugi::xml_node & _xmlContainer );
+
+    protected:
+        void DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
+        Vector<uint32_t> CollectNodePath( const DebuggerNode * _node );
+        String PathToString( const Vector<uint32_t> & _path );
+        Vector<uint32_t> StringToPath( String & _pathStr );
+        DebuggerNode * PathToNode( const Vector<uint32_t> & _path );
+        void DestroyNode( DebuggerNode * _node );
 
         // UI
-        const CachedImage*          GetIconImage( const String & _name );
-        void                        LoadIconsAtlas();
-        const NodeIcon*             GetIconForNodeType( const String & _nodeType );
-        void                        DoUI();
-        void                        DoUIGameDebuggerTab();
-        void                        DoUILogTab();
-        void                        DoUIExampleTab();
-        String                      DoIPInput( const String & _title, const String & _inIP );
-        void                        DoNodeElement( DebuggerNode * _node, const String & _tag );
-        void                        DoNodeProperties( DebuggerNode * _node );
-        void                        OnConnectButton();
-        void                        OnDisconnectButton();
-        void                        OnSelectNode( DebuggerNode * _node );
-        void                        OnPauseButton();
+        const CachedImage * GetIconImage( const String & _name );
+        void LoadIconsAtlas();
+        const NodeIcon * GetIconForNodeType( const String & _nodeType );
+        void DoUI();
+        void DoUIGameDebuggerTab();
+        void DoUILogTab();
+        void DoUIExampleTab();
+        String DoIPInput( const String & _title, const String & _inIP );
+        void DoNodeElement( DebuggerNode * _node, const String & _tag );
+        void DoNodeProperties( DebuggerNode * _node );
+        void OnConnectButton();
+        void OnDisconnectButton();
+        void OnSelectNode( DebuggerNode * _node );
+        void OnPauseButton();
 
         // network
-        void                        NetworkLoop();
-        void                        ConnectToServer();
-        void                        DisconnectFromServer();
-        void                        SendNetworkData();
-        void                        ReceiveNetworkData();
-        void                        SendXML( const pugi::xml_document & _doc );
-        void                        SendChangedNode( const DebuggerNode & _node );
-        void                        SendNodeSelection( const String & _path );
+        void NetworkLoop();
+        void ConnectToServer();
+        void DisconnectFromServer();
+        void SendNetworkData();
+        void ReceiveNetworkData();
+        void SendXML( const pugi::xml_document & _doc );
+        void SendChangedNode( const DebuggerNode & _node );
+        void SendNodeSelection( const String & _path );
 
-        void                        SendGameControlCommand( const String & _command );
-        void                        SendSceneRequest();
-        void                        SendPauseRequest();
+        void SendGameControlCommand( const String & _command );
+        void SendSceneRequest();
+        void SendPauseRequest();
 
     private:
-        GLFWwindow*                 mWindow;
-        bool                        mShutdown;
-        int                         mWidth;
-        int                         mHeight;
+        GLFWwindow * mWindow;
+        bool mShutdown;
+        int mWidth;
+        int mHeight;
 
         // UI
-        DebuggerNode*               mSelectedNode;
-        NodeIcon*                   mDefaultIcon;
-        Vector<NodeIcon>            mIcons;
-        Vector<CachedImage>         mImagesCache;
-        Vector<TabDescriptor>       mTabs;
-        size_t                      mCurrentTab;
+        DebuggerNode * mSelectedNode;
+        NodeIcon * mDefaultIcon;
+        Vector<NodeIcon> mIcons;
+        Vector<CachedImage> mImagesCache;
+        Vector<TabDescriptor> mTabs;
+        size_t mCurrentTab;
 
         // Server connection
-        String                      mServerAddress;
-        uint16_t                    mServerPort;
-        String                      mServerAddressCopy;
-        uint16_t                    mServerPortCopy;
-        volatile ConnectionStatus   mConnectionStatus;
-        zed_net_socket_t            mSocket;
-        Deque<NodeDebuggerPacket>   mIncomingPackets;
-        Deque<NodeDebuggerPacket>   mOutgoingPackets;
-        Mengine::Blobject           mReceivedData;
+        String mServerAddress;
+        uint16_t mServerPort;
+        String mServerAddressCopy;
+        uint16_t mServerPortCopy;
+        volatile ConnectionStatus mConnectionStatus;
+        zed_net_socket_t mSocket;
+        Deque<NodeDebuggerPacket> mIncomingPackets;
+        Deque<NodeDebuggerPacket> mOutgoingPackets;
+        Mengine::Blobject mReceivedData;
 
-        std::thread                 mNetworkThread;
-        std::mutex                  mDataMutex;
+        std::thread mNetworkThread;
+        std::mutex mDataMutex;
 
-        DebuggerNode*               mScene;
+        DebuggerNode * mScene;
         DebuggerNode * mScenePickerable;
         DebuggerNode * mSceneRenderable;
-        String                      mSelectedNodePath;
-        String                      mLastSelectedNodePath;
+        String mSelectedNodePath;
+        String mLastSelectedNodePath;
 
-        int                         mSceneUpdateFreq;
-        double                      mSceneUpdateTimer;
-        bool                        mUpdateSceneOnChange;
-        bool                        mPauseRequested;
+        int mSceneUpdateFreq;
+        double mSceneUpdateTimer;
+        bool mUpdateSceneOnChange;
+        bool mPauseRequested;
     };
 }

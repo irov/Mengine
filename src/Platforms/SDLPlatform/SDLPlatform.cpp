@@ -943,9 +943,20 @@ namespace Mengine
 
             return false;
         }
+#elif defined(MENGINE_PLATFORM_LINUX)
+        int status = ::mkdir( _fullpath, 0700 );
+
+        if( status != 0 )
+        {
+            LOGGER_WARNING( "'%s' alredy exists"
+                , _fullpath
+            );
+
+            return false;
+        }
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        int status = mkdir( _fullpath, 0700 );
+        int status = ::mkdir( _fullpath, 0700 );
 
         if( status != 0 )
         {
@@ -960,7 +971,7 @@ namespace Mengine
         WChar unicode_fullpath[MENGINE_MAX_PATH];
         Helper::utf8ToUnicode( _fullpath, unicode_fullpath, MENGINE_MAX_PATH );
 
-        BOOL successful = CreateDirectoryW( unicode_fullpath, NULL );
+        BOOL successful = ::CreateDirectoryW( unicode_fullpath, NULL );
 
         if( successful == FALSE )
         {

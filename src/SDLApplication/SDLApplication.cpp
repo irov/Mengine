@@ -56,7 +56,7 @@
 
 #include "SDLMessageBoxLogger.h"
 
-#ifdef MENGINE_PLATFORM_ANDROID
+#if defined(MENGINE_PLATFORM_ANDROID)
 #   include "AndroidLogger.h"
 #else
 #   include "SDLStdioLogger.h"

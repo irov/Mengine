@@ -85,4 +85,3 @@ namespace Mengine
     typedef IntrusivePtr<ResourceBankInterface> ResourceBankInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }
-

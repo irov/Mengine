@@ -8,6 +8,8 @@ SimpleBox2DFramework
     SimpleBox2DFrameworkPlugin.h
     SimpleBox2DEventReceiver.cpp
     SimpleBox2DEventReceiver.h
+    Box.h
+    Box.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/GOAP/include)

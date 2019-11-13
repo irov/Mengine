@@ -110,6 +110,7 @@ namespace Mengine
         virtual bool isStatic() const = 0;
 
     public:
+        virtual void setTransform( const mt::vec2f & _position, float _angle ) = 0;
         virtual void setLinearDumping( float _dumping ) = 0;
         virtual float getLinearDumping() const = 0;
         virtual void setAngularDumping( float _dumping ) = 0;

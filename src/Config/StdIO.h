@@ -16,7 +16,7 @@
 
 #if defined(MENGINE_COMPILER_MSVC)
 #   define MENGINE_STRICMP _stricmp
-#elif defined(MENGINE_COMPILER_GCC)
+#elif defined(MENGINE_PLATFORM_LINUX) && defined(MENGINE_COMPILER_GCC)
 #   define MENGINE_STRICMP strcasecmp
 #else
 #   define MENGINE_STRICMP stricmp

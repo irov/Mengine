@@ -32,7 +32,7 @@
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
-#define WORLDSCALE 50.f
+#define WORLDSCALE 1.f
 
 namespace Mengine
 {

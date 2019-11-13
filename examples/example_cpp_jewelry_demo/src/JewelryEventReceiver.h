@@ -2,6 +2,8 @@
 
 #include "Interface/RandomizerInterface.h"
 
+#include "Plugins/JSONPlugin/JSONInterface.h"
+
 #include "Kernel/Factory.h"
 #include "Kernel/DummySceneEventReceiver.h"
 
@@ -54,7 +56,6 @@ namespace Mengine
         float m_jewelry_cell_explosive_time_ms;
         uint32_t m_jewelry_cell_explosive_count;
         float m_jewelry_spawn_time_ms;
-        uint32_t m_jewelry_spawn_count;
 
         FactoryPtr m_factoryJewelry;
 
@@ -66,6 +67,8 @@ namespace Mengine
         JewelryMatrixPtr m_jewelryMatrix;
 
         RandomizerInterfacePtr m_randomizer;
+
+        JSONStorageInterfacePtr m_storageLevels;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JewelryEventReceiver> JewelryEventReceiverPtr;

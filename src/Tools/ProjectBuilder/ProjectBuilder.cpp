@@ -972,7 +972,7 @@ bool run()
     da.mem = &stdex_alloc;
     da.obj = &stdex_alloc;
 
-    pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, false, false, false );
+    pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, MENGINE_DEBUG_ATTRIBUTE( true, false ), true, false );
 
     if( kernel == nullptr )
     {

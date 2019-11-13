@@ -32,6 +32,7 @@
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
+#define WORLDSCALE 50.f
 
 namespace Mengine
 {
@@ -39,7 +40,6 @@ namespace Mengine
     SimpleBox2DEventReceiver::SimpleBox2DEventReceiver()
         : m_scene( nullptr )
         , m_timepipeId( 0 )
-        , m_worldOffset( 0.f, 0.f, 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -68,17 +68,15 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
-        if( m_vectorizator != nullptr )
-        {
-            m_vectorizator->removeFromParent();
-            m_vectorizator->release();
+        m_boxes.clear();
 
-            m_vectorizator = nullptr;
+        if( m_boxNode != nullptr )
+        {
+            m_boxNode->removeFromParent();
+            m_boxNode = nullptr;
         }
 
         m_scene = nullptr;
-
-        m_body = nullptr;
 
         m_world = nullptr;
     }
@@ -87,77 +85,139 @@ namespace Mengine
     {
         MENGINE_UNUSED( _behavior );
 
-        LOGGER_MESSAGE( "Scene onEntityActivate [%s]"
+        LOGGER_MESSAGE( "Scene onEntityPreparation [%s]"
             , m_scene->getName().c_str()
         );
 
-        mt::vec2f gravity( 0.0f, 10.0f );
+        // create node for box2d objects
+        NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), MENGINE_DOCUMENT_FUNCTION );
 
-        Box2DWorldInterfacePtr world = BOX2D_SERVICE()
-            ->createWorld( gravity, 100.f, MENGINE_DOCUMENT_FUNCTION );
+        MENGINE_ASSERTION_MEMORY_PANIC( node, false );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( world, false );
+        m_boxNode = node;
 
-        m_world = world;
+        m_scene->addChild( m_boxNode );
 
-        float timeStep = 1.0f / 60.0f;
-        uint32_t velocityIterations = 6;
-        uint32_t positionIterations = 2;
-
-        m_world->setTimeStep( timeStep, velocityIterations, positionIterations );
-
-        m_body = m_world->createBody(
-            false
-            , { 0.f, 20.f }, 0.f, 0.f, 0.f
-            , true, false, false
-            , MENGINE_DOCUMENT_FUNCTION
-        );
-
-        m_body->addShapeBox(
-            1.f, 1.f, { 0.f, 0.f }, 0.f
-            , 1.f, 0.2f, 0.f, false
-            , 0xFFFF, 0x0001, 0
-        );
-
-        // transforms
-        //m_body->SetTransform( b2Vec2( 10.f, 20.f ), 45.f * DEGTORAD );
-        m_body->setLinearVelocity( { -5.f, 5.f } );
-        m_body->setAngularVelocity( -90.f * DEGTORAD );
-
-        // vectorizer
-
-        VectorizatorPtr vectorizator = Helper::generateVectorizator( MENGINE_DOCUMENT_FUNCTION );
-
-        vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_Tire" ) );
-
-        Color colorLine( Helper::makeARGB8( 255, 0, 0, 255 ) );
-        Color colorFill( Helper::makeARGB8( 0, 255, 0, 255 ) );
-
-        vectorizator->setLineColor( colorLine );
-        vectorizator->setLineWidth( 5.f );
-
-        mt::vec2f size( 100.f, 100.f );
-        mt::vec2f halfSize = size * 0.5;
-
-        vectorizator->beginFill( colorFill );
-        vectorizator->drawRect( { -halfSize.x, -halfSize.y }, size.x, size.y );
-        vectorizator->endFill();
-
-        vectorizator->drawCircle( { 0.f, 0.f }, 5.f );
-
-        m_vectorizator = vectorizator;
-
-        m_scene->addChild( vectorizator );
-
-        // setup world center
+        // setup box2d node position at screen center
         const Resolution & resolution = APPLICATION_SERVICE()
             ->getContentResolution();
 
         float width = resolution.getWidthF();
         float height = resolution.getHeightF();
 
-        m_worldOffset.x = width / 2.f;
-        m_worldOffset.y = height / 2.f;
+        m_boxNode->setLocalPosition( { width / 2.f, height / 2.f, 0.f } );
+
+        // create box2d objects
+        mt::vec2f gravity( 0.0f, -10.0f );
+
+        Box2DWorldInterfacePtr world = BOX2D_SERVICE()
+            ->createWorld( gravity, WORLDSCALE, MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( world, false );
+
+        m_world = world;
+
+        float timeStep = 1.0f / 60.0f;
+        uint32_t velocityIterations = 8;
+        uint32_t positionIterations = 3;
+
+        m_world->setTimeStep( timeStep, velocityIterations, positionIterations );
+
+        // create box with dynamic body
+        {
+            Box2DBodyInterfacePtr body = m_world->createBody(
+                false
+                , { 0.f, 20.f }, 0.f, 0.f, 0.f
+                , true, false, false
+                , MENGINE_DOCUMENT_FUNCTION
+            );
+
+            mt::vec2f shapeSize( 1.f, 1.f );
+
+            body->addShapeBox(
+                shapeSize.x, shapeSize.y, { 0.f, 0.f }, 0.f
+                , 1.f, 0.2f, 0.f, false
+                , 0xFFFF, 0x0001, 0
+            );
+
+            // transforms
+            body->setTransform( { 10.f, 20.f }, 45.f * DEGTORAD );
+            body->setLinearVelocity( { -5.f, 5.f } );
+            body->setAngularVelocity( -90.f * DEGTORAD );
+
+            // vectorizer
+            VectorizatorPtr vectorizator = Helper::generateVectorizator( MENGINE_DOCUMENT_FUNCTION );
+
+            vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_DynamicBody" ) );
+
+            Color colorLine( Helper::makeARGB8( 255, 0, 0, 255 ) );
+            Color colorFill( Helper::makeARGB8( 0, 255, 0, 255 ) );
+
+            vectorizator->setLineColor( colorLine );
+            vectorizator->setLineWidth( 5.f );
+
+            mt::vec2f size( shapeSize * WORLDSCALE );
+            mt::vec2f halfSize = size * 0.5;
+
+            vectorizator->beginFill( colorFill );
+            vectorizator->drawRect( { -halfSize.x, -halfSize.y }, size.x, size.y );
+            vectorizator->endFill();
+
+            vectorizator->drawCircle( { 0.f, 0.f }, 5.f );
+
+            m_boxNode->addChild( vectorizator );
+
+            // create box
+            BoxPtr box = Helper::makeFactorableUnique<Box>( body, vectorizator );
+
+            m_boxes.emplace_back( box );
+        }
+
+        // create box with static body
+        {
+            // static body
+            Box2DBodyInterfacePtr body = m_world->createBody(
+                true
+                , { 0.f, 10.f }, 0.f, 0.f, 0.f
+                , true, false, false
+                , MENGINE_DOCUMENT_FUNCTION
+            );
+
+            mt::vec2f shapeSize( 1.f, 1.f );
+
+            body->addShapeBox(
+                shapeSize.x, shapeSize.y, { 0.f, 0.f }, 0.f
+                , 1.f, 0.2f, 0.f, false
+                , 0xFFFF, 0x0001, 0
+            );
+
+            // vectorizer
+            VectorizatorPtr vectorizator = Helper::generateVectorizator( MENGINE_DOCUMENT_FUNCTION );
+
+            vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_StaticBody" ) );
+
+            Color colorLine( Helper::makeARGB8( 255, 0, 0, 255 ) );
+            Color colorFill( Helper::makeARGB8( 0, 255, 255, 255 ) );
+
+            vectorizator->setLineColor( colorLine );
+            vectorizator->setLineWidth( 5.f );
+
+            mt::vec2f size( shapeSize * WORLDSCALE );
+            mt::vec2f halfSize = size * 0.5;
+
+            vectorizator->beginFill( colorFill );
+            vectorizator->drawRect( { -halfSize.x, -halfSize.y }, size.x, size.y );
+            vectorizator->endFill();
+
+            vectorizator->drawCircle( { 0.f, 0.f }, 5.f );
+
+            m_boxNode->addChild( vectorizator );
+
+            // create box
+            BoxPtr box = Helper::makeFactorableUnique<Box>( body, vectorizator );
+
+            m_boxes.emplace_back( box );
+        }
 
         return true;
     }
@@ -170,6 +230,7 @@ namespace Mengine
             , m_scene->getName().c_str()
         );
 
+        // task chain
         GOAP::SourcePtr source = GOAP::Helper::makeSource();
 
         source->addTask<TaskGlobalMouseButton>( MC_LBUTTON, true, nullptr );
@@ -181,8 +242,7 @@ namespace Mengine
 
         m_chain = chain;
 
-        // run box2d
-
+        // subscribe for timepipe updates
         uint32_t timepipeId = TIMEPIPE_SERVICE()
             ->addTimepipe( TimepipeInterfacePtr::from( this ) );
 
@@ -200,6 +260,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _behavior );
 
+        LOGGER_MESSAGE( "Scene onEntityDeactivate [%s]"
+            , m_scene->getName().c_str()
+        );
+
         if( m_timepipeId != 0 )
         {
             TIMEPIPE_SERVICE()
@@ -211,6 +275,7 @@ namespace Mengine
         if( m_chain != nullptr )
         {
             m_chain->cancel();
+
             m_chain = nullptr;
         }
     }
@@ -219,17 +284,9 @@ namespace Mengine
     {
         MENGINE_UNUSED( _context );
 
-        if( m_vectorizator == nullptr )
+        for( const BoxPtr & box : m_boxes )
         {
-            return;
+            box->update();
         }
-
-        mt::vec2f position = m_body->getPosition();
-        float angle = m_body->getAngle();
-
-        m_vectorizator->setLocalPosition( { m_worldOffset.x + position.x, m_worldOffset.y + position.y, 0.f } );
-        m_vectorizator->setLocalOrientationX( -angle );
-
-        LOGGER_MESSAGE( "%4.2f %4.2f %4.2f", position.x, position.y, angle );
     }
 };

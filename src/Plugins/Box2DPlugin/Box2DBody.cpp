@@ -396,6 +396,13 @@ namespace Mengine
         return type == b2_staticBody;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Box2DBody::setTransform( const mt::vec2f & _position, float _angle )
+    {
+        b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
+
+        m_body->SetTransform( b2_position, _angle );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Box2DBody::sleep()
     {
         m_body->SetSleepingAllowed( true );

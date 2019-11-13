@@ -60,6 +60,8 @@ namespace Mengine
         bool isSleeping() const override;
         bool isStatic() const override;
 
+        void setTransform( const mt::vec2f & _position, float _angle ) override;
+
         void setLinearDumping( float _dumping ) override;
         float getLinearDumping() const override;
         void setAngularDumping( float _dumping ) override;

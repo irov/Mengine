@@ -11,6 +11,8 @@
 
 #include "GOAP/GOAP.h"
 
+#include "Box.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -33,20 +35,20 @@ namespace Mengine
     public:
         void onTimepipe( const UpdateContext * _context ) override;
 
+    
     protected:
-        Scene * m_scene;
+        NodePtr m_boxNode;
 
         GOAP::ChainPtr m_chain;
 
         Box2DWorldInterfacePtr m_world;
 
-        Box2DBodyInterfacePtr m_body;
-
-        VectorizatorPtr m_vectorizator;
-
         uint32_t m_timepipeId;
 
-        mt::vec3f m_worldOffset;
+        VectorBoxPtr m_boxes;
+
+    protected:
+        Scene * m_scene;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SimpleBox2DEventReceiver> SimpleBox2DEventReceiverPtr;

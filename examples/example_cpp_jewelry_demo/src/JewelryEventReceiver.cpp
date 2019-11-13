@@ -5,6 +5,9 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
+
+#include "Plugins/JSONPlugin/JSONInterface.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -23,6 +26,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/TimepipeHelper.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Tasks/TaskTransformationTranslateTime.h"
 #include "Tasks/TaskTransformationScaleTime.h"
@@ -41,6 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JewelryEventReceiver::JewelryEventReceiver()
         : m_scene( nullptr )
+        , m_jewelry_spawn_time_ms( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -92,14 +97,16 @@ namespace Mengine
 
         uint32_t column_count = game_setting->getValue( "jewelry_column_count", 6U );
         uint32_t row_count = game_setting->getValue( "jewelry_row_count", 10U );
-        m_jewelry_type_count = game_setting->getValue( "jewelry_type_count", 6U );
         m_jewelry_size = game_setting->getValue( "jewelry_size", 50.f );
         m_jewelry_stride = game_setting->getValue( "jewelry_stride", 10.f );
-        m_jewelry_cell_fall_time_ms = game_setting->getValue( "jewelry_cell_fall_time_ms", 750.f );
         m_jewelry_cell_explosive_time_ms = game_setting->getValue( "jewelry_cell_explosive_time_ms", 750.f );
         m_jewelry_cell_explosive_count = game_setting->getValue( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
-        m_jewelry_spawn_time_ms = game_setting->getValue( "jewelry_spawn_time_ms", 350.f );
-        m_jewelry_spawn_count = game_setting->getValue( "jewelry_spawn_count", ~0U );
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+        m_storageLevels = JSON_SERVICE()
+            ->loadJSON( fileGroup, STRINGIZE_FILEPATH_LOCAL( "levels.json" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_jewelryMatrix = Helper::makeFactorableUnique<JewelryMatrix>();
 
@@ -534,14 +541,30 @@ namespace Mengine
 
         source->addTask<TaskGlobalDelay>( 1000.f );
 
-        auto && [source_spawn, source_boom] = source->addParallel<2>();
+        auto && [source_stage, source_spawn, source_boom] = source->addParallel<3>();
+
+        
+        const jpp::object & levels = m_storageLevels->getJSON();
+
+        const jpp::object & level_test = levels["test"];
+
+        for( const jpp::object & stage : jpp::array( level_test["stages"] ) )
+        {
+            float time = stage["time"];
+            
+            source_stage->addFunction( [this, stage]()
+            {
+                m_jewelry_type_count = stage["jewelry_type_count"];
+                m_jewelry_cell_fall_time_ms = stage["jewelry_cell_fall_time_ms"];
+                m_jewelry_spawn_time_ms = stage["jewelry_spawn_time_ms"];
+            } );
+
+            source_stage->addTask<TaskGlobalDelay>( time );
+        }
 
         source_spawn->addGenerator( timer, [this]( uint32_t _iterator )
         {
-            if( m_jewelry_spawn_count == _iterator )
-            {
-                return -1.f;
-            }
+            MENGINE_UNUSED( _iterator );
 
             return m_jewelry_spawn_time_ms;
         }, [this]( const GOAP::SourcePtr & _source, uint32_t _iterator, float _time )

@@ -63,11 +63,14 @@ add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
 add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
 add_python_module(_codecs   MOD_SRCS ${SOURCE_DIR}/Modules/_codecsmodule.c)
-add_python_module(zipimport MOD_SRCS ${SOURCE_DIR}/Modules/zipimport.c)
 add_python_module(_symtable MOD_SRCS ${SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${SOURCE_DIR}/Modules/xxsubtype.c)
 add_python_module(_struct MOD_SRCS ${SOURCE_DIR}/Modules/_struct.c)
 add_python_module(binascii MOD_SRCS ${SOURCE_DIR}/Modules/binascii.c)
+add_python_module(_statistics MOD_SRCS ${SOURCE_DIR}/Modules/_statisticsmodule.c)
+add_python_module(_xxsubinterpreters MOD_SRCS ${SOURCE_DIR}/Modules/_xxsubinterpretersmodule.c)
+
+
 
 set( HAVE_CHROOT 0 )
 set( HAVE_FSYNC 0 )
@@ -80,17 +83,13 @@ set( HAVE_DEVICE_MACROS 0 )
 
 set(P_SRCS                                     
         ${SOURCE_DIR}/Parser/acceler.c
-        ${SOURCE_DIR}/Parser/bitset.c
-        ${SOURCE_DIR}/Parser/firstsets.c
-        ${SOURCE_DIR}/Parser/grammar.c
         ${SOURCE_DIR}/Parser/grammar1.c
         ${SOURCE_DIR}/Parser/listnode.c
-        ${SOURCE_DIR}/Parser/metagrammar.c
         ${SOURCE_DIR}/Parser/node.c
         ${SOURCE_DIR}/Parser/parser.c
-        ${SOURCE_DIR}/Parser/parser.h
         ${SOURCE_DIR}/Parser/parsetok.c
-        ${SOURCE_DIR}/Parser/tokenizer.h
+        ${SOURCE_DIR}/Parser/token.c
+        ${SOURCE_DIR}/Parser/tokenizer.c
     )
 
 set(PARSER_SRCS ${P_SRCS} ${SOURCE_DIR}/Parser/myreadline.c ${SOURCE_DIR}/Parser/tokenizer.c )
@@ -135,13 +134,15 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/structseq.c
         ${SOURCE_DIR}/Objects/tupleobject.c
         ${SOURCE_DIR}/Objects/typeobject.c
-        #${SOURCE_DIR}/Objects/unicodectype.c
-       # ${SOURCE_DIR}/Objects/unicodeobject.c
+        ${SOURCE_DIR}/Objects/unicodectype.c
+        ${SOURCE_DIR}/Objects/unicodeobject.c
         ${SOURCE_DIR}/Objects/unicodetype_db.h
         ${SOURCE_DIR}/Objects/weakrefobject.c        
         ${SOURCE_DIR}/Objects/namespaceobject.c
         ${SOURCE_DIR}/Objects/odictobject.c
         ${SOURCE_DIR}/Objects/accu.c
+        ${SOURCE_DIR}/Objects/picklebufobject.c
+        ${SOURCE_DIR}/Objects/interpreteridobject.c
         )
    
 set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
@@ -149,6 +150,8 @@ set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DI
 
 set(PYTHON_SRCS              
                 ${SOURCE_DIR}/Python/_warnings.c
+                ${SOURCE_DIR}/Python/preconfig.c
+                ${SOURCE_DIR}/Python/initconfig.c
                 ${SOURCE_DIR}/Python/asdl.c
                 ${SOURCE_DIR}/Python/ast.c
                 ${SOURCE_DIR}/Python/ast_opt.c
@@ -292,7 +295,6 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_threadmodule.c
                 ${SOURCE_DIR}/Modules/_datetimemodule.c
                 ${SOURCE_DIR}/Modules/xxsubtype.c
-                ${SOURCE_DIR}/Modules/zipimport.c
                 ${SOURCE_DIR}/Modules/unicodedata.c
                 
                 ${SOURCE_DIR}/Modules/faulthandler.c
@@ -302,7 +304,6 @@ set(MODULE_SRCS
                 
                 ${SOURCE_DIR}/Modules/socketmodule.c
               
-                ${SOURCE_DIR}/Modules/expat/loadlibrary.c
                 ${SOURCE_DIR}/Modules/expat/xmlparse.c
                 ${SOURCE_DIR}/Modules/expat/xmlrole.c
                 ${SOURCE_DIR}/Modules/expat/xmltok.c
@@ -330,6 +331,7 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 
 include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include)
+include_directories(${SOURCE_DIR}/Include/internal)
 
 
 if(WIN32)
@@ -359,7 +361,7 @@ add_definitions(-DHAVE_MEMMOVE)
 
 add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
-add_definitions(-DPy_BUILD_CORE)
+add_definitions(-DPy_BUILD_CORE_BUILTIN)
 
 		  
 add_library( ${PROJECT_NAME} STATIC

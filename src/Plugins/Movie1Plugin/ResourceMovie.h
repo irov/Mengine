@@ -280,7 +280,7 @@ namespace Mengine
         VectorMovieLayers m_layers;
 
         bool m_hasCamera3D;
-        MovieLayerCamera3D m_camera3D;
+        MovieLayerCamera3D m_camera3D = {};
 
         uint32_t m_maxLayerIndex;
     };

@@ -100,7 +100,10 @@ static HWND hwndText_Game;
 static HWND hwndText_Params;
 static HWND hwndText_Art;
 static HWND hwndText_Value;
-
+static HWND hwndText_PathGame;
+static HWND hwndText_PathParams;
+static HWND hwndText_PathArt;
+static HWND hwndText_Ok;
 
 void SetElementPathText( HWND element, HWND hwnd )
 {
@@ -135,7 +138,7 @@ LRESULT CALLBACK WindowProcedure( HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 10, 10, 400, 20,
                 hwnd, (HMENU)ID_TEXTBOX_Value, NULL, NULL );
 
-            CreateWindow( TEXT( "button" ), TEXT( "Path Game" ),
+            hwndText_PathGame = CreateWindow( TEXT( "button" ), TEXT( "Path Game" ),
                 WS_VISIBLE | WS_CHILD,
                 10, 40, 100, 20,
                 hwnd, (HMENU)ID_BTN_Game, NULL, NULL );
@@ -145,7 +148,7 @@ LRESULT CALLBACK WindowProcedure( HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 120, 40, 400, 20,
                 hwnd, (HMENU)ID_TEXTBOX_Game, NULL, NULL );
 
-            CreateWindow( TEXT( "button" ), TEXT( "Path Params" ),
+            hwndText_PathParams = CreateWindow( TEXT( "button" ), TEXT( "Path Params" ),
                 WS_VISIBLE | WS_CHILD,
                 10, 70, 100, 20,
                 hwnd, (HMENU)ID_BTN_Params, NULL, NULL );
@@ -155,7 +158,7 @@ LRESULT CALLBACK WindowProcedure( HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 120, 70, 400, 20,
                 hwnd, (HMENU)ID_TEXTBOX_Params, NULL, NULL );
 
-            CreateWindow( TEXT( "button" ), TEXT( "Path Art" ),
+            hwndText_PathArt = CreateWindow( TEXT( "button" ), TEXT( "Path Art" ),
                 WS_VISIBLE | WS_CHILD,
                 10, 100, 100, 20,
                 hwnd, (HMENU)ID_BTN_Art, NULL, NULL );
@@ -165,7 +168,7 @@ LRESULT CALLBACK WindowProcedure( HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 120, 100, 400, 20,
                 hwnd, (HMENU)ID_TEXTBOX_Art, NULL, NULL );
 
-            CreateWindow( TEXT( "button" ), TEXT( "Ok" ),
+            hwndText_Ok = CreateWindow( TEXT( "button" ), TEXT( "Ok" ),
                 WS_VISIBLE | WS_CHILD,
                 10, 130, 80, 20,
                 hwnd, (HMENU)ID_BTN_Ok, NULL, NULL );

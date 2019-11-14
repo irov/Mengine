@@ -3,6 +3,7 @@
 #include "Kernel/Node.h"
 
 #include <algorithm>
+#include <numeric>
 
 namespace Mengine
 {
@@ -75,10 +76,10 @@ namespace Mengine
 
         mt::vec3f velocity( 0.f, 0.f, 0.f );
 
-        for( const VelocityDesc & desc : m_velocities )
+        std::accumulate( m_velocities.begin(), m_velocities.end(), mt::vec3f( 0.f, 0.f, 0.f ), [_context]( const mt::vec3f & _v, const VelocityDesc & _desc )
         {
-            velocity += desc.velocity * _context->time;
-        }
+            return _v + _desc.velocity * _context->time;
+        } );
 
         m_node->translate( velocity );
     }

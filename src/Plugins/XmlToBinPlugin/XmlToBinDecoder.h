@@ -49,6 +49,6 @@ namespace Mengine
 
         InputStreamInterfacePtr m_stream;
 
-        XmlCodecOptions m_options;
+        XmlCodecOptions m_options = {};
     };
 }

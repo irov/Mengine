@@ -39,7 +39,7 @@ namespace Mengine
         bool isDead() const;
 
     public:
-        void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations );
+        void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations ) override;
 
     public:
         Box2DBodyInterfacePtr createBody( bool _static

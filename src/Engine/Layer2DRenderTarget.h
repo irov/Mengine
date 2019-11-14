@@ -12,7 +12,7 @@ namespace Mengine
         , public Factorable
     {
     public:
-        Layer2DRenderTarget( Layer2D * _layer );
+        explicit Layer2DRenderTarget( Layer2D * _layer );
         ~Layer2DRenderTarget() override;
 
     protected:

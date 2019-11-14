@@ -66,7 +66,7 @@ namespace Mengine
     size_t ImageDecoderPVRTC::_decode( void * _buffer, size_t _bufferSize )
     {
         // TODO: investigate why sizeof(PVRTextureHeader) != 52
-        m_stream->seek( 52 + m_pvrtc_ptr.metaDataSize );
+        m_stream->seek( 52 + m_header.metaDataSize );
         size_t read = m_stream->read( _buffer, _bufferSize );
 
         return read == _bufferSize ? read : 0;
@@ -76,9 +76,9 @@ namespace Mengine
     {
         m_stream->seek( 0 );
 
-        m_stream->read( &m_pvrtc_ptr, 52 );
+        m_stream->read( &m_header, 52 );
 
-        switch( m_pvrtc_ptr.pixelFormat )
+        switch( m_header.pixelFormat )
         {
         case PVRTC4RGB:
             {
@@ -102,22 +102,22 @@ namespace Mengine
             }break;
         }
 
-        m_dataInfo.width = m_pvrtc_ptr.width;
-        m_dataInfo.height = m_pvrtc_ptr.height;
+        m_dataInfo.width = m_header.width;
+        m_dataInfo.height = m_header.height;
         m_dataInfo.channels = 3;
         m_dataInfo.depth = 1;
 
-        if( (m_pvrtc_ptr.flags & PVRTEX_MIPMAP) == PVRTEX_MIPMAP )
+        if( (m_header.flags & PVRTEX_MIPMAP) == PVRTEX_MIPMAP )
         {
-            m_dataInfo.mipmaps = 1 + m_pvrtc_ptr.numMipmaps;
+            m_dataInfo.mipmaps = 1 + m_header.numMipmaps;
         }
         else
         {
             m_dataInfo.mipmaps = 1;
         }
 
-        bool isValid = m_pvrtc_ptr.numFaces == 1  // supported only 1 face
-            && m_pvrtc_ptr.numSurfaces == 1;  // supported only 1 surface		
+        bool isValid = m_header.numFaces == 1  // supported only 1 face
+            && m_header.numSurfaces == 1;  // supported only 1 surface		
 
         return isValid;
     }

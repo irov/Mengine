@@ -18,7 +18,7 @@ namespace Mengine
         : public Factory
     {
     public:
-        FactoryWithListener( const Char * _name );
+        explicit FactoryWithListener( const Char * _name );
         ~FactoryWithListener() override;
 
     public:

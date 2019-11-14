@@ -56,7 +56,7 @@ namespace Mengine
         size_t m_capacity;
         size_t m_reading;
 
-        uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
+        uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE] = {0};
 
         STDEX_THREAD_GUARD_INIT;
 

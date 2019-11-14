@@ -79,7 +79,7 @@ namespace Mengine
         MapHashEmitterContainers m_containers;
 
         int32_t m_materialCount;
-        const RenderMaterialStage * m_stages[256];
+        const RenderMaterialStage * m_stages[256] = {nullptr};
 
         typedef Vector<ResourceImagePtr> VectorAtlasDesc;
         VectorAtlasDesc m_atlases;

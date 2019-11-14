@@ -74,9 +74,7 @@ namespace Mengine
             return;
         }
 
-        mt::vec3f velocity( 0.f, 0.f, 0.f );
-
-        std::accumulate( m_velocities.begin(), m_velocities.end(), mt::vec3f( 0.f, 0.f, 0.f ), [_context]( const mt::vec3f & _v, const VelocityDesc & _desc )
+        mt::vec3f velocity = std::accumulate( m_velocities.begin(), m_velocities.end(), mt::vec3f( 0.f, 0.f, 0.f ), [_context]( const mt::vec3f & _v, const VelocityDesc & _desc )
         {
             return _v + _desc.velocity * _context->time;
         } );

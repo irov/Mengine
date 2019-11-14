@@ -194,7 +194,7 @@ namespace Mengine
 
         EventReceiverInterfacePtr delreceiver = eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE );
 
-        MENGINE_ASSERTION_FATAL( m_receiver == delreceiver, "pickerable miss remove" );
+        MENGINE_ASSERTION_FATAL( m_receiver == delreceiver, "event EVENT_HOTSPOT_MOUSE_LEAVE miss remove" );
         m_receiver = nullptr;
         
         m_pickerable = nullptr;

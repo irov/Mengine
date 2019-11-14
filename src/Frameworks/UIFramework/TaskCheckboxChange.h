@@ -21,6 +21,8 @@ namespace Mengine
     protected:
         CheckboxPtr m_checkbox;
         bool m_value;
+
+        EventReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskCheckboxChange> TaskCheckboxChangePtr;

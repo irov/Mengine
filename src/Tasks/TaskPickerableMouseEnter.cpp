@@ -178,7 +178,7 @@ namespace Mengine
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_ENTER, newreceiver );
 
-        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "pickerable override" );
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "event EVENT_HOTSPOT_MOUSE_ENTER override" );
 
         m_receiver = newreceiver;
 
@@ -195,7 +195,7 @@ namespace Mengine
 
         EventReceiverInterfacePtr delreceiver = eventation->removeEventReceiver( EVENT_HOTSPOT_MOUSE_ENTER );
 
-        MENGINE_ASSERTION_FATAL( m_receiver == delreceiver, "pickerable miss remove" );
+        MENGINE_ASSERTION_FATAL( m_receiver == delreceiver, "event EVENT_HOTSPOT_MOUSE_ENTER miss remove" );
         m_receiver = nullptr;
         
         m_pickerable = nullptr;

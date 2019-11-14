@@ -1,5 +1,6 @@
 #include "Interface/PluginInterface.h"
 
+#include "Interface/ServiceProviderInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"

@@ -13,7 +13,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderIndexBuffer::OpenGLRenderIndexBuffer()
-        : m_indexSize( 0 )
+        : m_memory( nullptr )
+        , m_indexSize( 0 )
         , m_indexCount( 0 )
         , m_usage( GL_STATIC_DRAW )
         , m_id( 0 )

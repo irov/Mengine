@@ -104,7 +104,7 @@ namespace Mengine
 
         FEDataInterfacePtr m_dataFE;
         fe_effect * m_ttfFEEffect;
-        const fe_node * m_ttfEffectNodes[FE_MAX_PINS];
+        const fe_node * m_ttfEffectNodes[FE_MAX_PINS] = {nullptr};
 
         struct TTFGlyphQuad
         {

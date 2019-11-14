@@ -70,8 +70,8 @@ namespace Mengine
         void applyCursorPosition_( uint32_t _touchId, float _x, float _y, float _pressure );
 
     private:
-        mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH];
-        float m_cursorPressure[MENGINE_INPUT_MAX_TOUCH];
+        mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH] = {{0.f, 0.f}};
+        float m_cursorPressure[MENGINE_INPUT_MAX_TOUCH] = {0.f};
 
         struct InputMousePositionProviderDesc
         {
@@ -86,8 +86,8 @@ namespace Mengine
         VectorInputEvents m_eventsAdd;
         VectorInputEvents m_events;
 
-        bool m_keyBuffer[256];
-        bool m_mouseBuffer[3];
-        bool m_mouseBufferSpecial[3];
+        bool m_keyBuffer[256] = {false};
+        bool m_mouseBuffer[3] = {false};
+        bool m_mouseBufferSpecial[3] = {false};
     };
 }

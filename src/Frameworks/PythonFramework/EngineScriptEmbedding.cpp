@@ -3278,7 +3278,7 @@ namespace Mengine
             , public ConcreteVisitor<Resource>
         {
         public:
-            ResourceVisitorGetAlreadyCompiled( const pybind::object & _cb )
+            explicit ResourceVisitorGetAlreadyCompiled( const pybind::object & _cb )
                 : m_cb( _cb )
             {
             }
@@ -3318,7 +3318,7 @@ namespace Mengine
             , public ConcreteVisitor<Resource>
         {
         public:
-            MyResourceVisitor( const pybind::object & _cb )
+            explicit MyResourceVisitor( const pybind::object & _cb )
                 : m_cb( _cb )
             {
             }
@@ -3415,7 +3415,7 @@ namespace Mengine
             , public ConcreteVisitor<Resource>
         {
         public:
-            GetResourceVisitor( pybind::kernel_interface * _kernel )
+            explicit GetResourceVisitor( pybind::kernel_interface * _kernel )
                 : m_kernel( _kernel )
                 , m_l( _kernel )
             {
@@ -3682,7 +3682,8 @@ namespace Mengine
         pybind::def_functor_deprecated( _kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage, "use 'mountResourcePackage'" );
         pybind::def_functor_deprecated( _kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage, "use 'unmountResourcePackage'" );
         pybind::def_functor( _kernel, "mountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePackage );
-        pybind::def_functor( _kernel, "unmountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage );
+        pybind::def_functor( _kernel, "unmountResourcePackage", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePackage );        
+        pybind::def_functor( _kernel, "hasPackage", nodeScriptMethod, &EngineScriptMethod::s_hasPackage );
         
         pybind::def_functor( _kernel, "existFile", nodeScriptMethod, &EngineScriptMethod::s_existFile );
         pybind::def_functor( _kernel, "removeFile", nodeScriptMethod, &EngineScriptMethod::s_removeFile );

@@ -46,35 +46,35 @@ namespace Mengine
             m_stream->seek( 0 );
         }
 
-        m_stream->read( &m_etc1_ptr, sizeof( ETC1Header ) );
+        m_stream->read( &m_header, sizeof( ETC1Header ) );
         m_needSeek = false;
 
-        if( strncmp( m_etc1_ptr.tag, "PKM 10", 6 ) != 0 )
+        if( strncmp( m_header.tag, "PKM 10", 6 ) != 0 )
         {
             LOGGER_ERROR( "Bad or not ETC1 file" );
 
             return false;
         }
 
-        uint8_t * buffer = reinterpret_cast<uint8_t *>(&m_etc1_ptr);
-        m_etc1_ptr.format = readBEUint16( buffer + ETC1_PKM_FORMAT_OFFSET );
-        m_etc1_ptr.texHeight = readBEUint16( buffer + ETC1_PKM_ENCODED_HEIGHT_OFFSET );
-        m_etc1_ptr.texWidth = readBEUint16( buffer + ETC1_PKM_ENCODED_WIDTH_OFFSET );
-        m_etc1_ptr.origHeight = readBEUint16( buffer + ETC1_PKM_HEIGHT_OFFSET );
-        m_etc1_ptr.origWidth = readBEUint16( buffer + ETC1_PKM_WIDTH_OFFSET );
+        uint8_t * buffer = reinterpret_cast<uint8_t *>(&m_header);
+        m_header.format = readBEUint16( buffer + ETC1_PKM_FORMAT_OFFSET );
+        m_header.texHeight = readBEUint16( buffer + ETC1_PKM_ENCODED_HEIGHT_OFFSET );
+        m_header.texWidth = readBEUint16( buffer + ETC1_PKM_ENCODED_WIDTH_OFFSET );
+        m_header.origHeight = readBEUint16( buffer + ETC1_PKM_HEIGHT_OFFSET );
+        m_header.origWidth = readBEUint16( buffer + ETC1_PKM_WIDTH_OFFSET );
 
-        bool isValid = m_etc1_ptr.texWidth >= m_etc1_ptr.origWidth
-            && m_etc1_ptr.texWidth - m_etc1_ptr.origWidth < 4
-            && m_etc1_ptr.texHeight >= m_etc1_ptr.origHeight
-            && m_etc1_ptr.texHeight - m_etc1_ptr.origHeight < 4;
+        bool isValid = m_header.texWidth >= m_header.origWidth
+            && m_header.texWidth - m_header.origWidth < 4
+            && m_header.texHeight >= m_header.origHeight
+            && m_header.texHeight - m_header.origHeight < 4;
 
         m_dataInfo.channels = 3;
         m_dataInfo.depth = 1;
         //m_dataInfo.format = PF_ETC1;
-        m_dataInfo.width = m_etc1_ptr.texWidth;
-        m_dataInfo.height = m_etc1_ptr.texHeight;
+        m_dataInfo.width = m_header.texWidth;
+        m_dataInfo.height = m_header.texHeight;
 
-        m_dataInfo.mipmaps = 1 + m_etc1_ptr.format;
+        m_dataInfo.mipmaps = 1 + m_header.format;
 
         return isValid;
     }

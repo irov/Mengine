@@ -25,7 +25,7 @@ namespace Mengine
         , public SoundListenerInterface
     {
     public:
-        MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
+        explicit MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
             : m_callback( _callback )
         {
         }

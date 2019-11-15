@@ -13,12 +13,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RouterButtonEventReceiver::addButtonEventReceiver( const ConstString & _state, const ButtonEventReceiverInterfacePtr & _button )
     {
-        m_receivers.emplace( _state, _button );
+        ButtonEventReceiverInterfacePtr delreceiver = m_receivers.change( _state, _button );
+
+        MENGINE_UNUSED( delreceiver );
+
+        MENGINE_ASSERTION_FATAL( delreceiver == nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     ButtonEventReceiverInterfacePtr RouterButtonEventReceiver::removeButtonEventReceiver( const ConstString & _state )
     {
         ButtonEventReceiverInterfacePtr delreceiver = m_receivers.erase( _state );
+
+        MENGINE_ASSERTION_FATAL( delreceiver != nullptr );
 
         return delreceiver;
     }

@@ -19,6 +19,10 @@ Button
     ButtonEventReceiverInterface.h
     TaskButtonClick.cpp
     TaskButtonClick.h
+    RouterButtonEventReceiver.h
+    RouterButtonEventReceiver.cpp
+    TaskRouterButtonClick.h
+    TaskRouterButtonClick.cpp
 )
 
 ADD_FILTER(

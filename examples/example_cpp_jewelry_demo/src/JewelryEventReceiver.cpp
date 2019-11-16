@@ -6,6 +6,7 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 #include "Plugins/JSONPlugin/JSONInterface.h"
 
@@ -101,6 +102,7 @@ namespace Mengine
         m_jewelry_stride = game_setting->getValue( "jewelry_stride", 10.f );
         m_jewelry_cell_explosive_time_ms = game_setting->getValue( "jewelry_cell_explosive_time_ms", 750.f );
         m_jewelry_cell_explosive_count = game_setting->getValue( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
+        m_jewelry_collapse = game_setting->getValue( "jewelry_collapse", true );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -125,6 +127,11 @@ namespace Mengine
 
         m_scene->addChild( m_base );
 
+        m_timemillisecond = GET_TIME_MILLISECONDS();
+        m_stage = 0;
+
+        this->makeUI_();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -144,6 +151,82 @@ namespace Mengine
         m_base->addChild( node );
 
         return jewelry;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::makeUI_()
+    {
+        this->makeUITextStage_();
+        this->makeUITextTime_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::makeUITextStage_()
+    {
+        TextFieldPtr textScore = Helper::generateTextField( MENGINE_DOCUMENT_FUNCTION );
+
+        textScore->setTextID( STRINGIZE_STRING_LOCAL( "ID_Stage" ) );
+
+        VectorString empty_args;
+        empty_args.push_back( "" );
+        textScore->setTextFormatArgs( empty_args );
+
+        textScore->setTextFormatArgsContext( 0, [this]( String * _arg )
+        {
+            static uint32_t cache_stage = ~0U;
+
+            if( cache_stage == m_stage )
+            {
+                return false;
+            }
+
+            cache_stage = m_stage;
+
+            Helper::unsignedToString( m_stage, _arg );
+
+            return true;
+        } );
+
+        textScore->setLocalPosition( { 50.f, 50.f, 0.f } );
+
+        m_textStage = textScore;
+
+        m_scene->addChild( m_textStage );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::makeUITextTime_()
+    {
+        TextFieldPtr textScore = Helper::generateTextField( MENGINE_DOCUMENT_FUNCTION );
+
+        textScore->setTextID( STRINGIZE_STRING_LOCAL( "ID_Time" ) );
+
+        VectorString empty_args;
+        empty_args.push_back( "" );
+        textScore->setTextFormatArgs( empty_args );
+
+        textScore->setTextFormatArgsContext( 0, [this]( String * _arg )
+        {
+            static uint64_t cache_time = ~0U;
+
+            if( cache_time == m_stage )
+            {
+                return false;
+            }
+
+            uint64_t timemillisecond = GET_TIME_MILLISECONDS();
+
+            uint64_t timesecond = (timemillisecond - m_timemillisecond) / 1000;
+
+            cache_time = timesecond;
+
+            Helper::unsigned64ToString( timesecond, _arg );
+
+            return true;
+        } );
+
+        textScore->setLocalPosition( { 50.f, 150.f, 0.f } );
+
+        m_textStage = textScore;
+
+        m_scene->addChild( m_textStage );
     }
     //////////////////////////////////////////////////////////////////////////
     void JewelryEventReceiver::spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator )
@@ -330,6 +413,11 @@ namespace Mengine
         {
             _jewelry->stop();
             _jewelry->block( _source );
+        }
+
+        if( m_jewelry_collapse == false )
+        {
+            return;
         }
 
         uint32_t jewelry_type = _jewelry->getType();
@@ -554,6 +642,8 @@ namespace Mengine
             
             source_stage->addFunction( [this, stage]()
             {
+                ++m_stage;
+
                 m_jewelry_type_count = stage["jewelry_type_count"];
                 m_jewelry_cell_fall_time_ms = stage["jewelry_cell_fall_time_ms"];
                 m_jewelry_spawn_time_ms = stage["jewelry_spawn_time_ms"];

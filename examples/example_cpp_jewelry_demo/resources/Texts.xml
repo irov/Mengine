@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Texts>
+    <Text Font="Stage" Key="ID_Stage" Value="State: %s" />
+    <Text Font="Time" Key="ID_Time" Value="Time: %s" />
+</Texts>

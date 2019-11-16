@@ -194,26 +194,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void JewelryEventReceiver::makeUITextTime_()
     {
-        TextFieldPtr textScore = Helper::generateTextField( MENGINE_DOCUMENT_FUNCTION );
+        TextFieldPtr textTime = Helper::generateTextField( MENGINE_DOCUMENT_FUNCTION );
 
-        textScore->setTextID( STRINGIZE_STRING_LOCAL( "ID_Time" ) );
+        textTime->setTextID( STRINGIZE_STRING_LOCAL( "ID_Time" ) );
 
         VectorString empty_args;
         empty_args.push_back( "" );
-        textScore->setTextFormatArgs( empty_args );
+        textTime->setTextFormatArgs( empty_args );
 
-        textScore->setTextFormatArgsContext( 0, [this]( String * _arg )
+        textTime->setTextFormatArgsContext( 0, [this]( String * _arg )
         {
             static uint64_t cache_time = ~0U;
-
-            if( cache_time == m_stage )
-            {
-                return false;
-            }
 
             uint64_t timemillisecond = GET_TIME_MILLISECONDS();
 
             uint64_t timesecond = (timemillisecond - m_timemillisecond) / 1000;
+
+            if( cache_time == timesecond )
+            {
+                return false;
+            }
 
             cache_time = timesecond;
 
@@ -222,11 +222,11 @@ namespace Mengine
             return true;
         } );
 
-        textScore->setLocalPosition( { 50.f, 150.f, 0.f } );
+        textTime->setLocalPosition( { 50.f, 150.f, 0.f } );
 
-        m_textStage = textScore;
+        m_textTime = textTime;
 
-        m_scene->addChild( m_textStage );
+        m_scene->addChild( m_textTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void JewelryEventReceiver::spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator )
@@ -728,6 +728,12 @@ namespace Mengine
     void JewelryEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
+
+        m_textStage->removeFromParent();
+        m_textStage = nullptr;
+
+        m_textTime->removeFromParent();
+        m_textTime = nullptr;
 
         if( m_chain != nullptr )
         {

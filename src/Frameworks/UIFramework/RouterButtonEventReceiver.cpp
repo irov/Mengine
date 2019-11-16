@@ -105,4 +105,21 @@ namespace Mengine
 
         receiver->onButtonMouseButtonEnd();
     }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button )
+        {
+            RouterButtonEventReceiverPtr router = Helper::makeFactorableUnique<RouterButtonEventReceiver>();
+
+            EventationInterface * eventation = _button->getEventation();
+
+            EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_BUTTON_MOUSE_BUTTON, router );
+
+            MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, nullptr, "event EVENT_BUTTON_MOUSE_BUTTON override" );
+
+            return router;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

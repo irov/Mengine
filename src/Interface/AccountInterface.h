@@ -10,11 +10,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Magic.h"
 #include "Kernel/Mixin.h"
-
-#ifndef MENGINE_ACCOUNT_SETTING_MAXVALUE
-#define MENGINE_ACCOUNT_SETTING_MAXVALUE 1024
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

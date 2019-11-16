@@ -155,8 +155,8 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
-        MENGINE_INLINE static const Char * getStaticServiceID(){ return ID; };\
-        MENGINE_INLINE const Char * getServiceID() const override { return ID; };\
+        MENGINE_INLINE static const Mengine::Char * getStaticServiceID(){ return ID; };\
+        MENGINE_INLINE const Mengine::Char * getServiceID() const override { return ID; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\

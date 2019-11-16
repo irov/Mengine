@@ -31,7 +31,7 @@ namespace Mengine
 	([](){static bool value = OPTIONS_SERVICE()->hasOption( Key ); return value;}())
 //////////////////////////////////////////////////////////////////////////
 #define GET_OPTION_VALUE( Key, Default )\
-	([](){static const Char * value = OPTIONS_SERVICE()->getOptionValue( Key, Default ); return value;}())
+	([](){static const Mengine::Char * value = OPTIONS_SERVICE()->getOptionValue( Key, Default ); return value;}())
 //////////////////////////////////////////////////////////////////////////
 #define GET_OPTION_VALUE_UINT32( Key )\
 	([](){static uint32_t value = OPTIONS_SERVICE()->getOptionUInt32( Key ); return value;}())

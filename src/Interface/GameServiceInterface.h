@@ -10,10 +10,6 @@
 
 #include "Kernel/Eventable.h"
 
-#ifndef MENGINE_GAME_PARAM_MAXVALUE
-#define MENGINE_GAME_PARAM_MAXVALUE 1024
-#endif
-
 namespace Mengine
 {
     class GameServiceInterface

@@ -159,15 +159,6 @@ namespace Mengine
         uint32_t m_velocityIterations;
         uint32_t m_positionIterations;
 
-        struct JoinDef
-        {
-            b2JointDef * def;
-            Box2DJoint * join;
-        };
-
-        typedef Vector<JoinDef> VectorJoints;
-        VectorJoints m_joints;
-
         Box2DScaler m_scaler;
     };
     //////////////////////////////////////////////////////////////////////////

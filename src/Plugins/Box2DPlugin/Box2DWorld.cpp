@@ -16,9 +16,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Box2DWorld::Box2DWorld()
-        : m_world( nullptr )
+        : m_timepipeId( 0 )
         , m_dead( false )
         , m_time( 0.f )
+        , m_world( nullptr )
         , m_timeStep( 1000.f / 60.f )
         , m_velocityIterations( 10 )
         , m_positionIterations( 10 )
@@ -62,6 +63,7 @@ namespace Mengine
         {
             TIMEPIPE_SERVICE()
                 ->removeTimepipe( m_timepipeId );
+
             m_timepipeId = 0;
         }
 

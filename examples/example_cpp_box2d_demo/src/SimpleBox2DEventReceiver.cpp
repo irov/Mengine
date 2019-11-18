@@ -30,8 +30,6 @@
 
 #include "Config/Vector.h"
 
-#define DEGTORAD 0.0174532925199432957f
-#define RADTODEG 57.295779513082320876f
 #define WORLDSCALE 1.f
 
 namespace Mengine
@@ -108,10 +106,10 @@ namespace Mengine
         m_boxNode->setLocalPosition( { width / 2.f, height / 2.f, 0.f } );
 
         // create box2d objects
-        mt::vec2f gravity( 0.0f, -10.0f );
+        mt::vec2f gravity( 0.f, -10.f );
 
         Box2DWorldInterfacePtr world = BOX2D_SERVICE()
-            ->createWorld( gravity, WORLDSCALE, MENGINE_DOCUMENT_FUNCTION );
+            ->createWorld( gravity, 128.f, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( world, false );
 
@@ -141,17 +139,17 @@ namespace Mengine
             );
 
             // transforms
-            body->setTransform( { 10.f, 20.f }, 45.f * DEGTORAD );
+            body->setTransform( { 10.f, 20.f }, 45.f * mt::constant::deg2rad );
             body->setLinearVelocity( { -5.f, 5.f } );
-            body->setAngularVelocity( -90.f * DEGTORAD );
+            body->setAngularVelocity( -90.f * mt::constant::deg2rad );
 
             // vectorizer
             VectorizatorPtr vectorizator = Helper::generateVectorizator( MENGINE_DOCUMENT_FUNCTION );
 
             vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_DynamicBody" ) );
 
-            Color colorLine( Helper::makeARGB8( 255, 0, 0, 255 ) );
-            Color colorFill( Helper::makeARGB8( 0, 255, 0, 255 ) );
+            Color colorLine( Helper::makeRGBA8( 255, 0, 0, 255 ) );
+            Color colorFill( Helper::makeRGBA8( 0, 255, 0, 255 ) );
 
             vectorizator->setLineColor( colorLine );
             vectorizator->setLineWidth( 5.f );
@@ -196,8 +194,8 @@ namespace Mengine
 
             vectorizator->setName( STRINGIZE_STRING_LOCAL( "Vectorizator_StaticBody" ) );
 
-            Color colorLine( Helper::makeARGB8( 255, 0, 0, 255 ) );
-            Color colorFill( Helper::makeARGB8( 0, 255, 255, 255 ) );
+            Color colorLine( Helper::makeRGBA8( 255, 0, 0, 255 ) );
+            Color colorFill( Helper::makeRGBA8( 0, 255, 255, 255 ) );
 
             vectorizator->setLineColor( colorLine );
             vectorizator->setLineWidth( 5.f );

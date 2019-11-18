@@ -886,7 +886,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
+    void OpenGLRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
     {
         GLbitfield frameBufferFlags = 0;
 
@@ -895,10 +895,10 @@ namespace Mengine
             frameBufferFlags |= GL_COLOR_BUFFER_BIT;
 
             GLCALL( glClearColor, (
-                Detail::get_R_float_from_argb32( _color ),
-                Detail::get_G_float_from_argb32( _color ),
-                Detail::get_B_float_from_argb32( _color ),
-                Detail::get_A_float_from_argb32( _color ))
+                _color.getR(),
+                _color.getG(),
+                _color.getB(),
+                _color.getA())
             );
         }
 

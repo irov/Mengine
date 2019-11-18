@@ -82,7 +82,7 @@ namespace Mengine
         }
 
         Setting st;
-        st.value = _defaultValue;
+        ::strcpy( st.value, _defaultValue );
         st.provider = _provider;
 
         m_settings.emplace( _setting, st );
@@ -106,7 +106,7 @@ namespace Mengine
 
         Setting & st = it_found->second;
 
-        st.value = _value;
+        ::strcpy( st.value, _value );
 
         if( st.provider != nullptr )
         {
@@ -132,9 +132,7 @@ namespace Mengine
 
         const Setting & st = it_found->second;
 
-        const Char * value_str = st.value.c_str();
-
-        strcpy( _value, value_str );
+        ::strcpy( _value, st.value );
 
         return true;
     }
@@ -152,9 +150,7 @@ namespace Mengine
         {
             const Setting & st = it_found->second;
 
-            const Char * value_str = st.value.c_str();
-
-            strcpy( _value, value_str );
+            ::strcpy( _value, st.value );
         }
 
         return true;
@@ -249,7 +245,7 @@ namespace Mengine
                 continue;
             }
 
-            st.value = value;
+            ::strcpy( st.value, value );
         }
 
         return true;
@@ -307,9 +303,7 @@ namespace Mengine
                 continue;
             }
 
-            const Char * value_str = st.value.c_str();
-
-            st.provider->onChangeSetting( value_str );
+            st.provider->onChangeSetting( st.value );
         }
     }
     //////////////////////////////////////////////////////////////////////////

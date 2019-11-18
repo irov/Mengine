@@ -333,8 +333,6 @@ if(MENGINE_DEPENDENCE_FREETYPE)
     message("================freetype================")
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
 
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/freetype/CMakeLists.txt ${THIRDPARTY_DIR}/freetype/CMakeLists.txt COPYONLY)
-
     if(MENGINE_TARGET_IOS)
         set(IOS_PLATFORM "OS" CACHE STRING "IOS_PLATFORM" FORCE)
     endif()

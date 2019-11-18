@@ -20,6 +20,10 @@ elseif(MINGW)
     # input and thirdparty paths
     SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
     SET(THIRDPARTY_LIB_DIR ${MENGINE_REPOSITORY}/lib/dependencies/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE})
+elseif(APPLE)
+    # input and thirdparty paths
+    SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
+    SET(THIRDPARTY_LIB_DIR ${MENGINE_REPOSITORY}/lib/dependencies/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE})
 else()
     # input and thirdparty paths
     SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)

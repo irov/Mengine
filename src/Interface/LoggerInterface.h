@@ -27,7 +27,7 @@ namespace Mengine
         virtual bool validMessage( ELoggerLevel _level, uint32_t _flag ) const = 0;
 
     public:
-        virtual void log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _size ) = 0;
+        virtual void log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _size ) = 0;
         virtual void flush() = 0;
     };
     //////////////////////////////////////////////////////////////////////////

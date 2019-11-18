@@ -247,7 +247,7 @@ namespace Mengine
             break;
         }
 
-        size_t messageLen = strlen( _message );
+        size_t messageLen = ::strlen( _message );
 
         LOGGER_SERVICE()
             ->logMessage( level, 0, _message, messageLen );

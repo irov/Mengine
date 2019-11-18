@@ -405,7 +405,7 @@ namespace Mengine
             uint8_t RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
             uint8_t RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
 
-            ColorValue_ARGB argb = Helper::makeARGB8( RenderFrameClearColorR, RenderFrameClearColorG, RenderFrameClearColorB, 255 );
+            Color argb = Helper::makeColor( RenderFrameClearColorR, RenderFrameClearColorG, RenderFrameClearColorB, 255 );
 
             uint32_t frameBufferTypes = FBT_COLOR;
 

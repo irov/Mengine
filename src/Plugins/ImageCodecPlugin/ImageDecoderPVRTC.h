@@ -34,6 +34,6 @@ namespace Mengine
             uint32_t metaDataSize;
         };
 
-        PVRTextureHeader m_pvrtc_ptr;
+        PVRTextureHeader m_header = {};
     };
 }

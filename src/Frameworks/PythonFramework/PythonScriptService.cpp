@@ -84,7 +84,7 @@ namespace Mengine
             : public pybind::observer_bind_call
         {
         public:
-            My_observer_bind_call( PythonScriptService * _scriptService )
+            explicit My_observer_bind_call( PythonScriptService * _scriptService )
                 : m_scriptService( _scriptService )
 #ifdef MENGINE_WINDOWS_DEBUG
                 , m_prev_handler( nullptr )
@@ -412,7 +412,9 @@ namespace Mengine
     void PythonScriptService::_finalizeService()
     {
 #ifdef MENGINE_DEBUG
-        My_observer_bind_call * observer_bind_call = (My_observer_bind_call*)m_kernel->get_observer_bind_call();
+        pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
+
+        My_observer_bind_call * observer_bind_call = static_cast<My_observer_bind_call *>(observer);
         Helper::freeT( observer_bind_call );
 
         m_kernel->set_observer_bind_call( nullptr );
@@ -728,7 +730,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
     {
+#ifndef MENGINE_MASTER_RELEASE
         DataflowInterfacePtr dataflowPY = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
+#endif
+
         DataflowInterfacePtr dataflowPYZ = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         for( const ScriptModulePackage & pack : m_bootstrapperModules )

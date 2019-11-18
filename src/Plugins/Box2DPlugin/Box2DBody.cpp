@@ -188,6 +188,14 @@ namespace Mengine
         return angle;
     }
     //////////////////////////////////////////////////////////////////////////
+    mt::vec2f Box2DBody::getWorldVector( const mt::vec2f & _localVector )       
+    {       
+        b2Vec2 b2_localVector = m_scaler.toBox2DWorld( _localVector );
+        b2Vec2 b2_worldVector = m_body->GetWorldVector( b2_localVector );       
+        mt::vec2f worldVector = m_scaler.toEngineWorld( b2_worldVector );
+        return worldVector;     
+    }
+    //////////////////////////////////////////////////////////////////////////
     float Box2DBody::getMass() const
     {
         float32 mass = m_body->GetMass();
@@ -247,6 +255,11 @@ namespace Mengine
         b2Vec2 b2_world_center = m_body->GetWorldCenter();
         b2Vec2 b2_total_point = b2_world_center + b2_point;
         m_body->ApplyLinearImpulse( b2_impulse, b2_total_point, true );
+    }
+    //////////////////////////////////////////////////////////////////////////      
+    void Box2DBody::applyAngularImpulse( float _impulse )       
+    {       
+        m_body->ApplyAngularImpulse( _impulse, true );      
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::onBeginContact( Box2DBody * _body, b2Contact * _contact )
@@ -381,6 +394,13 @@ namespace Mengine
         b2BodyType type = m_body->GetType();
 
         return type == b2_staticBody;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Box2DBody::setTransform( const mt::vec2f & _position, float _angle )
+    {
+        b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
+
+        m_body->SetTransform( b2_position, _angle );
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::sleep()

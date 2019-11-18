@@ -130,7 +130,7 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_WAIT( DataServiceInterface, [this]()
+        SERVICE_WAIT( DataServiceInterface, []()
         {
             DataflowInterfacePtr dataflowAEK = Helper::makeFactorableUnique<DataflowAEK>();
 

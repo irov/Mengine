@@ -1,0 +1,30 @@
+{
+  "test": {
+    "stages": [
+      {
+        "time": 5000,
+        "jewelry_type_count": 3,
+        "jewelry_cell_fall_time_ms": 950.0,
+        "jewelry_spawn_time_ms": 350.0
+      },
+      {
+        "time": 5000,
+        "jewelry_type_count": 3,
+        "jewelry_cell_fall_time_ms": 1150.0,
+        "jewelry_spawn_time_ms": 300.0
+      },
+      {
+        "time": 5000,
+        "jewelry_type_count": 4,
+        "jewelry_cell_fall_time_ms": 850.0,
+        "jewelry_spawn_time_ms": 300.0
+      },
+      {
+        "time": 5000,
+        "jewelry_type_count": 5,
+        "jewelry_cell_fall_time_ms": 850.0,
+        "jewelry_spawn_time_ms": 300.0
+      }
+    ]
+  }
+}

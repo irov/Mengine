@@ -145,7 +145,7 @@ namespace Mengine
         typedef Hashtable<ConstString, RenderProgramInterfacePtr> HashtableRenderPrograms;
         HashtableRenderPrograms m_programs;
 
-        const RenderMaterialStage * m_defaultStages[EM_MATERIAL_COUNT];
+        const RenderMaterialStage * m_defaultStages[EM_MATERIAL_COUNT] = {nullptr};
         ConstString m_defaultStageNames[EM_MATERIAL_COUNT];
 
         typedef Map<ConstString, EMaterial> MapDefaultStagesName;

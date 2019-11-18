@@ -48,12 +48,12 @@ namespace Mengine
         uint32_t getFingerIndex_( SDL_FingerID _fingerId ) const;
 
     protected:
-        bool m_keyDown[KC_MAX_CODE];
+        bool m_keyDown[KC_MAX_CODE] = {false};
 
-        EKeyCode m_keys[KC_MAX_CODE];
-        SDL_Scancode m_codes[SDL_NUM_SCANCODES];
+        EKeyCode m_keys[KC_MAX_CODE] = {KC_UNASSIGNED};
+        SDL_Scancode m_codes[SDL_NUM_SCANCODES] = {SDL_SCANCODE_UNKNOWN};
 
-        SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH];
+        SDL_FingerID m_fingers[MENGINE_INPUT_MAX_TOUCH] = {-1};
 
         float m_width;
         float m_height;

@@ -1,18 +1,18 @@
 #include "Color.h"
 
 namespace Mengine
-{    
+{
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        ColorValue_ARGB makeARGB8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
+        ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
         {
-#ifdef MENGINE_RENDER_TEXTURE_RGBA			
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
             uint8_t b8 = _r;
             uint8_t g8 = _g;
             uint8_t r8 = _b;
             uint8_t a8 = _a;
-#else			
+#else
             uint8_t r8 = _r;
             uint8_t g8 = _g;
             uint8_t b8 = _b;
@@ -24,7 +24,7 @@ namespace Mengine
             return argb;
         }
         //////////////////////////////////////////////////////////////////////////
-        ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a )
+        ColorValue_ARGB makeRGBA( float _r, float _g, float _b, float _a )
         {
             const float rgba_255 = 255.5f;
 
@@ -33,15 +33,22 @@ namespace Mengine
             uint8_t b8 = static_cast<uint8_t>(_b * rgba_255);
             uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
 
-            ColorValue_ARGB argb = makeARGB8( r8, g8, b8, a8 );
+            ColorValue_ARGB argb = Helper::makeRGBA8( r8, g8, b8, a8 );
 
             return argb;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        Color makeColor( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a )
+        {
+            ColorValue_ARGB value = Helper::makeRGBA8( _r, _g, _b, _a );
+
+            return Color( _r, _g, _b, _a, value );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void Color::updateRGBA_() const
     {
-        m_argb = Helper::makeARGB( m_r, m_g, m_b, m_a );
+        m_argb = Helper::makeRGBA( m_r, m_g, m_b, m_a );
 
         if( m_argb == Detail::COLOR_IDENTITY_VALUE )
         {
@@ -127,7 +134,7 @@ namespace Mengine
         220.f / 255.f, 221.f / 255.f, 222.f / 255.f, 223.f / 255.f, 224.f / 255.f, 225.f / 255.f, 226.f / 255.f, 227.f / 255.f, 228.f / 255.f, 229.f / 255.f,
         230.f / 255.f, 231.f / 255.f, 232.f / 255.f, 233.f / 255.f, 234.f / 255.f, 235.f / 255.f, 236.f / 255.f, 237.f / 255.f, 238.f / 255.f, 239.f / 255.f,
         240.f / 255.f, 241.f / 255.f, 242.f / 255.f, 243.f / 255.f, 244.f / 255.f, 245.f / 255.f, 246.f / 255.f, 247.f / 255.f, 248.f / 255.f, 249.f / 255.f,
-        250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f };
+        250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f};
     //////////////////////////////////////////////////////////////////////////
     void Color::setAsARGB( ColorValue_ARGB _val )
     {

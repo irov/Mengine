@@ -99,7 +99,13 @@ namespace Mengine
 
         EventationInterface * eventation = m_checkbox->getEventation();
 
-        eventation->addEventReceiver( EVENT_CHECKBOX_CHANGE, Helper::makeFactorableUnique<Detail::TaskCheckboxChangeEventReceiver>( lambda, m_value ) );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskCheckboxChangeEventReceiver>( lambda, m_value );
+
+        EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_CHECKBOX_CHANGE, newreceiver );
+
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "event EVENT_CHECKBOX_CHANGE override" );
+
+        m_receiver = newreceiver;
 
         return false;
     }
@@ -108,7 +114,10 @@ namespace Mengine
     {
         EventationInterface * eventation = m_checkbox->getEventation();
 
-        eventation->removeEventReceiver( EVENT_CHECKBOX_CHANGE );
+        EventReceiverInterfacePtr delreceiver = eventation->removeEventReceiver( EVENT_CHECKBOX_CHANGE );
+
+        MENGINE_ASSERTION_FATAL( delreceiver == m_receiver, "event EVENT_BUTTON_MOUSE_BUTTON override" );
+        m_receiver = nullptr;
 
         m_checkbox = nullptr;
     }

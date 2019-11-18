@@ -24,6 +24,7 @@ extern PyObject* PyInit__sha1(void);
 extern PyObject* PyInit__sha256(void);
 extern PyObject* PyInit__sha512(void);
 extern PyObject* PyInit__sha3(void);
+extern PyObject* PyInit__statistics(void);
 extern PyObject* PyInit__blake2(void);
 extern PyObject* PyInit_select(void);
 extern PyObject* PyInit_time(void);
@@ -35,9 +36,9 @@ extern PyObject* PyInit__locale(void);
 #endif
 extern PyObject* PyInit__codecs(void);
 extern PyObject* PyInit__weakref(void);
-/* XXX: This one should really be extracted to standalone extension. */
+/* XXX: These two should really be extracted to standalone extensions. */
 extern PyObject* PyInit_xxsubtype(void);
-extern PyObject* PyInit_zipimport(void);
+extern PyObject* PyInit__xxsubinterpreters(void);
 extern PyObject* PyInit__random(void);
 extern PyObject* PyInit_itertools(void);
 extern PyObject* PyInit__collections(void);
@@ -101,7 +102,7 @@ struct _inittab _PyImport_Inittab[] = {
     {"_operator", PyInit__operator},
     {"_signal", PyInit__signal},
     {"_socket", PyInit__socket},
-    {"select", PyInit_select},    
+    {"select", PyInit_select},
     {"_md5", PyInit__md5},
     {"_sha1", PyInit__sha1},
     {"_sha256", PyInit__sha256},
@@ -110,6 +111,7 @@ struct _inittab _PyImport_Inittab[] = {
     {"_blake2", PyInit__blake2},
     {"time", PyInit_time},
     {"_thread", PyInit__thread},
+    {"_statistics", PyInit__statistics},
     {"_ssl", PyInit__thread},
 #ifdef WIN32
     {"msvcrt", PyInit_msvcrt},
@@ -139,8 +141,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"_json", PyInit__json},
     { "pyexpat", PyInit_pyexpat },
     {"xxsubtype", PyInit_xxsubtype},
+    {"_xxsubinterpreters", PyInit__xxsubinterpreters},
     {"unicodedata", PyInit_unicodedata},
-    {"zipimport", PyInit_zipimport},
 #ifdef _Py_HAVE_ZLIB
     {"zlib", PyInit_zlib},
 #endif

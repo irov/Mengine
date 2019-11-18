@@ -69,7 +69,7 @@ namespace Mengine
         return m_softspace;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _size )
+    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );

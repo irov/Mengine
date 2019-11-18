@@ -664,7 +664,7 @@ static bool getCurrentUserRegValue( const WCHAR * _path, const WCHAR * _key, WCH
 
     if( lRes != ERROR_SUCCESS )
     {
-        LOGGER_ERROR( "getCurrentUserRegValue %ls RegOpenKeyEx get Error %d"
+        LOGGER_ERROR( "%ls RegOpenKeyEx get Error %d"
             , _path
             , lRes
         );
@@ -679,7 +679,7 @@ static bool getCurrentUserRegValue( const WCHAR * _path, const WCHAR * _key, WCH
 
     if( nError != ERROR_SUCCESS )
     {
-        LOGGER_ERROR( "getCurrentUserRegValue %ls RegQueryValueEx get Error %d"
+        LOGGER_ERROR( "%ls RegQueryValueEx get Error %d"
             , _path
             , nError
         );
@@ -703,7 +703,7 @@ static bool filterCurrentUserRegValue( const WCHAR * _path, const std::function<
 
     if( lOpenRes != ERROR_SUCCESS )
     {
-        LOGGER_ERROR( "getCurrentUserRegValue %ls RegOpenKeyEx get Error %d"
+        LOGGER_ERROR( "%ls RegOpenKeyEx get Error %d"
             , _path
             , lOpenRes
         );
@@ -937,6 +937,13 @@ bool run()
         pythonDescs.emplace_back( desc );
     }
 
+    if( pythonDescs.empty() == true )
+    {
+        LOGGER_ERROR( "invalid found python" );
+
+        return false;
+    }
+
     std::sort( pythonDescs.begin(), pythonDescs.end(), []( const PythonDesc & _l, const PythonDesc & _r )
     {
         uint32_t lk = _l.major_version * 100 + _l.minor_version;
@@ -945,7 +952,7 @@ bool run()
         return lk < rk;
     } );
 
-    PythonDesc & desc = pythonDescs.front();
+    PythonDesc & desc = pythonDescs.back();
 
     WCHAR * szPythonPath = desc.szPythonPath;
 
@@ -972,7 +979,7 @@ bool run()
     da.mem = &stdex_alloc;
     da.obj = &stdex_alloc;
 
-    pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, false, false, false );
+    pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, MENGINE_DEBUG_ATTRIBUTE( true, false ), true, false );
 
     if( kernel == nullptr )
     {

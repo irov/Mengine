@@ -2,6 +2,8 @@
 
 #include "GOAP/Task.h"
 
+#include "Interface/EventReceiverInterface.h"
+
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
 
@@ -23,6 +25,8 @@ namespace Mengine
     protected:
         AnimatablePtr m_animatable;
         EventablePtr m_eventable;
+
+        EventReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskAnimatablePlayWait> TaskAnimatablePlayWaitPtr;

@@ -14,7 +14,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static const VectorTextLineChunks::size_type TextChunkNPos = MENGINE_UNKNOWN_SIZE;
         //////////////////////////////////////////////////////////////////////////
-        static bool test2( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
+        static bool test2( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
         {
             if( _offset == _size )
             {
@@ -83,27 +83,27 @@ namespace Mengine
                 const TextFontInterfacePtr & font = TEXT_SERVICE()
                     ->getFont( c_FontName );
 
-                VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts.begin(), _cacheFonts.end(), [&font]( const CacheFont & cache )
+                VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts->begin(), _cacheFonts->end(), [&font]( const CacheFont & cache )
                 {
                     return cache.font == font;
                 } );
 
-                if( it_found != _cacheFonts.end() )
+                if( it_found != _cacheFonts->end() )
                 {
-                    ptrdiff_t d = std::distance( _cacheFonts.begin(), it_found );
+                    ptrdiff_t d = std::distance( _cacheFonts->begin(), it_found );
 
                     c.fontId = (uint32_t)d;
                 }
                 else
                 {
-                    VectorCacheFonts::size_type cacheFontSize = _cacheFonts.size();
+                    VectorCacheFonts::size_type cacheFontSize = _cacheFonts->size();
 
                     c.fontId = (uint32_t)cacheFontSize;
 
                     CacheFont cache;
                     cache.font = font;
 
-                    _cacheFonts.emplace_back( cache );
+                    _cacheFonts->emplace_back( cache );
                 }
 
                 _out.emplace_back( c );
@@ -119,7 +119,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool test( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font )
+        bool test( VectorTextLineChunks & _out, const U32String & _in, VectorCacheFonts * _cacheFonts, uint32_t _font )
         {
             U32String tag_pre = U"{{font=";
             U32String tag_post = U"}}";

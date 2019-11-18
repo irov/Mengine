@@ -20,6 +20,8 @@ namespace Mengine
 
     protected:
         ButtonPtr m_button;
+
+        EventReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef GOAP::IntrusivePtr<TaskButtonClick> TaskButtonClickPtr;

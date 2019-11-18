@@ -91,7 +91,13 @@ namespace Mengine
 
         EventationInterface * eventation = m_button->getEventation();
 
-        eventation->addEventReceiver( EVENT_BUTTON_MOUSE_BUTTON, Helper::makeFactorableUnique<Detail::TaskButtonClickEventReceiver>( lambda ) );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskButtonClickEventReceiver>( lambda );
+
+        EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_BUTTON_MOUSE_BUTTON, newreceiver );
+
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver == nullptr, false, "event EVENT_BUTTON_MOUSE_BUTTON override" );
+
+        m_receiver = newreceiver;
 
         return false;
     }
@@ -100,7 +106,10 @@ namespace Mengine
     {
         EventationInterface * eventation = m_button->getEventation();
 
-        eventation->removeEventReceiver( EVENT_BUTTON_MOUSE_BUTTON );
+        EventReceiverInterfacePtr delreceiver = eventation->removeEventReceiver( EVENT_BUTTON_MOUSE_BUTTON );
+
+        MENGINE_ASSERTION_FATAL( delreceiver == m_receiver, "event EVENT_BUTTON_MOUSE_BUTTON override" );
+        m_receiver = nullptr;
 
         m_button = nullptr;
     }

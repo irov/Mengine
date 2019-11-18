@@ -5,6 +5,10 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
+
+#include "Plugins/JSONPlugin/JSONInterface.h"
 
 #include "Engine/Engine.h"
 #include "Engine/SurfaceSolidColor.h"
@@ -23,6 +27,7 @@
 #include "Kernel/StringHelper.h"
 #include "Kernel/TimepipeHelper.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Tasks/TaskTransformationTranslateTime.h"
 #include "Tasks/TaskTransformationScaleTime.h"
@@ -41,6 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JewelryEventReceiver::JewelryEventReceiver()
         : m_scene( nullptr )
+        , m_jewelry_spawn_time_ms( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -92,14 +98,17 @@ namespace Mengine
 
         uint32_t column_count = game_setting->getValue( "jewelry_column_count", 6U );
         uint32_t row_count = game_setting->getValue( "jewelry_row_count", 10U );
-        m_jewelry_type_count = game_setting->getValue( "jewelry_type_count", 6U );
         m_jewelry_size = game_setting->getValue( "jewelry_size", 50.f );
         m_jewelry_stride = game_setting->getValue( "jewelry_stride", 10.f );
-        m_jewelry_cell_fall_time_ms = game_setting->getValue( "jewelry_cell_fall_time_ms", 750.f );
         m_jewelry_cell_explosive_time_ms = game_setting->getValue( "jewelry_cell_explosive_time_ms", 750.f );
         m_jewelry_cell_explosive_count = game_setting->getValue( "jewelry_cell_explosive_count", MENGINE_MAX( column_count, row_count ) );
-        m_jewelry_spawn_time_ms = game_setting->getValue( "jewelry_spawn_time_ms", 350.f );
-        m_jewelry_spawn_count = game_setting->getValue( "jewelry_spawn_count", ~0U );
+        m_jewelry_collapse = game_setting->getValue( "jewelry_collapse", true );
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+        m_storageLevels = JSON_SERVICE()
+            ->loadJSON( fileGroup, STRINGIZE_FILEPATH_LOCAL( "levels.json" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_jewelryMatrix = Helper::makeFactorableUnique<JewelryMatrix>();
 
@@ -117,6 +126,11 @@ namespace Mengine
         m_base->setLocalPosition( { 300.f, 100.f, 0.f } );
 
         m_scene->addChild( m_base );
+
+        m_timemillisecond = GET_TIME_MILLISECONDS();
+        m_stage = 0;
+
+        this->makeUI_();
 
         return true;
     }
@@ -137,6 +151,82 @@ namespace Mengine
         m_base->addChild( node );
 
         return jewelry;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::makeUI_()
+    {
+        this->makeUITextStage_();
+        this->makeUITextTime_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::makeUITextStage_()
+    {
+        TextFieldPtr textScore = Helper::generateTextField( MENGINE_DOCUMENT_FUNCTION );
+
+        textScore->setTextID( STRINGIZE_STRING_LOCAL( "ID_Stage" ) );
+
+        VectorString empty_args;
+        empty_args.push_back( "" );
+        textScore->setTextFormatArgs( empty_args );
+
+        textScore->setTextFormatArgsContext( 0, [this]( String * _arg )
+        {
+            static uint32_t cache_stage = ~0U;
+
+            if( cache_stage == m_stage )
+            {
+                return false;
+            }
+
+            cache_stage = m_stage;
+
+            Helper::unsignedToString( m_stage, _arg );
+
+            return true;
+        } );
+
+        textScore->setLocalPosition( { 50.f, 50.f, 0.f } );
+
+        m_textStage = textScore;
+
+        m_scene->addChild( m_textStage );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void JewelryEventReceiver::makeUITextTime_()
+    {
+        TextFieldPtr textTime = Helper::generateTextField( MENGINE_DOCUMENT_FUNCTION );
+
+        textTime->setTextID( STRINGIZE_STRING_LOCAL( "ID_Time" ) );
+
+        VectorString empty_args;
+        empty_args.push_back( "" );
+        textTime->setTextFormatArgs( empty_args );
+
+        textTime->setTextFormatArgsContext( 0, [this]( String * _arg )
+        {
+            static uint64_t cache_time = ~0U;
+
+            uint64_t timemillisecond = GET_TIME_MILLISECONDS();
+
+            uint64_t timesecond = (timemillisecond - m_timemillisecond) / 1000;
+
+            if( cache_time == timesecond )
+            {
+                return false;
+            }
+
+            cache_time = timesecond;
+
+            Helper::unsigned64ToString( timesecond, _arg );
+
+            return true;
+        } );
+
+        textTime->setLocalPosition( { 50.f, 150.f, 0.f } );
+
+        m_textTime = textTime;
+
+        m_scene->addChild( m_textTime );
     }
     //////////////////////////////////////////////////////////////////////////
     void JewelryEventReceiver::spawnJewelry_( const GOAP::SourcePtr & _source, EJewelrySuper _super, uint32_t _iterator )
@@ -323,6 +413,11 @@ namespace Mengine
         {
             _jewelry->stop();
             _jewelry->block( _source );
+        }
+
+        if( m_jewelry_collapse == false )
+        {
+            return;
         }
 
         uint32_t jewelry_type = _jewelry->getType();
@@ -534,14 +629,32 @@ namespace Mengine
 
         source->addTask<TaskGlobalDelay>( 1000.f );
 
-        auto && [source_spawn, source_boom] = source->addParallel<2>();
+        auto && [source_stage, source_spawn, source_boom] = source->addParallel<3>();
+
+        
+        const jpp::object & levels = m_storageLevels->getJSON();
+
+        const jpp::object & level_test = levels["test"];
+
+        for( const jpp::object & stage : jpp::array( level_test["stages"] ) )
+        {
+            float time = stage["time"];
+            
+            source_stage->addFunction( [this, stage]()
+            {
+                ++m_stage;
+
+                m_jewelry_type_count = stage["jewelry_type_count"];
+                m_jewelry_cell_fall_time_ms = stage["jewelry_cell_fall_time_ms"];
+                m_jewelry_spawn_time_ms = stage["jewelry_spawn_time_ms"];
+            } );
+
+            source_stage->addTask<TaskGlobalDelay>( time );
+        }
 
         source_spawn->addGenerator( timer, [this]( uint32_t _iterator )
         {
-            if( m_jewelry_spawn_count == _iterator )
-            {
-                return -1.f;
-            }
+            MENGINE_UNUSED( _iterator );
 
             return m_jewelry_spawn_time_ms;
         }, [this]( const GOAP::SourcePtr & _source, uint32_t _iterator, float _time )
@@ -615,6 +728,12 @@ namespace Mengine
     void JewelryEventReceiver::onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior )
     {
         MENGINE_UNUSED( _behavior );
+
+        m_textStage->removeFromParent();
+        m_textStage = nullptr;
+
+        m_textTime->removeFromParent();
+        m_textTime = nullptr;
 
         if( m_chain != nullptr )
         {

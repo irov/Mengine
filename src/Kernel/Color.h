@@ -9,12 +9,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef uint32_t ColorValue_ARGB;
     //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        ColorValue_ARGB makeARGB8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a );
-        ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a );        
-    }
-    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         const uint32_t COLOR_INVALIDATE_IDENTITY = 0;
@@ -43,6 +37,16 @@ namespace Mengine
             , m_a( _a )
             , m_argb( Detail::COLOR_IDENTITY_VALUE )
             , m_invalidateARGB( Detail::COLOR_INVALIDATE_TRUE )
+        {
+        }
+
+        MENGINE_INLINE Color( float _r, float _g, float _b, float _a, ColorValue_ARGB _argb )
+            : m_r( _r )
+            , m_g( _g )
+            , m_b( _b )
+            , m_a( _a )
+            , m_argb( _argb )
+            , m_invalidateARGB( Detail::COLOR_INVALIDATE_FALSE )
         {
         }
 
@@ -294,4 +298,13 @@ namespace Mengine
 
         return c;
     }
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        ColorValue_ARGB makeRGBA8( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a );
+        ColorValue_ARGB makeRGBA( float _r, float _g, float _b, float _a );
+
+        Color makeColor( uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a );
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

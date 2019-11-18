@@ -903,7 +903,7 @@ namespace Mengine
         m_cacheFonts.emplace_back( baseCacheFont );
 
         VectorTextLineChunks textChars;
-        Helper::test( textChars, cacheText, m_cacheFonts, 0 );
+        Helper::test( textChars, cacheText, &m_cacheFonts, 0 );
 
         for( const CacheFont & cache : m_cacheFonts )
         {

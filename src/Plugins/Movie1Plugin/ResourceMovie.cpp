@@ -31,15 +31,15 @@ namespace Mengine
         : m_frameDuration( 0.f )
         , m_duration( 0.f )
         , m_loopSegment( 0.f, -1.f )
-        , m_frameCount( 0 )
-        , m_size( 0.f, 0.f )
-        , m_maxLayerIndex( 0 )
-        , m_hasCamera3D( false )
         , m_hasBoundBox( false )
         , m_hasAnchorPoint( false )
         , m_anchorPoint( 0.f, 0.f, 0.f )
         , m_hasOffsetPoint( false )
         , m_offsetPoint( 0.f, 0.f, 0.f )
+        , m_frameCount( 0 )
+        , m_size( 0.f, 0.f )
+        , m_hasCamera3D( false )
+        , m_maxLayerIndex( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////

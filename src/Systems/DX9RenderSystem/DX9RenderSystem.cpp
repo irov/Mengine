@@ -902,7 +902,7 @@ namespace Mengine
         ++m_frames;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
+    void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, const Color & _color, float _depth, uint32_t _stencil )
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
@@ -923,7 +923,9 @@ namespace Mengine
             frameBufferFlags |= D3DCLEAR_STENCIL;
         }
 
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, _color, _depth, _stencil) );
+        ColorValue_ARGB argb = _color.getAsARGB();
+
+        DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, argb, _depth, _stencil) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setScissor( const Viewport & _viewport )

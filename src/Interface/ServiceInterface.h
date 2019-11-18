@@ -155,8 +155,8 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DECLARE( ID )\
     public:\
-        MENGINE_INLINE static const Char * getStaticServiceID(){ return ID; };\
-        MENGINE_INLINE const Char * getServiceID() const override { return ID; };\
+        MENGINE_INLINE static const Mengine::Char * getStaticServiceID(){ return ID; };\
+        MENGINE_INLINE const Mengine::Char * getServiceID() const override { return ID; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\
@@ -169,7 +169,7 @@ namespace Mengine
     struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DEPENDENCY( Type, Dependency )\
-    SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
+    SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), Dependency::getStaticServiceID())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN( Name )\
 	extern bool SERVICE_FUNCTION_CREATE( Name )(Mengine::ServiceInterface**);\

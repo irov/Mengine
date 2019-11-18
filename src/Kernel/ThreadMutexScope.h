@@ -7,7 +7,7 @@ namespace Mengine
     class ThreadMutexScope
     {
     public:
-        ThreadMutexScope( const ThreadMutexInterfacePtr & _mutex );
+        explicit ThreadMutexScope( const ThreadMutexInterfacePtr & _mutex );
         ~ThreadMutexScope();
 
     public:

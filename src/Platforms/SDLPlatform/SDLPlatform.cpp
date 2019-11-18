@@ -247,7 +247,7 @@ namespace Mengine
             break;
         }
 
-        size_t messageLen = strlen( _message );
+        size_t messageLen = ::strlen( _message );
 
         LOGGER_SERVICE()
             ->logMessage( level, 0, _message, messageLen );
@@ -1525,7 +1525,7 @@ namespace Mengine
 #if defined(MENGINE_PLATFORM_IOS)
         SDL_SetHint( SDL_HINT_IOS_HIDE_HOME_INDICATOR, "1" );
 
-        m_window = SDL_CreateWindow( m_projectTitle.c_str()
+        m_window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1
@@ -1533,7 +1533,7 @@ namespace Mengine
             , windowFlags );
 
 #elif defined(MENGINE_PLATFORM_ANDROID)
-        m_window = SDL_CreateWindow( m_projectTitle.c_str()
+        m_window = SDL_CreateWindow( m_projectTitle
             , SDL_WINDOWPOS_UNDEFINED
             , SDL_WINDOWPOS_UNDEFINED
             , -1

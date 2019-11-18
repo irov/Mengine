@@ -13,7 +13,7 @@ namespace Mengine
         {
         }
 
-        MENGINE_INLINE Box2DScaler( float _value )
+        MENGINE_INLINE explicit Box2DScaler( float _value )
             : m_value( _value )
             , m_valueInv( 1.f / _value )
         {

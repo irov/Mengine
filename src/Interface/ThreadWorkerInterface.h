@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {
     class ThreadWorkerInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool onWork( uint32_t _id ) = 0;

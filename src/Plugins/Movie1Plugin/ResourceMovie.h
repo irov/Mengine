@@ -53,12 +53,12 @@ namespace Mengine
             , scale( 1.f, 1.f, 1.f )
             , rotation( 0.f, 0.f, 0.f )
             , viewport( 0.f, 0.f, 0.f, 0.f )
-            , params( 0 )
-            , switcher( false )
+            , params( 0 )            
             , timeRemap( false )
             , shape( false )
             , polygon( false )
             , loop( false )
+            , switcher( false )
             , hasViewport( false )
         {
         }
@@ -280,7 +280,7 @@ namespace Mengine
         VectorMovieLayers m_layers;
 
         bool m_hasCamera3D;
-        MovieLayerCamera3D m_camera3D;
+        MovieLayerCamera3D m_camera3D = {};
 
         uint32_t m_maxLayerIndex;
     };

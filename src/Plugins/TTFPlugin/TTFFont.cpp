@@ -32,6 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
+        , m_height( 0 )
+        , m_FESample( 1 )
         , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
         , m_ttfHeight( 0.f )
@@ -39,8 +41,6 @@ namespace Mengine
         , m_ttfSpacing( 0.f )
         , m_ttfLayoutCount( 1 )
         , m_ttfFEEffect( nullptr )
-        , m_height( 0 )
-        , m_FESample( 1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -268,7 +268,7 @@ namespace Mengine
 
         const FT_Glyph_Metrics & face_glyphA_metrics = face_glyphA->metrics;
 
-        int32_t glyphA_bearingY = (face_glyphA_metrics.horiBearingY >> 6);
+        FT_Pos glyphA_bearingY = (face_glyphA_metrics.horiBearingY >> 6);
 
         m_ttfBearingYA = static_cast<float>(glyphA_bearingY);
 
@@ -499,10 +499,10 @@ namespace Mengine
 
         const FT_Glyph_Metrics & metrics = glyph->metrics;
 
-        int32_t glyph_dx = (metrics.horiBearingX >> 6);
-        int32_t glyph_dy = (metrics.horiBearingY >> 6);
-        uint32_t glyph_w = (metrics.width >> 6);
-        uint32_t glyph_h = (metrics.height >> 6);
+        FT_Pos glyph_dx = (metrics.horiBearingX >> 6);
+        FT_Pos glyph_dy = (metrics.horiBearingY >> 6);
+        FT_Pos glyph_w = (metrics.width >> 6);
+        FT_Pos glyph_h = (metrics.height >> 6);
 
         float glyph_advance = static_cast<float>(metrics.horiAdvance >> 6);
 

@@ -340,55 +340,55 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        if( fileGroup->existFile( applicationPath, true ) == false )
+        if( fileGroup->existFile( applicationPath, true ) == true )
+        {
+            ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
+                ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, false, "invalid open application settings '%s'"
+                , applicationPath.c_str()
+            );
+
+            VectorFilePath configsPaths;
+            applicationConfig->getValues( "Configs", "Path", configsPaths );
+
+            VectorFilePath credentialsPaths;
+            applicationConfig->getValues( "Credentials", "Path", credentialsPaths );
+
+            applicationConfig->getValues( "Packages", "Path", m_packagesPaths );
+            applicationConfig->getValues( "Settings", "Path", m_settingsPaths );
+
+            for( const FilePath & filePath : configsPaths )
+            {
+                if( CONFIG_SERVICE()
+                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                {
+                    LOGGER_ERROR( "invalid load config '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
+            }
+
+            for( const FilePath & filePath : credentialsPaths )
+            {
+                if( CONFIG_SERVICE()
+                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                {
+                    LOGGER_ERROR( "invalid load credential '%s'"
+                        , filePath.c_str()
+                    );
+
+                    return false;
+                }
+            }
+        }
+        else
         {
             LOGGER_INFO( "not exist application config '%s'"
                 , applicationPath.c_str()
             );
-
-            return true;
-        }
-
-        ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-            ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, false, "invalid open application settings '%s'"
-            , applicationPath.c_str()
-        );
-
-        VectorFilePath configsPaths;
-        applicationConfig->getValues( "Configs", "Path", configsPaths );
-
-        VectorFilePath credentialsPaths;
-        applicationConfig->getValues( "Credentials", "Path", credentialsPaths );
-
-        applicationConfig->getValues( "Packages", "Path", m_packagesPaths );
-        applicationConfig->getValues( "Settings", "Path", m_settingsPaths );
-
-        for( const FilePath & filePath : configsPaths )
-        {
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "invalid load config '%s'"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
-        }
-
-        for( const FilePath & filePath : credentialsPaths )
-        {
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "invalid load credential '%s'"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
         }
 
         SERVICE_CREATE( SettingsService );

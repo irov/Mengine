@@ -39,7 +39,7 @@ namespace Mengine
         bool isDead() const;
 
     public:
-        void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations );
+        void setTimeStep( float _timeStep, uint32_t _velocityIterations, uint32_t _positionIterations ) override;
 
     public:
         Box2DBodyInterfacePtr createBody( bool _static
@@ -158,15 +158,6 @@ namespace Mengine
         float m_timeStep;
         uint32_t m_velocityIterations;
         uint32_t m_positionIterations;
-
-        struct JoinDef
-        {
-            b2JointDef * def;
-            Box2DJoint * join;
-        };
-
-        typedef Vector<JoinDef> VectorJoints;
-        VectorJoints m_joints;
 
         Box2DScaler m_scaler;
     };

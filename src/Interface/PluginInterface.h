@@ -40,7 +40,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_DECLARE( Name )\
     public:\
-        MENGINE_INLINE const Char * getPluginName() const override { return Name; };\
+        MENGINE_INLINE const Mengine::Char * getPluginName() const override { return Name; };\
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FUNCTION(Name)\
@@ -58,7 +58,7 @@ namespace Mengine
 #define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
     extern "C"\
     {\
-        DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin )\
+        MENGINE_DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin )\
         {\
             return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
         }\

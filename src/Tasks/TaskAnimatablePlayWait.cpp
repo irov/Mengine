@@ -3,6 +3,7 @@
 #include "Interface/AnimationInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 
 #include "TaskAnimatablePlayReceiver.h"
 
@@ -39,9 +40,15 @@ namespace Mengine
 
         TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>();
 
-        eventation->addEventReceiver( EVENT_ANIMATION_END, receiver );
-        eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );
-        eventation->addEventReceiver( EVENT_ANIMATION_INTERRUPT, receiver );
+        EventReceiverInterfacePtr oldreceiver_end = eventation->addEventReceiver( EVENT_ANIMATION_END, receiver );
+        EventReceiverInterfacePtr oldreceiver_stop = eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );
+        EventReceiverInterfacePtr oldreceiver_interrupt = eventation->addEventReceiver( EVENT_ANIMATION_INTERRUPT, receiver );
+
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver_end == nullptr, false, "event EVENT_ANIMATION_END override" );
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver_stop == nullptr, false, "event EVENT_ANIMATION_STOP override" );
+        MENGINE_ASSERTION_FATAL_RETURN( oldreceiver_interrupt == nullptr, false, "event EVENT_ANIMATION_INTERRUPT override" );
+
+        m_receiver = receiver;
 
         receiver->setGOAPNode( _node );
 
@@ -74,9 +81,14 @@ namespace Mengine
 
         if( eventation != nullptr )
         {
-            eventation->removeEventReceiver( EVENT_ANIMATION_END );
-            eventation->removeEventReceiver( EVENT_ANIMATION_STOP );
-            eventation->removeEventReceiver( EVENT_ANIMATION_INTERRUPT );
+            EventReceiverInterfacePtr delreceiver_end = eventation->removeEventReceiver( EVENT_ANIMATION_END );
+            EventReceiverInterfacePtr delreceiver_stop = eventation->removeEventReceiver( EVENT_ANIMATION_STOP );
+            EventReceiverInterfacePtr delreceiver_interrupt = eventation->removeEventReceiver( EVENT_ANIMATION_INTERRUPT );
+
+            MENGINE_ASSERTION_FATAL( m_receiver == delreceiver_end, "event EVENT_ANIMATION_END miss remove" );
+            MENGINE_ASSERTION_FATAL( m_receiver == delreceiver_stop, "event EVENT_ANIMATION_STOP miss remove" );
+            MENGINE_ASSERTION_FATAL( m_receiver == delreceiver_interrupt, "event EVENT_ANIMATION_INTERRUPT miss remove" );
+            m_receiver = nullptr;
         }
 
         m_animatable = nullptr;

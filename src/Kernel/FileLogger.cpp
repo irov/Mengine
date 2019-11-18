@@ -58,7 +58,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
+    void FileLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _count )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );

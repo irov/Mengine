@@ -14,10 +14,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseUpdation::activate( uint32_t _mode, uint32_t _deep )
+    void BaseUpdation::activate( EUpdateMode _mode, uint32_t _deep )
     {
         m_updatableProxyId = UPDATE_SERVICE()
-            ->createUpdatater( _mode, _deep, UpdationInterfacePtr( this ) );
+            ->createUpdatater( _mode, _deep, UpdationInterfacePtr::from( this ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseUpdation::deactivate()

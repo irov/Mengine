@@ -14,25 +14,21 @@ SERVICE_FACTORY( UpdateService, Mengine::UpdateService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum EUpdateState
-    {
-        EUS_NORMAL,
-        EUS_REMOVE,
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_calcDeep( uint32_t _deep, uint32_t _mode )
+    static uint32_t s_calcDeep( EUpdateMode _mode, uint32_t _deep )
     {
         switch( _mode )
         {
-        case 0:
+        case EUM_NODE_BASE:
             return _deep * 2U + 0U;
             break;
-        case 1:
+        case EUM_NODE_AFFECTOR:
             return _deep * 2U + 1U;
             break;
-        default:
+        case EUM_SERVICE:
             return _deep;
             break;
+        default:
+            return ~0U;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -121,12 +117,12 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t UpdateService::placeProxy_( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
+    uint32_t UpdateService::placeProxy_( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
         UpdatableProxy proxy;
         proxy.updation = _updation;
         proxy.mode = _mode;
-        proxy.deep = s_calcDeep( _deep, _mode );
+        proxy.deep = s_calcDeep( _mode, _deep );
 
         proxy.state = EUS_NORMAL;
 
@@ -147,7 +143,7 @@ namespace Mengine
         return free_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t UpdateService::createUpdatater( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
+    uint32_t UpdateService::createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
         uint32_t id = this->placeProxy_( _mode, _deep, _updation );
 

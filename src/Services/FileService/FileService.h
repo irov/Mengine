@@ -32,7 +32,10 @@ namespace Mengine
     public:
         const FileGroupInterfacePtr & getDefaultFileGroup() const override;
 
-    private:
+    public:
+        void setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) override;
+
+    protected:
         FileGroupInterfacePtr m_defaultFileGroup;
 
         typedef Hashtable<ConstString, FileGroupInterfacePtr> HashtableFileGroups;

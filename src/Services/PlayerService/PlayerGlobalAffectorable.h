@@ -17,7 +17,7 @@ namespace Mengine
         ~PlayerGlobalAffectorable() override;
 
     protected:
-        uint32_t getAffectorableUpdatableMode() const override;
+        EUpdateMode getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
     };
     //////////////////////////////////////////////////////////////////////////

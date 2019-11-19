@@ -81,7 +81,7 @@ namespace Mengine
         return m_easing;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Affector::prepare( uint32_t _updatableMode, uint32_t _updatableLeaf )
+    bool Affector::prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf )
     {
         if( this->_prepare() == false )
         {

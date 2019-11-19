@@ -7,7 +7,7 @@
 #include "Config/Vector.h"
 
 #ifdef MENGINE_DEBUG
-#   include "Config/String.h"
+#   include "Kernel/Document.h"
 #endif
 
 namespace Mengine
@@ -38,7 +38,7 @@ namespace Mengine
             uint32_t id;
             LambdaChronometer lambda;
 #ifdef MENGINE_DEBUG
-            String doc;
+            Document doc;
 #endif
         };
 

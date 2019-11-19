@@ -38,6 +38,13 @@ namespace Mengine
         ::strcpy( m_buffer, _msg );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Document::operator = ( const Document & _doc )
+    {
+        const Char * msg = _doc.c_str();
+
+        this->operator =( msg );
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Char * Document::c_str() const
     {
         if( m_buffer == nullptr )

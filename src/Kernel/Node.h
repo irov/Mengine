@@ -193,7 +193,7 @@ namespace Mengine
         float getSpeedFactor() const;
 
     protected:
-        uint32_t getAffectorableUpdatableMode() const override;
+        EUpdateMode getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
 
     protected:

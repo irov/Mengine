@@ -17,6 +17,7 @@ namespace Mengine
 
     public:
         void operator = ( const Char * _msg );
+        void operator = ( const Document & _doc );
 
     public:
         const Char * c_str() const;

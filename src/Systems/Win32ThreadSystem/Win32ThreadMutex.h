@@ -9,7 +9,7 @@
 #include "Config/Char.h"
 
 #ifdef MENGINE_DEBUG
-#include "Kernel/Document.h"
+#   include "Kernel/Document.h"
 #endif
 
 namespace Mengine

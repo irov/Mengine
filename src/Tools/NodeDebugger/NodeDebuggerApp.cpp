@@ -28,6 +28,20 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static int jpp_dump_callback( const char * _buffer, jpp::jpp_size_t _size, void * _ud )
+    {
+        FILE * f = (FILE *)_ud;
+
+        size_t writebyte = fwrite( _buffer, _size, 1, f );
+
+        if( writebyte != 1 )
+        {
+            return -1;
+        }
+
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* _socket, const int _timeoutMs )
     {
         fd_set socketsSet;
@@ -495,20 +509,6 @@ namespace Mengine
 
             m_settings.emplace_back( desc );
         }
-
-        //pugi::xml_node xmlNode = _xmlContainer.first_child();
-
-        //if( xmlNode )
-        //{
-        //    //_xmlNode.child( "Render" );
-
-        //    //DeserializeNode( xmlNode, mSceneRenderable );
-        //    for( const pugi::xml_node & child : childrenNode.children() )
-        //    {
-        //        const Char * name = child["name"].value();
-        //        const Char * file = child["file"].value();
-        //    }
-        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, DebuggerNode* _node )
@@ -992,24 +992,122 @@ namespace Mengine
         const float leftPanelWidth = 400.0f;
 
         ImGui::Columns( 2, nullptr, true );
-        ImGui::SetColumnWidth( 0, leftPanelWidth );
-
-        SettingDesc sellect_desc;
+        //ImGui::SetColumnWidth( 0, leftPanelWidth );
 
         if( ImGui::CollapsingHeader( "Settings:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            for( const SettingDesc & desc : m_settings )
+            if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
             {
-                if( ImGui::Button( desc.name.c_str() ) == true )
+                for( const SettingDesc & desc : m_settings )
                 {
-                    sellect_desc = desc;
+                    ImGuiTreeNodeFlags seletedFlag = ImGuiTreeNodeFlags_Leaf | (m_selectedSetting == desc.name ? ImGuiTreeNodeFlags_Selected : 0);
+
+                    bool isOpened = ImGui::TreeNodeEx( desc.name.c_str(), seletedFlag );
+
+                    bool isClicked = ImGui::IsItemClicked();
+
+                    if( isClicked == true )
+                    {
+                        m_selectedSetting = desc.name;
+                    }
+
+                    if( isOpened == true )
+                    {
+                        ImGui::TreePop();
+                    }
                 }
             }
+
+            ImGui::EndChild();
         }
 
         ImGui::NextColumn();
 
-        ImGui::Columns( 1 );
+        for( SettingDesc & desc : m_settings )
+        {
+            if( m_selectedSetting != desc.name )
+            {
+                continue;
+            }
+
+            bool dirty = false;
+
+            for( auto && [key, record] : desc.json )
+            {
+                const jpp::object & j = record["value"];
+
+                jpp::e_type type = j.type();
+
+                switch( type )
+                {
+                case jpp::e_type::JPP_STRING:
+                    {
+                        char value[2048] = {0};
+                        const char * jv = j;
+                        strcpy( value, jv );
+                        if( ImGui::InputText( key, value, 2048 ) == true )
+                        {
+                            record.set( "value", value );
+
+                            dirty = true;
+                        }
+                    }break;
+                case jpp::e_type::JPP_INTEGER:
+                    {
+                        int min = record.get( "min", 0 );
+                        int max = record.get( "max", 0 );
+                        
+                        float speed = (min == max) ? 1.f : float(max - min) * 0.0015f;
+
+                        int value = j;
+                        if( ImGui::DragInt( key, &value, speed, min, max ) == true )
+                        {
+                            record.set( "value", value );
+
+                            dirty = true;
+                        }
+                    }break;
+                case jpp::e_type::JPP_REAL:
+                    {
+                        float min = record.get( "min", 0.f );
+                        float max = record.get( "max", 0.f );
+
+                        float speed = (min == max) ? 1.f : float( max - min ) * 0.0015f;
+
+                        float value = j;
+                        if( ImGui::DragFloat( key, &value, speed, min, max ) == true )
+                        {
+                            record.set( "value", value );
+
+                            dirty = true;
+                        }
+                    }break;
+                case jpp::e_type::JPP_TRUE:
+                case jpp::e_type::JPP_FALSE:
+                    {
+                        bool value = j;
+                        if( ImGui::Checkbox( key, &value ) == true )
+                        {
+                            record.set( "value", value );
+
+                            dirty = true;
+                        }
+                    }break;
+                default:
+                    break;
+                }
+            }
+
+            if( dirty == true )
+            {
+                FILE * f = fopen( desc.file.c_str(), "wb" );
+
+                bool successful = jpp::dump( desc.json, &jpp_dump_callback, f );
+                MENGINE_UNUSED( successful );
+
+                fclose( f );                
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     String NodeDebuggerApp::DoIPInput( const String & _title, const String & _inIP )
@@ -1088,8 +1186,9 @@ namespace Mengine
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
+        String treeNodeName = _node->name.empty() == false ? _node->name : "***unnamed***";
         String treeNodeId = _tag + "_" + (Stringstream() << _node->uid).str();
-        String fullLabel = String( _node->name.c_str() ) + "##" + treeNodeId;
+        String fullLabel = treeNodeName + " [" + _node->type + "]" + "##" + treeNodeId;
 
         ImGuiExt::ImIcon icon;
         ImGuiExt::ImIcon * iconPtr = nullptr;

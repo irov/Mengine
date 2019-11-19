@@ -1,9 +1,35 @@
 {
-  "jewelry_column_count": { "value": 6 },
-  "jewelry_row_count": { "value": 10 },
-  "jewelry_size": { "value": 50.0 },
-  "jewelry_stride": { "value": 10.0 },
-  "jewelry_cell_explosive_time_ms": { "value": 250.0 },
-  "jewelry_cell_explosive_count": { "value": 1 },
-  "jewelry_collapse": { "value": true }
+  "jewelry_column_count": {
+    "value": 6,
+    "min": 1,
+    "max": 20
+  },
+  "jewelry_row_count": {
+    "value": 10,
+    "min": 1,
+    "max": 20
+  },
+  "jewelry_size": {
+    "value": 50.0,
+    "min": 1.0,
+    "max": 100.0
+  },
+  "jewelry_stride": {
+    "value": 10.0,
+    "min": 1.0,
+    "max": 20.0
+  },
+  "jewelry_cell_explosive_time_ms": {
+    "value": 250.0,
+    "min": 1.0,
+    "max": 500.0
+  },
+  "jewelry_cell_explosive_count": {
+    "value": 1,
+    "min": 1,
+    "max": 20
+  },
+  "jewelry_collapse": {
+    "value": true
+  }
 }

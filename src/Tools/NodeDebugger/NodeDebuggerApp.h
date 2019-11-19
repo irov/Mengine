@@ -300,7 +300,7 @@ namespace Mengine
         String name;
         String file;
 
-        jpp::object json;
+        mutable jpp::object json;
     };
 
     class NodeDebuggerApp
@@ -401,5 +401,7 @@ namespace Mengine
         double m_sceneUpdateTimer;
         bool m_updateSceneOnChange;
         bool m_pauseRequested;
+
+        String m_selectedSetting;
     };
 }

@@ -52,15 +52,26 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::getFullPath( const FilePath & _filePath, Char * _fullPath ) const
+    {
+        size_t fullPathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
+
+        MENGINE_UNUSED( fullPathLen );
+
+        MENGINE_ASSERTION_FATAL_RETURN( fullPathLen != MENGINE_PATH_INVALID_LENGTH, false, "invlalid concatenate fullPath '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
         Char utf8_filePath[MENGINE_MAX_PATH];
-        size_t utf8_filePathLen = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, _filePath, utf8_filePath, MENGINE_MAX_PATH );
-
-        if( utf8_filePathLen == MENGINE_PATH_INVALID_LENGTH )
+        if( this->getFullPath( _filePath, utf8_filePath ) == false )
         {
-            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
-                , m_folderPath.c_str()
+            LOGGER_ERROR( "invlalid get fullPath '%s'"
                 , _filePath.c_str()
             );
 
@@ -127,20 +138,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFilePath & _lambda ) const
     {
-        Char unicode_base[MENGINE_MAX_PATH];
-        size_t fullPath = Helper::Win32ConcatenateFilePathA( m_relationPath, m_folderPath, FilePath::none(), unicode_base, MENGINE_MAX_PATH );
-        
-        MENGINE_UNUSED( fullPath );
+        Char fullPathBase[MENGINE_MAX_PATH];
+        if( this->getFullPath( FilePath::none(), fullPathBase ) == false )
+        {
+            return false;
+        }
 
-        MENGINE_ASSERTION_FATAL_RETURN( fullPath != MENGINE_PATH_INVALID_LENGTH, false, "invlalid concatenate filePath '%s':'%s'"
-            , m_folderPath.c_str()
-            , _filePath.c_str()
-        );
-
-        Helper::pathCorrectForwardslashA( unicode_base );
+        Helper::pathCorrectForwardslashA( fullPathBase );
 
         PLATFORM_SERVICE()
-            ->findFiles( unicode_base, _filePath.c_str(), _mask, _lambda );
+            ->findFiles( fullPathBase, _filePath.c_str(), _mask, _lambda );
 
         return true;
     }

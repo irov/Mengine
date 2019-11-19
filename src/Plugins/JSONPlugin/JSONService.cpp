@@ -9,8 +9,6 @@
 
 #include "JSONStorage.h"
 
-#include "jansson.h"
-
 #include "jpp/jpp.hpp"
 
 #include <string.h>
@@ -85,7 +83,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONService::_initializeService()
     {
-        json_object_seed( 1 );
+        jpp::set_seed( 1 );
+
+        jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
 
         m_factoryJSONStorage = Helper::makeFactoryPool<JSONStorage, 16>();
 
@@ -162,7 +162,7 @@ namespace Mengine
         jd.carriage = 0;
         jd.capacity = _size;
 
-        jpp::object json = jpp::load( &Detail::my_jpp_load_callback, &Detail::my_jpp_malloc, &Detail::my_jpp_free, &Detail::my_jpp_error, &jd );
+        jpp::object json = jpp::load( &Detail::my_jpp_load_callback, &Detail::my_jpp_error, &jd );
 
         if( json == jpp::detail::invalid )
         {

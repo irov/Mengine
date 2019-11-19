@@ -7,6 +7,7 @@
 
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
+#include "jpp/jpp.hpp"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -294,6 +295,14 @@ namespace Mengine
         TabFunctor  functor;
     };
 
+    struct SettingDesc
+    {
+        String name;
+        String file;
+
+        jpp::object json;
+    };
+
     class NodeDebuggerApp
     {
     public:
@@ -330,7 +339,7 @@ namespace Mengine
         void DoUI();
         void DoUIGameDebuggerTab();
         void DoUILogTab();
-        void DoUIExampleTab();
+        void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
         void DoNodeElement( DebuggerNode * _node, const String & _tag );
         void DoNodeProperties( DebuggerNode * _node );
@@ -354,42 +363,43 @@ namespace Mengine
         void SendPauseRequest();
 
     private:
-        GLFWwindow * mWindow;
-        bool mShutdown;
-        int mWidth;
-        int mHeight;
+        GLFWwindow * m_window;
+        bool m_shutdown;
+        int m_width;
+        int m_height;
 
         // UI
-        DebuggerNode * mSelectedNode;
-        NodeIcon * mDefaultIcon;
-        Vector<NodeIcon> mIcons;
-        Vector<CachedImage> mImagesCache;
-        Vector<TabDescriptor> mTabs;
-        size_t mCurrentTab;
+        DebuggerNode * m_selectedNode;
+        NodeIcon * m_defaultIcon;
+        Vector<NodeIcon> m_icons;
+        Vector<CachedImage> m_imagesCache;
+        Vector<TabDescriptor> m_tabs;
+        Vector<SettingDesc> m_settings;
+        size_t m_currentTab;
 
         // Server connection
-        String mServerAddress;
-        uint16_t mServerPort;
-        String mServerAddressCopy;
-        uint16_t mServerPortCopy;
-        volatile ConnectionStatus mConnectionStatus;
-        zed_net_socket_t mSocket;
-        Deque<NodeDebuggerPacket> mIncomingPackets;
-        Deque<NodeDebuggerPacket> mOutgoingPackets;
-        Mengine::Blobject mReceivedData;
+        String m_serverAddress;
+        uint16_t m_serverPort;
+        String m_serverAddressCopy;
+        uint16_t m_serverPortCopy;
+        volatile ConnectionStatus m_connectionStatus;
+        zed_net_socket_t m_socket;
+        Deque<NodeDebuggerPacket> m_incomingPackets;
+        Deque<NodeDebuggerPacket> m_outgoingPackets;
+        Mengine::Blobject m_receivedData;
 
-        std::thread mNetworkThread;
-        std::mutex mDataMutex;
+        std::thread m_networkThread;
+        std::mutex m_dataMutex;
 
-        DebuggerNode * mScene;
-        DebuggerNode * mScenePickerable;
-        DebuggerNode * mSceneRenderable;
-        String mSelectedNodePath;
-        String mLastSelectedNodePath;
+        DebuggerNode * m_scene;
+        DebuggerNode * m_scenePickerable;
+        DebuggerNode * m_sceneRenderable;
+        String m_selectedNodePath;
+        String m_lastSelectedNodePath;
 
-        int mSceneUpdateFreq;
-        double mSceneUpdateTimer;
-        bool mUpdateSceneOnChange;
-        bool mPauseRequested;
+        int m_sceneUpdateFreq;
+        double m_sceneUpdateTimer;
+        bool m_updateSceneOnChange;
+        bool m_pauseRequested;
     };
 }

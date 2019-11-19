@@ -52,22 +52,35 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::getFullPath( const FilePath & _filePath, Char * _fullPath ) const
+    {
+        bool successful = Helper::concatenateFilePath( m_relationPath, m_folderPath, _filePath, _fullPath, MENGINE_MAX_PATH );
+
+        MENGINE_UNUSED( successful );
+
+        MENGINE_ASSERTION_FATAL_RETURN( successful == true, false, "invlalid concatenate fullPath '%s':'%s'"
+            , m_folderPath.c_str()
+            , _filePath.c_str()
+        );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::existFile( const FilePath & _filePath, bool _recursive ) const
     {
         // SDL doesn't have this, so we're emulating ... ugly way :(
 
-        Char filePath[MENGINE_MAX_PATH];
-        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, _filePath, filePath, MENGINE_MAX_PATH ) == false )
+        Char fullPath[MENGINE_MAX_PATH];
+        if( this->getFullPath( _filePath, fullPath ) == false )
         {
-            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
-                , m_folderPath.c_str()
+            LOGGER_ERROR( "invlalid get fullPath '%s'"
                 , _filePath.c_str()
             );
 
             return false;
         }
 
-        SDL_RWops * rwops = SDL_RWFromFile( filePath, "rb" );
+        SDL_RWops * rwops = SDL_RWFromFile( fullPath, "rb" );
 
         if( rwops != nullptr )
         {

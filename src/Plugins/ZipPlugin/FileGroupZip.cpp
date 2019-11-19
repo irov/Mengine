@@ -212,6 +212,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::getFullPath( const FilePath & _filePath, Char * _fullPath ) const
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _fullPath );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existFile( const FilePath & _filePath, bool _recursive ) const
     {
         MapFileInfo::const_iterator it_found = m_files.find( _filePath );

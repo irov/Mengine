@@ -68,13 +68,6 @@ if (UNIX)
    option(JANSSON_COVERALLS_UPLOAD "Upload coverage info to Coveralls (Only works via Travis)" ON)
 endif ()
 
-# Give the debug version a different postfix for windows,
-# so both the debug and release version can be built in the
-# same build-tree on Windows (MSVC).
-if (WIN32 AND NOT CMAKE_DEBUG_POSTFIX)
-   set(CMAKE_DEBUG_POSTFIX "_d")
-endif()
-
 # This is how I thought it should go
 # set (JANSSON_VERSION "2.3.1")
 # set (JANSSON_SOVERSION 2)

@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool JSONService::_initializeService()
     {
-        jpp::set_seed( 1 );
+        jpp::set_object_seed( 1 );
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
 

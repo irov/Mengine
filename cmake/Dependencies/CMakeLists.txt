@@ -331,7 +331,9 @@ endif()
 #dependencies freetype
 if(MENGINE_DEPENDENCE_FREETYPE)
     message("================freetype================")
+    
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
+    set(DISABLE_FORCE_DEBUG_POSTFIX ON CACHE BOOL "DISABLE_FORCE_DEBUG_POSTFIX" FORCE)
 
     if(MENGINE_TARGET_IOS)
         set(IOS_PLATFORM "OS" CACHE STRING "IOS_PLATFORM" FORCE)

@@ -38,7 +38,7 @@ namespace Mengine
         const mt::vec3f & getLinearSpeed() const;
 
     public:
-        virtual uint32_t getAffectorableUpdatableMode() const = 0;
+        virtual EUpdateMode getAffectorableUpdatableMode() const = 0;
         virtual uint32_t getAffectorableUpdatableLeafDeep() const = 0;
 
     protected:

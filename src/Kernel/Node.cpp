@@ -1072,7 +1072,7 @@ namespace Mengine
         {
             uint32_t deep = this->getLeafDeep();
 
-            updation->activate( 0U, deep );
+            updation->activate( EUM_NODE_BASE, deep );
         }
 
         RenderInterface * render = this->getRender();
@@ -1201,9 +1201,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Node::getAffectorableUpdatableMode() const
+    EUpdateMode Node::getAffectorableUpdatableMode() const
     {
-        return 1U;
+        return EUM_NODE_AFFECTOR;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getAffectorableUpdatableLeafDeep() const

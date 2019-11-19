@@ -179,4 +179,16 @@ namespace Mengine
     {
         return m_defaultFileGroup;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void FileService::setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda )
+    {
+        Char fullPath[MENGINE_MAX_PATH];
+        if( _fileGroup->getFullPath( _filePath, fullPath ) == false )
+        {
+            return;
+        }
+
+        _lambda();
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

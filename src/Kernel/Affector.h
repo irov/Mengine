@@ -49,7 +49,7 @@ namespace Mengine
         float getSpeedFactor() const noexcept;
 
     public:
-        bool prepare( uint32_t _updatableMode, uint32_t _updatableLeaf );
+        bool prepare( EUpdateMode _updatableMode, uint32_t _updatableLeaf );
 
     protected:
         virtual bool _prepare();

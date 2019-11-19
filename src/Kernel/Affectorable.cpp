@@ -25,7 +25,7 @@ namespace Mengine
 
         _affector->setId( id );
 
-        uint32_t updatableMode = this->getAffectorableUpdatableMode();
+        EUpdateMode updatableMode = this->getAffectorableUpdatableMode();
         uint32_t updatableDeep = this->getAffectorableUpdatableLeafDeep();
 
         if( _affector->prepare( updatableMode, updatableDeep ) == false )

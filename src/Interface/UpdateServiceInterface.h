@@ -15,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "UpdateService" )
 
     public:
-        virtual uint32_t createUpdatater( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) = 0;
+        virtual uint32_t createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) = 0;
         virtual void replaceUpdatater( uint32_t _id, uint32_t _deep ) = 0;
         virtual void removeUpdatater( uint32_t _id ) = 0;
 

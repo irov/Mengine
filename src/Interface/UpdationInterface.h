@@ -7,11 +7,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum EUpdateMode
+    {
+        EUM_NODE_BASE,
+        EUM_NODE_AFFECTOR,
+        EUM_SERVICE,
+    };
+    //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
         : public Interface
     {
     public:
-        virtual void activate( uint32_t _mode, uint32_t _deep ) = 0;
+        virtual void activate( EUpdateMode _mode, uint32_t _deep ) = 0;
         virtual void deactivate() = 0;
         virtual void replace( uint32_t _deep ) = 0;
 

@@ -1,5 +1,7 @@
 #include "JSONSetting.h"
 
+#include "Interface/FileServiceInterface.h"
+
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
@@ -24,6 +26,12 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( storage, false );
 
         m_storage = storage;
+
+        FILE_SERVICE()
+            ->setFileModifyHook( _fileGroup, _filePath, []()
+        {
+
+        } );
 
         return true;
     }

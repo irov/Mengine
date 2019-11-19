@@ -340,22 +340,26 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        m_loggerStdio = Helper::makeFactorableUnique<AndroidLogger>();
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>();
 #else
-        m_loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>();
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>();
 #endif
 
-        m_loggerStdio->setVerboseFlag( LM_MESSAGE );
+        loggerStdio->setVerboseFlag( LM_MESSAGE );
 
         LOGGER_SERVICE()
-            ->registerLogger( m_loggerStdio );
+            ->registerLogger( loggerStdio );
 
-        m_loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>();
+        m_loggerStdio = loggerStdio;
 
-        m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>();
+
+        loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
         LOGGER_SERVICE()
-            ->registerLogger( m_loggerMessageBox );        
+            ->registerLogger( loggerMessageBox );
+
+        m_loggerMessageBox = loggerMessageBox;
 
         return true;
     }

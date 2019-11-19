@@ -651,7 +651,14 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setProjectTitle( const Char * _projectTitle )
-    {        
+    {
+        if( _projectTitle == nullptr )
+        {
+            m_projectTitle[0] = '\0';
+
+            return;
+        }
+
         Helper::utf8ToUnicodeSize( _projectTitle, MENGINE_UNKNOWN_SIZE, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////

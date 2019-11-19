@@ -864,12 +864,19 @@ namespace Mengine
         SETTINGS_SERVICE()
             ->visitSettings( [&payloadNode]( const ConstString & _name, const SettingInterfacePtr & _settings )
         {
+            const FileGroupInterfacePtr & fileGroup = _settings->getFileGroup();
             const FilePath & filePath = _settings->getFilePath();
+
+            Char fullPath[MENGINE_MAX_PATH] = { '\0' };
+            if( fileGroup->getFullPath( filePath, fullPath ) == false )
+            {
+                return;
+            }
 
             pugi::xml_node xml_setting = payloadNode.append_child( "Setting" );
 
             xml_setting.append_attribute( "name" ).set_value( _name.c_str() );
-            xml_setting.append_attribute( "file" ).set_value( filePath.c_str() );
+            xml_setting.append_attribute( "file" ).set_value( fullPath );
         } );
 
         NodeDebuggerPacket packet;

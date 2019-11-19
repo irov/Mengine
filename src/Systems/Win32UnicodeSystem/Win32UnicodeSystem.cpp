@@ -3,6 +3,7 @@
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -22,6 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _unicode, false );
+
 #   if (WINVER >= 0x0600)
         DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
 #   else
@@ -77,6 +80,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
     {
+        MENGINE_ASSERTION_MEMORY_PANIC( _utf8, false );
+
         int32_t int_utf8Size = static_cast<int32_t>(_utf8Size);
         int32_t int_unicodeCapacity = static_cast<int32_t>(_unicodeCapacity);
 

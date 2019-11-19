@@ -44,25 +44,25 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     NodeDebuggerApp::NodeDebuggerApp()
-        : mWindow( nullptr )
-        , mShutdown( false )
-        , mWidth( 1280 )
-        , mHeight( 720 )
-        , mSelectedNode( nullptr )
-        , mDefaultIcon( nullptr )
-        , mCurrentTab( 0 )
-        , mServerAddress()
-        , mServerPort( 18790 )
-        , mServerAddressCopy()
-        , mServerPortCopy( 0 )
-        , mConnectionStatus( ConnectionStatus::Disconnected )
-        , mScene( nullptr )
-        , mScenePickerable( nullptr )
-        , mSceneRenderable( nullptr )
-        , mSceneUpdateFreq( 0 )
-        , mSceneUpdateTimer( 0.0 )
-        , mUpdateSceneOnChange( false )
-        , mPauseRequested( false )
+        : m_window( nullptr )
+        , m_shutdown( false )
+        , m_width( 1280 )
+        , m_height( 720 )
+        , m_selectedNode( nullptr )
+        , m_defaultIcon( nullptr )
+        , m_currentTab( 0 )
+        , m_serverAddress()
+        , m_serverPort( 18790 )
+        , m_serverAddressCopy()
+        , m_serverPortCopy( 0 )
+        , m_connectionStatus( ConnectionStatus::Disconnected )
+        , m_scene( nullptr )
+        , m_scenePickerable( nullptr )
+        , m_sceneRenderable( nullptr )
+        , m_sceneUpdateFreq( 0 )
+        , m_sceneUpdateTimer( 0.0 )
+        , m_updateSceneOnChange( false )
+        , m_pauseRequested( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -88,33 +88,33 @@ namespace Mengine
         glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
         glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
 
-        mWindow = glfwCreateWindow( mWidth, mHeight, "Node Debugger", nullptr, nullptr );
+        m_window = glfwCreateWindow( m_width, m_height, "Node Debugger", nullptr, nullptr );
 
-        if( mWindow == nullptr )
+        if( m_window == nullptr )
         {
             glfwTerminate();
 
             return false;
         }
 
-        glfwSetWindowUserPointer( mWindow, this );
+        glfwSetWindowUserPointer( m_window, this );
 
-        glfwMakeContextCurrent( mWindow );
+        glfwMakeContextCurrent( m_window );
         gladLoadGLLoader( reinterpret_cast<GLADloadproc>(glfwGetProcAddress) );
         glfwSwapInterval( 1 ); // enable v-sync
 
         LoadIconsAtlas();
 
-        glViewport( 0, 0, mWidth, mHeight );
+        glViewport( 0, 0, m_width, m_height );
 
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-        glfwSetScrollCallback( mWindow, ImGui_ImplGlfw_ScrollCallback );
-        glfwSetCharCallback( mWindow, ImGui_ImplGlfw_CharCallback );
-        glfwSetKeyCallback( mWindow, ImGui_ImplGlfw_KeyCallback );
-        glfwSetMouseButtonCallback( mWindow, ImGui_ImplGlfw_MouseButtonCallback );
-        glfwSetWindowSizeCallback(mWindow, []( GLFWwindow * _wnd, int _width, int _height ) {
+        glfwSetScrollCallback( m_window, ImGui_ImplGlfw_ScrollCallback );
+        glfwSetCharCallback( m_window, ImGui_ImplGlfw_CharCallback );
+        glfwSetKeyCallback( m_window, ImGui_ImplGlfw_KeyCallback );
+        glfwSetMouseButtonCallback( m_window, ImGui_ImplGlfw_MouseButtonCallback );
+        glfwSetWindowSizeCallback(m_window, []( GLFWwindow * _wnd, int _width, int _height ) {
              NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
              if( _this != nullptr )
              {
@@ -127,35 +127,35 @@ namespace Mengine
         ImGui::CreateContext();
         ImGui::GetIO().IniFilename = nullptr; // disable "imgui.ini"
         //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // tell ImGui to not interfere with our cursors
-        ImGui_ImplGlfwGL3_Init( mWindow, false );
+        ImGui_ImplGlfwGL3_Init( m_window, false );
         ImGui::StyleColorsClassic();
         //ImGuiExt::SetBrightStyle();
 
-        mShutdown = false;
-        mNetworkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
+        m_shutdown = false;
+        m_networkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
 
         // Create tabs
-        mTabs.push_back({
+        m_tabs.push_back({
             "Game debugger",
             true,
             [this]() { this->DoUIGameDebuggerTab(); }
         });
-        mTabs.push_back({
+        m_tabs.push_back({
             "Game logger",
             true,
             [this]() { this->DoUILogTab(); }
         });
-        mTabs.push_back({
-            "Example tab",
+        m_tabs.push_back({
+            "Settings",
             true,
-            [this]() { this->DoUIExampleTab(); }
+            [this]() { this->DoUISettingsTab(); }
         });
 
         // if requested to auto-connect, then do so
         if( !_address.empty() && _port != 0 )
         {
-            mServerAddress = _address;
-            mServerPort = _port;
+            m_serverAddress = _address;
+            m_serverPort = _port;
 
             OnConnectButton();
         }
@@ -167,7 +167,7 @@ namespace Mengine
     {
         double lastTimerValue = glfwGetTime();
 
-        while( GL_FALSE == glfwWindowShouldClose( mWindow ) )
+        while( GL_FALSE == glfwWindowShouldClose( m_window ) )
         {
             glfwPollEvents();
 
@@ -187,112 +187,112 @@ namespace Mengine
             ImGui::Render();
             ImGui_ImplGlfwGL3_RenderDrawData( ImGui::GetDrawData() );
 
-            glfwSwapBuffers( mWindow );
+            glfwSwapBuffers( m_window );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::Shutdown()
     {
-        mShutdown = true;
+        m_shutdown = true;
 
         glfwTerminate();
         zed_net_shutdown();
 
-        mNetworkThread.join();
+        m_networkThread.join();
 
-        if( mScene )
+        if( m_scene )
         {
-            DestroyNode( mScene );
-            mScene = nullptr;
+            DestroyNode( m_scene );
+            m_scene = nullptr;
         }
 
-        if( mScenePickerable )
+        if( m_scenePickerable )
         {
-            DestroyNode( mScenePickerable );
-            mScenePickerable = nullptr;
+            DestroyNode( m_scenePickerable );
+            m_scenePickerable = nullptr;
         }
 
-        if( mSceneRenderable )
+        if( m_sceneRenderable )
         {
-            DestroyNode( mSceneRenderable );
-            mSceneRenderable = nullptr;
+            DestroyNode( m_sceneRenderable );
+            m_sceneRenderable = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::Resize( const int _width, const int _height )
     {
-        if( mWidth != _width || mHeight != _height )
+        if( m_width != _width || m_height != _height )
         {
-            mWidth = _width;
-            mHeight = _height;
-            glViewport( 0, 0, mWidth, mHeight );
+            m_width = _width;
+            m_height = _height;
+            glViewport( 0, 0, m_width, m_height );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::Update( const double _dt )
     {
-        MutexLocker lock( mDataMutex );
+        MutexLocker lock( m_dataMutex );
 
-        if( mConnectionStatus == ConnectionStatus::Disconnected )
+        if( m_connectionStatus == ConnectionStatus::Disconnected )
         {
-            if( mScene )
+            if( m_scene )
             {
-                DestroyNode( mScene );
-                mScene = nullptr;
+                DestroyNode( m_scene );
+                m_scene = nullptr;
             }
 
-            if( mScenePickerable )
+            if( m_scenePickerable )
             {
-                DestroyNode( mScenePickerable );
-                mScenePickerable = nullptr;
+                DestroyNode( m_scenePickerable );
+                m_scenePickerable = nullptr;
             }
 
-            if( mSceneRenderable )
+            if( m_sceneRenderable )
             {
-                DestroyNode( mSceneRenderable );
-                mSceneRenderable = nullptr;
+                DestroyNode( m_sceneRenderable );
+                m_sceneRenderable = nullptr;
             }
 
-            mIncomingPackets.resize( 0 );
-            mOutgoingPackets.resize( 0 );
-            mReceivedData.resize( 0 );
+            m_incomingPackets.resize( 0 );
+            m_outgoingPackets.resize( 0 );
+            m_receivedData.resize( 0 );
         }
-        else if( mConnectionStatus == ConnectionStatus::Connected )
+        else if( m_connectionStatus == ConnectionStatus::Connected )
         {
-            if( !mIncomingPackets.empty() )
+            if( !m_incomingPackets.empty() )
             {
-                ProcessPacket( mIncomingPackets.front() );
-                mIncomingPackets.pop_front();
+                ProcessPacket( m_incomingPackets.front() );
+                m_incomingPackets.pop_front();
             }
 
-            if( mSelectedNode && mSelectedNode->dirty )
+            if( m_selectedNode && m_selectedNode->dirty )
             {
-                SendChangedNode( *mSelectedNode );
-                mSelectedNode->dirty = false;
+                SendChangedNode( *m_selectedNode );
+                m_selectedNode->dirty = false;
             }
 
-            if( !mSelectedNodePath.empty() )
+            if( !m_selectedNodePath.empty() )
             {
-                SendNodeSelection( mSelectedNodePath );
-                mSelectedNodePath.clear();
+                SendNodeSelection( m_selectedNodePath );
+                m_selectedNodePath.clear();
             }
 
-            if( mSceneUpdateFreq > 0 )
+            if( m_sceneUpdateFreq > 0 )
             {
-                mSceneUpdateTimer += _dt;
+                m_sceneUpdateTimer += _dt;
 
-                const double updateInterval = 1.0 / static_cast<double>( mSceneUpdateFreq );
-                if( mSceneUpdateTimer >= updateInterval )
+                const double updateInterval = 1.0 / static_cast<double>( m_sceneUpdateFreq );
+                if( m_sceneUpdateTimer >= updateInterval )
                 {
                     SendSceneRequest();
-                    mSceneUpdateTimer = 0.0;
+                    m_sceneUpdateTimer = 0.0;
                 }
             }
 
-            if( mPauseRequested )
+            if( m_pauseRequested )
             {
                 SendPauseRequest();
-                mPauseRequested = false;
+                m_pauseRequested = false;
             }
         }
     }
@@ -377,22 +377,22 @@ namespace Mengine
 
         if( typeStr == "Scene" )
         {
-            ReceiveScene( payloadNode );
+            this->ReceiveScene( payloadNode );
         }
 
         if( typeStr == "Pickerable" )
         {
-            ReceivePickerable( payloadNode );
+            this->ReceivePickerable( payloadNode );
         }
 
         if( typeStr == "Renderable" )
         {
-            ReceiveRenderable( payloadNode );
+            this->ReceiveRenderable( payloadNode );
         }
 
         if( typeStr == "Settings" )
         {
-            ReceiveSettings( payloadNode );
+            this->ReceiveSettings( payloadNode );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -402,17 +402,17 @@ namespace Mengine
 
         if( xmlNode )
         {
-            if( mScene )
+            if( m_scene )
             {
-                DestroyNode( mScene );
+                DestroyNode( m_scene );
             }
 
-            mScene = new DebuggerNode();
-            mScene->parent = nullptr;
+            m_scene = new DebuggerNode();
+            m_scene->parent = nullptr;
 
-            DeserializeNode( xmlNode, mScene );
+            DeserializeNode( xmlNode, m_scene );
 
-            mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
+            m_selectedNode = PathToNode( StringToPath( m_lastSelectedNodePath ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -422,17 +422,17 @@ namespace Mengine
 
         if( xmlNode )
         {
-            if( mScenePickerable )
+            if( m_scenePickerable )
             {
-                DestroyNode( mScenePickerable );
+                DestroyNode( m_scenePickerable );
             }
 
-            mScenePickerable = new DebuggerNode();
-            mScenePickerable->parent = nullptr;
+            m_scenePickerable = new DebuggerNode();
+            m_scenePickerable->parent = nullptr;
 
-            DeserializeNode( xmlNode, mScenePickerable );
+            DeserializeNode( xmlNode, m_scenePickerable );
 
-            mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
+            m_selectedNode = PathToNode( StringToPath( m_lastSelectedNodePath ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -442,23 +442,59 @@ namespace Mengine
 
         if( xmlNode )
         {
-            if( mSceneRenderable )
+            if( m_sceneRenderable )
             {
-                DestroyNode( mSceneRenderable );
+                DestroyNode( m_sceneRenderable );
             }
 
-            mSceneRenderable = new DebuggerNode();
-            mSceneRenderable->parent = nullptr;
+            m_sceneRenderable = new DebuggerNode();
+            m_sceneRenderable->parent = nullptr;
 
-            DeserializeNode( xmlNode, mSceneRenderable );
+            DeserializeNode( xmlNode, m_sceneRenderable );
 
-            mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
+            m_selectedNode = PathToNode( StringToPath( m_lastSelectedNodePath ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSettings( const pugi::xml_node & _xmlContainer )
     {
         MENGINE_UNUSED( _xmlContainer );
+
+        for( const pugi::xml_node & child : _xmlContainer.children() )
+        {
+            const pugi::char_t * name = child.attribute( "name" ).value();
+            const pugi::char_t * file = child.attribute( "file" ).value();
+
+            SettingDesc desc;
+            desc.name = name;
+            desc.file = file;
+
+            FILE * f = fopen( desc.file.c_str(), "rb" );
+
+            if( f == NULL )
+            {
+                continue;
+            }
+
+            fseek( f, 0L, SEEK_END );
+            long sz = ftell( f );
+            rewind( f );
+
+            uint8_t buffer[8096];
+            fread( buffer, 1, 8096, f );
+            fclose( f );
+
+            jpp::object json = jpp::load( buffer, sz, nullptr, nullptr );
+
+            if( json == jpp::detail::invalid )
+            {
+                continue;
+            }
+
+            desc.json = json;
+
+            m_settings.emplace_back( desc );
+        }
 
         //pugi::xml_node xmlNode = _xmlContainer.first_child();
 
@@ -601,7 +637,7 @@ namespace Mengine
 
         if( !_path.empty() )
         {
-            DebuggerNode * node = mScene;
+            DebuggerNode * node = m_scene;
 
             auto it = _path.begin(), end = _path.end();
             for( ; it != end; ++it )
@@ -632,9 +668,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DestroyNode( DebuggerNode * _node )
     {
-        if( mSelectedNode == _node )
+        if( m_selectedNode == _node )
         {
-            mSelectedNode = nullptr;
+            m_selectedNode = nullptr;
         }
 
         for( auto n : _node->children )
@@ -650,11 +686,11 @@ namespace Mengine
     {
         const CachedImage* result = nullptr;
 
-        auto it = std::find_if( mImagesCache.begin(), mImagesCache.end(), [&_name]( const CachedImage & _ci )->bool {
+        auto it = std::find_if( m_imagesCache.begin(), m_imagesCache.end(), [&_name]( const CachedImage & _ci )->bool {
             return _ci.name == _name;
         });
 
-        if( it != mImagesCache.end() )
+        if( it != m_imagesCache.end() )
         {
             result = &(*it);
         }
@@ -678,9 +714,9 @@ namespace Mengine
 
                 stbi_image_free( data );
 
-                mImagesCache.push_back( { _name, static_cast<uintptr_t>(texture), static_cast<size_t>(width), static_cast<size_t>(height) } );
+                m_imagesCache.push_back( { _name, static_cast<uintptr_t>(texture), static_cast<size_t>(width), static_cast<size_t>(height) } );
 
-                result = &mImagesCache.back();
+                result = &m_imagesCache.back();
             }
         }
 
@@ -726,35 +762,35 @@ namespace Mengine
                     ni.uv1_X = (x + 16.0f) / static_cast<float>(ci->width);
                     ni.uv1_Y = (y + 16.0f) / static_cast<float>(ci->height);
 
-                    mIcons.emplace_back( ni );
+                    m_icons.emplace_back( ni );
                 }
             }
         }
 
         // trying to assign the default icon
-        auto it = std::find_if( mIcons.begin(), mIcons.end(), []( const NodeIcon & _ni )->bool {
+        auto it = std::find_if( m_icons.begin(), m_icons.end(), []( const NodeIcon & _ni )->bool {
             return _ni.name == "?";
         });
 
-        if( it != mIcons.end() )
+        if( it != m_icons.end() )
         {
-            mDefaultIcon = &(*it);
+            m_defaultIcon = &(*it);
         }
         else
         {
-            mDefaultIcon = nullptr;
+            m_defaultIcon = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     const NodeIcon* NodeDebuggerApp::GetIconForNodeType( const String & _nodeType )
     {
-        auto it = std::find_if( mIcons.begin(), mIcons.end(), [&_nodeType]( const NodeIcon & _ni )->bool {
+        auto it = std::find_if( m_icons.begin(), m_icons.end(), [&_nodeType]( const NodeIcon & _ni )->bool {
             return _ni.name == _nodeType;
         });
 
-        if( it == mIcons.end() )
+        if( it == m_icons.end() )
         {
-            return mDefaultIcon;
+            return m_defaultIcon;
         }
         else
         {
@@ -767,14 +803,14 @@ namespace Mengine
         const ImGuiWindowFlags kPanelFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
 
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_FirstUseEver );
-        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_Always );
+        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(m_width), static_cast<float>(m_height) ), ImGuiCond_Always );
         ImGui::GetStyle().WindowRounding = 0.f;
 
         if( ImGui::Begin( "Node Debugger", nullptr, kPanelFlags ) )
         {
             if( ImGui::BeginTabBar( "##Tabs", ImGuiTabBarFlags_NoCloseWithMiddleMouseButton ) )
             {
-                for( auto& tab : mTabs )
+                for( auto& tab : m_tabs )
                 {
                     if( ImGui::BeginTabItem( tab.title.c_str() ) )
                     {
@@ -801,12 +837,12 @@ namespace Mengine
         {
             char serverAddress[256] = {0};
 
-            if( !mServerAddress.empty() )
+            if( !m_serverAddress.empty() )
             {
-                std::copy( mServerAddress.begin(), mServerAddress.end(), serverAddress );
+                std::copy( m_serverAddress.begin(), m_serverAddress.end(), serverAddress );
             }
 
-            mServerAddress = this->DoIPInput( "Address:", mServerAddress );
+            m_serverAddress = this->DoIPInput( "Address:", m_serverAddress );
 
             ImGui::BeginGroup();
             {
@@ -816,16 +852,16 @@ namespace Mengine
 
                 const float width = ImGui::CalcItemWidth();
                 ImGui::PushItemWidth( width * 0.25f );
-                int port = static_cast<int>(mServerPort);
+                int port = static_cast<int>(m_serverPort);
                 if( ImGui::InputInt( "##Port", &port, 0, 0, ImGuiInputTextFlags_CharsDecimal ) )
                 {
-                    mServerPort = static_cast<uint16_t>(port & 0xFFFF);
+                    m_serverPort = static_cast<uint16_t>(port & 0xFFFF);
                 }
                 ImGui::PopItemWidth();
             }
             ImGui::EndGroup();
 
-            if( mConnectionStatus == ConnectionStatus::Connected )
+            if( m_connectionStatus == ConnectionStatus::Connected )
             {
                 const ImVec4 redButtonColor( 0.5f, 0.f, 0.f, 1.f );
                 ImGui::PushStyleColor( ImGuiCol_Button, redButtonColor );
@@ -837,7 +873,7 @@ namespace Mengine
                 ImGui::PopStyleColor();
                 ImGui::PopStyleColor();
             }
-            else if( mConnectionStatus == ConnectionStatus::Disconnected || mConnectionStatus == ConnectionStatus::ConnectionFailed )
+            else if( m_connectionStatus == ConnectionStatus::Disconnected || m_connectionStatus == ConnectionStatus::ConnectionFailed )
             {
                 const ImVec4 greenButtonColor( 0.1686f, 0.5686f, 0.f, 1.f );
                 ImGui::PushStyleColor( ImGuiCol_Button, greenButtonColor );
@@ -853,21 +889,21 @@ namespace Mengine
 
         if( ImGui::CollapsingHeader( "Game controls:" ) )
         {
-            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, mUpdateSceneOnChange );
-            int hz = mSceneUpdateFreq;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, m_updateSceneOnChange );
+            int hz = m_sceneUpdateFreq;
             if( ImGui::InputInt( "Update freq (hz):", &hz ) )
             {
-                mSceneUpdateFreq = std::clamp( hz, 0, 30 );
-                mSceneUpdateTimer = 0.0;
+                m_sceneUpdateFreq = std::clamp( hz, 0, 30 );
+                m_sceneUpdateTimer = 0.0;
             }
             ImGui::PopItemFlag();
 
-            if( ImGui::Checkbox( "Update scene on change", &mUpdateSceneOnChange ) )
+            if( ImGui::Checkbox( "Update scene on change", &m_updateSceneOnChange ) )
             {
-                if( mUpdateSceneOnChange )
+                if( m_updateSceneOnChange )
                 {
-                    mSceneUpdateFreq = 0;
-                    mSceneUpdateTimer = 0.0;
+                    m_sceneUpdateFreq = 0;
+                    m_sceneUpdateTimer = 0.0;
                 }
             }
 
@@ -892,11 +928,11 @@ namespace Mengine
             {
                 if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
-                    if( mScene )
+                    if( m_scene )
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            DoNodeElement( mScene, "Full" );
+                            DoNodeElement( m_scene, "Full" );
                         }
                         ImGui::EndChild();
                     }
@@ -906,11 +942,11 @@ namespace Mengine
             {
                 if( ImGui::CollapsingHeader( "Pickerable:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
-                    if( mScenePickerable )
+                    if( m_scenePickerable )
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            DoNodeElement( mScenePickerable, "Pickerable" );
+                            DoNodeElement( m_scenePickerable, "Pickerable" );
                         }
                         ImGui::EndChild();
                     }
@@ -920,11 +956,11 @@ namespace Mengine
             {
                 if( ImGui::CollapsingHeader( "Renderable:", ImGuiTreeNodeFlags_DefaultOpen ) )
                 {
-                    if( mSceneRenderable )
+                    if( m_sceneRenderable )
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            DoNodeElement( mSceneRenderable, "Renderable" );
+                            DoNodeElement( m_sceneRenderable, "Renderable" );
                         }
                         ImGui::EndChild();
                     }
@@ -936,9 +972,9 @@ namespace Mengine
 
         if( ImGui::BeginChild( "Panel" ) )
         {
-            if( mSelectedNode )
+            if( m_selectedNode )
             {
-                DoNodeProperties( mSelectedNode );
+                DoNodeProperties( m_selectedNode );
             }
         }
         ImGui::EndChild();
@@ -951,9 +987,29 @@ namespace Mengine
         ImGui::InputTextMultiline( "", "Log: libe 1\nLog: line 2\nLog: line 3\n", 0, ImVec2( 0.f, 0.f ), ImGuiInputTextFlags_ReadOnly );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUIExampleTab()
+    void NodeDebuggerApp::DoUISettingsTab()
     {
-        ImGui::TextColored( ImVec4(1.0f, 0.85f, 0.0f, 1.0f), "Hello example tab!" );
+        const float leftPanelWidth = 400.0f;
+
+        ImGui::Columns( 2, nullptr, true );
+        ImGui::SetColumnWidth( 0, leftPanelWidth );
+
+        SettingDesc sellect_desc;
+
+        if( ImGui::CollapsingHeader( "Settings:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            for( const SettingDesc & desc : m_settings )
+            {
+                if( ImGui::Button( desc.name.c_str() ) == true )
+                {
+                    sellect_desc = desc;
+                }
+            }
+        }
+
+        ImGui::NextColumn();
+
+        ImGui::Columns( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     String NodeDebuggerApp::DoIPInput( const String & _title, const String & _inIP )
@@ -1028,7 +1084,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoNodeElement( DebuggerNode * _node, const String & _tag )
     {
-        const ImGuiTreeNodeFlags seletedFlag = (mSelectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
+        const ImGuiTreeNodeFlags seletedFlag = (m_selectedNode == _node) ? ImGuiTreeNodeFlags_Selected : 0;
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
@@ -1332,56 +1388,56 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::OnConnectButton()
     {
-        mServerAddressCopy = mServerAddress;
-        mServerPortCopy = mServerPort;
+        m_serverAddressCopy = m_serverAddress;
+        m_serverPortCopy = m_serverPort;
 
-        mConnectionStatus = ConnectionStatus::ConnectionRequested;
+        m_connectionStatus = ConnectionStatus::ConnectionRequested;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::OnDisconnectButton()
     {
-        mConnectionStatus = ConnectionStatus::DisconnectionRequested;
+        m_connectionStatus = ConnectionStatus::DisconnectionRequested;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::OnSelectNode( DebuggerNode * _node )
     {
-        if( mSelectedNode != _node )
+        if( m_selectedNode != _node )
         {
-            mSelectedNode = _node;
+            m_selectedNode = _node;
 
-            if( mSelectedNode != nullptr )
+            if( m_selectedNode != nullptr )
             {
-                Vector<uint32_t> path = this->CollectNodePath( mSelectedNode );
+                Vector<uint32_t> path = this->CollectNodePath( m_selectedNode );
 
-                mSelectedNodePath = this->PathToString( path );
+                m_selectedNodePath = this->PathToString( path );
             }
             else
             {
-                mSelectedNodePath = "-";
+                m_selectedNodePath = "-";
             }
 
-            mLastSelectedNodePath = mSelectedNodePath;
+            m_lastSelectedNodePath = m_selectedNodePath;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::OnPauseButton()
     {
-        mPauseRequested = true;
+        m_pauseRequested = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::NetworkLoop()
     {
-        while( mShutdown == false )
+        while( m_shutdown == false )
         {
-            if( mConnectionStatus == ConnectionStatus::ConnectionRequested )
+            if( m_connectionStatus == ConnectionStatus::ConnectionRequested )
             {
                 this->ConnectToServer();
             }
-            else if( mConnectionStatus == ConnectionStatus::DisconnectionRequested )
+            else if( m_connectionStatus == ConnectionStatus::DisconnectionRequested )
             {
                 this->DisconnectFromServer();
             }
-            else if( mConnectionStatus == ConnectionStatus::Connected )
+            else if( m_connectionStatus == ConnectionStatus::Connected )
             {
                 this->SendNetworkData();
                 this->ReceiveNetworkData();
@@ -1394,9 +1450,9 @@ namespace Mengine
     void NodeDebuggerApp::ConnectToServer()
     {
         zed_net_address_t address;
-        if( 0 != zed_net_get_address( &address, mServerAddressCopy.c_str(), mServerPortCopy ) )
+        if( 0 != zed_net_get_address( &address, m_serverAddressCopy.c_str(), m_serverPortCopy ) )
         {
-            mConnectionStatus = ConnectionStatus::ConnectionFailed;
+            m_connectionStatus = ConnectionStatus::ConnectionFailed;
             return;
         }
 
@@ -1406,40 +1462,40 @@ namespace Mengine
         if( zed_net_tcp_connect( &socket, address ) )
         {
             zed_net_socket_close( &socket);
-            mConnectionStatus = ConnectionStatus::ConnectionFailed;
+            m_connectionStatus = ConnectionStatus::ConnectionFailed;
             return;
         }
 
-        mSocket = socket;
-        mConnectionStatus = ConnectionStatus::Connected;
+        m_socket = socket;
+        m_connectionStatus = ConnectionStatus::Connected;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DisconnectFromServer()
     {
-        zed_net_socket_close( &mSocket);
-        mConnectionStatus = ConnectionStatus::Disconnected;
+        zed_net_socket_close( &m_socket);
+        m_connectionStatus = ConnectionStatus::Disconnected;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::SendNetworkData()
     {
-        mDataMutex.lock();
+        m_dataMutex.lock();
         {
-            if( !mOutgoingPackets.empty() )
+            if( !m_outgoingPackets.empty() )
             {
-                for( const NodeDebuggerPacket & p : mOutgoingPackets )
+                for( const NodeDebuggerPacket & p : m_outgoingPackets )
                 {
-                    zed_net_tcp_socket_send( &mSocket, p.payload.data(), static_cast<int>(p.payload.size()) );
+                    zed_net_tcp_socket_send( &m_socket, p.payload.data(), static_cast<int>(p.payload.size()) );
                 }
 
-                mOutgoingPackets.clear();
+                m_outgoingPackets.clear();
             }
         }
-        mDataMutex.unlock();
+        m_dataMutex.unlock();
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveNetworkData()
     {
-        const bool hasData = zed_net_ext_tcp_wait_for_data( &mSocket, 100 );
+        const bool hasData = zed_net_ext_tcp_wait_for_data( &m_socket, 100 );
         if( !hasData )
         {
             return;
@@ -1452,10 +1508,10 @@ namespace Mengine
         bool shouldDisconnect = false;
         do
         {
-            bytesReceived = zed_net_tcp_socket_receive( &mSocket, buffer, BUFFER_SIZE );
+            bytesReceived = zed_net_tcp_socket_receive( &m_socket, buffer, BUFFER_SIZE );
             if( bytesReceived )
             {
-                mReceivedData.insert( mReceivedData.end(), &buffer[0], &buffer[bytesReceived] );
+                m_receivedData.insert( m_receivedData.end(), &buffer[0], &buffer[bytesReceived] );
             }
             else
             {
@@ -1471,12 +1527,12 @@ namespace Mengine
         }
 
         // check if we have read something
-        if( mReceivedData.size() > sizeof( PacketHeader ) )
+        if( m_receivedData.size() > sizeof( PacketHeader ) )
         {
-            MutexLocker lock( mDataMutex );
+            MutexLocker lock( m_dataMutex );
 
             // check if we have enough data to form a packet
-            PacketHeader* hdr = reinterpret_cast<PacketHeader *>(mReceivedData.data());
+            PacketHeader* hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
 
             // received garbage - nothing fancy, just disconnect
             if( hdr->magic != PACKET_MAGIC )
@@ -1486,7 +1542,7 @@ namespace Mengine
                 return;
             }
 
-            while( hdr != nullptr && hdr->compressedSize <= (mReceivedData.size() - sizeof( PacketHeader )) )
+            while( hdr != nullptr && hdr->compressedSize <= (m_receivedData.size() - sizeof( PacketHeader )) )
             {
                 // received garbage - nothing fancy, just disconnect
                 if( hdr->magic != PACKET_MAGIC )
@@ -1499,22 +1555,22 @@ namespace Mengine
                 const size_t dataSizeWithHeader = hdr->compressedSize + sizeof( PacketHeader );
 
                 NodeDebuggerPacket packet;
-                this->UncompressPacket( packet, *hdr, mReceivedData.data() + sizeof( PacketHeader ) );
+                this->UncompressPacket( packet, *hdr, m_receivedData.data() + sizeof( PacketHeader ) );
 
-                mIncomingPackets.emplace_back( packet );
+                m_incomingPackets.emplace_back( packet );
 
                 // now remove this packet data from the buffer
-                const size_t newSize = mReceivedData.size() - dataSizeWithHeader;
+                const size_t newSize = m_receivedData.size() - dataSizeWithHeader;
                 if( newSize )
                 {
-                    memmove( mReceivedData.data(), mReceivedData.data() + dataSizeWithHeader, newSize );
-                    mReceivedData.resize( newSize );
+                    memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
+                    m_receivedData.resize( newSize );
 
-                    hdr = reinterpret_cast<PacketHeader *>(mReceivedData.data());
+                    hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
                 }
                 else
                 {
-                    mReceivedData.clear();
+                    m_receivedData.clear();
                     hdr = nullptr;
                 }
 
@@ -1528,7 +1584,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::SendXML( const pugi::xml_document & _doc )
     {
-        if( mConnectionStatus != ConnectionStatus::Connected )
+        if( m_connectionStatus != ConnectionStatus::Connected )
         {
             return;
         }
@@ -1555,7 +1611,7 @@ namespace Mengine
 
             Detail::InsertPacketHeader( packet.payload, hdr );
 
-            mOutgoingPackets.emplace_back( packet );
+            m_outgoingPackets.emplace_back( packet );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1615,7 +1671,7 @@ namespace Mengine
 
         this->SendXML( doc );
 
-        if( mUpdateSceneOnChange == true )
+        if( m_updateSceneOnChange == true )
         {
             this->SendSceneRequest();
         }

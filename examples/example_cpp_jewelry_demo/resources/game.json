@@ -1,23 +1,9 @@
 {
   "jewelry_column_count": { "value": 6 },
   "jewelry_row_count": { "value": 10 },
-  "jewelry_type_count": { "value": 3 },
-  "jewelry_cell_fall_time_ms": { "value": 950.0 },
+  "jewelry_size": { "value": 50.0 },
+  "jewelry_stride": { "value": 10.0 },
   "jewelry_cell_explosive_time_ms": { "value": 250.0 },
   "jewelry_cell_explosive_count": { "value": 1 },
-  "jewelry_spawn_time_ms": { "value": 350.0 },
-  "jewelry_spawn_count": { "value": -1 },
-
-  "levels": [
-    {
-      "stages": [
-        {
-          "time": { "value": 10000.0 },
-          "jewelry_type_count": { "value": 3 },
-          "jewelry_cell_fall_time_ms": { "value": 950.0 },
-          "jewelry_spawn_time_ms": { "value": 350.0 },
-        }
-      ]
-    }
-    ]
-  }
+  "jewelry_collapse": { "value": true }
+}

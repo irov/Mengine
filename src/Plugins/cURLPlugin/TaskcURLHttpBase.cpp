@@ -30,10 +30,7 @@ namespace Mengine
         {
             GOAP::SourceInterfacePtr source = m_node->makeSource();
 
-            cURLSourceInterfacePtr curl_source = CURL_SERVICE()
-                ->makeSource( source );
-
-            m_receiver->onResponse( curl_source, _status, _error, _response, _code, _successful );
+            m_receiver->onResponse( source, _status, _error, _response, _code, _successful );
             m_receiver = nullptr;
 
             const GOAP::SourceProviderInterfacePtr & provider = source->getSourceProvider();

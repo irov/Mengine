@@ -119,7 +119,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     JSONStorageInterfacePtr JSONService::loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) const
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, _doc );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 

@@ -11,7 +11,7 @@ namespace Mengine
         : public InputStreamInterface
     {
     public:
-        virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming ) = 0;
+        virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileInputStreamInterface> FileInputStreamInterfacePtr;

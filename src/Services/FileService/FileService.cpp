@@ -3,7 +3,12 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
+#include "Interface/PlatformInterface.h"
 
+#include "Kernel/FileStreamHelper.h"
+#include "Kernel/ThreadHelper.h"
+#include "Kernel/ThreadMutexScope.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FilePath.h"
@@ -27,11 +32,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileService::_initializeService()
     {
+        SERVICE_WAIT( ThreadServiceInterface, [this]()
+        {
+            Helper::createSimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ), 500, [this]()
+            {
+                this->notifyFileModifies();
+            }, [this]()
+            {
+                this->checkFileModifies();
+            }, MENGINE_DOCUMENT_FUNCTION );
+
+            ThreadMutexInterfacePtr fileModifyMutex = THREAD_SERVICE()
+                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+
+            m_fileModifyMutex = fileModifyMutex;
+
+            return true;
+        } );
+
+        SERVICE_LEAVE( ThreadServiceInterface, [this]()
+        {
+            Helper::destroySimpleThreadWorker( STRINGIZE_STRING_LOCAL( "FileModifyHook" ) );
+
+            m_fileModifyMutex = nullptr;
+        } );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FileService::_finalizeService()
     {
+        m_fileModifies.clear();
+
         m_defaultFileGroup = nullptr;
 
         for( HashtableFileGroups::const_reverse_iterator
@@ -180,15 +212,86 @@ namespace Mengine
         return m_defaultFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileService::setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda )
+    bool FileService::setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda )
     {
-        Char fullPath[MENGINE_MAX_PATH];
-        if( _fileGroup->getFullPath( _filePath, fullPath ) == false )
+        FileModifyDesc desc;
+
+        desc.fileGroup = _fileGroup;
+        desc.filePath = _filePath;
+        desc.stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, true, MENGINE_DOCUMENT_FUNCTION );        
+
+        desc.lambda = _lambda;
+
+        if( desc.stream->time( &desc.time ) == false )
         {
-            return;
+            return false;
         }
 
-        _lambda();
+        desc.modify = false;
+
+        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+
+        m_fileModifies.emplace_back( desc );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void FileService::removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+
+        for( VectorFileModifyDesc::iterator
+            it = m_fileModifies.begin(),
+            it_end = m_fileModifies.end();
+            it != it_end;
+            ++it )
+        {
+            const FileModifyDesc & desc = *it;
+
+            if( desc.fileGroup != _fileGroup || desc.filePath != _filePath )
+            {
+                continue;
+            }
+
+            *it = m_fileModifies.back();
+            m_fileModifies.pop_back();
+
+            break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileService::notifyFileModifies() const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+
+        for( const FileModifyDesc & desc : m_fileModifies )
+        {
+            if( desc.modify == false )
+            {
+                continue;
+            }
+
+            desc.modify = false;
+            desc.lambda();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FileService::checkFileModifies() const
+    {
+        MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
+
+        for( const FileModifyDesc & desc : m_fileModifies )
+        {
+            uint64_t time;
+            desc.stream->time( &time );
+
+            if( desc.time == time )
+            {
+                continue;
+            }
+
+            desc.time = time;
+            desc.modify = true;
+        }
+    }
 }

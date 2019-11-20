@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Interface/FileServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
+
+#include "Config/Vector.h"
+#include "Config/Atomic.h"
 
 namespace Mengine
 {
@@ -33,12 +37,35 @@ namespace Mengine
         const FileGroupInterfacePtr & getDefaultFileGroup() const override;
 
     public:
-        void setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) override;
+        bool setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) override;
+        void removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
+
+    protected:
+        void notifyFileModifies() const;
+        void checkFileModifies() const;
 
     protected:
         FileGroupInterfacePtr m_defaultFileGroup;
 
         typedef Hashtable<ConstString, FileGroupInterfacePtr> HashtableFileGroups;
         HashtableFileGroups m_fileGroups;
+
+        ThreadMutexInterfacePtr m_fileModifyMutex;
+
+        struct FileModifyDesc
+        {
+            FileGroupInterfacePtr fileGroup;
+            FilePath filePath;
+
+            InputStreamInterfacePtr stream;
+
+            LambdaFileModifyHook lambda;
+
+            mutable uint64_t time;
+            mutable bool modify;
+        };
+
+        typedef Vector<FileModifyDesc> VectorFileModifyDesc;
+        VectorFileModifyDesc m_fileModifies;
     };
 }

@@ -29,7 +29,7 @@ namespace Mengine
 
         bool streamable = _resource->isStreamable();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

@@ -26,7 +26,8 @@ namespace Mengine
 
     public:
         typedef Lambda<void()> LambdaFileModifyHook;
-        virtual void setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) = 0;
+        virtual bool setFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const LambdaFileModifyHook & _lambda ) = 0;
+        virtual void removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

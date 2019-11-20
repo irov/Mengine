@@ -179,13 +179,13 @@ namespace Mengine
         return stream;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
+    bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming );
+        bool result = file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming, _share );
 
         MENGINE_ASSERTION_RETURN( result == true, false, "failed open file '%s':'%s'"
             , m_folderPath.c_str()

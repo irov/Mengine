@@ -24,7 +24,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
         const FilePath & filePath = content->getFilePath();
 
-        m_buffer = Helper::createMemoryFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FACTORABLE );
+        m_buffer = Helper::createMemoryFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

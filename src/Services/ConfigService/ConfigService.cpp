@@ -74,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, _doc );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid open config '%s'"
             , _filePath.c_str()
@@ -100,7 +100,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, _doc );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "invalid open config '%s'"
             , _filePath.c_str()

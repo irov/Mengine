@@ -321,6 +321,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
+        SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( OptionsService );
         SERVICE_CREATE( FactoryService );
         SERVICE_CREATE( SecureService );
@@ -421,7 +422,6 @@ namespace Mengine
         SERVICE_CREATE( PrefetcherService );
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
-        SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( ChronometerService );
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( EasingService );
@@ -443,7 +443,6 @@ namespace Mengine
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
         SERVICE_CREATE( TimepipeService );
-        SERVICE_CREATE( EnumeratorService );
 
         return true;
     }

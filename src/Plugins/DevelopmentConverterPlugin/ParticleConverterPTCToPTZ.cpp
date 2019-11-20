@@ -48,7 +48,7 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
         FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
 
-        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_cache, false );
 

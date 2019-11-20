@@ -153,7 +153,7 @@ namespace Mengine
 
         if( options.fileGroup->existFile( options.outputFilePath, true ) == true )
         {
-            InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( options.fileGroup, options.inputFilePath, false, _doc );
+            InputStreamInterfacePtr oldFile = Helper::openInputStreamFile( options.fileGroup, options.inputFilePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( oldFile, false, "converter '%s' can't open input file '%s:%s' (time)"
                 , _converter.c_str()
@@ -162,11 +162,11 @@ namespace Mengine
             );
 
             uint64_t fileTimeInput;
-            oldFile->time( fileTimeInput );
+            oldFile->time( &fileTimeInput );
 
             oldFile = nullptr;
 
-            InputStreamInterfacePtr newFile = Helper::openInputStreamFile( options.fileGroup, options.outputFilePath, false, _doc );
+            InputStreamInterfacePtr newFile = Helper::openInputStreamFile( options.fileGroup, options.outputFilePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( newFile, false, "converter '%s' can't open output file '%s:%s' (time)"
                 , _converter.c_str()
@@ -175,7 +175,7 @@ namespace Mengine
             );
 
             uint64_t fileTimeOutput;
-            newFile->time( fileTimeOutput );
+            newFile->time( &fileTimeOutput );
 
             if( fileTimeInput <= fileTimeOutput )
             {

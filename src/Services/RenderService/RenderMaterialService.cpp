@@ -663,7 +663,7 @@ namespace Mengine
         }
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, _doc );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
@@ -709,7 +709,7 @@ namespace Mengine
         }
 #endif
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, _doc );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, outFilePath, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 

@@ -267,34 +267,47 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_thread_updateWorker( ThreadJobWorkerDesc & desc )
     {
-        if( desc.status != ETS_DONE )
-        {
-            return;
-        }
-
-        bool successful = false;
         ThreadWorkerInterfacePtr worker;
         uint32_t id = 0;
 
         desc.mutex->lock();
 
-        if( desc.status == ETS_DONE )
+        EThreadStatus status = desc.status;
+
+        switch( status )
         {
-            worker = desc.worker;
-            id = desc.id;
+        case ETS_DONE:
+            {
+                worker = desc.worker;
+                id = desc.id;
 
-            desc.worker = nullptr;
-            desc.id = 0;
-            desc.status = ETS_FREE;
-
-            successful = true;
+                desc.worker = nullptr;
+                desc.id = 0;
+                desc.status = ETS_FREE;
+            }break;
+        case ETS_WORK:
+            {
+                worker = desc.worker;
+                id = desc.id;
+            }break;
+        default:
+            break;
         }
 
         desc.mutex->unlock();
 
-        if( successful == true )
+        switch( status )
         {
-            worker->onDone( id );
+        case ETS_WORK:
+            {
+                worker->onUpdate( id );
+            }break;
+        case ETS_DONE:
+            {
+                worker->onDone( id );
+            }break;
+        default:
+            break;
         }
     }
     //////////////////////////////////////////////////////////////////////////

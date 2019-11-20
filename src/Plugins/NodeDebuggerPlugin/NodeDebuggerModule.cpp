@@ -114,6 +114,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::onUpdate( uint32_t _id )
+    {
+        MENGINE_UNUSED( _id );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::onWork( uint32_t )
     {
         switch( m_serverState )

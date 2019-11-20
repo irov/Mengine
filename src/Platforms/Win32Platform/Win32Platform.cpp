@@ -2252,13 +2252,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32Platform::getFileTime( const Char * _path ) const
-    {
-        MENGINE_UNUSED( _path );
-
-        return 0U;
-    }
-    //////////////////////////////////////////////////////////////////////////
     DateTimeProviderInterfacePtr Win32Platform::createDateTimeProvider( const Char * _doc )
     {
         Win32DateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );

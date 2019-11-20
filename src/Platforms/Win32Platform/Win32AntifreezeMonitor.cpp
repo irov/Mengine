@@ -92,6 +92,11 @@ namespace Mengine
         m_refalive++;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32AntifreezeMonitor::onUpdate( uint32_t _id )
+    {
+        MENGINE_UNUSED( _id );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32AntifreezeMonitor::onWork( uint32_t _id )
     {
         MENGINE_UNUSED( _id );

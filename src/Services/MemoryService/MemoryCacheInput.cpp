@@ -148,7 +148,7 @@ namespace Mengine
         return distance;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MemoryCacheInput::time( uint64_t & _time ) const
+    bool MemoryCacheInput::time( uint64_t * _time ) const
     {
         MENGINE_UNUSED( _time );
 

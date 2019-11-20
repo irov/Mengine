@@ -40,7 +40,7 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
         FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
 
-        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
             , m_options.inputFilePath.c_str()

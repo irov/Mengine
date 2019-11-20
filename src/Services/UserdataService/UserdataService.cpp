@@ -114,7 +114,7 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.category, desc.path, false, _doc );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.category, desc.path, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "data '%s' invalid open file '%s'"
             , _name.c_str()

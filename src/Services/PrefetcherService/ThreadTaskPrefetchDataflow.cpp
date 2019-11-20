@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskPrefetchDataflow::_onMain()
     {
-        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
+        if( m_realFileGroup->openInputFile( m_filePath, m_stream, 0, 0, false, false ) == false )
         {
             LOGGER_ERROR( "invalide open file '%s':'%s'"
                 , this->getFileGroup()->getName().c_str()

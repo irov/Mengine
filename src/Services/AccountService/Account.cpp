@@ -316,7 +316,7 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullpath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullpath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
             , m_id.c_str()

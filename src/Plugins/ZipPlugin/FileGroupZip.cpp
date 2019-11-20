@@ -104,7 +104,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::loadHeader_()
     {
-        InputStreamInterfacePtr zipFile = Helper::openInputStreamFile( m_baseFileGroup, m_folderPath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr zipFile = Helper::openInputStreamFile( m_baseFileGroup, m_folderPath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( zipFile, false, "can't open input stream for path '%s'"
             , m_folderPath.c_str()
@@ -423,7 +423,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
+    bool FileGroupZip::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "zip '%s' file '%s' stream is NULL"
             , m_folderPath.c_str()
@@ -458,7 +458,7 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true ) == false )
+            if( m_baseFileGroup->openInputFile( m_folderPath, _stream, file_offset, file_size, true, _share ) == false )
             {
                 LOGGER_ERROR( "zip '%s' file '%s' invalid open range %d:%d"
                     , m_folderPath.c_str()

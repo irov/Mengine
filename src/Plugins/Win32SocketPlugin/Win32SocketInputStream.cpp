@@ -68,7 +68,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketInputStream::time( uint64_t & _time ) const
+    bool Win32SocketInputStream::time( uint64_t * _time ) const
     {
         MENGINE_UNUSED( _time );
 

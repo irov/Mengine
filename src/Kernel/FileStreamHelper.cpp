@@ -8,7 +8,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        InputStreamInterfacePtr openInputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _streaming, const Char * _doc )
+        InputStreamInterfacePtr openInputStreamFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _streaming, bool _share, const Char * _doc )
         {
             FileGroupInterface * realFileGroup;
             InputStreamInterfacePtr file = _fileGroup->createInputFile( _filePath, _streaming, &realFileGroup, _doc );
@@ -18,7 +18,7 @@ namespace Mengine
                 , _filePath.c_str()
             );
 
-            if( realFileGroup->openInputFile( _filePath, file, 0, 0, _streaming ) == false )
+            if( realFileGroup->openInputFile( _filePath, file, 0, 0, _streaming, _share ) == false )
             {
                 LOGGER_ERROR( "can't open input file '%s:%s'"
                     , _fileGroup->getName().c_str()

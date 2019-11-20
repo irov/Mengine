@@ -113,9 +113,6 @@ namespace Mengine
         bool createDirectory_( const WChar * _filePath );
 
     public:
-        uint64_t getFileTime( const Char * _filePath ) const override;
-
-    public:
         DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
 
     public:

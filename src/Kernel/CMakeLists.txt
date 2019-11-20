@@ -281,6 +281,8 @@ ThreadTask
     ThreadJob.cpp
 	ThreadTaskPacket.h
 	ThreadTaskPacket.cpp
+    ThreadHelper.h
+    ThreadHelper.cpp
 )
 
 ADD_FILTER(

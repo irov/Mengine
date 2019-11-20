@@ -26,6 +26,11 @@ namespace Mengine
         return m_done;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ThreadWorkerSoundBufferUpdate::onUpdate( uint32_t _id )
+    {
+        MENGINE_UNUSED( _id );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadWorkerSoundBufferUpdate::onWork( uint32_t _id )
     {
         MENGINE_UNUSED( _id );

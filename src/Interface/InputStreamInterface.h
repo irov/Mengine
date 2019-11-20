@@ -18,7 +18,7 @@ namespace Mengine
         virtual bool eof() const = 0;
 
     public:
-        virtual bool time( uint64_t & _time ) const = 0;
+        virtual bool time( uint64_t * _time ) const = 0;
 
     public:
         virtual bool memory( void ** _memory, size_t * _size ) = 0;

@@ -21,9 +21,8 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
-#ifdef MENGINE_DEBUG
+        , m_share( 0 )
         , m_streaming( false )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -48,7 +47,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming )
+    bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
         MENGINE_UNUSED( _streaming );
 
@@ -57,10 +56,11 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
-        m_filePath = _filePath;
-
-        m_streaming = _streaming;
+        m_filePath = _filePath;        
 #endif
+
+        m_share = _share;
+        m_streaming = _streaming;
 
         WChar fullPath[MENGINE_MAX_PATH];
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
@@ -132,10 +132,17 @@ namespace Mengine
             , _filePath.c_str()
         );
 
+        DWORD sharedMode = FILE_SHARE_READ;
+
+        if( m_share == true )
+        {
+            sharedMode |= FILE_SHARE_WRITE | FILE_SHARE_DELETE;
+        }
+
         HANDLE hFile = Helper::Win32CreateFile(
             _fullPath, // file to open
             GENERIC_READ, // open for reading
-            FILE_SHARE_READ, // share for reading, exclusive for mapping
+            sharedMode, // share for reading, exclusive for mapping
             OPEN_EXISTING // existing file only
         );
 
@@ -411,7 +418,7 @@ namespace Mengine
         return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::time( uint64_t & _time ) const
+    bool Win32FileInputStream::time( uint64_t * _time ) const
     {
         FILETIME creation;
         FILETIME access;
@@ -430,7 +437,7 @@ namespace Mengine
 
         time_t time = s_FileTimeToUnixTime( &write );
 
-        _time = (uint64_t)time;
+        *_time = (uint64_t)time;
 
         return true;
     }

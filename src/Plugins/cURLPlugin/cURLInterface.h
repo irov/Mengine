@@ -46,12 +46,12 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void onResponse( const cURLSourceInterfacePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const cURLSourceInterfacePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdaTaskReceiver;
+    typedef Lambda<void( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )> LambdaTaskReceiver;
     //////////////////////////////////////////////////////////////////////////
     class cURLTaskReceiverF
         : public cURLTaskReceiverInterface
@@ -67,7 +67,7 @@ namespace Mengine
         }
 
     protected:
-        MENGINE_INLINE void onResponse( const cURLSourceInterfacePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
+        MENGINE_INLINE void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
         {
             m_f( _source, _status, _error, _response, _code, _successful );
         }
@@ -80,24 +80,30 @@ namespace Mengine
         : public ServantInterface
     {
     protected:
-        virtual void addHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
+        virtual void addHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _lambda ) = 0;
         virtual void addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
         virtual void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
 
     public:
-        MENGINE_INLINE void addHttpGet( const String & _url, int32_t _timeout, const LambdaTaskReceiver & _receiver )
+        MENGINE_INLINE void addHttpGet( const String & _url, int32_t _timeout, const LambdaTaskReceiver & _lambda )
         {
-            this->addHttpGet( _url, _timeout, Helper::makeFactorableUnique<cURLTaskReceiverF>( _receiver ) );
+            cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
+
+            this->addHttpGet( _url, _timeout, receiver );
         }
 
-        MENGINE_INLINE void addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const LambdaTaskReceiver & _receiver )
+        MENGINE_INLINE void addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const LambdaTaskReceiver & _lambda )
         {
-            this->addHttpHeaderData( _url, _headers, _data, _timeout, Helper::makeFactorableUnique<cURLTaskReceiverF>( _receiver ) );
+            cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
+
+            this->addHttpHeaderData( _url, _headers, _data, _timeout, receiver );
         }
 
-        MENGINE_INLINE void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const LambdaTaskReceiver & _receiver )
+        MENGINE_INLINE void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const LambdaTaskReceiver & _lambda )
         {
-            this->addHttpPost( _url, _params, _timeout, Helper::makeFactorableUnique<cURLTaskReceiverF>( _receiver ) );
+            cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
+
+            this->addHttpPost( _url, _params, _timeout, receiver );
         }
     };
     //////////////////////////////////////////////////////////////////////////

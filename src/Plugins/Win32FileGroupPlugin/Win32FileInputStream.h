@@ -66,8 +66,8 @@ namespace Mengine
         FilePath m_filePath;
 #endif
 
-        bool m_share;
         bool m_streaming;
+        bool m_share;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32FileInputStream> Win32FileInputStreamPtr;

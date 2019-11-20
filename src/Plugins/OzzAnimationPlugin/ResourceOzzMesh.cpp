@@ -32,7 +32,7 @@ namespace Mengine
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FACTORABLE );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, m_filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false );
 

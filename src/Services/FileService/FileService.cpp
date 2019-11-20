@@ -216,16 +216,12 @@ namespace Mengine
     {
         FileModifyDesc desc;
 
-        desc.fileGroup = _fileGroup;
-        desc.filePath = _filePath;
-        desc.stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, true, MENGINE_DOCUMENT_FUNCTION );        
+        _fileGroup->getFullPath( _filePath, desc.fullPath );
 
         desc.lambda = _lambda;
 
-        if( desc.stream->time( &desc.time ) == false )
-        {
-            return false;
-        }
+        desc.time = PLATFORM_SERVICE()
+            ->getFileTime( desc.fullPath );
 
         desc.modify = false;
 
@@ -238,6 +234,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileService::removeFileModifyHook( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
+        Char fullPath[MENGINE_MAX_PATH];
+        _fileGroup->getFullPath( _filePath, fullPath );
+
         MENGINE_THREAD_MUTEX_SCOPE( m_fileModifyMutex );
 
         for( VectorFileModifyDesc::iterator
@@ -248,7 +247,7 @@ namespace Mengine
         {
             const FileModifyDesc & desc = *it;
 
-            if( desc.fileGroup != _fileGroup || desc.filePath != _filePath )
+            if( strcmp( desc.fullPath, fullPath ) != 0 )
             {
                 continue;
             }
@@ -282,8 +281,8 @@ namespace Mengine
 
         for( const FileModifyDesc & desc : m_fileModifies )
         {
-            uint64_t time;
-            desc.stream->time( &time );
+            uint64_t time = PLATFORM_SERVICE()
+                ->getFileTime( desc.fullPath );
 
             if( desc.time == time )
             {

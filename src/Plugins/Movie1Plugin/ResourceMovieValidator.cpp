@@ -114,7 +114,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

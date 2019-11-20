@@ -2252,6 +2252,83 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
+    {
+        uint32_t a2 = filetime->dwHighDateTime;
+        uint32_t a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
+        uint32_t a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
+
+        uint32_t carry;
+
+        if( a0 >= 32768 )
+            a0 -= 32768, carry = 0;
+        else
+            a0 += (1 << 16) - 32768, carry = 1;
+
+        if( a1 >= 54590 + carry )
+            a1 -= 54590 + carry, carry = 0;
+        else
+            a1 += (1 << 16) - 54590 - carry, carry = 1;
+
+        a2 -= 27111902 + carry;
+
+        int32_t negative = (a2 >= ((uint32_t)1) << 31);
+
+        if( negative )
+        {
+            a0 = 0xffff - a0;
+            a1 = 0xffff - a1;
+            a2 = ~a2;
+        }
+
+        a1 += (a2 % 10000) << 16;
+        a2 /= 10000;
+        a0 += (a1 % 10000) << 16;
+        a1 /= 10000;
+        a0 /= 10000;
+
+        a1 += (a2 % 1000) << 16;
+        a2 /= 1000;
+        a0 += (a1 % 1000) << 16;
+        a1 /= 1000;
+        a0 /= 1000;
+
+        if( negative )
+        {
+            a0 = 0xffff - a0;
+            a1 = 0xffff - a1;
+            a2 = ~a2;
+        }
+
+        return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint64_t Win32Platform::getFileTime( const Char * _filePath ) const
+    {
+        WChar unicode_filePath[MENGINE_MAX_PATH];
+        Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
+
+        HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
+            OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+
+        FILETIME creation;
+        FILETIME access;
+        FILETIME write;
+
+        if( ::GetFileTime( handle, &creation, &access, &write ) == FALSE )
+        {
+            ::CloseHandle( handle );
+
+            return 0U;
+        }
+
+        time_t time = s_FileTimeToUnixTime( &write );
+
+        ::CloseHandle( handle );
+
+        return time;
+    }
+    //////////////////////////////////////////////////////////////////////////
     DateTimeProviderInterfacePtr Win32Platform::createDateTimeProvider( const Char * _doc )
     {
         Win32DateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );

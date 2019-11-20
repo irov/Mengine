@@ -22,9 +22,8 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
-#ifdef MENGINE_DEBUG
         , m_streaming( false )
-#endif
+        , m_share( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -49,7 +48,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming )
+    bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share )
     {
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
@@ -57,9 +56,10 @@ namespace Mengine
         m_relationPath = _relationPath;
         m_folderPath = _folderPath;
         m_filePath = _filePath;
+#endif
 
         m_streaming = _streaming;
-#endif
+        m_share = _share;
 
         Char fullPath[MENGINE_MAX_PATH];
         if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
@@ -349,9 +349,8 @@ namespace Mengine
         return (m_reading - m_capacity + m_carriage) == m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::time( uint64_t & _time ) const
+    bool SDLFileInputStream::time( uint64_t * _time ) const
     {
-#ifdef MENGINE_DEBUG
         Char filePath[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
         {
@@ -366,12 +365,9 @@ namespace Mengine
         uint64_t ft = PLATFORM_SERVICE()
             ->getFileTime( filePath );
 
-        _time = ft;
+        *_time = ft;
+
         return true;
-#else
-        _time = 0;
-        return false;
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::memory( void ** _memory, size_t * _size )

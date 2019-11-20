@@ -21,7 +21,7 @@ namespace Mengine
         ~SDLFileInputStream() override;
 
     public:
-        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming ) override;
+        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming, bool _share ) override;
 
     public:
         size_t read( void * _buf, size_t _count ) override;
@@ -32,7 +32,7 @@ namespace Mengine
         bool eof() const override;
 
     public:
-        bool time( uint64_t & _time ) const override;
+        bool time( uint64_t * _time ) const override;
 
     public:
         bool memory( void ** _memory, size_t * _size ) override;
@@ -61,9 +61,10 @@ namespace Mengine
         FilePath m_relationPath;
         FilePath m_folderPath;
         FilePath m_filePath;
+#endif
 
         bool m_streaming;
-#endif
+        bool m_share;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SDLFileInputStream> SDLFileInputStreamPtr;

@@ -108,6 +108,9 @@ namespace Mengine
     public:
         bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const override;
 
+    public:
+        uint64_t getFileTime( const Char * _filePath ) const override;
+
     protected:
         bool existFile_( const WChar * _filePath );
         bool createDirectory_( const WChar * _filePath );

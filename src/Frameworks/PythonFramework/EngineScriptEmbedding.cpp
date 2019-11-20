@@ -1231,7 +1231,7 @@ namespace Mengine
                 const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                     ->getFileGroup( _fileGroupName );
 
-                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, MENGINE_DOCUMENT_PYBIND );
+                InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
@@ -1500,7 +1500,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
 
@@ -1749,7 +1749,7 @@ namespace Mengine
             const FilePath & filePath = content->getFilePath();
             const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, MENGINE_DOCUMENT_PYBIND );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
             if( stream == nullptr )
             {

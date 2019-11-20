@@ -21,8 +21,8 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
-        , m_share( 0 )
         , m_streaming( false )
+        , m_share( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -355,19 +355,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
-        uint32_t a0;			/* 16 bit, low    bits */
-        uint32_t a1;			/* 16 bit, medium bits */
-        uint32_t a2;			/* 32 bit, high   bits */
+        uint32_t a2 = filetime->dwHighDateTime;
+        uint32_t a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
+        uint32_t a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
 
-        uint32_t carry;		/* carry bit for subtraction */
-        int32_t negative;		/* whether a represents a negative value */
+        uint32_t carry;
 
-        /* Copy the time values to a2/a1/a0 */
-        a2 = filetime->dwHighDateTime;
-        a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
-        a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
-
-        /* Subtract the time difference */
         if( a0 >= 32768 )
             a0 -= 32768, carry = 0;
         else
@@ -380,18 +373,15 @@ namespace Mengine
 
         a2 -= 27111902 + carry;
 
-        /* If a is negative, replace a by (-1-a) */
-        negative = (a2 >= ((uint32_t)1) << 31);
+        int32_t negative = (a2 >= ((uint32_t)1) << 31);
+
         if( negative )
         {
-            /* Set a to -a - 1 (a is a2/a1/a0) */
             a0 = 0xffff - a0;
             a1 = 0xffff - a1;
             a2 = ~a2;
         }
 
-        /* Divide a by 10000000 (a = a2/a1/a0), put the rest into r.
-        Split the divisor into 10000 * 1000 which are both less than 0xffff. */
         a1 += (a2 % 10000) << 16;
         a2 /= 10000;
         a0 += (a1 % 10000) << 16;
@@ -404,17 +394,13 @@ namespace Mengine
         a1 /= 1000;
         a0 /= 1000;
 
-        /* If a was negative, replace a by (-1-a) and r by (9999999 - r) */
         if( negative )
         {
-            /* Set a to -a - 1 (a is a2/a1/a0) */
             a0 = 0xffff - a0;
             a1 = 0xffff - a1;
             a2 = ~a2;
         }
 
-        /* Do not replace this by << 32, it gives a compiler warning and it does
-        not work. */
         return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
     }
     //////////////////////////////////////////////////////////////////////////

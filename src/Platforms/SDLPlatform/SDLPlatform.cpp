@@ -1341,7 +1341,7 @@ namespace Mengine
         WChar unicode_filePath[MENGINE_MAX_PATH];
         Helper::utf8ToUnicode( _filePath, unicode_filePath, MENGINE_MAX_PATH );
 
-        HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ, NULL,
+        HANDLE handle = ::CreateFile( unicode_filePath, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, NULL,
             OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
 
         FILETIME creation;

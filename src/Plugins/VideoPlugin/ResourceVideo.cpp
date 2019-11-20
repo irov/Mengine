@@ -71,7 +71,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
         const FilePath & filePath = this->getFilePath();
 
-        InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, _doc );
+        InputStreamInterfacePtr videoStream = Helper::openInputStreamFile( fileGroup, filePath, true, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( videoStream, nullptr, "group '%s' name '%s' can't open video file '%s'"
             , this->getGroupName().c_str()

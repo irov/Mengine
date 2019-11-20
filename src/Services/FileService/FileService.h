@@ -54,10 +54,7 @@ namespace Mengine
 
         struct FileModifyDesc
         {
-            FileGroupInterfacePtr fileGroup;
-            FilePath filePath;
-
-            InputStreamInterfacePtr stream;
+            Char fullPath[MENGINE_MAX_PATH];
 
             LambdaFileModifyHook lambda;
 

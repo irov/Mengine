@@ -115,6 +115,9 @@ namespace Mengine
         virtual bool findFiles( const Char * _base, const Char * _path, const Char * _mask, const LambdaFilePath & _lambda ) const = 0;
 
     public:
+        virtual uint64_t getFileTime( const Char * _filePath ) const = 0;
+
+    public:
         virtual DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) = 0;
 
     public:

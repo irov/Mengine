@@ -105,10 +105,10 @@ namespace Mengine
 
         IntrusiveSlugListNodeChild m_children;
 
-    private:
+    protected:
         void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
 
-    private:
+    protected:
         void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );
 
@@ -126,7 +126,7 @@ namespace Mengine
     public:
         void visitChildren( const VisitorPtr & _visitor );
 
-    public:
+    protected:
         void removeRelationRender_();
 
     protected:
@@ -134,9 +134,10 @@ namespace Mengine
         void foreachRenderCloseChildren_( const LambdaRenderCloseChildren & _lambda );
         void foreachRenderReverseCloseChildren_( const LambdaRenderCloseChildren & _lambda );
 
-    public:
+    protected:
         void removeRelationPicker_();
 
+    protected:
         typedef const Lambda<void( PickerInterface * )> LambdaPickerCloseChildren;
         void foreachPickerCloseChildren_( const LambdaPickerCloseChildren & _lambda );
         void foreachPickerReverseCloseChildren_( const LambdaPickerCloseChildren & _lambda );

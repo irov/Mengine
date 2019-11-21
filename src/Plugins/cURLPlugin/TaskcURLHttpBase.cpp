@@ -26,11 +26,11 @@ namespace Mengine
         }
 
     protected:
-        void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
+        void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override
         {
             GOAP::SourceInterfacePtr source = m_node->makeSource();
 
-            m_receiver->onResponse( source, _status, _error, _response, _code, _successful );
+            m_receiver->onResponse( source, _status, _error, _headers, _response, _code, _successful );
             m_receiver = nullptr;
 
             const GOAP::SourceProviderInterfacePtr & provider = source->getSourceProvider();
@@ -54,9 +54,11 @@ namespace Mengine
         cURLTaskReceiverInterfacePtr m_receiver;
     };
     //////////////////////////////////////////////////////////////////////////
-    TaskcURLHttpBase::TaskcURLHttpBase( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
+    TaskcURLHttpBase::TaskcURLHttpBase( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver )
         : m_url( _url )
+        , m_headers( _headers )
         , m_timeout( _timeout )
+        , m_receiveHeaders( _receiveHeaders )
         , m_receiver( _receiver )
         , m_requestId( 0 )
     {

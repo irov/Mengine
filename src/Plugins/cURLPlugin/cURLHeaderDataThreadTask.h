@@ -13,15 +13,13 @@ namespace Mengine
         ~cURLHeaderDataThreadTask() override;
 
     public:
-        bool initialize( const String & _url, const VectorString & _headers, const String & _data );
+        bool initialize( const String & _data );
 
     protected:
         void _onCURL( CURL * _curl ) override;
         void _onCURLCleanup( CURL * _curl ) override;
 
-    protected:
-        String m_url;
-        VectorString m_headers;
+    protected:        
         String m_data;
 
         struct curl_slist * m_curl_header_list;

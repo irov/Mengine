@@ -20,15 +20,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLGetAssetThreadTask::initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
+    bool cURLGetAssetThreadTask::initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
     {
-        m_url = _url;
         m_login = _login;
         m_password = _password;
         m_fileGroup = _fileGroup;
         m_filePath = _filepath;
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool cURLGetAssetThreadTask::_onRun()

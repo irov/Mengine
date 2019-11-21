@@ -19,6 +19,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef uint32_t HttpRequestID;
     //////////////////////////////////////////////////////////////////////////
+    typedef VectorString cURLHeaders;
+    //////////////////////////////////////////////////////////////////////////
     struct cURLPostParam
     {
         String key;
@@ -31,7 +33,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLReceiverInterface> cURLReceiverInterfacePtr;
@@ -46,12 +48,12 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )> LambdaTaskReceiver;
+    typedef Lambda<void( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )> LambdaTaskReceiver;
     //////////////////////////////////////////////////////////////////////////
     class cURLTaskReceiverF
         : public cURLTaskReceiverInterface
@@ -67,9 +69,9 @@ namespace Mengine
         }
 
     protected:
-        MENGINE_INLINE void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
+        MENGINE_INLINE void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override
         {
-            m_f( _source, _status, _error, _response, _code, _successful );
+            m_f( _source, _status, _error, _headers, _response, _code, _successful );
         }
 
     protected:
@@ -80,30 +82,30 @@ namespace Mengine
         : public ServantInterface
     {
     protected:
-        virtual void addHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _lambda ) = 0;
-        virtual void addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
-        virtual void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
+        virtual void addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _lambda ) = 0;
+        virtual void addHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
+        virtual void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
 
     public:
-        MENGINE_INLINE void addHttpGet( const String & _url, int32_t _timeout, const LambdaTaskReceiver & _lambda )
+        MENGINE_INLINE void addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda )
         {
             cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
 
-            this->addHttpGet( _url, _timeout, receiver );
+            this->addHttpGet( _url, _headers, _timeout, _receiveHeaders, receiver );
         }
 
-        MENGINE_INLINE void addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const LambdaTaskReceiver & _lambda )
+        MENGINE_INLINE void addHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const LambdaTaskReceiver & _lambda )
         {
             cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
 
-            this->addHttpHeaderData( _url, _headers, _data, _timeout, receiver );
+            this->addHttpHeaderData( _url, _headers, _timeout, _receiveHeaders, _data, receiver );
         }
 
-        MENGINE_INLINE void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const LambdaTaskReceiver & _lambda )
+        MENGINE_INLINE void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const LambdaTaskReceiver & _lambda )
         {
             cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
 
-            this->addHttpPost( _url, _params, _timeout, receiver );
+            this->addHttpPost( _url, _headers, _timeout, _receiveHeaders, _params, receiver );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -115,9 +117,9 @@ namespace Mengine
         SERVICE_DECLARE( "cURLService" );
 
     public:
-        virtual HttpRequestID getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID postMessage( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:
         virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) = 0;

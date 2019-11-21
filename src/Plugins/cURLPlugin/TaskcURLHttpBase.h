@@ -12,7 +12,7 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        TaskcURLHttpBase( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver );
+        TaskcURLHttpBase( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver );
         ~TaskcURLHttpBase() override;
 
     protected:
@@ -26,7 +26,10 @@ namespace Mengine
 
     protected:
         String m_url;
+        cURLHeaders m_headers;
+
         int32_t m_timeout;
+        bool m_receiveHeaders;
 
         cURLTaskReceiverInterfacePtr m_receiver;
 

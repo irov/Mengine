@@ -25,19 +25,19 @@ namespace Mengine
         return m_source;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLSource::addHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
+    void cURLSource::addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver )
     {
-        m_source->addTask<TaskcURLHttpGet>( _url, _timeout, _receiver );
+        m_source->addTask<TaskcURLHttpGet>( _url, _headers, _timeout, _receiveHeaders, _receiver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLSource::addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
+    void cURLSource::addHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLTaskReceiverInterfacePtr & _receiver )
     {
-        m_source->addTask<TaskcURLHttpHeaderData>( _url, _headers, _data, _timeout, _receiver );
+        m_source->addTask<TaskcURLHttpHeaderData>( _url, _headers, _timeout, _receiveHeaders, _data, _receiver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLSource::addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
+    void cURLSource::addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver )
     {
-        m_source->addTask<TaskcURLHttpPost>( _url, _params, _timeout, _receiver );
+        m_source->addTask<TaskcURLHttpPost>( _url, _headers, _timeout, _receiveHeaders, _params, _receiver );
     }
     //////////////////////////////////////////////////////////////////////////
 }

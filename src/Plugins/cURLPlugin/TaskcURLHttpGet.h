@@ -8,7 +8,7 @@ namespace Mengine
         : public TaskcURLHttpBase
     {
     public:
-        TaskcURLHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver );
+        TaskcURLHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver );
         ~TaskcURLHttpGet() override;
 
     protected:

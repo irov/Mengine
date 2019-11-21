@@ -39,8 +39,10 @@ namespace Mengine
             }
 
         protected:
-            void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
+            void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override
             {
+                MENGINE_UNUSED( _headers );
+
                 m_cb.call_args( _id, _status, _error, _response, _code, _successful, m_args );
             }
 
@@ -98,7 +100,7 @@ namespace Mengine
         }
 
         HttpRequestID id = CURL_SERVICE()
-            ->postMessage( _url, params, _timeout, receiver );
+            ->postMessage( _url, {}, _timeout, false, params, receiver );
 
         return id;
     }
@@ -112,7 +114,7 @@ namespace Mengine
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->headerData( _url, _headers, _data, _timeout, receiver );
+            ->headerData( _url, _headers, _timeout, false, _data, receiver );
 
         return id;
     }
@@ -126,7 +128,7 @@ namespace Mengine
         receiver->initialize( _cb, _args );
 
         HttpRequestID id = CURL_SERVICE()
-            ->getMessage( _url, _timeout, receiver );
+            ->getMessage( _url, {}, _timeout, false, receiver );
 
         return id;
     }

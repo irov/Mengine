@@ -163,7 +163,7 @@ namespace Mengine
     protected:
         void _invalidateWorldMatrix() override;
 
-    public:
+    protected:
         bool compile() override;
         void release() override;
 

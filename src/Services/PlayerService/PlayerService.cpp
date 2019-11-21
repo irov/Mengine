@@ -288,7 +288,7 @@ namespace Mengine
     {
         if( m_arrow != nullptr )
         {
-            m_arrow->release();
+            m_arrow->disable();
 
             m_arrow->setRenderCamera( nullptr );
             m_arrow->setRenderViewport( nullptr );
@@ -387,19 +387,19 @@ namespace Mengine
 
         if( m_camera2D != nullptr )
         {
-            m_camera2D->release();
+            m_camera2D->disable();
             m_camera2D = nullptr;
         }
 
         if( m_viewport2D != nullptr )
         {
-            m_viewport2D->release();
+            m_viewport2D->disable();
             m_viewport2D = nullptr;
         }
 
         if( m_arrowCamera2D != nullptr )
         {
-            m_arrowCamera2D->release();
+            m_arrowCamera2D->disable();
             m_arrowCamera2D = nullptr;
         }
     }

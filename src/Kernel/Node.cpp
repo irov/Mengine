@@ -232,6 +232,13 @@ namespace Mengine
             return false;
         }
 
+        PickerInterface * picker = this->getPicker();
+
+        if( picker != nullptr )
+        {
+            picker->updatePickers();
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

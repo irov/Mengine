@@ -617,7 +617,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_addHomeless( Node * _node )
         {
-            _node->release();
+            _node->removeFromParent();
+            _node->disable();
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_isHomeless( Node * _node )
@@ -953,7 +954,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getHotSpotImageSize( const HotSpotImagePtr & _hotspotImage )
         {
-            if( _hotspotImage == 0 || _hotspotImage->isCompile() == false )
+            if( _hotspotImage == nullptr || _hotspotImage->isCompile() == false )
             {
                 return mt::vec2f( 0.f, 0.f );
             }
@@ -982,7 +983,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC_VOID( _node, "invalid take None object" );
 
             _node->removeFromParent();
-            _node->release();
+            _node->disable();
         }
         //////////////////////////////////////////////////////////////////////////
         NodePtr s_createNode( const ConstString & _type )

@@ -944,7 +944,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _movie1, false, "movie1 is NULL" );
             MENGINE_ASSERTION_MEMORY_PANIC( _movie2, false, "movie2 is NULL" );
 
-            if( _movie1->compile() == false )
+            if( _movie1->enable() == false )
             {
                 LOGGER_ERROR( "movie1 invalid compile"
                 );
@@ -952,7 +952,7 @@ namespace Mengine
                 return false;
             }
 
-            if( _movie2->compile() == false )
+            if( _movie2->enable() == false )
             {
                 LOGGER_ERROR( "movie2 invalid compile"
                 );
@@ -988,7 +988,7 @@ namespace Mengine
 
             HotSpotShapePtr shape1 = stdex::intrusive_static_cast<HotSpotShapePtr>(node1);
 
-            if( shape1->compile() == false )
+            if( shape1->enable() == false )
             {
                 LOGGER_ERROR( "movie1 '%s' socket shape '%s' invalid compile"
                     , _movie1->getName().c_str()
@@ -1000,7 +1000,7 @@ namespace Mengine
 
             HotSpotShapePtr shape2 = stdex::intrusive_static_cast<HotSpotShapePtr>(node2);
 
-            if( shape2->compile() == false )
+            if( shape2->enable() == false )
             {
                 LOGGER_ERROR( "movie2 '%s' socket shape '%s' invalid compile"
                     , _movie2->getName().c_str()
@@ -1041,7 +1041,7 @@ namespace Mengine
         {
             MENGINE_ASSERTION_MEMORY_PANIC( _movie, false, "movie is NULL" );
 
-            if( _movie->compile() == false )
+            if( _movie->enable() == false )
             {
                 LOGGER_ERROR( "movie invalid compile"
                 );
@@ -1064,7 +1064,7 @@ namespace Mengine
 
             HotSpotShapePtr shape = stdex::intrusive_static_cast<HotSpotShapePtr>(node);
 
-            if( shape->compile() == false )
+            if( shape->enable() == false )
             {
                 LOGGER_ERROR( "movie '%s' socket shape '%s' invalid compile"
                     , _movie->getName().c_str()

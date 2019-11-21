@@ -286,7 +286,7 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, (destroyScene) );
 
-            destroyScene->release();
+            destroyScene->disable();
             destroyScene->onDestroy();
             destroyScene = nullptr;
 

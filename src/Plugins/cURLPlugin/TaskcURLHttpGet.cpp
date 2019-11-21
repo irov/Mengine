@@ -5,8 +5,8 @@
 namespace Mengine
 {    
     //////////////////////////////////////////////////////////////////////////
-    TaskcURLHttpGet::TaskcURLHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver )
-        : TaskcURLHttpBase( _url, _timeout, _receiver )
+    TaskcURLHttpGet::TaskcURLHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver )
+        : TaskcURLHttpBase( _url, _headers, _timeout, _receiveHeaders, _receiver )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ namespace Mengine
         cURLReceiverInterfacePtr receiver = this->createHttpReceiver_( _node );
 
         HttpRequestID requestId = CURL_SERVICE()
-            ->getMessage( m_url, m_timeout, receiver );
+            ->getMessage( m_url, m_headers, m_timeout, m_receiveHeaders, receiver );
 
         if( requestId == 0 )
         {

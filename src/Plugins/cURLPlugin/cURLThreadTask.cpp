@@ -61,13 +61,34 @@ namespace Mengine
     cURLThreadTask::cURLThreadTask()
         : m_id( 0 )
         , m_timeout( -1 )
-        , m_code( 0 )
-        , m_status( CURLE_OK )
+        , m_receiveHeaders( false )
+        , m_responseCode( 0 )
+        , m_responseStatus( CURLE_OK )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     cURLThreadTask::~cURLThreadTask()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::setURL( const String & _url )
+    {
+        m_url = _url;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & cURLThreadTask::getURL() const
+    {
+        return m_url;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::setHeaders( const cURLHeaders & _headers )
+    {
+        m_headers = _headers;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const cURLHeaders & cURLThreadTask::getHeaders() const
+    {
+        return m_headers;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setRequestId( HttpRequestID _id )
@@ -88,6 +109,16 @@ namespace Mengine
     int32_t cURLThreadTask::getTimeout() const
     {
         return m_timeout;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::setReceiveHeaders( bool _receiveHeaders )
+    {
+        m_receiveHeaders = _receiveHeaders;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool cURLThreadTask::getReceiveHeaders() const
+    {
+        return m_receiveHeaders;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setReceiver( const cURLReceiverInterfacePtr & _receiver )
@@ -137,13 +168,13 @@ namespace Mengine
 
         CURLcode status = curl_easy_perform( curl );
 
-        m_status = status;
-        m_error = errorbuf;
+        m_responseStatus = status;
+        m_responseError = errorbuf;
 
         long http_code = 0;
         CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
 
-        m_code = (uint32_t)http_code;
+        m_responseCode = (uint32_t)http_code;
 
         this->_onCURLCleanup( curl );
 
@@ -170,21 +201,44 @@ namespace Mengine
         return total;
     }
     //////////////////////////////////////////////////////////////////////////
+    static size_t s_writeRequestHeaderResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
+    {
+        cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
+        MENGINE_UNUSED( perfomer );
+
+        size_t total = size * nmemb;
+
+        perfomer->writeHeader( ptr, total );
+        
+        return total;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setupWriteResponse( CURL * _curl )
     {
         /* send all data to this function  */
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)this) );
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse) );
+
+        if( m_receiveHeaders == true )
+        {
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERDATA, (void *)this) );
+            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HEADERFUNCTION, &s_writeRequestHeaderResponse) );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::writeResponse( Char * _ptr, size_t _size )
     {
-        m_response.append( _ptr, _size );
+        m_responseData.append( _ptr, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::writeHeader( Char * _ptr, size_t _size )
+    {
+        m_responseHeaders.emplace_back( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::_onComplete( bool _successful )
     {
-        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_status, m_error, m_response, m_code, _successful );
+        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_responseStatus, m_responseError, m_responseHeaders, m_responseData, m_responseCode, _successful );
         m_receiver = nullptr;
     }
 }

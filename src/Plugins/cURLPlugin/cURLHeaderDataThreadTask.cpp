@@ -20,17 +20,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHeaderDataThreadTask::initialize( const String & _url, const VectorString & _headers, const String & _data )
+    bool cURLHeaderDataThreadTask::initialize( const String & _data )
     {
-        m_url = _url;
-        m_headers = _headers;
         m_data = _data;
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLHeaderDataThreadTask::_onCURL( CURL * _curl )
     {
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
+        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1) );
+
         struct curl_slist * curl_header_list = nullptr;
 
         if( m_headers.empty() == false )
@@ -47,12 +48,9 @@ namespace Mengine
             m_curl_header_list = curl_header_list;
         }
 
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
-
         const String::value_type * data_buffer = m_data.c_str();
         String::size_type data_size = m_data.size();
-
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1) );
+        
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );
 

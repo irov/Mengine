@@ -179,7 +179,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver )
     {
         if( this->isStopService() == true )
         {
@@ -194,10 +194,17 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
+        task->setURL( _url );
+        task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
+        task->setReceiveHeaders( _receiveHeaders );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
-        task->initialize( _url );
+        
+        if( task->initialize() == false )
+        {
+            return 0;
+        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -211,7 +218,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::postMessage( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver )
     {
         if( this->isStopService() == true )
         {
@@ -226,10 +233,17 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
+        task->setURL( _url );
+        task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
+        task->setReceiveHeaders( _receiveHeaders );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
-        task->initialize( _url, _params );
+        
+        if( task->initialize( _params ) == false )
+        {
+            return false;
+        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -243,7 +257,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver )
     {
         if( this->isStopService() == true )
         {
@@ -258,10 +272,17 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
+        task->setURL( _url );
+        task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
+        task->setReceiveHeaders( _receiveHeaders );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
-        task->initialize( _url, _headers, _data );
+        
+        if( task->initialize( _data ) == false )
+        {
+            return false;
+        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -301,10 +322,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
+        task->setURL( _url );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );
         task->setReceiver( Helper::makeIntrusivePtr( this ) );
-        task->initialize( _url, _login, _password, _fileGroup, _filePath );
+        
+        if( task->initialize( _login, _password, _fileGroup, _filePath ) == false )
+        {
+            return false;
+        }
 
         ReceiverDesc desc;
         desc.id = task_id;
@@ -355,7 +381,7 @@ namespace Mengine
         return curl_source;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )
+    void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )
     {
         for( VectorReceiverDesc::iterator
             it = m_receiverDescs.begin(),
@@ -377,7 +403,7 @@ namespace Mengine
 
             if( receiver != nullptr )
             {
-                receiver->onHttpRequestComplete( _id, _status, _error, _response, _code, _successful );
+                receiver->onHttpRequestComplete( _id, _status, _error, _headers, _response, _code, _successful );
             }
 
             return;

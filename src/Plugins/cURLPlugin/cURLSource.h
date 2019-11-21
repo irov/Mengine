@@ -27,9 +27,9 @@ namespace Mengine
         typedef Lambda<void( const cURLSourcePtr &, uint32_t, const String &, const String &, uint32_t, bool )> LambdacURLReceiver;
 
     public:
-        void addHttpGet( const String & _url, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) override;
-        void addHttpHeaderData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) override;
-        void addHttpPost( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLTaskReceiverInterfacePtr & _receiver ) override;
+        void addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _receiver ) override;
+        void addHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLTaskReceiverInterfacePtr & _receiver ) override;
+        void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver ) override;
 
     protected:
         EngineSourcePtr m_source;

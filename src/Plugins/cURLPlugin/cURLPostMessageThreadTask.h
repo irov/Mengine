@@ -13,16 +13,16 @@ namespace Mengine
         ~cURLPostMessageThreadTask() override;
 
     public:
-        bool initialize( const String & _url, const cURLPostParams & _params );
+        bool initialize( const cURLPostParams & _params );
 
     protected:
         void _onCURL( CURL * _curl ) override;
         void _onCURLCleanup( CURL * _curl ) override;
 
     protected:
-        String m_url;
         cURLPostParams m_params;
 
+        struct curl_slist * m_curl_header_list;
         struct curl_httppost * m_curl_formpost;
     };
     //////////////////////////////////////////////////////////////////////////

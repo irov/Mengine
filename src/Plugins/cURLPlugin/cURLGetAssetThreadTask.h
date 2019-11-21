@@ -16,7 +16,7 @@ namespace Mengine
         ~cURLGetAssetThreadTask() override;
 
     public:
-        bool initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath );
+        bool initialize( const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath );
 
     protected:
         bool _onRun() override;
@@ -28,7 +28,6 @@ namespace Mengine
         void _onComplete( bool _successful ) override;
 
     protected:
-        String m_url;
         String m_login;
         String m_password;
         FileGroupInterfacePtr m_fileGroup;

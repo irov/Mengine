@@ -17,11 +17,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLGetMessageThreadTask::initialize( const String & _url )
+    bool cURLGetMessageThreadTask::initialize()
     {
-        m_url = _url;
+        //Empty
 
-        return false;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLGetMessageThreadTask::_onCURL( CURL * _curl )

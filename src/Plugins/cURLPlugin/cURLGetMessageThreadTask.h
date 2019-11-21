@@ -13,13 +13,10 @@ namespace Mengine
         ~cURLGetMessageThreadTask() override;
 
     public:
-        bool initialize( const String & _url );
+        bool initialize();
 
     protected:
         void _onCURL( CURL * _curl ) override;
-
-    protected:
-        String m_url;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLGetMessageThreadTask> cURLGetMessageThreadTaskPtr;

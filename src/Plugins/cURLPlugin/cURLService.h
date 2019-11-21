@@ -27,9 +27,9 @@ namespace Mengine
         void _stopService() override;
 
     protected:
-        HttpRequestID getMessage( const String & _url, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) override;
-        HttpRequestID postMessage( const String & _url, const cURLPostParams & _params, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) override;
-        HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver ) override;
 
     protected:
         HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, int32_t _timeout, const cURLReceiverInterfacePtr & _receiver ) override;
@@ -41,7 +41,7 @@ namespace Mengine
         cURLSourceInterfacePtr makeSource( const EngineSourcePtr & _source ) override;
 
     private:
-        void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override;
+        void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override;
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;

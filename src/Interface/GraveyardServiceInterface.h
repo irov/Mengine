@@ -17,9 +17,6 @@ namespace Mengine
         SERVICE_DECLARE( "Graveyard" )
 
     public:
-        virtual void tick( const UpdateContext * _context ) = 0;
-
-    public:
         virtual void clearTextures() = 0;
 
     public:

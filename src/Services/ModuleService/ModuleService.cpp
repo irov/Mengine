@@ -2,6 +2,7 @@
 
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ModuleFactoryInterface.h"
+#include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
@@ -17,6 +18,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ModuleService::ModuleService()
+        : m_timepipe( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,7 +28,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::_initializeService()
     {
-        //Empty
+        uint32_t timepipe = TIMEPIPE_SERVICE()
+            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+
+        m_timepipe = timepipe;
 
         return true;
     }
@@ -46,6 +51,11 @@ namespace Mengine
 
         m_waits.clear();
         m_leaves.clear();
+
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( m_timepipe );
+
+        m_timepipe = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::hasModule( const ConstString & _name ) const
@@ -198,7 +208,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::tick( const UpdateContext * _context )
+    void ModuleService::onTimepipe( const UpdateContext * _context )
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {

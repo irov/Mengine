@@ -1415,25 +1415,7 @@ namespace Mengine
         applicationContext.revision = m_updateRevision;
         applicationContext.current = current;
         applicationContext.time = time;
-
-        GAME_SERVICE()
-            ->tick( &applicationContext );
-
-        MODULE_SERVICE()
-            ->tick( &applicationContext );
-
-        if( SERVICE_EXIST( SoundServiceInterface ) == true )
-        {
-            SOUND_SERVICE()
-                ->tick( &applicationContext );
-        }
-
-        if( SERVICE_EXIST( GraveyardServiceInterface ) == true )
-        {
-            GRAVEYARD_SERVICE()
-                ->tick( &applicationContext );
-        }
-
+        
         TIMELINE_SERVICE()
             ->tick( &applicationContext );
 

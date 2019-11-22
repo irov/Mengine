@@ -6,6 +6,7 @@
 #include "Interface/NotificatorInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/TimepipeServiceInterface.h"
 
 #include <algorithm>
 
@@ -31,6 +32,11 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, this, &GraveyardService::onEngineTextureDestroy );
 
+        uint32_t timepipe = TIMEPIPE_SERVICE()
+            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+
+        m_timepipe = timepipe;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,6 +45,11 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_ENGINE_TEXTURE_DESTROY );
 
         this->clearTextures();
+
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( m_timepipe );
+
+        m_timepipe = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void GraveyardService::clearTextures()
@@ -53,7 +64,7 @@ namespace Mengine
         m_textures.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GraveyardService::tick( const UpdateContext * _context )
+    void GraveyardService::onTimepipe( const UpdateContext * _context )
     {
         VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
         {

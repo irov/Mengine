@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/GraveyardServiceInterface.h"
+#include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Observable.h"
@@ -13,6 +14,7 @@ namespace Mengine
 
     class GraveyardService
         : public ServiceBase<GraveyardServiceInterface>
+        , public TimepipeInterface
         , public Observable
     {
     public:
@@ -23,8 +25,8 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
-    public:
-        void tick( const UpdateContext * _context ) override;
+    protected:
+        void onTimepipe( const UpdateContext * _context ) override;
 
     public:
         void clearTextures() override;
@@ -37,6 +39,8 @@ namespace Mengine
         void onEngineTextureDestroy( RenderTextureInterface * _texture );
 
     protected:
+        uint32_t m_timepipe;
+
         uint32_t m_count;
         float m_graveyardTime;
 

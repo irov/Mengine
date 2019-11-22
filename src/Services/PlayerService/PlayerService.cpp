@@ -530,12 +530,6 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::tick( const UpdateContext * _context )
-    {
-        UPDATE_SERVICE()
-            ->update( _context );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool PlayerService::update()
     {
         PICKER_SERVICE()

@@ -436,7 +436,7 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 

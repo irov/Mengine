@@ -12,8 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     cURLPostMessageThreadTask::cURLPostMessageThreadTask()
-        : m_curl_header_list( nullptr )
-        , m_curl_formpost( nullptr )
+        : m_curl_formpost( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -30,24 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLPostMessageThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POST, 1L) );
-
-        struct curl_slist * curl_header_list = nullptr;
-
-        if( m_headers.empty() == false )
-        {
-            for( const String & header : m_headers )
-            {
-                const Char * header_buffer = header.c_str();
-
-                curl_header_list = curl_slist_append( curl_header_list, header_buffer );
-            }
-
-            CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPHEADER, curl_header_list) );
-
-            m_curl_header_list = curl_header_list;
-        }
 
         struct curl_httppost * lastptr = nullptr;
         struct curl_httppost * formpost = nullptr;
@@ -72,9 +54,9 @@ namespace Mengine
             }
         }
 
-        m_curl_formpost = formpost;
-
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_HTTPPOST, formpost) );
+
+        m_curl_formpost = formpost;
 
         /* send all data to this function  */
         this->setupWriteResponse( _curl );
@@ -101,12 +83,6 @@ namespace Mengine
     void cURLPostMessageThreadTask::_onCURLCleanup( CURL * _curl )
     {
         MENGINE_UNUSED( _curl );
-
-        if( m_curl_header_list != nullptr )
-        {
-            curl_slist_free_all( m_curl_header_list );
-            m_curl_header_list = nullptr;
-        }
 
         if( m_curl_formpost != nullptr )
         {

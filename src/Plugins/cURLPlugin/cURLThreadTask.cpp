@@ -62,6 +62,7 @@ namespace Mengine
         : m_id( 0 )
         , m_timeout( -1 )
         , m_receiveHeaders( false )
+        , m_curl_header_list( nullptr )
         , m_responseCode( 0 )
         , m_responseStatus( CURLE_OK )
     {
@@ -79,6 +80,16 @@ namespace Mengine
     const String & cURLThreadTask::getURL() const
     {
         return m_url;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void cURLThreadTask::setCookies( const String & _cookies )
+    {
+        m_cookies = _cookies;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const String & cURLThreadTask::getCookies() const
+    {
+        return m_cookies;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setHeaders( const cURLHeaders & _headers )
@@ -141,11 +152,35 @@ namespace Mengine
         /* init the curl session */
         CURL * curl = curl_easy_init();
 
+        CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, m_url.c_str()) );
+        //CURLCALL( curl_easy_setopt, (curl, CURLOPT_FOLLOWLOCATION, 1) );
+
+        struct curl_slist * curl_header_list = nullptr;
+
+        if( m_headers.empty() == false )
+        {
+            for( const String & header : m_headers )
+            {
+                const Char * header_buffer = header.c_str();
+
+                curl_header_list = curl_slist_append( curl_header_list, header_buffer );
+            }
+
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_HTTPHEADER, curl_header_list) );
+
+            m_curl_header_list = curl_header_list;
+        }
+
         this->_onCURL( curl );
 
         if( m_timeout != -1 )
         {
             CURLCALL( curl_easy_setopt, (curl, CURLOPT_TIMEOUT_MS, m_timeout) );
+        }
+
+        if( m_cookies.empty() == false )
+        {
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, m_cookies.c_str()) );            
         }
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );
@@ -175,6 +210,12 @@ namespace Mengine
         CURLCALL( curl_easy_getinfo, (curl, CURLINFO_RESPONSE_CODE, &http_code) );
 
         m_responseCode = (uint32_t)http_code;
+
+        if( m_curl_header_list != nullptr )
+        {
+            curl_slist_free_all( m_curl_header_list );
+            m_curl_header_list = nullptr;
+        }
 
         this->_onCURLCleanup( curl );
 

@@ -335,6 +335,8 @@ namespace Mengine
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( FileService );
         SERVICE_CREATE( ConfigService );
+        SERVICE_CREATE( TimelineService );
+        SERVICE_CREATE( TimepipeService );
 
         FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
 
@@ -441,8 +443,6 @@ namespace Mengine
         SERVICE_CREATE( PlayerService );
         SERVICE_CREATE( AccountService );
         SERVICE_CREATE( GameService );
-        SERVICE_CREATE( TimelineService );
-        SERVICE_CREATE( TimepipeService );
 
         return true;
     }

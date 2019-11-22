@@ -80,8 +80,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLGetAssetThreadTask::_onCURL( CURL * _curl )
     {
-        CURLCALL( curl_easy_setopt, (_curl, CURLOPT_URL, m_url.c_str()) );
-
         if( m_login.empty() == false || m_password.empty() == false )
         {
             CURLCALL( curl_easy_setopt, (_curl, CURLOPT_USERNAME, m_login.c_str()) );

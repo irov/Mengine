@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/SoundServiceInterface.h"
+#include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -22,6 +23,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     class SoundService
         : public ServiceBase<SoundServiceInterface>
+        , public TimepipeInterface
     {
     public:
         SoundService();
@@ -38,7 +40,7 @@ namespace Mengine
         bool isSupportStreamSound() const override;
 
     public:
-        void tick( const UpdateContext * _context ) override;
+        void onTimepipe( const UpdateContext * _context ) override;
 
     public:
         void addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) override;
@@ -132,6 +134,8 @@ namespace Mengine
         bool checkMaxSoundPlay_() const;
 
     protected:
+        uint32_t m_timepipe;
+
         MixerValue m_commonVolume;
         MixerValue m_soundVolume;
         MixerValue m_musicVolume;

@@ -19,9 +19,6 @@ namespace Mengine
         SERVICE_DECLARE( "SoundService" )
 
     public:
-        virtual void tick( const UpdateContext * _context ) = 0;
-
-    public:
         virtual bool isSupportStreamSound() const = 0;
 
     public:

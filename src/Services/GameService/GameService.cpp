@@ -14,6 +14,7 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+#include "Interface/UpdateServiceInterface.h"
 
 #include "GameServiceAccountProvider.h"
 #include "GameServiceSoundVolumeProvider.h"
@@ -36,7 +37,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     GameService::GameService()
-        : m_timingFactor( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -268,15 +268,6 @@ namespace Mengine
         }
 
         m_userEvents.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void GameService::tick( const UpdateContext * _context )
-    {
-        UpdateContext gameContext = *_context;
-        gameContext.time *= m_timingFactor;
-
-        PLAYER_SERVICE()
-            ->tick( &gameContext );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::render( const RenderPipelineInterfacePtr & _renderPipeline )
@@ -544,12 +535,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float GameService::getTimeFactor() const
     {
-        return m_timingFactor;
+        float timingFactor = UPDATE_SERVICE()
+            ->getTimeFactor();
+
+        return timingFactor;
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::setTimeFactor( float _timingFactor )
     {
-        m_timingFactor = _timingFactor;
+        UPDATE_SERVICE()
+            ->setTimeFactor( _timingFactor );
 
         EVENTABLE_METHOD( EVENT_GAME_ON_TIMING_FACTOR )
             ->onGameTimingFactor( _timingFactor );

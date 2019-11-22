@@ -1,21 +1,10 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-
-#include "Kernel/UpdateContext.h"
+#include "Interface/TimepipeInterface.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class TimepipeInterface
-        : public Mixin
-    {
-    public:
-         virtual void onTimepipe( const UpdateContext * _contet ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<TimepipeInterface> TimepipeInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class TimepipeServiceInterface
         : public ServiceInterface
     {

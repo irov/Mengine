@@ -20,6 +20,9 @@ namespace Mengine
         void setURL( const String & _url );
         const String & getURL() const;
 
+        void setCookies( const String & _cookies );
+        const String & getCookies() const;
+
         void setHeaders( const cURLHeaders & _headers );
         const cURLHeaders & getHeaders() const;
 
@@ -55,11 +58,14 @@ namespace Mengine
 
     protected:
         String m_url;
+        String m_cookies;
         cURLHeaders m_headers;
         HttpRequestID m_id;
         int32_t m_timeout;
         bool m_receiveHeaders;
         cURLReceiverInterfacePtr m_receiver;
+
+        struct curl_slist * m_curl_header_list;
 
         uint32_t m_responseCode;
         CURLcode m_responseStatus;

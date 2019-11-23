@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EUpdateMode PlayerGlobalAffectorable::getAffectorableUpdatableMode() const
     {
-        return EUM_SERVICE;
+        return EUM_SERVICE_BEFORE;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t PlayerGlobalAffectorable::getAffectorableUpdatableLeafDeep() const

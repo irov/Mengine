@@ -76,7 +76,6 @@ namespace Mengine
         void finalizeRenderResources() override;
 
     public:
-        void tick( const UpdateContext * _context ) override;
         bool update() override;
 
     public:

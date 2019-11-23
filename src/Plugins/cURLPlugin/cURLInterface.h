@@ -84,7 +84,7 @@ namespace Mengine
     protected:
         virtual void addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLTaskReceiverInterfacePtr & _lambda ) = 0;
         virtual void addHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
-        virtual void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
+        virtual void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _cookies, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver ) = 0;
 
     public:
         MENGINE_INLINE void addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda )
@@ -101,11 +101,11 @@ namespace Mengine
             this->addHttpHeaderData( _url, _headers, _timeout, _receiveHeaders, _data, receiver );
         }
 
-        MENGINE_INLINE void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const LambdaTaskReceiver & _lambda )
+        MENGINE_INLINE void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _cookies, const cURLPostParams & _params, const LambdaTaskReceiver & _lambda )
         {
             cURLTaskReceiverInterfacePtr receiver = Helper::makeFactorableUnique<cURLTaskReceiverF>( _lambda );
 
-            this->addHttpPost( _url, _headers, _timeout, _receiveHeaders, _params, receiver );
+            this->addHttpPost( _url, _headers, _timeout, _receiveHeaders, _cookies, _params, receiver );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -118,7 +118,7 @@ namespace Mengine
 
     public:
         virtual HttpRequestID getMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _cookies, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver ) = 0;
         virtual HttpRequestID headerData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const cURLReceiverInterfacePtr & _receiver ) = 0;
 
     public:

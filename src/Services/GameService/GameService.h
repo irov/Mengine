@@ -34,7 +34,6 @@ namespace Mengine
 
     public:
         void update() override;
-        void tick( const UpdateContext * _context ) override;
 
     public:
         void render( const RenderPipelineInterfacePtr & _renderPipeline ) override;
@@ -86,8 +85,6 @@ namespace Mengine
     protected:
         ConstString m_currentPackName;
         String m_currentResourcePath;
-
-        float m_timingFactor;
 
         FilePath m_iconPath;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/UpdateServiceInterface.h"
+#include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -17,6 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class UpdateService
         : public ServiceBase<UpdateServiceInterface>
+        , public TimepipeInterface
     {
     public:
         UpdateService();
@@ -28,14 +30,22 @@ namespace Mengine
         void _stopService() override;
 
     public:
+        void setTimeFactor( float _timeFactor ) override;
+        float getTimeFactor() const override;
+
+    public:
         uint32_t createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) override;
         void replaceUpdatater( uint32_t _id, uint32_t _deep ) override;
         void removeUpdatater( uint32_t _id ) override;
 
     public:
-        void update( const UpdateContext * _context ) override;
+        void onTimepipe( const UpdateContext * _context ) override;
 
     protected:
+        uint32_t m_timepipe;
+
+        float m_timeFactor;
+
         struct UpdatableProxy
         {
             UpdationInterfacePtr updation;
@@ -65,6 +75,6 @@ namespace Mengine
     protected:
         uint32_t placeProxy_( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updatable );
         void updateLeaf_( uint32_t _deep, LeafUpdatable & _leaf, const UpdateContext * _context );
-        LeafUpdatable * getLeafUpdatable( uint32_t _mode, uint32_t _deep );
+        LeafUpdatable * getLeafUpdatable( EUpdateMode _mode, uint32_t _deep );
     };
 }

@@ -24,7 +24,6 @@ namespace Mengine
 
     public:
         virtual void update() = 0;
-        virtual void tick( const UpdateContext * _context ) = 0;
 
     public:
         virtual void render( const RenderPipelineInterfacePtr & _renderPipeline ) = 0;

@@ -21,8 +21,6 @@ namespace Mengine
 
     protected:        
         String m_data;
-
-        struct curl_slist * m_curl_header_list;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLHeaderDataThreadTask> cURLHeaderDataThreadTaskPtr;

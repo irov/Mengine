@@ -22,7 +22,6 @@ namespace Mengine
     protected:
         cURLPostParams m_params;
 
-        struct curl_slist * m_curl_header_list;
         struct curl_httppost * m_curl_formpost;
     };
     //////////////////////////////////////////////////////////////////////////

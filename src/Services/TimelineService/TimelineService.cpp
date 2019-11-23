@@ -57,12 +57,7 @@ namespace Mengine
     {
         float time = _context->time;
 
-        if( m_offsets.empty() == false )
-        {
-            LOGGER_ERROR( "invalid complete times" );
-
-            return;
-        }
+        MENGINE_ASSERTION_FATAL( m_offsets.empty() == true, "invalid complete times" );
 
         m_time += time;
     }

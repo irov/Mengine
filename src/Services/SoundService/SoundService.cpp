@@ -7,6 +7,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -27,7 +28,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
-        : m_supportStream( true )
+        : m_timepipe( 0 )
+        , m_supportStream( true )
         , m_muted( false )
         , m_turnStream( true )
         , m_turnSound( true )
@@ -77,6 +79,11 @@ namespace Mengine
         m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
         m_factorySoundEmitter = Helper::makeFactoryPool<SoundIdentity, 32>();
 
+        uint32_t timepipe = TIMEPIPE_SERVICE()
+            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+
+        m_timepipe = timepipe;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -121,6 +128,11 @@ namespace Mengine
         }
 
         m_soundVolumeProviders.clear();
+
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( m_timepipe );
+
+        m_timepipe = 0;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundEmitter );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );
@@ -637,7 +649,7 @@ namespace Mengine
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundService::tick( const UpdateContext * _context )
+    void SoundService::onTimepipe( const UpdateContext * _context )
     {
         SOUND_SYSTEM()
             ->update();

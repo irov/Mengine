@@ -1,6 +1,7 @@
 #include "UpdateService.h"
 
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/TimepipeServiceInterface.h"
 
 #include "Kernel/Updatable.h"
 #include "Kernel/Logger.h"
@@ -24,7 +25,10 @@ namespace Mengine
         case EUM_NODE_AFFECTOR:
             return _deep * 2U + 1U;
             break;
-        case EUM_SERVICE:
+        case EUM_SERVICE_BEFORE:
+            return _deep;
+            break;
+        case EUM_SERVICE_AFTER:
             return _deep;
             break;
         default:
@@ -33,6 +37,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     UpdateService::UpdateService()
+        : m_timepipe( 0 )
+        , m_timeFactor( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -52,6 +58,11 @@ namespace Mengine
         m_leafs.resize( DefaultUpdateLeafs );
         m_afterLeaf.resize( 16 );
 
+        uint32_t timepipe = TIMEPIPE_SERVICE()
+            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+
+        m_timepipe = timepipe;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -63,6 +74,11 @@ namespace Mengine
 
         m_proxyFrees.clear();
         m_proxies.clear();
+
+        TIMEPIPE_SERVICE()
+            ->removeTimepipe( m_timepipe );
+
+        m_timepipe = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::_stopService()
@@ -73,11 +89,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( uint32_t _mode, uint32_t _deep )
+    UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( EUpdateMode _mode, uint32_t _deep )
     {
         switch( _mode )
         {
-        case 0:
+        case EUM_NODE_BASE:
             {
                 MENGINE_ASSERTION_FATAL( _deep * 2 + 0 < m_leafs.size(), nullptr );
 
@@ -85,7 +101,7 @@ namespace Mengine
 
                 return &leaf;
             }break;
-        case 1:
+        case EUM_NODE_AFFECTOR:
             {
                 MENGINE_ASSERTION_FATAL( _deep * 2 + 1 < m_leafs.size(), nullptr );
 
@@ -93,7 +109,7 @@ namespace Mengine
 
                 return &leaf;
             }break;
-        case 2:
+        case EUM_SERVICE_BEFORE:
             {
                 MENGINE_ASSERTION_FATAL( _deep < m_beforeLeaf.size(), nullptr );
 
@@ -101,7 +117,7 @@ namespace Mengine
 
                 return &leaf;
             }break;
-        case 3:
+        case EUM_SERVICE_AFTER:
             {
                 MENGINE_ASSERTION_FATAL( _deep < m_afterLeaf.size(), nullptr );
 
@@ -141,6 +157,16 @@ namespace Mengine
         m_proxies[free_id] = proxy;
 
         return free_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UpdateService::setTimeFactor( float _timeFactor )
+    {
+        m_timeFactor = _timeFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float UpdateService::getTimeFactor() const
+    {
+        return m_timeFactor;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t UpdateService::createUpdatater( EUpdateMode _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
@@ -248,12 +274,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::update( const UpdateContext * _context )
+    void UpdateService::onTimepipe( const UpdateContext * _context )
     {
+        UpdateContext context;
+        context = *_context;
+        context.time *= m_timeFactor;
+
         uint32_t enumerateBeforeDeep = 0U;
         for( LeafUpdatable & leaf : m_beforeLeaf )
         {
-            this->updateLeaf_( enumerateBeforeDeep, leaf, _context );
+            this->updateLeaf_( enumerateBeforeDeep, leaf, &context );
 
             ++enumerateBeforeDeep;
         }
@@ -261,7 +291,7 @@ namespace Mengine
         uint32_t enumerateDeep = 0U;
         for( LeafUpdatable & leaf : m_leafs )
         {
-            this->updateLeaf_( enumerateDeep, leaf, _context );
+            this->updateLeaf_( enumerateDeep, leaf, &context );
 
             ++enumerateDeep;
         }
@@ -269,7 +299,7 @@ namespace Mengine
         uint32_t enumerateAfterDeep = 0U;
         for( LeafUpdatable & leaf : m_afterLeaf )
         {
-            this->updateLeaf_( enumerateAfterDeep, leaf, _context );
+            this->updateLeaf_( enumerateAfterDeep, leaf, &context );
 
             ++enumerateAfterDeep;
         }

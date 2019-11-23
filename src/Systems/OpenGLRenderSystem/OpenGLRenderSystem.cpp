@@ -24,34 +24,6 @@ SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    namespace Detail
-    {
-        static constexpr float get_A_float_from_argb32( uint32_t argb )
-        {
-            float a = (argb >> 24) / 255.0f;
-
-            return a;
-        }
-        static constexpr float get_R_float_from_argb32( uint32_t argb )
-        {
-            float r = ((argb >> 16) & 0xFF) / 255.0f;
-
-            return r;
-        }
-        static constexpr float get_G_float_from_argb32( uint32_t argb )
-        {
-            float g = ((argb >> 8) & 0xFF) / 255.0f;
-
-            return g;
-        }
-        static constexpr float get_B_float_from_argb32( uint32_t argb )
-        {
-            float b = (argb & 0xFF) / 255.0f;
-
-            return b;
-        }
-    }
-
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::OpenGLRenderSystem()
         : m_glMaxCombinedTextureImageUnits( 0 )

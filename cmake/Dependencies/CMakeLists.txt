@@ -577,6 +577,7 @@ if(MENGINE_DEPENDENCE_PNG)
     set(ZLIB_LIBRARY zlib)
     set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
 
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/CMakeLists.txt ${THIRDPARTY_DIR}/libpng/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/pnglibconf.h ${THIRDPARTY_DIR}/libpng/pnglibconf.h COPYONLY)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libpng ${CMAKE_TEMP_DIR}/libpng)

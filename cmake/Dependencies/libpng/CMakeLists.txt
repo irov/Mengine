@@ -287,9 +287,6 @@ set(libpng_private_hdrs
   pnginfo.h
   pngstruct.h
 )
-if(AWK AND NOT ANDROID)
-  list(APPEND libpng_private_hdrs "${CMAKE_CURRENT_BINARY_DIR}/pngprefix.h")
-endif()
 set(libpng_sources
   ${libpng_public_hdrs}
   ${libpng_private_hdrs}
@@ -359,16 +356,6 @@ if(PNG_SHARED)
     set_target_properties(png PROPERTIES IMPORT_PREFIX "lib")
   endif()
   target_link_libraries(png ${ZLIB_LIBRARY} ${M_LIBRARY})
-
-  if(UNIX AND AWK)
-    if(HAVE_LD_VERSION_SCRIPT)
-      set_target_properties(png PROPERTIES LINK_FLAGS
-        "-Wl,--version-script='${CMAKE_CURRENT_BINARY_DIR}/libpng.vers'")
-    elseif(HAVE_SOLARIS_LD_VERSION_SCRIPT)
-      set_target_properties(png PROPERTIES LINK_FLAGS
-        "-Wl,-M -Wl,'${CMAKE_CURRENT_BINARY_DIR}/libpng.vers'")
-    endif()
-  endif()
 endif()
 
 if(PNG_STATIC)

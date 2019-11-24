@@ -75,6 +75,14 @@ PROJECT(Dependencies)
 
 message("============@@##START##@@============")
 
+#dependencies zlib
+if(MENGINE_DEPENDENCE_ZLIB)
+    message("================zlib================")
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
+    
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
+endif()
+
 #dependencies jansson
 if(MENGINE_DEPENDENCE_JANSSON)
     message("================jansson================")
@@ -136,14 +144,6 @@ endif()
 if(MENGINE_DEPENDENCE_THEORA)
     message("================libtheora================")
     ADD_SUBDIRECTORY(libtheora)
-endif()
-
-
-if(MENGINE_DEPENDENCE_ZLIB)
-    message("================zlib================")
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/zlib/CMakeLists.txt ${THIRDPARTY_DIR}/zlib/CMakeLists.txt COPYONLY)
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/zlib ${CMAKE_TEMP_DIR}/zlib)
 endif()
 
 
@@ -572,10 +572,10 @@ if(MENGINE_DEPENDENCE_PNG)
     set(PNG_FRAMEWORK OFF CACHE BOOL "PNG_FRAMEWORK" FORCE)
     set(PNG_DEBUG OFF CACHE BOOL "PNG_DEBUG" FORCE)
     set(PNGARG OFF CACHE BOOL "PNGARG" FORCE)
-	SET(CMAKE_SYSTEM_PROCESSOR "arm64")
     set(PNG_HARDWARE_OPTIMIZATIONS ON CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
-    set(ZLIB_LIBRARY zlib)
-    set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
+    set(ZLIB_LIBRARY zlib CACHE STRING "ZLIB_LIBRARY" FORCE)
+    set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib CACHE STRING "ZLIB_INCLUDE_DIR" FORCE)
+    set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
 
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/CMakeLists.txt ${THIRDPARTY_DIR}/libpng/CMakeLists.txt COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libpng/pnglibconf.h ${THIRDPARTY_DIR}/libpng/pnglibconf.h COPYONLY)

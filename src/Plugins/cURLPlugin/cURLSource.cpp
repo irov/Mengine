@@ -35,9 +35,9 @@ namespace Mengine
         m_source->addTask<TaskcURLHttpHeaderData>( _url, _headers, _timeout, _receiveHeaders, _data, _receiver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLSource::addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _cookies, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver )
+    void cURLSource::addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLTaskReceiverInterfacePtr & _receiver )
     {
-        m_source->addTask<TaskcURLHttpPost>( _url, _headers, _timeout, _receiveHeaders, _cookies, _params, _receiver );
+        m_source->addTask<TaskcURLHttpPost>( _url, _headers, _timeout, _receiveHeaders, _params, _receiver );
     }
     //////////////////////////////////////////////////////////////////////////
 }

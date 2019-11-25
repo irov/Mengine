@@ -159,6 +159,8 @@ namespace Mengine
 
         if( m_headers.empty() == false )
         {
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_HEADER, 1) );
+
             for( const String & header : m_headers )
             {
                 const Char * header_buffer = header.c_str();
@@ -180,7 +182,7 @@ namespace Mengine
 
         if( m_cookies.empty() == false )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, m_cookies.c_str()) );            
+            CURLCALL( curl_easy_setopt, (curl, CURLOPT_COOKIE, m_cookies.c_str()) );
         }
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_SSL_VERIFYPEER, 0) );

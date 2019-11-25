@@ -218,7 +218,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _cookies, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::postMessage( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const cURLReceiverInterfacePtr & _receiver )
     {
         if( this->isStopService() == true )
         {
@@ -234,7 +234,6 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( task, 0 );
 
         task->setURL( _url );
-        task->setCookies( _cookies );
         task->setHeaders( _headers );
         task->setRequestId( task_id );
         task->setTimeout( _timeout );

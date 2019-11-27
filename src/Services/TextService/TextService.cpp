@@ -365,7 +365,14 @@ namespace Mengine
                 );
             }
 
-            m_textManager->addTextEntry( text_key, text_str_value, text_str_size, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
+            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride ) == false )
+            {
+                LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
+                    , m_fileGroup->getName().c_str()
+                    , m_filePath.c_str()
+                    , text_key.c_str()
+                );
+            }
         }
 
     protected:

@@ -200,7 +200,7 @@ namespace Mengine
             }
 #endif
 
-            return IntrusivePtr<U, D>( std::move( m_pointer ) );
+            return std::move( m_pointer.moveT<U, D>() );
         }
 
     protected:

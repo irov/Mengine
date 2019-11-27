@@ -159,8 +159,6 @@ namespace Mengine
 
         if( m_headers.empty() == false )
         {
-            CURLCALL( curl_easy_setopt, (curl, CURLOPT_HEADER, 1) );
-
             for( const String & header : m_headers )
             {
                 const Char * header_buffer = header.c_str();

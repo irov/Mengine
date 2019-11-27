@@ -37,6 +37,8 @@ namespace Mengine
             , uint32_t _params
             , bool _isOverride ) = 0;
 
+        virtual bool removeTextEntry( const ConstString & _key ) = 0;
+
     public:
         virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const = 0;
         virtual const TextEntryInterfacePtr & getTextEntry( const ConstString & _key ) const = 0;

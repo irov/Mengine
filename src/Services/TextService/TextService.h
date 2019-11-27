@@ -85,7 +85,7 @@ namespace Mengine
             , uint32_t _params
             , bool _isOverride ) override;
 
-        bool removeTextEntry( const ConstString & _key );
+        bool removeTextEntry( const ConstString & _key ) override;
 
     public:
         bool directFontCompile( const ConstString & _name ) override;

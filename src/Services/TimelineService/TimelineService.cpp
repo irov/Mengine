@@ -9,7 +9,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimelineService::TimelineService()
-        : m_time( 0.f )
+        : m_revision( 0 )
+        , m_current( 0.f )
+        , m_time( 0.f )
+        , m_total( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -19,6 +22,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TimelineService::beginOffset( float _offset )
     {
+        MENGINE_ASSERTION_FATAL( m_time >= _offset );
+
         m_offsets.emplace_back( _offset );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,26 +44,48 @@ namespace Mengine
         m_offsets.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
-    float TimelineService::getTime() const
+    uint32_t TimelineService::getCurrentRevision() const
+    {
+        return m_revision;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TimelineService::getCurrentTime() const
+    {
+        return m_current;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TimelineService::getCurrentDelta() const
+    {
+        return m_time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TimelineService::getTotalTime() const
     {
         if( m_offsets.empty() == true )
         {
-            return m_time;
+            return m_total;
         }
 
         float offset = m_offsets.back();
 
-        float totalTime = m_time + offset;
+        MENGINE_ASSERTION_FATAL( m_time >= offset );
+
+        float totalTime = m_total + offset;
 
         return totalTime;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TimelineService::tick( const UpdateContext * _context )
+    void TimelineService::begin( const UpdateContext * _context )
     {
-        float time = _context->time;
+        m_revision = _context->revision;
+        m_current = _context->current;
+        m_time = _context->time;
 
         MENGINE_ASSERTION_FATAL( m_offsets.empty() == true, "invalid complete times" );
-
-        m_time += time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TimelineService::end()
+    {
+        m_total += m_time;
     }
 }

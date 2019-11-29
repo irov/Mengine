@@ -21,13 +21,23 @@ namespace Mengine
         void endOffset() override;
 
     public:
-        float getTime() const override;
+        uint32_t getCurrentRevision() const override;
+        float getCurrentTime() const override;
+        float getCurrentDelta() const override;
 
     public:
-        void tick( const UpdateContext * _context ) override;
+        float getTotalTime() const override;
+
+    public:
+        void begin( const UpdateContext * _context ) override;
+        void end() override;
 
     protected:
+        uint32_t m_revision;
+        float m_current;
         float m_time;
+
+        float m_total;
 
         typedef Vector<float> VectorTime;
         VectorTime m_offsets;

@@ -1487,7 +1487,7 @@ namespace Mengine
         case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
                 float time = TIMELINE_SERVICE()
-                    ->getTime();
+                    ->getTotalTime();
 
                 if( _callbackData->loop == AE_TRUE && _animation->isLoop() == true )
                 {
@@ -1538,7 +1538,7 @@ namespace Mengine
         case AE_MOVIE_STATE_UPDATE_RESUME:
             {
                 float time = TIMELINE_SERVICE()
-                    ->getTime();
+                    ->getTotalTime();
 
                 _animation->resume( time );
             }break;
@@ -2253,7 +2253,7 @@ namespace Mengine
         if( autoPlay == true )
         {
             float time = TIMELINE_SERVICE()
-                ->getTime();
+                ->getTotalTime();
 
             if( this->play( time ) == 0 )
             {

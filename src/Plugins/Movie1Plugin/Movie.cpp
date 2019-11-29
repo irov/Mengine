@@ -2182,7 +2182,7 @@ namespace Mengine
                 const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
                 float time = TIMELINE_SERVICE()
-                    ->getTime();
+                    ->getTotalTime();
 
                 animation->resume( time );
             }
@@ -2251,7 +2251,7 @@ namespace Mengine
         if( autoPlay == true )
         {
             float time = TIMELINE_SERVICE()
-                ->getTime();
+                ->getTotalTime();
 
             if( this->play( time ) == 0 )
             {
@@ -2741,7 +2741,7 @@ namespace Mengine
                         if( animation->isPlay() == false )
                         {
                             float playTime = TIMELINE_SERVICE()
-                                ->getTime();
+                                ->getTotalTime();
 
                             animation->play( playTime );
                         }

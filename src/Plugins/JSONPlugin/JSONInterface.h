@@ -16,6 +16,9 @@ namespace Mengine
     {
     public:
         virtual const jpp::object & getJSON() const = 0;
+
+    public:
+        virtual void mergeJSON( const jpp::object & _obj ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JSONStorageInterface> JSONStorageInterfacePtr;

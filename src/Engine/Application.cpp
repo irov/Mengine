@@ -1409,7 +1409,7 @@ namespace Mengine
         }
 
         float current = TIMELINE_SERVICE()
-            ->getTime();
+            ->getTotalTime();
 
         UpdateContext applicationContext;
         applicationContext.revision = m_updateRevision;
@@ -1417,10 +1417,13 @@ namespace Mengine
         applicationContext.time = time;
         
         TIMELINE_SERVICE()
-            ->tick( &applicationContext );
+            ->begin( &applicationContext );
 
         TIMEPIPE_SERVICE()
             ->tick( &applicationContext );
+
+        TIMELINE_SERVICE()
+            ->end();
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()

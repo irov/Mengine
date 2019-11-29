@@ -300,6 +300,8 @@ namespace Mengine
         {
             float deltha = m_playTime - _context->current;
             totalTime -= deltha;
+
+            MENGINE_ASSERTION_FATAL( totalTime >= 0.f );
         }
 
         float speedFactor = this->getAnimationSpeedFactor();

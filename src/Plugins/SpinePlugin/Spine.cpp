@@ -681,9 +681,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Spine::render( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context ) const
     {
-        const mt::mat4f & wm = this->getWorldMatrix();
-
         int slotCount = m_skeleton->slotsCount;
+
+        const mt::mat4f & wm = this->getWorldMatrix();
 
         const RenderIndex quadTriangles[6] = { 0, 1, 2, 2, 3, 0 };
 
@@ -851,7 +851,7 @@ namespace Mengine
         if( autoPlay == true )
         {
             float time = TIMELINE_SERVICE()
-                ->getTime();
+                ->getTotalTime();
 
             if( this->play( time ) == 0 )
             {

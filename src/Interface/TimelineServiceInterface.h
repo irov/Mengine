@@ -17,10 +17,16 @@ namespace Mengine
         virtual void endOffset() = 0;
 
     public:
-        virtual float getTime() const = 0;
+        virtual uint32_t getCurrentRevision() const = 0;
+        virtual float getCurrentTime() const = 0;
+        virtual float getCurrentDelta() const = 0;
 
     public:
-        virtual void tick( const UpdateContext * _context ) = 0;
+        virtual float getTotalTime() const = 0;
+
+    public:
+        virtual void begin( const UpdateContext * _context ) = 0;
+        virtual void end() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

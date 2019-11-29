@@ -560,7 +560,7 @@ namespace Mengine
         uint32_t s_Animation_play( AnimationInterface * _animation )
         {
             float time = TIMELINE_SERVICE()
-                ->getTime();
+                ->getTotalTime();
 
             uint32_t id = _animation->play( time );
 
@@ -570,7 +570,7 @@ namespace Mengine
         void s_Animation_resume( AnimationInterface * _animation )
         {
             float time = TIMELINE_SERVICE()
-                ->getTime();
+                ->getTotalTime();
 
             _animation->resume( time );
         }

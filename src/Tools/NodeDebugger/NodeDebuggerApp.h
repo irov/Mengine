@@ -1,7 +1,9 @@
 #pragma once
 
 #include "Config/Vector.h"
+#include "Config/Map.h"
 #include "Config/String.h"
+#include "Config/VectorString.h"
 #include "Config/Deque.h"
 #include "Config/Blobject.h"
 
@@ -322,6 +324,7 @@ namespace Mengine
         void ReceiveScene( const pugi::xml_node & _xmlContainer );
         void ReceivePickerable( const pugi::xml_node & _xmlContainer );
         void ReceiveRenderable( const pugi::xml_node & _xmlContainer );
+        void ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer );
         void ReceiveSettings( const pugi::xml_node & _xmlContainer );
 
     protected:
@@ -337,8 +340,8 @@ namespace Mengine
         void LoadIconsAtlas();
         const NodeIcon * GetIconForNodeType( const String & _nodeType );
         void DoUI();
-        void DoUIGameDebuggerTab();
-        void DoUILogTab();
+        void DoUISceneDebuggerTab();
+        void DoUIObjectsLeakTab();
         void DoUISettingsTab();
         String DoIPInput( const String & _title, const String & _inIP );
         void DoNodeElement( DebuggerNode * _node, const String & _tag );
@@ -375,6 +378,7 @@ namespace Mengine
         Vector<CachedImage> m_imagesCache;
         Vector<TabDescriptor> m_tabs;
         Vector<SettingDesc> m_settings;
+        Map<String, VectorString> m_objectLeaks;
         size_t m_currentTab;
 
         // Server connection

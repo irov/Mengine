@@ -40,7 +40,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( fileGroup, inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( fileGroup, inputFileName, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( input_stream == nullptr )
         {

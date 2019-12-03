@@ -36,6 +36,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UserdataService::_finalizeService()
     {
+        m_archivator = nullptr;
+
+        m_datas.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
@@ -54,7 +57,7 @@ namespace Mengine
         }
 
         UserdataDesc desc;
-        desc.category = _fileGroup;
+        desc.fileGroup = _fileGroup;
         desc.path = _filePath;
 
 #ifdef MENGINE_DEBUG
@@ -91,7 +94,7 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        if( desc.category->existFile( desc.path, true ) == false )
+        if( desc.fileGroup->existFile( desc.path, true ) == false )
         {
             return false;
         }
@@ -114,7 +117,7 @@ namespace Mengine
 
         const UserdataDesc & desc = it_found->second;
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.category, desc.path, false, false, _doc );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( desc.fileGroup, desc.path, false, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "data '%s' invalid open file '%s'"
             , _name.c_str()
@@ -156,7 +159,7 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.category, desc.path, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.fileGroup, desc.path, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "data '%s' invalid open file '%s'"
             , _name.c_str()

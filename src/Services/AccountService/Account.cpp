@@ -47,6 +47,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Account::finalize()
+    {
+        m_archivator = nullptr;
+        m_fileGroup = nullptr;
+
+        m_settings.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & Account::getID() const
     {
         return m_id;

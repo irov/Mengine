@@ -19,10 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::initialize( uint32_t _id
-        , const RenderImageInterfacePtr & _image
-        , uint32_t _width
-        , uint32_t _height )
+    void RenderTexture::initialize( uint32_t _id, const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
     {
         m_id = _id;
 
@@ -53,6 +50,7 @@ namespace Mengine
     void RenderTexture::release()
     {
         m_image = nullptr;
+        m_fileGroup = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderImageInterfacePtr & RenderTexture::getImage() const

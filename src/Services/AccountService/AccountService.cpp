@@ -1,5 +1,4 @@
 #include "AccountService.h"
-#include "Account.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsServiceInterface.h"
@@ -70,6 +69,14 @@ namespace Mengine
         m_archivator = nullptr;
 
         m_currentAccountID.clear();
+
+        for( const HashtableAccounts::value_type & value : m_accounts )
+        {
+            const AccountPtr & account = value.element;
+
+            account->finalize();
+        }
+
         m_accounts.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAccounts );
@@ -132,9 +139,9 @@ namespace Mengine
     AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountID )
     {
 #ifdef MENGINE_DEBUG
-        MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
+        AccountInterfacePtr account = m_accounts.find( _accountID );
 
-        if( it_find != m_accounts.end() )
+        if( account != nullptr )
         {
             LOGGER_ERROR( "account with ID '%s' already exist. Account not created"
                 , _accountID.c_str()
@@ -178,9 +185,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountID )
     {
-        MapAccounts::iterator it_find = m_accounts.find( _accountID );
+#ifdef MENGINE_DEBUG
+        AccountInterfacePtr account = m_accounts.find( _accountID );
 
-        if( it_find != m_accounts.end() )
+        if( account != nullptr )
         {
             LOGGER_ERROR( "Account with ID '%s' already exist. Account not created"
                 , _accountID.c_str()
@@ -188,6 +196,7 @@ namespace Mengine
 
             return nullptr;
         }
+#endif
 
         AccountInterfacePtr newAccount = this->newAccount_( _accountID );
 
@@ -263,30 +272,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::hasAccount( const ConstString & _accountID ) const
     {
-        MapAccounts::const_iterator it_find = m_accounts.find( _accountID );
+        bool exist = m_accounts.exist( _accountID );
 
-        if( it_find == m_accounts.end() )
-        {
-            return false;
-        }
-
-        return true;
+        return exist;
     }
     //////////////////////////////////////////////////////////////////////////
     void AccountService::deleteAccount( const ConstString & _accountID )
     {
-        MapAccounts::iterator it_find = m_accounts.find( _accountID );
+        AccountPtr account = m_accounts.erase( _accountID );
 
-        if( it_find == m_accounts.end() )
-        {
-            LOGGER_ERROR( "Can't delete account '%s'. There is no account with such ID"
-                , _accountID.c_str()
-            );
-
-            return;
-        }
-
-        AccountInterfacePtr account = it_find->second;
+        MENGINE_ASSERTION_MEMORY_PANIC_VOID( account, "can't delete account '%s'. There is no account with such ID"
+            , _accountID.c_str()
+        );
 
         if( m_currentAccountID.empty() == false )
         {
@@ -296,7 +293,7 @@ namespace Mengine
             }
         }
 
-        m_accounts.erase( it_find );
+        account->finalize();
 
         if( m_accountProvider != nullptr )
         {
@@ -308,11 +305,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::selectAccount( const ConstString & _accountID )
     {
-        MapAccounts::iterator it_find = m_accounts.find( _accountID );
+        const AccountInterfacePtr & account = m_accounts.find( _accountID );
 
-        if( it_find == m_accounts.end() )
+        if( account == nullptr )
         {
-            LOGGER_ERROR( "Can't select account '%s'. There is no account with such ID"
+            LOGGER_ERROR( "can't select account '%s'. There is no account with such ID"
                 , _accountID.c_str()
             );
 
@@ -326,8 +323,6 @@ namespace Mengine
                 this->unselectCurrentAccount_();
             }
         }
-
-        AccountInterfacePtr account = it_find->second;
 
         m_currentAccountID = _accountID;
 
@@ -355,27 +350,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const AccountInterfacePtr & AccountService::getAccount( const ConstString & _accountID ) const
     {
-        MapAccounts::const_iterator it_found = m_accounts.find( _accountID );
+        const AccountInterfacePtr & account = m_accounts.find( _accountID );
 
-        if( it_found == m_accounts.end() )
-        {
-            LOGGER_ERROR( "account with ID '%s' not found"
-                , _accountID.c_str()
-            );
-
-            return AccountInterfacePtr::none();
-        }
-
-        const AccountInterfacePtr & account = it_found->second;
+        MENGINE_ASSERTION_MEMORY_PANIC( account, AccountInterfacePtr::none(), "account with ID '%s' not found"
+            , _accountID.c_str()
+        );
 
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
     void AccountService::visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const
     {
-        for( const MapAccounts::value_type & value : m_accounts )
+        for( const HashtableAccounts::value_type & value : m_accounts )
         {
-            const AccountInterfacePtr & account = value.second;
+            const AccountPtr & account = value.element;
 
             const ConstString & accountID = account->getID();
 
@@ -695,24 +683,16 @@ namespace Mengine
 
         Helper::writeIniSection( file, "[ACCOUNTS]" );
 
-        for( MapAccounts::iterator
-            it = m_accounts.begin(),
-            it_end = m_accounts.end();
-            it != it_end;
-            ++it )
+        for( const HashtableAccounts::value_type & value : m_accounts )
         {
-            const ConstString & accountID = it->first;
+            const ConstString & accountID = value.key;
 
             Helper::writeIniSetting( file, "Account", accountID );
         }
 
-        for( MapAccounts::iterator
-            it = m_accounts.begin(),
-            it_end = m_accounts.end();
-            it != it_end;
-            ++it )
+        for( const HashtableAccounts::value_type & value : m_accounts )
         {
-            const AccountInterfacePtr & account = it->second;
+            const AccountInterfacePtr & account = value.element;
 
             if( account->save() == false )
             {

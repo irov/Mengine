@@ -16,10 +16,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PythonScriptModuleLoader::~PythonScriptModuleLoader()
     {
-        if( m_kernel != nullptr )
-        {
-            m_kernel->decref( m_module );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptModuleLoader::setModule( pybind::kernel_interface * _kernel, PyObject * _module )
@@ -50,6 +46,18 @@ namespace Mengine
         m_filePath = _filePath;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonScriptModuleLoader::finalize()
+    {
+        m_dataflow = nullptr;
+        m_fileGroup = nullptr;
+
+        if( m_kernel != nullptr )
+        {
+            m_kernel->decref( m_module );
+            m_module = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptModuleLoader::setPackagePath( bool _packagePath )

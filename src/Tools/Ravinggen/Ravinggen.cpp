@@ -217,7 +217,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     const Mengine::FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
         ->getFileGroup( Mengine::ConstString::none() );
 
-    Mengine::MemoryInterfacePtr memory = Mengine::Helper::createMemoryFile( fileGroup, fp_in, false, MENGINE_DOCUMENT_FUNCTION );
+    Mengine::MemoryInterfacePtr memory = Mengine::Helper::createMemoryFile( fileGroup, fp_in, false, false, MENGINE_DOCUMENT_FUNCTION );
 
     void * memoryBuffer = memory->getBuffer();
     size_t memorySize = memory->getSize();

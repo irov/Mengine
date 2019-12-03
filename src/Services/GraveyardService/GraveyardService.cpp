@@ -58,6 +58,7 @@ namespace Mengine
         {
             m_count--;
 
+            entry.fileGroup = nullptr;
             entry.image = nullptr;
         }
 
@@ -113,7 +114,7 @@ namespace Mengine
 
         RenderTextureGraveEntry entry;
 
-        entry.category = fileGroup;
+        entry.fileGroup = fileGroup;
         entry.filePath = filePath;
 
         entry.image = _texture->getImage();
@@ -141,7 +142,7 @@ namespace Mengine
 
         VectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath]( const RenderTextureGraveEntry & _entry )
         {
-            if( _entry.category != _fileGroup )
+            if( _entry.fileGroup != _fileGroup )
             {
                 return false;
             }

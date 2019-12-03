@@ -87,6 +87,7 @@ namespace Mengine
         void sendPickerable( const ScenePtr & _scene );
         void sendRenderable( const ScenePtr & _scene );
         void sendSettings();
+        void sendObjectsLeak();
 
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
         void serializeNodeSingle( const NodePtr & _node, pugi::xml_node & _xmlNode );

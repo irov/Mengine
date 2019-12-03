@@ -35,7 +35,7 @@ namespace Mengine
         virtual void increfFactoryGeneration() = 0;
         virtual uint32_t getFactoryGeneration() const = 0;
 
-        typedef Lambda<void( const Factory * _factory, const Factorable *, const Char * _name, const Char * _doc )> LambdaFactoryLeaks;
+        typedef Lambda<void( const Factory * _factory, const Factorable *, const Char * _type, const Char * _doc )> LambdaFactoryLeaks;
         virtual void visitFactoryLeakObjects( uint32_t _generation, const LambdaFactoryLeaks & _leaks ) const = 0;
 
     public:

@@ -50,6 +50,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextLocalePackage::finalize()
+    {
+        m_fileGroup = nullptr;
+        m_memory = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const FileGroupInterfacePtr & TextLocalePackage::getFileGroup() const
     {
         return m_fileGroup;

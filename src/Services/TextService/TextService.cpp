@@ -59,7 +59,16 @@ namespace Mengine
     void TextService::_finalizeService()
     {
         m_texts.clear();
+
+        for( const HashtableTextFont::value_type & value : m_fonts )
+        {
+            const TextFontInterfacePtr & font = value.element;
+
+            font->finalize();
+        }
+        
         m_fonts.clear();
+
         m_aliases.clear();
         m_aliasesArguments.clear();
         

@@ -15,6 +15,10 @@ namespace Mengine
         ~ConverterService() override;
 
     public:
+        bool _initializeService() override;
+        void _finalizeService() override;
+
+    public:
         ConverterInterfacePtr createConverter( const ConstString & _type, const Char * _doc ) override;
 
     public:

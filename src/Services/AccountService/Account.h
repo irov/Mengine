@@ -23,6 +23,7 @@ namespace Mengine
 
     public:
         bool initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folderPath, uint32_t _projectVersion );
+        void finalize();
 
     public:
         const ConstString & getID() const override;
@@ -75,6 +76,6 @@ namespace Mengine
         MapSettings m_settings;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Account> AccountPtr;
+    typedef IntrusivePtr<Account, AccountInterface> AccountPtr;
     //////////////////////////////////////////////////////////////////////////
 }

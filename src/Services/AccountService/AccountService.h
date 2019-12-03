@@ -4,11 +4,11 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#include "Account.h"
+
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Factory.h"
-
-#include "Config/Map.h"
+#include "Kernel/Hashtable.h"
 
 namespace Mengine
 {
@@ -84,8 +84,8 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroup;
         ArchivatorInterfacePtr m_archivator;
 
-        typedef Map<ConstString, AccountInterfacePtr> MapAccounts;
-        MapAccounts m_accounts;
+        typedef Hashtable<ConstString, AccountPtr> HashtableAccounts;
+        HashtableAccounts m_accounts;
 
         FactoryPtr m_factoryAccounts;
 

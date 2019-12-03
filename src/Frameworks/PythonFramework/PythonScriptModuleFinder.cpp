@@ -113,6 +113,8 @@ namespace Mengine
 
                 return m_embed.ret();
             }
+
+            loader->finalize();
         }
 #endif
 
@@ -128,6 +130,8 @@ namespace Mengine
 
                 return m_embed.ret();
             }
+
+            loader->finalize();
         }
 
         return _kernel->ret_none();
@@ -146,6 +150,8 @@ namespace Mengine
         }
 
         PyObject * py_code = loader->load_module( _kernel, _module );
+
+        loader->finalize();
 
         return py_code;
     }

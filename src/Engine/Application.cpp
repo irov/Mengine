@@ -32,6 +32,7 @@
 #include "Interface/ScriptWrapperInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/SettingsServiceInterface.h"
+#include "Interface/FactoryServiceInterface.h"
 
 #include "Kernel/Document.h"
 #include "Kernel/Logger.h"
@@ -887,6 +888,18 @@ namespace Mengine
             {
                 SCENE_SERVICE()
                     ->restartCurrentScene( false, nullptr );
+            }
+
+            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isKeyDown( KC_OEM_PLUS ) == true )
+            {
+                FACTORY_SERVICE()
+                    ->increfFactoryGeneration();
+            }
+
+            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isKeyDown( KC_OEM_MINUS ) == true )
+            {
+                FACTORY_SERVICE()
+                    ->increfFactoryGeneration();
             }
 
             if( _event.code == KC_OEM_MINUS && _event.isDown == true )

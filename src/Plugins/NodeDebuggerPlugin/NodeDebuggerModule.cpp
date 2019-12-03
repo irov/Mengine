@@ -271,6 +271,7 @@ namespace Mengine
             this->sendPickerable( m_scene );
             this->sendRenderable( m_scene );
             this->sendSettings();
+            this->sendObjectsLeak();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -554,18 +555,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendPacket( NodeDebuggerPacket & _packet )
     {
-        if( !_packet.payload.empty() )
+        if( _packet.payload.empty() == true )
         {
-            PacketHeader hdr;
-            hdr.magic = PACKET_MAGIC;
-
-            compressPacket( _packet, hdr );
-
-            Detail::InsertPacketHeader( _packet.payload, hdr );
-
-            ThreadMutexScope mutexLock( m_dataMutex );
-            m_outgoingPackets.emplace_back( _packet );
+            return;
         }
+
+        PacketHeader hdr;
+        hdr.magic = PACKET_MAGIC;
+
+        this->compressPacket( _packet, hdr );
+
+        Detail::InsertPacketHeader( _packet.payload, hdr );
+
+        ThreadMutexScope mutexLock( m_dataMutex );
+        m_outgoingPackets.emplace_back( _packet );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode )
@@ -883,6 +886,66 @@ namespace Mengine
             xml_setting.append_attribute( "name" ).set_value( _name.c_str() );
             xml_setting.append_attribute( "file" ).set_value( fullPath );
         } );
+
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef _DEBUG
+        const uint32_t xmlFlags = pugi::format_indent;
+#else
+        const uint32_t xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        this->sendPacket( packet );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::sendObjectsLeak()
+    {
+        uint32_t generation = FACTORY_SERVICE()
+            ->getFactoryGeneration();
+
+        if( generation < 2 )
+        {
+            return;
+        }
+
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "ObjectsLeak" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        uint32_t leakcount = 0;
+
+        typedef Map<String, VectorString> MapObjectLeaks;
+        MapObjectLeaks objectLeaks;
+        FACTORY_SERVICE()
+            ->visitFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const Char * _doc )
+        {
+            MENGINE_UNUSED( _factory );
+            MENGINE_UNUSED( _factorable );
+
+            objectLeaks[_type].emplace_back( _doc );
+
+            ++leakcount;
+        } );
+
+        for( auto && [factory, objects] : objectLeaks )
+        {
+            pugi::xml_node xml_objects = payloadNode.append_child( "Objects" );
+
+            xml_objects.append_attribute( "factory" ).set_value( factory.c_str() );
+
+            for( const String & name : objects )
+            {
+                pugi::xml_node xml_object = xml_objects.append_child( "Object" );
+
+                xml_object.append_attribute( "name" ).set_value( name.c_str() );
+            }
+        }
 
         NodeDebuggerPacket packet;
 

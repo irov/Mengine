@@ -62,6 +62,12 @@ namespace Mengine
         m_fonts.clear();
         m_aliases.clear();
         m_aliasesArguments.clear();
+        
+        for( const TextLocalePackagePtr & package : m_packages )
+        {
+            package->finalize();
+        }
+
         m_packages.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
@@ -522,10 +528,12 @@ namespace Mengine
             if( _pack->getFileGroup() != _fileGroup )
             {
                 return false;
-            }return true;
-        } )
-            , m_packages.end()
-            );
+            }
+
+            _pack->finalize();
+
+            return true;
+        } ), m_packages.end() );
 
         return true;
     }

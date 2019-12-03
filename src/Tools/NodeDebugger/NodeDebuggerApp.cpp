@@ -150,14 +150,14 @@ namespace Mengine
 
         // Create tabs
         m_tabs.push_back({
-            "Game debugger",
+            "Scene Debugger",
             true,
-            [this]() { this->DoUIGameDebuggerTab(); }
+            [this]() { this->DoUISceneDebuggerTab(); }
         });
         m_tabs.push_back({
-            "Game logger",
+            "Objects Leak",
             true,
-            [this]() { this->DoUILogTab(); }
+            [this]() { this->DoUIObjectsLeakTab(); }
         });
         m_tabs.push_back({
             "Settings",
@@ -404,6 +404,11 @@ namespace Mengine
             this->ReceiveRenderable( payloadNode );
         }
 
+        if( typeStr == "ObjectsLeak" )
+        {
+            this->ReceiveObjectsLeak( payloadNode );
+        }
+
         if( typeStr == "Settings" )
         {
             this->ReceiveSettings( payloadNode );
@@ -470,9 +475,34 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerApp::ReceiveObjectsLeak( const pugi::xml_node & _xmlContainer )
+    {
+        MENGINE_UNUSED( _xmlContainer );
+
+        m_objectLeaks.clear();
+
+        _xmlContainer.child( "Generation" ).value();
+
+        for( const pugi::xml_node & child : _xmlContainer.children() )
+        {
+            const pugi::char_t * type = child.attribute( "type" ).value();
+            
+            VectorString & objects = m_objectLeaks[type];
+
+            for( const pugi::xml_node & o : child.children() )
+            {
+                const pugi::char_t * name = child.attribute( "name" ).value();
+
+                objects.emplace_back( name );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::ReceiveSettings( const pugi::xml_node & _xmlContainer )
     {
         MENGINE_UNUSED( _xmlContainer );
+
+        m_settings.clear();
 
         for( const pugi::xml_node & child : _xmlContainer.children() )
         {
@@ -826,7 +856,7 @@ namespace Mengine
         ImGui::End();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUIGameDebuggerTab()
+    void NodeDebuggerApp::DoUISceneDebuggerTab()
     {
         const float leftPanelWidth = 400.0f;
 
@@ -932,7 +962,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            DoNodeElement( m_scene, "Full" );
+                            this->DoNodeElement( m_scene, "Full" );
                         }
                         ImGui::EndChild();
                     }
@@ -946,7 +976,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            DoNodeElement( m_scenePickerable, "Pickerable" );
+                            this->DoNodeElement( m_scenePickerable, "Pickerable" );
                         }
                         ImGui::EndChild();
                     }
@@ -960,7 +990,7 @@ namespace Mengine
                     {
                         if( ImGui::BeginChild( "SceneTree", ImVec2( 0, 0 ), false, ImGuiWindowFlags_HorizontalScrollbar ) )
                         {
-                            DoNodeElement( m_sceneRenderable, "Renderable" );
+                            this->DoNodeElement( m_sceneRenderable, "Renderable" );
                         }
                         ImGui::EndChild();
                     }
@@ -974,7 +1004,7 @@ namespace Mengine
         {
             if( m_selectedNode )
             {
-                DoNodeProperties( m_selectedNode );
+                this->DoNodeProperties( m_selectedNode );
             }
         }
         ImGui::EndChild();
@@ -982,9 +1012,21 @@ namespace Mengine
         ImGui::Columns( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerApp::DoUILogTab()
+    void NodeDebuggerApp::DoUIObjectsLeakTab()
     {
-        ImGui::InputTextMultiline( "", "Log: libe 1\nLog: line 2\nLog: line 3\n", 0, ImVec2( 0.f, 0.f ), ImGuiInputTextFlags_ReadOnly );
+        for( auto && [type, objects] : m_objectLeaks )
+        {
+            ImGui::Text( "Factory: %s"
+                , type.c_str() 
+            );
+
+            for( const String & name : objects )
+            {
+                ImGui::Text( "  -- %s"
+                    , name.c_str()
+                );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUISettingsTab()

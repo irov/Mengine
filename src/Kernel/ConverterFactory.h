@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/ConverterServiceInterface.h"
+#include "Interface/ConverterFactoryInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -58,19 +59,14 @@ namespace Mengine
                 return nullptr;
             }
 
-            if( CONVERTER_SERVICE()
-                ->registerConverter( Helper::stringizeString( _type ), converter ) == false )
-            {
-                return nullptr;
-            }
+            VOCABULARY_SET( ConverterFactoryInterface, STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ), converter );
 
             return converter;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         MENGINE_INLINE void unregisterConverter( const Char * _type )
         {
-            CONVERTER_SERVICE()
-                ->unregisterConverter( Helper::stringizeString( _type ) );
+            VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), Helper::stringizeString( _type ) );
         }
     }
 }

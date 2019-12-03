@@ -44,7 +44,6 @@ namespace Mengine
 
     protected:
         ArchivatorInterfacePtr m_archivator;
-
         FileGroupInterfacePtr m_fileGroupDev;
 
         InputStreamInterfacePtr m_stream;

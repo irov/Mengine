@@ -46,7 +46,7 @@ namespace Mengine
 
         struct RenderTextureGraveEntry
         {
-            FileGroupInterfacePtr category;
+            FileGroupInterfacePtr fileGroup;
             FilePath filePath;
 
             RenderImageInterfacePtr image;

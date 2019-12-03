@@ -65,14 +65,6 @@ namespace Mengine
     void FactoryService::_finalizeService()
     {
 #ifdef MENGINE_DEBUG
-        VectorString factoryLeaks;
-        for( const FactoryDesc & desc : m_factories )
-        {
-            factoryLeaks.emplace_back( desc.factory_name );
-        }
-#endif
-
-#ifdef MENGINE_DEBUG
         if( m_memleakDetection == false )
         {
             return;
@@ -82,13 +74,12 @@ namespace Mengine
 
         typedef Map<String, VectorString> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
-        this->visitFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _name, const Char * _doc )
+        this->visitFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const Char * _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
-
-            objectLeaks[_name].emplace_back( _doc );
+            objectLeaks[_type].emplace_back( _doc );
 
             ++leakcount;
         } );

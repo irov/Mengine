@@ -35,7 +35,7 @@ namespace Mengine
 
         struct UserdataDesc
         {
-            FileGroupInterfacePtr category;
+            FileGroupInterfacePtr fileGroup;
             FilePath path;
 #ifdef MENGINE_DEBUG
             Document doc;

@@ -1,6 +1,7 @@
 #include "ConverterService.h"
 
-#include "Interface/FileServiceInterface.h"
+#include "Interface/ConverterFactoryInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -23,55 +24,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _factory )
-    {
-        LOGGER_INFO( "add converter '%s'"
-            , _type.c_str()
-        );
-
-        m_mapConverterSystem.emplace( _type, _factory );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ConverterService::unregisterConverter( const ConstString & _type )
-    {
-        LOGGER_INFO( "remove converter '%s'"
-            , _type.c_str()
-        );
-
-        MapConverterSystem::iterator it_found = m_mapConverterSystem.find( _type );
-
-        if( it_found == m_mapConverterSystem.end() )
-        {
-            return false;
-        }
-
-        m_mapConverterSystem.erase( it_found );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const Char * _doc )
     {
         LOGGER_INFO( "create converter '%s'"
             , _type.c_str()
         );
 
-        MapConverterSystem::iterator it_find = m_mapConverterSystem.find( _type );
+        ConverterFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "ConverterFactory" ), _type );
 
-        if( it_find == m_mapConverterSystem.end() )
-        {
-            LOGGER_INFO( "not found converter '%s'"
-                , _type.c_str()
-            );
-
-            return nullptr;
-        }
-
-        const ConverterFactoryInterfacePtr & factory = it_find->second;
-
-        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "invalid factory '%s' is nullptr"
+        MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found converter factory '%s'"
             , _type.c_str()
         );
 

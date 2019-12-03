@@ -24,7 +24,8 @@
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 
-#include "Config/Stringstream.h"
+#include "PlayerGlobalInputHandler.h"
+#include "PlayerGlobalAffectorable.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/NodeRenderHierarchy.h"
@@ -41,14 +42,11 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "PlayerGlobalInputHandler.h"
-#include "PlayerGlobalAffectorable.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
 #include "Kernel/Resource.h"
+
+#include "Config/Stringstream.h"
 
 #include "math/mat3.h"
 
@@ -70,118 +68,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PlayerService::~PlayerService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::setArrow( const ArrowPtr & _arrow )
-    {
-        if( m_arrow != nullptr )
-        {
-            m_arrow->disable();
-
-            m_arrow->setRenderCamera( nullptr );
-            m_arrow->setRenderViewport( nullptr );
-            m_arrow->setRenderScissor( nullptr );
-
-            m_arrow->onDestroy();
-            m_arrow = nullptr;
-        }
-
-        m_arrow = _arrow;
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->setRenderCamera( m_arrowCamera2D );
-            m_arrow->setRenderViewport( m_renderViewport );
-            m_arrow->setRenderScissor( m_renderScissor );
-
-            m_arrow->enable();
-        }
-
-        PICKER_SERVICE()
-            ->setArrow( m_arrow );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ArrowPtr & PlayerService::getArrow() const
-    {
-        return m_arrow;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint )
-    {
-        Helper::screenToWorldPosition( m_renderCamera, _screenPoint, _worldPoint );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha )
-    {
-        Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
-    {
-        SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
-
-        sm->setName( _name );
-
-        if( sm->initialize() == false )
-        {
-            return nullptr;
-        }
-
-        m_schedulers.emplace_back( sm );
-
-        return sm;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::destroySchedulerManager( const SchedulerInterfacePtr & _scheduler )
-    {
-        VectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
-
-        if( it_found == m_schedulers.end() )
-        {
-            LOGGER_ERROR( "scheduler '%s' not found!"
-                , _scheduler->getName().c_str()
-            );
-
-            return false;
-        }
-
-        _scheduler->finalize();
-
-        m_schedulers.erase( it_found );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const GlobalInputHandlerInterfacePtr & PlayerService::getGlobalInputHandler() const
-    {
-        return m_globalInputHandler;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const SchedulerInterfacePtr & PlayerService::getScheduler() const
-    {
-        return m_scheduler;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const SchedulerInterfacePtr & PlayerService::getGlobalScheduler() const
-    {
-        return m_schedulerGlobal;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RandomizerInterfacePtr & PlayerService::getRandomizer() const
-    {
-        return m_randomizer;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const AffectorablePtr & PlayerService::getAffectorable() const
-    {
-        return m_affectorable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const AffectorablePtr & PlayerService::getGlobalAffectorable() const
-    {
-        return m_affectorableGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
@@ -294,6 +180,9 @@ namespace Mengine
             m_arrow->setRenderViewport( nullptr );
             m_arrow->setRenderScissor( nullptr );
 
+            PICKER_SERVICE()
+                ->setArrow( nullptr );
+
             m_arrow->onDestroy();
             m_arrow = nullptr;
         }
@@ -338,6 +227,121 @@ namespace Mengine
         {
             m_affectorableGlobal->stopAllAffectors();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::setArrow( const ArrowPtr & _arrow )
+    {
+        if( m_arrow != nullptr )
+        {
+            m_arrow->disable();
+
+            m_arrow->setRenderCamera( nullptr );
+            m_arrow->setRenderViewport( nullptr );
+            m_arrow->setRenderScissor( nullptr );
+
+            PICKER_SERVICE()
+                ->setArrow( nullptr );
+
+            m_arrow->onDestroy();
+            m_arrow = nullptr;
+        }
+
+        m_arrow = _arrow;
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->setRenderCamera( m_arrowCamera2D );
+            m_arrow->setRenderViewport( m_renderViewport );
+            m_arrow->setRenderScissor( m_renderScissor );
+
+            PICKER_SERVICE()
+                ->setArrow( m_arrow );
+
+            m_arrow->enable();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ArrowPtr & PlayerService::getArrow() const
+    {
+        return m_arrow;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint )
+    {
+        Helper::screenToWorldPosition( m_renderCamera, _screenPoint, _worldPoint );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha )
+    {
+        Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
+    {
+        SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
+
+        sm->setName( _name );
+
+        if( sm->initialize() == false )
+        {
+            return nullptr;
+        }
+
+        m_schedulers.emplace_back( sm );
+
+        return sm;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerService::destroySchedulerManager( const SchedulerInterfacePtr & _scheduler )
+    {
+        VectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
+
+        if( it_found == m_schedulers.end() )
+        {
+            LOGGER_ERROR( "scheduler '%s' not found!"
+                , _scheduler->getName().c_str()
+            );
+
+            return false;
+        }
+
+        _scheduler->finalize();
+
+        m_schedulers.erase( it_found );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const GlobalInputHandlerInterfacePtr & PlayerService::getGlobalInputHandler() const
+    {
+        return m_globalInputHandler;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SchedulerInterfacePtr & PlayerService::getScheduler() const
+    {
+        return m_scheduler;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SchedulerInterfacePtr & PlayerService::getGlobalScheduler() const
+    {
+        return m_schedulerGlobal;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RandomizerInterfacePtr & PlayerService::getRandomizer() const
+    {
+        return m_randomizer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AffectorablePtr & PlayerService::getAffectorable() const
+    {
+        return m_affectorable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const AffectorablePtr & PlayerService::getGlobalAffectorable() const
+    {
+        return m_affectorableGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::initializeRenderResources()

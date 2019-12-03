@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/PathString.h"
 #include "Kernel/FilePathHelper.h"
@@ -22,6 +23,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConverterService::~ConverterService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ConverterService::_initializeService()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ConverterService::_finalizeService()
+    {
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ConverterFactory" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     ConverterInterfacePtr ConverterService::createConverter( const ConstString & _type, const Char * _doc )

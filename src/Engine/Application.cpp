@@ -890,13 +890,7 @@ namespace Mengine
                     ->restartCurrentScene( false, nullptr );
             }
 
-            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isKeyDown( KC_OEM_PLUS ) == true )
-            {
-                FACTORY_SERVICE()
-                    ->increfFactoryGeneration();
-            }
-
-            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isKeyDown( KC_OEM_MINUS ) == true )
+            if( _event.code == KC_G && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 FACTORY_SERVICE()
                     ->increfFactoryGeneration();

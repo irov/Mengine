@@ -83,9 +83,12 @@ namespace Mengine
 
         this->destroyCompositionLayers_();
 
-        if( this->createCompositionLayers_() == false )
+        if( _compositionName.empty() == false )
         {
-            return false;
+            if( this->createCompositionLayers_() == false )
+            {
+                return false;
+            }
         }
 
         return true;
@@ -611,6 +614,12 @@ namespace Mengine
 
         m_matrixProxies.clear();
 
+        for( const HashtableSlots::value_type & value : m_slots )
+        {
+            const Movie2SlotPtr & slot = value.element;
+            slot->removeFromParent();
+        }
+
         m_slots.clear();
 
         for( const HashtableSockets::value_type & value : m_sockets )
@@ -623,9 +632,30 @@ namespace Mengine
 
         m_sockets.clear();
 
+        for( const HashtableTexts::value_type & value : m_texts )
+        {
+            const TextFieldPtr & text = value.element;
+            text->removeFromParent();
+        }
+
         m_texts.clear();
-        m_particleEmitters.clear();
+
+        for( const HashtableSprites::value_type & value : m_sprites )
+        {
+            const ShapeQuadFixedPtr & sprite = value.element;
+            sprite->removeFromParent();
+        }
+
         m_sprites.clear();
+
+        for( const HashtableParticleEmitter2s::value_type & value : m_particleEmitters )
+        {
+            const NodePtr & particle = value.element;
+            particle->removeFromParent();
+        }
+
+        m_particleEmitters.clear();
+
         m_subCompositions.clear();
     }
     //////////////////////////////////////////////////////////////////////////

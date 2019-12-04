@@ -31,10 +31,10 @@ namespace Mengine
         virtual void onTurnSound( bool _turn ) = 0;
 
     public:
-        virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable ) = 0;
+        virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const Char * _doc ) = 0;
 
     public:
-        virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
+        virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const Char * _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

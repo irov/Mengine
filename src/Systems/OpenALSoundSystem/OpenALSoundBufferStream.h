@@ -24,8 +24,9 @@ namespace Mengine
         OpenALSoundBufferStream();
         ~OpenALSoundBufferStream() override;
 
-    protected:
-        bool _initialize() override;
+    public:
+        bool initialize() override;
+        void finalize() override;
 
     public:
         bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;

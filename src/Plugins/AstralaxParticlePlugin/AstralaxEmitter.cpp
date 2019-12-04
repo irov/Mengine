@@ -177,6 +177,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::_release()
     {
+        m_emitter->setPositionProvider( nullptr );
+        m_emitter->setCameraProvider( nullptr );
         m_emitter = nullptr;
 
         m_resourceParticle->release();

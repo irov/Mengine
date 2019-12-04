@@ -36,7 +36,7 @@ namespace Mengine
         m_particleSystem = _particleSystem;
         m_container = _container;
 
-        HM_EMITTER emitterId = stdex::intrusive_static_cast<AstralaxEmitterContainer2Ptr>(m_container)
+        HM_EMITTER emitterId = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(m_container)
             ->createEmitterId();
 
         if( emitterId == 0 )
@@ -77,7 +77,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter2::finalize()
     {
-        stdex::intrusive_static_cast<AstralaxEmitterContainer2Ptr>(m_container)
+        stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(m_container)
             ->destroyEmitterId( m_emitterId );
 
         m_emitterId = 0;

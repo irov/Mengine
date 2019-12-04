@@ -159,6 +159,8 @@ namespace Mengine
         }
 
         m_behaviorEventable = nullptr;
+
+        this->unwrap();
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_destroy()

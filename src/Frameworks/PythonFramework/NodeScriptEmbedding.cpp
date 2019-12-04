@@ -17,6 +17,7 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Reference.h"
+#include "Kernel/Eventable.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
@@ -2580,7 +2581,12 @@ namespace Mengine
             .def_mutable( "getAnimation", &Animatable::getAnimation )
             ;
 
+        pybind::interface_<EventationInterface, pybind::bases<Mixin>>( _kernel, "Eventation" )
+            .def( "removeEvents", &EventationInterface::removeEvents )
+            ;
+
         pybind::interface_<Eventable, pybind::bases<Mixin>>( _kernel, "Eventable" )
+            .def_mutable( "getEventation", &Eventable::getEventation )
             ;
 
         pybind::interface_<Soundable, pybind::bases<Mixin>>( _kernel, "Soundable" )
@@ -2605,7 +2611,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, Compilable, Renderable, Pickerable, Affectorable>>( _kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Eventable, Animatable, Identity, Transformation, Compilable, Renderable, Pickerable, Affectorable>>( _kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -2680,7 +2686,7 @@ namespace Mengine
             .def( "getSpeedFactor", &Affector::getSpeedFactor )
             ;
 
-        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable>>( _kernel, "Surface", false )
+        pybind::interface_<Surface, pybind::bases<Scriptable, Eventable, Animatable, Identity, Materialable, Compilable>>( _kernel, "Surface", false )
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
@@ -2690,7 +2696,7 @@ namespace Mengine
             .def_deprecated( "getColour", &Surface::getColor, "use getColor" )
             ;
 
-        pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable>>( _kernel, "SurfaceSound", false )
+        pybind::interface_<SurfaceSound, pybind::bases<Surface, Soundable>>( _kernel, "SurfaceSound", false )
             .def( "setResourceSound", &SurfaceSound::setResourceSound )
             .def( "getResourceSound", &SurfaceSound::getResourceSound )
             .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
@@ -2701,7 +2707,7 @@ namespace Mengine
             .def( "getResourceImage", &SurfaceImage::getResourceImage )
             ;
 
-        pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Eventable, Animatable>>( _kernel, "SurfaceImageSequence", false )
+        pybind::interface_<SurfaceImageSequence, pybind::bases<Surface>>( _kernel, "SurfaceImageSequence", false )
             .def( "setResourceImageSequence", &SurfaceImageSequence::setResourceImageSequence )
             .def( "getResourceImageSequence", &SurfaceImageSequence::getResourceImageSequence )
             .def( "getFrameCount", &SurfaceImageSequence::getFrameCount )

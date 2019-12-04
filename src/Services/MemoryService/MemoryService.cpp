@@ -79,7 +79,17 @@ namespace Mengine
     {
         this->clearCacheBuffers();
 
-        m_memoryCacheMutex = nullptr;
+        if( SERVICE_EXIST( ThreadServiceInterface ) == true )
+        {
+            m_memoryCacheMutex = nullptr;
+
+            m_factoryMemoryBuffer->setMutex( nullptr );
+            m_factoryMemoryProxy->setMutex( nullptr );
+            m_factoryMemoryCacheBuffer->setMutex( nullptr );
+            m_factoryMemoryCacheInput->setMutex( nullptr );
+            m_factoryMemoryProxyInput->setMutex( nullptr );
+            m_factoryMemoryInput->setMutex( nullptr );
+        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryProxy );

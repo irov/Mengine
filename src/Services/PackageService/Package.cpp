@@ -871,7 +871,7 @@ namespace Mengine
             }
 
             ResourcePtr resource = RESOURCE_SERVICE()
-                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT_FUNCTION );
+                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT( "locale '%s' group '%s' name '%s' type '%s'", _locale.c_str(), groupName.c_str(), name.c_str(), type.c_str() ) );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
                 , _filePath.c_str()
@@ -917,7 +917,17 @@ namespace Mengine
 
             if( precompile == true )
             {
-                resource->compile();
+                resource->setPrecompile( true );
+
+                if( resource->compile() == false )
+                {
+                    LOGGER_ERROR( "resource '%s' type [%s] invalid precompile"
+                        , name.c_str()
+                        , type.c_str()
+                    );
+
+                    continue;
+                }
             }
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -1006,6 +1016,14 @@ namespace Mengine
                 );
 
                 return false;
+            }
+
+            bool precompile = false;
+            meta_resource->get_Precompile( &precompile );
+
+            if( precompile == true )
+            {
+                has_resource->release();
             }
 
             if( RESOURCE_SERVICE()

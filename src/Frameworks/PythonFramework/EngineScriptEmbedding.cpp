@@ -892,7 +892,6 @@ namespace Mengine
             const PythonEntityBehaviorPtr & behavior = arrow->getBehavior();
             const pybind::object & py_arrow = behavior->getScriptObject();
 
-
             return py_arrow;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -3420,7 +3419,7 @@ namespace Mengine
                 : m_kernel( _kernel )
                 , m_l( _kernel )
             {
-                m_scope = m_kernel->class_scope<Resource>();
+                m_scope = m_kernel->get_class_type_scope_t<Resource>();
             }
 
             ~GetResourceVisitor() override

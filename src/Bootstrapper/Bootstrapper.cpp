@@ -866,9 +866,9 @@ namespace Mengine
 
         SERVICE_PROVIDER_STOP();
 
-        this->stopDevModules_();
-        this->stopModules_();
         this->stopFrameworks_();
+        this->stopModules_();
+        this->stopDevModules_();
 
         this->finalizeFrameworks_();
 

@@ -27,6 +27,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/PluginServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 

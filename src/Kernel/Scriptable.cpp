@@ -71,15 +71,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::unwrap()
     {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
-        if( m_kernel != nullptr )
+        if( m_embed != nullptr )
         {
             PyObject * embed = m_embed;
             m_embed = nullptr;
-            m_kernel->unwrap( embed );
-            m_kernel = nullptr;
+            m_scriptWrapper->unwrap( embed );
         }
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Scriptable::setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper )

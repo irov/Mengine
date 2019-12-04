@@ -46,6 +46,8 @@ namespace Mengine
         {
             pybind::type_cast_ptr cast( new Helper::ScriptExtract<T> );
             pybind::registration_type_cast<T>(m_kernel, cast);
+
+            m_scope = m_kernel->get_class_type_scope_t<T>();
         }
 
         ~PythonScriptWrapper() override
@@ -77,7 +79,22 @@ namespace Mengine
             return py_obj;
         }
 
+        void unwrap( PyObject * _obj ) override
+        {
+            void * impl = m_kernel->get_class_impl( _obj );
+
+            if( impl != nullptr && m_kernel->is_class_weak( _obj ) == false )
+            {
+                m_scope->clear_bindable( impl );
+                m_scope->decref_smart_pointer( impl );
+            }
+
+            m_kernel->unwrap( _obj );
+        }
+
     protected:
         pybind::kernel_interface * m_kernel;
+
+        pybind::class_type_scope_interface_ptr m_scope;
     };
 }

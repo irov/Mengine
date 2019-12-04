@@ -35,7 +35,7 @@ namespace Mengine
         virtual SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _type, bool _streamable, const Char * _doc ) = 0;
 
     public:
-        virtual SoundBufferInterfacePtr createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _isStream ) = 0;
+        virtual SoundBufferInterfacePtr createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _isStream, const Char * _doc ) = 0;
 
     public:
         virtual void setSoundVolume( const ConstString & _type, float _volume, float _default ) = 0;

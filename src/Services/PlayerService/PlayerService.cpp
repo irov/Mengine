@@ -178,7 +178,9 @@ namespace Mengine
 
             m_arrow->setRenderCamera( nullptr );
             m_arrow->setRenderViewport( nullptr );
+            m_arrow->setRenderTransformation( nullptr );
             m_arrow->setRenderScissor( nullptr );
+            m_arrow->setRenderTarget( nullptr );
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );
@@ -237,7 +239,9 @@ namespace Mengine
 
             m_arrow->setRenderCamera( nullptr );
             m_arrow->setRenderViewport( nullptr );
+            m_arrow->setRenderTransformation( nullptr );
             m_arrow->setRenderScissor( nullptr );
+            m_arrow->setRenderTarget( nullptr );
 
             PICKER_SERVICE()
                 ->setArrow( nullptr );

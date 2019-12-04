@@ -730,7 +730,11 @@ namespace Mengine
                 return false;
             }
 
-            m_fonts.erase( fontName );
+            TextFontInterfacePtr font = m_fonts.erase( fontName );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( font, false );
+
+            font->finalize();
         }
 
         return true;

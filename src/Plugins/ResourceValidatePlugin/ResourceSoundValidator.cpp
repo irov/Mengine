@@ -123,9 +123,9 @@ namespace Mengine
         decoder = nullptr;
         stream = nullptr;
 
-        SoundBufferInterfacePtr buffer = _resource->createSoundBuffer();
+        SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        if( buffer == nullptr )
+        if( soundBuffer == nullptr )
         {
             LOGGER_MESSAGE( "resource '%s' group '%s' can't create buffer '%s'"
                 , _resource->getName().c_str()
@@ -135,6 +135,8 @@ namespace Mengine
 
             return false;
         }
+
+        _resource->destroySoundBuffer( soundBuffer );
 
         return true;
     }

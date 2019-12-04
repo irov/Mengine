@@ -44,7 +44,7 @@ namespace Mengine
             return false;
         }
 
-        m_soundBuffer = m_resourceSound->createSoundBuffer();
+        m_soundBuffer = m_resourceSound->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_soundBuffer, false, "sound '%s' resource '%s' sound buffer not create"
             , this->getName().c_str()
@@ -90,6 +90,8 @@ namespace Mengine
         }
 
         m_soundEmitter = nullptr;
+
+        m_resourceSound->destroySoundBuffer( m_soundBuffer );
         m_soundBuffer = nullptr;
 
         m_resourceSound->release();

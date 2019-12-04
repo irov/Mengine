@@ -70,6 +70,18 @@ namespace Mengine
 
         const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
 
+        for( const ResourceBank::HashtableResources::value_type & value : resources )
+        {
+            const ResourcePtr & resource = value.element;
+
+            bool precompile = resource->isPrecompile();
+
+            if( precompile == true )
+            {
+                resource->release();
+            }
+        }
+
 #ifndef MENGINE_MASTER_RELEASE
         for( const ResourceBank::HashtableResources::value_type & value : resources )
         {

@@ -46,7 +46,7 @@ namespace Mengine
     {
         if( m_isStreamable == false )
         {
-            SoundBufferInterfacePtr soundBuffer = this->createSoundBuffer();
+            SoundBufferInterfacePtr soundBuffer = this->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, false );
 
@@ -58,10 +58,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceSound::_release()
     {
-        m_soundBufferNoStreamableCache = nullptr;
+        if( m_soundBufferNoStreamableCache != nullptr )
+        {
+            m_soundBufferNoStreamableCache->finalize();
+            m_soundBufferNoStreamableCache = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr ResourceSound::createSoundBuffer() const
+    SoundBufferInterfacePtr ResourceSound::createSoundBuffer( const Char * _doc ) const
     {
         if( m_isStreamable == false && m_soundBufferNoStreamableCache != nullptr )
         {
@@ -72,7 +76,7 @@ namespace Mengine
         const FilePath & filePath = this->getFilePath();
 
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
-            ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable );
+            ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, nullptr, "sound '%s' group '%s' can't load sound '%s'"
             , this->getName().c_str()
@@ -81,5 +85,15 @@ namespace Mengine
         );
 
         return soundBuffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSound::destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const
+    {
+        if( m_isStreamable == false && m_soundBufferNoStreamableCache != nullptr )
+        {
+            return;
+        }
+
+        _soundBuffer->finalize();
     }
 }

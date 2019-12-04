@@ -19,10 +19,12 @@ namespace Mengine
         ~OpenALSoundBufferBase() override;
 
     public:
-        bool initialize( OpenALSoundSystem * _soundSystem );
+        void setSoundSystem( OpenALSoundSystem * _soundSystem );
+        OpenALSoundSystem * getSoundSystem() const;
 
-    protected:
-        virtual bool _initialize();
+    public:
+        bool initialize() override;
+        void finalize() override;
 
     public:
         const SoundDecoderInterfacePtr & getDecoder() const override;

@@ -71,6 +71,6 @@ namespace Mengine
         VectorResourceImages m_resourceImages;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AstralaxEmitterContainer> AstralaxEmitterContainer2Ptr;
+    typedef IntrusivePtr<AstralaxEmitterContainer> AstralaxEmitterContainerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

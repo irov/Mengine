@@ -340,7 +340,7 @@ namespace Mengine
         }
 
         SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM()
-            ->createSoundSource( _isHeadMode, _buffer );
+            ->createSoundSource( _isHeadMode, _buffer, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sourceInterface, nullptr, "create SoundSource invalid" );
 
@@ -444,9 +444,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
+    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const Char * _doc )
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, false, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "can't open sound file '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -454,7 +454,7 @@ namespace Mengine
         );
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "can't create sound decoder for file '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -474,7 +474,7 @@ namespace Mengine
         return soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
+    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const Char * _doc )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -500,7 +500,7 @@ namespace Mengine
             if( PREFETCHER_SERVICE()
                 ->getSoundDecoder( _fileGroup, _filePath, soundDecoder ) == false )
             {
-                soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, false );
+                soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, false, _doc );
             }
             else
             {
@@ -517,7 +517,7 @@ namespace Mengine
         }
         else
         {
-            soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, true );
+            soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, true, _doc );
         }
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundDecoder, nullptr, "invalid create decoder '%s':'%s' type '%s'"
@@ -527,7 +527,7 @@ namespace Mengine
         );
 
         SoundBufferInterfacePtr buffer = SOUND_SYSTEM()
-            ->createSoundBuffer( soundDecoder, _streamable );
+            ->createSoundBuffer( soundDecoder, _streamable, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "can't create sound buffer for file '%s:%s'"
             , _fileGroup->getName().c_str()

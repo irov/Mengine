@@ -88,6 +88,14 @@ namespace Mengine
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
 
+        m_scene = nullptr;
+
+        if( m_socket != nullptr )
+        {
+            m_socket->disconnect();
+            m_socket = nullptr;
+        }
+
         if( m_threadJob != nullptr )
         {
             m_threadJob->removeWorker( m_workerId );
@@ -97,6 +105,10 @@ namespace Mengine
 
             m_threadJob = nullptr;
         }
+
+        m_dataMutex = nullptr;
+
+        m_archivator = nullptr;
 
         const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
             ->getGlobalInputHandler();

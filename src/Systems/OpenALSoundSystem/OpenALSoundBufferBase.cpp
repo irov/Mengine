@@ -19,20 +19,26 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferBase::initialize( OpenALSoundSystem * _soundSystem )
+    void OpenALSoundBufferBase::setSoundSystem( OpenALSoundSystem * _soundSystem )
     {
         m_soundSystem = _soundSystem;
-
-        bool succesful = this->_initialize();
-
-        return succesful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferBase::_initialize()
+    OpenALSoundSystem * OpenALSoundBufferBase::getSoundSystem() const
+    {
+        return m_soundSystem;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenALSoundBufferBase::initialize()
     {
         //Empty
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferBase::finalize()
+    {
+        //Empty
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundDecoderInterfacePtr & OpenALSoundBufferBase::getDecoder() const

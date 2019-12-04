@@ -29,7 +29,7 @@ namespace Mengine
         this->removeBuffers_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::_initialize()
+    bool OpenALSoundBufferStream::initialize()
     {
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
@@ -39,6 +39,11 @@ namespace Mengine
         m_mutexUpdating = mutexUpdating;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferStream::finalize()
+    {
+        m_mutexUpdating = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenALSoundBufferStream::removeBuffers_()

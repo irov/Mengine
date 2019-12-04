@@ -10,6 +10,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
         virtual bool update() = 0;
 
     public:

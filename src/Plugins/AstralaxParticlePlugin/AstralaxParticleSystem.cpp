@@ -96,7 +96,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
     {
-        AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
+        AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "invalid create container doc '%s'"
             , _doc
@@ -141,7 +141,7 @@ namespace Mengine
         AstralaxEmitterContainerDesc & desc = it_found->second;
         ++desc.reference;
 
-        AstralaxEmitterContainer2Ptr new_container( desc.container );
+        AstralaxEmitterContainerPtr new_container( desc.container );
 
         return new_container;
     }

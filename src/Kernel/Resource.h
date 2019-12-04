@@ -57,6 +57,9 @@ namespace Mengine
         void setMapping( bool _mapping );
         MENGINE_INLINE bool isMapping() const;
 
+        void setPrecompile( bool _precompile );
+        MENGINE_INLINE bool isPrecompile() const;
+
     public:
         void setTags( const Tags & _tags );
         const Tags & getTags() const;
@@ -111,6 +114,7 @@ namespace Mengine
         bool m_groupCache;
         bool m_keep;
         bool m_mapping;
+        bool m_precompile;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Resource> ResourcePtr;
@@ -143,6 +147,11 @@ namespace Mengine
     MENGINE_INLINE bool Resource::isMapping() const
     {
         return m_mapping;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE bool Resource::isPrecompile() const
+    {
+        return m_precompile;
     }
     //////////////////////////////////////////////////////////////////////////
     MENGINE_INLINE uint32_t Resource::getCompileReferenceCount() const

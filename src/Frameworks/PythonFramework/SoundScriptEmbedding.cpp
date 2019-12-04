@@ -107,10 +107,11 @@ namespace Mengine
                     );
                 }
 
+                m_resource->destroySoundBuffer( m_soundBuffer );
+                m_soundBuffer = nullptr;
+
                 m_resource->release();
                 m_resource = nullptr;
-
-                m_soundBuffer = nullptr;
             }
 
             void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
@@ -170,7 +171,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
-            SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer();
+            SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( MENGINE_DOCUMENT_PYBIND );
 
             if( soundBuffer == nullptr )
             {

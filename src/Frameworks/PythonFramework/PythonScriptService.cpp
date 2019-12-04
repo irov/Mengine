@@ -12,6 +12,7 @@
 #include "Interface/ScriptProviderServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 
@@ -319,6 +320,15 @@ namespace Mengine
 
         VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ );
 
+        SERVICE_LEAVE( DataServiceInterface, []()
+        {
+            DataflowInterfacePtr dataflowPy = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
+            dataflowPy->finalize();
+
+            DataflowInterfacePtr dataflowPyz = VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
+            dataflowPyz->finalize();
+        } );
+
         pybind::interface_<PythonScriptModuleFinder>( m_kernel, "PythonScriptModuleFinder", true )
             .def_kernel( "find_module", &PythonScriptModuleFinder::find_module )
             .def_kernel( "load_module", &PythonScriptModuleFinder::load_module )
@@ -436,9 +446,6 @@ namespace Mengine
 #endif
 
         m_embeddings.clear();
-
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
-        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         m_kernel->remove_module_finder();
 

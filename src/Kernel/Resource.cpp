@@ -19,6 +19,7 @@ namespace Mengine
         , m_groupCache( false )
         , m_keep( false )
         , m_mapping( false )
+        , m_precompile( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,6 +55,11 @@ namespace Mengine
     void Resource::setMapping( bool _mapping )
     {
         m_mapping = _mapping;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Resource::setPrecompile( bool _precompile )
+    {
+        m_precompile = _precompile;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setTags( const Tags & _tags )

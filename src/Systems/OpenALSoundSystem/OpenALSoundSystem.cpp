@@ -6,6 +6,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
@@ -193,9 +194,9 @@ namespace Mengine
         //}
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
+    SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const Char * _doc )
     {
-        OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( MENGINE_DOCUMENT_FUNCTION );
+        OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( _doc );
 
         soundSource->setSoundSystem( this );
 
@@ -205,15 +206,19 @@ namespace Mengine
         return soundSource;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr OpenALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+    SoundBufferInterfacePtr OpenALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const Char * _doc )
     {
         OpenALSoundBufferBasePtr base = nullptr;
 
         if( _isStream == false || SERVICE_IS_AVAILABLE( ThreadServiceInterface ) == false )
         {
-            OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( MENGINE_DOCUMENT_FUNCTION );
+            OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( _doc );
 
-            if( buffer->initialize( this ) == false )
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
+
+            buffer->setSoundSystem( this );
+
+            if( buffer->initialize() == false )
             {
                 return nullptr;
             }
@@ -222,9 +227,13 @@ namespace Mengine
         }
         else
         {
-            OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( MENGINE_DOCUMENT_FUNCTION );
+            OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( _doc );
 
-            if( buffer->initialize( this ) == false )
+            MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
+
+            buffer->setSoundSystem( this );
+
+            if( buffer->initialize() == false )
             {
                 return nullptr;
             }

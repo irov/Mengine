@@ -39,6 +39,7 @@ namespace Mengine
             {
             case ESCT_SET:
                 {
+                    desc.scene->disable();
                     desc.scene->onDestroy();
                     desc.scene = nullptr;
                 }break;

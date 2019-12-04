@@ -26,7 +26,8 @@ namespace Mengine
         float getDefaultVolume() const;
 
     public:
-        SoundBufferInterfacePtr createSoundBuffer() const;
+        SoundBufferInterfacePtr createSoundBuffer( const Char * _doc ) const;
+        void destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const;
 
     protected:
         bool _compile() override;

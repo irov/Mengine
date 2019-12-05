@@ -9,7 +9,6 @@
 
 #include "Engine/ResourceSound.h"
 
-#include "Interface/SoundBufferInterface.h"
 #include "Interface/SoundIdentityInterface.h"
 
 namespace Mengine
@@ -104,8 +103,7 @@ namespace Mengine
     private:
         ResourceSoundPtr m_resourceSound;
 
-        SoundBufferInterfacePtr m_soundBuffer;
-        SoundIdentityInterfacePtr m_soundEmitter;
+        SoundIdentityInterfacePtr m_soundIdentity;
 
         ESoundSourceCategory m_sourceCategory;
 

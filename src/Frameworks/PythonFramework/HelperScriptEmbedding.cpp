@@ -167,7 +167,7 @@ namespace Mengine
 
 #if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
             _asm int 3;
-#endif			
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
         void s_debugNode( Node * _node )
@@ -648,7 +648,7 @@ namespace Mengine
 
             size_t total_base64_size;
             Char total_base64[16];
-            Helper::base64_encode( (const uint8_t *)& total, sizeof( total ), false, total_base64, 16, &total_base64_size );
+            Helper::base64_encode( (const uint8_t *)&total, sizeof( total ), false, total_base64, 16, &total_base64_size );
             total_base64[total_base64_size] = '\0';
 
             Stringstream ss;

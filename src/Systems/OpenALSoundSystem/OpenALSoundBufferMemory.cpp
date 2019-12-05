@@ -21,6 +21,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferMemory::~OpenALSoundBufferMemory()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenALSoundBufferMemory::_acquire()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferMemory::_release()
+    {
         if( m_alBufferId != 0 )
         {
             m_soundSystem->releaseBufferId( m_alBufferId );

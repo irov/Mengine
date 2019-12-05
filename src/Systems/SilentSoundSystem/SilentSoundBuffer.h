@@ -14,8 +14,8 @@ namespace Mengine
         ~SilentSoundBuffer() override;
 
     public:
-        bool initialize() override;
-        void finalize() override;
+        bool acquire() override;
+        void release() override;
 
     public:
         bool update() override;

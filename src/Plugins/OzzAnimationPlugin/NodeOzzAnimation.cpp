@@ -64,7 +64,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resource]()
+        this->recompile( [this, &_resource]()
         {
             this->m_resourceImage = _resource;
         } );
@@ -82,7 +82,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resource]()
+        this->recompile( [this, &_resource]()
         {
             this->m_resourceSkeleton = _resource;
         } );
@@ -100,7 +100,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resource]()
+        this->recompile( [this, &_resource]()
         {
             this->m_resourceMesh = _resource;
         } );

@@ -44,33 +44,40 @@ namespace Mengine
             return false;
         }
 
-        m_soundBuffer = m_resourceSound->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
+        SoundBufferInterfacePtr soundBuffer = m_resourceSound->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_soundBuffer, false, "sound '%s' resource '%s' sound buffer not create"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, false, "sound '%s' resource '%s' sound buffer not create"
             , this->getName().c_str()
             , m_resourceSound->getName().c_str()
         );
 
         bool streamable = m_resourceSound->isStreamable();
 
-        m_soundEmitter = SOUND_SERVICE()
-            ->createSoundIdentity( m_isHeadMode, m_soundBuffer, m_sourceCategory, streamable
+        SoundIdentityInterfacePtr  soundIdentity = SOUND_SERVICE()
+            ->createSoundIdentity( m_isHeadMode, soundBuffer, m_sourceCategory, streamable
                 , MENGINE_DOCUMENT( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( m_soundEmitter, false, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
+        MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, false, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
             , this->getName().c_str()
             , m_resourceSound->getName().c_str()
             , m_sourceCategory
             , streamable
         );
 
-        m_soundEmitter->setSoundListener( SoundListenerInterfacePtr( this ) );
+        soundIdentity->setSoundListener( SoundListenerInterfacePtr( this ) );
 
         AnimationInterface * animation = this->getAnimation();
         bool loop = animation->isLoop();
 
         SOUND_SERVICE()
-            ->setLoop( m_soundEmitter, loop );
+            ->setLoop( soundIdentity, loop );
+
+        if( soundIdentity->initialize() == false )
+        {
+            return false;
+        }
+
+        m_soundIdentity = soundIdentity;
 
         float volume = m_resourceSound->getDefaultVolume();
         this->setVolume( volume );
@@ -81,18 +88,19 @@ namespace Mengine
     void SurfaceSound::_release()
     {
         if( SOUND_SERVICE()
-            ->releaseSoundSource( m_soundEmitter ) == false )
+            ->releaseSoundSource( m_soundIdentity ) == false )
         {
             LOGGER_ERROR( "'%s' emitter invalid release sound %d"
                 , this->getName().c_str()
-                , m_soundEmitter->getId()
+                , m_soundIdentity->getId()
             );
         }
 
-        m_soundEmitter = nullptr;
-
-        m_resourceSound->destroySoundBuffer( m_soundBuffer );
-        m_soundBuffer = nullptr;
+        if( m_soundIdentity != nullptr )
+        {
+            
+            m_soundIdentity = nullptr;
+        }
 
         m_resourceSound->release();
     }
@@ -118,7 +126,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceSound]()
+        this->recompile( [this, &_resourceSound]()
         {
             m_resourceSound = _resourceSound;
         } );
@@ -196,11 +204,11 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->playEmitter( m_soundEmitter ) == false )
+            ->playEmitter( m_soundIdentity ) == false )
         {
             LOGGER_ERROR( "'%s' invalid play [%d] resource '%s'"
                 , this->getName().c_str()
-                , m_soundEmitter->getId()
+                , m_soundIdentity->getId()
                 , m_resourceSound->getName().c_str()
             );
 
@@ -234,7 +242,7 @@ namespace Mengine
         }
 
         SOUND_SERVICE()
-            ->pauseEmitter( m_soundEmitter );
+            ->pauseEmitter( m_soundIdentity );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_resume( uint32_t _enumerator, float _time )
@@ -252,18 +260,18 @@ namespace Mengine
         }
 
         SOUND_SERVICE()
-            ->resumeEmitter( m_soundEmitter );
+            ->resumeEmitter( m_soundIdentity );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_stop( uint32_t _enumerator )
     {
-        if( m_soundEmitter != nullptr )
+        if( m_soundIdentity != nullptr )
         {
             if( SOUND_SERVICE()
-                ->isEmitterStop( m_soundEmitter ) == false )
+                ->isEmitterStop( m_soundIdentity ) == false )
             {
                 SOUND_SERVICE()
-                    ->stopEmitter( m_soundEmitter );
+                    ->stopEmitter( m_soundIdentity );
             }
         }
 
@@ -312,11 +320,11 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->setSourceVolume( m_soundEmitter, m_volume, m_volume, forceVolume ) == false )
+            ->setSourceVolume( m_soundIdentity, m_volume, m_volume, forceVolume ) == false )
         {
             LOGGER_ERROR( "invalid %s:%d %f"
                 , m_resourceSound->getName().c_str()
-                , m_soundEmitter->getId()
+                , m_soundIdentity->getId()
                 , m_volume
             );
         }
@@ -335,7 +343,7 @@ namespace Mengine
         }
 
         SOUND_SERVICE()
-            ->setLoop( m_soundEmitter, _value );
+            ->setLoop( m_soundIdentity, _value );
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceSound::_getDuration() const
@@ -350,7 +358,7 @@ namespace Mengine
         }
 
         float lengthMs = SOUND_SERVICE()
-            ->getDuration( m_soundEmitter );
+            ->getDuration( m_soundIdentity );
 
         return lengthMs;
     }
@@ -374,7 +382,7 @@ namespace Mengine
         }
 
         float lengthMs = SOUND_SERVICE()
-            ->getDuration( m_soundEmitter );
+            ->getDuration( m_soundIdentity );
 
         float pos = _time;
         if( _time > lengthMs )
@@ -383,7 +391,7 @@ namespace Mengine
         }
 
         SOUND_SERVICE()
-            ->setPosMs( m_soundEmitter, pos );
+            ->setPosMs( m_soundIdentity, pos );
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceSound::_getTime() const
@@ -398,7 +406,7 @@ namespace Mengine
         }
 
         float pos = SOUND_SERVICE()
-            ->getPosMs( m_soundEmitter );
+            ->getPosMs( m_soundIdentity );
 
         return pos;
     }

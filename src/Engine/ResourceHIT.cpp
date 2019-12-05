@@ -119,7 +119,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _filePath]()
+        this->recompile( [this, &_filePath]()
         {
             this->setFilePath( _filePath );
         } );

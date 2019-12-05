@@ -33,7 +33,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceImageSequence]()
+        this->recompile( [this, &_resourceImageSequence]()
         {
             m_resourceImageSequence = _resourceImageSequence;
         } );

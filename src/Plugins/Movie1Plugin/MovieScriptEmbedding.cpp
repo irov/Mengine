@@ -1366,12 +1366,18 @@ namespace Mengine
         pybind::interface_<MovieSlot, pybind::bases<Node> >( _kernel, "MovieSlot", false )
             ;
 
+        pybind::interface_<MovieSceneEffect, pybind::bases<Node> >( _kernel, "MovieSceneEffect", false )
+            ;
+
         pybind::interface_<MovieInternalObject, pybind::bases<Node> >( _kernel, "MovieInternalObject", false )
             ;
 
         pybind::interface_<MovieMesh2D, pybind::bases<Node, Materialable> >( _kernel, "MovieMesh2D", false )
             .def( "setResourceImage", &MovieMesh2D::setResourceImage )
             .def( "getResourceImage", &MovieMesh2D::getResourceImage )
+            ;
+
+        pybind::interface_<MovieEvent, pybind::bases<Node> >( _kernel, "MovieEvent", false )
             ;
 
         pybind::interface_<ResourceMovie, pybind::bases<Resource>>( _kernel, "ResourceMovie", false )

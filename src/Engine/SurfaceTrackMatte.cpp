@@ -40,7 +40,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceImage]()
+        this->recompile( [this, &_resourceImage]()
         {
             m_resourceImage = _resourceImage;
         } );
@@ -58,7 +58,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceTrackMatteImage]()
+        this->recompile( [this, &_resourceTrackMatteImage]()
         {
             m_resourceTrackMatteImage = _resourceTrackMatteImage;
         } );

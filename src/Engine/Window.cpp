@@ -571,7 +571,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceWindow]()
+        this->recompile( [this, &_resourceWindow]()
         {
             m_resourceWindow = _resourceWindow;
         } );

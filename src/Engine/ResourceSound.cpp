@@ -50,6 +50,11 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( soundBuffer, false );
 
+            if( soundBuffer->acquire() == false )
+            {
+                return false;
+            }
+
             m_soundBufferNoStreamableCache = soundBuffer;
         }
 
@@ -60,7 +65,7 @@ namespace Mengine
     {
         if( m_soundBufferNoStreamableCache != nullptr )
         {
-            m_soundBufferNoStreamableCache->finalize();
+            m_soundBufferNoStreamableCache->release();
             m_soundBufferNoStreamableCache = nullptr;
         }
     }
@@ -85,15 +90,5 @@ namespace Mengine
         );
 
         return soundBuffer;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceSound::destroySoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) const
-    {
-        if( m_isStreamable == false && m_soundBufferNoStreamableCache != nullptr )
-        {
-            return;
-        }
-
-        _soundBuffer->finalize();
     }
 }

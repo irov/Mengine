@@ -7,6 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferBase::OpenALSoundBufferBase()
         : m_soundSystem( nullptr )
+        , m_refacquire( 0 )
         , m_format( 0 )
         , m_frequency( 0 )
         , m_channels( 0 )
@@ -29,14 +30,37 @@ namespace Mengine
         return m_soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferBase::initialize()
+    bool OpenALSoundBufferBase::acquire()
+    {
+        if( ++m_refacquire == 1 )
+        {
+            if( this->_acquire() == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferBase::release()
+    {
+        MENGINE_ASSERTION_FATAL( m_refacquire > 0 );
+
+        if( --m_refacquire == 0 )
+        {
+            this->_release();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenALSoundBufferBase::_acquire()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferBase::finalize()
+    void OpenALSoundBufferBase::_release()
     {
         //Empty
     }

@@ -218,11 +218,6 @@ namespace Mengine
 
             buffer->setSoundSystem( this );
 
-            if( buffer->initialize() == false )
-            {
-                return nullptr;
-            }
-
             base = buffer;
         }
         else
@@ -233,18 +228,12 @@ namespace Mengine
 
             buffer->setSoundSystem( this );
 
-            if( buffer->initialize() == false )
-            {
-                return nullptr;
-            }
-
             base = buffer;
         }
 
         if( base->load( _soundDecoder ) == false )
         {
-            LOGGER_ERROR( "Failed to create sound buffer from stream"
-            );
+            LOGGER_ERROR( "Failed to create sound buffer from stream" );
 
             return nullptr;
         }

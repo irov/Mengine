@@ -17,9 +17,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum ESoundSourceState
     {
-        ESS_STOP = 0,	    // currently stopped
-        ESS_PLAY = 2,		// currently playing
-        ESS_PAUSE = 4,			// currently paused
+        ESS_STOP = 0,
+        ESS_PLAY = 2,
+        ESS_PAUSE = 4,
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class SoundIdentityInterface> SoundIdentityInterfacePtr;
@@ -40,6 +40,10 @@ namespace Mengine
         : public Mixin
     {
     public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
         virtual uint32_t getId() const = 0;
 
     public:
@@ -57,6 +61,7 @@ namespace Mengine
         virtual ESoundSourceCategory getCategory() const = 0;
         virtual ESoundSourceState getState() const = 0;
 
+    public:
         virtual const MixerValue & getVolume() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

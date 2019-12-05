@@ -18,6 +18,10 @@ namespace Mengine
         ~SoundIdentity() override;
 
     public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
         uint32_t getId() const override;
 
     public:
@@ -60,5 +64,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SoundIdentity> SoundIdentityPtr;
+    typedef IntrusivePtr<SoundIdentity, SoundIdentityInterface> SoundIdentityPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

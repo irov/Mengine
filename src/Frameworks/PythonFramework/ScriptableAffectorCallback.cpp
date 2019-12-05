@@ -20,6 +20,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptableAffectorCallback::onAffectorEnd( uint32_t _id, bool _isEnd )
     {
+        ScriptablePtr scriptable = m_scriptable;
+        m_scriptable = nullptr;
+
         if( m_cb.is_invalid() == true )
         {
             return;
@@ -30,8 +33,6 @@ namespace Mengine
             return;
         }
 
-        m_cb.call_args( m_scriptable, _id, _isEnd, m_args );
-
-        m_scriptable = nullptr;
+        m_cb.call_args( scriptable, _id, _isEnd, m_args );        
     }
 }

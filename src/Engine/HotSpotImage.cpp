@@ -28,7 +28,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceTestPick]()
+        this->recompile( [this, &_resourceTestPick]()
         {
             m_resourceTestPick = _resourceTestPick;
         } );

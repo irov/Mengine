@@ -981,8 +981,9 @@ namespace Mengine
         {
             MENGINE_ASSERTION_MEMORY_PANIC_VOID( _node, "invalid take None object" );
 
-            _node->removeFromParent();
             _node->disable();
+            _node->removeFromParent();
+            _node->unwrap();
         }
         //////////////////////////////////////////////////////////////////////////
         NodePtr s_createNode( const ConstString & _type )

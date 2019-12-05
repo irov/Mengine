@@ -26,7 +26,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceImage]()
+        this->recompile( [this, &_resourceImage]()
         {
             m_resourceImage = _resourceImage;
         } );

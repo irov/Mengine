@@ -753,4 +753,3 @@ namespace Mengine
         pybind::unregistration_stl_vector_type_cast<Polygon, Vector<Polygon>>(_kernel);
     }
 }
-

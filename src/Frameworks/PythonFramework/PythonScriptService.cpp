@@ -468,7 +468,7 @@ namespace Mengine
         m_kernel->setStdErrorHandle( nullptr );
 
         m_kernel->remove_scope<PythonScriptLogger>();
-        m_kernel->remove_scope<PythonScriptModuleFinder>();
+        m_kernel->remove_scope<PythonScriptModuleFinder>();        
 
         m_bootstrapperModules.clear();
         m_prototypies.clear();
@@ -573,6 +573,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptService::removeScriptEmbedding( const ConstString & _name )
     {
+        m_kernel->collect();
+
         VectorEmbeddings::const_iterator it_found = std::find_if( m_embeddings.begin(), m_embeddings.end(), [&_name]( const ScriptEmbeddingDesc & _desc )
         {
             return _desc.name == _name;

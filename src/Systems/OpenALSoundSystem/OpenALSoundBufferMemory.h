@@ -13,6 +13,10 @@ namespace Mengine
         ~OpenALSoundBufferMemory() override;
 
     public:
+        bool _acquire() override;
+        void _release() override;
+
+    public:
         bool update() override;
 
     public:

@@ -369,6 +369,11 @@ namespace Mengine
         emitter->doc = _doc;
 #endif
 
+        if( emitter->initialize() == false )
+        {
+            return nullptr;
+        }
+
         this->updateSourceVolume_( emitter );
 
         m_soundIdentities.emplace_back( emitter );
@@ -539,8 +544,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::releaseSoundSource( const SoundIdentityInterfacePtr & _element )
     {
-        _element->setSoundSource( nullptr );
-        _element->setSoundListener( nullptr );
+        _element->finalize();
 
         uint32_t id = _element->getId();
 
@@ -1427,7 +1431,9 @@ namespace Mengine
         {
             ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-            const SoundBufferInterfacePtr & soundBuffer = _identity->source->getSoundBuffer();
+            const SoundSourceInterfacePtr & source = _identity->source;
+
+            const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
 
             worker->initialize( soundBuffer );
 

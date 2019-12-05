@@ -56,7 +56,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, resourceMovie2]()
+        this->recompile( [this, &resourceMovie2]()
         {
             m_resourceMovie2 = resourceMovie2;
         } );

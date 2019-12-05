@@ -136,7 +136,7 @@ namespace Mengine
             return false;
         }
 
-        _resource->destroySoundBuffer( soundBuffer );
+        soundBuffer->release();
 
         return true;
     }

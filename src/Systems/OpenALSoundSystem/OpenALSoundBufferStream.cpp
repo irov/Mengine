@@ -25,11 +25,10 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     OpenALSoundBufferStream::~OpenALSoundBufferStream()
-    {
-        this->removeBuffers_();
+    {        
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::initialize()
+    bool OpenALSoundBufferStream::_acquire()
     {
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
             ->createMutex( MENGINE_DOCUMENT_FUNCTION );
@@ -41,8 +40,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::finalize()
+    void OpenALSoundBufferStream::_release()
     {
+        this->removeBuffers_();
+
         m_mutexUpdating = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

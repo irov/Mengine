@@ -104,6 +104,13 @@ namespace Mengine
             return py_entity;
         }
         //////////////////////////////////////////////////////////////////////////
+        void s_destroyEntity( const EntityPtr & _entity )
+        {
+            _entity->disable();
+            _entity->removeFromParent();
+            _entity->onDestroy();
+        }
+        //////////////////////////////////////////////////////////////////////////
         pybind::object s_importEntity( pybind::kernel_interface * _kernel, const ConstString & _prototype )
         {
             MENGINE_UNUSED( _kernel );
@@ -287,6 +294,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
         pybind::def_functor( _kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
         pybind::def_functor( _kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
+        pybind::def_functor( _kernel, "destroyEntity", entityScriptMethod, &EntityScriptMethod::s_destroyEntity );
         pybind::def_functor_kernel( _kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
 
         m_implement = entityScriptMethod;

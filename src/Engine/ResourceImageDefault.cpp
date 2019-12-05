@@ -102,7 +102,7 @@ namespace Mengine
 
         this->correctUVTexture();
 
-        bool successful = this->recompile( [this, _imagePath]()
+        bool successful = this->recompile( [this, &_imagePath]()
         {
             this->setFilePath( _imagePath );
         } );

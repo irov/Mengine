@@ -33,7 +33,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceVideo]()
+        this->recompile( [this, &_resourceVideo]()
         {
             m_resourceVideo = _resourceVideo;
         } );

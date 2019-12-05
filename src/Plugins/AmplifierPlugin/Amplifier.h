@@ -39,7 +39,7 @@ namespace Mengine
         float getPosMs() const override;
 
     protected:
-        SoundIdentityInterfacePtr m_soundEmitter;
+        SoundIdentityInterfacePtr m_soundIdentity;
 
         bool m_play;
         bool m_pause;

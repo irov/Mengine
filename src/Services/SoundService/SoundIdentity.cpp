@@ -19,6 +19,28 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SoundIdentity::initialize()
+    {
+        const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
+
+        if( soundBuffer->acquire() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::finalize()
+    {
+        const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
+        soundBuffer->release();
+
+        source = nullptr;
+        listener = nullptr;
+        worker = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t SoundIdentity::getId() const
     {
         return id;

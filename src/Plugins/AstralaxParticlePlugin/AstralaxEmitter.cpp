@@ -482,7 +482,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceParticle]()
+        this->recompile( [this, &_resourceParticle]()
         {
             m_resourceParticle = stdex::intrusive_static_cast<ResourceAstralaxPtr>(_resourceParticle);
         } );

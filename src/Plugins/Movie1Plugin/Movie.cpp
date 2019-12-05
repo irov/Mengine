@@ -67,7 +67,7 @@ namespace Mengine
 
         this->destroyLayers_();
 
-        this->recompile( [this, _resourceMovie]
+        this->recompile( [this, &_resourceMovie]()
         {
             m_resourceMovie = _resourceMovie;
 

@@ -37,7 +37,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceSpineSkeleton]()
+        this->recompile( [this, &_resourceSpineSkeleton]()
         {
             m_resourceSpineSkeleton = _resourceSpineSkeleton;
         } );

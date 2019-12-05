@@ -2191,78 +2191,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-#define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(_kernel))
-
-        SCRIPT_CLASS_WRAPPING( Node );
-        SCRIPT_CLASS_WRAPPING( Layer );
-        SCRIPT_CLASS_WRAPPING( Layer2D );
-        SCRIPT_CLASS_WRAPPING( HotSpot );
-        SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
-        SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
-        SCRIPT_CLASS_WRAPPING( HotSpotCircle );
-        SCRIPT_CLASS_WRAPPING( HotSpotBubbles );
-        SCRIPT_CLASS_WRAPPING( HotSpotImage );
-        SCRIPT_CLASS_WRAPPING( HotSpotShape );
-
-        SCRIPT_CLASS_WRAPPING( ScriptHolder );
-
-        SCRIPT_CLASS_WRAPPING( Gyroscope );
-        SCRIPT_CLASS_WRAPPING( Interender );
-        SCRIPT_CLASS_WRAPPING( Isometric );
-        SCRIPT_CLASS_WRAPPING( MatrixProxy );
-        SCRIPT_CLASS_WRAPPING( TextField );
-        SCRIPT_CLASS_WRAPPING( SoundEmitter );
-        SCRIPT_CLASS_WRAPPING( Meshget );
-        SCRIPT_CLASS_WRAPPING( Point );
-        SCRIPT_CLASS_WRAPPING( Line );
-        SCRIPT_CLASS_WRAPPING( Landscape2D );
-        SCRIPT_CLASS_WRAPPING( Grid2D );
-
-        SCRIPT_CLASS_WRAPPING( ShapeCircle );
-        SCRIPT_CLASS_WRAPPING( ShapePacMan );
-        SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
-        SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
-
-        SCRIPT_CLASS_WRAPPING( Vectorizator );
-
-        SCRIPT_CLASS_WRAPPING( Window );
-
-        SCRIPT_CLASS_WRAPPING( RenderViewport );
-        SCRIPT_CLASS_WRAPPING( RenderScissor );
-        SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
-        SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
-        SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
-
-        SCRIPT_CLASS_WRAPPING( Resource );
-        SCRIPT_CLASS_WRAPPING( ResourceImage );
-        SCRIPT_CLASS_WRAPPING( ResourceImageData );
-        SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
-        SCRIPT_CLASS_WRAPPING( ResourceMusic );
-        SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
-        SCRIPT_CLASS_WRAPPING( ResourceSound );
-        SCRIPT_CLASS_WRAPPING( ResourceFile );
-
-        SCRIPT_CLASS_WRAPPING( ResourceImageSolid );
-        SCRIPT_CLASS_WRAPPING( ResourceShape );
-        SCRIPT_CLASS_WRAPPING( ResourceCursorICO );
-        SCRIPT_CLASS_WRAPPING( ResourceCursorSystem );
-        SCRIPT_CLASS_WRAPPING( ResourceWindow );
-        SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
-        SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
-
-        SCRIPT_CLASS_WRAPPING( ResourceTestPick );
-        SCRIPT_CLASS_WRAPPING( ResourceHIT );
-
-        SCRIPT_CLASS_WRAPPING( Surface );
-        SCRIPT_CLASS_WRAPPING( SurfaceSound );
-        SCRIPT_CLASS_WRAPPING( SurfaceImage );
-        SCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
-        SCRIPT_CLASS_WRAPPING( SurfaceTrackMatte );
-        SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
-
-#undef SCRIPT_CLASS_WRAPPING
-
         NodeScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<NodeScriptMethod>();
 
         pybind::interface_<Mixin>( _kernel, "Mixin", true )
@@ -2532,7 +2460,7 @@ namespace Mengine
             .def_mutable( "getRender", &Renderable::getRender )
             ;
 
-        pybind::interface_<PickerInterface, pybind::bases<Mixin>>( _kernel, "PickerInterface", false )
+        pybind::interface_<PickerInterface, pybind::bases<Mixin>>( _kernel, "PickerInterface" )
             .def( "isPickerEnable", &PickerInterface::isPickerEnable )
             .def( "isPickerPicked", &PickerInterface::isPickerPicked )
             .def( "isPickerPressed", &PickerInterface::isPickerPressed )
@@ -2602,7 +2530,7 @@ namespace Mengine
             .def( "getLinearSpeed", &Affectorable::getLinearSpeed )
             ;
 
-        pybind::interface_<Materialable, pybind::bases<Mixin>>( _kernel, "Materialable", false )
+        pybind::interface_<Materialable, pybind::bases<Mixin>>( _kernel, "Materialable" )
             .def( "setMaterialName", &Materialable::setMaterialName )
             .def( "getMaterialName", &Materialable::getMaterialName )
             .def( "setDisableTextureColor", &Materialable::setDisableTextureColor )
@@ -3099,6 +3027,78 @@ namespace Mengine
             .def( "getSpeedFactor", &SchedulerInterface::getSpeedFactor )
             .def( "getTiming", &SchedulerInterface::getTime )
             ;
+
+#define SCRIPT_CLASS_WRAPPING( Class )\
+    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(_kernel))
+
+        SCRIPT_CLASS_WRAPPING( Node );
+        SCRIPT_CLASS_WRAPPING( Layer );
+        SCRIPT_CLASS_WRAPPING( Layer2D );
+        SCRIPT_CLASS_WRAPPING( HotSpot );
+        SCRIPT_CLASS_WRAPPING( HotSpotPolygon );
+        SCRIPT_CLASS_WRAPPING( HotSpotGlobal );
+        SCRIPT_CLASS_WRAPPING( HotSpotCircle );
+        SCRIPT_CLASS_WRAPPING( HotSpotBubbles );
+        SCRIPT_CLASS_WRAPPING( HotSpotImage );
+        SCRIPT_CLASS_WRAPPING( HotSpotShape );
+
+        SCRIPT_CLASS_WRAPPING( ScriptHolder );
+
+        SCRIPT_CLASS_WRAPPING( Gyroscope );
+        SCRIPT_CLASS_WRAPPING( Interender );
+        SCRIPT_CLASS_WRAPPING( Isometric );
+        SCRIPT_CLASS_WRAPPING( MatrixProxy );
+        SCRIPT_CLASS_WRAPPING( TextField );
+        SCRIPT_CLASS_WRAPPING( SoundEmitter );
+        SCRIPT_CLASS_WRAPPING( Meshget );
+        SCRIPT_CLASS_WRAPPING( Point );
+        SCRIPT_CLASS_WRAPPING( Line );
+        SCRIPT_CLASS_WRAPPING( Landscape2D );
+        SCRIPT_CLASS_WRAPPING( Grid2D );
+
+        SCRIPT_CLASS_WRAPPING( ShapeCircle );
+        SCRIPT_CLASS_WRAPPING( ShapePacMan );
+        SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
+        SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
+
+        SCRIPT_CLASS_WRAPPING( Vectorizator );
+
+        SCRIPT_CLASS_WRAPPING( Window );
+
+        SCRIPT_CLASS_WRAPPING( RenderViewport );
+        SCRIPT_CLASS_WRAPPING( RenderScissor );
+        SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
+        SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
+        SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
+
+        SCRIPT_CLASS_WRAPPING( Resource );
+        SCRIPT_CLASS_WRAPPING( ResourceImage );
+        SCRIPT_CLASS_WRAPPING( ResourceImageData );
+        SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
+        SCRIPT_CLASS_WRAPPING( ResourceMusic );
+        SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
+        SCRIPT_CLASS_WRAPPING( ResourceSound );
+        SCRIPT_CLASS_WRAPPING( ResourceFile );
+
+        SCRIPT_CLASS_WRAPPING( ResourceImageSolid );
+        SCRIPT_CLASS_WRAPPING( ResourceShape );
+        SCRIPT_CLASS_WRAPPING( ResourceCursorICO );
+        SCRIPT_CLASS_WRAPPING( ResourceCursorSystem );
+        SCRIPT_CLASS_WRAPPING( ResourceWindow );
+        SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
+        SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
+
+        SCRIPT_CLASS_WRAPPING( ResourceTestPick );
+        SCRIPT_CLASS_WRAPPING( ResourceHIT );
+
+        SCRIPT_CLASS_WRAPPING( Surface );
+        SCRIPT_CLASS_WRAPPING( SurfaceSound );
+        SCRIPT_CLASS_WRAPPING( SurfaceImage );
+        SCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
+        SCRIPT_CLASS_WRAPPING( SurfaceTrackMatte );
+        SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
+
+#undef SCRIPT_CLASS_WRAPPING
 
         m_implement = nodeScriptMethod;
 

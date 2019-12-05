@@ -236,7 +236,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2ScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
-    {        
+    {
         _kernel->remove_scope<Movie2>();
         _kernel->remove_scope<Movie2Slot>();
         _kernel->remove_scope<Movie2SubComposition>();

@@ -21,14 +21,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SilentSoundBuffer::initialize()
+    bool SilentSoundBuffer::acquire()
     {
         //Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundBuffer::finalize()
+    void SilentSoundBuffer::release()
     {
         //Empty
     }

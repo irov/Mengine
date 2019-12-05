@@ -61,7 +61,7 @@ namespace Mengine
             return;
         }
 
-        this->recompile( [this, _resourceShape]()
+        this->recompile( [this, &_resourceShape]()
         {
             m_resourceShape = _resourceShape;
         } );

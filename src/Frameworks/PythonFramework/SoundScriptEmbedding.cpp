@@ -57,9 +57,8 @@ namespace Mengine
             , public SoundListenerInterface
         {
         public:
-            MySoundNodeListener( const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::args & _args )
+            MySoundNodeListener( const ResourceSoundPtr & _resource, const pybind::object & _cb, const pybind::args & _args )
                 : m_resource( _resource )
-                , m_soundBuffer( _soundBuffer )
                 , m_cb( _cb )
                 , m_args( _args )
             {
@@ -107,9 +106,6 @@ namespace Mengine
                     );
                 }
 
-                m_resource->destroySoundBuffer( m_soundBuffer );
-                m_soundBuffer = nullptr;
-
                 m_resource->release();
                 m_resource = nullptr;
             }
@@ -134,13 +130,10 @@ namespace Mengine
 
                 m_resource->release();
                 m_resource = nullptr;
-
-                m_soundBuffer = nullptr;
             }
 
         protected:
             ResourceSoundPtr m_resource;
-            SoundBufferInterfacePtr m_soundBuffer;
             pybind::object m_cb;
             pybind::args m_args;
         };
@@ -182,12 +175,12 @@ namespace Mengine
 
             bool streamable = resource->isStreamable();
 
-            SoundIdentityInterfacePtr sourceEmitter = SOUND_SERVICE()
+            SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
                 ->createSoundIdentity( true, soundBuffer, _category, streamable
                     , MENGINE_DOCUMENT_PYBIND
                 );
 
-            if( sourceEmitter == nullptr )
+            if( soundIdentity == nullptr )
             {
                 LOGGER_ERROR( "sound '%s' invalid create identity"
                     , _resourceName.c_str()
@@ -204,12 +197,12 @@ namespace Mengine
             }
 
             SOUND_SERVICE()
-                ->setLoop( sourceEmitter, _loop );
+                ->setLoop( soundIdentity, _loop );
 
             float volume = resource->getDefaultVolume();
 
             if( SOUND_SERVICE()
-                ->setSourceVolume( sourceEmitter, volume, volume, true ) == false )
+                ->setSourceVolume( soundIdentity, volume, volume, true ) == false )
             {
                 LOGGER_ERROR( "sound '%s' invalid set volume %f"
                     , _resourceName.c_str()
@@ -226,23 +219,23 @@ namespace Mengine
                 return nullptr;
             }
 
-            MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( resource, soundBuffer, _cb, _args );
+            MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( resource, _cb, _args );
 
-            sourceEmitter->setSoundListener( snlistener );
+            soundIdentity->setSoundListener( snlistener );
 
-            return sourceEmitter;
+            return soundIdentity;
         }
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
             );
 
             if( SOUND_SERVICE()
-                ->playEmitter( sourceEmitter ) == false )
+                ->playEmitter( soundIdentity ) == false )
             {
                 LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
@@ -251,19 +244,19 @@ namespace Mengine
                 return nullptr;
             }
 
-            return sourceEmitter;
+            return soundIdentity;
         }
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
             );
 
             if( SOUND_SERVICE()
-                ->playEmitter( sourceEmitter ) == false )
+                ->playEmitter( soundIdentity ) == false )
             {
                 LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
@@ -272,7 +265,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            return sourceEmitter;
+            return soundIdentity;
         }
         //////////////////////////////////////////////////////////////////////////
         bool voicePause( const SoundIdentityInterfacePtr & _emitter )
@@ -353,7 +346,7 @@ namespace Mengine
         public:
             void initialize( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
             {
-                m_emitter = _emitter;
+                m_soundIdentity = _emitter;
                 m_cb = _cb;
                 m_args = _args;
             }
@@ -364,7 +357,7 @@ namespace Mengine
                 if( _isEnd == true )
                 {
                     SOUND_SERVICE()
-                        ->stopEmitter( m_emitter );
+                        ->stopEmitter( m_soundIdentity );
                 }
 
                 if( m_cb.is_invalid() == true )
@@ -381,7 +374,7 @@ namespace Mengine
             }
 
         protected:
-            SoundIdentityInterfacePtr m_emitter;
+            SoundIdentityInterfacePtr m_soundIdentity;
             pybind::object m_cb;
             pybind::args m_args;
         };
@@ -427,14 +420,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
             );
 
             if( SOUND_SERVICE()
-                ->playEmitter( sourceEmitter ) == false )
+                ->playEmitter( soundIdentity ) == false )
             {
                 LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
@@ -452,7 +445,7 @@ namespace Mengine
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
                     , easing
-                    , nullptr, [this, sourceEmitter]( float _value ){ this->___soundFade( sourceEmitter, _value ); }
+                    , nullptr, [this, soundIdentity]( float _value ){ this->___soundFade( soundIdentity, _value ); }
                     , 0.f, 1.f, _time
                 );
 
@@ -463,7 +456,7 @@ namespace Mengine
 
             affectorable->addAffector( affector );
 
-            return sourceEmitter;
+            return soundIdentity;
         }
         //////////////////////////////////////////////////////////////////////////
         void soundFadeInTo( const SoundIdentityInterfacePtr & _emitter, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
@@ -490,14 +483,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr emitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( emitter, nullptr, "can't get resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
             );
 
             if( SOUND_SERVICE()
-                ->playEmitter( emitter ) == false )
+                ->playEmitter( soundIdentity ) == false )
             {
                 LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
@@ -513,12 +506,12 @@ namespace Mengine
             );
 
             float volume = SOUND_SERVICE()
-                ->getSourceMixerVolume( emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
+                ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
             AffectorPtr affector =
                 m_affectorCreatorSound.create( ETA_POSITION
                     , easing
-                    , nullptr, [this, emitter]( float _value ) { this->___soundFade( emitter, _value ); }
+                    , nullptr, [this, soundIdentity]( float _value ) { this->___soundFade( soundIdentity, _value ); }
                     , volume, _to, _time
                 );
 
@@ -529,7 +522,7 @@ namespace Mengine
 
             affectorable->addAffector( affector );
 
-            return emitter;
+            return soundIdentity;
         }
         //////////////////////////////////////////////////////////////////////////
         void soundStop( const SoundIdentityInterfacePtr & _emitter )

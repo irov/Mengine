@@ -43,6 +43,13 @@ namespace Mengine
         this->recompile( [this, &_resourceImage]()
         {
             m_resourceImage = _resourceImage;
+
+            if( m_resourceImage == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -61,6 +68,13 @@ namespace Mengine
         this->recompile( [this, &_resourceTrackMatteImage]()
         {
             m_resourceTrackMatteImage = _resourceTrackMatteImage;
+
+            if( m_resourceTrackMatteImage == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

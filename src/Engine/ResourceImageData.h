@@ -31,9 +31,15 @@ namespace Mengine
         void setImageWidth( uint32_t _width );
         uint32_t getImageWidth() const override;
 
+    public:
         void setImageHeight( uint32_t _height );
         uint32_t getImageHeight() const override;
 
+    public:
+        float getImageWidthF() const override;
+        float getImageHeightF() const override;
+
+    public:
         Pointer getImageBuffer() const override;
 
     protected:
@@ -43,6 +49,9 @@ namespace Mengine
     protected:
         uint32_t m_width;
         uint32_t m_height;
+
+        float m_widthF;
+        float m_heightF;
 
         mt::vec2f m_maxSize;
         uint8_t * m_buffer;

@@ -170,6 +170,24 @@ namespace Mengine
 #endif
         }
         //////////////////////////////////////////////////////////////////////////
+        void s_debugOnce()
+        {
+            static bool once = false;
+
+            if( once == true )
+            {
+                return;
+            }
+
+            once = true;
+            
+            printf( "debug once!\n" );
+
+#if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+            _asm int 3;
+#endif
+        }
+        //////////////////////////////////////////////////////////////////////////
         void s_debugNode( Node * _node )
         {
             MENGINE_UNUSED( _node );
@@ -3614,6 +3632,7 @@ namespace Mengine
         pybind::def_functor( _kernel, "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
 
         pybind::def_functor( _kernel, "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
+        pybind::def_functor( _kernel, "debugOnce", helperScriptMethod, &HelperScriptMethod::s_debugOnce );
         pybind::def_functor( _kernel, "debugNode", helperScriptMethod, &HelperScriptMethod::s_debugNode );
 
         pybind::def_functor( _kernel, "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );

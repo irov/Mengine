@@ -414,39 +414,33 @@ namespace Mengine
                 const VectorMovieFrameSource & frames = frame.frames;
 
 #define MENGINE_WRITE_FRAME_SOURCE( Type, Member )\
-												{ \
-					Type value = frames[0].Member; \
-					\
-					uint8_t value_immutable = 1; \
-					for( uint32_t i = 1; i != frame.count; ++i ) \
-															{ \
-						const MovieFrameSource & source = frames[i]; \
-						\
-						if( source.Member == value ) \
-																		{ \
-							continue; \
-																		} \
-						\
-						value_immutable = 0; \
-						break; \
-															} \
-					\
-					aw << value_immutable; \
-					\
-					if( value_immutable == 1 ) \
-															{ \
-						aw << value; \
-															} \
-											else \
-													{ \
-						for( uint32_t i = 0; i != frame.count; ++i ) \
-																		{ \
-							const MovieFrameSource & source = frames[i]; \
-							\
-							aw << source.Member; \
-																		} \
-													} \
-												}
+            { \
+                Type value = frames[0].Member; \
+                uint8_t value_immutable = 1; \
+                for( uint32_t i = 1; i != frame.count; ++i ) \
+                { \
+                    const MovieFrameSource & source = frames[i]; \
+                    if( source.Member == value ) \
+                    { \
+                        continue; \
+                    } \
+                    value_immutable = 0; \
+                    break; \
+                } \
+                aw << value_immutable; \
+                if( value_immutable == 1 ) \
+                { \
+                    aw << value; \
+                } \
+                else \
+                { \
+                    for( uint32_t i = 0; i != frame.count; ++i ) \
+                    { \
+                        const MovieFrameSource & source = frames[i]; \
+                        aw << source.Member; \
+                    } \
+                } \
+            }
 
                 MENGINE_WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
                 MENGINE_WRITE_FRAME_SOURCE( mt::vec3f, position );
@@ -457,7 +451,7 @@ namespace Mengine
                 MENGINE_WRITE_FRAME_SOURCE( float, opacity );
                 MENGINE_WRITE_FRAME_SOURCE( float, volume );
 
-#	undef WRITE_FRAME_SOURCE
+#	undef MENGINE_WRITE_FRAME_SOURCE
             }
         }
 

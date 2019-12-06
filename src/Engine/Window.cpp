@@ -574,6 +574,13 @@ namespace Mengine
         this->recompile( [this, &_resourceWindow]()
         {
             m_resourceWindow = _resourceWindow;
+
+            if( m_resourceWindow == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

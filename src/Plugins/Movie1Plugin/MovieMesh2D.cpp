@@ -75,6 +75,13 @@ namespace Mengine
         this->recompile( [this, &_resourceImage]()
         {
             m_resourceImage = _resourceImage;
+
+            if( m_resourceImage == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

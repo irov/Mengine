@@ -29,6 +29,7 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+        void _stopService() override;
 
     public:
         ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const Char * _doc ) override;

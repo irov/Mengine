@@ -26,6 +26,13 @@ namespace Mengine
         this->recompile( [this, &_surfaceSound]()
         {
             m_surfaceSound = _surfaceSound;
+
+            if( m_surfaceSound == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

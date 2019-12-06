@@ -59,6 +59,13 @@ namespace Mengine
         this->recompile( [this, &resourceMovie2]()
         {
             m_resourceMovie2 = resourceMovie2;
+
+            if( m_resourceMovie2 == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

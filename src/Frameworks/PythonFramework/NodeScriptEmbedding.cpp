@@ -2402,6 +2402,8 @@ namespace Mengine
             .def_deprecated( "getHeight", &ResourceTestPick::getImageHeight, "use getImageHeight" )
             .def( "getImageWidth", &ResourceTestPick::getImageWidth )
             .def( "getImageHeight", &ResourceTestPick::getImageHeight )
+            .def( "getImageWidthF", &ResourceTestPick::getImageWidthF )
+            .def( "getImageHeightF", &ResourceTestPick::getImageHeightF )
             ;
 
         pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick>>( _kernel, "ResourceHIT", false )

@@ -21,11 +21,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotShape::_compile()
     {
-        if( HotSpotPolygon::_compile() == false )
-        {
-            return false;
-        }
-
         MENGINE_ASSERTION_MEMORY_PANIC( m_resourceShape, false, "'%s' resource is null"
             , this->getName().c_str()
         );
@@ -50,8 +45,6 @@ namespace Mengine
     void HotSpotShape::_release()
     {
         m_resourceShape->release();
-
-        HotSpotPolygon::_release();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpotShape::setResourceShape( const ResourceShapePtr & _resourceShape )
@@ -64,6 +57,13 @@ namespace Mengine
         this->recompile( [this, &_resourceShape]()
         {
             m_resourceShape = _resourceShape;
+
+            if( m_resourceShape == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

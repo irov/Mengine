@@ -36,7 +36,7 @@ if(MENGINE_USE_SCRIPT_SERVICE)
         AstralaxScriptEmbedding.h    
         )
         
-    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)    
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pybind/include)
 endif()
 
 add_definitions(-DMAGIC_3D)

@@ -36,6 +36,13 @@ namespace Mengine
         this->recompile( [this, &_resourceImageSequence]()
         {
             m_resourceImageSequence = _resourceImageSequence;
+
+            if( m_resourceImageSequence == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -4,7 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundIdentity::SoundIdentity()
-        : id( 0 )
+        : m_id( 0 )
         , bufferId( 0 )
         , time_left( 0.f )
         , state( ESS_STOP )
@@ -33,17 +33,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::finalize()
     {
-        const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
-        soundBuffer->release();
+        if( source != nullptr )
+        {
+            const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
+            soundBuffer->release();
+            source = nullptr;
+        }
 
-        source = nullptr;
         listener = nullptr;
         worker = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
+    void SoundIdentity::setId( uint32_t _id )
+    {
+        m_id = _id;
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t SoundIdentity::getId() const
     {
-        return id;
+        return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::setSoundSource( const SoundSourceInterfacePtr & _source )

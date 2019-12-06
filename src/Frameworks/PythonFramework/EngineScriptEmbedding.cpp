@@ -961,8 +961,8 @@ namespace Mengine
             const ResourceTestPickPtr & resourceHIT = _hotspotImage->getResourceTestPick();
 
             mt::vec2f size;
-            size.x = (float)resourceHIT->getImageWidth();
-            size.y = (float)resourceHIT->getImageHeight();
+            size.x = resourceHIT->getImageWidthF();
+            size.y = resourceHIT->getImageHeightF();
 
             return size;
         }
@@ -1119,24 +1119,24 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourcePtr s_getResource( const ConstString & _name )
+        const ResourcePtr & s_getResource( const ConstString & _name )
         {
             const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "not exist resource '%s'"
                 , _name.c_str()
             );
 
             return resource;
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourcePtr s_getResourceReference( const ConstString & _name )
+        const ResourcePtr & s_getResourceReference( const ConstString & _name )
         {
             const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResourceReference( _name );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "not exist resource '%s'"
+            MENGINE_ASSERTION_MEMORY_PANIC( resource, ResourcePtr::none(), "not exist resource '%s'"
                 , _name.c_str()
             );
 

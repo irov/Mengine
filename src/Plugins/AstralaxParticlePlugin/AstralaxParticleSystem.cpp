@@ -82,9 +82,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleSystem::_finalizeService()
     {
-        m_atlases.clear();
-        m_containers.clear();
-
         m_renderFragmentShaderCache.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
@@ -92,6 +89,12 @@ namespace Mengine
 
         m_factoryPoolAstralaxEmitterContainer = nullptr;
         m_factoryPoolAstralaxEmitter = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleSystem::_stopService()
+    {
+        m_atlases.clear();
+        m_containers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const Char * _doc )

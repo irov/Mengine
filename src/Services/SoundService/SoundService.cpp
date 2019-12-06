@@ -185,7 +185,9 @@ namespace Mengine
 
             this->updateSourceVolume_( identity );
 
-            if( identity->source->play() == false )
+            const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+            if( source->play() == false )
             {
                 LOGGER_ERROR( "invalid play"
                 );
@@ -199,23 +201,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::pauseSounds_()
     {
-        for( const SoundIdentityPtr & source : m_soundIdentities )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( source == nullptr )
+            if( identity == nullptr )
             {
                 continue;
             }
 
-            source->turn = false;
+            identity->turn = false;
 
-            if( source->state != ESS_PLAY )
+            if( identity->state != ESS_PLAY )
             {
                 continue;
             }
 
-            this->pauseSoundBufferUpdate_( source );
+            this->pauseSoundBufferUpdate_( identity );
 
-            source->source->pause();
+            const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+            source->pause();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -237,9 +241,11 @@ namespace Mengine
 
             this->updateSourceVolume_( identity );
 
-            if( identity->source->isPlay() == true )
+            const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+            if( source->isPlay() == true )
             {
-                if( identity->source->resume() == false )
+                if( source->resume() == false )
                 {
                     LOGGER_ERROR( "invalid resume (play)"
                     );
@@ -251,7 +257,7 @@ namespace Mengine
             }
             else
             {
-                if( identity->source->play() == false )
+                if( source->play() == false )
                 {
                     LOGGER_ERROR( "invalid resume (stop)"
                     );
@@ -266,25 +272,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundService::stopSounds_()
     {
-        for( const SoundIdentityPtr & source : m_soundIdentities )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            if( source == nullptr )
+            if( identity == nullptr )
             {
                 continue;
             }
 
-            source->turn = false;
+            identity->turn = false;
 
-            if( source->state != ESS_PLAY )
+            if( identity->state != ESS_PLAY )
             {
                 continue;
             }
 
-            this->stopSoundBufferUpdate_( source );
+            this->stopSoundBufferUpdate_( identity );
 
-            if( source->source != nullptr )
+            const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+            if( source != nullptr )
             {
-                source->source->stop();
+                source->stop();
             }
         }
     }
@@ -339,19 +347,19 @@ namespace Mengine
             return nullptr;
         }
 
-        SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM()
+        SoundSourceInterfacePtr source = SOUND_SYSTEM()
             ->createSoundSource( _isHeadMode, _buffer, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( sourceInterface, nullptr, "create SoundSource invalid" );
+        MENGINE_ASSERTION_MEMORY_PANIC( source, nullptr, "create SoundSource invalid" );
 
         SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( emitter, nullptr );
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
-        emitter->id = new_id;
+        emitter->setId( new_id );
 
-        emitter->source = sourceInterface;
+        emitter->setSoundSource( source );
         emitter->listener = nullptr;
         emitter->worker = nullptr;
         emitter->bufferId = 0;
@@ -556,7 +564,7 @@ namespace Mengine
         {
             const SoundIdentityPtr & identity = *it;
 
-            if( identity->id != id )
+            if( identity->getId() != id )
             {
                 continue;
             }
@@ -828,7 +836,7 @@ namespace Mengine
                 if( source == nullptr )
                 {
                     LOGGER_ERROR( "invalid play %d source is nullptr"
-                        , identity->id
+                        , identity->getId()
                     );
 
                     return false;
@@ -846,7 +854,7 @@ namespace Mengine
                     if( source->play() == false )
                     {
                         LOGGER_ERROR( "invalid play %d"
-                            , identity->id
+                            , identity->getId()
                         );
 
                         return false;
@@ -878,7 +886,7 @@ namespace Mengine
                     if( source->resume() == false )
                     {
                         LOGGER_ERROR( "invalid play %d"
-                            , identity->id
+                            , identity->getId()
                         );
 
                         return false;
@@ -1008,7 +1016,7 @@ namespace Mengine
                     if( source->resume() == false )
                     {
                         LOGGER_ERROR( "invalid play %d"
-                            , identity->id
+                            , identity->getId()
                         );
 
                         return false;
@@ -1067,10 +1075,10 @@ namespace Mengine
                     this->stopSoundBufferUpdate_( identity );
                 }
 
-                if( identity->source != nullptr )
-                {
-                    SoundSourceInterfacePtr source = identity->source;
+                const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
+                if( source != nullptr )
+                {
                     float duration = source->getDuration();
                     float position = source->getPosition();
 
@@ -1317,7 +1325,7 @@ namespace Mengine
         if( source == nullptr )
         {
             LOGGER_ERROR( "not setup source %d"
-                , identity->id
+                , identity->getId()
             );
 
             return false;
@@ -1328,7 +1336,7 @@ namespace Mengine
         if( _pos > duration )
         {
             LOGGER_ERROR( "emitter %d pos %f length %f"
-                , identity->id
+                , identity->getId()
                 , _pos
                 , duration
             );
@@ -1431,7 +1439,7 @@ namespace Mengine
         {
             ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-            const SoundSourceInterfacePtr & source = _identity->source;
+            const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 
             const SoundBufferInterfacePtr & soundBuffer = source->getSoundBuffer();
 

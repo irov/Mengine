@@ -36,6 +36,13 @@ namespace Mengine
         this->recompile( [this, &_resourceVideo]()
         {
             m_resourceVideo = _resourceVideo;
+
+            if( m_resourceVideo == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

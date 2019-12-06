@@ -68,45 +68,16 @@ namespace Mengine
 
         m_resourcesCache.clear();
 
-        const ResourceBank::HashtableResources & resources = m_globalBank->getResources();
-
-        for( const ResourceBank::HashtableResources::value_type & value : resources )
-        {
-            const ResourcePtr & resource = value.element;
-
-            bool precompile = resource->isPrecompile();
-
-            if( precompile == true )
-            {
-                resource->release();
-            }
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        for( const ResourceBank::HashtableResources::value_type & value : resources )
-        {
-            const ResourcePtr & resource = value.element;
-
-            uint32_t refcount = resource->getCompileReferenceCount();
-
-            if( refcount != 0 )
-            {
-                LOGGER_WARNING( "resource '%s' type '%s' group '%s' refcount %d"
-                    , resource->getName().c_str()
-                    , resource->getType().c_str()
-                    , resource->getGroupName().c_str()
-                    , refcount
-                );
-            }
-        }
-#endif
-
-        m_globalBank->finalize();
         m_globalBank = nullptr;
         
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryResourceBank );
 
         m_factoryResourceBank = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceService::_stopService()
+    {
+        m_globalBank->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const Char * _doc )

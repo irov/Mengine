@@ -22,7 +22,8 @@ namespace Mengine
         virtual void release();
 
     public:
-        bool recompile( const Lambda<> & _lambda );
+        typedef Lambda<bool()> LambdaRecompile;
+        bool recompile( const LambdaRecompile & _lambda );
 
     protected:
         virtual bool _compile();

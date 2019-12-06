@@ -838,6 +838,9 @@ namespace Mengine
         m_packagesPaths.clear();
         m_settingsPaths.clear();
 
+        SCENE_SERVICE()
+            ->destroyCurrentScene();
+
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {
             PLATFORM_SERVICE()
@@ -849,9 +852,6 @@ namespace Mengine
 
         GAME_SERVICE()
             ->removePersonality();
-
-        SCENE_SERVICE()
-            ->destroyCurrentScene();
 
         //if( SERVICE_EXIST( FrameworkInterface ) == true )
         //{

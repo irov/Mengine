@@ -90,11 +90,6 @@ namespace Mengine
 
             void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
             {
-                if( m_cb.is_callable() == true )
-                {
-                    m_cb.call_args( _emitter, 0, m_args );
-                }
-
                 if( SOUND_SERVICE()
                     ->releaseSoundSource( _emitter ) == false )
                 {
@@ -104,6 +99,11 @@ namespace Mengine
                         , m_resource->getName().c_str()
                         , id
                     );
+                }
+
+                if( m_cb.is_callable() == true )
+                {
+                    m_cb.call_args( _emitter, 0, m_args );
                 }
 
                 m_resource->release();
@@ -112,11 +112,6 @@ namespace Mengine
 
             void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
             {
-                if( m_cb.is_callable() == true )
-                {
-                    m_cb.call_args( _emitter, 1, m_args );
-                }
-
                 if( SOUND_SERVICE()
                     ->releaseSoundSource( _emitter ) == false )
                 {
@@ -126,6 +121,11 @@ namespace Mengine
                         , m_resource->getName().c_str()
                         , id
                     );
+                }
+
+                if( m_cb.is_callable() == true )
+                {
+                    m_cb.call_args( _emitter, 1, m_args );
                 }
 
                 m_resource->release();

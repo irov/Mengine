@@ -34,6 +34,11 @@ namespace Mengine
         uint32_t getImageWidth() const override;
         uint32_t getImageHeight() const override;
 
+    protected:
+        float getImageWidthF() const override;
+        float getImageHeightF() const override;
+
+    protected:
         Pointer getImageBuffer() const override;
 
     protected:
@@ -43,6 +48,9 @@ namespace Mengine
         uint32_t m_width;
         uint32_t m_height;
         uint32_t m_mipmaplevel;
+
+        float m_widthF;
+        float m_heightF;
 
         MemoryInterfacePtr m_mipmap;
         uint32_t m_mipmapsize;

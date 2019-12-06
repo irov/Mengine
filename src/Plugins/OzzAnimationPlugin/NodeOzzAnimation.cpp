@@ -66,7 +66,14 @@ namespace Mengine
 
         this->recompile( [this, &_resource]()
         {
-            this->m_resourceImage = _resource;
+            m_resourceImage = _resource;
+
+            if( m_resourceImage == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -84,7 +91,14 @@ namespace Mengine
 
         this->recompile( [this, &_resource]()
         {
-            this->m_resourceSkeleton = _resource;
+            m_resourceSkeleton = _resource;
+
+            if( m_resourceSkeleton == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -102,7 +116,14 @@ namespace Mengine
 
         this->recompile( [this, &_resource]()
         {
-            this->m_resourceMesh = _resource;
+            m_resourceMesh = _resource;
+
+            if( m_resourceMesh == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

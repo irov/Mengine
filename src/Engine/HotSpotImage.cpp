@@ -31,6 +31,13 @@ namespace Mengine
         this->recompile( [this, &_resourceTestPick]()
         {
             m_resourceTestPick = _resourceTestPick;
+
+            if( m_resourceTestPick == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -266,8 +273,8 @@ namespace Mengine
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        float hs_width = (float)m_resourceTestPick->getImageWidth();
-        float hs_height = (float)m_resourceTestPick->getImageHeight();
+        float hs_width = m_resourceTestPick->getImageWidthF();
+        float hs_height = m_resourceTestPick->getImageHeightF();
 
         mt::vec2f minimal( 0.f, 0.f );
         mt::vec2f maximal( hs_width, hs_height );

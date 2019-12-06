@@ -17,6 +17,8 @@ namespace Mengine
         : m_maxSize( 0.f, 0.f )
         , m_width( 0 )
         , m_height( 0 )
+        , m_widthF( 0.f )
+        , m_heightF( 0.f )
         , m_buffer( nullptr )
     {
     }
@@ -118,6 +120,8 @@ namespace Mengine
     void ResourceImageData::setImageWidth( uint32_t _width )
     {
         m_width = _width;
+
+        m_widthF = (float)_width;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceImageData::getImageWidth() const
@@ -128,11 +132,23 @@ namespace Mengine
     void ResourceImageData::setImageHeight( uint32_t _height )
     {
         m_height = _height;
+
+        m_heightF = (float)_height;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceImageData::getImageHeight() const
     {
         return m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceImageData::getImageWidthF() const
+    {
+        return m_widthF;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceImageData::getImageHeightF() const
+    {
+        return m_heightF;
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer ResourceImageData::getImageBuffer() const

@@ -40,6 +40,13 @@ namespace Mengine
         this->recompile( [this, &_resourceSpineSkeleton]()
         {
             m_resourceSpineSkeleton = _resourceSpineSkeleton;
+
+            if( m_resourceSpineSkeleton == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

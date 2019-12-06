@@ -51,19 +51,27 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Compilable::recompile( const Lambda<> & _lambda )
+    bool Compilable::recompile( const LambdaRecompile & _lambda )
     {
         if( this->isCompile() == false )
         {
-            (_lambda)();
+            bool tocompile = (_lambda)();
+            MENGINE_UNUSED( tocompile );
 
             return true;
         }
 
         this->_release();
 
-        (_lambda)();
+        bool tocompile = (_lambda)();
 
+        if( tocompile == false )
+        {
+            m_compile = false;
+
+            return true;
+        }
+         
         if( this->_compile() == false )
         {
             m_compile = false;

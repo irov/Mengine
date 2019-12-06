@@ -38,9 +38,37 @@ namespace Mengine
         {
             const ResourcePtrView & resource = value.element;
 
-            ResourceBankInterface * resourceBank = resource->getResourceBank();
-            MENGINE_UNUSED( resourceBank );
+            bool precompile = resource->isPrecompile();
 
+            if( precompile == true )
+            {
+                resource->release();
+            }
+        }
+
+#ifndef MENGINE_MASTER_RELEASE
+        for( const ResourceBank::HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtr & resource = value.element;
+
+            uint32_t refcount = resource->getCompileReferenceCount();
+
+            if( refcount != 0 )
+            {
+                LOGGER_WARNING( "resource '%s' type '%s' group '%s' refcount %d"
+                    , resource->getName().c_str()
+                    , resource->getType().c_str()
+                    , resource->getGroupName().c_str()
+                    , refcount
+                );
+            }
+        }
+#endif
+
+        for( const HashtableResources::value_type & value : m_resources )
+        {
+            const ResourcePtrView & resource = value.element;
+       
             resource->setResourceBank( nullptr );
             resource->finalize();
 

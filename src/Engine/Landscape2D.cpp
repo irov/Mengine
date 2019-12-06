@@ -152,6 +152,8 @@ namespace Mengine
         this->recompile( [this, &_images]()
         {
             m_images = _images;
+
+            return true;
         } );
 
         m_elementCountX = _countX;

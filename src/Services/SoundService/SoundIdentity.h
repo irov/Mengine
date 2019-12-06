@@ -22,6 +22,7 @@ namespace Mengine
         void finalize() override;
 
     public:
+        void setId( uint32_t _id );
         uint32_t getId() const override;
 
     public:
@@ -40,9 +41,10 @@ namespace Mengine
         ESoundSourceState getState() const override;
         const MixerValue & getVolume() const override;
 
-    public:
-        uint32_t id;
+    protected:
+        uint32_t m_id;
 
+    public:
         SoundSourceInterfacePtr source;
         SoundListenerInterfacePtr listener;
 

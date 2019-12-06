@@ -95,12 +95,8 @@ namespace Mengine
                 , m_soundIdentity->getId()
             );
         }
-
-        if( m_soundIdentity != nullptr )
-        {
             
-            m_soundIdentity = nullptr;
-        }
+        m_soundIdentity = nullptr;
 
         m_resourceSound->release();
     }
@@ -129,6 +125,13 @@ namespace Mengine
         this->recompile( [this, &_resourceSound]()
         {
             m_resourceSound = _resourceSound;
+
+            if( m_resourceSound == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -57,6 +57,13 @@ namespace Mengine
         this->recompile( [this, &_surface]()
         {
             m_surface = _surface;
+
+            if( m_surface == nullptr )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

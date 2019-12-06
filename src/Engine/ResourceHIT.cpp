@@ -19,6 +19,8 @@ namespace Mengine
     ResourceHIT::ResourceHIT()
         : m_width( 0 )
         , m_height( 0 )
+        , m_widthF( 0.f )
+        , m_heightF( 0.f )
         , m_mipmaplevel( 0 )
         , m_mipmapsize( 0 )
     {
@@ -67,6 +69,9 @@ namespace Mengine
         m_width = dataInfo->width;
         m_height = dataInfo->height;
         m_mipmaplevel = dataInfo->mipmaplevel;
+
+        m_widthF = (float)m_width;
+        m_heightF = (float)m_height;
 
         MemoryBufferInterfacePtr mipmap = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
@@ -122,6 +127,13 @@ namespace Mengine
         this->recompile( [this, &_filePath]()
         {
             this->setFilePath( _filePath );
+
+            if( _filePath.empty() == true )
+            {
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -162,8 +174,8 @@ namespace Mengine
         float fi = _point.x;
         float fj = _point.y;
 
-        float w = (float)m_width;
-        float h = (float)m_height;
+        float w = m_widthF;
+        float h = m_heightF;
 
         if( fi < -_radius || fj < -_radius )
         {
@@ -198,7 +210,8 @@ namespace Mengine
         uint32_t i = (uint32_t)fi;
         uint32_t j = (uint32_t)fj;
 
-        uint32_t level = (uint32_t)(logf( _radius ) / logf( 2.f ));
+        float levelF = MT_logf( _radius ) * mt::constant::inv_log2;
+        uint32_t level = (uint32_t)levelF;
 
         if( level >= m_mipmaplevel )
         {
@@ -280,6 +293,16 @@ namespace Mengine
     uint32_t ResourceHIT::getImageHeight() const
     {
         return m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceHIT::getImageWidthF() const
+    {
+        return m_widthF;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceHIT::getImageHeightF() const
+    {
+        return m_heightF;
     }
     //////////////////////////////////////////////////////////////////////////
     Pointer ResourceHIT::getImageBuffer() const

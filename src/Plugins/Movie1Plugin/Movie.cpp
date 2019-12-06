@@ -71,19 +71,24 @@ namespace Mengine
         {
             m_resourceMovie = _resourceMovie;
 
-            if( m_resourceMovie != nullptr )
+            if( m_resourceMovie == nullptr )
             {
-                if( this->createLayers_() == false )
-                {
-                    LOGGER_ERROR( "'%s' resource '%s' can't create layers"
-                        , this->getName().c_str()
-                        , m_resourceMovie->getName().c_str()
-                    );
-
-                    m_resourceMovie = nullptr;
-                    return;
-                }
+                return false;
             }
+             
+            if( this->createLayers_() == false )
+            {
+                LOGGER_ERROR( "'%s' resource '%s' can't create layers"
+                    , this->getName().c_str()
+                    , m_resourceMovie->getName().c_str()
+                );
+
+                m_resourceMovie = nullptr;
+
+                return false;
+            }
+
+            return true;
         } );
     }
     //////////////////////////////////////////////////////////////////////////

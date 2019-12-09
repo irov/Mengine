@@ -4,7 +4,7 @@
 
 #include "Kernel/EntityEventable.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

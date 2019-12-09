@@ -8,7 +8,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
@@ -384,7 +384,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const Char * _doc )
+    InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const DocumentPtr & _doc )
     {
         if( m_parentFileGroup != nullptr )
         {
@@ -531,7 +531,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr FileGroupZip::createOutputFile( const Char * _doc )
+    OutputStreamInterfacePtr FileGroupZip::createOutputFile( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

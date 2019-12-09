@@ -4,14 +4,14 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const Char * _doc )
+        MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -22,7 +22,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _doc )
+        MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
@@ -43,7 +43,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const Char * _doc )
+        MemoryInterfacePtr createMemoryStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -65,22 +65,23 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const Char * _doc )
+        MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "invalid create input file stream '%s:%s' stream [%d] (doc: %s)"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _stream
-                , _doc );
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
+            );
 
             MemoryInterfacePtr memory = Helper::createMemoryStream( stream, _doc );
 
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryBuffer( size_t _size, const Char * _doc )
+        MemoryInterfacePtr createMemoryBuffer( size_t _size, const DocumentPtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
@@ -95,7 +96,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const Char * _doc )
+        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const DocumentPtr & _doc )
         {
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryCacheBuffer( _doc );
@@ -110,7 +111,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _doc )
+        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const DocumentPtr & _doc )
         {
             MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _doc );
 
@@ -128,7 +129,7 @@ namespace Mengine
             return cache;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const Char * _doc )
+        MemoryInterfacePtr createMemoryCacheStreamExtraSize( const InputStreamInterfacePtr & _stream, size_t _extraSize, const DocumentPtr & _doc )
         {
             size_t stream_size = _stream->size();
 
@@ -150,7 +151,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const Char * _doc )
+        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
         {
             size_t size = _stream->size();
 
@@ -161,9 +162,9 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const Char * _doc )
+        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 
@@ -174,9 +175,9 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const Char * _doc )
+        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _stream, bool _share, const DocumentPtr & _doc )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _stream, _share, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr );
 

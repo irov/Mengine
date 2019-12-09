@@ -33,22 +33,22 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        CacheBufferID lockBuffer( size_t _size, void ** _memory, const Char * _doc );
+        CacheBufferID lockBuffer( size_t _size, void ** _memory, const DocumentPtr & _doc );
         void unlockBuffer( CacheBufferID _bufferId );
 
     public:
         void clearCacheBuffers() override;
 
     public:
-        MemoryBufferInterfacePtr createMemoryBuffer( const Char * _doc ) override;
-        MemoryProxyInterfacePtr createMemoryProxy( const Char * _doc ) override;
-        MemoryBufferInterfacePtr createMemoryCacheBuffer( const Char * _doc ) override;
-        MemoryCacheInputInterfacePtr createMemoryCacheInput( const Char * _doc ) override;
-        MemoryProxyInputInterfacePtr createMemoryProxyInput( const Char * _doc ) override;
-        MemoryInputInterfacePtr createMemoryInput( const Char * _doc ) override;
+        MemoryBufferInterfacePtr createMemoryBuffer( const DocumentPtr & _doc ) override;
+        MemoryProxyInterfacePtr createMemoryProxy( const DocumentPtr & _doc ) override;
+        MemoryBufferInterfacePtr createMemoryCacheBuffer( const DocumentPtr & _doc ) override;
+        MemoryCacheInputInterfacePtr createMemoryCacheInput( const DocumentPtr & _doc ) override;
+        MemoryProxyInputInterfacePtr createMemoryProxyInput( const DocumentPtr & _doc ) override;
+        MemoryInputInterfacePtr createMemoryInput( const DocumentPtr & _doc ) override;
 
     protected:
-        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc );
+        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const DocumentPtr & _doc );
 
     protected:
         struct CacheBufferMemory
@@ -59,7 +59,7 @@ namespace Mengine
             bool lock;
 
 #ifdef MENGINE_DEBUG
-            const Char * doc;
+            DocumentPtr doc;
 #endif
         };
 

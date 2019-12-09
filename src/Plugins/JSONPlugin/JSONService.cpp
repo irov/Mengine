@@ -106,7 +106,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::createStorage( const jpp::object & _json, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::createStorage( const jpp::object & _json, const DocumentPtr & _doc ) const
     {
         JSONStoragePtr storage = m_factoryJSONStorage->createObject( _doc );
 
@@ -117,7 +117,7 @@ namespace Mengine
         return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) const
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
@@ -128,7 +128,7 @@ namespace Mengine
         return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::loadJSONStream( const InputStreamInterfacePtr & _stream, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, nullptr );
 
@@ -141,7 +141,7 @@ namespace Mengine
         return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::createJSON( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) const
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _memory, nullptr );
 
@@ -155,7 +155,7 @@ namespace Mengine
         return storage;
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::createJSONBuffer( const void * _buffer, size_t _size, const Char * _doc ) const
+    JSONStorageInterfacePtr JSONService::createJSONBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc ) const
     {
         Detail::my_json_load_data_t jd;
         jd.buffer = static_cast<const uint8_t *>(_buffer);

@@ -50,7 +50,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowPY::create( const Char * _doc )
+    DataInterfacePtr DataflowPY::create( const DocumentPtr & _doc )
     {
         ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
@@ -59,7 +59,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowPY::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr DataflowPY::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc );
 
@@ -77,13 +77,15 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
+    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         PythonScriptCodeData * data = stdex::intrusive_get<PythonScriptCodeData *>( _data );
 
         Char * source_buffer = _memory->getBuffer();
 
-        PyObject * py_code = m_kernel->code_compile_file( source_buffer, _doc );
+        PyObject * py_code = m_kernel->code_compile_file( source_buffer, "FIXME!!!" );
 
         MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "invalid marshal get object" );
 

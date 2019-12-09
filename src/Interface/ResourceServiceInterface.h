@@ -19,11 +19,11 @@ namespace Mengine
         SERVICE_DECLARE( "ResourceService" )
 
     public:
-        virtual ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const Char * _doc ) = 0;
+        virtual ResourceBankInterfacePtr createResourceBank( uint32_t _reserved, const DocumentPtr & _doc ) = 0;
 
 
     public:
-        virtual ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const Char * _doc ) = 0;
+        virtual ResourcePointer createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool removeResource( const ResourcePtr & _resource ) = 0;

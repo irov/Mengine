@@ -7,7 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 
 #include <algorithm>
@@ -61,7 +61,7 @@ namespace Mengine
         m_factoryIniConfig = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::createMemoryConfig( const Char * _doc )
+    ConfigInterfacePtr ConfigService::createMemoryConfig( const DocumentPtr & _doc )
     {
         MemoryConfigPtr config = m_factoryMemoryConfig->createObject( _doc );
 
@@ -72,7 +72,7 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    ConfigInterfacePtr ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
@@ -98,7 +98,7 @@ namespace Mengine
         return config;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool ConfigService::loadDefaultConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 

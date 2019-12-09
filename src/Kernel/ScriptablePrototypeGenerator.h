@@ -73,7 +73,7 @@ namespace Mengine
         }
 
     protected:
-        FactorablePointer generate( const Char * _doc ) override
+        FactorablePointer generate( const DocumentPtr & _doc ) override
         {
             const FactoryPtr & factory = this->getFactory();
 
@@ -82,7 +82,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( scriptable, nullptr, "can't generate '%s:%s' doc '%s'"
                 , this->getCategory().c_str()
                 , this->getPrototype().c_str()
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             this->setupScriptable( scriptable );

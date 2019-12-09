@@ -33,7 +33,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/GlobalInputHandlerHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -67,6 +67,7 @@ namespace Mengine
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_INCREF_FACTORY_GENERATION, this, &NodeDebuggerModule::notifyIncrefFactoryGeneration );
 
         m_globalKeyHandlerF2 = Helper::addGlobalKeyHandler( KC_F2, true, []( const InputKeyEvent & )
         {
@@ -87,6 +88,7 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_SCENE_COMPLETE );
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_REMOVE_SCENE_DESTROY );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_INCREF_FACTORY_GENERATION );
 
         m_scene = nullptr;
 
@@ -105,6 +107,9 @@ namespace Mengine
 
             m_threadJob = nullptr;
         }
+
+        THREAD_SERVICE()
+            ->destroyThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ) );
 
         m_dataMutex = nullptr;
 
@@ -923,19 +928,22 @@ namespace Mengine
             return;
         }
 
-        pugi::xml_document doc;
+        pugi::xml_document xml_doc;
 
-        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        pugi::xml_node packetNode = xml_doc.append_child( "Packet" );
         packetNode.append_attribute( "type" ).set_value( "ObjectsLeak" );
 
         pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
+        payloadNode.append_attribute( "Generation" ).set_value( generation - 1 );
+
         uint32_t leakcount = 0;
 
-        typedef Map<String, VectorString> MapObjectLeaks;
+        typedef Vector<DocumentPtr> VectorDocuments;
+        typedef Map<String, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
         FACTORY_SERVICE()
-            ->visitFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const Char * _doc )
+            ->visitFactoryLeakObjects( generation - 1, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
@@ -951,11 +959,14 @@ namespace Mengine
 
             xml_objects.append_attribute( "factory" ).set_value( factory.c_str() );
 
-            for( const String & name : objects )
+            for( const DocumentPtr & doc : objects )
             {
                 pugi::xml_node xml_object = xml_objects.append_child( "Object" );
 
-                xml_object.append_attribute( "name" ).set_value( name.c_str() );
+                xml_object.append_attribute( "file" ).set_value( doc->getFile() );
+                xml_object.append_attribute( "function" ).set_value( doc->getFunction() );
+                xml_object.append_attribute( "line" ).set_value( doc->getLine() );
+                xml_object.append_attribute( "message" ).set_value( MENGINE_DOCUMENT_MESSAGE( doc ) );
             }
         }
 
@@ -968,7 +979,7 @@ namespace Mengine
 #else
         const uint32_t xmlFlags = pugi::format_raw;
 #endif
-        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+        xml_doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 
         this->sendPacket( packet );
     }
@@ -1281,5 +1292,12 @@ namespace Mengine
     void NodeDebuggerModule::notifyRemoveSceneDestroy()
     {
         this->setScene( nullptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::notifyIncrefFactoryGeneration( uint32_t _generator )
+    {
+        MENGINE_UNUSED( _generator );
+
+        m_shouldUpdateScene = true;
     }
 }

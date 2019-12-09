@@ -1,4 +1,5 @@
 #include "Kernel/Documentable.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -10,16 +11,17 @@ namespace Mengine
     Documentable::~Documentable()
     {
     }
+#ifdef MENGINE_DEBUG
     //////////////////////////////////////////////////////////////////////////
-    void Documentable::setDocument( const Char * _doc )
+    void Documentable::setDocument( const DocumentPtr & _document )
     {
-        m_document = _doc;
+        m_document = _document;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * Documentable::getDocument() const
+    const DocumentPtr & Documentable::getDocument() const
     {
-        const Char * doc = m_document.c_str();
-
-        return doc;
+        return m_document;
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
 }

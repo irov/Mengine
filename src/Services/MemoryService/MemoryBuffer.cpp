@@ -15,21 +15,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory, MENGINE_DEBUG_ATTRIBUTE( m_doc.c_str(), "" ) );
+        Helper::freeMemory( m_memory, MENGINE_DOCUMENT_MESSAGE( m_doc ) );
 
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _doc )
+    void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const DocumentPtr & _doc )
     {
         void * buffer = this->newBuffer( _size, _doc );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryBuffer::newBuffer( size_t _size, const Char * _doc )
+    Pointer MemoryBuffer::newBuffer( size_t _size, const DocumentPtr & _doc )
     {
-        void * new_memory = Helper::reallocateMemory( m_memory, _size, _doc );
+        void * new_memory = Helper::reallocateMemory( m_memory, _size, MENGINE_DOCUMENT_MESSAGE( _doc ) );
 
         if( new_memory == nullptr )
         {

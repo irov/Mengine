@@ -12,7 +12,7 @@ namespace Mengine
         ~EntityPrototypeGenerator() override;
 
     protected:
-        FactorablePointer generate( const Char * _doc ) override;
+        FactorablePointer generate( const DocumentPtr & _doc ) override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityPrototypeGenerator, PrototypeGeneratorInterface> EntityPrototypeGeneratorPtr;

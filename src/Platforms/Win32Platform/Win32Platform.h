@@ -25,7 +25,7 @@ namespace Mengine
         void _runService() override;
 
     public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) override;
+        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
         void removeTimer( uint32_t _id ) override;
 
     public:
@@ -116,7 +116,7 @@ namespace Mengine
         bool createDirectory_( const WChar * _filePath );
 
     public:
-        DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
+        DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
@@ -179,6 +179,10 @@ namespace Mengine
             float milliseconds;
             float time;
             LambdaTimer lambda;
+
+#ifdef MENGINE_DEBUG
+            DocumentPtr doc;
+#endif
         };
 
         uint32_t m_enumerator;

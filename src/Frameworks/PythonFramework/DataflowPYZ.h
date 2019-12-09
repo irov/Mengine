@@ -34,11 +34,11 @@ namespace Mengine
         bool isThreadFlow() const override;
 
     public:
-        DataInterfacePtr create( const Char * _doc ) override;
+        DataInterfacePtr create( const DocumentPtr & _doc ) override;
 
     public:
-        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
-        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc ) override;
+        MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
+        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) override;
 
     protected:
         pybind::kernel_interface * m_kernel;

@@ -12,7 +12,7 @@
 #include "Kernel/Observable.h"
 #include "Kernel/Exception.h"
 #include "Kernel/IntrusivePtr.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include <type_traits>
 
@@ -125,12 +125,12 @@ namespace Mengine
         SERVICE_DECLARE( "NotificationService" )
 
     public:
-        virtual void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) = 0;
+        virtual void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc ) = 0;
         virtual void removeObserver( uint32_t _id, Observable * _observer ) = 0;
 
     public:
         template<uint32_t ID, class C, class L>
-        void addObserverLambda( C * _self, const L & _lambda, const Char * _doc )
+        void addObserverLambda( C * _self, const L & _lambda, const DocumentPtr & _doc )
         {
             ObserverCallableInterfacePtr callable( new LambdaObserverCallable<ID, L>( _lambda ) );
 
@@ -139,7 +139,7 @@ namespace Mengine
 
     public:
         template<uint32_t ID, class C, class M>
-        void addObserverMethod( C * _self, M _method, const Char * _doc )
+        void addObserverMethod( C * _self, M _method, const DocumentPtr & _doc )
         {
             ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
 

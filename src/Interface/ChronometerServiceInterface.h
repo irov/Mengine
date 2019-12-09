@@ -17,7 +17,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void( uint32_t, uint64_t )> LambdaChronometer;
-        virtual uint32_t addChronometer( const LambdaChronometer & _lambda, const Char * _doc ) = 0;
+        virtual uint32_t addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc ) = 0;
         virtual bool removeChronometer( uint32_t _id ) = 0;
     };
 }

@@ -26,7 +26,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer JSONSettingPrototypeGenerator::generate( const Char * _doc )
+    FactorablePointer JSONSettingPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
         const FactoryPtr & factory = this->getFactory();
 
@@ -35,7 +35,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( setting, nullptr, "can't generate '%s:%s' doc '%s'"
             , this->getCategory().c_str()
             , this->getPrototype().c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         return setting;

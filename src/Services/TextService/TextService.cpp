@@ -14,7 +14,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/String.h"
@@ -547,7 +547,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    TextFontInterfacePtr TextService::createFont( const ConstString & _fontName, const ConstString & _fontType, const Char * _doc )
+    TextFontInterfacePtr TextService::createFont( const ConstString & _fontName, const ConstString & _fontType, const DocumentPtr & _doc )
     {
         TextFontInterfacePtr font = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), _fontType, _doc );
@@ -555,7 +555,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( font, nullptr, "invalid create font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         font->setName( _fontName );
@@ -564,7 +564,7 @@ namespace Mengine
         LOGGER_INFO( "add user font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         m_fonts.emplace( _fontName, font );

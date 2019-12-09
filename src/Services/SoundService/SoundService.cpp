@@ -13,7 +13,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
@@ -329,7 +329,7 @@ namespace Mengine
             ->onTurnSound( m_turnSound );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const Char * _doc )
+    SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const DocumentPtr & _doc )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -457,7 +457,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const Char * _doc )
+    SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentPtr & _doc )
     {
         InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, _streamable, false, _doc );
 
@@ -487,7 +487,7 @@ namespace Mengine
         return soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const Char * _doc )
+    SoundBufferInterfacePtr SoundService::createSoundBufferFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable, const DocumentPtr & _doc )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -908,7 +908,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , identity->doc.c_str()
+                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
                 );
 #endif
 
@@ -966,7 +966,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , identity->doc.c_str()
+                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
                 );
 #endif
 
@@ -1038,7 +1038,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , identity->doc.c_str()
+                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
                 );
 #endif
 
@@ -1098,7 +1098,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , identity->doc.c_str()
+                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
                 );
 #endif
 
@@ -1533,7 +1533,7 @@ namespace Mengine
 
                 LOGGER_ERROR( "sound: %s [%s] "
                     , identity->streamable == true ? "streamable" : "instance"
-                    , identity->doc.c_str()
+                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
                 );
             }
 #endif

@@ -39,7 +39,7 @@ namespace Mengine
         m_memoryManager = _memoryManager;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryCacheInput::cacheBuffer( size_t _size, const Char * _doc )
+    Pointer MemoryCacheInput::cacheBuffer( size_t _size, const DocumentPtr & _doc )
     {
         this->uncache_();
 

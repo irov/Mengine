@@ -14,7 +14,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileService, Mengine::FileService );
@@ -80,7 +80,7 @@ namespace Mengine
         m_fileGroups.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const Char * _doc )
+    FileGroupInterfacePtr FileService::createFileGroup( const ConstString & _type, const DocumentPtr & _doc )
     {
         FactoryPtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), _type );
 
@@ -97,7 +97,7 @@ namespace Mengine
         return fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc )
+    bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "group '%s' path '%s' type '%s'"
             , _name.c_str()

@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadMutex::initialize( const Char * _doc )
+    void Win32ThreadMutex::initialize( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

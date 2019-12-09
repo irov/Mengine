@@ -6,6 +6,7 @@
 #include "Interface/DecoderFactoryInterface.h"
 #include "Interface/EncoderFactoryInterface.h"
 
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 
@@ -18,10 +19,10 @@ namespace Mengine
         SERVICE_DECLARE( "CodecService" )
 
     public:
-        virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const Char * _doc ) = 0;
+        virtual DecoderInterfacePtr createDecoder( const ConstString & _type, const DocumentPtr & _doc ) = 0;
 
         template<class T>
-        T createDecoderT( const ConstString & _type, const Char * _doc )
+        T createDecoderT( const ConstString & _type, const DocumentPtr & _doc )
         {
             DecoderInterfacePtr decoder = this->createDecoder( _type, _doc );
 
@@ -43,10 +44,10 @@ namespace Mengine
         }
 
     public:
-        virtual EncoderInterfacePtr createEncoder( const ConstString & _type, const Char * _doc ) = 0;
+        virtual EncoderInterfacePtr createEncoder( const ConstString & _type, const DocumentPtr & _doc ) = 0;
 
         template<class T>
-        T createEncoderT( const ConstString & _type, const Char * _doc )
+        T createEncoderT( const ConstString & _type, const DocumentPtr & _doc )
         {
             EncoderInterfacePtr encoder = this->createEncoder( _type, _doc );
 

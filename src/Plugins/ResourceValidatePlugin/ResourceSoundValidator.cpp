@@ -7,7 +7,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -123,7 +123,7 @@ namespace Mengine
         decoder = nullptr;
         stream = nullptr;
 
-        SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
+        SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( soundBuffer == nullptr )
         {

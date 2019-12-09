@@ -65,7 +65,7 @@ namespace Mengine
         virtual const FileGroupInterfacePtr & getFileGroup() const = 0;
 
     public:
-        virtual bool load( const Char * _doc ) = 0;
+        virtual bool load( const DocumentPtr & _doc ) = 0;
         virtual bool enable() = 0;
         virtual bool disable() = 0;
 

@@ -3,6 +3,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/CRC32.h"
@@ -72,9 +73,10 @@ namespace Mengine
 
         uint32_t leakcount = 0;
 
-        typedef Map<String, VectorString> MapObjectLeaks;
+        typedef Vector<DocumentPtr> VectorDocuments;
+        typedef Map<String, VectorDocuments> MapObjectLeaks;
         MapObjectLeaks objectLeaks;
-        this->visitFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const Char * _doc )
+        this->visitFactoryLeakObjects( 0, [&leakcount, &objectLeaks]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
         {
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
@@ -116,14 +118,14 @@ namespace Mengine
 
                     fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
 
-                    for( const String & obj : objects )
+                    for( const DocumentPtr & obj : objects )
                     {
                         const Char * obj_delimiter = "**********************************************************\n";
                         fwrite( obj_delimiter, strlen( obj_delimiter ), 1, f );
 
                         Char objmsg[16384];
                         int objmsg_length = snprintf( objmsg, 16384, "    doc: %s\n"
-                            , obj.c_str()
+                            , obj->c_str()
                         );
 
                         fwrite( objmsg, objmsg_length, 1, f );
@@ -197,6 +199,8 @@ namespace Mengine
     {
 #ifdef MENGINE_DEBUG
         ++m_generation;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_INCREF_FACTORY_GENERATION, m_generation );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -226,13 +230,13 @@ namespace Mengine
                     continue;
                 }
 
-                _leaks( desc.factory, desc.factorable, desc.factory_name.c_str(), desc.factorable_doc.c_str() );
+                _leaks( desc.factory, desc.factorable, desc.factory_name.c_str(), desc.factorable_doc );
             }
         }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const Char * _doc )
+    void FactoryService::debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _factory );
         MENGINE_UNUSED( _factorable );

@@ -4,7 +4,7 @@
 
 #include "Kernel/BezierHelper.h"
 #include "Kernel/Assertion.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "math/line2.h"
 

@@ -54,7 +54,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         if( this->isAvailableService() == false )
         {

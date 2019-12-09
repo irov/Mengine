@@ -19,7 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryProxyInput::setBuffer( void * _memory, size_t _offset, size_t _size, const Char * _doc )
+    Pointer MemoryProxyInput::setBuffer( void * _memory, size_t _offset, size_t _size, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

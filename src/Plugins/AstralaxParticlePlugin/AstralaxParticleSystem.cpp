@@ -97,18 +97,18 @@ namespace Mengine
         m_containers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
+    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
     {
         AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "invalid create container doc '%s'"
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         if( container->initialize( _fileGroup, _filePath, _archivator ) == false )
         {
             LOGGER_ERROR( "invalid initialize container doc '%s'"
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return nullptr;
@@ -134,9 +134,11 @@ namespace Mengine
             container->finalize();
 
 #ifdef MENGINE_DEBUG
+            const AstralaxEmitterContainerDesc & old_desc = it_found->second;
+
             LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"
-                , _doc
-                , it_found->second.doc.c_str()
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_MESSAGE( old_desc.doc )
             );
 #endif
         }
@@ -149,7 +151,7 @@ namespace Mengine
         return new_container;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr AstralaxParticleSystem::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const Char * _doc )
+    AstralaxEmitterInterfacePtr AstralaxParticleSystem::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc )
     {
         AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject( _doc );
 

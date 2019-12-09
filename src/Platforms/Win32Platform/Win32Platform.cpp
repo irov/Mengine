@@ -15,7 +15,7 @@
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -436,8 +436,10 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda )
+    uint32_t Win32Platform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         uint32_t new_id = ++m_enumerator;
 
         TimerDesc desc;
@@ -445,6 +447,10 @@ namespace Mengine
         desc.milliseconds = _milliseconds;
         desc.time = _milliseconds;
         desc.lambda = _lambda;
+
+#ifdef MENGINE_DEBUG
+        desc.doc = _doc;
+#endif
 
         m_timers.emplace_back( desc );
 
@@ -2329,7 +2335,7 @@ namespace Mengine
         return time;
     }
     //////////////////////////////////////////////////////////////////////////
-    DateTimeProviderInterfacePtr Win32Platform::createDateTimeProvider( const Char * _doc )
+    DateTimeProviderInterfacePtr Win32Platform::createDateTimeProvider( const DocumentPtr & _doc )
     {
         Win32DateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
 

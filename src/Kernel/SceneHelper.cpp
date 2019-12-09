@@ -5,13 +5,13 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
     namespace Helper
     {
-        ScenePtr makeScene( const SceneEventReceiverPtr & _eventReceiver, const Char * _doc )
+        ScenePtr makeScene( const SceneEventReceiverPtr & _eventReceiver, const DocumentPtr & _doc )
         {
             ScenePtr scene = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), _doc );

@@ -42,7 +42,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "Forgot remove player global input handler [%d] (doc: %s)"
                 , desc.id
-                , desc.doc.c_str()
+                , MENGINE_DOCUMENT_MESSAGE( desc.doc )
             );
         }
 #endif
@@ -240,7 +240,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const Char * _doc )
+    uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -407,7 +407,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc )
+    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc )
     {
         InputHandlerInterfacePtr handler = Helper::makeFactorableUnique<Detail::GlobalKeyHandler>( _code, _lambda );
 

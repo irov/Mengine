@@ -50,7 +50,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowAEK::create( const Char * _doc )
+    DataInterfacePtr DataflowAEK::create( const DocumentPtr & _doc )
     {
         MovieFramePackPtr data = m_factoryMovieFramePack->createObject( _doc );
 
@@ -59,7 +59,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr DataflowAEK::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), _doc );
 
@@ -68,7 +68,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
+    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
     {
         MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>( _data );
 
@@ -78,7 +78,7 @@ namespace Mengine
         if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )
         {
             LOGGER_ERROR( "invalid load buffer (doc: %s)"
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return false;

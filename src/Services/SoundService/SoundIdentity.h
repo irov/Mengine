@@ -62,7 +62,7 @@ namespace Mengine
         bool turn;
 
 #ifdef MENGINE_DEBUG
-        Document doc;
+        DocumentPtr doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

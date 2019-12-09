@@ -30,7 +30,7 @@ namespace Mengine
         float getDuration() const;
 
     public:
-        VideoDecoderInterfacePtr createVideoDecoder( const Char * _doc ) const;
+        VideoDecoderInterfacePtr createVideoDecoder( const DocumentPtr & _doc ) const;
         void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder ) const;
 
     protected:

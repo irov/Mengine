@@ -17,7 +17,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Engine/TextDebug.h"
 
@@ -71,7 +71,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _event );
             this->toggleDebugText_();
-        }, "NodeDebugRenderService" );
+        }, MENGINE_DOCUMENT_FUNCTION );
 
         m_timerFPS = PLATFORM_SERVICE()
             ->addTimer( 1000.f, [this]()
@@ -83,7 +83,7 @@ namespace Mengine
 
             RENDER_SERVICE()
                 ->resetFrameCount();
-        } );
+        }, MENGINE_DOCUMENT_FUNCTION );
 
         return true;
     }
@@ -652,7 +652,7 @@ namespace Mengine
 
             //m_debugText->render( _context );
 
-            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), "%s"
+            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FUNCTION, "%s"
                 , text.c_str()
             );
         }

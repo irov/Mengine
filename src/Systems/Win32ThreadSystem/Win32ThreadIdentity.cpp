@@ -81,7 +81,7 @@ namespace Mengine
         ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const Char * _doc )
+    bool Win32ThreadIdentity::initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

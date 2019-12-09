@@ -65,7 +65,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
+        MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -128,7 +128,7 @@ namespace Mengine
             if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress doc '%s'"
-                    , _doc
+                    , MENGINE_DOCUMENT_MESSAGE( _doc )
                 );
 
                 return nullptr;
@@ -147,7 +147,7 @@ namespace Mengine
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const Char * _doc )
+        bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const DocumentPtr & _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -305,7 +305,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc )
+        MemoryInterfacePtr loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentPtr & _doc )
         {
             if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
             {
@@ -332,7 +332,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
+        MemoryInterfacePtr loadStreamArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -412,7 +412,7 @@ namespace Mengine
             return binary_memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc )
+        MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const DocumentPtr & _doc )
         {
             if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
             {
@@ -424,7 +424,7 @@ namespace Mengine
             return memory;
         }
         //////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
+        MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );

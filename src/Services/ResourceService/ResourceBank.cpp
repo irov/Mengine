@@ -83,7 +83,7 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** _override, const Char * _doc )
+    ResourcePointer ResourceBank::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _keep, Resource ** _override, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "create resource '%s'"
             , _type.c_str()
@@ -100,7 +100,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource '%s' invalid initialize (doc: %s)"
                 , _type.c_str()
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return nullptr;
@@ -111,7 +111,7 @@ namespace Mengine
             , _groupName.c_str()
             , _name.c_str()
             , _type.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         resource->setResourceBank( this );

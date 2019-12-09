@@ -103,7 +103,7 @@ namespace Mengine
         return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer PythonEntityPrototypeGenerator::generate( const Char * _doc )
+    FactorablePointer PythonEntityPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
         const pybind::object & py_type = this->getPythonType();
 
@@ -119,7 +119,7 @@ namespace Mengine
             LOGGER_ERROR( "can't create object '%s' '%s' (invalid create) doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return nullptr;
@@ -131,7 +131,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( entity, nullptr, "can't generate '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         entity->setPrototype( m_prototype );

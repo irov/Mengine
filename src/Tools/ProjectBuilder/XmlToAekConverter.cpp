@@ -18,7 +18,7 @@
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"

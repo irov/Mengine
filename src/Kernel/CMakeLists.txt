@@ -539,7 +539,8 @@ Core
     MouseCode.h
     
     Document.h
-    Document.cpp
+    Document.cpp    
+    DocumentHelper.h
     
     Ravingcode.h
     Ravingcode.cpp

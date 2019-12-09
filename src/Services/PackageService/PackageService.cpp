@@ -7,7 +7,7 @@
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -54,7 +54,7 @@ namespace Mengine
         m_factoryPackage = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "Packages load... %s:%s"
             , _fileGroup->getName().c_str()
@@ -236,7 +236,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PackageService::addPackage( const PackageDesc & _desc, const Char * _doc )
+    bool PackageService::addPackage( const PackageDesc & _desc, const DocumentPtr & _doc )
     {
         bool developmentMode = HAS_OPTION( "dev" );
 

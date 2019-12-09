@@ -107,6 +107,7 @@ namespace Mengine
     protected:
         void notifyChangeScene( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
+        void notifyIncrefFactoryGeneration( uint32_t _generator );
 
     protected:
         uint32_t m_globalKeyHandlerF2;

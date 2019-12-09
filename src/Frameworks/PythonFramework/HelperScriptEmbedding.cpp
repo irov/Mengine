@@ -555,13 +555,13 @@ namespace Mengine
             return axis;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_addChronometer( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_addChronometer( const pybind::object & _cb, const pybind::args & _args )
         {
             uint32_t id = CHRONOMETER_SERVICE()
                 ->addChronometer( [_cb, _args]( uint32_t _id, uint64_t _time )
             {
                 _cb.call_args( _id, _time, _args );
-            }, _kernel->object_repr( _cb.ptr() ) );
+            }, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -646,7 +646,7 @@ namespace Mengine
         {
             for( uint32_t i = 0; i != _count; ++i )
             {
-                Helper::allocateMemory( _size, MENGINE_DOCUMENT_FUNCTION );
+                Helper::allocateMemory( _size, "pymemleak" );
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -655,7 +655,7 @@ namespace Mengine
             MENGINE_UNUSED( _length );
 
             DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+                ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
             uint64_t milliseconds = dateTimeProvider->getLocalDateMilliseconds();
 
@@ -2550,9 +2550,9 @@ namespace Mengine
         PyObject * s_createAccount( pybind::kernel_interface * _kernel )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
-                ->createAccount();
+                ->createAccount( MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), MENGINE_DOCUMENT_PYBIND );
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none() );
 
             const ConstString & accountId = account->getID();
 
@@ -2564,9 +2564,9 @@ namespace Mengine
         PyObject * s_createGlobalAccount( pybind::kernel_interface * _kernel )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
-                ->createGlobalAccount();
+                ->createGlobalAccount( MENGINE_DOCUMENT_PYBIND );
 
-            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none(), MENGINE_DOCUMENT_PYBIND );
+            MENGINE_ASSERTION_MEMORY_PANIC( account, _kernel->ret_none() );
 
             const ConstString & accountId = account->getID();
 
@@ -3674,7 +3674,7 @@ namespace Mengine
 
         pybind::def_functor( _kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
 
-        pybind::def_functor_kernel_args( _kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
+        pybind::def_functor_args( _kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
         pybind::def_functor( _kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );
 
         pybind::def_functor( _kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );

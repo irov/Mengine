@@ -7,13 +7,13 @@ namespace Mengine
 {
     namespace Helper
     {
-        NodePtr generateNode( const Char * _doc );
+        NodePtr generateNode( const DocumentPtr & _doc );
     }
 }
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
 namespace Mengine{typedef IntrusiveNodePtr<class X> X ## Ptr;}\
-namespace Mengine::Helper{X ## Ptr generate ## X( const Char * _doc );}
+namespace Mengine::Helper{X ## Ptr generate ## X( const DocumentPtr & _doc );}
 //////////////////////////////////////////////////////////////////////////
 MENGINE_NODE_GENERATE( Interender )
 MENGINE_NODE_GENERATE( Isometric )

@@ -3,7 +3,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Stream.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
@@ -41,7 +41,7 @@ namespace Mengine
         m_datas.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
@@ -102,7 +102,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr UserdataService::loadUserdata( const ConstString & _name, const Char * _doc ) const
+    MemoryInterfacePtr UserdataService::loadUserdata( const ConstString & _name, const DocumentPtr & _doc ) const
     {
         MapDatas::const_iterator it_found = m_datas.find( _name );
 

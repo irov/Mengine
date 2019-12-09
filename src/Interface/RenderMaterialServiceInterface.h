@@ -20,16 +20,16 @@ namespace Mengine
         SERVICE_DECLARE( "RenderMaterialService" )
 
     public:
-        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const Char * _doc ) = 0;
+        virtual RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentPtr & _doc ) = 0;
         virtual RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) = 0;
 
-        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) = 0;
+        virtual RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) = 0;
         virtual RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) = 0;
 
-        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) = 0;
+        virtual RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) = 0;
         virtual RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) = 0;
 
-        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc ) = 0;
+        virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc ) = 0;
         virtual RenderProgramInterfacePtr removeProgram( const ConstString & _name ) = 0;
 
     public:
@@ -55,18 +55,18 @@ namespace Mengine
         virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) = 0;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) = 0;
 
         virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) = 0;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) = 0;
 
         virtual RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) = 0;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const = 0;

@@ -18,7 +18,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Resource.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include <stdio.h>
@@ -155,7 +155,7 @@ namespace Mengine
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::load( const Char * _doc )
+    bool Package::load( const DocumentPtr & _doc )
     {
         if( this->mountFileGroup_( _doc ) == false )
         {
@@ -177,7 +177,7 @@ namespace Mengine
         return m_load;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Package::mountFileGroup_( const Char * _doc )
+    bool Package::mountFileGroup_( const DocumentPtr & _doc )
     {
         const PackageInterfacePtr & parentPackage = this->getParent();
         const FileGroupInterfacePtr & parentFileGroup = (parentPackage == nullptr) ? FileGroupInterfacePtr::none() : parentPackage->getFileGroup();

@@ -1,21 +1,22 @@
 #pragma once
 
 #include "Kernel/Document.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Interface/ScriptProviderServiceInterface.h"
 
 namespace Mengine
 {
 #ifdef MENGINE_DEBUG
-#	define MENGINE_DOCUMENT_PYBIND []() -> const Char * \
+#   define MENGINE_DOCUMENT_PYBIND [](const Mengine::Char * _file, const Mengine::Char * _function, uint32_t _line) \
     { \
-        static Char buffer[5120]; \
+        static Mengine::DocumentPtr doc = Mengine::Helper::makeFactorableUnique<Mengine::Document>(_file, _function, _line); \
         static Char traceback[4096]; \
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()->getKernel(); \
         kernel->get_traceback(traceback, 8192); \
-        snprintf(buffer, 5120, "%s\nfile %s:%d\ncall: %s", traceback, MENGINE_CODE_FILE, MENGINE_CODE_LINE, MENGINE_CODE_FUNCTION); \
-        return buffer;}()
+        doc->message("traceback: %s", traceback); \
+        return doc;}(MENGINE_CODE_FILE, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)
 #else
-#	define MENGINE_DOCUMENT_PYBIND ""
+#   define MENGINE_DOCUMENT_PYBIND nullptr
 #endif
 }

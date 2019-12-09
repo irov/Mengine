@@ -7,7 +7,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -106,7 +106,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const Char * _doc )
+    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc )
     {
         if( _offset + _count > m_indexCount )
         {
@@ -114,7 +114,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_indexCount
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return nullptr;
@@ -139,7 +139,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
                 , _offset
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return nullptr;
@@ -165,7 +165,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size, const Char * _doc )
+    bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size, const DocumentPtr & _doc )
     {
         UINT sizeToLock = (UINT)(_size * m_indexSize);
 
@@ -174,7 +174,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return false;

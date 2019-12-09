@@ -35,14 +35,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _doc )
+    void MemoryCacheBuffer::setBuffer( const void * _ptr, size_t _size, const DocumentPtr & _doc )
     {
         void * buffer = this->newBuffer( _size, _doc );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryCacheBuffer::newBuffer( size_t _size, const Char * _doc )
+    Pointer MemoryCacheBuffer::newBuffer( size_t _size, const DocumentPtr & _doc )
     {
         this->uncache_();
 

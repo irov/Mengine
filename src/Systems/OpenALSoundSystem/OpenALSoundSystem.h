@@ -37,8 +37,8 @@ namespace Mengine
         void onTurnSound( bool _turn ) override;
 
     public:
-        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const Char * _doc ) override;
-        SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const Char * _doc ) override;
+        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, const DocumentPtr & _doc ) override;
+        SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const DocumentPtr & _doc ) override;
 
     public:
         ALuint genSourceId();

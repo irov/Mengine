@@ -15,9 +15,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid, const Char * _doc );
-        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const Char * _doc );
-        RenderMaterialInterfacePtr makeTextureMaterial( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid, const Char * _doc );
+        RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid, const DocumentPtr & _doc );
+        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentPtr & _doc );
+        RenderMaterialInterfacePtr makeTextureMaterial( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid, const DocumentPtr & _doc );
     }
     //////////////////////////////////////////////////////////////////////////
     class Materialable
@@ -53,9 +53,9 @@ namespace Mengine
         virtual RenderMaterialInterfacePtr _updateMaterial() const = 0;
 
     protected:
-        RenderMaterialInterfacePtr makeSolidMaterial( bool _solid, const Char * _doc ) const;
-        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const Char * _doc ) const;
-        RenderMaterialInterfacePtr makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _solid, const Char * _doc ) const;
+        RenderMaterialInterfacePtr makeSolidMaterial( bool _solid, const DocumentPtr & _doc ) const;
+        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const DocumentPtr & _doc ) const;
+        RenderMaterialInterfacePtr makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _solid, const DocumentPtr & _doc ) const;
 
     public:
         MENGINE_INLINE const RenderMaterialInterfacePtr & getMaterial() const;
@@ -68,7 +68,7 @@ namespace Mengine
         RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) const;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) const;
 
         const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const;
 

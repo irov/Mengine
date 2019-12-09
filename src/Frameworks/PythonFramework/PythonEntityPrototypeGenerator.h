@@ -34,7 +34,7 @@ namespace Mengine
         void _finalizeFactory() override;
 
     protected:
-        FactorablePointer generate( const Char * _doc ) override;
+        FactorablePointer generate( const DocumentPtr & _doc ) override;
 
     protected:
         EventablePtr m_eventable;

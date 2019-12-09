@@ -20,7 +20,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/VectorConstString.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 

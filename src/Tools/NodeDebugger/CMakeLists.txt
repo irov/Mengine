@@ -1,7 +1,9 @@
 set( MY_LIB_NAME NodeDebugger )
 
 ADD_FILTER(
-    src
+src
+	ImGui_Ext.h
+
     NodeDebuggerApp.h
     NodeDebuggerApp.cpp
 

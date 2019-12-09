@@ -378,7 +378,18 @@ namespace Mengine
         Vector<CachedImage> m_imagesCache;
         Vector<TabDescriptor> m_tabs;
         Vector<SettingDesc> m_settings;
-        Map<String, VectorString> m_objectLeaks;
+
+        struct LeakDesc
+        {
+            String file;
+            String function;
+            String line;
+            String message;
+        };
+
+        typedef Vector<LeakDesc> VectorLeaks;
+        Map<String, VectorLeaks> m_objectLeaks;
+        String m_objectLeakGeneration;
         size_t m_currentTab;
 
         // Server connection

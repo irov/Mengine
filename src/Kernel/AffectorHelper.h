@@ -11,7 +11,7 @@
 #include "Kernel/ValueInterpolatorLinear.h"
 #include "Kernel/ValueInterpolatorQuadratic.h"
 #include "Kernel/ValueInterpolatorBezier.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

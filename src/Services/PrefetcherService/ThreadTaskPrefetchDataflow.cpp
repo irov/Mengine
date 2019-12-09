@@ -3,7 +3,7 @@
 #include "Interface/CodecInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
@@ -68,7 +68,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = m_dataflow->load( m_stream, m_filePath.c_str() );
+        MemoryInterfacePtr memory = m_dataflow->load( m_stream, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalide load file '%s':'%s'"
             , this->getFileGroup()->getName().c_str()
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( m_dataflow->isThreadFlow() == true )
         {
-            if( m_dataflow->flow( m_data, memory, m_filePath.c_str() ) == false )
+            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
@@ -101,7 +101,7 @@ namespace Mengine
         {
             MemoryInterfacePtr memory = std::move( m_memory );
 
-            if( m_dataflow->flow( m_data, memory, m_filePath.c_str() ) == false )
+            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()

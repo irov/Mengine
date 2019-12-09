@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer ArrowPrototypeGenerator::generate( const Char * _doc )
+    FactorablePointer ArrowPrototypeGenerator::generate( const DocumentPtr & _doc )
     {
         ArrowPtr arrow = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), _doc );
@@ -25,7 +25,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( arrow, nullptr, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         return arrow;

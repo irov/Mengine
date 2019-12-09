@@ -34,7 +34,7 @@
 #include "Interface/SettingsServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
 #include "Kernel/FactoryDefault.h"

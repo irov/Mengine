@@ -13,7 +13,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/RenderUtils.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -199,7 +199,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "NullTexture" );
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
             , null_width
@@ -266,7 +266,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "WhitePixelTexture" );
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
             , null_width

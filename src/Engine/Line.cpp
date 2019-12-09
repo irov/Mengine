@@ -1,6 +1,6 @@
 #include "Line.h"
 
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

@@ -2,8 +2,9 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( BitmapGlyphService, Mengine::BitmapGlyphService );
@@ -47,6 +48,8 @@ namespace Mengine
         }
 
         BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FUNCTION );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( glyph, nullptr );
 
         if( glyph->initialize( _fileGroup, _filePath ) == false )
         {

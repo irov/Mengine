@@ -14,7 +14,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        DataPointer getDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const Char * _doc )
+        DataPointer getDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DocumentPtr & _doc )
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
@@ -31,7 +31,7 @@ namespace Mengine
             );
 
             DataInterfacePtr data = DATA_SERVICE()
-                ->dataflow( _dataflow, stream, _filePath.c_str() );
+                ->dataflow( _dataflow, stream, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr, "dataflow invalid create data for file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()
@@ -41,7 +41,7 @@ namespace Mengine
             return data;
         }
         //////////////////////////////////////////////////////////////////////////
-        DataPointer popDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const Char * _doc )
+        DataPointer popDataflow( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const DocumentPtr & _doc )
         {
             DataInterfacePtr prefetch_data;
             if( PREFETCHER_SERVICE()
@@ -58,7 +58,7 @@ namespace Mengine
             );
 
             DataInterfacePtr data = DATA_SERVICE()
-                ->dataflow( _dataflow, stream, _filePath.c_str() );
+                ->dataflow( _dataflow, stream, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr, "dataflow invalid create data for file '%s/%s'"
                 , _fileGroup->getFolderPath().c_str()

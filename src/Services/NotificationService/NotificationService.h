@@ -25,14 +25,14 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc ) override;
+        void addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc ) override;
         void removeObserver( uint32_t _id, Observable * _observer ) override;
 
     public:
         bool visitObservers( uint32_t _id, const LambdaObserver & _lambda ) override;
 
     public:
-        void addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc );
+        void addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc );
         void removeObserver_( uint32_t _id, Observable * _observer );
 
     protected:
@@ -42,7 +42,7 @@ namespace Mengine
             ObserverCallableInterfacePtr callable;
 
 #ifdef MENGINE_DEBUG
-            String doc;
+            DocumentPtr doc;
 #endif
         };
 
@@ -55,7 +55,7 @@ namespace Mengine
             Observable * observer;
             ObserverCallableInterfacePtr callable;
 #ifdef MENGINE_DEBUG
-            String doc;
+            DocumentPtr doc;
 #endif
         };
 

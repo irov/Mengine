@@ -39,7 +39,7 @@ namespace Mengine
 {
     namespace Helper
     {
-        NodePtr generateNode( const Char * _doc )
+        NodePtr generateNode( const DocumentPtr & _doc )
         {
             NodePtr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Node" ), _doc );
 
@@ -50,7 +50,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define MENGINE_NODE_GENERATE(X)\
 namespace Mengine::Helper{\
-        X ## Ptr generate ## X( const Char * _doc ){\
+        X ## Ptr generate ## X( const DocumentPtr & _doc ){\
             X ## Ptr node = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( #X ), _doc );\
             return node;\
         }}

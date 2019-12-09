@@ -8,7 +8,7 @@
 #include "Kernel/PixelFormat.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 #include "TTFPrototypeGenerator.h"

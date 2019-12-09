@@ -11,7 +11,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual FrameworkInterfacePtr createFramework( const Char * _doc ) = 0;
+        virtual FrameworkInterfacePtr createFramework( const DocumentPtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FrameworkFactoryInterface> FrameworkFactoryInterfacePtr;

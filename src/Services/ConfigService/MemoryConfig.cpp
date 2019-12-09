@@ -3,7 +3,7 @@
 #include "Kernel/Exception.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
 
 #include "Config/ArrayString.h"

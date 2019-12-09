@@ -3,10 +3,15 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/FactoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/DocumentHelper.h"
+
+#ifdef MENGINE_PLATFORM_WINDOWS
+#   include "Kernel/Win32Helper.h"
+#endif
 
 namespace Mengine
 {
@@ -145,6 +150,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::destroy()
     {
+        const Char * pluginName = this->getPluginName();
+        MENGINE_UNUSED( pluginName );
+
         this->_destroyPlugin();
         this->_destroy();
 
@@ -153,6 +161,54 @@ namespace Mengine
         ThreadMutexInterfacePtr mutexAllocatorPool = std::move( m_mutexAllocatorPool );
 
         delete this;
+
+#if defined(MENGINE_WINDOWS_DEBUG)
+        if( dynamicLoad == true )
+        {
+            Char plugin_modulePath[MENGINE_MAX_PATH];
+            Helper::Win32GetCurrentDllPath( plugin_modulePath );
+
+            typedef Vector<DocumentPtr> VectorDocuments;
+            VectorDocuments leakObjects;
+
+            FACTORY_SERVICE()
+                ->visitFactoryLeakObjects( ~0U, [plugin_modulePath, &leakObjects, &mutexAllocatorPool]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+            {
+                MENGINE_UNUSED( _factory );
+                MENGINE_UNUSED( _factorable );
+                MENGINE_UNUSED( _type );
+
+                if( _factorable == dynamic_cast<Factorable *>(mutexAllocatorPool.get()) )
+                {
+                    return;
+                }
+
+                const Char * object_modulePath = _doc->getModulePath();
+
+                if( strcmp( plugin_modulePath, object_modulePath ) != 0 )
+                {
+                    return;
+                }
+
+                leakObjects.emplace_back( _doc );
+            } );
+
+            if( leakObjects.empty() == false )
+            {
+                LOGGER_MESSAGE( "Plugin[%s] leak %u objects"
+                    , pluginName
+                    , leakObjects.size()
+                );
+
+                for( const DocumentPtr & doc : leakObjects )
+                {
+                    LOGGER_MESSAGE( "-- %s"
+                        , MENGINE_DOCUMENT_MESSAGE( doc )
+                    );
+                }
+            }
+        }
+#endif
 
         if( dynamicLoad == true )
         {

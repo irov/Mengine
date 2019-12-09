@@ -41,7 +41,7 @@ namespace Mengine
         NodePtr spawnExplosive_();
 
     protected:
-        JewelryPtr makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const Char * _doc );
+        JewelryPtr makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const DocumentPtr & _doc );
 
     protected:
         void makeUI_();

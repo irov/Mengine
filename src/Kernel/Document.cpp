@@ -2,12 +2,12 @@
 
 #include "Kernel/MemoryAllocator.h"
 
+#ifdef MENGINE_PLATFORM_WINDOWS
+#   include "Kernel/Win32Helper.h"
+#endif
+
 #include "Config/StdIO.h"
 
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_PLATFORM_WINDOWS
-#   include "Environment/Windows/WindowsIncluder.h"
-#endif
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DOCUMENT_MAX_MESSAGE
 #define MENGINE_DOCUMENT_MAX_MESSAGE 8192
@@ -60,40 +60,7 @@ namespace Mengine
     void Document::message( const char * _format, ... )
     {
 #ifdef MENGINE_PLATFORM_WINDOWS
-        WCHAR unicode_path[MENGINE_MAX_PATH];
-        HMODULE hm = NULL;
-
-        if( GetModuleHandleEx( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-            GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-            L"dllCreatePlugin", &hm ) == 0 )
-        {
-            int ret = GetLastError();
-            fprintf( stderr, "GetModuleHandle failed, error = %d\n", ret );
-            // Return or however you want to handle an error.
-        }
-        if( GetModuleFileName( hm, unicode_path, sizeof( unicode_path ) ) == 0 )
-        {
-            int ret = GetLastError();
-            fprintf( stderr, "GetModuleFileName failed, error = %d\n", ret );
-            // Return or however you want to handle an error.
-        }
-
-#   if (WINVER >= 0x0600)
-        DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
-#   else
-        DWORD dwConversionFlags = 0;
-#   endif
-
-        ::WideCharToMultiByte(
-            CP_UTF8
-            , dwConversionFlags
-            , unicode_path
-            , wcslen( unicode_path )
-            , m_modulePath
-            , MENGINE_MAX_PATH
-            , NULL
-            , NULL
-        );
+        Helper::Win32GetCurrentDllPath( m_modulePath );
 #endif
 
         MENGINE_VA_LIST_TYPE args;

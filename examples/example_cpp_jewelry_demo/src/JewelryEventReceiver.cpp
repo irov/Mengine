@@ -135,7 +135,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    JewelryPtr JewelryEventReceiver::makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const Char * _doc )
+    JewelryPtr JewelryEventReceiver::makeJewelry_( EJewelrySuper _super, uint32_t _type, uint32_t _column, uint32_t _row, const DocumentPtr & _doc )
     {
         JewelryPtr jewelry = m_factoryJewelry->createObject( _doc );
 

@@ -225,7 +225,7 @@ namespace Mengine
 
             for( const ObjectLeakDesc & desc : nodeLeakDescs )
             {
-                if( desc.generation != _generation )
+                if( _generation != ~0U && desc.generation != _generation )
                 {
                     continue;
                 }

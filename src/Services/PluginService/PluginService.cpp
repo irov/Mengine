@@ -144,6 +144,8 @@ namespace Mengine
 
             desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
+
+            desc.dynamicLibrary = nullptr;
         }
 
         for( PluginDesc & desc : reverse_plugins )

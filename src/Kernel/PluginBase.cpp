@@ -6,7 +6,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -157,6 +157,8 @@ namespace Mengine
         if( dynamicLoad == true )
         {
             stdex_allocator_finalize_threadsafe();
+            mutexAllocatorPool = nullptr;
+
             stdex_allocator_finalize();
         }
     }

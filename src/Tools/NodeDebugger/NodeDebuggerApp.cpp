@@ -117,7 +117,7 @@ namespace Mengine
         gladLoadGLLoader( reinterpret_cast<GLADloadproc>(glfwGetProcAddress) );
         glfwSwapInterval( 1 ); // enable v-sync
 
-        LoadIconsAtlas();
+        this->LoadIconsAtlas();
 
         glViewport( 0, 0, m_width, m_height );
 
@@ -141,7 +141,7 @@ namespace Mengine
         ImGui::CreateContext();
         ImGui::GetIO().IniFilename = nullptr; // disable "imgui.ini"
         //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // tell ImGui to not interfere with our cursors
-        ImGui_ImplGlfwGL3_Init( m_window, false );
+        ImGui_ImplGlfwGL3_Init( m_window, true );
         ImGui::StyleColorsClassic();
         //ImGuiExt::SetBrightStyle();
 
@@ -166,12 +166,12 @@ namespace Mengine
         });
 
         // if requested to auto-connect, then do so
-        if( !_address.empty() && _port != 0 )
+        if( _address.empty() == false && _port != 0 )
         {
             m_serverAddress = _address;
             m_serverPort = _port;
 
-            OnConnectButton();
+            this->OnConnectButton();
         }
 
         return true;
@@ -214,21 +214,21 @@ namespace Mengine
 
         m_networkThread.join();
 
-        if( m_scene )
+        if( m_scene != nullptr )
         {
-            DestroyNode( m_scene );
+            this->DestroyNode( m_scene );
             m_scene = nullptr;
         }
 
-        if( m_scenePickerable )
+        if( m_scenePickerable != nullptr )
         {
-            DestroyNode( m_scenePickerable );
+            this->DestroyNode( m_scenePickerable );
             m_scenePickerable = nullptr;
         }
 
-        if( m_sceneRenderable )
+        if( m_sceneRenderable != nullptr )
         {
-            DestroyNode( m_sceneRenderable );
+            this->DestroyNode( m_sceneRenderable );
             m_sceneRenderable = nullptr;
         }
     }
@@ -249,21 +249,21 @@ namespace Mengine
 
         if( m_connectionStatus == ConnectionStatus::Disconnected )
         {
-            if( m_scene )
+            if( m_scene != nullptr )
             {
-                DestroyNode( m_scene );
+                this->DestroyNode( m_scene );
                 m_scene = nullptr;
             }
 
-            if( m_scenePickerable )
+            if( m_scenePickerable != nullptr )
             {
-                DestroyNode( m_scenePickerable );
+                this->DestroyNode( m_scenePickerable );
                 m_scenePickerable = nullptr;
             }
 
-            if( m_sceneRenderable )
+            if( m_sceneRenderable != nullptr )
             {
-                DestroyNode( m_sceneRenderable );
+                this->DestroyNode( m_sceneRenderable );
                 m_sceneRenderable = nullptr;
             }
 
@@ -273,21 +273,22 @@ namespace Mengine
         }
         else if( m_connectionStatus == ConnectionStatus::Connected )
         {
-            if( !m_incomingPackets.empty() )
+            if( m_incomingPackets.empty() == false )
             {
-                ProcessPacket( m_incomingPackets.front() );
+                NodeDebuggerPacket & packet = m_incomingPackets.front();
+                this->ProcessPacket( packet );
                 m_incomingPackets.pop_front();
             }
 
             if( m_selectedNode && m_selectedNode->dirty )
             {
-                SendChangedNode( *m_selectedNode );
+                this->SendChangedNode( *m_selectedNode );
                 m_selectedNode->dirty = false;
             }
 
-            if( !m_selectedNodePath.empty() )
+            if( m_selectedNodePath.empty() == false )
             {
-                SendNodeSelection( m_selectedNodePath );
+                this->SendNodeSelection( m_selectedNodePath );
                 m_selectedNodePath.clear();
             }
 
@@ -298,14 +299,14 @@ namespace Mengine
                 const double updateInterval = 1.0 / static_cast<double>( m_sceneUpdateFreq );
                 if( m_sceneUpdateTimer >= updateInterval )
                 {
-                    SendSceneRequest();
+                    this->SendSceneRequest();
                     m_sceneUpdateTimer = 0.0;
                 }
             }
 
-            if( m_pauseRequested )
+            if( m_pauseRequested == true )
             {
-                SendPauseRequest();
+                this->SendPauseRequest();
                 m_pauseRequested = false;
             }
         }
@@ -326,7 +327,7 @@ namespace Mengine
             Mengine::Blobject compressedPayload( maxCompressedSize );
 
             const int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
-            if( result < 0 || result >= payloadSize )
+            if( result < 0 || payloadSize < result )
             {
                 _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
                 _hdr.uncompressedSize = 0; // packet is not compressed
@@ -421,7 +422,7 @@ namespace Mengine
 
         if( xmlNode )
         {
-            if( m_scene )
+            if( m_scene != nullptr )
             {
                 DestroyNode( m_scene );
             }
@@ -429,9 +430,9 @@ namespace Mengine
             m_scene = new DebuggerNode();
             m_scene->parent = nullptr;
 
-            DeserializeNode( xmlNode, m_scene );
+            this->DeserializeNode( xmlNode, m_scene );
 
-            m_selectedNode = PathToNode( StringToPath( m_lastSelectedNodePath ) );
+            m_selectedNode = this->PathToNode( this->StringToPath( m_lastSelectedNodePath ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -441,17 +442,17 @@ namespace Mengine
 
         if( xmlNode )
         {
-            if( m_scenePickerable )
+            if( m_scenePickerable != nullptr )
             {
-                DestroyNode( m_scenePickerable );
+                this->DestroyNode( m_scenePickerable );
             }
 
             m_scenePickerable = new DebuggerNode();
             m_scenePickerable->parent = nullptr;
 
-            DeserializeNode( xmlNode, m_scenePickerable );
+            this->DeserializeNode( xmlNode, m_scenePickerable );
 
-            m_selectedNode = PathToNode( StringToPath( m_lastSelectedNodePath ) );
+            m_selectedNode = this->PathToNode( this->StringToPath( m_lastSelectedNodePath ) );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -481,19 +482,28 @@ namespace Mengine
 
         m_objectLeaks.clear();
 
-        _xmlContainer.child( "Generation" ).value();
+        m_objectLeakGeneration = _xmlContainer.attribute( "Generation" ).value();
 
         for( const pugi::xml_node & child : _xmlContainer.children() )
         {
-            const pugi::char_t * type = child.attribute( "type" ).value();
+            const pugi::char_t * type = child.attribute( "factory" ).value();
             
-            VectorString & objects = m_objectLeaks[type];
+            VectorLeaks & leaks = m_objectLeaks[type];
 
             for( const pugi::xml_node & o : child.children() )
             {
-                const pugi::char_t * name = child.attribute( "name" ).value();
+                const pugi::char_t * file = o.attribute( "file" ).value();
+                const pugi::char_t * function = o.attribute( "function" ).value();
+                const pugi::char_t * line = o.attribute( "line" ).value();
+                const pugi::char_t * message = o.attribute( "message" ).value();
 
-                objects.emplace_back( name );
+                LeakDesc desc;
+                desc.file = file;
+                desc.function = function;
+                desc.line = line;
+                desc.message = message;
+
+                leaks.emplace_back( desc );
             }
         }
     }
@@ -1014,18 +1024,77 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUIObjectsLeakTab()
     {
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Generator: %s"
+            , m_objectLeakGeneration.c_str()
+        );
+
+        ImGui::Separator();
+
+        uint32_t index = 0;
+
         for( auto && [type, objects] : m_objectLeaks )
         {
-            ImGui::Text( "Factory: %s"
-                , type.c_str() 
+            ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 1.f, 0.f, 1.f ) );
+
+            char label_node[16];
+            sprintf( label_node, "##tree_node_%u"
+                , index
             );
 
-            for( const String & name : objects )
+            bool isOpened = ImGui::TreeNodeEx( label_node, ImGuiTreeNodeFlags_DefaultOpen, "%s [%u]"
+                , type.c_str()
+                , objects.size()
+            );
+
+            ImGui::PopStyleColor();
+
+            if( isOpened == true )
             {
-                ImGui::Text( "  -- %s"
-                    , name.c_str()
-                );
+                ImGui::Separator();
+
+                for( const LeakDesc & leak : objects )
+                {
+                    //ImGui::Selectable( doc.c_str(), true, ImGuiSelectableFlags_AllowDoubleClick );
+                    ImGui::BulletText( "file: %s"
+                        , leak.file.c_str()
+                    );
+
+                    ImGui::BulletText( "line: %s"
+                        , leak.line.c_str()
+                    );
+
+                    ImGui::BulletText( "function: %s"
+                        , leak.function.c_str()
+                    );
+
+                    char label_text[16];
+                    sprintf( label_text, "##text_%u"
+                        , index
+                    );
+
+                    ImGui::InputTextMultiline( label_text
+                        , (char *)leak.message.data()
+                        , leak.message.size()
+                        , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
+                        , ImGuiInputTextFlags_ReadOnly
+                    );
+
+                    ImGui::Separator();
+
+                    ++index;
+                }
+
+                //char label_text[16];
+                //sprintf( label_text, "##text_%u"
+                //    , index
+                //);
+
+                //ImGui::InputTextMultiline( label_text, buffer.data(), buffer.size(), ImVec2( -1.f, 0.f ), ImGuiInputTextFlags_ReadOnly );
+
+                ImGui::TreePop();
             }
+
+            ++index;
         }
     }
     //////////////////////////////////////////////////////////////////////////

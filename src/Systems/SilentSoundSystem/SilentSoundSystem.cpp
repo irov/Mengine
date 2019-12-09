@@ -3,7 +3,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
@@ -58,7 +58,7 @@ namespace Mengine
         MENGINE_UNUSED( _turn );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const Char * _doc )
+    SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentPtr & _doc )
     {
         SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject( _doc );
 
@@ -70,7 +70,7 @@ namespace Mengine
         return soundSource;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const Char * _doc )
+    SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable, const DocumentPtr & _doc )
     {
         SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject( _doc );
 

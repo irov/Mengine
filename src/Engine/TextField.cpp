@@ -7,7 +7,7 @@
 #include "Kernel/StringFormat.h"
 #include "Kernel/StringHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "TextLine.h"

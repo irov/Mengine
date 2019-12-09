@@ -12,7 +12,7 @@
 #include "Config/Atomic.h"
 
 #ifdef MENGINE_DEBUG
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #endif
 
 namespace Mengine
@@ -26,7 +26,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const Char * _doc );
+        bool initialize( const ConstString & _name, int32_t _priority, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
 
     public:
         void main();
@@ -57,7 +57,7 @@ namespace Mengine
         AtomicBool m_exit;
 
 #ifdef MENGINE_DEBUG
-        Document m_doc;
+        DocumentPtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

@@ -29,8 +29,8 @@ namespace Mengine
         virtual void setAccountProvider( const AccountProviderInterfacePtr & _accountProvider ) = 0;
 
     public:
-        virtual AccountInterfacePtr createAccount() = 0;
-        virtual AccountInterfacePtr createGlobalAccount() = 0;
+        virtual AccountInterfacePtr createAccount( const DocumentPtr & _doc ) = 0;
+        virtual AccountInterfacePtr createGlobalAccount( const DocumentPtr & ) = 0;
 
     public:
         virtual bool hasAccount( const ConstString & _accountID ) const = 0;

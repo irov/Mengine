@@ -11,7 +11,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/PathHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
@@ -152,7 +152,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const Char * _doc )
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
@@ -195,7 +195,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const Char * _doc )
+    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
     {
         Win32FileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
 

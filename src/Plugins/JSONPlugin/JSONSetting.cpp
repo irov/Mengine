@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONSetting::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool JSONSetting::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         m_fileGroup = _fileGroup;
         m_filePath = _filePath;

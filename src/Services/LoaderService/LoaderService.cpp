@@ -19,7 +19,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #ifndef MENGINE_MASTER_RELEASE
 #   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"

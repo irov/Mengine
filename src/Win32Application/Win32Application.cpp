@@ -38,7 +38,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/FileLogger.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"

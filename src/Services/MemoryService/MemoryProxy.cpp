@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryProxy::setBuffer( void * _ptr, size_t _size, const Char * _doc )
+    void MemoryProxy::setBuffer( void * _ptr, size_t _size, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

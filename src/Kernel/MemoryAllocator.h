@@ -1,8 +1,9 @@
 #pragma once
 
+#include "Kernel/Typename.h"
+
 #include "Config/Config.h"
 #include "Config/Char.h"
-#include "Kernel/Typename.h"
 
 #include "stdex/allocator.h"
 

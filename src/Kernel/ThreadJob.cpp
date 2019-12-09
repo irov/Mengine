@@ -4,7 +4,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
@@ -19,7 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////        
-    bool ThreadJob::initialize( uint32_t _sleep, const Char * _doc )
+    bool ThreadJob::initialize( uint32_t _sleep, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

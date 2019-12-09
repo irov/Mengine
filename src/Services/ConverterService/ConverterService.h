@@ -19,9 +19,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ConverterInterfacePtr createConverter( const ConstString & _type, const Char * _doc ) override;
+        ConverterInterfacePtr createConverter( const ConstString & _type, const DocumentPtr & _doc ) override;
 
     public:
-        bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * _out, const Char * _doc ) override;
+        bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _fileGroup, const FilePath & _in, FilePath * _out, const DocumentPtr & _doc ) override;
     };
 }

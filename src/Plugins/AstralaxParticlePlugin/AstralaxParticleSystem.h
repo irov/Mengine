@@ -43,8 +43,8 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const Char * _doc ) override;
-        AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const Char * _doc ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc ) override;
+        AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const DocumentPtr & _doc ) override;
 
     public:
         const RenderMaterialStage * getMaterialStage( int32_t _index ) const override;
@@ -72,7 +72,7 @@ namespace Mengine
             uint32_t reference;
             const AstralaxEmitterContainer * container;
 #ifdef MENGINE_DEBUG
-            String doc;
+            DocumentPtr doc;
 #endif
         };
 

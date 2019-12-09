@@ -31,7 +31,7 @@ namespace Mengine
         for( const ChronometerDesc & desc : m_chronometers )
         {
             LOGGER_ERROR( "Not remove chronometer '%s'"
-                , desc.doc.c_str()
+                , desc.doc->c_str()
             );
         }
 #endif
@@ -39,7 +39,7 @@ namespace Mengine
         m_chronometers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ChronometerService::addChronometer( const LambdaChronometer & _lambda, const Char * _doc )
+    uint32_t ChronometerService::addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

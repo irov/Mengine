@@ -26,7 +26,7 @@ namespace Mengine
         const Char * getName() const;
 
     public:
-        virtual FactorablePointer createObject( const Char * _doc );
+        virtual FactorablePointer createObject( const DocumentPtr & _doc );
         virtual void destroyObject( Factorable * _object );
 
     public:

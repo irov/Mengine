@@ -14,7 +14,7 @@ namespace Mengine
         ~JSONSetting() override;
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) override;
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) override;
         void finalize() override;
 
     public:

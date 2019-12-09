@@ -23,7 +23,7 @@ namespace Mengine
         ~Win32ThreadMutex() override;
 
     public:
-        void initialize( const Char * _doc );
+        void initialize( const DocumentPtr & _doc );
 
     protected:
         void lock() override;
@@ -39,7 +39,7 @@ namespace Mengine
         CRITICAL_SECTION m_cs;
 
 #ifdef MENGINE_DEBUG
-        Document m_doc;
+        DocumentPtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

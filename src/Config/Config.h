@@ -35,7 +35,7 @@
 #   error "undefine compiler"
 #endif
 
-#ifdef __GNUC__
+#ifdef MENGINE_COMPILER_GCC
 #define MENGINE_CODE_FILE __FILE__
 #define MENGINE_CODE_FUNCTION __PRETTY_FUNCTION__
 #define MENGINE_CODE_LINE __LINE__

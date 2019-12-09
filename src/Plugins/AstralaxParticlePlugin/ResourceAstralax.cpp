@@ -92,7 +92,7 @@ namespace Mengine
         m_container = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter( const Char * _doc )
+    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter( const DocumentPtr & _doc )
     {
         if( this->isCompile() == false )
         {

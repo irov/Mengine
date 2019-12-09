@@ -21,11 +21,11 @@ namespace Mengine
         virtual bool isThreadFlow() const = 0;
 
     public:
-        virtual DataInterfacePtr create( const Char * _doc ) = 0;
+        virtual DataInterfacePtr create( const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const Char * _doc ) = 0;
-        virtual bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc ) = 0;
+        virtual MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) = 0;
+        virtual bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowInterface> DataflowInterfacePtr;

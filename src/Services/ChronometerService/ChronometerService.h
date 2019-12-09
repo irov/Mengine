@@ -27,7 +27,7 @@ namespace Mengine
         void update() override;
 
     public:
-        uint32_t addChronometer( const LambdaChronometer & _lambda, const Char * _doc ) override;
+        uint32_t addChronometer( const LambdaChronometer & _lambda, const DocumentPtr & _doc ) override;
         bool removeChronometer( uint32_t _id ) override;
 
     protected:
@@ -38,7 +38,7 @@ namespace Mengine
             uint32_t id;
             LambdaChronometer lambda;
 #ifdef MENGINE_DEBUG
-            Document doc;
+            DocumentPtr doc;
 #endif
         };
 

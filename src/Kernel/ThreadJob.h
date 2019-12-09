@@ -13,7 +13,7 @@
 #endif
 
 #ifdef MENGINE_DEBUG
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #endif
 
 namespace Mengine
@@ -44,7 +44,7 @@ namespace Mengine
         ~ThreadJob() override;
 
     public:
-        bool initialize( uint32_t _sleep, const Char * _doc );
+        bool initialize( uint32_t _sleep, const DocumentPtr & _doc );
 
     public:
         uint32_t addWorker( const ThreadWorkerInterfacePtr & _worker );
@@ -63,7 +63,7 @@ namespace Mengine
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 
 #ifdef MENGINE_DEBUG
-        Document m_doc;
+        DocumentPtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

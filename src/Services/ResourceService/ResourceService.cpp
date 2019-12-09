@@ -14,7 +14,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Error.h"
 #include "Kernel/FactoryPool.h"
@@ -80,7 +80,7 @@ namespace Mengine
         m_globalBank->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const Char * _doc )
+    ResourceBankInterfacePtr ResourceService::createResourceBank( uint32_t _reserved, const DocumentPtr & _doc )
     {
         ResourceBankPtr bank = m_factoryResourceBank->createObject( _doc );
 
@@ -94,7 +94,7 @@ namespace Mengine
         return bank;
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const Char * _doc )
+    ResourcePointer ResourceService::createResource( const ConstString & _locale, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, bool _groupCache, bool _keep, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true), nullptr );
 
@@ -106,7 +106,7 @@ namespace Mengine
             , _groupName.c_str()
             , _name.c_str()
             , _type.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         if( _name.empty() == false )

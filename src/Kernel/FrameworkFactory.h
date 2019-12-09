@@ -5,7 +5,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -25,7 +25,7 @@ namespace Mengine
         }
 
     public:
-        FrameworkInterfacePtr createFramework( const Char * _doc ) override
+        FrameworkInterfacePtr createFramework( const DocumentPtr & _doc ) override
         {
             IntrusivePtr<T> module = m_factory->createObject( _doc );
 

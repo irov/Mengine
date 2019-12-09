@@ -33,7 +33,7 @@ namespace Mengine
         void visitFactories( const VisitorFactoryServicePtr & _visitor ) override;
 
     protected:
-        void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const Char * _doc ) override;
+        void debugFactoryCreateObject( const Factory * _factory, const Factorable * _factorable, const DocumentPtr & _doc ) override;
         void debugFactoryDestroyObject( const Factory * _factory, const Factorable * _factorable ) override;
 
     protected:
@@ -67,7 +67,7 @@ namespace Mengine
             const Factory * factory;
             const Factorable * factorable;
             String factory_name;
-            String factorable_doc;
+            DocumentPtr factorable_doc;
         };
 
         typedef Vector<ObjectLeakDesc> VectorObjectLeakDesc;

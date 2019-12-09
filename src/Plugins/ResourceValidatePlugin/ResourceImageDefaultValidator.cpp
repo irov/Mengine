@@ -8,7 +8,7 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

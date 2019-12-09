@@ -223,7 +223,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const Char * _doc )
+        uint32_t addGlobalKeyHandler( EKeyCode _code, bool _isDown, const LambdaInputKeyEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
@@ -235,7 +235,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const Char * _doc )
+        uint32_t addGlobalMouseButtonEvent( EMouseCode _code, bool _isDown, const LambdaInputMouseButtonEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
@@ -247,7 +247,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const Char * _doc )
+        uint32_t addGlobalMouseMoveEvent( const LambdaInputMouseMoveEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
@@ -259,7 +259,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const Char * _doc )
+        uint32_t addGlobalMouseWheelEvent( const LambdaInputMouseWheelEvent & _event, const DocumentPtr & _doc )
         {
             const GlobalInputHandlerInterfacePtr & globalInputHandle = PLAYER_SERVICE()
                 ->getGlobalInputHandler();

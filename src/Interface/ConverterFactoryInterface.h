@@ -14,7 +14,7 @@ namespace Mengine
         virtual bool initialize() = 0;
 
     public:
-        virtual ConverterInterfacePtr createConverter( const Char * _doc ) = 0;
+        virtual ConverterInterfacePtr createConverter( const DocumentPtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ConverterFactoryInterface> ConverterFactoryInterfacePtr;

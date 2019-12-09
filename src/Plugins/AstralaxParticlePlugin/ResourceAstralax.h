@@ -30,7 +30,7 @@ namespace Mengine
         const ResourceImagePtr & getResourceImage( uint32_t _index ) const;
 
     public:
-        AstralaxEmitterInterfacePtr createEmitter( const Char * _doc );
+        AstralaxEmitterInterfacePtr createEmitter( const DocumentPtr & _doc );
 
     protected:
         bool _compile() override;
@@ -42,5 +42,5 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr m_container;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceAstralax, Resource> ResourceAstralaxPtr;
+    typedef IntrusiveResourcePtr<ResourceAstralax> ResourceAstralaxPtr;
 }

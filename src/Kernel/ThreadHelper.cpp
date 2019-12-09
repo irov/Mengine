@@ -62,7 +62,7 @@ namespace Mengine
             //////////////////////////////////////////////////////////////////////////
         }
         //////////////////////////////////////////////////////////////////////////
-        bool createSimpleThreadWorker( const ConstString & _threadName, uint32_t _sleep, const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker, const Char * _doc )
+        bool createSimpleThreadWorker( const ConstString & _threadName, uint32_t _sleep, const LambdaThreadUpdate & _update, const LambdaThreadWorker & _worker, const DocumentPtr & _doc )
         {
             ThreadJobPtr threadJob = THREAD_SERVICE()
                 ->createJob( _sleep, _doc );

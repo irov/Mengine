@@ -36,13 +36,13 @@ namespace Mengine
         SERVICE_DECLARE( "JSONService" );
 
     public:
-        virtual JSONStorageInterfacePtr createStorage( const jpp::object & _json, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr createStorage( const jpp::object & _json, const DocumentPtr & _doc ) const = 0;
 
     public:
-        virtual JSONStorageInterfacePtr loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc ) const = 0;
-        virtual JSONStorageInterfacePtr loadJSONStream( const InputStreamInterfacePtr & _stream, const Char * _doc ) const = 0;
-        virtual JSONStorageInterfacePtr createJSON( const MemoryInterfacePtr & _memory, const Char * _doc ) const = 0;
-        virtual JSONStorageInterfacePtr createJSONBuffer( const void * _buffer, size_t _size, const Char * _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) const = 0;
+        virtual JSONStorageInterfacePtr loadJSONStream( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) const = 0;
+        virtual JSONStorageInterfacePtr createJSON( const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) const = 0;
+        virtual JSONStorageInterfacePtr createJSONBuffer( const void * _buffer, size_t _size, const DocumentPtr & _doc ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@
 #include "Kernel/PolygonHelper.h"
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
@@ -88,7 +88,7 @@ namespace Mengine
     bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, "MovieKeyConverterXMLToAEK" );
+            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, MENGINE_DOCUMENT_FUNCTION );
 
         if( framePack == nullptr )
         {

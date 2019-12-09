@@ -28,7 +28,7 @@ namespace Mengine
         const PrototypeGeneratorInterfacePtr & getGenerator( const ConstString & _category, const ConstString & _prototype ) const override;
 
     public:
-        FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype, const Char * _doc ) override;
+        FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc ) override;
 
     public:
         void foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const override;

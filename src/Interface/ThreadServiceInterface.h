@@ -19,10 +19,10 @@ namespace Mengine
         virtual void update() = 0;
 
     public:
-        virtual ThreadJobPtr createJob( uint32_t _sleep, const Char * _doc ) = 0;
+        virtual ThreadJobPtr createJob( uint32_t _sleep, const DocumentPtr & _doc ) = 0;
 
     public:
-        virtual bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) = 0;
+        virtual bool createThread( const ConstString & _threadName, int32_t _priority, const DocumentPtr & _doc ) = 0;
         virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
@@ -36,11 +36,11 @@ namespace Mengine
         virtual void stopTasks() = 0;
 
     public:
-        virtual ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const Char * _doc ) = 0;
+        virtual ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc ) = 0;
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const Char * _doc ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;

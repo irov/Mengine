@@ -24,7 +24,7 @@ namespace Mengine
         
     public:
         bool hasModule( const ConstString & _name ) const override;
-        bool runModule( const ConstString & _name, const Char * _doc ) override;
+        bool runModule( const ConstString & _name, const DocumentPtr & _doc ) override;
         bool stopModule( const ConstString & _name ) override;
         bool isRunModule( const ConstString & _name ) const override;
 

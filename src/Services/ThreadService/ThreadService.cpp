@@ -12,7 +12,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "stdex/allocator.h"
 
@@ -114,7 +114,7 @@ namespace Mengine
         m_factoryThreadJob = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadJobPtr ThreadService::createJob( uint32_t _sleep, const Char * _doc )
+    ThreadJobPtr ThreadService::createJob( uint32_t _sleep, const DocumentPtr & _doc )
     {
         ThreadJobPtr threadJob = m_factoryThreadJob->createObject( _doc );
 
@@ -129,7 +129,7 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc )
+    bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const DocumentPtr & _doc )
     {
         if( this->isAvailableService() == false )
         {
@@ -293,7 +293,7 @@ namespace Mengine
         m_threads.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const Char * _doc )
+    ThreadQueueInterfacePtr ThreadService::createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc )
     {
         if( this->isAvailableService() == false )
         {
@@ -425,7 +425,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr ThreadService::createMutex( const Char * _doc )
+    ThreadMutexInterfacePtr ThreadService::createMutex( const DocumentPtr & _doc )
     {
         if( this->isAvailableService() == false )
         {

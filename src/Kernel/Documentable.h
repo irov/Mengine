@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-#include "Kernel/Document.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Document> DocumentPtr;
+    //////////////////////////////////////////////////////////////////////////
     class Documentable
         : public Mixin
     {
@@ -12,11 +14,13 @@ namespace Mengine
         Documentable();
         ~Documentable();
 
+#ifdef MENGINE_DEBUG
     public:
-        void setDocument( const Char * _doc );
-        const Char * getDocument() const;
+        void setDocument( const DocumentPtr & _document );
+        const DocumentPtr & getDocument() const;
 
     protected:
-        Document m_document;
+        DocumentPtr m_document;
+#endif
     };
 }

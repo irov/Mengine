@@ -5,7 +5,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

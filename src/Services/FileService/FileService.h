@@ -23,10 +23,10 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        FileGroupInterfacePtr createFileGroup( const ConstString & _type, const Char * _doc );
+        FileGroupInterfacePtr createFileGroup( const ConstString & _type, const DocumentPtr & _doc );
 
     public:
-        bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const Char * _doc ) override;
+        bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _baseFileGroup, const FileGroupInterfacePtr & _parentFileGroup, const FilePath & _filePath, const ConstString & _type, FileGroupInterfacePtr * _outFileGroup, bool _create, const DocumentPtr & _doc ) override;
         bool unmountFileGroup( const ConstString & _name ) override;
 
     public:

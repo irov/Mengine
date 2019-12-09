@@ -34,7 +34,7 @@ namespace Mengine
         }
 
     protected:
-        DecoderInterfacePtr createDecoder( const Char * _doc ) override
+        DecoderInterfacePtr createDecoder( const DocumentPtr & _doc ) override
         {
             IntrusivePtr<T> decoder = m_factory->createObject( _doc );
 

@@ -34,7 +34,7 @@ namespace Mengine
 
     public:
         typedef Lambda<void()> LambdaTimer;
-        virtual uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) = 0;
+        virtual uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) = 0;
         virtual void removeTimer( uint32_t _id ) = 0;
 
     public:
@@ -118,7 +118,7 @@ namespace Mengine
         virtual uint64_t getFileTime( const Char * _filePath ) const = 0;
 
     public:
-        virtual DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) = 0;
+        virtual DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) = 0;

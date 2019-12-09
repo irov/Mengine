@@ -33,7 +33,7 @@ namespace Mengine
             , const ConstString & _type
             , bool _keep
             , Resource ** _prev
-            , const Char * _doc ) = 0;
+            , const DocumentPtr & _doc ) = 0;
 
     public:
         virtual void removeResource( const ResourcePtr & _resource ) = 0;

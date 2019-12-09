@@ -6,7 +6,7 @@
 #include "Win32FileHelper.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
@@ -117,7 +117,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileMappedStream::createFileStream( const Char * _doc )
+    InputStreamInterfacePtr Win32FileMappedStream::createFileStream( const DocumentPtr & _doc )
     {
         MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxyInput( _doc );

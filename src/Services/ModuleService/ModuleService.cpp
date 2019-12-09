@@ -65,7 +65,7 @@ namespace Mengine
         return exist;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::runModule( const ConstString & _name, const Char * _doc )
+    bool ModuleService::runModule( const ConstString & _name, const DocumentPtr & _doc )
     {
         ModuleFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Module" ), _name );
 

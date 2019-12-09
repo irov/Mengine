@@ -23,11 +23,11 @@ namespace Mengine
         void finalize() override;
 
     public:
-        uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const Char * _doc ) override;
+        uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const DocumentPtr & _doc ) override;
         InputHandlerInterfacePtr removeGlobalHandler( uint32_t _id ) override;
 
     public:
-        uint32_t addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc ) override;
+        uint32_t addGlobalKeyHandler( EKeyCode _code, const LambdaKeyHandler & _lambda, const DocumentPtr & _doc ) override;
 
     public:
         bool enableGlobalHandler( uint32_t _id, bool _value ) override;
@@ -59,7 +59,7 @@ namespace Mengine
             bool enable;
             bool dead;
 #ifdef MENGINE_DEBUG
-            String doc;
+            DocumentPtr doc;
 #endif
         };
 

@@ -5,7 +5,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 
 #include <algorithm>
@@ -59,7 +59,7 @@ namespace Mengine
             for( const ObserverDesc & desc : observers )
             {
                 LOGGER_MESSAGE( "Notification '%s' not clear"
-                    , desc.doc.c_str()
+                    , MENGINE_DOCUMENT_MESSAGE( desc.doc )
                 );
             }
 #endif
@@ -72,7 +72,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
+    void NotificationService::addObserver( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( _id < MENGINE_NOTIFICATOR_MAX_COUNT );
 
@@ -147,11 +147,7 @@ namespace Mengine
         {
             for( const ObserverQueue & q : m_add )
             {
-#ifdef MENGINE_DEBUG
-                this->addObserver_( q.id, q.observer, q.callable, q.doc.c_str() );
-#else
-                this->addObserver_( q.id, q.observer, q.callable, nullptr );
-#endif
+                this->addObserver_( q.id, q.observer, q.callable, q.doc );
             }
 
             m_add.clear();
@@ -167,7 +163,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const Char * _doc )
+    void NotificationService::addObserver_( uint32_t _id, Observable * _observer, const ObserverCallableInterfacePtr & _callable, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

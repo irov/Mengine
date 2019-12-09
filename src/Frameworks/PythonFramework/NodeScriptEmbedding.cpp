@@ -914,7 +914,7 @@ namespace Mengine
             AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const Char * _doc )
+                , const NodePtr & _node, const mt::vec3f & _velocity, float _time, const DocumentPtr & _doc )
             {
                 AffectorVelocity2Ptr affector = m_factory->createObject( _doc );
 
@@ -1394,7 +1394,7 @@ namespace Mengine
             AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
-                , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const Char * _doc )
+                , const NodePtr & _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time, const DocumentPtr & _doc )
             {
                 AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject( _doc );
 
@@ -1620,7 +1620,7 @@ namespace Mengine
                 , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
                 , bool _rotate
-                , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const Char * _doc )
+                , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit, const DocumentPtr & _doc )
             {
                 AffectorCreatorFollowToPtr affector = m_factory->createObject( _doc );
 
@@ -1807,7 +1807,7 @@ namespace Mengine
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset
-                , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const Char * _doc )
+                , float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, const DocumentPtr & _doc )
             {
                 AffectorCreatorFollowToWPtr affector = m_factory->createObject( _doc );
 

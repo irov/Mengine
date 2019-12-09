@@ -23,7 +23,7 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        SocketInterfacePtr createSocket( const Char * _doc ) override;
+        SocketInterfacePtr createSocket( const DocumentPtr & _doc ) override;
 
     protected:
         WSADATA m_wsaData;

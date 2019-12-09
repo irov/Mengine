@@ -128,7 +128,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         if( _filePath.empty() == true )
         {

@@ -75,7 +75,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr TTFDataflow::create( const Char * _doc )
+    DataInterfacePtr TTFDataflow::create( const DocumentPtr & _doc )
     {
         TTFDataPtr data = m_factoryTTFData->createObject( _doc );
 
@@ -84,7 +84,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr TTFDataflow::load( const InputStreamInterfacePtr & _stream, const Char * _doc )
+    MemoryInterfacePtr TTFDataflow::load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
     {
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, _doc );
 
@@ -93,7 +93,7 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const Char * _doc )
+    bool TTFDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
     {
         TTFData * data = stdex::intrusive_get<TTFData *>( _data );
 
@@ -114,7 +114,7 @@ namespace Mengine
             LOGGER_ERROR( "FT_New_Memory_Face font error: %s [%d] (doc: %s)"
                 , FT_error_message( err_code_memory_face )
                 , err_code_memory_face
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return false;
@@ -127,7 +127,7 @@ namespace Mengine
             LOGGER_ERROR( "FT_Select_Charmap font error: %s [%d] (doc: %s)"
                 , FT_error_message( err_code_memory_face )
                 , err_code_memory_face
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return false;

@@ -4,6 +4,7 @@
 
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -22,7 +23,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual FactorablePointer generate( const Char * _doc ) = 0;
+        virtual FactorablePointer generate( const DocumentPtr & _doc ) = 0;
 
     public:
         virtual uint32_t count() const = 0;

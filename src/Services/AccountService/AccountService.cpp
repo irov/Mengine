@@ -11,7 +11,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/UID.h"
 #include "Kernel/IniHelper.h"
 #include "Kernel/ConstStringHelper.h"
@@ -99,7 +99,7 @@ namespace Mengine
         m_accountProvider = _accountProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount()
+    AccountInterfacePtr AccountService::createAccount( const DocumentPtr & _doc )
     {
         uint32_t new_playerID = ++m_playerEnumerator;
 
@@ -108,7 +108,7 @@ namespace Mengine
 
         ConstString accountID = Helper::stringizeString( streamAccountID.str() );
 
-        AccountInterfacePtr account = this->createAccount_( accountID );
+        AccountInterfacePtr account = this->createAccount_( accountID, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account, nullptr );
 
@@ -120,7 +120,7 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createGlobalAccount()
+    AccountInterfacePtr AccountService::createGlobalAccount( const DocumentPtr & _doc )
     {
         uint32_t new_playerID = ++m_playerEnumerator;
 
@@ -129,14 +129,14 @@ namespace Mengine
 
         ConstString accountID = Helper::stringizeString( streamAccountID.str() );
 
-        AccountInterfacePtr account = this->createGlobalAccount_( accountID );
+        AccountInterfacePtr account = this->createGlobalAccount_( accountID, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( account, nullptr );
 
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountID )
+    AccountInterfacePtr AccountService::createAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
     {
 #ifdef MENGINE_DEBUG
         AccountInterfacePtr account = m_accounts.find( _accountID );
@@ -153,7 +153,7 @@ namespace Mengine
 
         this->unselectCurrentAccount_();
 
-        AccountInterfacePtr newAccount = this->newAccount_( _accountID );
+        AccountInterfacePtr newAccount = this->newAccount_( _accountID, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( newAccount, nullptr, "account with ID '%s' invalid create. Account not created"
             , _accountID.c_str()
@@ -183,7 +183,7 @@ namespace Mengine
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////	
-    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountID )
+    AccountInterfacePtr AccountService::createGlobalAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
     {
 #ifdef MENGINE_DEBUG
         AccountInterfacePtr account = m_accounts.find( _accountID );
@@ -198,7 +198,7 @@ namespace Mengine
         }
 #endif
 
-        AccountInterfacePtr newAccount = this->newAccount_( _accountID );
+        AccountInterfacePtr newAccount = this->newAccount_( _accountID, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( newAccount, nullptr, "Account with ID '%s' invalid create. Account not created"
             , _accountID.c_str()
@@ -238,7 +238,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountID )
+    AccountInterfacePtr AccountService::newAccount_( const ConstString & _accountID, const DocumentPtr & _doc )
     {
         PathString accountString;
         accountString.append( _accountID );
@@ -255,7 +255,7 @@ namespace Mengine
             return nullptr;
         }
 
-        AccountPtr newAccount = m_factoryAccounts->createObject( MENGINE_DOCUMENT_FUNCTION );
+        AccountPtr newAccount = m_factoryAccounts->createObject( _doc );
 
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
@@ -547,7 +547,7 @@ namespace Mengine
 
         for( const ConstString & accountID : values )
         {
-            AccountInterfacePtr account = this->newAccount_( accountID );
+            AccountInterfacePtr account = this->newAccount_( accountID, MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid create account '%s'"
                 , accountID.c_str()

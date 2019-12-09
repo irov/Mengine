@@ -5,7 +5,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include <algorithm>
 
@@ -42,7 +42,7 @@ namespace Mengine
         m_factoryWin32ThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( const ConstString & _name, int32_t _priority, const Char * _doc )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( const ConstString & _name, int32_t _priority, const DocumentPtr & _doc )
     {
         Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
@@ -63,7 +63,7 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const Char * _doc )
+    ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const DocumentPtr & _doc )
     {
         Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( _doc );
 

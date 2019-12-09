@@ -57,7 +57,7 @@ namespace Mengine
         m_videoDecoderCacher.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder( const Char * _doc ) const
+    VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder( const DocumentPtr & _doc ) const
     {
         const VideoDecoderInterfacePtr & cacheVideoDecoder = m_videoDecoderCacher.findCache();
 

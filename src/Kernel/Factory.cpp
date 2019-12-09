@@ -35,19 +35,29 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer Factory::createObject( const Char * _doc )
+    FactorablePointer Factory::createObject( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 
+        Factorable * object = this->_createObject();
+
+#ifdef MENGINE_DEBUG
+        if( object == nullptr )
+        {
+            return nullptr;
+        }
+#endif
+
         ++m_count;
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
-        Factorable * object = this->_createObject();
         object->setFactory( this );
 
 #ifdef MENGINE_DEBUG
+        object->setDocument( _doc );
+
         FACTORY_SERVICE()
             ->debugFactoryCreateObject( this, object, _doc );
 

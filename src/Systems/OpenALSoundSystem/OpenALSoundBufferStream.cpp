@@ -7,7 +7,7 @@
 
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine

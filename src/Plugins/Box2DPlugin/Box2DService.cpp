@@ -33,7 +33,7 @@ namespace Mengine
         m_factoryWorlds = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    Box2DWorldInterfacePtr Box2DService::createWorld( const mt::vec2f & _gravity, float _scaler, const Char * _doc )
+    Box2DWorldInterfacePtr Box2DService::createWorld( const mt::vec2f & _gravity, float _scaler, const DocumentPtr & _doc )
     {
         Box2DWorldPtr world = m_factoryWorlds->createObject( _doc );
 

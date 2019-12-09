@@ -21,7 +21,7 @@
 #include "stdex/memorycopy.h"
 
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureService );
@@ -124,7 +124,7 @@ namespace Mengine
         return RenderTextureInterfacePtr( texture );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
     {
         uint32_t HWMipmaps = _mipmaps;
         uint32_t HWWidth = _width;
@@ -154,7 +154,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
     {
         uint32_t HWWidth = _width;
         uint32_t HWHeight = _height;
@@ -167,11 +167,11 @@ namespace Mengine
         RenderImageInterfacePtr image = RENDER_SYSTEM()
             ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "couldn't create image '%s' size %d:%d channels %d"
-            , _doc
+        MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr, "couldn't create image size %d:%d channels %d (doc %s)"            
             , HWWidth
             , HWHeight
             , HWChannels
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
@@ -296,7 +296,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, uint32_t _codecFlags, const DocumentPtr & _doc )
     {
         const ConstString & fileGroupName = _fileGroup->getName();
 
@@ -333,7 +333,7 @@ namespace Mengine
         RenderImageDesc imageDesc;
         imageLoader->getImageDesc( &imageDesc );
 
-        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _filePath.c_str() );
+        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_texture, nullptr, "create texture '%s:%s' codec '%s'"
             , _fileGroup->getName().c_str()
@@ -491,7 +491,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc )
+    RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const DocumentPtr & _doc )
     {
         uint32_t id = GENERATE_UNIQUE_IDENTITY();
 

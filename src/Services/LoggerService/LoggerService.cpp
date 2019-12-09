@@ -6,7 +6,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/String.h"
 #include "Config/StringRegex.h"

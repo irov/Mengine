@@ -21,7 +21,7 @@ namespace Mengine
         m_data = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryInput::newBuffer( size_t _size, const Char * _doc )
+    Pointer MemoryInput::newBuffer( size_t _size, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

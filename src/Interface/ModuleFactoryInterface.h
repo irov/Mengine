@@ -11,7 +11,7 @@ namespace Mengine
         : public Interface
     {
     public:
-        virtual ModuleInterfacePtr createModule( const Char * _doc ) = 0;
+        virtual ModuleInterfacePtr createModule( const DocumentPtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;

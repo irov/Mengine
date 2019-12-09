@@ -2334,7 +2334,7 @@ namespace Mengine
             }
 
         public:
-            AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed, const Char * _doc )
+            AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed, const DocumentPtr & _doc )
             {
                 TAffectorNodeFollowerMethodPtr affector = m_factory->createObject( _doc );
 
@@ -2809,7 +2809,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -2859,7 +2859,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -2904,7 +2904,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -2950,7 +2950,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -2992,7 +2992,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -3040,7 +3040,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -3081,7 +3081,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }
@@ -3120,7 +3120,7 @@ namespace Mengine
 
             handler->initialize( _cb, _args );
 
-            uint32_t id = globalHandleSystem->addGlobalHandler( handler, _cb.repr() );
+            uint32_t id = globalHandleSystem->addGlobalHandler( handler, MENGINE_DOCUMENT_PYBIND );
 
             return id;
         }

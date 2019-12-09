@@ -9,7 +9,7 @@
 
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/StringHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Config/StdIO.h"
 
@@ -18,7 +18,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size, const Char * _doc )
+        static void drawTextDebug2( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const TextFontInterfacePtr & _font, uint32_t _argb, const Char * _message, size_t _size, const DocumentPtr & _doc )
         {
             U32String cacheText = _font->prepareText( _message, _size );
 
@@ -136,7 +136,7 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const Char * _doc, const Char * _format, ... )
+        void drawTextDebug( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::vec2f & _pos, const ConstString & _fontName, const Color & _color, const DocumentPtr & _doc, const Char * _format, ... )
         {
             ConstString fontName = _fontName;
 

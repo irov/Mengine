@@ -8,7 +8,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include <algorithm>
 #include <stdio.h>
@@ -194,7 +194,7 @@ namespace Mengine
         //}
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const Char * _doc )
+    SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, const DocumentPtr & _doc )
     {
         OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( _doc );
 
@@ -206,7 +206,7 @@ namespace Mengine
         return soundSource;
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr OpenALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const Char * _doc )
+    SoundBufferInterfacePtr OpenALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream, const DocumentPtr & _doc )
     {
         OpenALSoundBufferBasePtr base = nullptr;
 

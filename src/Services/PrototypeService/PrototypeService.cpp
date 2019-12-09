@@ -125,7 +125,7 @@ namespace Mengine
         return generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const Char * _doc )
+    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype, const DocumentPtr & _doc )
     {
         CategoryKey key{ _category, _prototype };
 
@@ -134,7 +134,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( generator, nullptr, "prototype not found '%s:%s' doc '%s'"
             , _category.c_str()
             , _prototype.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         FactorablePtr prototype = generator->generate( _doc );

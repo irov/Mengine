@@ -28,10 +28,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ThreadJobPtr createJob( uint32_t _sleep, const Char * _doc ) override;
+        ThreadJobPtr createJob( uint32_t _sleep, const DocumentPtr & _doc ) override;
 
     public:
-        bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) override;
+        bool createThread( const ConstString & _threadName, int32_t _priority, const DocumentPtr & _doc ) override;
         bool destroyThread( const ConstString & _threadName ) override;
 
     public:
@@ -45,14 +45,14 @@ namespace Mengine
         void stopTasks() override;
 
     public:
-        ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const Char * _doc ) override;
+        ThreadQueueInterfacePtr createTaskQueue( uint32_t _packetSize, const DocumentPtr & _doc ) override;
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
     public:
         void update() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex( const Char * _doc ) override;
+        ThreadMutexInterfacePtr createMutex( const DocumentPtr & _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

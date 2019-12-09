@@ -1,43 +1,55 @@
 #pragma once
 
 #include "Config/Config.h"
-#include "Config/Char.h"
+#include "Config/String.h"
+
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Document> DocumentPtr;
+    //////////////////////////////////////////////////////////////////////////
     class Document
+        : public Factorable
     {
     public:
-        Document();
+        Document( const Char * _file, const Char * _function, uint32_t _line );
         ~Document();
 
     public:
-        Document( const Document & _document );
-        Document( Document && _document );
+        const Char * getModulePath() const;
+        const Char * getFile() const;
+        const Char * getFunction() const;
+        uint32_t getLine() const;
 
     public:
-        void operator = ( const Char * _msg );
-        void operator = ( const Document & _doc );
+        void setParent( const DocumentPtr & _parent );
+        const DocumentPtr & getParent() const;
+
+    public:
+        void message( const char * _format, ... );
 
     public:
         const Char * c_str() const;
 
     protected:
-        Char * m_buffer;
-    };
-}
-//////////////////////////////////////////////////////////////////////////
-#ifdef MENGINE_DEBUG
-#   include "Kernel/BufferHelper.h"
+        DocumentPtr m_parent;
 
-#   define MENGINE_DOCUMENT_FUNCTION [](const Mengine::Char * _function, uint32_t _line) -> const Mengine::Char * { static Mengine::Char buffer[4096] = {0}; Mengine::Helper::bufferFormat( buffer, 4096, "%s[%d]", _function, _line ); return buffer;}(MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)
-#   define MENGINE_DOCUMENT(Format, ...) [=](const Mengine::Char * _function, uint32_t _line) -> const Mengine::Char * { static Mengine::Char buffer[4096] = {0}; Mengine::Helper::bufferFormat( buffer, 4096, "%s[%u]: " Format, _function, _line, __VA_ARGS__ ); return buffer;}(MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE)
-#   define MENGINE_DOCUMENT_FACTORABLE [this](const Mengine::Char * _doc) -> const Mengine::Char * { static Mengine::Char buffer[4096] = {0}; Mengine::Helper::bufferFormat( buffer, 4096, "%s [==>] '%s'", this->getDocument(), _doc ); return buffer;}(MENGINE_DOCUMENT_FUNCTION)
-#   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) [Ptr](const Mengine::Char * _doc) -> const Mengine::Char * { static Mengine::Char buffer[4096] = {0}; Mengine::Helper::bufferFormat( buffer, 4096, "%s [==>] '%s'", Ptr->getDocument(), _doc ); return buffer;}(MENGINE_DOCUMENT_FUNCTION)
+        Char m_modulePath[MENGINE_MAX_PATH] = {'\0'};
+
+        const Char * m_file;
+        const Char * m_function;
+        uint32_t m_line;
+        String m_message;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Document> DocumentPtr;
+    //////////////////////////////////////////////////////////////////////////
+}
+
+#ifdef MENGINE_DEBUG
+#   define MENGINE_DOCUMENT_MESSAGE(Doc) Doc->c_str()
 #else
-#   define MENGINE_DOCUMENT_FUNCTION MENGINE_STRING_EMPTY
-#   define MENGINE_DOCUMENT(Format, ...) MENGINE_STRING_EMPTY
-#   define MENGINE_DOCUMENT_FACTORABLE MENGINE_STRING_EMPTY
-#   define MENGINE_DOCUMENT_FACTORABLE_PTR(Ptr) MENGINE_STRING_EMPTY
+#   define MENGINE_DOCUMENT_MESSAGE(Doc) MENGINE_STRING_EMPTY
 #endif
-//////////////////////////////////////////////////////////////////////////

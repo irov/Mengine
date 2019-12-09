@@ -36,16 +36,16 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const Char * _doc ) override;
+        RenderVertexAttributeInterfacePtr createVertexAttribute( const ConstString & _name, uint32_t elementSize, const DocumentPtr & _doc ) override;
         RenderVertexAttributeInterfacePtr removeVertexAttribute( const ConstString & _name ) override;
 
-        RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) override;
+        RenderVertexShaderInterfacePtr createVertexShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) override;
         RenderVertexShaderInterfacePtr removeVertexShader( const ConstString & _name ) override;
 
-        RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const Char * _doc ) override;
+        RenderFragmentShaderInterfacePtr createFragmentShader( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _converterType, bool _compile, const DocumentPtr & _doc ) override;
         RenderFragmentShaderInterfacePtr removeFragmentShader( const ConstString & _name ) override;
 
-        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc ) override;
+        RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertexShader, const RenderFragmentShaderInterfacePtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc ) override;
         RenderProgramInterfacePtr removeProgram( const ConstString & _name ) override;
 
     protected:
@@ -72,18 +72,18 @@ namespace Mengine
         RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) override;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) override;
 
         RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) override;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) override;
 
         RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures, const Char * _doc ) override;
+            , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) override;
 
     public:
         const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const override;

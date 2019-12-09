@@ -38,13 +38,13 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "EncoderFactory" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DecoderInterfacePtr CodecService::createDecoder( const ConstString & _type, const Char * _doc )
+    DecoderInterfacePtr CodecService::createDecoder( const ConstString & _type, const DocumentPtr & _doc )
     {
         DecoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "DecoderFactory" ), _type );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
             , _type.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         DecoderInterfacePtr decoder = factory->createDecoder( _doc );
@@ -55,7 +55,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid initialize codec '%s' doc '%s'"
                 , _type.c_str()
-                , _doc
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
             return nullptr;
@@ -64,13 +64,13 @@ namespace Mengine
         return decoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterfacePtr CodecService::createEncoder( const ConstString & _type, const Char * _doc )
+    EncoderInterfacePtr CodecService::createEncoder( const ConstString & _type, const DocumentPtr & _doc )
     {
         EncoderFactoryInterfacePtr factory = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "EncoderFactory" ), _type );
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
             , _type.c_str()
-            , _doc
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
         );
 
         EncoderInterfacePtr encoder = factory->createEncoder( _doc );

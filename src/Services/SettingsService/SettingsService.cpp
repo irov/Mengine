@@ -6,7 +6,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ namespace Mengine
         m_settings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SettingsService::loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool SettingsService::loadSetting( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         ConstString filePathExt = Helper::getFilePathExt( _filePath );
 
@@ -78,7 +78,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Char * _doc )
+    bool SettingsService::loadSettings( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "Settings load... %s:%s"
             , _fileGroup->getName().c_str()

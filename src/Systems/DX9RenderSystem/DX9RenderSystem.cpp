@@ -29,7 +29,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Logger.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "math/uv4.h"
 
@@ -648,7 +648,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
+    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
     {
         IDirect3DTexture9 * dxTextureInterface = nullptr;
 
@@ -684,7 +684,7 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const Char * _doc )
+    RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, EPixelFormat _format, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _depth );
 
@@ -722,7 +722,7 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
         DX9RenderTargetTexturePtr target = m_factoryRenderTargetTexture->createObject( _doc );
 
@@ -750,7 +750,7 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const Char * _doc )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, EPixelFormat _format, const DocumentPtr & _doc )
     {
         DX9RenderTargetOffscreenPtr target = m_factoryRenderTargetOffscreen->createObject( _doc );
 
@@ -776,7 +776,7 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc )
+    RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const DocumentPtr & _doc )
     {
         DX9RenderTargetTexturePtr dx9RenderTarget = stdex::intrusive_static_cast<DX9RenderTargetTexturePtr>(_renderTarget);
 
@@ -1279,7 +1279,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc )
+    RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const DocumentPtr & _doc )
     {
         DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
@@ -1316,7 +1316,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc )
+    RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const DocumentPtr & _doc )
     {
         DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
@@ -1546,7 +1546,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const Char * _doc )
+    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const DocumentPtr & _doc )
     {
         DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
@@ -1582,7 +1582,7 @@ namespace Mengine
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
+    RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
     {
         DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
@@ -1618,7 +1618,7 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
+    RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const DocumentPtr & _doc )
     {
         DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
@@ -1654,7 +1654,7 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc )
+    RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _samplerCount );
 
@@ -1715,7 +1715,7 @@ namespace Mengine
         dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc )
+    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const DocumentPtr & _doc )
     {
         DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
@@ -1776,19 +1776,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const Char * _doc )
+    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, EPixelFormat _hwPixelFormat, const DocumentPtr & _doc )
     {
 #ifdef MENGINE_DEBUG
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 
         if( logcreateimage == true )
         {
-            LOGGER_STATISTIC( "create texture '%s' size %d:%d channels %d format %d"
-                , _doc
+            LOGGER_STATISTIC( "create texture size %d:%d channels %d format %d (doc %s)"                
                 , _hwWidth
                 , _hwHeight
                 , _hwChannels
                 , _hwPixelFormat
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
         }
 #endif

@@ -7,7 +7,7 @@
 #include "Kernel/Factory.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ValueInterpolator.h"
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

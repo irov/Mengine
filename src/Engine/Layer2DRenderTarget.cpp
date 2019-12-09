@@ -2,7 +2,7 @@
 
 #include "Layer2D.h"
 
-#include "Kernel/Document.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {

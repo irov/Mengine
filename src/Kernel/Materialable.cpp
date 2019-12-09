@@ -11,7 +11,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid, const Char * _doc )
+        RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid, const DocumentPtr & _doc )
         {
             if( _materialName.empty() == false )
             {
@@ -56,7 +56,7 @@ namespace Mengine
             return material;
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const Char * _doc )
+        RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid, const DocumentPtr & _doc )
         {
             uint32_t texturesNum = 0;
             RenderTextureInterfacePtr textures[2];
@@ -301,7 +301,7 @@ namespace Mengine
             return material;
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderMaterialInterfacePtr makeTextureMaterial( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid, const Char * _doc )
+        RenderMaterialInterfacePtr makeTextureMaterial( const ConstString & _materialName, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid, const DocumentPtr & _doc )
         {
             if( _materialName.empty() == false )
             {
@@ -559,21 +559,21 @@ namespace Mengine
         this->invalidateMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Materialable::makeSolidMaterial( bool _solid, const Char * _doc ) const
+    RenderMaterialInterfacePtr Materialable::makeSolidMaterial( bool _solid, const DocumentPtr & _doc ) const
     {
         RenderMaterialInterfacePtr material = Helper::makeSolidMaterial( m_materialName, m_blendMode, _solid, _doc );
 
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Materialable::makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const Char * _doc ) const
+    RenderMaterialInterfacePtr Materialable::makeImageMaterial( const ResourceImagePtr & _resourceImage, bool _solid, const DocumentPtr & _doc ) const
     {
         RenderMaterialInterfacePtr material = Helper::makeImageMaterial( _resourceImage, m_materialName, m_blendMode, m_disableTextureColor, _solid, _doc );
 
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr Materialable::makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _solid, const Char * _doc ) const
+    RenderMaterialInterfacePtr Materialable::makeTextureMaterial( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, bool _solid, const DocumentPtr & _doc ) const
     {
         RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( m_materialName, _textureCount, _textures, m_blendMode, m_premultiplyAlpha, m_disableTextureColor, _solid, _doc );
 
@@ -583,7 +583,7 @@ namespace Mengine
     RenderMaterialInterfacePtr Materialable::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
-        , const RenderTextureInterfacePtr * _textures, const Char * _doc ) const
+        , const RenderTextureInterfacePtr * _textures, const DocumentPtr & _doc ) const
     {
         RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
             ->getMaterial3( _materialId, _primitiveType, _textureCount, _textures, _doc );

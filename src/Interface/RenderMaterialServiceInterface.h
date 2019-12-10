@@ -47,6 +47,7 @@ namespace Mengine
 
         virtual const RenderMaterialStage * getMaterialStage( const ConstString & _materialName ) const = 0;
         virtual const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other ) = 0;
+        virtual void uncacheMaterialStage( const RenderMaterialStage * _stage ) = 0;
 
     public:
         virtual void updateSolidRenderMaterial() = 0;

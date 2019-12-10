@@ -82,8 +82,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleSystem::_finalizeService()
     {
-        m_renderFragmentShaderCache.clear();
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitterContainer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolAstralaxEmitter );
 
@@ -95,6 +93,16 @@ namespace Mengine
     {
         m_atlases.clear();
         m_containers.clear();
+
+        for( uint32_t index = 0; index != 256; ++index )
+        {
+            const RenderMaterialStage * stage = m_stages[index];
+
+            RENDERMATERIAL_SERVICE()
+                ->uncacheMaterialStage( stage );
+        }
+
+        m_renderFragmentShaderCache.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, const DocumentPtr & _doc )
@@ -310,20 +318,7 @@ namespace Mengine
                 textureStage.addressU = dx_address[state.address_u];
                 textureStage.addressV = dx_address[state.address_v];
                 textureStage.addressBorder = 0x00000000;
-
-                //const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
-                //const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};
-
-    //            textureStage.colorOp = dx_operation[state.operation_rgb];
-    //            textureStage.colorArg1 = dx_arg[state.argument_rgb1];
-    //            textureStage.colorArg2 = dx_arg[state.argument_rgb2];
-
-    //            textureStage.alphaOp = dx_operation[state.operation_alpha];
-    //            textureStage.alphaArg1 = dx_arg[state.argument_alpha1];
-    //            textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
             }
-
-
 
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
                 ->cacheMaterialStage( rs );

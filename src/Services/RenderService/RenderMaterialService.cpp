@@ -379,6 +379,23 @@ namespace Mengine
         return &cache_other;
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderMaterialService::uncacheMaterialStage( const RenderMaterialStage * _stage )
+    {
+        for( uint32_t it = 0; it != m_stageCount; ++it )
+        {
+            RenderMaterialStage * self = m_stages + it;
+
+            if( _stage != self )
+            {
+                continue;
+            }
+
+            self->program = nullptr;
+
+            return;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::updateSolidRenderMaterial()
     {
         m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;

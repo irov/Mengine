@@ -64,6 +64,7 @@ namespace Mengine
 
         const RenderMaterialStage * getMaterialStage( const ConstString & _name ) const override;
         const RenderMaterialStage * cacheMaterialStage( const RenderMaterialStage & _other ) override;
+        void uncacheMaterialStage( const RenderMaterialStage * _stage ) override;
 
     public:
         void updateSolidRenderMaterial() override;

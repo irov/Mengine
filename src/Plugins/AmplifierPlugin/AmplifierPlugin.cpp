@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AmplifierPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( Amplifier );
+        SERVICE_CREATE( Amplifier, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

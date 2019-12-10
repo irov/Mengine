@@ -248,7 +248,7 @@ namespace Mengine
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
 
-        m_renderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( this );
+        m_renderTarget = Helper::makeFactorableUnique<Layer2DRenderTarget>( MENGINE_DOCUMENT_FACTORABLE, this );
 
         return true;
     }

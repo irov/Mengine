@@ -33,18 +33,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DevelopmentConverterPlugin::_initializePlugin()
     {
-        Helper::registerConverter<HotspotImageConverterPNGToHIT>( "png2hit" );
-        Helper::registerConverter<SoundConverterFFMPEGToOGG>( "ffmpegToOggSound" );
-        Helper::registerConverter<VideoConverterFFMPEGToWEBM>( "ffmpegToWebM" );
-        Helper::registerConverter<VideoConverterFFMPEGToOGV>( "ffmpegToOGV" );
-        Helper::registerConverter<VideoConverterFFMPEGToOGVA>( "ffmpegToOGVA" );
-        Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie" );
-        Helper::registerConverter<ParticleConverterPTCToPTZ>( "ptc2ptz" );
-        Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf" );
-        Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf" );
-        Helper::registerConverter<ImageConverterPNGToACF>( "png2acf" );
-        Helper::registerConverter<ShaderConverterTextToVSO>( "text2vso" );
-        Helper::registerConverter<ShaderConverterTextToPSO>( "text2pso" );
+        Helper::registerConverter<HotspotImageConverterPNGToHIT>( "png2hit", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<SoundConverterFFMPEGToOGG>( "ffmpegToOggSound", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<VideoConverterFFMPEGToWEBM>( "ffmpegToWebM", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<VideoConverterFFMPEGToOGV>( "ffmpegToOGV", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<VideoConverterFFMPEGToOGVA>( "ffmpegToOGVA", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ParticleConverterPTCToPTZ>( "ptc2ptz", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ImageConverterPNGToACF>( "png2acf", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ShaderConverterTextToVSO>( "text2vso", MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerConverter<ShaderConverterTextToPSO>( "text2pso", MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

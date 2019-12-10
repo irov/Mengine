@@ -22,10 +22,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundCodecPlugin::_initializePlugin()
     {
-        Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ) );
+        Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "wav" ), STRINGIZE_STRING_LOCAL( "wavSound" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "wav" ), STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
         return true;
     }

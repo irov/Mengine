@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactoryPtr BitmapFontPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = Helper::makeFactoryPool<BitmapFont, 8>();
+        FactoryPtr factory = Helper::makeFactoryPool<BitmapFont, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return factory;
     }

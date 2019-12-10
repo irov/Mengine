@@ -19,13 +19,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe )
+    uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
     {
         uint32_t newid = ++m_enumerator;
 
         TimepipeDesc desc;
         desc.id = newid;
         desc.timepipe = _timepipe;
+        desc.doc = _doc;
 
         m_timepipeAdd.emplace_back( desc );
 

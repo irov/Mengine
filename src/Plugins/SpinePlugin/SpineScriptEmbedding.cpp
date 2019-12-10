@@ -6,6 +6,8 @@
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "Spine.h"
 #include "ResourceSpineAtlasDefault.h"
 #include "ResourceSpineAtlasTexturepacker.h"
@@ -46,10 +48,10 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
 
-            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _node, "onSpineEvent", EVENT_SPINE_EVENT );
-            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _node, "onSpineStateAnimationEnd", EVENT_SPINE_STATE_ANIMATION_END );
+            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _node, "onSpineEvent", EVENT_SPINE_EVENT, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonSpineEventReceiver>( _kernel, py_kwds, _node, "onSpineStateAnimationEnd", EVENT_SPINE_STATE_ANIMATION_END, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -99,10 +101,10 @@ namespace Mengine
             .def( "getResourceSpineAtlasName", &ResourceSpineSkeleton::getResourceSpineAtlasName )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Spine" ), Helper::makeFactorableUnique<PythonScriptWrapper<Spine> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineSkeleton> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineAtlasDefault> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineAtlasTexturepacker> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Spine" ), Helper::makeFactorableUnique<PythonScriptWrapper<Spine> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineSkeleton" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineSkeleton> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasDefault" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineAtlasDefault> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceSpineAtlasTexturepacker" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceSpineAtlasTexturepacker> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }

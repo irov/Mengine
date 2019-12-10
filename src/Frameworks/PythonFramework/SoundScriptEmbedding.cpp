@@ -37,12 +37,35 @@ namespace Mengine
         SoundScriptMethod()
             : m_affectorMusicID( 0 )
         {
-            m_factorySoundAffectorCallback = Helper::makeFactoryPool<SoundAffectorCallback, 4>();
-            m_factoryMusicAffectorCallback = Helper::makeFactoryPool<MusicAffectorCallback, 4>();
         }
 
         ~SoundScriptMethod() override
         {
+        }
+
+    public:
+        bool initialize()
+        {
+            m_factorySoundAffectorCallback = Helper::makeFactoryPool<SoundAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryMusicAffectorCallback = Helper::makeFactoryPool<MusicAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_affectorCreatorSound = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_affectorCreatorSound->initialize();
+
+            m_affectorCreatorMusic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_affectorCreatorMusic->initialize();
+
+            return true;
+        }
+
+        void finalize()
+        {
+            m_affectorCreatorSound->finalize();
+            m_affectorCreatorSound = nullptr;
+
+            m_affectorCreatorMusic->finalize();
+            m_affectorCreatorMusic = nullptr;
+
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundAffectorCallback );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMusicAffectorCallback );
 
@@ -153,7 +176,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factorySoundNodeListener;
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args, const DocumentPtr & _doc )
         {
             MENGINE_ASSERTION_RESOURCE_TYPE( _resourceName, ResourceSoundPtr, nullptr, "resource '%s' type does not match 'ResourceSound'"
                 , _resourceName.c_str()
@@ -164,7 +187,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr );
 
-            SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( MENGINE_DOCUMENT_PYBIND );
+            SoundBufferInterfacePtr soundBuffer = resource->createSoundBuffer( _doc );
 
             if( soundBuffer == nullptr )
             {
@@ -177,7 +200,7 @@ namespace Mengine
 
             SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
                 ->createSoundIdentity( true, soundBuffer, _category, streamable
-                    , MENGINE_DOCUMENT_PYBIND
+                    , _doc
                 );
 
             if( soundIdentity == nullptr )
@@ -219,7 +242,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( resource, _cb, _args );
+            MySoundNodeListenerPtr snlistener = Helper::makeFactorableUnique<MySoundNodeListener>( _doc, resource, _cb, _args );
 
             soundIdentity->setSoundListener( snlistener );
 
@@ -228,7 +251,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
@@ -249,7 +272,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
@@ -286,7 +309,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( sourceEmitter, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
@@ -396,8 +419,8 @@ namespace Mengine
             SOUND_SERVICE()
                 ->setSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
         }
-        //////////////////////////////////////////////////////////////////////////		
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorSound;
+        //////////////////////////////////////////////////////////////////////////
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorSound;
         //////////////////////////////////////////////////////////////////////////
         void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -405,11 +428,11 @@ namespace Mengine
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            AffectorPtr affector =
-                m_affectorCreatorSound.create( ETA_POSITION
+            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
                     , callback, [this, _emitter]( float _volume ){ this->___soundFade( _emitter, _volume ); }
                     , 1.f, 0.f, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
@@ -420,7 +443,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
@@ -442,11 +465,11 @@ namespace Mengine
                 , _easingType.c_str()
             );
 
-            AffectorPtr affector =
-                m_affectorCreatorSound.create( ETA_POSITION
+            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
                     , nullptr, [this, soundIdentity]( float _value ){ this->___soundFade( soundIdentity, _value ); }
                     , 0.f, 1.f, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
@@ -468,11 +491,11 @@ namespace Mengine
             float volume = SOUND_SERVICE()
                 ->getSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-            AffectorPtr affector =
-                m_affectorCreatorSound.create( ETA_POSITION
+            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
                     , callback, [this, _emitter]( float _volume ) { this->___soundFade( _emitter, _volume ); }
                     , volume, _to, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
@@ -483,7 +506,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundFadeOutTo( const ConstString & _resourceName, bool _loop, float _to, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr soundIdentity = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, nullptr, "can't get resource '%s'"
                 , _resourceName.c_str()
@@ -508,11 +531,11 @@ namespace Mengine
             float volume = SOUND_SERVICE()
                 ->getSourceMixerVolume( soundIdentity, STRINGIZE_STRING_LOCAL( "Fade" ) );
 
-            AffectorPtr affector =
-                m_affectorCreatorSound.create( ETA_POSITION
+            AffectorPtr affector = m_affectorCreatorSound->create( ETA_POSITION
                     , easing
                     , nullptr, [this, soundIdentity]( float _value ) { this->___soundFade( soundIdentity, _value ); }
                     , volume, _to, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, nullptr, "invalid create affector" );
@@ -664,7 +687,7 @@ namespace Mengine
 
             if( _cb.is_callable() == true )
             {
-                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
+                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
             }
 
             AMPLIFIER_SERVICE()
@@ -814,7 +837,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         AFFECTOR_ID m_affectorMusicID;
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorMusic;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_affectorCreatorMusic;
         //////////////////////////////////////////////////////////////////////////
         uint32_t musicFadeIn( float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -827,12 +850,12 @@ namespace Mengine
 
             MusicAffectorCallbackPtr callback = createMusicAffectorCallback( _cb, _args );
 
-            AffectorPtr affector =
-                m_affectorCreatorMusic.create( ETA_POSITION
+            AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
                     , easing
                     , callback
                     , [this]( float _value ) { this->___musicFade( _value ); }
                     , 1.f, 0.f, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
@@ -864,7 +887,7 @@ namespace Mengine
 
             if( _cb.is_callable() == true )
             {
-                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
+                cb = Helper::makeFactorableUnique<PythonAmplifierMusicCallback>( MENGINE_DOCUMENT_PYBIND, _cb, _args );
             }
 
             if( AMPLIFIER_SERVICE()
@@ -879,12 +902,12 @@ namespace Mengine
 
             EasingInterfacePtr easing = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Easing" ), _easingType );
 
-            AffectorPtr affector =
-                m_affectorCreatorMusic.create( ETA_POSITION
+            AffectorPtr affector = m_affectorCreatorMusic->create( ETA_POSITION
                     , easing
                     , nullptr
                     , [this]( float _value ) { this->___musicFade( _value ); }
                     , 0.f, 1.f, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
@@ -940,7 +963,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        SoundScriptMethodPtr soundScriptMethod = Helper::makeFactorableUnique<SoundScriptMethod>();
+        SoundScriptMethodPtr soundScriptMethod = Helper::makeFactorableUnique<SoundScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( soundScriptMethod->initialize() == false )
+        {
+            return false;
+        }
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin> >( _kernel, "SoundIdentity" )
             .def( "getId", &SoundIdentityInterface::getId )
@@ -1006,6 +1034,9 @@ namespace Mengine
     void SoundScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
+
+        SoundScriptMethodPtr soundScriptMethod = m_implement;
+        soundScriptMethod->finalize();
 
         m_implement = nullptr;
     }

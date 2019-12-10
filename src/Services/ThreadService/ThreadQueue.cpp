@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadQueue::initialize()
     {
-        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>();
+        m_factoryPoolTaskPacket = Helper::makeFactoryPool<ThreadTaskPacket, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -120,7 +120,7 @@ namespace Mengine
                 return;
             }
 
-            ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
             if( packet->initialize( m_packetSize ) == false )
             {

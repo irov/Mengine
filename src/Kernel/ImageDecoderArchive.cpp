@@ -78,7 +78,7 @@ namespace Mengine
         void * stream_memory;
         if( m_stream->memory( &stream_memory, &stream_size ) == false )
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
 
@@ -111,7 +111,7 @@ namespace Mengine
         }
         else
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( _capacityDest, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
 

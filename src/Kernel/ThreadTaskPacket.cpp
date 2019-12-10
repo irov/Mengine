@@ -22,7 +22,7 @@ namespace Mengine
         m_tasks.reserve( _packetSize );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
 

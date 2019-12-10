@@ -38,8 +38,8 @@ namespace Mengine
             tinyini_t ini;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath );
-        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream );
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc );
+        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc );
         //////////////////////////////////////////////////////////////////////////
         bool hasIniSection( const IniStore & _ini, const Char * _section );
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );

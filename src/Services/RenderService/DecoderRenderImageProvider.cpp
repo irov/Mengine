@@ -3,6 +3,7 @@
 #include "DecoderRenderImageLoader.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Kernel/Logger.h"
 
@@ -28,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader() const
     {
-        DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>();
+        DecoderRenderImageLoaderPtr loader = Helper::makeFactorableUnique<DecoderRenderImageLoader>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( loader->initialize( m_fileGroup, m_filePath, m_codecType, m_codecFlags ) == false )
         {

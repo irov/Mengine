@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/PluginInterface.h"
+#include "Interface/ServiceProviderInterface.h"
 
 #ifndef MENGINE_SERVICE_PROVIDER_NAME_SIZE
 #define MENGINE_SERVICE_PROVIDER_NAME_SIZE 64
@@ -40,7 +40,7 @@ namespace Mengine
         const ServiceInterfacePtr & getService( const Char * _name ) const override;
 
     protected:
-        bool initializeService( FServiceProviderGenerator _generator, bool _safe, const Char * _doc, const Char * _file, uint32_t _line ) override;
+        bool createService( FServiceProviderGenerator _generator, bool _safe, const DocumentPtr & _doc ) override;
         bool finalizeService( const Char * _name ) override;
 
         bool destroyService( const Char * _name ) override;
@@ -57,7 +57,7 @@ namespace Mengine
         void destroy() override;
 
     protected:
-        ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator );
+        ServiceInterfacePtr generateService_( FServiceProviderGenerator _generator, const DocumentPtr & _doc );
         void removeDependency_( const Char * _name );
         bool checkWaits_( const Char * _name );
 

@@ -213,19 +213,19 @@ namespace Mengine
 
         m_renderPlatformName = STRINGIZE_STRING_LOCAL( "DX9" );
 
-        m_factoryRenderVertexAttribute = Helper::makeFactoryPool<DX9RenderVertexAttribute, 8>();
-        m_factoryRenderVertexShader = Helper::makeFactoryPool<DX9RenderVertexShader, 16>();
-        m_factoryRenderFragmentShader = Helper::makeFactoryPool<DX9RenderFragmentShader, 16>();
-        m_factoryRenderProgram = Helper::makeFactoryPool<DX9RenderProgram, 16>();
-        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>();
-        m_factoryVertexBuffer = Helper::makeFactoryPool<DX9RenderVertexBuffer, 8>();
-        m_factoryIndexBuffer = Helper::makeFactoryPool<DX9RenderIndexBuffer, 8>();
+        m_factoryRenderVertexAttribute = Helper::makeFactoryPool<DX9RenderVertexAttribute, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderVertexShader = Helper::makeFactoryPool<DX9RenderVertexShader, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderFragmentShader = Helper::makeFactoryPool<DX9RenderFragmentShader, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgram = Helper::makeFactoryPool<DX9RenderProgram, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderProgramVariable = Helper::makeFactoryPool<DX9RenderProgramVariable, 64>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryVertexBuffer = Helper::makeFactoryPool<DX9RenderVertexBuffer, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryIndexBuffer = Helper::makeFactoryPool<DX9RenderIndexBuffer, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryRenderImage = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
-        m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_ );
+        m_factoryRenderImage = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_ );
-        m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_ );
+        m_factoryRenderTargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryRenderTargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

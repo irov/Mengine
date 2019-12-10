@@ -119,7 +119,7 @@ namespace Mengine
         if( fileGroup->isPacked() == false || external == false )
         {
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( fileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FUNCTION );
+                ->createSoundBufferFromFile( fileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FACTORABLE );
         }
         else
         {
@@ -127,7 +127,7 @@ namespace Mengine
                 ->getDefaultFileGroup();
 
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FUNCTION );
+                ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true, MENGINE_DOCUMENT_FACTORABLE );
         }
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "can't load sample '%s'"
@@ -144,7 +144,7 @@ namespace Mengine
 
         if( _callback != nullptr )
         {
-            soundIdentity->setSoundListener( Helper::makeFactorableUnique<Amplifier::MyMusicSoundListener>( _callback ) );
+            soundIdentity->setSoundListener( Helper::makeFactorableUnique<Amplifier::MyMusicSoundListener>( MENGINE_DOCUMENT_FACTORABLE, _callback ) );
         }
 
         if( SOUND_SERVICE()

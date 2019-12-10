@@ -88,7 +88,7 @@ namespace Mengine
     bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, MENGINE_DOCUMENT_FUNCTION );
+            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, MENGINE_DOCUMENT_FACTORABLE );
 
         if( framePack == nullptr )
         {
@@ -782,7 +782,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MovieKeyConverterXMLToAEK::writeFramePackage_( const Blobject & _buffer )
     {
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "invalid open file '%s:%s'"
             , m_options.fileGroup->getName().c_str()

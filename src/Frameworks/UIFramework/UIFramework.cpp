@@ -22,13 +22,13 @@ namespace Mengine
     bool UIFramework::_initializeFramework()
     {
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Button" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Button, 128> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Button" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Button, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Checkbox" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Checkbox, 128> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Checkbox" ), Helper::makeFactorableUnique<NodePrototypeGenerator<Checkbox, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }

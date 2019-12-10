@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/TimepipeInterface.h"
 
+#include "Kernel/Document.h"
+
 namespace Mengine
 {
     class TimepipeServiceInterface
@@ -11,7 +13,7 @@ namespace Mengine
         SERVICE_DECLARE( "TimepipeService" )
 
     public:
-        virtual uint32_t addTimepipe( const TimepipeInterfacePtr & _timepipe ) = 0;
+        virtual uint32_t addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc ) = 0;
         virtual TimepipeInterfacePtr removeTimepipe( uint32_t _id ) = 0;
 
     public:

@@ -183,11 +183,11 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>();
+            m_antifreezeMonitor = Helper::makeFactorableUnique<Win32AntifreezeMonitor>( MENGINE_DOCUMENT_FACTORABLE );
         }
 
-        m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>();
-        m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>();
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<Win32DynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDateTimeProviders = Helper::makeFactoryPool<Win32DateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -253,7 +253,7 @@ namespace Mengine
                 dumpPath += "_";
 
                 DateTimeProviderInterfacePtr dateTimeProvider = 
-                    this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+                    this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
                 PlatformDateTime dateTime;
                 dateTimeProvider->getLocalDateTime( &dateTime );
@@ -277,7 +277,7 @@ namespace Mengine
 #endif
 
         DateTimeProviderInterfacePtr dateTimeProvider =
-            this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+            this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
@@ -1429,7 +1429,7 @@ namespace Mengine
 
         if( alreadyRunning == true )
         {
-            m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>();
+            m_alreadyRunningMonitor = Helper::makeFactorableUnique<Win32AlreadyRunningMonitor>( MENGINE_DOCUMENT_FACTORABLE );
 
             if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
             {
@@ -1536,7 +1536,7 @@ namespace Mengine
 
         if( maxfps == false && vsync == false )
         {
-            m_fpsMonitor = Helper::makeFactorableUnique<Win32FPSMonitor>();
+            m_fpsMonitor = Helper::makeFactorableUnique<Win32FPSMonitor>( MENGINE_DOCUMENT_FACTORABLE );
             m_fpsMonitor->initialize();
 
             m_fpsMonitor->setActive( true );
@@ -1690,7 +1690,7 @@ namespace Mengine
                 return false;
             }
 
-            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
+            OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "name '%s' path '%s' can't open output stream '%s'"
                 , _name.c_str()
@@ -2815,14 +2815,14 @@ namespace Mengine
         ::abort();
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName )
+    DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "load dynamic library '%s'"
             , _dynamicLibraryName
         );
 
         Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries
-            ->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr );
 

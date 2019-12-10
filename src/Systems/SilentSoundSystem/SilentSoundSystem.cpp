@@ -28,8 +28,8 @@ namespace Mengine
     {
         LOGGER_INFO( "Starting Silent Sound System..." );
 
-        m_factorySilentSoundBuffer = Helper::makeFactoryPool<SilentSoundBuffer, 32>();
-        m_factorySilentSoundSource = Helper::makeFactoryPool<SilentSoundSource, 32>();
+        m_factorySilentSoundBuffer = Helper::makeFactoryPool<SilentSoundBuffer, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySilentSoundSource = Helper::makeFactoryPool<SilentSoundSource, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

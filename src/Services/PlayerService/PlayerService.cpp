@@ -72,11 +72,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
     {
-        m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>();
+        m_globalInputHandler = Helper::makeFactorableUnique<PlayerGlobalInputHandler>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>();
+        m_factoryScheduleManager = Helper::makeFactoryPool<Scheduler, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        SchedulerPtr scheduler = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr scheduler = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         scheduler->setName( STRINGIZE_STRING_LOCAL( "LocalScheduleManager" ) );
 
@@ -87,7 +87,7 @@ namespace Mengine
 
         m_scheduler = scheduler;
 
-        SchedulerPtr schedulerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr schedulerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         schedulerGlobal->setName( STRINGIZE_STRING_LOCAL( "GlobalScheduleManager" ) );
 
@@ -98,7 +98,7 @@ namespace Mengine
 
         m_schedulerGlobal = schedulerGlobal;
 
-        m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>();
+        m_randomizer = Helper::makeFactorableUnique<MT19937Randomizer>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( HAS_OPTION( "seed" ) == true )
         {
@@ -115,8 +115,8 @@ namespace Mengine
             m_randomizer->setSeed( randomSeed );
         }
 
-        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
-        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>();
+        m_affectorable = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
+        m_affectorableGlobal = Helper::makeFactorableUnique<PlayerGlobalAffectorable>( MENGINE_DOCUMENT_FACTORABLE );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );
@@ -282,7 +282,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
     {
-        SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( sm, nullptr );
 
@@ -358,7 +358,7 @@ namespace Mengine
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
         m_camera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_camera2D->setOrthogonalViewport( vp );
         m_camera2D->enableForce();
@@ -366,7 +366,7 @@ namespace Mengine
         this->setRenderCamera( m_camera2D );
 
         m_viewport2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_viewport2D->setViewport( vp );
         m_viewport2D->enableForce();
@@ -374,7 +374,7 @@ namespace Mengine
         this->setRenderViewport( m_viewport2D );
 
         m_arrowCamera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_arrowCamera2D->setOrthogonalViewport( vp );
         m_arrowCamera2D->enableForce();

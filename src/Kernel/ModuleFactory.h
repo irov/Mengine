@@ -6,22 +6,34 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Logger.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 namespace Mengine
 {
     template<class T>
     class ModuleFactory
         : public ModuleFactoryInterface
-        , public Factorable
     {
     public:
         ModuleFactory()
         {
-            m_factory = Helper::makeFactoryDefault<T>();
         }
 
         ~ModuleFactory() override
         {
+        }
+
+    public:
+        bool initialize() override
+        {
+            FactoryPtr factory = Helper::makeFactoryDefault<T>( MENGINE_DOCUMENT_FACTORABLE );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, false );
+
+            m_factory = factory;
+
+            return true;
         }
 
     public:
@@ -39,9 +51,26 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        ModuleFactoryInterfacePtr makeModuleFactory()
+        ModuleFactoryInterfacePtr makeModuleFactory( const DocumentPtr & _doc )
         {
+            MENGINE_UNUSED( _doc );
+
             ModuleFactoryInterface * factory = new FactorableUnique<ModuleFactory<T>>();
+
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+
+#ifdef MENGINE_DEBUG
+            factory->setDocument( _doc );
+#endif
+
+            if( factory->initialize() == false )
+            {
+                LOGGER_ERROR( "invalid initialize module (doc %s)"
+                    , MENGINE_DOCUMENT_MESSAGE( _doc )
+                );
+
+                return nullptr;
+            }
 
             return ModuleFactoryInterfacePtr( factory );
         }

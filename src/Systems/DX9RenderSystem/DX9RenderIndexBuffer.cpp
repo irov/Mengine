@@ -58,7 +58,7 @@ namespace Mengine
         m_format = s_getD3DIndexFormat();
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryProxy( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid create memory proxy" );
 
@@ -145,14 +145,14 @@ namespace Mengine
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_indexSize, MENGINE_DOCUMENT_FUNCTION );
+        m_memory->setBuffer( lock_memory, _count * m_indexSize, MENGINE_DOCUMENT_FACTORABLE );
 
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::unlock()
     {
-        m_memory->setBuffer( nullptr, 0, MENGINE_DOCUMENT_FUNCTION );
+        m_memory->setBuffer( nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
 
         IF_DXCALL( m_pIB, Unlock, () )
         {

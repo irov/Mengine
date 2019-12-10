@@ -157,26 +157,43 @@ namespace Mengine
     public:
         EngineScriptMethod()
         {
-            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 8>();
-            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 8>();
-            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 8>();
-            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 8>();
-            m_factoryPythonSceneChangeCallback = Helper::makeFactoryPool<PythonSceneChangeCallback, 8>();
-            m_factoryAffectorGridBurnTransparency = Helper::makeFactoryPool<AffectorGridBurnTransparency, 4>();
-            m_factoryAffectorUser = Helper::makeFactoryPool<AffectorUser, 4>();
-            m_factoryPyGlobalMouseLeaveHandlers = Helper::makeFactoryPool<PyGlobalMouseLeaveHandler, 32>();
-            m_factoryPyGlobalMouseMoveHandlers = Helper::makeFactoryPool<PyGlobalMouseMoveHandler, 32>();
-            m_factoryPyGlobalMouseHandlerButtons = Helper::makeFactoryPool<PyGlobalMouseHandlerButton, 32>();
-            m_factoryPyGlobalMouseHandlerButtonEnds = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonEnd, 32>();
-            m_factoryPyGlobalMouseHandlerWheels = Helper::makeFactoryPool<PyGlobalMouseHandlerWheel, 32>();
-            m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
-            m_factoryPyGlobalKeyHandler = Helper::makeFactoryPool<PyGlobalKeyHandler, 32>();
-            m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>();
-            m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>();
         }
 
         ~EngineScriptMethod() override
         {
+        }
+
+    public:
+        bool initialize()
+        {
+            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 8>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 8>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 8>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 8>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPythonSceneChangeCallback = Helper::makeFactoryPool<PythonSceneChangeCallback, 8>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryAffectorGridBurnTransparency = Helper::makeFactoryPool<AffectorGridBurnTransparency, 4>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryAffectorUser = Helper::makeFactoryPool<AffectorUser, 4>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalMouseLeaveHandlers = Helper::makeFactoryPool<PyGlobalMouseLeaveHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalMouseMoveHandlers = Helper::makeFactoryPool<PyGlobalMouseMoveHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalMouseHandlerButtons = Helper::makeFactoryPool<PyGlobalMouseHandlerButton, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalMouseHandlerButtonEnds = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonEnd, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalMouseHandlerWheels = Helper::makeFactoryPool<PyGlobalMouseHandlerWheel, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalMouseHandlerButtonBegins = Helper::makeFactoryPool<PyGlobalMouseHandlerButtonBegin, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalKeyHandler = Helper::makeFactoryPool<PyGlobalKeyHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyGlobalTextHandler = Helper::makeFactoryPool<PyGlobalTextHandler, 32>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPyInputMousePositionProvider = Helper::makeFactoryPool<PyInputMousePositionProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_creatorAffectorNodeFollowerLocalAlpha = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<Node, float>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_creatorAffectorNodeFollowerLocalAlpha->initialize();
+
+            return true;
+        }
+
+        void finalize()
+        {
+            m_creatorAffectorNodeFollowerLocalAlpha->finalize();
+            m_creatorAffectorNodeFollowerLocalAlpha = nullptr;
+
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
@@ -260,7 +277,7 @@ namespace Mengine
             }
 
             bool successful = PLUGIN_SERVICE()
-                ->loadPlugin( utf8_pluginName );
+                ->loadPlugin( utf8_pluginName, MENGINE_DOCUMENT_PYBIND );
 
             return successful;
         }
@@ -833,7 +850,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>();
+                PythonEntityBehaviorPtr behavior = Helper::makeFactorableUnique<PythonEntityBehavior>( MENGINE_DOCUMENT_PYBIND );
                 behavior->setScriptObject( py_scene );
 
                 scene->setBehavior( behavior );
@@ -1609,7 +1626,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_cacheResources( const ConstString & _groupName )
         {
-            CacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<CacheResourceVisitor>();
+            CacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<CacheResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -1661,7 +1678,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_uncacheResources( const ConstString & _groupName )
         {
-            UncacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<UncacheResourceVisitor>();
+            UncacheResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<UncacheResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -2320,6 +2337,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         template<class T_Node, class T_Value>
         class AffectorNodeFollowerCreator
+            : public Factorable
         {
             typedef Lambda<void( const T_Value & )> T_Setter;
             typedef Lambda<T_Value()> T_Getter;
@@ -2330,7 +2348,24 @@ namespace Mengine
         public:
             AffectorNodeFollowerCreator()
             {
-                m_factory = Helper::makeFactoryPool<TAffectorNodeFollowerMethod, 4>();
+            }
+
+            ~AffectorNodeFollowerCreator() override
+            {
+            }
+
+        public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<TAffectorNodeFollowerMethod, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+                m_factory = nullptr;
             }
 
         public:
@@ -2357,7 +2392,7 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        AffectorNodeFollowerCreator<Node, float> m_creatorAffectorNodeFollowerLocalAlpha;
+        IntrusivePtr<AffectorNodeFollowerCreator<Node, float>> m_creatorAffectorNodeFollowerLocalAlpha;
         //////////////////////////////////////////////////////////////////////////
         AffectorFollowerPtr s_addNodeFollowerLocalAlpha( const NodePtr & _node, float _value, float _target, float _speed )
         {
@@ -2367,7 +2402,7 @@ namespace Mengine
                 , _node->getName().c_str()
             );
 
-            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node
+            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha->create( _node
                 , [render]( float _alpha ) { render->setLocalAlpha( _alpha ); }
             , [render]() { return render->getLocalAlpha(); }
                 , _value, _target, _speed
@@ -3307,7 +3342,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_visitCompiledResources( const ConstString & _groupName, const pybind::object & _cb )
         {
-            ResourceVisitorGetAlreadyCompiledPtr rv_gac = Helper::makeFactorableUnique<ResourceVisitorGetAlreadyCompiled>( _cb );
+            ResourceVisitorGetAlreadyCompiledPtr rv_gac = Helper::makeFactorableUnique<ResourceVisitorGetAlreadyCompiled>( MENGINE_DOCUMENT_PYBIND, _cb );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -3342,7 +3377,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_visitResources( const ConstString & _groupName, const pybind::object & _cb )
         {
-            MyResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<MyResourceVisitor>( _cb );
+            MyResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<MyResourceVisitor>( MENGINE_DOCUMENT_PYBIND, _cb );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -3364,7 +3399,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         void s_incrementResources( const ConstString & _groupName )
         {
-            IncrefResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<IncrefResourceVisitor>();
+            IncrefResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<IncrefResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -3386,7 +3421,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         void s_decrementResources( const ConstString & _groupName )
         {
-            DecrementResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<DecrementResourceVisitor>();
+            DecrementResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<DecrementResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -3451,7 +3486,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _groupName )
         {
-            GetResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<GetResourceVisitor>( _kernel );
+            GetResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<GetResourceVisitor>( MENGINE_DOCUMENT_PYBIND, _kernel );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( _groupName, rv_gac );
@@ -3494,7 +3529,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EngineScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        EngineScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<EngineScriptMethod>();
+        EngineScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<EngineScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( nodeScriptMethod->initialize() == false )
+        {
+            return false;
+        }
 
         pybind::def_functor_args( _kernel, "createCurrentScene", nodeScriptMethod, &EngineScriptMethod::createCurrentScene );
         pybind::def_functor_args( _kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
@@ -3764,17 +3804,17 @@ namespace Mengine
 
         m_implement = nodeScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32> >( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -3793,6 +3833,9 @@ namespace Mengine
     void EngineScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
+
+        EngineScriptMethodPtr nodeScriptMethod = m_implement;
+        nodeScriptMethod->finalize();
 
         m_implement = nullptr;
 

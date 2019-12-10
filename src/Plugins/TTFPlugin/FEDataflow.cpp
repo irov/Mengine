@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEDataflow::initialize()
     {
-        m_factoryFEData = Helper::makeFactoryPool<FEData, 128>();
+        m_factoryFEData = Helper::makeFactoryPool<FEData, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

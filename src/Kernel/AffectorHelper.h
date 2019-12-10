@@ -6,6 +6,7 @@
 #include "Kernel/LambdaAffectorInterpolate.h"
 #include "Kernel/LambdaAffectorAccumulateLinear.h"
 #include "Kernel/AffectorCallbackInterface.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/Factory.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/ValueInterpolatorLinear.h"
@@ -123,6 +124,7 @@ namespace Mengine
     {
         template<class T>
         class NodeAffectorCreatorAccumulateLinear
+            : public Factorable
         {
         public:
             typedef LambdaAffectorAccumulateLinear<T> AffectorType;
@@ -131,7 +133,6 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorAccumulateLinear()
-                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
             {
             }
 
@@ -140,13 +141,28 @@ namespace Mengine
             }
 
         public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorType, 16>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+                m_factory = nullptr;
+            }
+
+        public:
             AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaType & _lambda
-                , const T & _pos, const T & _dir, float _speed )
+                , const T & _pos, const T & _dir, float _speed
+                , const DocumentPtr & _doc )
             {
-                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+                AffectorTypePtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
                 affector->setEasing( _easing );
@@ -165,6 +181,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         class NodeAffectorCreatorInterpolateLinear
+            : public Factorable
         {
         public:
             typedef LambdaAffectorInterpolateLinear<T> AffectorType;
@@ -173,7 +190,6 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorInterpolateLinear()
-                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
             {
             }
 
@@ -182,13 +198,28 @@ namespace Mengine
             }
 
         public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorType, 16>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+                m_factory = nullptr;
+            }
+
+        public:
             AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _lambda
-                , const T & _start, const T & _end, float _time )
+                , const T & _start, const T & _end, float _time
+                , const DocumentPtr & _doc )
             {
-                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+                AffectorTypePtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
                 affector->setEasing( _easing );
@@ -207,6 +238,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         class NodeAffectorCreatorInterpolateQuadratic
+            : public Factorable
         {
         public:
             typedef LambdaAffectorInterpolateQuadratic<T> AffectorType;
@@ -214,8 +246,7 @@ namespace Mengine
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
-            NodeAffectorCreatorInterpolateQuadratic()
-                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
+            NodeAffectorCreatorInterpolateQuadratic()                
             {
             }
 
@@ -224,13 +255,29 @@ namespace Mengine
             }
 
         public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorType, 16>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+
+                m_factory = nullptr;
+            }
+
+        public:
             AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _lambda
-                , const T & _start, const T & _end, const T & _v0, float _time )
+                , const T & _start, const T & _end, const T & _v0, float _time
+                , const DocumentPtr & _doc )
             {
-                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+                AffectorTypePtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
                 affector->setEasing( _easing );
@@ -249,6 +296,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t N>
         class NodeAffectorCreatorInterpolateBezier
+            : public Factorable
         {
         public:
             typedef LambdaAffectorInterpolateBezier<T, N> AffectorType;
@@ -259,8 +307,7 @@ namespace Mengine
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
-            NodeAffectorCreatorInterpolateBezier()
-                : m_factory( Helper::makeFactoryPool<AffectorType, 16>() )
+            NodeAffectorCreatorInterpolateBezier()                
             {
             }
 
@@ -269,13 +316,28 @@ namespace Mengine
             }
 
         public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorType, 16>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+                m_factory = nullptr;
+            }
+
+        public:
             AffectorPtr create( EAffectorType _type
                 , const EasingInterfacePtr & _easing
                 , const AffectorCallbackInterfacePtr & _cb
                 , const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _points
-                , float _time )
+                , float _time
+                , const DocumentPtr & _doc )
             {
-                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
+                AffectorTypePtr affector = m_factory->createObject( _doc );
 
                 affector->setAffectorType( _type );
                 affector->setEasing( _easing );

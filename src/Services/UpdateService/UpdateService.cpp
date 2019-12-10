@@ -5,6 +5,7 @@
 
 #include "Kernel/Updatable.h"
 #include "Kernel/Logger.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include <algorithm>
@@ -59,7 +60,7 @@ namespace Mengine
         m_afterLeaf.resize( 16 );
 
         uint32_t timepipe = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_timepipe = timepipe;
 

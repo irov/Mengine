@@ -18,7 +18,7 @@ namespace Mengine
     protected:
         bool initialize() override
         {
-            m_factory = Helper::makeFactoryPool<T, 8>();
+            m_factory = Helper::makeFactoryPool<T, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         }
@@ -52,9 +52,9 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T>
-        MENGINE_INLINE EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type )
+        MENGINE_INLINE EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type, const DocumentPtr & _doc )
         {
-            EncoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<EncoderFactory<T>>();
+            EncoderFactoryInterfacePtr factory = Helper::makeFactorableUnique<EncoderFactory<T>>( _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
 

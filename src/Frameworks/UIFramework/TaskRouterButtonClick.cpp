@@ -3,6 +3,7 @@
 #include "ButtonEventReceiverInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -87,7 +88,7 @@ namespace Mengine
             _node->complete();
         };
 
-        EventReceiverInterfacePtr receiver = Helper::makeFactorableUnique<Detail::TaskRouterButtonClickEventReceiver>( lambda );
+        EventReceiverInterfacePtr receiver = Helper::makeFactorableUnique<Detail::TaskRouterButtonClickEventReceiver>( MENGINE_DOCUMENT_FUNCTION, lambda );
 
         m_router->addButtonEventReceiver( m_state, receiver );
 

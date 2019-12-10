@@ -24,7 +24,7 @@ namespace Mengine
     {
         LOGGER_INFO( "Initializing Win32 Socket Plugin" );
 
-        SERVICE_CREATE( SocketSystem );
+        SERVICE_CREATE( SocketSystem, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

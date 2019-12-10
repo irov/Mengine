@@ -3,6 +3,7 @@
 #include "CheckboxEventReceiverInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 
 namespace Mengine
@@ -99,7 +100,7 @@ namespace Mengine
 
         EventationInterface * eventation = m_checkbox->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskCheckboxChangeEventReceiver>( lambda, m_value );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskCheckboxChangeEventReceiver>( MENGINE_DOCUMENT_FUNCTION, lambda, m_value );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_CHECKBOX_CHANGE, newreceiver );
 

@@ -159,7 +159,7 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.fileGroup, desc.path, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( desc.fileGroup, desc.path, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "data '%s' invalid open file '%s'"
             , _name.c_str()

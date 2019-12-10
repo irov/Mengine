@@ -50,10 +50,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PythonScriptModuleFinder::initialize()
     {
-        FactoryWithMutexPtr factory = Helper::makeFactoryPool<PythonScriptModuleLoader, 8, FactoryWithMutex>();
+        FactoryWithMutexPtr factory = Helper::makeFactoryPool<PythonScriptModuleLoader, 8, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         factory->setMutex( mutex );
 

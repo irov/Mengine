@@ -59,9 +59,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_initializeService()
     {
-        m_factoryThreadMutexDummy = Helper::makeFactoryPool<ThreadMutexDummy, 16>();
-        m_factoryThreadQueue = Helper::makeFactoryPool<ThreadQueue, 4>();
-        m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>();
+        m_factoryThreadMutexDummy = Helper::makeFactoryPool<ThreadMutexDummy, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadQueue = Helper::makeFactoryPool<ThreadQueue, 4>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadJob = Helper::makeFactoryPool<ThreadJob, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 

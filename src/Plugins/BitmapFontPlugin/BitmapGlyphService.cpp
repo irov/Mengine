@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool BitmapGlyphService::_initializeService()
     {
-        m_factoryTextGlyph = Helper::makeFactoryPool<BitmapGlyph, 8>();
+        m_factoryTextGlyph = Helper::makeFactoryPool<BitmapGlyph, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -47,7 +47,7 @@ namespace Mengine
             return glyph;
         }
 
-        BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FUNCTION );
+        BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( glyph, nullptr );
 

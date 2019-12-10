@@ -273,14 +273,14 @@ namespace Mengine
             .def_property( "softspace", &PythonScriptLogger::getSoftspace, &PythonScriptLogger::setSoftspace )
             ;
 
-        m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>();
+        m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_loggerWarning->setVerboseLevel( LM_WARNING );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
-        m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>();
+        m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_loggerError->setVerboseLevel( LM_ERROR );
 
@@ -292,7 +292,7 @@ namespace Mengine
         m_kernel->set_observer_bind_call( bind_call );
 #endif
 
-        DataflowPYPtr dataflowPY = Helper::makeFactorableUnique<DataflowPY>();
+        DataflowPYPtr dataflowPY = Helper::makeFactorableUnique<DataflowPY>( MENGINE_DOCUMENT_FACTORABLE );
 
         dataflowPY->setKernel( m_kernel );
 
@@ -303,7 +303,7 @@ namespace Mengine
 
         VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
 
-        DataflowPYZPtr dataflowPYZ = Helper::makeFactorableUnique<DataflowPYZ>();
+        DataflowPYZPtr dataflowPYZ = Helper::makeFactorableUnique<DataflowPYZ>( MENGINE_DOCUMENT_FACTORABLE );
 
         dataflowPYZ->setKernel( m_kernel );
 
@@ -334,7 +334,7 @@ namespace Mengine
             .def_kernel( "load_module", &PythonScriptModuleFinder::load_module )
             ;
 
-        m_moduleFinder = Helper::makeFactorableUnique<PythonScriptModuleFinder>();
+        m_moduleFinder = Helper::makeFactorableUnique<PythonScriptModuleFinder>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_moduleFinder->setDataflowPY( dataflowPY );
         m_moduleFinder->setDataflowPYZ( dataflowPYZ );
@@ -353,7 +353,7 @@ namespace Mengine
 
         kernel->set_module_finder( py_moduleFinder.ptr() );
 
-        m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>();
+        m_factoryScriptModule = Helper::makeFactoryPool<PythonScriptModule, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_DEBUG
         pybind::def_functor( m_kernel, "addLogFunction", this, &PythonScriptService::addLogFunction );
@@ -614,16 +614,16 @@ namespace Mengine
             }
         }
 
-        EventablePtr eventable = Helper::makeFactorableUnique<EntityEventable>();
+        EventablePtr eventable = Helper::makeFactorableUnique<EntityEventable>( MENGINE_DOCUMENT_FACTORABLE );
 
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCreate", EVENT_ENTITY_CREATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDestroy", EVENT_ENTITY_DESTROY );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onPreparation", EVENT_ENTITY_PREPARATION );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onActivate", EVENT_ENTITY_ACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDeactivate", EVENT_ENTITY_DEACTIVATE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCompile", EVENT_ENTITY_COMPILE );
-        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onRelease", EVENT_ENTITY_RELEASE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCreate", EVENT_ENTITY_CREATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDestroy", EVENT_ENTITY_DESTROY, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onPreparation", EVENT_ENTITY_PREPARATION, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onActivate", EVENT_ENTITY_ACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onPreparationDeactivate", EVENT_ENTITY_PREPARATION_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onDeactivate", EVENT_ENTITY_DEACTIVATE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onCompile", EVENT_ENTITY_COMPILE, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerPythonEventReceiverMethod<PythonEntityEventReceiver>( m_kernel, _type, eventable, "onRelease", EVENT_ENTITY_RELEASE, MENGINE_DOCUMENT_FACTORABLE );
 
         return eventable;
     }

@@ -20,8 +20,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadPlugin( const Char * _dynamicLibraryName ) override;
-        bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic ) override;
+        bool loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
+        bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentPtr & _doc ) override;
         void unloadPlugins() override;
 
     public:

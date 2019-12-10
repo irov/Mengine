@@ -33,15 +33,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidatePlugin::_initializePlugin()
     {
-        SERVICE_CREATE( ResourceValidateService );
+        SERVICE_CREATE( ResourceValidateService, MENGINE_DOCUMENT_FACTORABLE );
 
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceFile" ), Helper::makeFactorableUnique<ResourceFileValidator>() );
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ), Helper::makeFactorableUnique<ResourceHITValidator>() );
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageData" ), Helper::makeFactorableUnique<ResourceImageDataValidator>() );
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), Helper::makeFactorableUnique<ResourceImageDefaultValidator>() );
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ), Helper::makeFactorableUnique<ResourceImageSequenceValidator>() );
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMusic" ), Helper::makeFactorableUnique<ResourceMusicValidator>() );
-        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ), Helper::makeFactorableUnique<ResourceSoundValidator>() );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceFile" ), Helper::makeFactorableUnique<ResourceFileValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ), Helper::makeFactorableUnique<ResourceHITValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageData" ), Helper::makeFactorableUnique<ResourceImageDataValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), Helper::makeFactorableUnique<ResourceImageDefaultValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ), Helper::makeFactorableUnique<ResourceImageSequenceValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMusic" ), Helper::makeFactorableUnique<ResourceMusicValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ), Helper::makeFactorableUnique<ResourceSoundValidator>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

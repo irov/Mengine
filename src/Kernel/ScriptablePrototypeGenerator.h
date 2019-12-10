@@ -60,7 +60,7 @@ namespace Mengine
             } );
 #endif
 
-            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>();
+            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
 
             return factory;
         }

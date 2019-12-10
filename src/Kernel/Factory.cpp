@@ -57,7 +57,9 @@ namespace Mengine
 
 #ifdef MENGINE_DEBUG
         object->setDocument( _doc );
+#endif
 
+#ifdef MENGINE_DEBUG
         FACTORY_SERVICE()
             ->debugFactoryCreateObject( this, object, _doc );
 

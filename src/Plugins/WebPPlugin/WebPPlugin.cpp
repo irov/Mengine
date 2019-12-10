@@ -40,7 +40,7 @@ namespace Mengine
             , WEBP_DECODER_ABI_VERSION
         );
 
-        Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ) );
+        Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         CODEC_SERVICE()
             ->registerCodecExt( STRINGIZE_STRING_LOCAL( "webp" ), STRINGIZE_STRING_LOCAL( "webpImage" ) );

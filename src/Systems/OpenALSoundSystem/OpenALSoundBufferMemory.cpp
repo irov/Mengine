@@ -65,7 +65,7 @@ namespace Mengine
         m_length = dataInfo->length;
         size_t size = dataInfo->size;
 
-        MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr binary_memory = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binary_memory, false, "invalid sound %d memory %d"
             , size

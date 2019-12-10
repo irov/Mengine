@@ -80,7 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ImageDecoderHTF::_decode( void * _buffer, size_t _bufferSize )
     {
-        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FUNCTION ) == false )
+        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load"
             );

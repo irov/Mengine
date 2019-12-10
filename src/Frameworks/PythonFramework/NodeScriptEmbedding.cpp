@@ -149,15 +149,56 @@ namespace Mengine
     public:
         NodeScriptMethod()
         {
-            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 16>();
-            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 16>();
-            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>();
-            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>();
-            m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>();
         }
 
         ~NodeScriptMethod() override
         {
+        }
+
+    public:
+        bool initialize()
+        {
+            m_factoryPythonScheduleEvent = Helper::makeFactoryPool<PythonScheduleEvent, 16>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryDelaySchedulePipe = Helper::makeFactoryPool<DelaySchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPythonScheduleTiming = Helper::makeFactoryPool<PythonScheduleTiming, 16>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryPythonSchedulePipe = Helper::makeFactoryPool<PythonSchedulePipe, 16>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryNodeAffectorCallback = Helper::makeFactoryPool<ScriptableAffectorCallback, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+            m_factoryAffectorVelocity2 = Helper::makeFactorableUnique<FactoryAffectorVelocity2>( MENGINE_DOCUMENT_FACTORABLE );
+            m_factoryAffectorVelocity2->initialize();
+
+            m_nodeAffectorCreatorInterpolateParabolic = Helper::makeFactorableUnique<FactoryAffectorInterpolateParabolic>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateParabolic->initialize();
+
+            m_nodeAffectorCreatorFollowTo = Helper::makeFactorableUnique<FactoryAffectorFollowTo>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorFollowTo->initialize();
+
+            m_nodeAffectorCreatorFollowToW = Helper::makeFactorableUnique<FactoryAffectorFollowToW>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorFollowToW->initialize();
+
+            m_nodeAffectorCreatorInterpolateLinearFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateLinearFloat->initialize();
+
+            return true;
+        }
+
+        void finalize()
+        {
+            m_factoryAffectorVelocity2->finalize();
+            m_factoryAffectorVelocity2 = nullptr;
+
+            m_nodeAffectorCreatorInterpolateParabolic->finalize();
+            m_nodeAffectorCreatorInterpolateParabolic = nullptr;
+
+            m_nodeAffectorCreatorFollowTo->finalize();
+            m_nodeAffectorCreatorFollowTo = nullptr;
+
+            m_nodeAffectorCreatorFollowToW->finalize();
+            m_nodeAffectorCreatorFollowToW = nullptr;
+
+            m_nodeAffectorCreatorInterpolateLinearFloat->finalize();
+            m_nodeAffectorCreatorInterpolateLinearFloat = nullptr;
+
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
@@ -438,6 +479,7 @@ namespace Mengine
                 , callback
                 , [_shape]( const mt::vec4f & _v ) { _shape->setPercentVisibility( _v ); }
                 , _shape->getPercentVisibility(), _percent, _time
+                , MENGINE_DOCUMENT_PYBIND
             );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -583,7 +625,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -597,7 +639,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -623,7 +665,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( _kernel, py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -654,8 +696,8 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none(), "invalid set event listener" );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP );
-            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onKeepScript", EVENT_SCRIPT_HOLDER_KEEP, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( _kernel, py_kwds, _node, "onReleaseScript", EVENT_SCRIPT_HOLDER_RELEASE, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -670,17 +712,17 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_HOTSPOT_KEY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_HOTSPOT_MOUSE_BUTTON );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_HOTSPOT_MOUSE_BUTTON_END );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_HOTSPOT_MOUSE_MOVE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_HOTSPOT_MOUSE_WHEEL );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_HOTSPOT_MOUSE_ENTER );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_HOTSPOT_MOUSE_LEAVE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_HOTSPOT_MOUSE_OVER_DESTROY );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleActivate", EVENT_HOTSPOT_ACTIVATE );
-            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleDeactivate", EVENT_HOTSPOT_DEACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleKeyEvent", EVENT_HOTSPOT_KEY, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEvent", EVENT_HOTSPOT_MOUSE_BUTTON, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_HOTSPOT_MOUSE_BUTTON_END, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseMove", EVENT_HOTSPOT_MOUSE_MOVE, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseWheel", EVENT_HOTSPOT_MOUSE_WHEEL, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseEnter", EVENT_HOTSPOT_MOUSE_ENTER, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseLeave", EVENT_HOTSPOT_MOUSE_LEAVE, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleMouseOverDestroy", EVENT_HOTSPOT_MOUSE_OVER_DESTROY, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleActivate", EVENT_HOTSPOT_ACTIVATE, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( _kernel, py_kwds, _node, "onHandleDeactivate", EVENT_HOTSPOT_DEACTIVATE, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -829,6 +871,7 @@ namespace Mengine
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _dir, _speed
+                , MENGINE_DOCUMENT_PYBIND
             );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -903,11 +946,28 @@ namespace Mengine
         typedef IntrusivePtr<AffectorVelocity2> AffectorVelocity2Ptr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorVelocity2
+            : public Factorable
         {
         public:
             FactoryAffectorVelocity2()
             {
-                m_factory = Helper::makeFactoryPool<AffectorVelocity2, 4>();
+            }
+
+            ~FactoryAffectorVelocity2()
+            {
+            }
+
+        public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorVelocity2, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                m_factory = nullptr;
             }
 
         public:
@@ -932,7 +992,9 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorVelocity2 m_factoryAffectorVelocity2;
+        typedef IntrusivePtr<FactoryAffectorVelocity2> FactoryAffectorVelocity2Ptr;
+        //////////////////////////////////////////////////////////////////////////
+        FactoryAffectorVelocity2Ptr m_factoryAffectorVelocity2;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -950,7 +1012,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_factoryAffectorVelocity2.create( ETA_POSITION
+            AffectorPtr affector = m_factoryAffectorVelocity2->create( ETA_POSITION
                 , easing
                 , callback
                 , NodePtr( _node ), _velocity, _time, MENGINE_DOCUMENT_PYBIND
@@ -996,6 +1058,7 @@ namespace Mengine
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                     , _node->getLocalPosition(), _point, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1043,6 +1106,7 @@ namespace Mengine
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _point, linearSpeed, _time
+                , MENGINE_DOCUMENT_PYBIND
             );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1093,6 +1157,7 @@ namespace Mengine
             , [_to]() { return _to; }
             , [_v0]( mt::vec3f * _v ) { _v[0] = _v0; }
                 , _time
+                , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1148,6 +1213,7 @@ namespace Mengine
                 _v[0] = mt::vec3f( x, node_pos.y, 0.f );
             }
                 , _time
+                , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1198,6 +1264,7 @@ namespace Mengine
             , [_to]() {return _to; }
             , [_v0, _v1]( mt::vec3f * _v ) {_v[0] = _v0; _v[1] = _v1; }
                 , _time
+                , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1249,6 +1316,7 @@ namespace Mengine
             , [_to]() { return _to; }
             , [_v0, _v1, _v2]( mt::vec3f * _v ) {_v[0] = _v0; _v[1] = _v1; _v[2] = _v2; }
                 , _time
+                , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1383,11 +1451,28 @@ namespace Mengine
         typedef IntrusivePtr<AffectorCreatorInterpolateParabolic> AffectorCreatorInterpolateParabolicPtr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorInterpolateParabolic
+            : public Factorable
         {
         public:
             FactoryAffectorInterpolateParabolic()
             {
-                m_factory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>();
+            }
+
+            ~FactoryAffectorInterpolateParabolic()
+            {
+            }
+
+        public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorCreatorInterpolateParabolic, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                m_factory = nullptr;
             }
 
         public:
@@ -1412,7 +1497,9 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorInterpolateParabolic m_nodeAffectorCreatorInterpolateParabolic;
+        typedef IntrusivePtr<FactoryAffectorInterpolateParabolic> FactoryAffectorInterpolateParabolicPtr;
+        //////////////////////////////////////////////////////////////////////////
+        FactoryAffectorInterpolateParabolicPtr m_nodeAffectorCreatorInterpolateParabolic;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_parabolaTo( Node * _node
             , float _time
@@ -1436,11 +1523,11 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateParabolic.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateParabolic->create( ETA_POSITION
                     , easing
                     , callback
-                    , NodePtr( _node ), _end, _v0, _time, MENGINE_DOCUMENT_PYBIND
+                    , NodePtr( _node ), _end, _v0, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1607,11 +1694,28 @@ namespace Mengine
         typedef IntrusivePtr<AffectorCreatorFollowTo> AffectorCreatorFollowToPtr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorFollowTo
+            : public Factorable
         {
         public:
             FactoryAffectorFollowTo()
             {
-                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>();
+            }
+
+            ~FactoryAffectorFollowTo()
+            {
+            }
+
+        public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowTo, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                m_factory = nullptr;
             }
 
         public:
@@ -1640,8 +1744,10 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorFollowTo m_nodeAffectorCreatorFollowTo;
-        //////////////////////////////////////////////////////////////////////////		
+        typedef IntrusivePtr<FactoryAffectorFollowTo> FactoryAffectorFollowToPtr;
+        //////////////////////////////////////////////////////////////////////////
+        FactoryAffectorFollowToPtr m_nodeAffectorCreatorFollowTo;
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_followTo( Node * _node
             , const NodePtr & _target
             , const mt::vec3f & _offset
@@ -1671,8 +1777,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector =
-                m_nodeAffectorCreatorFollowTo.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorFollowTo->create( ETA_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
@@ -1795,11 +1900,29 @@ namespace Mengine
         typedef IntrusivePtr<AffectorCreatorFollowToW> AffectorCreatorFollowToWPtr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorFollowToW
+            : public Factorable
         {
         public:
             FactoryAffectorFollowToW()
             {
-                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>();
+            }
+
+            ~FactoryAffectorFollowToW()
+            {
+            }
+
+        public:
+            bool initialize()
+            {
+                m_factory = Helper::makeFactoryPool<AffectorCreatorFollowToW, 4>( MENGINE_DOCUMENT_FACTORABLE );
+
+                return true;
+            }
+
+            void finalize()
+            {
+                MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+                m_factory = nullptr;
             }
 
         public:
@@ -1827,8 +1950,10 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        FactoryAffectorFollowToW m_nodeAffectorCreatorFollowToW;
-        //////////////////////////////////////////////////////////////////////////		
+        typedef IntrusivePtr<FactoryAffectorFollowToW> FactoryAffectorFollowToWPtr;
+        //////////////////////////////////////////////////////////////////////////
+        FactoryAffectorFollowToWPtr m_nodeAffectorCreatorFollowToW;
+        //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_followToW( Node * _node
             , const NodePtr & _target
             , const mt::vec3f & _offset
@@ -1854,8 +1979,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector =
-                m_nodeAffectorCreatorFollowToW.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorFollowToW->create( ETA_POSITION
                     , easing
                     , callback
                     , NodePtr( _node ), _target, _offset, _distance
@@ -1883,7 +2007,7 @@ namespace Mengine
             _node->setAngularSpeed( 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_nodeAffectorCreatorInterpolateLinearFloat;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>> m_nodeAffectorCreatorInterpolateLinearFloat;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -1906,11 +2030,12 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_ANGLE
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_ANGLE
                 , easing
                 , callback
                 , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
                 , correct_angle_from, correct_angle_to, _time
+                , MENGINE_DOCUMENT_PYBIND
             );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -1963,6 +2088,7 @@ namespace Mengine
                     , callback
                     , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
                     , correct_angle_from, correct_angle_to, angularSpeed, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -2005,6 +2131,7 @@ namespace Mengine
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalScale( _v ); }
                 , _node->getLocalScale(), _scale, _time
+                , MENGINE_DOCUMENT_PYBIND
             );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "invalid create affector" );
@@ -2071,6 +2198,7 @@ namespace Mengine
                     , callback
                     , [render]( const Color & _v ) { render->setLocalColor( _v ); }
                     , render->getLocalColor(), _color, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
@@ -2142,11 +2270,12 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_COLOR
+                m_nodeAffectorCreatorInterpolateLinearFloat->create( ETA_COLOR
                     , easing
                     , callback
                     , [render]( float _v ) { render->setLocalAlpha( _v ); }
                     , render->getLocalAlpha(), _alpha, _time
+                    , MENGINE_DOCUMENT_PYBIND
                 );
 
             MENGINE_ASSERTION_MEMORY_PANIC( affector, 0, "node '%s' invalid create affector"
@@ -2191,7 +2320,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        NodeScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<NodeScriptMethod>();
+        NodeScriptMethodPtr nodeScriptMethod = Helper::makeFactorableUnique<NodeScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( nodeScriptMethod->initialize() == false )
+        {
+            return false;
+        }
 
         pybind::interface_<Mixin>( _kernel, "Mixin", true )
             .def_smart_pointer()
@@ -3031,7 +3165,7 @@ namespace Mengine
             ;
 
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(_kernel))
+    VOCABULARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), Helper::makeFactorableUnique<PythonScriptWrapper<Class>>(MENGINE_DOCUMENT_FACTORABLE, _kernel))
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );
@@ -3182,6 +3316,9 @@ namespace Mengine
         UNSCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
 #undef UNSCRIPT_CLASS_WRAPPING
+
+        NodeScriptMethodPtr nodeScriptMethod = m_implement;
+        nodeScriptMethod->finalize();
 
         m_implement = nullptr;
     }

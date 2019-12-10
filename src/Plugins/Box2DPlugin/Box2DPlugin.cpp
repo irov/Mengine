@@ -27,21 +27,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Box2DPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( Box2DService );
+        SERVICE_CREATE( Box2DService, MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), Helper::makeFactorableUnique<NodePrototypeGenerator<PhysicalPlaceholder, 128>>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "PhysicalPlaceholder" ), Helper::makeFactorableUnique<NodePrototypeGenerator<PhysicalPlaceholder, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), Helper::makeDefaultPrototypeGenerator<Box2DBody, 128>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DBody" ), Helper::makeDefaultPrototypeGenerator<Box2DBody, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
-
-
 
         return true;
     }

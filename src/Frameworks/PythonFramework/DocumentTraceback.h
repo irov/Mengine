@@ -10,7 +10,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
 #   define MENGINE_DOCUMENT_PYBIND [](const Mengine::Char * _file, const Mengine::Char * _function, uint32_t _line) \
     { \
-        Mengine::DocumentPtr doc = Mengine::Helper::makeFactorableUnique<Mengine::Document>(_file, _function, _line); \
+        Mengine::DocumentPtr doc = Mengine::Helper::makeFactorableUnique<Mengine::Document>(nullptr, _file, _function, _line); \
         Char traceback[8192]; \
         pybind::kernel_interface * kernel = SCRIPTPROVIDER_SERVICE()->getKernel(); \
         kernel->get_traceback(traceback, 8192); \

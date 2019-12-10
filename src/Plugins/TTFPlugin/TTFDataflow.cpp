@@ -56,7 +56,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFDataflow::initialize()
     {
-        m_factoryTTFData = Helper::makeFactoryPool<TTFData, 128>();
+        m_factoryTTFData = Helper::makeFactoryPool<TTFData, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

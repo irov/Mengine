@@ -215,7 +215,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "invalid stream config" );
 
         IniUtil::IniStore store;
-        if( IniUtil::loadIni( store, _stream ) == false )
+        if( IniUtil::loadIni( store, _stream, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             LOGGER_ERROR( "invalid load config" );
 

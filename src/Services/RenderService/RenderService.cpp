@@ -68,12 +68,12 @@ namespace Mengine
         m_debugInfo.triangle = 0;
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), Helper::makeDefaultPrototypeGenerator<BatchRenderPipeline, 8>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ), Helper::makeDefaultPrototypeGenerator<BatchRenderPipeline, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
         
-        m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>();
+        m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
 
@@ -199,7 +199,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FUNCTION );
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
             , null_width
@@ -266,7 +266,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FUNCTION );
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, false, "invalid create null texture %d:%d"
             , null_width
@@ -1014,13 +1014,13 @@ namespace Mengine
             return batch;
         }
 
-        RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FUNCTION );
+        RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         new_batch->setVertexAttribute( _vertexAttribute );
 
         uint32_t elementSize = _vertexAttribute->getElementSize();
 
-        RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
+        RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, RenderBatchInterfacePtr::none() );
 
@@ -1030,7 +1030,7 @@ namespace Mengine
 
         uint32_t indexSize = sizeof( RenderIndex );
 
-        RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
+        RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, RenderBatchInterfacePtr::none() );
 

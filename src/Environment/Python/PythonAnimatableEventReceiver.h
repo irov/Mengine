@@ -55,15 +55,15 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T_AnimatableReceiver = PythonAnimatableEventReceiver<> >
-        void registerAnimatableEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable )
+        void registerAnimatableEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable, const DocumentPtr & _doc )
         {
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATION_PLAY );
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATION_RESTART );
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatablePause", EVENT_ANIMATION_PAUSE );
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableResume", EVENT_ANIMATION_RESUME );
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableStop", EVENT_ANIMATION_STOP );
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableEnd", EVENT_ANIMATION_END );
-            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATION_INTERRUPT );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatablePlay", EVENT_ANIMATION_PLAY, _doc );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableRestart", EVENT_ANIMATION_RESTART, _doc );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatablePause", EVENT_ANIMATION_PAUSE, _doc );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableResume", EVENT_ANIMATION_RESUME, _doc );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableStop", EVENT_ANIMATION_STOP, _doc );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableEnd", EVENT_ANIMATION_END, _doc );
+            Helper::registerPythonEventReceiver<T_AnimatableReceiver>( _kernel, _kwds, _eventable, "onAnimatableInterrupt", EVENT_ANIMATION_INTERRUPT, _doc );
         }
     }
 }

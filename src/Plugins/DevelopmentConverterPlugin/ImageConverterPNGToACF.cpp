@@ -40,14 +40,14 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
         FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
 
-        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream_intput = Helper::openInputStreamFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_intput, false, "invalid open input file '%s'"
             , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder '%s'"
             , m_options.inputFilePath.c_str()
@@ -79,7 +79,7 @@ namespace Mengine
 
         size_t data_size = dataInfo->getSize();
 
-        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_buffer, false );
 
@@ -94,7 +94,7 @@ namespace Mengine
             return false;
         }
 
-        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream_output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream_output, false, "'%s' invalid open output '%s'"
             , m_options.inputFilePath.c_str()
@@ -102,7 +102,7 @@ namespace Mengine
         );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "'%s' invalid create encoder"
             , m_options.inputFilePath.c_str()

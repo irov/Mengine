@@ -40,13 +40,13 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FUNCTION );
+        m_stream = m_fileGroup->createInputFile( m_filePath, false, &m_realFileGroup, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_stream, false, "can't create input file '%s'"
             , this->getFileGroup()->getName().c_str()
         );
 
-        m_data = m_dataflow->create( MENGINE_DOCUMENT_FUNCTION );
+        m_data = m_dataflow->create( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_data, false, "dataflow '%s':'%s' invalid create data"
             , this->getFileGroup()->getName().c_str()
@@ -68,7 +68,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = m_dataflow->load( m_stream, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = m_dataflow->load( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalide load file '%s':'%s'"
             , this->getFileGroup()->getName().c_str()
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( m_dataflow->isThreadFlow() == true )
         {
-            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FUNCTION ) == false )
+            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
@@ -101,7 +101,7 @@ namespace Mengine
         {
             MemoryInterfacePtr memory = std::move( m_memory );
 
-            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FUNCTION ) == false )
+            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()

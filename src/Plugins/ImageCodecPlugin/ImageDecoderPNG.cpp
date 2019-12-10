@@ -325,7 +325,7 @@ namespace Mengine
                 }
                 else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
                 {
-                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
+                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
 
@@ -360,7 +360,7 @@ namespace Mengine
             {
                 if( m_dataInfo.channels == 1 && m_options.channels == 4 )
                 {
-                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
+                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
 
@@ -382,7 +382,7 @@ namespace Mengine
                 }
                 else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
                 {
-                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FUNCTION );
+                    MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, MENGINE_DOCUMENT_FACTORABLE );
 
                     MENGINE_ASSERTION_MEMORY_PANIC( row_buffer, 0, "invalid create cache buffer" );
 

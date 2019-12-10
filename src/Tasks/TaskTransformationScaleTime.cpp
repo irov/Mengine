@@ -1,6 +1,7 @@
 #include "TaskTransformationScaleTime.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "GOAP/NodeInterface.h"
 
@@ -105,7 +106,7 @@ namespace Mengine
     {
         const mt::vec3f & scale = m_transformation->getLocalScale();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( _node, m_transformation, scale, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationScaleTimeAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, scale, m_to, m_time );
 
         affector->setEasing( m_easing );
 

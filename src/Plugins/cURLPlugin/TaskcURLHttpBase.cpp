@@ -83,7 +83,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     cURLReceiverInterfacePtr TaskcURLHttpBase::createHttpReceiver_( GOAP::NodeInterface * _node )
     {
-        cURLReceiverInterfacePtr receiver = Helper::makeFactorableUnique<TaskcURLHttpBase::TaskcURLReceiver>( _node, this, m_receiver );
+        cURLReceiverInterfacePtr receiver = Helper::makeFactorableUnique<TaskcURLHttpBase::TaskcURLReceiver>( MENGINE_DOCUMENT_FUNCTION, _node, this, m_receiver );
 
         return receiver;
     }

@@ -8,6 +8,8 @@
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "Movie.h"
 #include "MovieSlot.h"
 #include "MovieEvent.h"
@@ -295,7 +297,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSlot>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSlot>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), visitor );
 
             return py_list;
@@ -336,7 +338,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSocket>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSocket>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), visitor );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), visitor );
 
@@ -378,7 +380,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSubMovie>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovieSubMovie>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), visitor );
 
             return py_list;
@@ -414,7 +416,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PyVisitorMovieLayer>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = Helper::makeFactorableUnique<PyVisitorMovieLayer>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
             _movie->visitMovieLayer( _type, visitor );
 
             return py_list;
@@ -876,11 +878,11 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
 
-            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL, MENGINE_DOCUMENT_PYBIND );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( _kernel, py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -1418,14 +1420,14 @@ namespace Mengine
         pybind::def_function_kernel( _kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
         pybind::def_function_kernel( _kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieSlot> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieInternalObject> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieMesh2D> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieEvent> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieSlot> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieInternalObject> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieMesh2D> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), Helper::makeFactorableUnique<PythonScriptWrapper<MovieEvent> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }

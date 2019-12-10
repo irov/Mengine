@@ -83,7 +83,8 @@ namespace Mengine
             , ETextVerticalAlign _verticalAlign
             , float _scale
             , uint32_t _params
-            , bool _isOverride ) override;
+            , bool _isOverride
+            , const DocumentPtr & _doc ) override;
 
         bool removeTextEntry( const ConstString & _key ) override;
 

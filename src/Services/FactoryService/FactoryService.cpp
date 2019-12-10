@@ -42,7 +42,7 @@ namespace Mengine
             SERVICE_WAIT( ThreadServiceInterface, [this]()
             {
                 ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-                    ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+                    ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
 

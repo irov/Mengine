@@ -117,7 +117,7 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -134,7 +134,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( imageDecoder == nullptr )
         {
@@ -223,7 +223,7 @@ namespace Mengine
         {
             uint32_t texture_size = dataInfo->getSize();
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, MENGINE_DOCUMENT_FACTORABLE );
 
             if( buffer == nullptr )
             {

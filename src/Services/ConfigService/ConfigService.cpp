@@ -28,10 +28,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ConfigService::_initializeService()
     {
-        m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>();
-        m_factoryIniConfig = Helper::makeFactoryPool<IniConfig, 16>();
+        m_factoryMemoryConfig = Helper::makeFactoryPool<MemoryConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryIniConfig = Helper::makeFactoryPool<IniConfig, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_defaultConfig = m_factoryIniConfig->createObject( MENGINE_DOCUMENT_FUNCTION );
+        m_defaultConfig = m_factoryIniConfig->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         SERVICE_WAIT( PlatformInterface, [this]()
         {

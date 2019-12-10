@@ -127,7 +127,7 @@ namespace Mengine
                 return false;
             }
 
-            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             done = this->importBin_( file_bin, _metadata, _metaVersion, nullptr );
         }
@@ -138,7 +138,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, uint32_t _metaVersion ) const
     {
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -225,7 +225,7 @@ namespace Mengine
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof( compress_size ) );
 
-        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
 
@@ -327,7 +327,7 @@ namespace Mengine
                 return false;
             }
 
-            InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
@@ -346,11 +346,11 @@ namespace Mengine
             }
         }
 
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 
-        InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( _fileGroup, c_cache_path_xml, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_xml = Helper::openInputStreamFile( _fileGroup, c_cache_path_xml, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_xml, false );
 
@@ -374,7 +374,7 @@ namespace Mengine
                 return false;
             }
 
-            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+            file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
         }
 
         *_stream = file_bin;
@@ -385,7 +385,7 @@ namespace Mengine
     bool LoaderService::makeBin_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _pathXml, const FilePath & _pathBin ) const
     {
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "invalid create decoder xml2bin for '%s:%s'"
             , _fileGroup->getName().c_str()
@@ -436,7 +436,7 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr file_bin = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file_bin, false );
 

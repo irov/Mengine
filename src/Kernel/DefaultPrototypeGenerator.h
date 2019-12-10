@@ -29,7 +29,7 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
-            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>();
+            FactoryPtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
 
             return factory;
         }
@@ -63,9 +63,9 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, uint32_t Count>
-        FactoryPrototypeGeneratorPtr makeDefaultPrototypeGenerator()
+        FactoryPrototypeGeneratorPtr makeDefaultPrototypeGenerator( const DocumentPtr & _doc )
         {
-            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<DefaultPrototypeGenerator<Type, Count>>();
+            FactoryPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<DefaultPrototypeGenerator<Type, Count>>( _doc );
 
             return generator;
         }

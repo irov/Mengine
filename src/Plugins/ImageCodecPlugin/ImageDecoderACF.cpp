@@ -87,7 +87,7 @@ namespace Mengine
 
         if( m_options.pitch * m_dataInfo.height == dataSize )
         {
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FUNCTION ) == false )
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load"
                 );
@@ -97,13 +97,13 @@ namespace Mengine
         }
         else
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0 );
 
             void * memory = buffer->getBuffer();
 
-            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, MENGINE_DOCUMENT_FUNCTION ) == false )
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalid load"
                 );

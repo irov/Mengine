@@ -313,7 +313,7 @@ namespace Mengine
                 EPrimitiveType primitiveType = _material->getPrimitiveType();
 
                 const RenderMaterialInterfacePtr & new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
+                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 if( new_material == nullptr )
                 {
@@ -566,7 +566,7 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
-            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_FUNCTION );
+            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_FACTORABLE );
         }
 
         m_debugRenderObjects.clear();

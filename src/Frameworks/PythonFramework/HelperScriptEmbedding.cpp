@@ -1274,7 +1274,7 @@ namespace Mengine
         {
             VectorConstString v_accounts;
 
-            AccountVisitorInterfacePtr mav = Helper::makeFactorableUnique<MyAccountVisitor>( &v_accounts );
+            AccountVisitorInterfacePtr mav = Helper::makeFactorableUnique<MyAccountVisitor>( MENGINE_DOCUMENT_PYBIND, &v_accounts );
 
             ACCOUNT_SERVICE()
                 ->visitAccounts( mav );
@@ -1481,7 +1481,7 @@ namespace Mengine
 
             if( _cb.is_none() == false )
             {
-                provider = Helper::makeFactorableUnique<PyAccountSettingProvider>( _kernel, _cb, _args );
+                provider = Helper::makeFactorableUnique<PyAccountSettingProvider>( MENGINE_DOCUMENT_PYBIND, _kernel, _cb, _args );
             }
 
             const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );
@@ -3408,7 +3408,7 @@ namespace Mengine
             .def( "clear", &Tags::clear )
             ;
 
-        HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>();
+        HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );

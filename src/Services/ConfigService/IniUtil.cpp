@@ -35,9 +35,9 @@ namespace Mengine
         {
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "open ini file '%s:%s'"
                 , _fileGroup->getName().c_str()
@@ -46,19 +46,19 @@ namespace Mengine
 
             _ini.path = _filePath;
 
-            bool successful = IniUtil::loadIni( _ini, stream );
+            bool successful = IniUtil::loadIni( _ini, stream, _doc );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream )
+        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc )
         {
             size_t size = _stream->size();
 
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+                ->createMemoryBuffer( _doc );
 
-            Char * memory_buffer = memory->newBuffer( size + 1, MENGINE_DOCUMENT_FUNCTION );
+            Char * memory_buffer = memory->newBuffer( size + 1, _doc );
 
             _stream->read( memory_buffer, size );
             memory_buffer[size] = '\0';

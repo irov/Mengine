@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/ServantInterface.h"
 #include "Interface/ServiceProviderInterface.h"
 
 #include "Kernel/Mixin.h"
@@ -15,7 +16,7 @@
 namespace Mengine
 {
     class PluginInterface
-        : public Mixin
+        : public ServantInterface
     {
     public:
         virtual const Char * getPluginName() const = 0;

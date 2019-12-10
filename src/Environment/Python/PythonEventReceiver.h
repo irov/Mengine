@@ -75,7 +75,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable, const Char * _method, uint32_t _event )
+        void registerPythonEventReceiver( pybind::kernel_interface * _kernel, const pybind::dict & _kwds, Eventable * _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -97,7 +97,7 @@ namespace Mengine
             }
             else
             {
-                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>( _doc );
 
                 receiver->initialize( _kernel, py_event );
 
@@ -110,7 +110,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiverModule( pybind::kernel_interface * _kernel, const pybind::module & _module, Eventable * _eventable, const Char * _method, uint32_t _event )
+        void registerPythonEventReceiverModule( pybind::kernel_interface * _kernel, const pybind::module & _module, Eventable * _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -132,7 +132,7 @@ namespace Mengine
             }
             else
             {
-                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>( _doc );
 
                 receiver->initialize( _kernel, py_method );
 
@@ -141,7 +141,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, Eventable * _eventable, const Char * _method, uint32_t _event )
+        void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, Eventable * _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -163,7 +163,7 @@ namespace Mengine
             }
             else
             {
-                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = Helper::makeFactorableUnique<T_Receiver>( _doc );
 
                 receiver->initialize( _kernel, py_method );
 
@@ -172,9 +172,9 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, const EventablePtr & _eventable, const Char * _method, uint32_t _event )
+        void registerPythonEventReceiverMethod( pybind::kernel_interface * _kernel, const pybind::object & _obj, const EventablePtr & _eventable, const Char * _method, uint32_t _event, const DocumentPtr & _doc )
         {
-            registerPythonEventReceiverMethod<T_Receiver>( _kernel, _obj, _eventable.get(), _method, _event );
+            registerPythonEventReceiverMethod<T_Receiver>( _kernel, _obj, _eventable.get(), _method, _event, _doc );
         }
     }
 }

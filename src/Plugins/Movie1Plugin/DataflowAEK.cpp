@@ -33,7 +33,7 @@ namespace Mengine
 
         m_archivator = archivator;
 
-        m_factoryMovieFramePack = Helper::makeFactoryPool<MovieFramePack, 32>();
+        m_factoryMovieFramePack = Helper::makeFactoryPool<MovieFramePack, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

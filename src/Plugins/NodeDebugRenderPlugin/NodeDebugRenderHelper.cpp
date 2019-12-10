@@ -8,7 +8,8 @@ namespace Mengine
 {
     namespace Helper
     {
-        void nodeDebugRenderLine( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const VectorRenderVertex2D & _vertices )
+        //////////////////////////////////////////////////////////////////////////
+        void nodeDebugRenderLine( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const VectorRenderVertex2D & _vertices, const DocumentPtr & _doc )
         {
             const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
                 ->getDebugLineMaterial();
@@ -18,10 +19,10 @@ namespace Mengine
                     , _vertices.data()
                     , (uint32_t)_vertices.size()
                     , nullptr
-                    , true, MENGINE_DOCUMENT_FUNCTION );
+                    , true, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderCircle( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, uint32_t _color )
+        void nodeDebugRenderCircle( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, float _radius, uint32_t _count, uint32_t _color, const DocumentPtr & _doc )
         {
             uint32_t numpoints = _count;
             uint32_t vertexCount = numpoints * 2;
@@ -74,10 +75,10 @@ namespace Mengine
                 }
             }
 
-            Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices );
+            Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
         //////////////////////////////////////////////////////////////////////////
-        void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, uint32_t _color )
+        void nodeDebugRenderPolygon( const RenderPipelineInterfacePtr & _renderPipeline, const RenderContext * _context, const mt::mat4f & _wm, const Polygon & _polygon, uint32_t _color, const DocumentPtr & _doc )
         {
             uint32_t numpoints = _polygon.size();
 
@@ -128,7 +129,7 @@ namespace Mengine
                 }
             }
 
-            Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices );
+            Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, _doc );
         }
     }
 }

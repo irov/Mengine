@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include <string.h>
 
@@ -51,7 +52,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceInterfacePtr ServiceProvider::generateService_( FServiceProviderGenerator _generator )
+    ServiceInterfacePtr ServiceProvider::generateService_( FServiceProviderGenerator _generator, const DocumentPtr & _doc )
     {
         if( _generator == nullptr )
         {
@@ -64,28 +65,34 @@ namespace Mengine
             return nullptr;
         }
 
+        MENGINE_ASSERTION_MEMORY_PANIC( service, nullptr );
+
+#ifdef MENGINE_DEBUG
+        service->setDocument( _doc );
+#endif
+
         return ServiceInterfacePtr::from( service );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::initializeService( FServiceProviderGenerator _generator, bool _safe, const Char * _doc, const Char * _file, uint32_t _line )
+    bool ServiceProvider::createService( FServiceProviderGenerator _generator, bool _safe, const DocumentPtr & _doc )
     {
         if( m_servicesCount == MENGINE_SERVICE_PROVIDER_COUNT )
         {
-            MENGINE_THROW_EXCEPTION_FL( _file, _line )("overflow service count doc '%s'"
-                , _doc
+            MENGINE_THROW_EXCEPTION( "overflow service count doc '%s'"
+                , MENGINE_DOCUMENT_MESSAGE( _doc )
                 );
 
             return false;
         }
 
-        ServiceInterfacePtr service = this->generateService_( _generator );
+        ServiceInterfacePtr service = this->generateService_( _generator, _doc );
 
         if( service == nullptr )
         {
             if( _safe == false )
             {
-                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid generate service doc '%s'"
-                    , _doc
+                MENGINE_THROW_EXCEPTION( "invalid generate service doc '%s'"
+                    , MENGINE_DOCUMENT_MESSAGE( _doc )
                     );
             }
 
@@ -110,9 +117,9 @@ namespace Mengine
         {
             if( _safe == false )
             {
-                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid initialize service '%s' doc '%s'"
+                MENGINE_THROW_EXCEPTION( "invalid initialize service '%s' doc '%s'"
                     , name
-                    , _doc
+                    , MENGINE_DOCUMENT_MESSAGE( _doc )
                     );
             }
 
@@ -150,9 +157,9 @@ namespace Mengine
 
             if( this->checkWaits_( name ) == false )
             {
-                MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid initialize service '%s' doc '%s' (waits)"
+                MENGINE_THROW_EXCEPTION("invalid initialize service '%s' doc '%s' (waits)"
                     , name
-                    , _doc
+                    , MENGINE_DOCUMENT_MESSAGE( _doc )
                     );
 
                 return false;
@@ -163,9 +170,10 @@ namespace Mengine
             return true;
         }
 
-        MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid allocate service name '%s' max count '%d'"
+        MENGINE_THROW_EXCEPTION("invalid allocate service name '%s' max count '%d' (doc %s)"
             , name
             , MENGINE_SERVICE_PROVIDER_COUNT
+            , MENGINE_DOCUMENT_MESSAGE( _doc )
             );
 
         return false;

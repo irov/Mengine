@@ -5,6 +5,7 @@
 #include "Engine/HotSpotEventReceiverInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
@@ -173,7 +174,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( _node, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseLeaveEventReceiver>( MENGINE_DOCUMENT_FUNCTION, _node, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_LEAVE, newreceiver );
 

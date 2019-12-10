@@ -40,10 +40,10 @@ namespace Mengine
             }, [this]()
             {
                 this->checkFileModifies();
-            }, MENGINE_DOCUMENT_FUNCTION );
+            }, MENGINE_DOCUMENT_FACTORABLE );
 
             ThreadMutexInterfacePtr fileModifyMutex = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             m_fileModifyMutex = fileModifyMutex;
 

@@ -38,15 +38,15 @@ namespace Mengine
     bool ResourceService::_initializeService()
     {
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, false );
 
         m_mutex = mutex;
 
-        m_factoryResourceBank = Helper::makeFactoryPool<ResourceBank, 8>();
+        m_factoryResourceBank = Helper::makeFactoryPool<ResourceBank, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
-        ResourceBankPtr globalBank = m_factoryResourceBank->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ResourceBankPtr globalBank = m_factoryResourceBank->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( globalBank, false );
 

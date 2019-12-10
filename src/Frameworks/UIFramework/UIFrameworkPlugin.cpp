@@ -26,7 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool UIFrameworkPlugin::_initializePlugin()
     {
-        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "UIFramework" ), Helper::makeFrameworkFactory<UIFramework>() );
+        VOCABULARY_SET( FrameworkFactoryInterface, STRINGIZE_STRING_LOCAL( "Framework" ), STRINGIZE_STRING_LOCAL( "UIFramework" ), Helper::makeFrameworkFactory<UIFramework>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

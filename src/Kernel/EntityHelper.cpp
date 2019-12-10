@@ -10,13 +10,13 @@ namespace Mengine
 {
     namespace Helper
     {
-        EntityPtr generateEntity( const EntityEventReceiverPtr & _eventReceiver )
+        EntityPtr generateEntity( const EntityEventReceiverPtr & _eventReceiver, const DocumentPtr & _doc )
         {
             EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), _doc );
 
             EntityEventablePtr eventable = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), _doc );
 
             EventationInterface * eventation = eventable->getEventation();
 

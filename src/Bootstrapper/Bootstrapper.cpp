@@ -321,22 +321,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Bootstrapper::createServices_()
     {
-        SERVICE_CREATE( EnumeratorService );
-        SERVICE_CREATE( OptionsService );
-        SERVICE_CREATE( FactoryService );
-        SERVICE_CREATE( SecureService );
-        SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( UnicodeSystem );
-        SERVICE_CREATE( NotificationService );
-        SERVICE_CREATE( StringizeService );
-        SERVICE_CREATE( VocabularyService );
-        SERVICE_CREATE( LoggerService );
-        SERVICE_CREATE( Platform );
-        SERVICE_CREATE( PluginService );
-        SERVICE_CREATE( FileService );
-        SERVICE_CREATE( ConfigService );
-        SERVICE_CREATE( TimelineService );
-        SERVICE_CREATE( TimepipeService );
+        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( SecureService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( StringizeService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
         FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
 
@@ -346,7 +346,7 @@ namespace Mengine
         if( fileGroup->existFile( applicationPath, true ) == true )
         {
             ConfigInterfacePtr applicationConfig = CONFIG_SERVICE()
-                ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
+                ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( applicationConfig, false, "invalid open application settings '%s'"
                 , applicationPath.c_str()
@@ -364,7 +364,7 @@ namespace Mengine
             for( const FilePath & filePath : configsPaths )
             {
                 if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_ERROR( "invalid load config '%s'"
                         , filePath.c_str()
@@ -377,7 +377,7 @@ namespace Mengine
             for( const FilePath & filePath : credentialsPaths )
             {
                 if( CONFIG_SERVICE()
-                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_ERROR( "invalid load credential '%s'"
                         , filePath.c_str()
@@ -394,55 +394,55 @@ namespace Mengine
             );
         }
 
-        SERVICE_CREATE( SettingsService );
+        SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_CREATE( ArchiveService );
+        SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
-        PLUGIN_CREATE( Zip );
-        PLUGIN_CREATE( LZ4 );
+        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FACTORABLE );
+        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_CREATE( ThreadSystem );
-        SERVICE_CREATE( ThreadService );
-        SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( RenderSystem );
+        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( RenderSystem, MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_CREATE_SAFE( SoundSystem );
+        SERVICE_CREATE_SAFE( SoundSystem, MENGINE_DOCUMENT_FACTORABLE );
 
         bool muteMode = HAS_OPTION( "mute" );
 
         if( muteMode == true || SERVICE_EXIST( Mengine::SoundSystemInterface ) == false )
         {
-            SERVICE_CREATE( SilentSoundSystem );
+            SERVICE_CREATE( SilentSoundSystem, MENGINE_DOCUMENT_FACTORABLE );
         }
 
-        SERVICE_CREATE( SoundService );
+        SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
 
-        SERVICE_CREATE( ModuleService );
-        SERVICE_CREATE( FrameworkService );
-        SERVICE_CREATE( CodecService );
-        SERVICE_CREATE( DataService );
-        SERVICE_CREATE( PrefetcherService );
-        SERVICE_CREATE( ConverterService );
-        SERVICE_CREATE( InputService );
-        SERVICE_CREATE( ChronometerService );
-        SERVICE_CREATE( TimeSystem );
-        SERVICE_CREATE( EasingService );
-        SERVICE_CREATE( UpdateService );
-        SERVICE_CREATE( LoaderService );
-        SERVICE_CREATE( RenderService );
-        SERVICE_CREATE( RenderMaterialService );
-        SERVICE_CREATE( RenderTextureService );
-        SERVICE_CREATE( SceneService );
-        SERVICE_CREATE( ResourceService );
-        SERVICE_CREATE( TextService );
-        SERVICE_CREATE( WatchdogService );
-        SERVICE_CREATE( GraveyardService );
-        SERVICE_CREATE( PackageService );
-        SERVICE_CREATE( UserdataService );
-        SERVICE_CREATE( PickerService );
-        SERVICE_CREATE( PlayerService );
-        SERVICE_CREATE( AccountService );
-        SERVICE_CREATE( GameService );
+        SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( FrameworkService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PrefetcherService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( InputService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( ChronometerService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( TimeSystem, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( EasingService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( UpdateService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( RenderService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( RenderMaterialService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( RenderTextureService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( SceneService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( ResourceService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( TextService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( WatchdogService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( GraveyardService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PackageService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( UserdataService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PickerService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( PlayerService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( AccountService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( GameService, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -451,135 +451,135 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "initialize Plugins..." );
 
-#define MENGINE_ADD_PLUGIN( Name, Info )\
+#define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
 		{LOGGER_INFO( Info );\
-		if(	PLUGIN_CREATE(Name) == false ){\
+		if(	PLUGIN_CREATE(Name, Doc) == false ){\
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_MESSAGE( "Successful %s", Info );}}
 
 #ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework..." );
+        MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_PYTHONFRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin Python Framework..." );
+        MENGINE_ADD_PLUGIN( PythonFramework, "initialize Plugin Python Framework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_UIFRAMEWORK_STATIC
-        MENGINE_ADD_PLUGIN( UIFramework, "initialize Plugin UI Framework..." );
+        MENGINE_ADD_PLUGIN( UIFramework, "initialize Plugin UI Framework...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
-        MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
+        MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
-        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
+        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
-        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
+        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert...", MENGINE_DOCUMENT_FACTORABLE );
 #endif        
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
-        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
+        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER_STATIC
-        MENGINE_ADD_PLUGIN( ResourceDebugger, "initialize Plugin Resource Debugger..." );
+        MENGINE_ADD_PLUGIN( ResourceDebugger, "initialize Plugin Resource Debugger...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
-        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
+        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_OZZ_ANIMATION_STATIC
-        MENGINE_ADD_PLUGIN( OzzAnimation, "initialize Plugin OzzAnimation..." );
+        MENGINE_ADD_PLUGIN( OzzAnimation, "initialize Plugin OzzAnimation...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_JSON_STATIC
-        MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON..." );
+        MENGINE_ADD_PLUGIN( JSON, "initialize Plugin JSON...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BOX2D_STATIC
-        MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
+        MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
-        MENGINE_ADD_PLUGIN( Texturepacker, "initialize Plugin Texturepacker..." );
+        MENGINE_ADD_PLUGIN( Texturepacker, "initialize Plugin Texturepacker...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
-        MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
+        MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-        MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
-        MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
-        MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
-        MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
+        MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec...", MENGINE_DOCUMENT_FACTORABLE );
+        MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier...", MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_PLUGIN_WEBP_STATIC
-        MENGINE_ADD_PLUGIN( WebP, "initialize Plugin WebP..." );
+        MENGINE_ADD_PLUGIN( WebP, "initialize Plugin WebP...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_VIDEO_STATIC
-        MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );
+        MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_THEORA_STATIC
-        MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora..." );
+        MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_CURL_STATIC
-        MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL..." );
+        MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_SPINE_STATIC
-        MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
+        MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_MOVIE_STATIC
-        MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
+        MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_MOVIE1_STATIC
-        MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1..." );
+        MENGINE_ADD_PLUGIN( Movie1, "initialize Plugin Movie1...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
-        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin Bitmap Font..." );
+        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin Bitmap Font...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_TTF_STATIC
-        MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
+        MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
-        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );
+        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native..." );
+        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native..." );
+        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native..." );
+        MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
+        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LINKING_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native..." );
+        MENGINE_ADD_PLUGIN( AndroidNativeLinking, "initialize Android Linking Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_LOCAL_NOTIFICATIONS_STATIC
-        MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native..." );
+        MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #	undef MENGINE_ADD_PLUGIN
@@ -595,7 +595,7 @@ namespace Mengine
         for( const String & pluginName : plugins )
         {
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName.c_str() ) == false )
+                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_CRITICAL( "failed to load plugin '%s'"
                     , pluginName.c_str()
@@ -631,7 +631,7 @@ namespace Mengine
             for( const String & pluginName : devPlugins )
             {
                 if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName.c_str() ) == false )
+                    ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_WARNING( "failed to load dev plugin '%s'"
                         , pluginName.c_str()
@@ -647,7 +647,7 @@ namespace Mengine
     {
         LOGGER_MESSAGE( "create Application..." );
 
-        SERVICE_CREATE( Application );
+        SERVICE_CREATE( Application, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -662,7 +662,7 @@ namespace Mengine
         for( const ConstString & name : frameworks )
         {
             if( FRAMEWORK_SERVICE()
-                ->initializeFramework( name, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->initializeFramework( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_CRITICAL( "failed to run framework '%s'"
                     , name.c_str()
@@ -683,7 +683,7 @@ namespace Mengine
         for( const ConstString & name : modules )
         {
             if( MODULE_SERVICE()
-                ->runModule( name, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->runModule( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_CRITICAL( "failed to run module '%s'"
                     , name.c_str()
@@ -727,7 +727,7 @@ namespace Mengine
                 }
 
                 if( MODULE_SERVICE()
-                    ->runModule( name, MENGINE_DOCUMENT_FUNCTION ) == false )
+                    ->runModule( name, MENGINE_DOCUMENT_FACTORABLE ) == false )
                 {
                     LOGGER_ERROR( "failed to run dev module '%s'"
                         , name.c_str()

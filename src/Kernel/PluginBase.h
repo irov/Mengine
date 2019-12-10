@@ -14,7 +14,6 @@ namespace Mengine
 {
     class PluginBase
         : public PluginInterface
-        , public Factorable
     {
     public:
         PluginBase();

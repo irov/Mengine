@@ -29,7 +29,7 @@ namespace Mengine
     bool ModuleService::_initializeService()
     {
         uint32_t timepipe = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_timepipe = timepipe;
 

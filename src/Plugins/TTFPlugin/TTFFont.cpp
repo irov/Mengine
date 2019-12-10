@@ -158,7 +158,7 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            FEDataInterfacePtr data = Helper::getDataflow( m_ttfFEFileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
+            FEDataInterfacePtr data = Helper::getDataflow( m_ttfFEFileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FACTORABLE );
 
             if( data == nullptr )
             {
@@ -189,7 +189,7 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            FEDataInterfacePtr data = Helper::getDataflow( m_ttfFEFileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
+            FEDataInterfacePtr data = Helper::getDataflow( m_ttfFEFileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( data, false );
 
@@ -232,7 +232,7 @@ namespace Mengine
 
         DataflowInterfacePtr dataflowTTF = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
-        TTFDataInterfacePtr data = Helper::getDataflow( m_ttfFileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FUNCTION );
+        TTFDataInterfacePtr data = Helper::getDataflow( m_ttfFileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, false );
 
@@ -709,7 +709,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_ttfFileGroup, m_ttfPath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_ttfFileGroup, m_ttfPath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();

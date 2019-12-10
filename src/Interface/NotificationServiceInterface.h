@@ -181,10 +181,10 @@ namespace Mengine
     ((Mengine::NotificationServiceInterface*)SERVICE_GET(Mengine::NotificationServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method )\
-    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method, MENGINE_DOCUMENT_FUNCTION )
+    NOTIFICATION_SERVICE()->addObserverMethod<ID>( Observer, Method, MENGINE_DOCUMENT_FACTORABLE )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_ADDOBSERVERLAMBDA( ID, Observer, L )\
-    NOTIFICATION_SERVICE()->addObserverLambda<ID>( Observer, L, MENGINE_DOCUMENT_FUNCTION )
+    NOTIFICATION_SERVICE()->addObserverLambda<ID>( Observer, L, MENGINE_DOCUMENT_FACTORABLE )
 //////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )

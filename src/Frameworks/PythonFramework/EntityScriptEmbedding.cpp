@@ -30,11 +30,22 @@ namespace Mengine
     {
     public:
         EntityScriptMethod()
-        {
-            m_factoryEntityPrototypeGenerator = Helper::makeFactoryPool<PythonEntityPrototypeGenerator, 64>();
+        {            
         }
 
         ~EntityScriptMethod() override
+        {
+        }
+
+    public:
+        bool initialize()
+        {
+            m_factoryEntityPrototypeGenerator = Helper::makeFactoryPool<PythonEntityPrototypeGenerator, 64>( MENGINE_DOCUMENT_FACTORABLE );
+
+            return true;
+        }
+
+        void finalize()
         {
             for( const PythonEntityPrototypeGeneratorPtr & generator : m_entityPrototypeGenerators )
             {
@@ -288,7 +299,12 @@ namespace Mengine
             .def_constructor( pybind::init<>() )
             ;
 
-        EntityScriptMethodPtr entityScriptMethod = Helper::makeFactorableUnique<EntityScriptMethod>();
+        EntityScriptMethodPtr entityScriptMethod = Helper::makeFactorableUnique<EntityScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
+
+        if( entityScriptMethod->initialize() == false )
+        {
+            return false;
+        }
 
         pybind::def_functor( _kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
         pybind::def_functor( _kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
@@ -299,9 +315,9 @@ namespace Mengine
 
         m_implement = entityScriptMethod;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<PythonScriptWrapper<Arrow> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), Helper::makeFactorableUnique<PythonScriptWrapper<Entity> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), Helper::makeFactorableUnique<PythonScriptWrapper<Scene> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<PythonScriptWrapper<Arrow> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), Helper::makeFactorableUnique<PythonScriptWrapper<Entity> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), Helper::makeFactorableUnique<PythonScriptWrapper<Scene> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }
@@ -309,6 +325,9 @@ namespace Mengine
     void EntityScriptEmbedding::ejecting( pybind::kernel_interface * _kernel )
     {
         MENGINE_UNUSED( _kernel );
+
+        EntityScriptMethodPtr entityScriptMethod = stdex::intrusive_static_cast<EntityScriptMethodPtr>(m_implement);
+        entityScriptMethod->finalize();
 
         m_implement = nullptr;
 

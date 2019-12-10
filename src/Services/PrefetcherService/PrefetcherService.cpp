@@ -46,7 +46,7 @@ namespace Mengine
         uint32_t PrefetcherServicePacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()
-            ->createTaskQueue( PrefetcherServicePacketSize, MENGINE_DOCUMENT_FUNCTION );
+            ->createTaskQueue( PrefetcherServicePacketSize, MENGINE_DOCUMENT_FACTORABLE );
 
         for( uint32_t index = 0; index != PrefetcherServiceThreadCount; ++index )
         {
@@ -55,17 +55,17 @@ namespace Mengine
             ConstString threadName = Helper::stringizeString( ss.str() );
 
             THREAD_SERVICE()
-                ->createThread( threadName, MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FUNCTION );
+                ->createThread( threadName, MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
             m_threads.emplace_back( threadName );
 
             m_threadQueue->addThread( threadName );
         }
 
-        m_factoryThreadTaskPrefetchImageDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
-        m_factoryThreadTaskPrefetchSoundDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
-        m_factoryThreadTaskPrefetchDataflow = Helper::makeFactoryPool<ThreadTaskPrefetchDataflow, 16>();
-        m_factoryThreadTaskPrefetchStream = Helper::makeFactoryPool<ThreadTaskPrefetchStream, 16>();
+        m_factoryThreadTaskPrefetchImageDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchImageDecoder, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchSoundDecoder = Helper::makeFactoryPool<ThreadTaskPrefetchSoundDecoder, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchDataflow = Helper::makeFactoryPool<ThreadTaskPrefetchDataflow, 16>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryThreadTaskPrefetchStream = Helper::makeFactoryPool<ThreadTaskPrefetchStream, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -143,7 +143,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -216,7 +216,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -294,7 +294,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
@@ -395,7 +395,7 @@ namespace Mengine
 
         new_receiver.refcount = 1;
 
-        ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 

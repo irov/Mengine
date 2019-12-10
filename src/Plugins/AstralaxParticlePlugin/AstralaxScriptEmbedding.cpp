@@ -7,6 +7,8 @@
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "ResourceAstralax.h"
 #include "AstralaxEmitter.h"
 
@@ -29,7 +31,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -73,10 +75,10 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceAstralax>>( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceAstralax>>( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), Helper::makeFactorableUnique<PythonScriptWrapper<AstralaxEmitter>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceAstralax>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceAstralax>>( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }

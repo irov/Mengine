@@ -69,7 +69,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactoryPtr PythonEntityPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = Helper::makeFactoryPool<PythonEntityBehavior, 128>();
+        FactoryPtr factory = Helper::makeFactoryPool<PythonEntityBehavior, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         return factory;
     }

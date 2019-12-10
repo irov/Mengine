@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FactoryPtr TTFPrototypeGenerator::_initializeFactory()
     {
-        FactoryPtr factory = Helper::makeFactoryPool<TTFFont, 8>();
+        FactoryPtr factory = Helper::makeFactoryPool<TTFFont, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return factory;
     }

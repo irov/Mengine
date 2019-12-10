@@ -91,7 +91,7 @@ namespace Mengine
 
         EventationInterface * eventation = m_button->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskButtonClickEventReceiver>( lambda );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskButtonClickEventReceiver>( MENGINE_DOCUMENT_FUNCTION, lambda );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_BUTTON_MOUSE_BUTTON, newreceiver );
 

@@ -1,6 +1,7 @@
 #include "TaskTransformationRotateY.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "math/angle.h"
 
@@ -99,7 +100,7 @@ namespace Mengine
         float correct_rotate_to;
         mt::angle_correct_interpolate_from_to( orientationY, m_to, correct_rotate_from, correct_rotate_to );
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationRotateYAffector>( _node, m_transformation, correct_rotate_from, correct_rotate_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationRotateYAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, correct_rotate_from, correct_rotate_to, m_speed );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

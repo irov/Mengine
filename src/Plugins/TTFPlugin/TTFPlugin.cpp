@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( TTFAtlasService );
+        SERVICE_CREATE( TTFAtlasService, MENGINE_DOCUMENT_FACTORABLE );
 
         FT_Library ftlibrary;
         FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
@@ -69,7 +69,7 @@ namespace Mengine
             return false;
         }
 
-        TTFPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFPrototypeGenerator>();
+        TTFPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<TTFPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         generator->setFTLibrary( ftlibrary );
 
@@ -82,11 +82,11 @@ namespace Mengine
         m_ftlibrary = ftlibrary;
 
         m_ftMutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         SERVICE_WAIT( DataServiceInterface, [this]()
         {
-            TTFDataflowPtr dataflowTTF = Helper::makeFactorableUnique<TTFDataflow>();
+            TTFDataflowPtr dataflowTTF = Helper::makeFactorableUnique<TTFDataflow>( MENGINE_DOCUMENT_FACTORABLE );
 
             dataflowTTF->setFTLibrary( m_ftlibrary );
 
@@ -99,7 +99,7 @@ namespace Mengine
 
             VOCABULARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF );
 
-            FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>();
+            FEDataflowPtr dataflowFE = Helper::makeFactorableUnique<FEDataflow>( MENGINE_DOCUMENT_FACTORABLE );
 
             if( dataflowFE->initialize() == false )
             {

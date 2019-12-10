@@ -5,6 +5,8 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "ResourcePrefetcherServiceInterface.h"
 
 #include "Kernel/Logger.h"
@@ -103,7 +105,7 @@ namespace Mengine
                 , _groupName.c_str()
             );
 
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( _groupName, _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, _groupName, _cb, _args );
 
             RESOURCE_SERVICE()
                 ->foreachGroupResources( _groupName, [&observer]( const ResourcePtr & _resource )
@@ -133,7 +135,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( ConstString::none(), _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
             TEXT_SERVICE()
                 ->foreachFonts( [&observer]( const TextFontInterfacePtr & _textFont )
@@ -148,7 +150,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_prefetchScripts( const pybind::object & _cb, const pybind::args & _args )
         {
-            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( ConstString::none(), _cb, _args );
+            PyPrefetcherObserverPtr observer = Helper::makeFactorableUnique<PyPrefetcherObserver>( MENGINE_DOCUMENT_PYBIND, ConstString::none(), _cb, _args );
 
             SCRIPT_SERVICE()
                 ->prefetchModules( observer );

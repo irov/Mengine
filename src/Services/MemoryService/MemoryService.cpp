@@ -28,18 +28,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryService::_initializeService()
     {
-        ThreadMutexInterfacePtr memoryCacheMutex = Helper::makeFactorableUnique<ThreadMutexDummy>();
+        ThreadMutexInterfacePtr memoryCacheMutex = Helper::makeFactorableUnique<ThreadMutexDummy>( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex, false );
 
         m_memoryCacheMutex = memoryCacheMutex;
 
-        m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
-        m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
-        m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16, FactoryWithMutex>();
-        m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16, FactoryWithMutex>();
-        m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>();
-        m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>();
+        m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_factoryMemoryBuffer->setMutex( m_memoryCacheMutex );
         m_factoryMemoryProxy->setMutex( m_memoryCacheMutex );
@@ -51,14 +51,14 @@ namespace Mengine
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
             ThreadMutexInterfacePtr memoryCacheMutex = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex, false );
 
             m_memoryCacheMutex = memoryCacheMutex;
 
             ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memoryFactoryMutex, false );
 

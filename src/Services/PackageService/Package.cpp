@@ -692,7 +692,7 @@ namespace Mengine
     bool Package::loadData_( const ConstString & _name, const FilePath & _filePath )
     {
         bool successful = USERDATA_SERVICE()
-            ->addUserdata( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->addUserdata( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
@@ -708,7 +708,7 @@ namespace Mengine
     bool Package::loadSetting_( const ConstString & _name, const FilePath & _filePath )
     {
         bool successful = SETTINGS_SERVICE()
-            ->loadSetting( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadSetting( _name, m_fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         return successful;
     }
@@ -1094,7 +1094,7 @@ namespace Mengine
             meta_FragmentShader.get_File_Compile( &isCompile );
 
             RenderFragmentShaderInterfacePtr shader = RENDERMATERIAL_SERVICE()
-                ->createFragmentShader( name, _fileGroup, filePath, fileConverterType, isCompile, MENGINE_DOCUMENT_FUNCTION );
+                ->createFragmentShader( name, _fileGroup, filePath, fileConverterType, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' fragment shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
@@ -1129,7 +1129,7 @@ namespace Mengine
             meta_VertexShader.get_File_Compile( &isCompile );
 
             RenderVertexShaderInterfacePtr shader = RENDERMATERIAL_SERVICE()
-                ->createVertexShader( name, _fileGroup, filePath, fileConverter, isCompile, MENGINE_DOCUMENT_FUNCTION );
+                ->createVertexShader( name, _fileGroup, filePath, fileConverter, isCompile, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( shader, false, "material '%s:%s' invalid load '%s' vertex shader '%s' compile %d"
                 , _fileGroup->getName().c_str()
@@ -1158,7 +1158,7 @@ namespace Mengine
             const ConstString & name = meta_VertexAttribute.get_Name();
 
             RenderVertexAttributeInterfacePtr vertexAttribute = RENDERMATERIAL_SERVICE()
-                ->createVertexAttribute( name, elementSize, MENGINE_DOCUMENT_FUNCTION );
+                ->createVertexAttribute( name, elementSize, MENGINE_DOCUMENT_FACTORABLE );
 
             const Metacode::Meta_Data::Meta_DataBlock::Meta_VertexAttribute::VectorMeta_Attribute & includes_Attributes = meta_VertexAttribute.get_Includes_Attribute();
 
@@ -1226,7 +1226,7 @@ namespace Mengine
             );
 
             RenderProgramInterfacePtr program = RENDERMATERIAL_SERVICE()
-                ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount, MENGINE_DOCUMENT_FUNCTION );
+                ->createProgram( name, vertexShader, fragmentShader, vertexAttribute, samplerCount, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( program, false, "material '%s:%s' invalid create program vertex '%s' fragment '%s'"
                 , _fileGroup->getName().c_str()
@@ -1316,13 +1316,13 @@ namespace Mengine
             if( is_debug == true )
             {
                 const RenderMaterialInterfacePtr & debugLineMaterial = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( name, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
+                    ->getMaterial( name, PT_LINELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 RENDERMATERIAL_SERVICE()
                     ->setDebugLineMaterial( debugLineMaterial );
 
                 const RenderMaterialInterfacePtr & debugTriangleMaterial = RENDERMATERIAL_SERVICE()
-                    ->getMaterial( name, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION );
+                    ->getMaterial( name, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
 
                 RENDERMATERIAL_SERVICE()
                     ->setDebugTriangleMaterial( debugTriangleMaterial );

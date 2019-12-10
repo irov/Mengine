@@ -1,6 +1,7 @@
 #include "TaskDelay.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 
 #include "GOAP/NodeInterface.h"
@@ -66,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskDelay::_onRun( GOAP::NodeInterface * _node )
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( this, _node );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskDelay::ScheduleEvent>( MENGINE_DOCUMENT_FUNCTION, this, _node );
 
         uint32_t id = m_scheduler->event( m_time, ev );
 

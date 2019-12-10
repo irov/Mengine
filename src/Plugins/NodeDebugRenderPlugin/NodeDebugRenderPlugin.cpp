@@ -30,28 +30,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebugRenderPlugin::_initializePlugin()
     {
-        if( SERVICE_CREATE_SAFE( NodeDebugRenderService ) == false )
+        if( SERVICE_CREATE_SAFE( NodeDebugRenderService, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return true;
         }
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ), Helper::makeFactorableUnique<ArrowDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), Helper::makeFactorableUnique<PointDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Point" ), Helper::makeFactorableUnique<PointDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), Helper::makeFactorableUnique<HotSpotCircleDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotCircle" ), Helper::makeFactorableUnique<HotSpotCircleDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotImage" ), Helper::makeFactorableUnique<HotSpotImageDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotImage" ), Helper::makeFactorableUnique<HotSpotImageDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NODEDEBUGRENDER_SERVICE()
-            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebugRender>() );
+            ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebugRender>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

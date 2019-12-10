@@ -55,9 +55,9 @@ namespace Mengine
         m_supportNonPow2 = RENDER_SYSTEM()
             ->supportTextureNonPow2();
 
-        m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_ );
+        m_factoryRenderTexture = Helper::makeFactoryPoolWithListener<RenderTexture, 128>( this, &RenderTextureService::onRenderTextureDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
-        m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>();
+        m_factoryDecoderRenderImageProvider = Helper::makeFactoryPool<DecoderRenderImageProvider, 128>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t TextureHashTableSize = CONFIG_VALUE( "Engine", "TextureHashTableSize", 1024 * 8 );
 
@@ -183,7 +183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecType, const FilePath & _filePath )
     {
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't create file '%s' '%s'"
             , _fileGroup->getName().c_str()
@@ -191,7 +191,7 @@ namespace Mengine
         );
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createEncoderT<ImageEncoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageEncoder, false, "can't create encoder for file '%s'"
             , _filePath.c_str()

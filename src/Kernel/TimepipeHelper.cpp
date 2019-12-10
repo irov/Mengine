@@ -32,12 +32,12 @@ namespace Mengine
             };
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t addTimepipe( const LambdaTimepipe & _lambda )
+        uint32_t addTimepipe( const LambdaTimepipe & _lambda, const DocumentPtr & _doc )
         {
-            TimepipeInterfacePtr timepipe = Helper::makeFactorableUnique<Detail::MyTimepipe>( _lambda );
+            TimepipeInterfacePtr timepipe = Helper::makeFactorableUnique<Detail::MyTimepipe>( _doc, _lambda );
 
             uint32_t id = TIMEPIPE_SERVICE()
-                ->addTimepipe( timepipe );
+                ->addTimepipe( timepipe, _doc );
 
             return id;
         }

@@ -77,4 +77,6 @@ namespace Mengine
 #define CODEC_SERVICE()\
     ((Mengine::CodecServiceInterface *)SERVICE_GET(Mengine::CodecServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-
+#define CODEC_REGISTER_EXT(EXT, TYPE)\
+    CODEC_SERVICE()->registerCodecExt( EXT, TYPE )
+//////////////////////////////////////////////////////////////////////////

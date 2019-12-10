@@ -48,7 +48,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _sampler );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _sampler, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _sampler, py_kwds );
 
@@ -104,12 +104,11 @@ namespace Mengine
             .def( "getOzzAnimationSampler", &NodeOzzAnimation::getOzzAnimationSampler )
             ;        
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzAnimation> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzMesh> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzSkeleton> >( _kernel ) );
-
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<SamplerOzzAnimation> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeOzzAnimation> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzAnimation> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzMesh" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzMesh> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceOzzSkeleton" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceOzzSkeleton> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SamplerOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<SamplerOzzAnimation> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "NodeOzzAnimation" ), Helper::makeFactorableUnique<PythonScriptWrapper<NodeOzzAnimation> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }

@@ -212,14 +212,14 @@ namespace Mengine
             return false;
         }
 
-        Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
-        Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
+        Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
         const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
-        strcpy( m_companyName, companyName );
-        strcpy( m_projectName, projectName );
+        ::strcpy( m_companyName, companyName );
+        ::strcpy( m_projectName, projectName );
 
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
@@ -332,7 +332,7 @@ namespace Mengine
         ConstString EngineRenderPipeline = CONFIG_VALUE( "Engine", "RenderPipeline", STRINGIZE_STRING_LOCAL( "Batch" ) );
 
         RenderPipelineInterfacePtr renderPipeline = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), EngineRenderPipeline, MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), EngineRenderPipeline, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( renderPipeline, false );
 
@@ -387,13 +387,13 @@ namespace Mengine
         LOGGER_MESSAGE( "Register Base Generator..." );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "EntityEventable" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<EntityEventable, 128>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), Helper::makeDefaultPrototypeGenerator<MT19937Randomizer, 8>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
@@ -418,7 +418,7 @@ namespace Mengine
 
 #define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<NodePrototypeGenerator<Type, 128> >() ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<NodePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
 		{\
 			return false;\
 		}        
@@ -461,7 +461,7 @@ namespace Mengine
 
 #define SURFACE_FACTORY(Type)\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, 128>>() ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
 		{\
 			return false;\
 	    }
@@ -538,7 +538,7 @@ namespace Mengine
     {
         LOGGER_INFO( "Register Entity Generator..." );
 
-        EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>();
+        EntityPrototypeGeneratorPtr generator = Helper::makeFactorableUnique<EntityPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Entity" ), ConstString::none(), generator ) == false )
@@ -553,7 +553,7 @@ namespace Mengine
     {
         LOGGER_INFO( "Register Scene Generator..." );
 
-        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>();
+        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ScenePrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), generator ) == false )
@@ -584,7 +584,7 @@ namespace Mengine
     {
         LOGGER_INFO( "Register Arrow Generator..." );
 
-        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>();
+        PrototypeGeneratorInterfacePtr generator = Helper::makeFactorableUnique<ArrowPrototypeGenerator>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), ConstString::none(), generator ) == false )
@@ -608,11 +608,11 @@ namespace Mengine
         LOGGER_INFO( "Register Resource Type..." );
 
 #define ADD_PROTOTYPE( Type )\
-		if( PROTOTYPE_SERVICE()\
-			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>() ) == false )\
-		{\
-			return false;\
-		}
+        if( PROTOTYPE_SERVICE()\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<ResourcePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
+        {\
+            return false;\
+        }
 
         ADD_PROTOTYPE( ResourceMusic );
         ADD_PROTOTYPE( ResourceImageSequence );
@@ -731,7 +731,7 @@ namespace Mengine
         for( const FilePath & packagePath : _packagesPaths )
         {
             if( PACKAGE_SERVICE()
-                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->loadPackages( _fileGroup, packagePath, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_CRITICAL( "invalid load package '%s'"
                     , packagePath.c_str()
@@ -762,7 +762,7 @@ namespace Mengine
         for( const FilePath & settingPath : _settingsPaths )
         {
             if( SETTINGS_SERVICE()
-                ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FUNCTION ) == false )
+                ->loadSettings( _fileGroup, settingPath, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_CRITICAL( "invalid load setting '%s'"
                     , settingPath.c_str()
@@ -808,7 +808,7 @@ namespace Mengine
                 processDumpPath += "_";
 
                 DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                    ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+                    ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
                 PlatformDateTime dateTime;
                 dateTimeProvider->getLocalDateTime( &dateTime );
@@ -884,7 +884,13 @@ namespace Mengine
                 }
             }
 
-            if( _event.code == KC_F5 && _event.isDown == true )
+            if( _event.code == KC_F5 && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
+            {
+                SCENE_SERVICE()
+                    ->removeCurrentScene( false, nullptr );
+            }
+
+            if( _event.code == KC_F5 && _event.isDown == true && INPUT_SERVICE()->isControlDown() == false )
             {
                 SCENE_SERVICE()
                     ->restartCurrentScene( false, nullptr );

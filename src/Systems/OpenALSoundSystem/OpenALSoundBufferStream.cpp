@@ -31,7 +31,7 @@ namespace Mengine
     bool OpenALSoundBufferStream::_acquire()
     {
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutexUpdating, false );
 

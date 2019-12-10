@@ -4,6 +4,8 @@
 #include "Interface/PluginInterface.h"
 #include "Interface/DynamicLibraryInterface.h"
 
+#include "Kernel/Document.h"
+
 #include "Config/Export.h"
 
 namespace Mengine
@@ -14,8 +16,8 @@ namespace Mengine
         SERVICE_DECLARE( "PluginService" )
 
     public:
-        virtual bool loadPlugin( const Char * _dynamicLibraryName ) = 0;
-        virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic ) = 0;
+        virtual bool loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) = 0;
+        virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentPtr & _doc ) = 0;
         virtual void unloadPlugins() = 0;
 
     public:
@@ -29,6 +31,6 @@ namespace Mengine
 #define PLUGIN_SERVICE()\
     ((Mengine::PluginServiceInterface*)SERVICE_GET(Mengine::PluginServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-#define PLUGIN_CREATE(Name)\
-	PLUGIN_SERVICE()->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false )
+#define PLUGIN_CREATE(Name, Doc)\
+	PLUGIN_SERVICE()->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false, Doc )
 //////////////////////////////////////////////////////////////////////////

@@ -87,7 +87,7 @@ namespace Mengine
 
         jpp::set_alloc_funcs( &Detail::my_jpp_malloc, &Detail::my_jpp_free );
 
-        m_factoryJSONStorage = Helper::makeFactoryPool<JSONStorage, 16>();
+        m_factoryJSONStorage = Helper::makeFactoryPool<JSONStorage, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

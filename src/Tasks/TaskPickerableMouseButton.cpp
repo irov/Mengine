@@ -5,6 +5,7 @@
 #include "Engine/HotSpotEventReceiverInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Assertion.h"
 
@@ -198,7 +199,7 @@ namespace Mengine
 
         EventationInterface * eventation = eventable->getEventation();
 
-        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( _node, m_code, m_isDown, m_isPressed, m_filter );
+        EventReceiverInterfacePtr newreceiver = Helper::makeFactorableUnique<Detail::TaskPickerableMouseButtonEventReceiver>( MENGINE_DOCUMENT_FUNCTION, _node, m_code, m_isDown, m_isPressed, m_filter );
 
         EventReceiverInterfacePtr oldreceiver = eventation->addEventReceiver( EVENT_HOTSPOT_MOUSE_BUTTON, newreceiver );
 

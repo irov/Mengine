@@ -71,7 +71,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _event );
             this->toggleDebugText_();
-        }, MENGINE_DOCUMENT_FUNCTION );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
         m_timerFPS = PLATFORM_SERVICE()
             ->addTimer( 1000.f, [this]()
@@ -83,7 +83,7 @@ namespace Mengine
 
             RENDER_SERVICE()
                 ->resetFrameCount();
-        }, MENGINE_DOCUMENT_FUNCTION );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -361,7 +361,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<CompileResourceVisitor> CompileResourceVisitorPtr;
 
-                CompileResourceVisitorPtr crv = Helper::makeFactorableUnique<CompileResourceVisitor>();
+                CompileResourceVisitorPtr crv = Helper::makeFactorableUnique<CompileResourceVisitor>( MENGINE_DOCUMENT_FACTORABLE );
 
                 RESOURCE_SERVICE()
                     ->visitResources( crv );
@@ -402,7 +402,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<CompleteThreadTaskVisitor> CompleteThreadTaskVisitorPtr;
 
-                CompleteThreadTaskVisitorPtr cttv = Helper::makeFactorableUnique<CompleteThreadTaskVisitor>();
+                CompleteThreadTaskVisitorPtr cttv = Helper::makeFactorableUnique<CompleteThreadTaskVisitor>( MENGINE_DOCUMENT_FACTORABLE );
 
                 PREFETCHER_SERVICE()
                     ->visitPrefetches( cttv );
@@ -571,7 +571,7 @@ namespace Mengine
 
                 typedef IntrusivePtr<MyVisitorFactoryService> MyVisitorFactoryServicePtr;
 
-                MyVisitorFactoryServicePtr mvcts = Helper::makeFactorableUnique<MyVisitorFactoryService>();
+                MyVisitorFactoryServicePtr mvcts = Helper::makeFactorableUnique<MyVisitorFactoryService>( MENGINE_DOCUMENT_FACTORABLE );
                 FACTORY_SERVICE()
                     ->visitFactories( mvcts );
 
@@ -652,7 +652,7 @@ namespace Mengine
 
             //m_debugText->render( _context );
 
-            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FUNCTION, "%s"
+            Helper::drawTextDebug( _renderPipeline, _context, { 100.f, 100.f }, STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ), Color( 1.f, 0.f, 0.f, 1.f ), MENGINE_DOCUMENT_FACTORABLE, "%s"
                 , text.c_str()
             );
         }

@@ -59,7 +59,7 @@ namespace Mengine
         virtual bool hasTouchpad() const = 0;
 
     public:
-        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) = 0;
+        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool getDesktopResolution( Resolution & _resolution ) const = 0;

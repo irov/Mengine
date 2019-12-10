@@ -45,7 +45,7 @@ namespace Mengine
         m_world->SetContactListener( this );
 
         uint32_t timepipeId = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         if( timepipeId == 0 )
         {

@@ -29,12 +29,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( cURLService );
+        SERVICE_CREATE( cURLService, MENGINE_DOCUMENT_FACTORABLE );
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, []()
+        NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING, this, [this]()
         {
-            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>() );
+            ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "cURLScriptEmbedding" ), Helper::makeFactorableUnique<cURLScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
         } );
 
         NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EJECTING, this, []()

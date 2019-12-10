@@ -44,8 +44,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::_initializeService()
     {
-        m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>();
-        m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>();
+        m_factoryTextEntry = Helper::makeFactoryPool<TextEntry, 128>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryTextLocalePackage = Helper::makeFactoryPool<TextLocalePackage, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t TextServiceReserveTexts = CONFIG_VALUE( "Engine", "TextServiceReserveTexts", 1024U );
         uint32_t TextServiceReserveFonts = CONFIG_VALUE( "Engine", "TextServiceReserveFonts", 64U );
@@ -89,10 +89,11 @@ namespace Mengine
     class TextService::TextManagerLoadSaxCallback
     {
     public:
-        TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
+        TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc )
             : m_textManager( _textManager )
             , m_fileGroup( _fileGroup )
             , m_filePath( _filePath )
+            , m_doc( _doc )
         {
         }
 
@@ -380,7 +381,7 @@ namespace Mengine
                 );
             }
 
-            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride ) == false )
+            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, m_doc ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
                     , m_fileGroup->getName().c_str()
@@ -395,11 +396,13 @@ namespace Mengine
 
         const FileGroupInterfacePtr & m_fileGroup;
         const FilePath & m_filePath;
+
+        DocumentPtr m_doc;
     };
     //////////////////////////////////////////////////////////////////////////
     bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( package->initialize( _fileGroup, _filePath ) == false )
         {
@@ -417,7 +420,7 @@ namespace Mengine
 
         Char * xml_buff = xml_memory->getBuffer();
 
-        TextManagerLoadSaxCallback tmsc( this, _fileGroup, _filePath );
+        TextManagerLoadSaxCallback tmsc( this, _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         xmlsax_callbacks_t callbacks;
         callbacks.begin_node = nullptr;
@@ -500,7 +503,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextLocalePackagePtr package = m_factoryTextLocalePackage->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( package->initialize( _fileGroup, _filePath ) == false )
         {
@@ -589,7 +592,7 @@ namespace Mengine
     bool TextService::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
             , _filePath.c_str()
@@ -622,7 +625,7 @@ namespace Mengine
             config->hasValue( fontName.c_str(), "Type", &fontType );
 
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid create '%s:%s' font '%s' not found type '%s'"
                 , _fileGroup->getName().c_str()
@@ -696,7 +699,7 @@ namespace Mengine
     bool TextService::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( _fileGroup, _filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid load settings '%s'"
             , _filePath.c_str()
@@ -752,7 +755,8 @@ namespace Mengine
         , ETextVerticalAlign _verticalAlign
         , float _scale
         , uint32_t _params
-        , bool _isOverride )
+        , bool _isOverride
+        , const DocumentPtr & _doc )
     {
         const TextEntryPtr & textEntry_has = m_texts.find( _key );
 
@@ -776,7 +780,7 @@ namespace Mengine
             return true;
         }
 
-        TextEntryPtr textEntry = m_factoryTextEntry->createObject( MENGINE_DOCUMENT_FUNCTION );
+        TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
 
         if( textEntry->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
         {

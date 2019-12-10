@@ -108,9 +108,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button )
+        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button, const DocumentPtr & _doc )
         {
-            RouterButtonEventReceiverPtr router = Helper::makeFactorableUnique<RouterButtonEventReceiver>();
+            RouterButtonEventReceiverPtr router = Helper::makeFactorableUnique<RouterButtonEventReceiver>( _doc );
 
             EventationInterface * eventation = _button->getEventation();
 

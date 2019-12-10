@@ -33,7 +33,7 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_ENGINE_TEXTURE_DESTROY, this, &GraveyardService::onEngineTextureDestroy );
 
         uint32_t timepipe = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_timepipe = timepipe;
 

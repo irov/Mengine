@@ -1,6 +1,7 @@
 #include "TaskTransformationTranslate.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "GOAP/NodeInterface.h"
 
@@ -95,7 +96,7 @@ namespace Mengine
 
         mt::vec3f deltha = dir * m_speed;
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( _node, m_transformation, deltha, m_to, m_speed );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, deltha, m_to, m_speed );
 
         AFFECTOR_ID id = m_affectorable->addAffector( affector );
 

@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
     {
-        MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( compress_buffer, false, "invalid compress buffer %d"
             , _size
@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
     {
-        MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( uncompress_buffer, nullptr, "invalid cache buffer" );
 
@@ -64,11 +64,11 @@ namespace Mengine
         size_t compressSize2 = _archivator->compressBound( _size );
 
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryInput( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        void * memory_buffer = memory->newBuffer( compressSize2, MENGINE_DOCUMENT_FUNCTION );
+        void * memory_buffer = memory->newBuffer( compressSize2, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr, "invalid new memory size '%d'"
             , compressSize2
@@ -83,7 +83,7 @@ namespace Mengine
             return nullptr;
         }
 
-        void * new_memory = memory->newBuffer( compressSize, MENGINE_DOCUMENT_FUNCTION );
+        void * new_memory = memory->newBuffer( compressSize, MENGINE_DOCUMENT_FACTORABLE );
         MENGINE_UNUSED( new_memory );
 
         MENGINE_ASSERTION_MEMORY_PANIC( new_memory, nullptr, "invalid new memory '%d'"

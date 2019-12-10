@@ -29,11 +29,11 @@ namespace Mengine
     {
         LOGGER_INFO( "Initializing Astralax Particle System..." );
 
-        SERVICE_CREATE( AstralaxService );
-        SERVICE_CREATE( AstralaxSystem );
+        SERVICE_CREATE( AstralaxService, MENGINE_DOCUMENT_FACTORABLE );
+        SERVICE_CREATE( AstralaxSystem, MENGINE_DOCUMENT_FACTORABLE );
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
-            , Helper::makeModuleFactory<AstralaxParticleModule>() );
+            , Helper::makeModuleFactory<AstralaxParticleModule>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

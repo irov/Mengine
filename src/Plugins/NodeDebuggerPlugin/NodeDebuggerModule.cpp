@@ -62,8 +62,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::_initializeModule()
     {
-        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
-        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>() );
+        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), Helper::makeFactorableUnique<HotSpotPolygonDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), Helper::makeFactorableUnique<TextFieldDebuggerBoundingBox>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
@@ -74,7 +74,7 @@ namespace Mengine
             uint32_t exitCode;
             PLATFORM_SERVICE()
                 ->createProcess( "NodeDebugger.exe", "127.0.0.1:18790", false, &exitCode );
-        }, MENGINE_DOCUMENT_FUNCTION );
+        }, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -475,7 +475,7 @@ namespace Mengine
                 , vertices.data(), vertices.size()
                 , indices.data(), indices.size()
                 , &bbox
-                , false, MENGINE_DOCUMENT_FUNCTION );
+                , false, MENGINE_DOCUMENT_FACTORABLE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::privateInit()
@@ -483,16 +483,16 @@ namespace Mengine
         m_shouldRecreateServer = true;
 
         m_threadJob = THREAD_SERVICE()
-            ->createJob( 50u, MENGINE_DOCUMENT_FUNCTION );
+            ->createJob( 50u, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FUNCTION );
+            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), MENGINE_THREAD_PRIORITY_BELOW_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob );
 
         m_dataMutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
         m_workerId = m_threadJob->addWorker( ThreadWorkerInterfacePtr( this ) );
 
@@ -508,7 +508,7 @@ namespace Mengine
     void NodeDebuggerModule::recreateServer()
     {
         m_socket = SOCKET_SYSTEM()
-            ->createSocket( MENGINE_DOCUMENT_FUNCTION );
+            ->createSocket( MENGINE_DOCUMENT_FACTORABLE );
 
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
         m_socket->bind( sci, false );

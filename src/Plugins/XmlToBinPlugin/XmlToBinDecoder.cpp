@@ -141,7 +141,7 @@ namespace Mengine
             , m_options.pathBin.c_str()
         );
 
-        InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathProtocol, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr protocol_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathProtocol, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( protocol_stream, 0, "error open protocol '%s'"
             , m_options.pathProtocol.c_str()
@@ -150,11 +150,11 @@ namespace Mengine
         size_t protocol_size = protocol_stream->size();
 
         MemoryBufferInterfacePtr memory_protocol = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol, 0, "invalid create memory for protocol" );
 
-        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, MENGINE_DOCUMENT_FUNCTION );
+        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol_buffer, 0, "invalid new memory buffer '%u'"
             , protocol_size
@@ -207,7 +207,7 @@ namespace Mengine
 
         memory_protocol = nullptr;
 
-        InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathXml, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr xml_stream = Helper::openInputStreamFile( m_fileGroupDev, m_options.pathXml, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( xml_stream, 0, "error open xml '%s'"
             , m_options.pathXml.c_str()
@@ -225,11 +225,11 @@ namespace Mengine
         }
 
         MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid create memory for xml" );
 
-        void * memory_xml_buffer = memory_xml->newBuffer( xml_size, MENGINE_DOCUMENT_FUNCTION );
+        void * memory_xml_buffer = memory_xml->newBuffer( xml_size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid new memory buffer '%u'"
             , xml_size
@@ -260,11 +260,11 @@ namespace Mengine
         xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void *)nullptr );
 
         MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_header, 0, "invalid create memory for bin" );
 
-        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, MENGINE_DOCUMENT_FUNCTION );
+        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_header_buffer, 0, "invalid new memory buffer '%u'"
             , Metacode::header_size
@@ -285,11 +285,11 @@ namespace Mengine
         }
 
         MemoryBufferInterfacePtr memory_bin = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_bin, 0, "invalid create memory for bin" );
 
-        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, MENGINE_DOCUMENT_FUNCTION );
+        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_bin_buffer, 0, "invalid new memory buffer '%u'"
             , xml_size * 2
@@ -313,7 +313,7 @@ namespace Mengine
             , m_options.pathXml.c_str()
         );
 
-        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr bin_stream = Helper::openOutputStreamFile( m_fileGroupDev, m_options.pathBin, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( bin_stream, 0, "error create bin '%s'"
             , m_options.pathBin.c_str()

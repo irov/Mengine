@@ -20,7 +20,7 @@ namespace Mengine
     protected:
         bool initialize() override
         {
-            m_factory = Helper::makeFactoryPool<T, 8>();
+            m_factory = Helper::makeFactoryPool<T, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
             return true;
         }
@@ -50,9 +50,9 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type )
+        MENGINE_INLINE ConverterFactoryInterfacePtr registerConverter( const Char * _type, const DocumentPtr & _doc )
         {
-            ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T> >();
+            ConverterFactoryInterfacePtr converter = Helper::makeFactorableUnique<ConverterFactory<T> >( _doc );
 
             if( converter->initialize() == false )
             {

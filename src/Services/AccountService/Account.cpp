@@ -177,7 +177,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FACTORABLE );
 
         if( config == nullptr )
         {
@@ -261,7 +261,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::save()
     {
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, m_settingsPath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Account '%s' settings not saved '%s'"
             , m_id.c_str()
@@ -324,7 +324,7 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullpath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( m_fileGroup, fullpath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
             , m_id.c_str()
@@ -343,7 +343,7 @@ namespace Mengine
 
         FilePath fullpath = Helper::stringizeFilePath( path );
 
-        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullpath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr stream = Helper::openOutputStreamFile( m_fileGroup, fullpath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, nullptr, "account '%s' invalid open file '%s'"
             , m_id.c_str()
@@ -362,7 +362,7 @@ namespace Mengine
             , _filepath.c_str()
         );
 
-        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( binaryBuffer, nullptr, "account '%s' invalid load stream archive '%s'"
             , m_id.c_str()

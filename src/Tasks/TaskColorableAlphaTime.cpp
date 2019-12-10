@@ -1,6 +1,7 @@
 #include "TaskColorableAlphaTime.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Assertion.h"
 
 #include "GOAP/Node.h"
@@ -114,7 +115,7 @@ namespace Mengine
     {
         float alpha = m_colorable->getLocalAlpha();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( _node, m_colorable, alpha, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskColorableAlphaTimeAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_colorable, alpha, m_to, m_time );
 
         affector->setEasing( m_easing );
 

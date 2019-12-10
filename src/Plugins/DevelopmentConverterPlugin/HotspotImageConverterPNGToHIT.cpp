@@ -36,7 +36,7 @@ namespace Mengine
     bool HotspotImageConverterPNGToHIT::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false );
 
@@ -49,7 +49,7 @@ namespace Mengine
 
         uint32_t bufferSize = dataInfo->mipmapsize;
 
-        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
@@ -67,14 +67,14 @@ namespace Mengine
     ///////////////////////////////////////////////////////////////////////////////////////////////
     bool HotspotImageConverterPNGToHIT::convert()
     {
-        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( m_options.fileGroup, m_options.inputFilePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( m_options.fileGroup, m_options.inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( input_stream, false, "Image file '%s' was not found"
             , m_options.inputFilePath.c_str()
         );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( imageDecoder, false, "Image decoder for file '%s' was not found"
             , m_options.inputFilePath.c_str()
@@ -108,7 +108,7 @@ namespace Mengine
 
         uint32_t bufferSize = width * height + mimmap_size;
 
-        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "create memory cache buffer '%d'"
             , bufferSize
@@ -129,7 +129,7 @@ namespace Mengine
 
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
-        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( m_options.fileGroup, m_options.outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output_stream, false, "HIT file '%s' not create (open file '%s')"
             , m_options.outputFilePath.c_str()
@@ -137,7 +137,7 @@ namespace Mengine
         );
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FUNCTION );
+            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( encoder, false, "HIT file '%s' not create (createEncoder hitPick)"
             , m_options.outputFilePath.c_str()

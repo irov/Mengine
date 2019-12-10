@@ -153,12 +153,9 @@ namespace Mengine
         EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format, MENGINE_DOCUMENT_FUNCTION );
+            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format, MENGINE_DOCUMENT_FACTORABLE );
 
-        if( texture == nullptr )
-        {
-            return nullptr;
-        }
+        MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
 
         newAtlas.texture = texture;
 

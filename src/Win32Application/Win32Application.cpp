@@ -98,7 +98,7 @@ namespace Mengine
 
         {
             LOGGER_INFO( "Initialize Win32 file group..." );
-            PLUGIN_CREATE( Win32FileGroup );
+            PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
         }
 
         Char currentPath[MENGINE_MAX_PATH];
@@ -185,7 +185,7 @@ namespace Mengine
         DWORD dwConversionFlags = 0;
 #   endif
 
-        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
         for( int32_t i = 1; i != pNumArgs; ++i )
         {
@@ -281,7 +281,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>();
+        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         fileLog->setFileGroup( fileGroup );
         fileLog->setFilePath( logFilePath );
@@ -313,7 +313,7 @@ namespace Mengine
             return true;
         }
 
-        MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>();
+        MessageBoxLoggerPtr loggerMessageBox = Helper::makeFactorableUnique<MessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
@@ -397,7 +397,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_CREATE( Bootstrapper );
+        SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION );
 
         if( BOOTSTRAPPER_SERVICE()
             ->run() == false )

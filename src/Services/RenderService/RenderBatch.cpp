@@ -82,7 +82,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr vertexMemory = m_vertexBuffer->lock( 0, m_vertexCount, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr vertexMemory = m_vertexBuffer->lock( 0, m_vertexCount, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, false, "failed to lock vertex buffer '%u'"
             , m_vertexCount
@@ -99,7 +99,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr indexMemory = m_indexBuffer->lock( 0, m_indexCount, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr indexMemory = m_indexBuffer->lock( 0, m_indexCount, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( indexMemory, false, "failed to lock index buffer '%u'"
             , m_indexCount

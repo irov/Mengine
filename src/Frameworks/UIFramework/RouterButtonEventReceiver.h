@@ -45,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button );
+        RouterButtonEventReceiverPtr makeRouterButtonEventReceiver( const ButtonPtr & _button, const DocumentPtr & _doc );
     }
     //////////////////////////////////////////////////////////////////////////
 }

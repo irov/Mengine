@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LZ4Plugin::_initializePlugin()
     {
-        VOCABULARY_SET( ArchivatorInterface, STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ), Helper::makeFactorableUnique<ArchivatorLZ4>() );
+        VOCABULARY_SET( ArchivatorInterface, STRINGIZE_STRING_LOCAL( "Archivator" ), STRINGIZE_STRING_LOCAL( "lz4" ), Helper::makeFactorableUnique<ArchivatorLZ4>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

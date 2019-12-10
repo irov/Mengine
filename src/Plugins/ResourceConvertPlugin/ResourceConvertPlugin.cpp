@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceConvertPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( ResourceConvertService );
+        SERVICE_CREATE( ResourceConvertService, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

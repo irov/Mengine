@@ -27,14 +27,11 @@ namespace Mengine
             , theora_version_string()
         );
 
-        Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
-        Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
+        Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvVideo" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvaVideo" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogv" ), STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "ogva" ), STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogv" ), STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "ogva" ), STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
         return true;
     }

@@ -111,7 +111,7 @@ namespace Mengine
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
         {
             ThreadMutexInterfacePtr threadMutex = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+                ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( threadMutex, false );
 
@@ -128,7 +128,7 @@ namespace Mengine
         SERVICE_WAIT( Mengine::PlatformInterface, [this]()
         {
             DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+                ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, false );
 

@@ -3,6 +3,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "Win32Socket.h"
 
@@ -31,7 +32,7 @@ namespace Mengine
             return false;
         }
 
-        m_factoryWin32Socket = Helper::makeFactoryPool<Win32Socket, 16>();
+        m_factoryWin32Socket = Helper::makeFactoryPool<Win32Socket, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

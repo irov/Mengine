@@ -43,14 +43,14 @@ namespace Mengine
         m_seconds = seconds;
 
         ThreadJobPtr threadJob = THREAD_SERVICE()
-            ->createJob( seconds * 1000, MENGINE_DOCUMENT_FUNCTION );
+            ->createJob( seconds * 1000, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( threadJob, false, "invalid create thread job" );
 
         m_threadJob = threadJob;
 
         if( THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FUNCTION ) == false )
+            ->createThread( STRINGIZE_STRING_LOCAL( "Win32AntifreezeMonitor" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FACTORABLE ) == false )
         {
             return false;
         }
@@ -66,7 +66,7 @@ namespace Mengine
         m_workerId = workerId;
 
         DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-            ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+            ->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dateTimeProvider, false );
 

@@ -7,6 +7,8 @@
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "ResourceVideo.h"
 #include "SurfaceVideo.h"
 
@@ -29,7 +31,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface );
+            Helper::registerAnimatableEventReceiver<>( _kernel, py_kwds, _surface, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _surface, py_kwds );
 
@@ -58,8 +60,8 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceVideo> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<SurfaceVideo> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceVideo> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), Helper::makeFactorableUnique<PythonScriptWrapper<SurfaceVideo> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }

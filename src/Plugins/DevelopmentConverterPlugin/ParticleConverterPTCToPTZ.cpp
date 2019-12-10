@@ -48,7 +48,7 @@ namespace Mengine
         FilePath full_inputFilePath = Helper::concatenationFilePath( folderPath, m_options.inputFilePath );
         FilePath full_outputFilePath = Helper::concatenationFilePath( folderPath, m_options.outputFilePath );
 
-        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_inputFilePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data_cache, false );
 
@@ -59,7 +59,7 @@ namespace Mengine
             , full_inputFilePath.c_str()
         );
 
-        OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr output = Helper::openOutputStreamFile( m_fileGroup, full_outputFilePath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( output, false, "invalid open '%s'"
             , full_outputFilePath.c_str()

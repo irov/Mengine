@@ -19,34 +19,37 @@ SERVICE_FACTORY( RenderMaterialService, Mengine::RenderMaterialService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static ETextureFilter parseConfigTextureFilterValue( uint32_t _value )
+    namespace Detail
     {
-        switch( _value )
+        //////////////////////////////////////////////////////////////////////////
+        static ETextureFilter parseConfigTextureFilterValue( uint32_t _value )
         {
-        case 0:
-            return TF_NONE;
-            break;
-        case 1:
-            return TF_POINT;
-            break;
-        case 2:
-            return TF_LINEAR;
-            break;
-        case 3:
-            return TF_ANISOTROPIC;
-            break;
-        case 4:
-            return TF_FLATCUBIC;
-            break;
-        case 5:
-            return TF_GAUSSIANCUBIC;
-            break;
-        default:
-            break;
-        }
+            switch( _value )
+            {
+            case 0:
+                return TF_NONE;
+                break;
+            case 1:
+                return TF_POINT;
+                break;
+            case 2:
+                return TF_LINEAR;
+                break;
+            case 3:
+                return TF_ANISOTROPIC;
+                break;
+            case 4:
+                return TF_FLATCUBIC;
+                break;
+            case 5:
+                return TF_GAUSSIANCUBIC;
+                break;
+            default:
+                break;
+            }
 
-        return TF_GAUSSIANCUBIC;
+            return TF_GAUSSIANCUBIC;
+        }
     }
     //////////////////////////////////////////////////////////////////////////    
     RenderMaterialService::RenderMaterialService()
@@ -159,11 +162,11 @@ namespace Mengine
             return false;
         }
 
-        m_defaultTextureFilterMipmap = parseConfigTextureFilterValue( defaultTextureFilterMipmap );
-        m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
-        m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );
+        m_defaultTextureFilterMipmap = Detail::parseConfigTextureFilterValue( defaultTextureFilterMipmap );
+        m_defaultTextureFilterMagnification = Detail::parseConfigTextureFilterValue( defaultTextureFilterMagnification );
+        m_defaultTextureFilterMinification = Detail::parseConfigTextureFilterValue( defaultTextureFilterMinification );
 
-        m_factoryMaterial = Helper::makeFactoryPoolWithListener<RenderMaterial, 256>( this, &RenderMaterialService::onRenderMaterialDestroy_ );
+        m_factoryMaterial = Helper::makeFactoryPoolWithListener<RenderMaterial, 256>( this, &RenderMaterialService::onRenderMaterialDestroy_, MENGINE_DOCUMENT_FACTORABLE );
 
         m_materialEnumerators.reserve( 1024 );
 
@@ -378,10 +381,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialService::updateSolidRenderMaterial()
     {
-        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
-        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FUNCTION ) : nullptr;
+        m_solidRenderMaterial[EMB_NORMAL] = m_defaultStages[EMB_NORMAL] != nullptr ? this->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_ADD] = m_defaultStages[EMB_ADD] != nullptr ? this->getMaterial3( EM_COLOR_INTENSIVE, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_SCREEN] = m_defaultStages[EMB_SCREEN] != nullptr ? this->getMaterial3( EM_COLOR_SCREEN, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
+        m_solidRenderMaterial[EMB_MULTIPLY] = m_defaultStages[EMB_MULTIPLY] != nullptr ? this->getMaterial3( EM_COLOR_MULTIPLY, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE ) : nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr RenderMaterialService::getMaterial( const ConstString & _materialName

@@ -29,7 +29,7 @@ namespace Mengine
 
         bool streamable = _resource->isStreamable();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, streamable, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -46,7 +46,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         SoundDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<SoundDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( decoder == nullptr )
         {
@@ -123,7 +123,7 @@ namespace Mengine
         decoder = nullptr;
         stream = nullptr;
 
-        SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FUNCTION );
+        SoundBufferInterfacePtr soundBuffer = _resource->createSoundBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         if( soundBuffer == nullptr )
         {

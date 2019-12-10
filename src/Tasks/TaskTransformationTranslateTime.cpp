@@ -1,6 +1,7 @@
 #include "TaskTransformationTranslateTime.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "GOAP/NodeInterface.h"
 
@@ -106,7 +107,7 @@ namespace Mengine
     {
         const mt::vec3f & position = m_transformation->getLocalPosition();
 
-        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( _node, m_transformation, position, m_to, m_time );
+        AffectorPtr affector = Helper::makeFactorableUnique<Detail::TaskTransformationTranslateTimeAffector>( MENGINE_DOCUMENT_FUNCTION, _node, m_transformation, position, m_to, m_time );
 
         affector->setEasing( m_easing );
 

@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XmlToBinPlugin::_initializePlugin()
     {
-        Helper::registerDecoder<XmlToBinDecoder>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
+        Helper::registerDecoder<XmlToBinDecoder>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

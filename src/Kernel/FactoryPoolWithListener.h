@@ -38,25 +38,25 @@ namespace Mengine
         };
         //////////////////////////////////////////////////////////////////////////
         template<class C, class M, class T>
-        FactoryDestroyListenerInterfacePtr makeFactoryDestroyListener( C * _class, M _method )
+        FactoryDestroyListenerInterfacePtr makeFactoryDestroyListener( C * _class, M _method, const DocumentPtr & _doc )
         {
-            return Helper::makeFactorableUnique<MethodFactoryDestroyListener<C, M, T> >( _class, _method );
+            return Helper::makeFactorableUnique<MethodFactoryDestroyListener<C, M, T> >( _doc, _class, _method );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C, class M>
-        void setupFactoryDestroyListener( const FactoryWithListenerPtr & _factory, C * _class, M _method )
+        void setupFactoryDestroyListener( const FactoryWithListenerPtr & _factory, C * _class, M _method, const DocumentPtr & _doc )
         {
-            FactoryDestroyListenerInterfacePtr destroyListener = Helper::makeFactorableUnique<MethodFactoryDestroyListener<C, M, T> >( _class, _method );
+            FactoryDestroyListenerInterfacePtr destroyListener = Helper::makeFactorableUnique<MethodFactoryDestroyListener<C, M, T> >( _doc, _class, _method );
 
             _factory->setDestroyListener( destroyListener );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class Type, uint32_t Count, class C, class M>
-        FactoryPtr makeFactoryPoolWithListener( C * _self, M _method )
+        FactoryPtr makeFactoryPoolWithListener( C * _self, M _method, const DocumentPtr & _doc )
         {
-            FactoryWithListenerPtr factory = Helper::makeFactoryPool<Type, Count, FactoryWithListener>();
+            FactoryWithListenerPtr factory = Helper::makeFactoryPool<Type, Count, FactoryWithListener>( _doc );
 
-            setupFactoryDestroyListener<Type>( factory, _self, _method );
+            Helper::setupFactoryDestroyListener<Type>( factory, _self, _method, _doc );
 
             return factory;
         }

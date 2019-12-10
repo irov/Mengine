@@ -48,10 +48,10 @@ namespace Mengine
         if( m_supportStream == true )
         {
             m_threadJobSoundBufferUpdate = THREAD_SERVICE()
-                ->createJob( 25, MENGINE_DOCUMENT_FUNCTION );
+                ->createJob( 25, MENGINE_DOCUMENT_FACTORABLE );
 
             THREAD_SERVICE()
-                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FUNCTION );
+                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), MENGINE_THREAD_PRIORITY_NORMAL, MENGINE_DOCUMENT_FACTORABLE );
 
             THREAD_SERVICE()
                 ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate );
@@ -76,11 +76,11 @@ namespace Mengine
             this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f );
         }
 
-        m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
-        m_factorySoundEmitter = Helper::makeFactoryPool<SoundIdentity, 32>();
+        m_factoryWorkerTaskSoundBufferUpdate = Helper::makeFactoryPool<ThreadWorkerSoundBufferUpdate, 32>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factorySoundEmitter = Helper::makeFactoryPool<SoundIdentity, 32>( MENGINE_DOCUMENT_FACTORABLE );
 
         uint32_t timepipe = TIMEPIPE_SERVICE()
-            ->addTimepipe( TimepipeInterfacePtr::from( this ) );
+            ->addTimepipe( TimepipeInterfacePtr::from( this ), MENGINE_DOCUMENT_FACTORABLE );
 
         m_timepipe = timepipe;
 
@@ -1437,7 +1437,7 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
+            ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
             const SoundSourceInterfacePtr & source = _identity->getSoundSource();
 

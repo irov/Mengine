@@ -43,7 +43,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ConsoleLoggerPlugin::_initializePlugin()
     {
-        Win32ConsoleLoggerPtr loggerConsole = Helper::makeFactorableUnique<Win32ConsoleLogger>();
+        Win32ConsoleLoggerPtr loggerConsole = Helper::makeFactorableUnique<Win32ConsoleLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         LOGGER_SERVICE()
             ->registerLogger( loggerConsole );

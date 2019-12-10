@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TaskGlobalDelay::_onRun( GOAP::NodeInterface * _node )
     {
-        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskGlobalDelay::ScheduleEvent>( this, _node );
+        SchedulerEventInterfacePtr ev = Helper::makeFactorableUnique<TaskGlobalDelay::ScheduleEvent>( MENGINE_DOCUMENT_FUNCTION, this, _node );
 
         const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
             ->getGlobalScheduler();

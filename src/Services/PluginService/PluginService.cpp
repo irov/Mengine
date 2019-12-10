@@ -41,14 +41,14 @@ namespace Mengine
         this->unloadPlugins();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::loadPlugin( const Char * _dynamicLibraryName )
+    bool PluginService::loadPlugin( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
         LOGGER_MESSAGE( "load plugin '%s'"
             , _dynamicLibraryName
         );
 
         DynamicLibraryInterfacePtr dynamicLibrary = PLATFORM_SERVICE()
-            ->loadDynamicLibrary( _dynamicLibraryName );
+            ->loadDynamicLibrary( _dynamicLibraryName, _doc );
 
         if( dynamicLibrary == nullptr )
         {
@@ -61,8 +61,7 @@ namespace Mengine
 
         const Char * symbol = MENGINE_PLUGIN_CREATE_FUNCTION_NAME;
 
-        TDynamicLibraryFunction function_dllCreatePlugin =
-            dynamicLibrary->getSymbol( symbol );
+        TDynamicLibraryFunction function_dllCreatePlugin = dynamicLibrary->getSymbol( symbol );
 
         if( function_dllCreatePlugin == nullptr )
         {
@@ -76,7 +75,7 @@ namespace Mengine
 
         TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
 
-        if( this->createPlugin( dynamicLibrary, dllCreatePlugin, true ) == false )
+        if( this->createPlugin( dynamicLibrary, dllCreatePlugin, true, _doc ) == false )
         {
             LOGGER_ERROR( "can't load '%s' plugin [invalid create]"
                 , _dynamicLibraryName
@@ -88,8 +87,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic )
+    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         if( _create == nullptr )
         {
             return false;
@@ -113,6 +114,10 @@ namespace Mengine
 
             return false;
         }
+
+#ifdef MENGINE_DEBUG
+        plugin->setDocument( _doc );
+#endif
 
         if( this->addPlugin( _dynamicLibrary, PluginInterfacePtr( plugin ) ) == false )
         {

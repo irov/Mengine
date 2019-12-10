@@ -43,7 +43,7 @@ namespace Mengine
         LOGGER_INFO( "Initializing Account manager..."
         );
 
-        m_factoryAccounts = Helper::makeFactoryPool<Account, 8>();
+        m_factoryAccounts = Helper::makeFactoryPool<Account, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         FileGroupInterfacePtr fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
@@ -498,7 +498,7 @@ namespace Mengine
         }
 
         ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
+            ->loadConfig( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FACTORABLE );
 
         if( config == nullptr )
         {
@@ -547,7 +547,7 @@ namespace Mengine
 
         for( const ConstString & accountID : values )
         {
-            AccountInterfacePtr account = this->newAccount_( accountID, MENGINE_DOCUMENT_FUNCTION );
+            AccountInterfacePtr account = this->newAccount_( accountID, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( account, false, "invalid create account '%s'"
                 , accountID.c_str()
@@ -653,7 +653,7 @@ namespace Mengine
 
         FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
-        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
+        OutputStreamInterfacePtr file = Helper::openOutputStreamFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( file, false, "can't open file for writing. Accounts '%s' settings not saved"
             , accountsPath.c_str()

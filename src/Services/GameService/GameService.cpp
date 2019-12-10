@@ -311,7 +311,7 @@ namespace Mengine
         ConstString defaultArrowPrototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
 
         ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( defaultArrow, false, "failed create defaultArrow 'Default'" );
 
@@ -386,13 +386,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameService::_initializeService()
     {
-        GameAccountProviderPtr accountProvider = Helper::makeFactorableUnique<GameServiceAccountProvider>();
+        GameAccountProviderPtr accountProvider = Helper::makeFactorableUnique<GameServiceAccountProvider>( MENGINE_DOCUMENT_FACTORABLE );
         accountProvider->setEventable( EventablePtr( this ) );
 
         ACCOUNT_SERVICE()
             ->setAccountProvider( accountProvider );
 
-        GameSoundVolumeProviderPtr soundVolumeProvider = Helper::makeFactorableUnique<GameServiceSoundVolumeProvider>();
+        GameSoundVolumeProviderPtr soundVolumeProvider = Helper::makeFactorableUnique<GameServiceSoundVolumeProvider>( MENGINE_DOCUMENT_FACTORABLE );
         soundVolumeProvider->setEventable( EventablePtr( this ) );
 
         SOUND_SERVICE()

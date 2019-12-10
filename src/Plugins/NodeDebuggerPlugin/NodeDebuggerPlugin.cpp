@@ -3,6 +3,7 @@
 #include "NodeDebuggerModule.h"
 
 #include "Kernel/ModuleFactory.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,7 @@ namespace Mengine
     bool NodeDebuggerPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" )
-            , Helper::makeModuleFactory<NodeDebuggerModule>() );
+            , Helper::makeModuleFactory<NodeDebuggerModule>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

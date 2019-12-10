@@ -806,7 +806,7 @@ namespace Mengine
             Movie2ScissorPtr scissor;
             if( mesh.viewport != nullptr )
             {
-                scissor = Helper::makeFactorableUnique<Movie2Scissor>();
+                scissor = Helper::makeFactorableUnique<Movie2Scissor>( MENGINE_DOCUMENT_FACTORABLE );
 
                 scissor->setViewport( wm, mesh.viewport );
 
@@ -2460,7 +2460,7 @@ namespace Mengine
             Movie2ScissorPtr scissor;
             if( mesh.viewport != nullptr )
             {
-                scissor = Helper::makeFactorableUnique<Movie2Scissor>();
+                scissor = Helper::makeFactorableUnique<Movie2Scissor>( MENGINE_DOCUMENT_FACTORABLE );
 
                 scissor->setViewport( wm, mesh.viewport );
 

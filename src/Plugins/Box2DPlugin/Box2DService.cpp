@@ -4,6 +4,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/DocumentHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Box2DService, Mengine::Box2DService );
@@ -21,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Box2DService::_initializeService()
     {
-        m_factoryWorlds = Helper::makeFactoryPool<Box2DWorld, 8>();
+        m_factoryWorlds = Helper::makeFactoryPool<Box2DWorld, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

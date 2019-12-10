@@ -74,8 +74,8 @@ namespace Mengine
         m_renderPlatform = RENDER_SYSTEM()
             ->getRenderPlatformType();
 
-        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer, 16>( this, &AstralaxParticleSystem::onEmitterContainerRelease_ );
-        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxParticleSystem::onEmitterRelease_ );
+        m_factoryPoolAstralaxEmitterContainer = Helper::makeFactoryPoolWithListener<AstralaxEmitterContainer, 16>( this, &AstralaxParticleSystem::onEmitterContainerRelease_, MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryPoolAstralaxEmitter = Helper::makeFactoryPoolWithListener<AstralaxEmitter2, 16>( this, &AstralaxParticleSystem::onEmitterRelease_, MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }

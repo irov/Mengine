@@ -50,7 +50,7 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -67,7 +67,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         if( imageDecoder == nullptr )
         {

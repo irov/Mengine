@@ -33,9 +33,16 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        FactoryPtr makeFactoryDefault()
+        FactoryPtr makeFactoryDefault( const DocumentPtr & _doc )
         {
             Factory * factory = new FactoryDefault<T>();
+
+#ifdef MENGINE_DEBUG
+            if( factory != nullptr )
+            {
+                factory->setDocument( _doc );
+            }
+#endif
 
             return FactoryPtr( factory );
         }

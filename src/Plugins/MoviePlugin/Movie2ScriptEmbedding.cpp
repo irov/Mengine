@@ -7,6 +7,8 @@
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "Frameworks/PythonFramework/DocumentTraceback.h"
+
 #include "Movie2.h"
 
 #include "Kernel/Logger.h"
@@ -35,7 +37,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( _kernel, py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -95,7 +97,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Socket>( _kernel, py_list );
+            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Socket>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
             _movie->visitSockets( visitor );
 
             return py_list;
@@ -142,7 +144,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Slots>( _kernel, py_list );
+            VisitorMovie2LayerInterfacePtr visitor = Helper::makeFactorableUnique<PythonVisitorMovie2Slots>( MENGINE_DOCUMENT_PYBIND, _kernel, py_list );
             _movie->visitSockets( visitor );
 
             return py_list;
@@ -161,7 +163,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( _kwds, _kernel->ret_none() );
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( _kernel, py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( _kernel, py_kwds, _node, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_PYTHON_EVENT_RECEIVER( _node, py_kwds );
 
@@ -227,10 +229,10 @@ namespace Mengine
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
             ;
 
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2Slot> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( _kernel ) );
-        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie2> >( _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2Slot> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
+        VOCABULARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), Helper::makeFactorableUnique<PythonScriptWrapper<ResourceMovie2> >( MENGINE_DOCUMENT_FACTORABLE, _kernel ) );
 
         return true;
     }

@@ -5,6 +5,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -26,41 +27,41 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EasingService::_initializeService()
     {
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), ConstString::none(), Helper::makeFactorableUnique<EasingLinear>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyLinear" ), Helper::makeFactorableUnique<EasingLinear>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyIn" ), Helper::makeFactorableUnique<EasingIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyOut" ), Helper::makeFactorableUnique<EasingOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyInOut" ), Helper::makeFactorableUnique<EasingInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineIn" ), Helper::makeFactorableUnique<EasingSineIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineOut" ), Helper::makeFactorableUnique<EasingSineOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineInOut" ), Helper::makeFactorableUnique<EasingSineInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadIn" ), Helper::makeFactorableUnique<EasingQuadIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadOut" ), Helper::makeFactorableUnique<EasingQuadOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadInOut" ), Helper::makeFactorableUnique<EasingQuadInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCubicIn" ), Helper::makeFactorableUnique<EasingCubicIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCubicOut" ), Helper::makeFactorableUnique<EasingCubicOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCubicInOut" ), Helper::makeFactorableUnique<EasingCubicInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuartIn" ), Helper::makeFactorableUnique<EasingQuartIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuartOut" ), Helper::makeFactorableUnique<EasingQuartOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuartInOut" ), Helper::makeFactorableUnique<EasingQuartInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuintIn" ), Helper::makeFactorableUnique<EasingQuintIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuintOut" ), Helper::makeFactorableUnique<EasingQuintOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuintInOut" ), Helper::makeFactorableUnique<EasingQuintInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyExpoIn" ), Helper::makeFactorableUnique<EasingExpoIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyExpoOut" ), Helper::makeFactorableUnique<EasingExpoOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyExpoInOut" ), Helper::makeFactorableUnique<EasingExpoInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCircIn" ), Helper::makeFactorableUnique<EasingCircIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCircOut" ), Helper::makeFactorableUnique<EasingCircOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCircInOut" ), Helper::makeFactorableUnique<EasingCircInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyElasticIn" ), Helper::makeFactorableUnique<EasingElasticIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyElasticOut" ), Helper::makeFactorableUnique<EasingElasticOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyElasticInOut" ), Helper::makeFactorableUnique<EasingElasticInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBackIn" ), Helper::makeFactorableUnique<EasingBackIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBackOut" ), Helper::makeFactorableUnique<EasingBackOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBackInOut" ), Helper::makeFactorableUnique<EasingBackInOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBounceIn" ), Helper::makeFactorableUnique<EasingBounceIn>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBounceOut" ), Helper::makeFactorableUnique<EasingBounceOut>() );
-        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBounceInOut" ), Helper::makeFactorableUnique<EasingBounceInOut>() );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), ConstString::none(), Helper::makeFactorableUnique<EasingLinear>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyLinear" ), Helper::makeFactorableUnique<EasingLinear>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyIn" ), Helper::makeFactorableUnique<EasingIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyOut" ), Helper::makeFactorableUnique<EasingOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyInOut" ), Helper::makeFactorableUnique<EasingInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineIn" ), Helper::makeFactorableUnique<EasingSineIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineOut" ), Helper::makeFactorableUnique<EasingSineOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easySineInOut" ), Helper::makeFactorableUnique<EasingSineInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadIn" ), Helper::makeFactorableUnique<EasingQuadIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadOut" ), Helper::makeFactorableUnique<EasingQuadOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuadInOut" ), Helper::makeFactorableUnique<EasingQuadInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCubicIn" ), Helper::makeFactorableUnique<EasingCubicIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCubicOut" ), Helper::makeFactorableUnique<EasingCubicOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCubicInOut" ), Helper::makeFactorableUnique<EasingCubicInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuartIn" ), Helper::makeFactorableUnique<EasingQuartIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuartOut" ), Helper::makeFactorableUnique<EasingQuartOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuartInOut" ), Helper::makeFactorableUnique<EasingQuartInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuintIn" ), Helper::makeFactorableUnique<EasingQuintIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuintOut" ), Helper::makeFactorableUnique<EasingQuintOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyQuintInOut" ), Helper::makeFactorableUnique<EasingQuintInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyExpoIn" ), Helper::makeFactorableUnique<EasingExpoIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyExpoOut" ), Helper::makeFactorableUnique<EasingExpoOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyExpoInOut" ), Helper::makeFactorableUnique<EasingExpoInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCircIn" ), Helper::makeFactorableUnique<EasingCircIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCircOut" ), Helper::makeFactorableUnique<EasingCircOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyCircInOut" ), Helper::makeFactorableUnique<EasingCircInOut>(MENGINE_DOCUMENT_FACTORABLE) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyElasticIn" ), Helper::makeFactorableUnique<EasingElasticIn>(MENGINE_DOCUMENT_FACTORABLE) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyElasticOut" ), Helper::makeFactorableUnique<EasingElasticOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyElasticInOut" ), Helper::makeFactorableUnique<EasingElasticInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBackIn" ), Helper::makeFactorableUnique<EasingBackIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBackOut" ), Helper::makeFactorableUnique<EasingBackOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBackInOut" ), Helper::makeFactorableUnique<EasingBackInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBounceIn" ), Helper::makeFactorableUnique<EasingBounceIn>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBounceOut" ), Helper::makeFactorableUnique<EasingBounceOut>( MENGINE_DOCUMENT_FACTORABLE ) );
+        VOCABULARY_SET( EasingInterface, STRINGIZE_STRING_LOCAL( "Easing" ), STRINGIZE_STRING_LOCAL( "easyBounceInOut" ), Helper::makeFactorableUnique<EasingBounceInOut>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

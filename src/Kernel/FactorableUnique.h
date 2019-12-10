@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/IntrusivePtr.h"
+#include "Kernel/Document.h"
 #include "Kernel/MemoryAllocator.h"
 
 namespace Mengine
@@ -33,9 +34,16 @@ namespace Mengine
     namespace Helper
     {
         template<class Type, class ... Args>
-        IntrusivePtr<Type> makeFactorableUnique( Args && ... _args )
+        IntrusivePtr<Type> makeFactorableUnique( const DocumentPtr & _doc, Args && ... _args )
         {
             Type * factorable = new FactorableUnique<Type>( std::forward<Args &&>( _args ) ... );
+
+#ifdef MENGINE_DEBUG
+            if( factorable != nullptr )
+            {
+                factorable->setDocument( _doc );
+            }
+#endif
 
             return IntrusivePtr<Type>( factorable );
         }

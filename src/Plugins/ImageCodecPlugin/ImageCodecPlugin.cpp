@@ -44,55 +44,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageCodecPlugin::_initializePlugin()
     {
-        Helper::registerDecoder<ImageDecoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
-        Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        Helper::registerDecoder<ImageDecoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
-        Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ) );
-        Helper::registerDecoder<ImageDecoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
+        Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerDecoder<ImageDecoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        Helper::registerDecoder<ImageDecoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ) );
-        Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ) );
+        Helper::registerDecoder<ImageDecoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "png" ), STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "png" ), STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "PNG" ), STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "jpeg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "dds" ), STRINGIZE_STRING_LOCAL( "ddsImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "PNG" ), STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        Helper::registerEncoder<ImageEncoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerEncoder<ImageEncoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerEncoder<ImageEncoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerEncoder<ImageEncoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        Helper::registerEncoder<ImageEncoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "jpeg" ), STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        Helper::registerDecoder<PickDecoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
+        Helper::registerEncoder<PickEncoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ), MENGINE_DOCUMENT_FACTORABLE );
 
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "pvr" ), STRINGIZE_STRING_LOCAL( "pvrImage" ) );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "dds" ), STRINGIZE_STRING_LOCAL( "ddsImage" ) );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "etc" ), STRINGIZE_STRING_LOCAL( "etcImage" ) );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "htf" ), STRINGIZE_STRING_LOCAL( "htfImage" ) );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "acf" ), STRINGIZE_STRING_LOCAL( "acfImage" ) );
-
-        Helper::registerEncoder<ImageEncoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
-        Helper::registerEncoder<ImageEncoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
-        Helper::registerEncoder<ImageEncoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ) );
-        Helper::registerEncoder<ImageEncoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ) );
-
-        Helper::registerEncoder<ImageEncoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
-
-        Helper::registerDecoder<PickDecoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
-        Helper::registerEncoder<PickEncoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( STRINGIZE_STRING_LOCAL( "hit" ), STRINGIZE_STRING_LOCAL( "hitPick" ) );
+        CODEC_REGISTER_EXT( STRINGIZE_STRING_LOCAL( "hit" ), STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         return true;
     }

@@ -58,7 +58,7 @@ namespace Mengine
         bool hasTouchpad() const override;
 
     public:
-        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) override;
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
 
     public:
         bool getDesktopResolution( Resolution & _resolution ) const override;

@@ -1024,8 +1024,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::DoUIObjectsLeakTab()
     {
-        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Generator: %s"
+        uint32_t leaksCount = 0;
+
+        for( auto && [type, objects] : m_objectLeaks )
+        {
+            leaksCount += objects.size();
+        }
+
+        ImGui::TextColored( ImVec4( 0.f, 1.f, 0.f, 1.f ), "Generator: %s [total %u]"
             , m_objectLeakGeneration.c_str()
+            , leaksCount
         );
 
         ImGui::Separator();
@@ -1054,7 +1062,6 @@ namespace Mengine
 
                 for( const LeakDesc & leak : objects )
                 {
-                    //ImGui::Selectable( doc.c_str(), true, ImGuiSelectableFlags_AllowDoubleClick );
                     ImGui::BulletText( "file: %s"
                         , leak.file.c_str()
                     );
@@ -1083,13 +1090,6 @@ namespace Mengine
 
                     ++index;
                 }
-
-                //char label_text[16];
-                //sprintf( label_text, "##text_%u"
-                //    , index
-                //);
-
-                //ImGui::InputTextMultiline( label_text, buffer.data(), buffer.size(), ImVec2( -1.f, 0.f ), ImGuiInputTextFlags_ReadOnly );
 
                 ImGui::TreePop();
             }

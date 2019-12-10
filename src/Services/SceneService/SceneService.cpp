@@ -257,16 +257,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SceneService::removeCurrentScene_( const SceneCommandDesc & _desc )
     {
-        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, (m_scene) );
-
-        if( m_scene != nullptr )
-        {
-            m_scene->disable();
-            m_scene->onDestroy();
-            m_scene = nullptr;
-        }
-
-        NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_DESTROY );
+        this->destroyCurrentScene();
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_REMOVE_SCENE_PREPARE_COMPLETE );
 
@@ -308,7 +299,7 @@ namespace Mengine
         }
 
         ScenePtr scene = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FUNCTION );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( scene, false );
 

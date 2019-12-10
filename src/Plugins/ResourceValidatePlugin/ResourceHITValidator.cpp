@@ -32,7 +32,7 @@ namespace Mengine
             return false;
         }
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "resource '%s' group '%s' invalid open file '%s:%s'"
             , _resource->getName().c_str()
@@ -44,7 +44,7 @@ namespace Mengine
         const ConstString & codecType = content->getCodecType();
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
+            ->createDecoderT<PickDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( decoder, false, "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
             , _resource->getName().c_str()

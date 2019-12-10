@@ -4,6 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "TaskAnimatablePlayReceiver.h"
 
@@ -38,7 +39,7 @@ namespace Mengine
             return true;
         }
 
-        TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>();
+        TaskAnimatablePlayReceiverPtr receiver = Helper::makeFactorableUnique<TaskAnimatablePlayReceiver>( MENGINE_DOCUMENT_FUNCTION );
 
         EventReceiverInterfacePtr oldreceiver_end = eventation->addEventReceiver( EVENT_ANIMATION_END, receiver );
         EventReceiverInterfacePtr oldreceiver_stop = eventation->addEventReceiver( EVENT_ANIMATION_STOP, receiver );

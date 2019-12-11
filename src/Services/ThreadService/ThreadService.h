@@ -7,7 +7,6 @@
 #include "ThreadQueue.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/ThreadMutexDummy.h"
 #include "Kernel/Factory.h"
 
 #include "Config/String.h"

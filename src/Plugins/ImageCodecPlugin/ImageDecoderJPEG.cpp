@@ -124,8 +124,8 @@ namespace Mengine
         src->base.skip_input_data = &s_skip_input_data;
         src->base.resync_to_restart = jpeg_resync_to_restart; // use default method 
         src->base.term_source = s_term_source;
-        src->base.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
-        src->base.next_input_byte = nullptr;	// until buffer loaded 
+        src->base.bytes_in_buffer = 0;
+        src->base.next_input_byte = nullptr;
         src->stream = _stream;
     }
     //////////////////////////////////////////////////////////////////////////

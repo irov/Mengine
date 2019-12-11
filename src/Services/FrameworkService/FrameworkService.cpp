@@ -132,7 +132,7 @@ namespace Mengine
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////		
+    //////////////////////////////////////////////////////////////////////////
     const FrameworkInterfacePtr & FrameworkService::findFramework_( const ConstString & _name ) const
     {
         VectorFrameworks::const_iterator it_found =

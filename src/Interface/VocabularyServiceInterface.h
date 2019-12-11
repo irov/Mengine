@@ -29,7 +29,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_SERVICE()\
-	((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
+    ((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define VOCABULARY_SET(Interface, Category, Prototype, Factorable)\
     VOCABULARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>(Factorable))

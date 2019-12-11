@@ -2,22 +2,22 @@ set(MY_LIB_NAME AstralaxParticlePlugin)
 
 ADD_FILTER(
 src
-	AstralaxParticleModule.cpp
+    AstralaxParticleModule.cpp
     AstralaxParticleModule.h
     AstralaxEmitter.cpp
-	AstralaxEmitter.h
+    AstralaxEmitter.h
     AstralaxEmitter2.cpp
-	AstralaxEmitter2.h
-	AstralaxEmitterContainer.cpp
-	AstralaxEmitterContainer.h
-	AstralaxParticleSystem.cpp
-	AstralaxParticleSystem.h
-	ResourceAstralax.cpp
-	ResourceAstralax.h
+    AstralaxEmitter2.h
+    AstralaxEmitterContainer.cpp
+    AstralaxEmitterContainer.h
+    AstralaxParticleSystem.cpp
+    AstralaxParticleSystem.h
+    ResourceAstralax.cpp
+    ResourceAstralax.h
     LoaderResourceAstralax.cpp
     LoaderResourceAstralax.h
     AstralaxService.h
-	AstralaxService.cpp
+    AstralaxService.cpp
     
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
@@ -58,7 +58,7 @@ endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)
     if(MENGINE_ARCHITECTURE_X86)
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)		
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)
     endif()
     
     if(MENGINE_ARCHITECTURE_X64)

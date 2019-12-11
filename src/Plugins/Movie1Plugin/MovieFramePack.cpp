@@ -194,14 +194,14 @@ namespace Mengine
         }
 
 #define MOVIE_FRAME_SETUP( Member1, Member2, Mask )\
-		if( layer.immutable_mask & Mask ) \
-		{ \
-			_frame.Member1 = layer.source.Member1; \
-		} \
-		else \
-		{ \
-			_frame.Member1 = layer.Member2[_frameIndex]; \
-		}
+        if( layer.immutable_mask & Mask ) \
+        { \
+            _frame.Member1 = layer.source.Member1; \
+        } \
+        else \
+        { \
+            _frame.Member1 = layer.Member2[_frameIndex]; \
+        }
 
         MOVIE_FRAME_SETUP( anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
         MOVIE_FRAME_SETUP( position, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
@@ -239,17 +239,16 @@ namespace Mengine
         }
 
 #define MOVIE_FRAME_SETUP_F3( Member, Mask )\
-		if( layer.immutable_mask & Mask ) \
-		{ \
-			_frame.Member = layer.source.Member; \
-		} \
-		else \
-		{ \
-			const mt::vec3f & value0 = layer.Member[ _frameIndex + 0 ]; \
-			const mt::vec3f & value1 = layer.Member[ _frameIndex + 1 ]; \
-			\
-			mt::linerp_v3( _frame.Member, value0, value1, _t ); \
-		}
+        if( layer.immutable_mask & Mask ) \
+        { \
+            _frame.Member = layer.source.Member; \
+        } \
+        else \
+        { \
+            const mt::vec3f & value0 = layer.Member[ _frameIndex + 0 ]; \
+            const mt::vec3f & value1 = layer.Member[ _frameIndex + 1 ]; \
+            mt::linerp_v3( _frame.Member, value0, value1, _t ); \
+        }
 
         MOVIE_FRAME_SETUP_F3( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
         MOVIE_FRAME_SETUP_F3( position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
@@ -259,17 +258,16 @@ namespace Mengine
 #undef MOVIE_FRAME_SETUP_F3
 
 #define MOVIE_FRAME_SETUP_F1( Member, Mask )\
-		if( layer.immutable_mask & Mask ) \
-		{ \
-			_frame.Member = layer.source.Member; \
-		} \
-		else \
-		{ \
-			float value0 = layer.Member[ _frameIndex + 0 ]; \
-			float value1 = layer.Member[ _frameIndex + 1 ]; \
-			\
-			_frame.Member = mt::linerp_f1( value0, value1, _t ); \
-		}
+        if( layer.immutable_mask & Mask ) \
+        { \
+            _frame.Member = layer.source.Member; \
+        } \
+        else \
+        { \
+            float value0 = layer.Member[ _frameIndex + 0 ]; \
+            float value1 = layer.Member[ _frameIndex + 1 ]; \
+            _frame.Member = mt::linerp_f1( value0, value1, _t ); \
+        }
 
         MOVIE_FRAME_SETUP_F1( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
         MOVIE_FRAME_SETUP_F1( volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );

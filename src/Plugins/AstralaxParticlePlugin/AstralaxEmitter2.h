@@ -5,13 +5,13 @@
 #include "Kernel/Factorable.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(push, 0) 
+#   pragma warning(push, 0) 
 #endif 
 
 #include "magic.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(pop) 
+#   pragma warning(pop) 
 #endif
 
 namespace Mengine

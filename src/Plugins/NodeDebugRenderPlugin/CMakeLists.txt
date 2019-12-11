@@ -3,11 +3,11 @@ set(MY_LIB_NAME NodeDebugRenderPlugin)
 ADD_FILTER(
 src
     NodeDebugRenderInterface.h
-	NodeDebugRenderServiceInterface.h
+    NodeDebugRenderServiceInterface.h
 
-	NodeDebugRenderPlugin.h
+    NodeDebugRenderPlugin.h
     NodeDebugRenderPlugin.def
-	NodeDebugRenderPlugin.cpp
+    NodeDebugRenderPlugin.cpp
     
     NodeDebugRenderService.h
     NodeDebugRenderService.cpp

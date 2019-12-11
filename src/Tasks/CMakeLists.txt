@@ -34,8 +34,8 @@ Tasks
     TaskGlobalMouseMove.h
     TaskGlobalMouseWheel.cpp
     TaskGlobalMouseWheel.h
-	TaskGlobalKeyPress.h
-	TaskGlobalKeyPress.cpp
+    TaskGlobalKeyPress.h
+    TaskGlobalKeyPress.cpp
     TaskTransformationRotateY.cpp
     TaskTransformationRotateY.h
     TaskTransformationRotateYTime.cpp
@@ -46,8 +46,8 @@ Tasks
     TaskTransformationTranslate.h
     TaskTransformationTranslateTime.h
     TaskTransformationTranslateTime.cpp
-	TaskColorableAlphaTime.h
-	TaskColorableAlphaTime.cpp
+    TaskColorableAlphaTime.h
+    TaskColorableAlphaTime.cpp
     TaskAnimatablePlay.cpp
     TaskAnimatablePlay.h
     TaskAnimatablePlayWait.cpp
@@ -58,8 +58,8 @@ Tasks
     TaskAnimatablePause.h
     TaskAnimatableResume.cpp
     TaskAnimatableResume.h
-	TaskAnimatablePlayReceiver.h
-	TaskAnimatablePlayReceiver.cpp
+    TaskAnimatablePlayReceiver.h
+    TaskAnimatablePlayReceiver.cpp
     TaskAnimatableRewind.h
     TaskAnimatableRewind.cpp
     TaskNotify.h

@@ -5,7 +5,7 @@ src
     Interface.h
     ServiceInterface.h
     ServiceProviderInterface.h
-	PluginInterface.h
+    PluginInterface.h
     ModuleInterface.h
     ModuleFactoryInterface.h
     ModuleServiceInterface.h
@@ -13,34 +13,34 @@ src
     ScriptCodeDataInterface.h
     ScriptEmbeddingInterface.h
     ScriptProviderServiceInterface.h
-	ScriptServiceInterface.h
-	CodecInterface.h
-	CodecFactoryInterface.h
-	DecoderInterface.h
-	DecoderFactoryInterface.h
-	EncoderInterface.h
-	EncoderFactoryInterface.h
-	CodecServiceInterface.h
+    ScriptServiceInterface.h
+    CodecInterface.h
+    CodecFactoryInterface.h
+    DecoderInterface.h
+    DecoderFactoryInterface.h
+    EncoderInterface.h
+    EncoderFactoryInterface.h
+    CodecServiceInterface.h
     ConfigInterface.h
     ConfigServiceInterface.h
     DataInterface.h
-	DataflowInterface.h
-	DataServiceInterface.h
+    DataflowInterface.h
+    DataServiceInterface.h
     MemoryInterface.h
-	MemoryServiceInterface.h
-    PlatformInterface.h	
-	ImageCodecInterface.h
+    MemoryServiceInterface.h
+    PlatformInterface.h
+    ImageCodecInterface.h
     PickCodecInterface.h
-	SoundCodecInterface.h
+    SoundCodecInterface.h
     TextFontInterface.h
-	TextEntryInterface.h
+    TextEntryInterface.h
     TextServiceInterface.h
-	InputStreamInterface.h
-	OutputStreamInterface.h
-	LoggerInterface.h
-	LoggerServiceInterface.h
-	ApplicationInterface.h
-	InputServiceInterface.h
+    InputStreamInterface.h
+    OutputStreamInterface.h
+    LoggerInterface.h
+    LoggerServiceInterface.h
+    ApplicationInterface.h
+    InputServiceInterface.h
     InputHandlerInterface.h
     EasingInterface.h
     EasingServiceInterface.h
@@ -48,11 +48,11 @@ src
     SecureServiceInterface.h
     ThreadWorkerInterface.h
     DateTimeProviderInterface.h
-
-	ConverterInterface.h
-	ConverterFactoryInterface.h
-	ConverterServiceInterface.h
-	StringizeServiceInterface.h
+    
+    ConverterInterface.h
+    ConverterFactoryInterface.h
+    ConverterServiceInterface.h
+    StringizeServiceInterface.h
     GameEventReceiverInterface.h
     GameServiceInterface.h
     PlayerServiceInterface.h
@@ -71,28 +71,28 @@ src
     GraveyardServiceInterface.h
     GlobalInputHandlerInterface.h
     NotificationServiceInterface.h
-	TimeSystemInterface.h
+    TimeSystemInterface.h
     PackageInterface.h
-	PackageServiceInterface.h
+    PackageServiceInterface.h
     UserdataServiceInterface.h
     OptionsServiceInterface.h
     TimelineServiceInterface.h
     TimepipeInterface.h
     TimepipeServiceInterface.h
     SocketInterface.h
-	SocketSystemInterface.h
-	FactoryServiceInterface.h
+    SocketSystemInterface.h
+    FactoryServiceInterface.h
     ResourceServiceInterface.h
     UnicodeSystemInterface.h
     NotificatorInterface.h    
-	LoadableInterface.h
+    LoadableInterface.h
     LoaderInterface.h
-	LoaderServiceInterface.h
+    LoaderServiceInterface.h
     RandomizerInterface.h
     AnimationInterface.h
     AccountInterface.h
-	AccountProviderInterface.h
-	AccountServiceInterface.h
+    AccountProviderInterface.h
+    AccountServiceInterface.h
     EventationInterface.h
     EventReceiverInterface.h
     UnknownInterface.h    
@@ -115,8 +115,9 @@ src
     ResourceBankInterface.h
     SettingInterface.h
     SettingsServiceInterface.h
+    DocumentServiceInterface.h
     
-	dummy.cpp
+    dummy.cpp
 )
 
 ADD_FILTER(
@@ -132,50 +133,50 @@ Sound
 ADD_FILTER(
 File
     FileServiceInterface.h
-	FileInputStreamInterface.h
-	FileMappedStreamInterface.h
-	FileOutputStreamInterface.h
-	FileGroupInterface.h
+    FileInputStreamInterface.h
+    FileMappedStreamInterface.h
+    FileOutputStreamInterface.h
+    FileGroupInterface.h
 )   
 
 ADD_FILTER(
 Thread     
-	ThreadIdentityInterface.h
-	ThreadQueueInterface.h
+    ThreadIdentityInterface.h
+    ThreadQueueInterface.h
     ThreadTaskInterface.h
     ThreadMutexInterface.h
     ThreadServiceInterface.h
-	ThreadSystemInterface.h
+    ThreadSystemInterface.h
 )
 
 ADD_FILTER(
 Render     
     MaterialEnumInterface.h
     RenderEnumInterface.h
-	RenderSystemInterface.h
-	RenderImageInterface.h
-	RenderTextureInterface.h
-	RenderViewportInterface.h	
-	RenderCameraInterface.h
+    RenderSystemInterface.h
+    RenderImageInterface.h
+    RenderTextureInterface.h
+    RenderViewportInterface.h
+    RenderCameraInterface.h
     RenderTransformationInterface.h
-	RenderScissorInterface.h
-	RenderTargetInterface.h
-	RenderMaterialServiceInterface.h
-	RenderTextureServiceInterface.h
-	RenderIndexBufferInterface.h
-	RenderVertexBufferInterface.h
-	RenderProgramInterface.h
-	RenderVertexShaderInterface.h
-	RenderFragmentShaderInterface.h
-	RenderVertexAttributeInterface.h
-	RenderMaterialInterface.h
+    RenderScissorInterface.h
+    RenderTargetInterface.h
+    RenderMaterialServiceInterface.h
+    RenderTextureServiceInterface.h
+    RenderIndexBufferInterface.h
+    RenderVertexBufferInterface.h
+    RenderProgramInterface.h
+    RenderVertexShaderInterface.h
+    RenderFragmentShaderInterface.h
+    RenderVertexAttributeInterface.h
+    RenderMaterialInterface.h
     RenderBatchInterface.h
     RenderPipelineInterface.h    
 )
 
 ADD_FILTER(
-dummy     
-	dummy.cpp
+dummy
+    dummy.cpp
 )
 
 ADD_MENGINE_LIBRARY()

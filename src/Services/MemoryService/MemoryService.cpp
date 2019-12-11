@@ -4,7 +4,6 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/ThreadMutexDummy.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
@@ -28,25 +27,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MemoryService::_initializeService()
     {
-        ThreadMutexInterfacePtr memoryCacheMutex = Helper::makeFactorableUnique<ThreadMutexDummy>( MENGINE_DOCUMENT_FACTORABLE );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( memoryCacheMutex, false );
-
-        m_memoryCacheMutex = memoryCacheMutex;
-
         m_factoryMemoryCacheBuffer = Helper::makeFactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryCacheInput = Helper::makeFactoryPool<MemoryCacheInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryProxyInput = Helper::makeFactoryPool<MemoryProxyInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryInput = Helper::makeFactoryPool<MemoryInput, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryBuffer = Helper::makeFactoryPool<MemoryBuffer, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryMemoryProxy = Helper::makeFactoryPool<MemoryProxy, 16, FactoryWithMutex>( MENGINE_DOCUMENT_FACTORABLE );
-
-        m_factoryMemoryBuffer->setMutex( m_memoryCacheMutex );
-        m_factoryMemoryProxy->setMutex( m_memoryCacheMutex );
-        m_factoryMemoryCacheBuffer->setMutex( m_memoryCacheMutex );
-        m_factoryMemoryCacheInput->setMutex( m_memoryCacheMutex );
-        m_factoryMemoryProxyInput->setMutex( m_memoryCacheMutex );
-        m_factoryMemoryInput->setMutex( m_memoryCacheMutex );
 
         SERVICE_WAIT( ThreadServiceInterface, [this]()
         {
@@ -77,18 +63,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MemoryService::_finalizeService()
     {
-        this->clearCacheBuffers();
-
         if( SERVICE_EXIST( ThreadServiceInterface ) == true )
         {
-            m_memoryCacheMutex = nullptr;
-
             m_factoryMemoryBuffer->setMutex( nullptr );
             m_factoryMemoryProxy->setMutex( nullptr );
             m_factoryMemoryCacheBuffer->setMutex( nullptr );
             m_factoryMemoryCacheInput->setMutex( nullptr );
             m_factoryMemoryProxyInput->setMutex( nullptr );
             m_factoryMemoryInput->setMutex( nullptr );
+
+            m_memoryCacheMutex = nullptr;
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMemoryBuffer );
@@ -104,6 +88,11 @@ namespace Mengine
         m_factoryMemoryCacheInput = nullptr;
         m_factoryMemoryProxyInput = nullptr;
         m_factoryMemoryInput = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MemoryService::_stopService()
+    {
+        this->clearCacheBuffers();
     }
     //////////////////////////////////////////////////////////////////////////
     CacheBufferID MemoryService::lockBuffer( size_t _size, void ** _memory, const DocumentPtr & _doc )

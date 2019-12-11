@@ -8,8 +8,8 @@ ADD_FILTER(
 
     NodeDebuggerModule.h
     NodeDebuggerModule.cpp
-	
-	NodeDebuggerSerialization.h
+
+    NodeDebuggerSerialization.h
     
     NodeDebuggerBoundingBoxInterface.h
     HotSpotPolygonDebuggerBoundingBox.h

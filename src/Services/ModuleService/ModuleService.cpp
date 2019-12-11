@@ -243,7 +243,7 @@ namespace Mengine
             module->messageAll( _name, _params );
         }
     }
-    //////////////////////////////////////////////////////////////////////////		
+    //////////////////////////////////////////////////////////////////////////
     const ModuleInterfacePtr & ModuleService::findModule_( const ConstString & _name ) const
     {
         VectorModules::const_iterator it_found =

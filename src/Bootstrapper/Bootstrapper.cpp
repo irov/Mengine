@@ -452,10 +452,10 @@ namespace Mengine
         LOGGER_MESSAGE( "initialize Plugins..." );
 
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
-		{LOGGER_INFO( Info );\
-		if(	PLUGIN_CREATE(Name, Doc) == false ){\
-		LOGGER_ERROR( "Invalid %s", Info );}else{\
-		LOGGER_MESSAGE( "Successful %s", Info );}}
+        {LOGGER_INFO( Info );\
+        if( PLUGIN_CREATE(Name, Doc) == false ){\
+        LOGGER_ERROR( "Invalid %s", Info );}else{\
+        LOGGER_MESSAGE( "Successful %s", Info );}}
 
 #ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
         MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework...", MENGINE_DOCUMENT_FACTORABLE );
@@ -582,7 +582,7 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AndroidNativeLocalNotifications, "initialize Android Local Notifications Native...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
-#	undef MENGINE_ADD_PLUGIN
+#undef MENGINE_ADD_PLUGIN
 
         return true;
     }
@@ -934,5 +934,57 @@ namespace Mengine
         SERVICE_FINALIZE( StringizeService );
         SERVICE_FINALIZE( FactoryService );
         SERVICE_FINALIZE( OptionsService );
+
+        SERVICE_DESTROY( SceneService );
+        SERVICE_DESTROY( GameService );
+        SERVICE_DESTROY( Application );
+        SERVICE_DESTROY( SecureService );
+        SERVICE_DESTROY( AccountService );
+        SERVICE_DESTROY( ChronometerService );
+        SERVICE_DESTROY( PrefetcherService );
+        SERVICE_DESTROY( PackageService );
+        SERVICE_DESTROY( UserdataService );
+        SERVICE_DESTROY( GraveyardService );
+        SERVICE_DESTROY( ResourceService );
+        SERVICE_DESTROY( TextService );
+        SERVICE_DESTROY( DataService );
+        SERVICE_DESTROY( LoaderService );
+        SERVICE_DESTROY( TimelineService );
+        SERVICE_DESTROY( WatchdogService );
+        SERVICE_DESTROY( ModuleService );
+        SERVICE_DESTROY( FrameworkService );
+        SERVICE_DESTROY( PlayerService );
+        SERVICE_DESTROY( PickerService );
+        SERVICE_DESTROY( UpdateService );
+        SERVICE_DESTROY( InputService );
+        SERVICE_DESTROY( UnicodeSystem );
+        SERVICE_DESTROY( CodecService );
+        SERVICE_DESTROY( SoundService );
+        SERVICE_DESTROY( SoundSystem );
+        SERVICE_DESTROY( ConverterService );
+        SERVICE_DESTROY( RenderService );
+        SERVICE_DESTROY( PrototypeService );
+        SERVICE_DESTROY( RenderMaterialService );
+        SERVICE_DESTROY( RenderTextureService );
+        SERVICE_DESTROY( RenderSystem );
+        SERVICE_DESTROY( ConfigService );
+        SERVICE_DESTROY( SettingsService );
+        SERVICE_DESTROY( ArchiveService );
+        SERVICE_DESTROY( MemoryService );
+        SERVICE_DESTROY( ThreadService );
+        SERVICE_DESTROY( TimeSystem );
+        SERVICE_DESTROY( EasingService );
+        SERVICE_DESTROY( VocabularyService );
+        SERVICE_DESTROY( EnumeratorService );
+        SERVICE_DESTROY( PluginService );
+        SERVICE_DESTROY( FileService );
+        SERVICE_DESTROY( ThreadSystem );
+        SERVICE_DESTROY( TimepipeService );
+        SERVICE_DESTROY( Platform );
+        SERVICE_DESTROY( NotificationService );
+        SERVICE_DESTROY( LoggerService );
+        SERVICE_DESTROY( StringizeService );
+        SERVICE_DESTROY( FactoryService );
+        SERVICE_DESTROY( OptionsService );
     }
 }

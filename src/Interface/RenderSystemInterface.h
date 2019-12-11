@@ -55,9 +55,9 @@ namespace Mengine
             , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
     public:
-        virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
-        virtual	void setViewMatrix( const mt::mat4f & _view ) = 0;
-        virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
+        virtual void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
+        virtual void setViewMatrix( const mt::mat4f & _view ) = 0;
+        virtual void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
     public:
         virtual void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) = 0;

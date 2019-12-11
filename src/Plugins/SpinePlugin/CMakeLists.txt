@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     SpineInterface.h
 
-	Spine.h
-	Spine.cpp
+    Spine.h
+    Spine.cpp
     
     ResourceSpineSkeleton.h
     ResourceSpineSkeleton.cpp    

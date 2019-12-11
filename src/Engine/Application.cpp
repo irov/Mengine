@@ -179,7 +179,7 @@ namespace Mengine
     Application::~Application()
     {
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     bool Application::_initializeService()
     {
         if( this->registerBaseTypes_() == false )
@@ -419,9 +419,9 @@ namespace Mengine
 #define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
             ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<NodePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
-		{\
-			return false;\
-		}        
+        {\
+            return false;\
+        }
 
         NODE_FACTORY( Node );
         NODE_FACTORY( Entity );
@@ -462,9 +462,9 @@ namespace Mengine
 #define SURFACE_FACTORY(Type)\
         if( PROTOTYPE_SERVICE()\
             ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), Helper::makeFactorableUnique<SurfacePrototypeGenerator<Type, 128>>(MENGINE_DOCUMENT_FACTORABLE) ) == false )\
-		{\
-			return false;\
-	    }
+        {\
+            return false;\
+        }
 
         SURFACE_FACTORY( SurfaceSound );
         SURFACE_FACTORY( SurfaceImage );
@@ -640,8 +640,8 @@ namespace Mengine
         LOGGER_INFO( "Initializing Resource Type..." );
 
 #define REMOVE_PROTOTYPE( Type )\
-		PROTOTYPE_SERVICE()\
-			->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
+        PROTOTYPE_SERVICE()\
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
 
         REMOVE_PROTOTYPE( ResourceMusic );
         REMOVE_PROTOTYPE( ResourceImageSequence );
@@ -659,7 +659,7 @@ namespace Mengine
         REMOVE_PROTOTYPE( ResourceCursorICO );
         REMOVE_PROTOTYPE( ResourceCursorSystem );
 
-#	undef RESOURCE_FACTORY
+#undef REMOVE_PROTOTYPE
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::createRenderWindow()

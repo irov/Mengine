@@ -196,7 +196,7 @@ namespace Mengine
 
 #if defined(MENGINE_TOOLCHAIN_MSVC) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
             _asm int 3;
-#endif	
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_hasGameData( const ConstString & _name )
@@ -2637,18 +2637,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_saveAccount()
         {
-            //AccountInterface * currentAccount = ACCOUNT_SERVICE()
-            //	->getCurrentAccount();
-
-            //if( currentAccount == NULL )
-            //{
-            //	LOGGER_ERROR("Error saveCurrentAccount: currentAccount is none"
-            //		);
-
-            //	return;
-            //}
-
-            //currentAccount->save();
+            //ToDo
         }
         //////////////////////////////////////////////////////////////////////////
         void s_saveAccounts()
@@ -2659,8 +2648,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_saveAccountsInfo()
         {
-            //ACCOUNT_SERVICE()
-            //	->saveAccountsInfo();
+            //ToDo
         }
         //////////////////////////////////////////////////////////////////////////
         void s_deleteAccount( const ConstString & _accountName )

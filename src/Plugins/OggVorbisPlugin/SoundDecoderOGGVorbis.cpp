@@ -114,18 +114,15 @@ namespace Mengine
             , 2
         );
 
-        ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );	// number of 16bit samples
+        ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );
 
         size_t size_pcmTotal = (size_t)pcmTotal;
 
-        //m_dataInfo.size = pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
-        m_dataInfo.size = size_pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
+        m_dataInfo.size = size_pcmTotal * 2 * vorbisInfo->channels;
         m_dataInfo.channels = (uint32_t)vorbisInfo->channels;
         m_dataInfo.frequency = (uint32_t)vorbisInfo->rate;
         m_dataInfo.bits = 2;
 
-
-        //The Buffer Size must be an exact multiple of the BlockAlignment
         m_dataInfo.size -= (m_dataInfo.size % 4);
 
         double al_total = ov_time_total( &m_oggVorbisFile, -1 );

@@ -597,7 +597,7 @@ namespace Mengine
 
         return volume;
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     void SoundService::setCommonVolume( const ConstString & _type, float _volume, float _default )
     {
         m_commonVolume.setValue( _type, _volume, _default, true );

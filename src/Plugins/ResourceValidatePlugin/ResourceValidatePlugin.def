@@ -1,2 +1,2 @@
-LIBRARY		"ResourceValidatePlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY "ResourceValidatePlugin"
+EXPORTS dllCreatePlugin @1

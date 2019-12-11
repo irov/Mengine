@@ -34,7 +34,10 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        m_mutex->lock();
+        if( m_mutex != nullptr )
+        {
+            m_mutex->lock();
+        }
 
         ++m_count;
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
@@ -42,11 +45,17 @@ namespace Mengine
         Factorable * object = this->_createObject();
         object->setFactory( this );
 
-        m_mutex->unlock();
+        if( m_mutex != nullptr )
+        {
+            m_mutex->unlock();
+        }
 
 #ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->debugFactoryCreateObject( this, object, _doc );
+        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        {
+            FACTORY_SERVICE()
+                ->debugFactoryCreateObject( this, object, _doc );
+        }
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
@@ -60,22 +69,30 @@ namespace Mengine
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
 #ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->debugFactoryDestroyObject( this, _object );
+        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        {
+            FACTORY_SERVICE()
+                ->debugFactoryDestroyObject( this, _object );
+        }
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, (Factory *)this, _object );
         }
 #endif
-
-        m_mutex->lock();
+        if( m_mutex != nullptr )
+        {
+            m_mutex->lock();
+        }
 
         this->_destroyObject( _object );
 
         --m_count;
         IntrusivePtrBase::intrusive_ptr_dec_ref( this );
 
-        m_mutex->unlock();
+        if( m_mutex != nullptr )
+        {
+            m_mutex->unlock();
+        }
     }
 }

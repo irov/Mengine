@@ -8,8 +8,8 @@ src
     IniConfig.cpp
     MemoryConfig.h
     MemoryConfig.cpp
-	ConfigService.h
-	ConfigService.cpp
+    ConfigService.h
+    ConfigService.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/tinyini/include)

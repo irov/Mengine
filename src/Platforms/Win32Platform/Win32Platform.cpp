@@ -30,13 +30,13 @@
 #include "Config/Stringstream.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(push, 0) 
+#   pragma warning(push, 0) 
 #endif
 
 #include "Environment/Windows/DbgHelp.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(pop) 
+#   pragma warning(pop) 
 #endif
 
 #include <cstdio>
@@ -1234,13 +1234,6 @@ namespace Mengine
                 fdx /= width;
                 fdy /= height;
 
-                //printf( "%f %f %d %d\n"
-                //	, point.x
-                //	, point.y
-                //	, int( point.x * 1024.f )
-                //	, int( point.y * 768.f )
-                //	);
-
                 Helper::pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
 
                 handle = true;
@@ -1444,7 +1437,7 @@ namespace Mengine
 
         HBRUSH black_brush = (HBRUSH)::GetStockObject( BLACK_BRUSH );
 
-        // Register the window class		
+        // Register the window class
         ATOM result = this->registerClass_(
             s_wndProc,
             0,
@@ -1781,7 +1774,7 @@ namespace Mengine
 
             //if( allowMaximize == true )
             //{
-            //	dwStyle |= WS_MAXIMIZEBOX;
+            //  dwStyle |= WS_MAXIMIZEBOX;
             //}
         }
         else
@@ -2016,14 +2009,14 @@ namespace Mengine
 
         size_t len = ::wcslen( pathCorrect );
 
-        if( len == 0 )	// current dir
+        if( len == 0 )
         {
             return true;
         }
 
-        if( pathCorrect[len - 1] == L':' )	// root dir
+        if( pathCorrect[len - 1] == L':' )
         {
-            return true;	// let it be
+            return true;
         }
 
         DWORD attributes = ::GetFileAttributes( pathCorrect );

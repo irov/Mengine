@@ -8,24 +8,20 @@
 #define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
 #endif
 
-//Defines
-#define THEORA_MAX( a, b ) ((a > b) ? a : b)
-#define THEORA_MIN( a, b ) ((a < b) ? a : b)
-
 #ifdef MENGINE_RENDER_TEXTURE_RGBA
-#	define THEORA_COLOR_R 0
-#	define THEORA_COLOR_G 1
-#	define THEORA_COLOR_B 2
-#	define THEORA_COLOR_A 3
+#   define THEORA_COLOR_R 0
+#   define THEORA_COLOR_G 1
+#   define THEORA_COLOR_B 2
+#   define THEORA_COLOR_A 3
 #else
-#	define THEORA_COLOR_R 2
-#	define THEORA_COLOR_G 1
-#	define THEORA_COLOR_B 0
-#	define THEORA_COLOR_A 3
+#   define THEORA_COLOR_R 2
+#   define THEORA_COLOR_G 1
+#   define THEORA_COLOR_B 0
+#   define THEORA_COLOR_A 3
 #endif
 
 #define THEORA_CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-	rgb_char_buffer = (uint8_t)(THEORA_MAX( THEORA_MIN(rgb_color_test, 255), 0 ))
+    rgb_char_buffer = (uint8_t)MENGINE_CLAMP( 0, rgb_color_test, 255)
 
 namespace Mengine
 {
@@ -38,22 +34,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_createCoefTables()
     {
-        //used to bring the table into the high side (scale up) so we
-        //can maintain high precision and not use floats (FIXED POINT)
         int32_t scale = 1L << 13;
 
         for( int32_t i = 0; i < 256; i++ )
         {
             int32_t temp = i - 128;
 
-            s_YTable[i] = (int32_t)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+            s_YTable[i] = (int32_t)((1.164 * scale + 0.5) * (i - 16));
 
-            s_RVTable[i] = (int32_t)((1.596 * scale + 0.5) * temp);		//Calc R component
+            s_RVTable[i] = (int32_t)((1.596 * scale + 0.5) * temp);
 
-            s_GUTable[i] = (int32_t)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
+            s_GUTable[i] = (int32_t)((0.391 * scale + 0.5) * temp);
             s_GVTable[i] = (int32_t)((0.813 * scale + 0.5) * temp);
 
-            s_BUTable[i] = (int32_t)((2.018 * scale + 0.5) * temp);		//Calc B component
+            s_BUTable[i] = (int32_t)((2.018 * scale + 0.5) * temp);
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -76,10 +70,8 @@ namespace Mengine
         memset( &m_theoraComment, 0, sizeof( m_theoraComment ) );
         memset( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
 
-        // start up Ogg stream synchronization layer
         ogg_sync_init( &m_oggSyncState );
 
-        // init supporting Theora structures needed in header parsing
         theora_comment_init( &m_theoraComment );
         theora_info_init( &m_theoraInfo );
 
@@ -95,63 +87,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::_prepareData()
     {
-        // Ogg file open; parse the headers
-        // Only interested in Vorbis/Theora streams 
         bool stateFlag = true;
-        bool theoraHeader = false;  // число обработанных пакетов заголовков theora
+        bool theoraHeader = false;
 
         do
         {
-            // и передает их в буфер приема ogg
             if( this->read_buffer_data_() == 0 )
             {
-                // кончился файл, на данном этапе это ошибка
                 LOGGER_ERROR( "bad file" );
 
                 return false;
             }
 
-            // ogg_sync_pageout - формирует страницу
             ogg_page page;
             while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
-                // 1-больше данных не требуется
-                // 0-требуется больше данных для создания страницы
             {
-
-                // что страница сформирована успешно
-
-                // это страница заголовков? если нет, кончаем искать заголовки
                 if( ogg_page_bos( &page ) == false )
                 {
-                    // нет, это не страница заголовков
-                    // значит, страницы заголовков всех логических потоков кончились
-                    // и начались данные этих потоков
-                    // таким образом надо переходить к чтению страниц данных
-
-                    // закидываем эту страничку в логический видеопоток
                     if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
                     {
                         LOGGER_ERROR( "bad page in" );
 
                         return false;
                     }
-                    // закидывает страничку
-                    // в логический поток theora, если
-                    // совпадает идентификатор логического потока
-                    // в противном случае страница игнорируется
 
-                    // выходим из циклов
                     stateFlag = false;
                     break;
                 }
 
-                // да, это страница заголовков
                 ogg_stream_state oggStreamStateTest;
                 memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
 
-                // тестовый логический поток
-                // инициализируем тестовый поток на тот же поток с таким же
-                // идентификатором потока, как и у текущей странички
                 int32_t serialno = ogg_page_serialno( &page );
                 if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
                 {
@@ -160,7 +126,6 @@ namespace Mengine
                     return false;
                 }
 
-                // добавляем страницу в тестовый поток
                 if( ogg_stream_pagein( &oggStreamStateTest, &page ) != 0 )
                 {
                     LOGGER_ERROR( "error during ogg_stream_pagein" );
@@ -168,7 +133,6 @@ namespace Mengine
                     return false;
                 }
 
-                // декодируем данные из этого тестового потока в пакет
                 ogg_packet packet;
                 if( ogg_stream_packetout( &oggStreamStateTest, &packet ) == -1 )
                 {
@@ -177,38 +141,18 @@ namespace Mengine
                     return false;
                 }
 
-                // theoraHeaderPackets - число прочитанных
-                // заголовочных ПАКЕТОВ theora (не страниц)
-                // по спецификации theora таких пакетов должно быть три
-                // декодируем заголовок theora
                 if( theoraHeader == true || theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet ) < 0 )
                 {
-                    // это не заголовок theora
-
-                    // очищаем структуру тестового потока
                     ogg_stream_clear( &oggStreamStateTest );
-                    //и продолжаем цикл в поисках заголовков theora
                 }
                 else
                 {
-                    // это заголовок theora!
-
-                    // вот таким образом "инициализируем" логический поток theora:
-                    // теперь из этого потока будут всегда сыпаться пакеты theora
-
                     memcpy( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
 
                     theoraHeader = true;
-
-                    // после того, как мы нашли заголовочную страницу логического потока theora,
-                    // нам необходимо прочитать все остальные заголовочные страницы
-                    // других потоков и отбросить их (если таковые, конечно, имеются)
                 }
             }
         } while( stateFlag == true );
-
-        // сейчас надо получить еще два пакета заголовков theora (см. её документацию)
-        // и можно переходить к потоковому воспроизведению
 
         if( theoraHeader == false )
         {
@@ -224,11 +168,9 @@ namespace Mengine
             {
                 ogg_packet packet;
                 int32_t result = ogg_stream_packetout( &m_oggStreamState, &packet );
-                // если функция возвращает нуль, значит не хватает данных для декодирования
 
                 if( result < 0 )
                 {
-                    // ошибка декодирования, поврежденный поток
                     LOGGER_ERROR( "error during ogg_stream_packetout %d"
                         , result
                     );
@@ -241,12 +183,10 @@ namespace Mengine
                     break;
                 }
 
-                // удалось успешно извлечь пакет информации theora
                 int32_t result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
 
                 if( result2 < 0 )
                 {
-                    // ошибка декодирования, поврежденный поток
                     LOGGER_ERROR( "error during theora_decode_header (corrupt stream) %d"
                         , result2
                     );
@@ -257,42 +197,29 @@ namespace Mengine
                 ++theoraHeaderPackets;
             }
 
-            // эту страничку обработали, надо извлечь новую
-            // для этого проверяем буфер чтения, вдруг там осталось что-нить похожее
-            // на страничку. Если не осталось, тогда просто читаем эти данные из файла:			
             ogg_page page;
             if( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
-                // ogg_sync_pageout - функция, берет данные из буфера приема ogg
-                // и записывает их в ogg_page
             {
-                //мы нашли страничку в буфере и...
                 if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
                 {
-                    // опять файл кончился!
-                    LOGGER_ERROR( "invalid page..."
-                    );
+                    LOGGER_ERROR( "invalid page..." );
 
                     return false;
                 }
-                // ...пихаем эти данные в подходящий поток
             }
             else
             {
-                // ничего мы в буфере не нашли
                 size_t ret = this->read_buffer_data_();
-                // надо больше данных! читаем их из файла
+
                 if( ret == 0 )
                 {
-                    // опять файл кончился!
-                    LOGGER_ERROR( "eof searched. terminate..."
-                    );
+                    LOGGER_ERROR( "eof searched. terminate..." );
 
                     return false;
                 }
             }
         }
 
-        // наконец мы получили, все, что хотели. инициализируем декодеры
         theora_decode_init( &m_theoraState, &m_theoraInfo );
 
         if( m_theoraInfo.pixelformat != OC_PF_420 )
@@ -305,19 +232,6 @@ namespace Mengine
 
             return false;
         }
-
-        //if( m_theoraInfo.width != m_theoraInfo.frame_width ||
-        //	m_theoraInfo.height != m_theoraInfo.frame_height )
-        //{
-        //	LOGGER_ERROR("VideoDecoderTheora::_prepareData invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
-        //		, m_theoraInfo.frame_width
-        //		, m_theoraInfo.frame_height
-        //		, m_theoraInfo.width
-        //		, m_theoraInfo.height
-        //		);
-
-        //	return false;
-        //}
 
         if( m_options.alpha == true )
         {
@@ -376,7 +290,6 @@ namespace Mengine
 
         ogg_sync_init( &m_oggSyncState );
 
-        // init supporting Theora structures needed in header parsing
         theora_comment_init( &m_theoraComment );
         theora_info_init( &m_theoraInfo );
 
@@ -407,12 +320,10 @@ namespace Mengine
         }
 
         yuv_buffer yuvBuffer;
-        // декодируем страничку в YUV-виде в спец. структуру yuv_buffer
         int32_t error_code = theora_decode_YUVout( &m_theoraState, &yuvBuffer );
 
         if( error_code < 0 )
         {
-            // ошибка декодирования
             LOGGER_ERROR( "error during theora_decode_YUVout '%d'"
                 , error_code
             );
@@ -450,21 +361,17 @@ namespace Mengine
             uint8_t * vSrc = (uint8_t *)_yuvBuffer.v;
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
-            //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
             for( int32_t y = 0; y != y_height; ++y )
             {
                 for( int32_t x = 0; x != y_width; ++x )
                 {
-                    //Get uv pointers for row
                     int32_t u = uSrc[x];
                     int32_t v = vSrc[x];
 
-                    //get corresponding lookup values					
                     int32_t rV = s_RVTable[v];
                     int32_t gUV = s_GUTable[u] + s_GVTable[v];
                     int32_t bU = s_BUTable[u];
 
-                    //scale down - brings are values back into the 8 bits of a byte
                     int32_t rgbY = s_YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
@@ -475,8 +382,6 @@ namespace Mengine
                     dstBitmap[THEORA_COLOR_A] = 255;
                     ++ySrc;
 
-                    //And repeat for other pixels (note, y is unique for each
-                    //pixel, while uv are not)
                     rgbY = s_YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
@@ -507,19 +412,17 @@ namespace Mengine
                     dstBitmapOffset[4 + THEORA_COLOR_A] = 255;
                     ++ySrc2;
 
-                    //Advance inner loop offsets
                     dstBitmap += 4 << 1;
                     dstBitmapOffset += 4 << 1;
-                } // end for x
+                }
 
-                //Advance destination pointers by offsets
                 dstBitmap += dstOff;
                 dstBitmapOffset += dstOff;
                 ySrc += yOff;
                 ySrc2 += yOff;
                 uSrc += _yuvBuffer.uv_stride;
                 vSrc += _yuvBuffer.uv_stride;
-            } //end for y
+            }
         }
         else if( m_options.alpha == false && m_options.pixelFormat == PF_R8G8B8 )
         {
@@ -537,22 +440,17 @@ namespace Mengine
             uint8_t * vSrc = (uint8_t *)_yuvBuffer.v;
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
-            //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
             for( int32_t y = 0; y != y_height; ++y )
             {
                 for( int32_t x = 0; x != y_width; ++x )
                 {
-                    //Get uv pointers for row
                     int32_t u = uSrc[x];
                     int32_t v = vSrc[x];
-
-                    //get corresponding lookup values
 
                     int32_t rV = s_RVTable[v];
                     int32_t gUV = s_GUTable[u] + s_GVTable[v];
                     int32_t bU = s_BUTable[u];
 
-                    //scale down - brings are values back into the 8 bits of a byte
                     int32_t rgbY = s_YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
@@ -562,8 +460,6 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
                     ++ySrc;
 
-                    //And repeat for other pixels (note, y is unique for each
-                    //pixel, while uv are not)
                     rgbY = s_YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
@@ -591,26 +487,24 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[3 + THEORA_COLOR_B] );
                     ++ySrc2;
 
-                    //Advance inner loop offsets
                     dstBitmap += 3 << 1;
                     dstBitmapOffset += 3 << 1;
-                } // end for x
+                }
 
-                //Advance destination pointers by offsets
                 dstBitmap += dstOff;
                 dstBitmapOffset += dstOff;
                 ySrc += yOff;
                 ySrc2 += yOff;
                 uSrc += _yuvBuffer.uv_stride;
                 vSrc += _yuvBuffer.uv_stride;
-            } //end for y
+            }
         }
         else if( m_options.alpha == true )
         {
             uint8_t * dstBitmap = _buffer;
             uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
-            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+            uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
             int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
             int32_t y_height = _yuvBuffer.y_height >> 1;
@@ -621,25 +515,19 @@ namespace Mengine
             uint8_t * vSrc = (uint8_t *)_yuvBuffer.v;
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
-            //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-            //int y_rgb_height_begin = y_height;
-            //int y_rgb_height_end = y_height / 2;
             int32_t y_rgb_count = y_height / 2;
 
             for( int32_t y = 0; y != y_rgb_count; ++y )
             {
                 for( int32_t x = 0; x != y_width; ++x )
                 {
-                    //Get uv pointers for row
                     int32_t u = uSrc[x];
                     int32_t v = vSrc[x];
 
-                    //get corresponding lookup values					
                     int32_t rV = s_RVTable[v];
                     int32_t gUV = s_GUTable[u] + s_GVTable[v];
                     int32_t bU = s_BUTable[u];
 
-                    //scale down - brings are values back into the 8 bits of a byte
                     int32_t rgbY = s_YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     int32_t g = (rgbY - gUV) >> 13;
@@ -649,8 +537,6 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
                     ++ySrc;
 
-                    //And repeat for other pixels (note, y is unique for each
-                    //pixel, while uv are not)
                     rgbY = s_YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     g = (rgbY - gUV) >> 13;
@@ -678,19 +564,17 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( b, dstBitmapOffset[4 + THEORA_COLOR_B] );
                     ++ySrc2;
 
-                    //Advance inner loop offsets
                     dstBitmap += 4 << 1;
                     dstBitmapOffset += 4 << 1;
-                } // end for x
+                }
 
-                //Advance destination pointers by offsets
                 dstBitmap += dstOff;
                 dstBitmapOffset += dstOff;
                 ySrc += yOff;
                 ySrc2 += yOff;
                 uSrc += _yuvBuffer.uv_stride;
                 vSrc += _yuvBuffer.uv_stride;
-            } //end for y
+            }
 
             dstBitmap = _buffer;
             dstBitmapOffset = _buffer + m_pitch;
@@ -699,21 +583,15 @@ namespace Mengine
             {
                 for( int32_t x = 0; x != y_width; ++x )
                 {
-                    //Get uv pointers for row
                     int32_t v = vSrc[x];
-
-                    //get corresponding lookup values
 
                     int32_t rV = s_RVTable[v];
 
-                    //scale down - brings are values back into the 8 bits of a byte
                     int32_t rgbY = s_YTable[*ySrc];
                     int32_t r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_A] );
                     ++ySrc;
 
-                    //And repeat for other pixels (note, y is unique for each
-                    //pixel, while uv are not)
                     rgbY = s_YTable[*ySrc];
                     r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[4 + THEORA_COLOR_A] );
@@ -729,18 +607,16 @@ namespace Mengine
                     THEORA_CLIP_RGB_COLOR( r, dstBitmapOffset[4 + THEORA_COLOR_A] );
                     ++ySrc2;
 
-                    //Advance inner loop offsets
                     dstBitmap += 4 << 1;
                     dstBitmapOffset += 4 << 1;
-                } // end for x
+                }
 
-                //Advance destination pointers by offsets
                 dstBitmap += dstOff;
                 dstBitmapOffset += dstOff;
                 ySrc += yOff;
                 ySrc2 += yOff;
                 vSrc += _yuvBuffer.uv_stride;
-            } //end for y
+            }
         }
         else
         {

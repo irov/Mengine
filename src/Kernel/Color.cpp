@@ -157,7 +157,7 @@ namespace Mengine
         uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t b8 = (m_argb >> 16) & 0xFF;
         uint8_t a8 = (m_argb >> 24) & 0xFF;
-#else		
+#else
         uint8_t b8 = (m_argb >> 0) & 0xFF;
         uint8_t g8 = (m_argb >> 8) & 0xFF;
         uint8_t r8 = (m_argb >> 16) & 0xFF;

@@ -2,9 +2,9 @@ set(MY_LIB_NAME OggVorbisPlugin)
 
 ADD_FILTER(
 src
-	OggVorbisPlugin.cpp
-	OggVorbisPlugin.def
-	OggVorbisPlugin.h
+    OggVorbisPlugin.cpp
+    OggVorbisPlugin.def
+    OggVorbisPlugin.h
     SoundDecoderOGGVorbis.cpp
     SoundDecoderOGGVorbis.h
 )

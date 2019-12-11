@@ -13,7 +13,7 @@ namespace Mengine
     FactoryPrototypeGenerator::~FactoryPrototypeGenerator()
     {
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     bool FactoryPrototypeGenerator::initialize()
     {
         FactoryPtr factory = this->_initializeFactory();

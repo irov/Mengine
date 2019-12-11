@@ -1563,7 +1563,7 @@ namespace Mengine
 
         return 0;
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     bool TextField::updateTextCache_( U32String & _cacheText ) const
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();

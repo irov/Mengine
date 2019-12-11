@@ -28,7 +28,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define PROTOTYPE_SERVICE()\
-	((Mengine::PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
+    ((Mengine::PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define PROTOTYPE_GENERATE(Category, Prototype, Document)\
     PROTOTYPE_SERVICE()->generatePrototype(Category, Prototype, Document)

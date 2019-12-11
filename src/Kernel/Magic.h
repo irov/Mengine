@@ -29,7 +29,7 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_MAGIC_NUMBER( name, c0, c1, c2, c3, version)\
-	typedef Magic<c0, c1, c2, c3, version> name;
+    typedef Magic<c0, c1, c2, c3, version> name;
 //////////////////////////////////////////////////////////////////////////
 #define GET_MAGIC_NUMBER( name ) (name::magic_number)
 #define GET_MAGIC_VERSION( name ) (name::magic_version)

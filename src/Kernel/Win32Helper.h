@@ -7,6 +7,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        bool Win32GetCurrentDllPath( Char * _path );
+        const Char * Win32GetCurrentDllPath();
     }
 }

@@ -45,6 +45,10 @@ namespace Mengine
 
         uint32_t m_count;
 
+#ifdef MENGINE_DEBUG
+        bool m_register;
+#endif
+
         STDEX_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////

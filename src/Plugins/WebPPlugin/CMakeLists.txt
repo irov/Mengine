@@ -2,10 +2,10 @@ set(MY_LIB_NAME WebPPlugin)
 
 ADD_FILTER(
 src
-	WebPPlugin.h
-	WebPPlugin.cpp
+    WebPPlugin.h
+    WebPPlugin.cpp
     WebPPlugin.def
-    
+
     ImageDecoderWebP.h
     ImageDecoderWebP.cpp
 )

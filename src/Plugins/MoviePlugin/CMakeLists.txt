@@ -5,8 +5,8 @@ src
     Movie2Interface.h
     UnknownMovie2Interface.h
     
-	MoviePlugin.h
-	MoviePlugin.cpp
+    MoviePlugin.h
+    MoviePlugin.cpp
     
     Movie2.cpp
     Movie2.h
@@ -59,5 +59,5 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}movie${MENGINE_LIB_SUFFIX})
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Engine)	
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Engine)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Metacode)

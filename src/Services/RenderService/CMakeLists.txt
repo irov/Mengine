@@ -5,15 +5,15 @@ src
     RenderBatch.h
     RenderBatch.cpp
     RenderService.h
-	RenderService.cpp	
-	RenderTexture.h
-	RenderTexture.cpp
+    RenderService.cpp
+    RenderTexture.h
+    RenderTexture.cpp
     RenderTextureService.h
     RenderTextureService.cpp
-	DecoderRenderImageProvider.h
-	DecoderRenderImageProvider.cpp
-	DecoderRenderImageLoader.h
-	DecoderRenderImageLoader.cpp
+    DecoderRenderImageProvider.h
+    DecoderRenderImageProvider.cpp
+    DecoderRenderImageLoader.h
+    DecoderRenderImageLoader.cpp
     RenderMaterial.h
     RenderMaterial.cpp
     RenderMaterialService.h

@@ -66,6 +66,7 @@
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
+SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 
 PLUGIN_EXPORT( Win32FileGroup );
@@ -115,7 +116,6 @@ namespace Mengine
 
         LOGGER_MESSAGE( "Current Path '%s'", currentPath );
 
-        // mount root		
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
@@ -127,7 +127,6 @@ namespace Mengine
         }
 
 #ifndef MENGINE_MASTER_RELEASE
-        // mount root		
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
@@ -339,6 +338,8 @@ namespace Mengine
 
         m_serviceProvider = serviceProvider;
 
+        SERVICE_CREATE( DocumentService, nullptr );
+
         SERVICE_WAIT( OptionsServiceInterface, [this]()
         {
             if( this->initializeOptionsService_() == false )
@@ -520,6 +521,10 @@ namespace Mengine
             ->stop();
 
         SERVICE_FINALIZE( Bootstrapper );
+        SERVICE_DESTROY( Bootstrapper );
+
+        SERVICE_FINALIZE( DocumentService );
+        SERVICE_DESTROY( DocumentService );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }

@@ -6,6 +6,7 @@
 
 #define MENGINE_MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MENGINE_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MENGINE_CLAMP(a, b, c) MENGINE_MAX( MENGINE_MIN(b, c), a )
 
 #define MENGINE_STRING_EMPTY ""
 

@@ -63,7 +63,7 @@ namespace Mengine
         uint32_t           dwDepth;
         uint32_t           dwMipMapCount;
         uint32_t           dwReserved1[11];
-        DDS_PIXELFORMAT	 ddspf;
+        DDS_PIXELFORMAT    ddspf;
         uint32_t           dwSurfaceFlags;
         uint32_t           dwCubemapFlags;
         uint32_t           dwReserved2[3];

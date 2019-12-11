@@ -8,14 +8,14 @@ MessageBoxLogger
 
 if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
-main	
+main
     win32_main.cpp
 )
 endif()
 
 if(MENGINE_TOOLCHAIN_MINGW)
 ADD_FILTER(
-main	
+main
     mingw32_main.cpp
 )
 endif()
@@ -23,8 +23,8 @@ endif()
     
 ADD_FILTER(
 Win32Application
-	Win32Application.cpp
-	Win32Application.h
+    Win32Application.cpp
+    Win32Application.h
 )
 
 if(MENGINE_TOOLCHAIN_MINGW)
@@ -51,11 +51,11 @@ if(NOT MSVC)
 endif()
 
 if(MSVC)
-	set_target_properties(${MY_LIB_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib")
+    set_target_properties(${MY_LIB_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib")
 endif()
 
 if(MINGW)
-	set_target_properties(${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map"            )
+    set_target_properties(${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Win32Application.map"            )
 endif()
 
 ADD_DEPENDENCIES(${MY_LIB_NAME} ${APPLICATION_DEPENDENCIES})

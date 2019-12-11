@@ -4,15 +4,15 @@ ADD_FILTER(
 src
     BitmapFontPlugin.h
     BitmapFontPlugin.cpp
-	BitmapFontInterface.h
+    BitmapFontInterface.h
     BitmapFont.h
     BitmapFont.cpp
     BitmapGlyph.h
     BitmapGlyph.cpp
-	BitmapGlyphService.h
-	BitmapGlyphService.cpp
-	BitmapFontPrototypeGenerator.h
-	BitmapFontPrototypeGenerator.cpp
+    BitmapGlyphService.h
+    BitmapGlyphService.cpp
+    BitmapFontPrototypeGenerator.h
+    BitmapFontPrototypeGenerator.cpp
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)

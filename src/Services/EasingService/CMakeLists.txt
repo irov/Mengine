@@ -5,8 +5,8 @@ src
     EasingHelper.cpp
     EasingHelper.h
     
-	EasingService.cpp
-	EasingService.h
+    EasingService.cpp
+    EasingService.h
 )
 
 ADD_MENGINE_LIBRARY(Services)

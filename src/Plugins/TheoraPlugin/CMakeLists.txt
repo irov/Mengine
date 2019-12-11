@@ -2,13 +2,13 @@ set(MY_LIB_NAME TheoraPlugin)
 
 ADD_FILTER(
 src
-	TheoraPlugin.h
-	TheoraPlugin.cpp
+    TheoraPlugin.h
+    TheoraPlugin.cpp
     TheoraPlugin.def
     
     TheoraVideoDecoder.cpp
     TheoraVideoDecoder.h
-	)
+)
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libtheora/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/libogg/include)

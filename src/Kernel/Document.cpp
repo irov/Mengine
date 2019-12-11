@@ -2,49 +2,19 @@
 
 #include "Kernel/MemoryAllocator.h"
 
-#ifdef MENGINE_PLATFORM_WINDOWS
-#   include "Kernel/Win32Helper.h"
-#endif
-
-#include "Config/StdIO.h"
-
-//////////////////////////////////////////////////////////////////////////
-#ifndef MENGINE_DOCUMENT_MAX_MESSAGE
-#define MENGINE_DOCUMENT_MAX_MESSAGE 8192
-#endif
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Document::Document( const Char * _file, const Char * _function, uint32_t _line )
-        : m_file( _file )
-        , m_function( _function )
-        , m_line( _line )
+    Document::Document()
+        : m_file( nullptr )
+        , m_function( nullptr )
+        , m_line( 0 )
     {
     }
     /////////////////////////////////////////////////////////////////////////
     Document::~Document()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Char * Document::getModulePath() const
-    {
-        return m_modulePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Char * Document::getFile() const
-    {
-        return m_file;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const Char * Document::getFunction() const
-    {
-        return m_function;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Document::getLine() const
-    {
-        return m_line;
     }
     //////////////////////////////////////////////////////////////////////////
     void Document::setParent( const DocumentPtr & _parent )
@@ -57,24 +27,52 @@ namespace Mengine
         return m_parent;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Document::message( const char * _format, ... )
+    void Document::setModulePath( const Char * _modulePath )
     {
-#ifdef MENGINE_PLATFORM_WINDOWS
-        Helper::Win32GetCurrentDllPath( m_modulePath );
-#endif
-
-        MENGINE_VA_LIST_TYPE args;
-        MENGINE_VA_LIST_START( args, _format );
-
-        Char message[MENGINE_DOCUMENT_MAX_MESSAGE] = {0};
-        int message_size = MENGINE_VSNPRINTF( message, MENGINE_DOCUMENT_MAX_MESSAGE, _format, args );
-
-        MENGINE_VA_LIST_END( args );
-
-        m_message.assign( message, message_size );
+        m_modulePath.assign( _modulePath );
     }
     //////////////////////////////////////////////////////////////////////////
-    const Char * Document::c_str() const
+    const Char * Document::getModulePath() const
+    {
+        return m_modulePath.c_str();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Document::setFile( const Char * _file )
+    {
+        m_file = _file;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * Document::getFile() const
+    {
+        return m_file;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Document::setFunction( const Char * _function )
+    {
+        m_function = _function;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * Document::getFunction() const
+    {
+        return m_function;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Document::setLine( uint32_t _line )
+    {
+        m_line = _line;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Document::getLine() const
+    {
+        return m_line;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Document::setMessage( const Char * _message )
+    {
+        m_message.assign( _message );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * Document::getMessage() const
     {
         return m_message.c_str();
     }

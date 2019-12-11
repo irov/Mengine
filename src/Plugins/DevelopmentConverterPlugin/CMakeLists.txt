@@ -2,18 +2,18 @@ set(MY_LIB_NAME DevelopmentConverterPlugin)
 
 ADD_FILTER(
 src
-	DevelopmentConverter.cpp
+    DevelopmentConverter.cpp
     DevelopmentConverter.h
-	DevelopmentConverterPlugin.cpp
+    DevelopmentConverterPlugin.cpp
     DevelopmentConverterPlugin.def
     DevelopmentConverterPlugin.h
     
-	HotspotImageConverterPNGToHIT.cpp
+    HotspotImageConverterPNGToHIT.cpp
     HotspotImageConverterPNGToHIT.h
     SoundConverterFFMPEGToOGG.cpp
-	SoundConverterFFMPEGToOGG.h
-	VideoConverterFFMPEGToWEBM.cpp
-	VideoConverterFFMPEGToWEBM.h
+    SoundConverterFFMPEGToOGG.h
+    VideoConverterFFMPEGToWEBM.cpp
+    VideoConverterFFMPEGToWEBM.h
     VideoConverterFFMPEGToOGV.cpp
     VideoConverterFFMPEGToOGV.h
     VideoConverterFFMPEGToOGVA.cpp
@@ -22,8 +22,8 @@ src
     ShaderConverterTextToPSO.h
     ShaderConverterTextToVSO.cpp
     ShaderConverterTextToVSO.h
-	ParticleConverterPTCToPTZ.cpp
-	ParticleConverterPTCToPTZ.h    
+    ParticleConverterPTCToPTZ.cpp
+    ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp
     MovieKeyConverterXMLToAEK.h
     ImageConverterPVRToHTF.cpp

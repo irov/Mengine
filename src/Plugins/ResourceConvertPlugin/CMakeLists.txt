@@ -4,9 +4,9 @@ ADD_FILTER(
 src
     ResourceConvertServiceInterface.h
 
-	ResourceConvertPlugin.h
+    ResourceConvertPlugin.h
     ResourceConvertPlugin.def
-	ResourceConvertPlugin.cpp
+    ResourceConvertPlugin.cpp
     
     ResourceConvertService.h
     ResourceConvertService.cpp    

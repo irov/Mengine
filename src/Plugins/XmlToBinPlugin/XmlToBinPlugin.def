@@ -1,2 +1,2 @@
-LIBRARY		"XmlToBinPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY "XmlToBinPlugin"
+EXPORTS dllCreatePlugin @1

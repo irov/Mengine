@@ -2,9 +2,9 @@ set(MY_LIB_NAME SoundCodecPlugin)
 
 ADD_FILTER(
 src
-	SoundCodecPlugin.cpp
-	SoundCodecPlugin.def
-	SoundCodecPlugin.h
+    SoundCodecPlugin.cpp
+    SoundCodecPlugin.def
+    SoundCodecPlugin.h
     SoundDecoderWAV.cpp
     SoundDecoderWAV.h
 )

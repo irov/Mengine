@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     JSONInterface.h
     
-	JSONPlugin.h
-	JSONPlugin.cpp
+    JSONPlugin.h
+    JSONPlugin.cpp
     JSONPlugin.def
 
     JSONStorage.cpp
@@ -16,9 +16,9 @@ src
     
     ResourceJSON.cpp
     ResourceJSON.h
-	
-	LoaderResourceJSON.cpp
-	LoaderResourceJSON.h
+
+    LoaderResourceJSON.cpp
+    LoaderResourceJSON.h
     
     JSONSetting.cpp
     JSONSetting.h

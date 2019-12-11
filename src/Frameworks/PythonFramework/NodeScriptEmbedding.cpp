@@ -300,16 +300,6 @@ namespace Mengine
             return ws_args;
         }
         //////////////////////////////////////////////////////////////////////////
-        //WString textfield_getText( TextField * _textField )
-        //{
-        //	const U32String & utf8 = _textField->getText();
-
-        //	WString unicode;
-        //	Helper::utf8ToUnicode( utf8, unicode );
-
-        //	return unicode;
-        //}
-        //////////////////////////////////////////////////////////////////////////
         mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
         {
             const mt::box2f * bb = _boundingBox->getBoundingBox();

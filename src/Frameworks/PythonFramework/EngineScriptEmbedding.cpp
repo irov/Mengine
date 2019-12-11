@@ -2183,7 +2183,7 @@ namespace Mengine
         typedef IntrusivePtr<AffectorUser> AffectorUserPtr;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryAffectorUser;
-        //////////////////////////////////////////////////////////////////////////		
+        //////////////////////////////////////////////////////////////////////////
         AffectorPtr s_createAffector( const pybind::object & _cb, const pybind::args & _args )
         {
             AffectorUserPtr affector = m_factoryAffectorUser->createObject( MENGINE_DOCUMENT_PYBIND );
@@ -2443,7 +2443,7 @@ namespace Mengine
 
             _affector->stop();
         }
-        //////////////////////////////////////////////////////////////////////////		
+        //////////////////////////////////////////////////////////////////////////
         void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params )
         {
             MODULE_SERVICE()
@@ -3396,7 +3396,7 @@ namespace Mengine
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<IncrefResourceVisitor> IncrefResourceVisitorPtr;
-        //////////////////////////////////////////////////////////////////////////		
+        //////////////////////////////////////////////////////////////////////////
         void s_incrementResources( const ConstString & _groupName )
         {
             IncrefResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<IncrefResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
@@ -3418,7 +3418,7 @@ namespace Mengine
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<DecrementResourceVisitor> DecrementResourceVisitorPtr;
-        //////////////////////////////////////////////////////////////////////////		
+        //////////////////////////////////////////////////////////////////////////
         void s_decrementResources( const ConstString & _groupName )
         {
             DecrementResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<DecrementResourceVisitor>( MENGINE_DOCUMENT_PYBIND );
@@ -3483,7 +3483,7 @@ namespace Mengine
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<GetResourceVisitor> GetResourceVisitorPtr;
-        //////////////////////////////////////////////////////////////////////////		
+        //////////////////////////////////////////////////////////////////////////
         pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _groupName )
         {
             GetResourceVisitorPtr rv_gac = Helper::makeFactorableUnique<GetResourceVisitor>( MENGINE_DOCUMENT_PYBIND, _kernel );

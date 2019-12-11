@@ -2,8 +2,8 @@ set(MY_LIB_NAME cURLPlugin)
 
 ADD_FILTER(
 src
-	cURLPlugin.h
-	cURLPlugin.cpp
+    cURLPlugin.h
+    cURLPlugin.cpp
     cURLPlugin.def
     
     cURLInterface.h

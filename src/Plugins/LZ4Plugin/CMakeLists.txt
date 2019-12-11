@@ -2,10 +2,10 @@ set(MY_LIB_NAME LZ4Plugin)
 
 ADD_FILTER(
 src
-	LZ4Plugin.h
-	LZ4Plugin.cpp   
+    LZ4Plugin.h
+    LZ4Plugin.cpp
     ArchivatorLZ4.h
-    ArchivatorLZ4.cpp    
+    ArchivatorLZ4.cpp
 )
 
 ADD_DEFINITIONS(-DLZ4HC_HEAPMODE=0)

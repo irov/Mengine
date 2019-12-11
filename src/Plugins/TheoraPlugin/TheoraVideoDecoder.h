@@ -43,7 +43,7 @@ namespace Mengine
 
     protected:
         ogg_stream_state m_oggStreamState;
-        ogg_sync_state	m_oggSyncState;
+        ogg_sync_state m_oggSyncState;
 
         theora_comment m_theoraComment;
         theora_info m_theoraInfo;

@@ -2,19 +2,19 @@ set(MY_LIB_NAME Win32SocketPlugin)
 
 ADD_FILTER(
 src
-	Win32Socket.cpp
-	Win32Socket.h
+    Win32Socket.cpp
+    Win32Socket.h
     Win32SocketProviderInterface.h
-	Win32SocketInputStream.cpp
-	Win32SocketInputStream.h
-	Win32SocketOutputStream.cpp
-	Win32SocketOutputStream.h
-	Win32SocketSystem.cpp
-	Win32SocketSystem.h
+    Win32SocketInputStream.cpp
+    Win32SocketInputStream.h
+    Win32SocketOutputStream.cpp
+    Win32SocketOutputStream.h
+    Win32SocketSystem.cpp
+    Win32SocketSystem.h
 
     Win32SocketPlugin.cpp
     Win32SocketPlugin.h
-	Win32SocketPlugin.def
+    Win32SocketPlugin.def
 )
 
 ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_WIN32_SOCKET)

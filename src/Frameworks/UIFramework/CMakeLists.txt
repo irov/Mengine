@@ -14,8 +14,8 @@ UIFramework
 
 ADD_FILTER(
 Button
-	Button.cpp
-	Button.h
+    Button.cpp
+    Button.h
     ButtonEventReceiverInterface.h
     TaskButtonClick.cpp
     TaskButtonClick.h
@@ -27,8 +27,8 @@ Button
 
 ADD_FILTER(
 Checkbox
-	Checkbox.cpp
-	Checkbox.h
+    Checkbox.cpp
+    Checkbox.h
     CheckboxEventReceiverInterface.h
     TaskCheckboxChange.cpp
     TaskCheckboxChange.h

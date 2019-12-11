@@ -27,8 +27,8 @@ namespace Mengine
     static const uint32_t MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN = MENGINE_CODE_LINE
 
 #define MENGINE_DECLARE_NOTIFICATOR(NAME, ...)\
-	static const uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
-	template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; }
+    static const uint32_t NAME = MENGINE_CODE_LINE - MENGINE_NOTIFICATOR_ENUMERATOR_BEGIN;\
+    template<> struct Notificator<NAME> { typedef Tuple<__VA_ARGS__> args_type; }
 
     MENGINE_DECLARE_BEGIN();
     MENGINE_DECLARE_NOTIFICATOR( NOTIFICATOR_DEBUG_OPEN_FILE, const Char *, const Char *, bool );

@@ -19,8 +19,8 @@ DocumentTraceback
 
 ADD_FILTER(
 ScriptHolder
-	ScriptHolder.cpp
-	ScriptHolder.h
+    ScriptHolder.cpp
+    ScriptHolder.h
 )
 
 ADD_FILTER(
@@ -62,27 +62,27 @@ Wrapper
     HelperScriptEmbedding.h
     HelperScriptEmbedding.cpp
     SoundScriptEmbedding.h
-	SoundScriptEmbedding.cpp
+    SoundScriptEmbedding.cpp
     NodeScriptEmbedding.h
-	NodeScriptEmbedding.cpp
+    NodeScriptEmbedding.cpp
     EngineScriptEmbedding.h
     EngineScriptEmbedding.cpp
     MathScriptEmbedding.h
-	MathScriptEmbedding.cpp
+    MathScriptEmbedding.cpp
     EntityScriptEmbedding.h
-	EntityScriptEmbedding.cpp
+    EntityScriptEmbedding.cpp
     ConstsScriptEmbedding.h
-	ConstsScriptEmbedding.cpp
+    ConstsScriptEmbedding.cpp
     GameScriptEmbedding.h
-	GameScriptEmbedding.cpp
+    GameScriptEmbedding.cpp
 )
 
 ADD_FILTER(
 EntityBehavior
     PythonEntityBehavior.h
     PythonEntityBehavior.cpp    
-	PythonEntityPrototypeGenerator.h
-	PythonEntityPrototypeGenerator.cpp
+    PythonEntityPrototypeGenerator.h
+    PythonEntityPrototypeGenerator.cpp
 )
 
 ADD_FILTER(
@@ -99,10 +99,10 @@ ScriptProviderService
 
 ADD_FILTER(
 ScriptService
-	PythonScriptService.cpp
-	PythonScriptService.h
-	PythonScriptLogger.h
-	PythonScriptLogger.cpp
+    PythonScriptService.cpp
+    PythonScriptService.h
+    PythonScriptLogger.h
+    PythonScriptLogger.cpp
     PythonScriptModule.h
     PythonScriptModule.cpp
     PythonScriptModuleFinder.h
@@ -116,7 +116,7 @@ ScriptService
     DataflowPY.cpp
     DataflowPYZ.h
     DataflowPYZ.cpp
-
+    
     ConstStringHolderPythonString.h
     ConstStringHolderPythonString.cpp
 )

@@ -376,7 +376,7 @@ namespace Mengine
 
         return memoryUse;
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     void RenderTextureService::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, EPixelFormat & _format ) const
     {
         if( ((_width & (_width - 1)) != 0 || (_height & (_height - 1)) != 0) /*&& m_supportNonPow2 == false*/ )

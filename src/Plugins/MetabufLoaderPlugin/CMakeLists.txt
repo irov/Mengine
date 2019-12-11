@@ -2,36 +2,36 @@ set(MY_LIB_NAME MetabufLoaderPlugin)
 
 ADD_FILTER(
 src
-	LoaderResourceCursorICO.cpp
-	LoaderResourceCursorICO.h
-	LoaderResourceCursorSystem.cpp
-	LoaderResourceCursorSystem.h
-	LoaderResourceFile.cpp
-	LoaderResourceFile.h
-	LoaderResourceHIT.cpp
-	LoaderResourceHIT.h
-	LoaderResourceImageData.cpp
-	LoaderResourceImageData.h
-	LoaderResourceImageDefault.cpp
-	LoaderResourceImageDefault.h
-	LoaderResourceImageSequence.cpp
-	LoaderResourceImageSequence.h
-	LoaderResourceImageSolid.cpp
-	LoaderResourceImageSolid.h
-	LoaderResourceImageSubstract.cpp
-	LoaderResourceImageSubstract.h
-	LoaderResourceImageSubstractRGBAndAlpha.cpp
-	LoaderResourceImageSubstractRGBAndAlpha.h
-	LoaderResourceMusic.cpp
-	LoaderResourceMusic.h
-	LoaderResourceShape.cpp
-	LoaderResourceShape.h
-	LoaderResourceSound.cpp
-	LoaderResourceSound.h
-	LoaderResourceWindow.cpp
-	LoaderResourceWindow.h
-	MetabufLoaderPlugin.cpp
-	MetabufLoaderPlugin.h    
+    LoaderResourceCursorICO.cpp
+    LoaderResourceCursorICO.h
+    LoaderResourceCursorSystem.cpp
+    LoaderResourceCursorSystem.h
+    LoaderResourceFile.cpp
+    LoaderResourceFile.h
+    LoaderResourceHIT.cpp
+    LoaderResourceHIT.h
+    LoaderResourceImageData.cpp
+    LoaderResourceImageData.h
+    LoaderResourceImageDefault.cpp
+    LoaderResourceImageDefault.h
+    LoaderResourceImageSequence.cpp
+    LoaderResourceImageSequence.h
+    LoaderResourceImageSolid.cpp
+    LoaderResourceImageSolid.h
+    LoaderResourceImageSubstract.cpp
+    LoaderResourceImageSubstract.h
+    LoaderResourceImageSubstractRGBAndAlpha.cpp
+    LoaderResourceImageSubstractRGBAndAlpha.h
+    LoaderResourceMusic.cpp
+    LoaderResourceMusic.h
+    LoaderResourceShape.cpp
+    LoaderResourceShape.h
+    LoaderResourceSound.cpp
+    LoaderResourceSound.h
+    LoaderResourceWindow.cpp
+    LoaderResourceWindow.h
+    MetabufLoaderPlugin.cpp
+    MetabufLoaderPlugin.h    
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

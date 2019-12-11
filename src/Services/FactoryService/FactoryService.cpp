@@ -125,7 +125,7 @@ namespace Mengine
 
                         Char objmsg[16384];
                         int objmsg_length = snprintf( objmsg, 16384, "    doc: %s\n"
-                            , obj->c_str()
+                            , MENGINE_DOCUMENT_MESSAGE( obj )
                         );
 
                         fwrite( objmsg, objmsg_length, 1, f );

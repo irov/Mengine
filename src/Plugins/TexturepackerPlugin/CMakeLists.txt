@@ -4,15 +4,15 @@ ADD_FILTER(
 src
     TexturepackerInterface.h
     
-	TexturepackerPlugin.h
-	TexturepackerPlugin.cpp
+    TexturepackerPlugin.h
+    TexturepackerPlugin.cpp
     TexturepackerPlugin.def
     
     ResourceTexturepacker.cpp
     ResourceTexturepacker.h
-	
-	LoaderResourceTexturepacker.cpp
-	LoaderResourceTexturepacker.h
+
+    LoaderResourceTexturepacker.cpp
+    LoaderResourceTexturepacker.h
 )
 
 if(MENGINE_USE_SCRIPT_SERVICE)

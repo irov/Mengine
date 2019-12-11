@@ -17,16 +17,24 @@ namespace Mengine
         , m_count( 0 )
     {
 #ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->registerFactory( this );
+        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        {
+            FACTORY_SERVICE()
+                ->registerFactory( this );
+
+            m_register = true;
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
     Factory::~Factory()
     {
 #ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->unregisterFactory( this );
+        if( m_register == true )
+        {
+            FACTORY_SERVICE()
+                ->unregisterFactory( this );
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -60,8 +68,11 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->debugFactoryCreateObject( this, object, _doc );
+        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        {
+            FACTORY_SERVICE()
+                ->debugFactoryCreateObject( this, object, _doc );
+        }
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
@@ -77,8 +88,11 @@ namespace Mengine
         STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
 
 #ifdef MENGINE_DEBUG
-        FACTORY_SERVICE()
-            ->debugFactoryDestroyObject( this, _object );
+        if( SERVICE_EXIST( FactoryServiceInterface ) == true )
+        {
+            FACTORY_SERVICE()
+                ->debugFactoryDestroyObject( this, _object );
+        }
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {

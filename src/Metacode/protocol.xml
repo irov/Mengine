@@ -483,8 +483,8 @@
 
       <Node Name="Pak">
         <Node Name="Scripts">
-		  <Attribute Name="Platform" Type="Mengine::Tags"/>
-		  
+      <Attribute Name="Platform" Type="Mengine::Tags"/>
+
           <Node Name="Script">
               <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
               <Attribute Name="Module" Type="Mengine::ConstString"/>
@@ -495,10 +495,10 @@
 
         <Node Name="Fonts">          
           <Attribute Name="Platform" Type="Mengine::Tags"/>
-		  
-		  <Node Name="Font">
-			<Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
-		  </Node>
+
+          <Node Name="Font">
+      <Attribute Name="Path" Type="Mengine::FilePath" Required="1"/>
+      </Node>
         </Node>
 
         <Node Name="Resources">

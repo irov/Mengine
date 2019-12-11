@@ -142,14 +142,6 @@ namespace Mengine
         newAtlas.width = hw_width;
         newAtlas.height = hw_height;
 
-        //#   ifdef MENGINE_RENDER_TEXTURE_RGBA
-        //        PixelFormat format_select[] = {PF_A8, PF_A8B8G8R8, PF_A8B8G8R8, PF_A8B8G8R8};
-        //#	else
-        //        PixelFormat format_select[] = {PF_A8, PF_A8R8G8B8, PF_A8R8G8B8, PF_A8R8G8B8};
-        //#	endif
-
-                //PixelFormat format = format_select[unpow_channel];
-
         EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()

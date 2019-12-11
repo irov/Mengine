@@ -156,20 +156,20 @@ namespace Mengine
                     else
                     {
 #define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
-										{ \
-						uint8_t value_immutable; \
-						ar << value_immutable; \
-						if( value_immutable == 1 ) \
-												{ \
-							ar << frame.source.Member1; \
-							frame.immutable_mask |= Mask; \
-												} \
-											else \
-											{ \
-							frame.Member2 = _pack->allocateMemoryT<Type>( frames_size ); \
-							ar.readPODs( frame.Member2, frames_size );\
-											} \
-										}
+                    { \
+                        uint8_t value_immutable; \
+                        ar << value_immutable; \
+                        if( value_immutable == 1 ) \
+                        { \
+                            ar << frame.source.Member1; \
+                            frame.immutable_mask |= Mask; \
+                        } \
+                        else \
+                        { \
+                            frame.Member2 = _pack->allocateMemoryT<Type>( frames_size ); \
+                            ar.readPODs( frame.Member2, frames_size );\
+                        } \
+                    }
 
                         READ_FRAME_SOURCE( mt::vec3f, anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
                         READ_FRAME_SOURCE( mt::vec3f, position, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
@@ -180,7 +180,7 @@ namespace Mengine
                         READ_FRAME_SOURCE( float, opacity, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
                         READ_FRAME_SOURCE( float, volume, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
 
-#	undef READ_FRAME_SOURCE
+#undef READ_FRAME_SOURCE
                     }
                 }
             }

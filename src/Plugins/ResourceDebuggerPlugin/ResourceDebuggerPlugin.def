@@ -1,2 +1,2 @@
-LIBRARY		"ResourceDebuggerPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY "ResourceDebuggerPlugin"
+EXPORTS dllCreatePlugin @1

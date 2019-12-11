@@ -200,7 +200,7 @@ namespace Mengine
         bool m_nofullscreen;
         bool m_vsync;
 
-        int32_t	m_FSAAType;
+        int32_t m_FSAAType;
         int32_t m_FSAAQuality;
 
         Resolution m_contentResolution;

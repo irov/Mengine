@@ -2,8 +2,8 @@ SET(MY_LIB_NAME ThreadService)
 
 ADD_FILTER(
 src
-	ThreadService.h
-	ThreadService.cpp
+    ThreadService.h
+    ThreadService.cpp
     ThreadQueue.h
     ThreadQueue.cpp
 )

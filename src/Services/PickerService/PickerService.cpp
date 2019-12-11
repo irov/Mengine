@@ -333,11 +333,6 @@ namespace Mengine
                 continue;
             }
 
-            //if( _event.isDown == false && state->pressed == false )
-            //{
-            //	continue;
-            //}
-
             const RenderViewportInterface * viewport = desc.viewport;
             const RenderCameraInterface * camera = desc.camera;
 
@@ -395,10 +390,6 @@ namespace Mengine
             {
                 picker->setPickerPressed( true );
             }
-            //else if( state->pressed == false )
-            //{
-            //	continue;
-            //}
 
             const RenderViewportInterface * viewport = desc.viewport;
             const RenderCameraInterface * camera = desc.camera;

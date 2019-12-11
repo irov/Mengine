@@ -138,11 +138,11 @@ namespace Mengine
     bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize )
     {
 #ifdef MENGINE_RENDER_TEXTURE_RGBA
-#	define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
-#	define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
+#   define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
+#   define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
 #else
-#	define MENGINE_WEBP_DECODE_RGBA WebPDecodeBGRAInto
-#	define MENGINE_WEBP_DECODE_RGB WebPDecodeBGRInto
+#   define MENGINE_WEBP_DECODE_RGBA WebPDecodeBGRAInto
+#   define MENGINE_WEBP_DECODE_RGB WebPDecodeBGRInto
 #endif
 
         if( m_dataInfo.channels == 4 && m_options.channels == 4 )

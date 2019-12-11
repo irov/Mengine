@@ -14,33 +14,39 @@ namespace Mengine
         : public Factorable
     {
     public:
-        Document( const Char * _file, const Char * _function, uint32_t _line );
+        Document();
         ~Document();
-
-    public:
-        const Char * getModulePath() const;
-        const Char * getFile() const;
-        const Char * getFunction() const;
-        uint32_t getLine() const;
 
     public:
         void setParent( const DocumentPtr & _parent );
         const DocumentPtr & getParent() const;
 
     public:
-        void message( const char * _format, ... );
+        void setModulePath( const Char * _modulePath );
+        const Char * getModulePath() const;
+
+        void setFile( const Char * _file );
+        const Char * getFile() const;
+
+        void setFunction( const Char * _function );
+        const Char * getFunction() const;
+
+        void setLine( uint32_t _line );
+        uint32_t getLine() const;
 
     public:
-        const Char * c_str() const;
+        void setMessage( const Char * _message );
+        const Char * getMessage() const;
 
     protected:
         DocumentPtr m_parent;
 
-        Char m_modulePath[MENGINE_MAX_PATH] = {'\0'};
+        String m_modulePath;
 
         const Char * m_file;
         const Char * m_function;
         uint32_t m_line;
+
         String m_message;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -49,7 +55,7 @@ namespace Mengine
 }
 
 #ifdef MENGINE_DEBUG
-#   define MENGINE_DOCUMENT_MESSAGE(Doc) Doc->c_str()
+#   define MENGINE_DOCUMENT_MESSAGE(Doc) Doc->getMessage()
 #else
 #   define MENGINE_DOCUMENT_MESSAGE(Doc) MENGINE_STRING_EMPTY
 #endif

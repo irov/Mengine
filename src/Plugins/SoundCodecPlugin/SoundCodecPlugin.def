@@ -1,2 +1,2 @@
-LIBRARY		"SoundCodecPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY "SoundCodecPlugin"
+EXPORTS dllCreatePlugin @1

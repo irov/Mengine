@@ -451,7 +451,7 @@ namespace Mengine
                 MENGINE_WRITE_FRAME_SOURCE( float, opacity );
                 MENGINE_WRITE_FRAME_SOURCE( float, volume );
 
-#	undef MENGINE_WRITE_FRAME_SOURCE
+#undef MENGINE_WRITE_FRAME_SOURCE
             }
         }
 

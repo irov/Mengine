@@ -2,8 +2,8 @@ SET(MY_LIB_NAME PackageService)
 
 ADD_FILTER(
 src
-	PackageService.h
-	PackageService.cpp
+    PackageService.h
+    PackageService.cpp
     Package.h
     Package.cpp
 )

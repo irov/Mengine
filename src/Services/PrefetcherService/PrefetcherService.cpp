@@ -310,7 +310,7 @@ namespace Mengine
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////			
+    //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
         if( this->isAvailableService() == false )
@@ -337,7 +337,7 @@ namespace Mengine
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////			
+    //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::popData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
         if( this->isAvailableService() == false )

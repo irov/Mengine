@@ -3,7 +3,7 @@ set(MY_LIB_NAME TTFPlugin)
 ADD_FILTER(
 src
     TTFPlugin.h
-	TTFPlugin.cpp
+    TTFPlugin.cpp
     TTFServiceInterface.h
     TTFFont.h
     TTFFont.cpp

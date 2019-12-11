@@ -28,7 +28,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void	s_writeProc( png_structp _png_ptr, uint8_t * data, png_size_t size )
+    static void s_writeProc( png_structp _png_ptr, uint8_t * data, png_size_t size )
     {
         png_voidp io_ptr = png_get_io_ptr( _png_ptr );
         OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);
@@ -36,7 +36,7 @@ namespace Mengine
         stream->write( (char *)data, size );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void	s_flushProc( png_structp _png_ptr )
+    static void s_flushProc( png_structp _png_ptr )
     {
         png_voidp io_ptr = png_get_io_ptr( _png_ptr );
         OutputStreamInterface * stream = static_cast<OutputStreamInterface *>(io_ptr);

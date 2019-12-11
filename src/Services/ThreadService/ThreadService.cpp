@@ -6,6 +6,7 @@
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ThreadTaskPacket.h"
+#include "Kernel/ThreadMutexDummy.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"

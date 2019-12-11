@@ -2,11 +2,11 @@ set(MY_LIB_NAME VideoPlugin)
 
 ADD_FILTER(
 src
-	VideoInterface.h
-	VideoUnknownInterface.h
+    VideoInterface.h
+    VideoUnknownInterface.h
 
-	VideoPlugin.h
-	VideoPlugin.cpp
+    VideoPlugin.h
+    VideoPlugin.cpp
     VideoPlugin.def
     
     ResourceVideo.cpp
@@ -14,17 +14,17 @@ src
     
     LoaderResourceVideo.cpp
     LoaderResourceVideo.h    
-	
-	SurfaceVideo.cpp
-	SurfaceVideo.h
-	
-	ResourceVideoValidator.cpp
-	ResourceVideoValidator.h
-	)
+
+    SurfaceVideo.cpp
+    SurfaceVideo.h
+
+    ResourceVideoValidator.cpp
+    ResourceVideoValidator.h
+)
     
 if(MENGINE_USE_SCRIPT_SERVICE)
     ADD_FILTER(
-    embedding    
+    embedding
         VideoScriptEmbedding.cpp
         VideoScriptEmbedding.h
         )

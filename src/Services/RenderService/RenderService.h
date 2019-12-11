@@ -30,7 +30,7 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     enum ERenderObjectFlag
     {
         RENDER_OBJECT_FLAG_NONE = 0x00000000,
@@ -141,7 +141,7 @@ namespace Mengine
 
         Resolution m_contentResolution;
 
-        RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
+        RenderTextureInterfacePtr m_nullTexture;
         RenderTextureInterfacePtr m_whitePixelTexture;
 
         FactoryPtr m_factoryRenderBatch;
@@ -178,9 +178,9 @@ namespace Mengine
         RenderScissorInterfacePtr m_currentRenderScissor;
         RenderProgramInterfacePtr m_currentRenderProgram;
 
-        RenderServiceDebugInfo m_debugInfo;	    // debug info
+        RenderServiceDebugInfo m_debugInfo;
 
-        Viewport m_renderViewport;        
+        Viewport m_renderViewport;
 
         typedef List<VectorRenderVertex2D> ListDebugVertices;
         ListDebugVertices m_debugRenderVertices;

@@ -203,7 +203,7 @@ namespace Mengine
 
         return stream;
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
     {
         MENGINE_ASSERTION_MEMORY_PANIC( _stream, false, "failed _stream == nullptr" );

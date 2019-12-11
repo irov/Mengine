@@ -2,18 +2,18 @@ set( MY_LIB_NAME Kernel )
 
 ADD_FILTER(
 Mixin\\\\Unknowable
-	Unknowable.h
+    Unknowable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Documentable
-	Documentable.h
+    Documentable.h
     Documentable.cpp
 )
 
 ADD_FILTER(
 Mixin\\\\Eventable
-	Eventable.h
+    Eventable.h
     EventableHelper.h
     BaseEventation.h
     BaseEventation.cpp
@@ -21,54 +21,54 @@ Mixin\\\\Eventable
 
 ADD_FILTER(
 Mixin\\\\Scriptable    
-	Scriptable.cpp
-	Scriptable.h
+    Scriptable.cpp
+    Scriptable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Animatable
-	Animatable.h
+    Animatable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Soundable
-	Soundable.cpp
-	Soundable.h
+    Soundable.cpp
+    Soundable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Updatable
-	Updatable.h
+    Updatable.h
     UpdateContext.h
 )
 
 ADD_FILTER(
 Mixin\\\\Renderable
-	Renderable.h
+    Renderable.h
     RenderContext.h
 )
 
 ADD_FILTER(
 Mixin\\\\Colorable
-	Colorable.cpp
-	Colorable.h
+    Colorable.cpp
+    Colorable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Affectorable
-	Affectorable.cpp
-	Affectorable.h
+    Affectorable.cpp
+    Affectorable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Materialable
-	Materialable.cpp
-	Materialable.h
+    Materialable.cpp
+    Materialable.h
 )
 
 ADD_FILTER(
 Mixin\\\\Observable
-	Observable.h
+    Observable.h
 )
 
 ADD_FILTER(
@@ -86,22 +86,22 @@ ADD_FILTER(
 BasePicker
     BasePicker.cpp
     BasePicker.h
-	DummyPicker.cpp
+    DummyPicker.cpp
     DummyPicker.h
 )
 
 ADD_FILTER(
 BaseRender
-	BaseRender.cpp
-	BaseRender.h
+    BaseRender.cpp
+    BaseRender.h
     DummyRender.cpp
     DummyRender.h
 )
 
 ADD_FILTER(
 Affector
-	Affector.h
-	Affector.cpp
+    Affector.h
+    Affector.cpp
     BaseAffector.h
     BaseAffector.cpp
     LambdaAffector.h
@@ -109,20 +109,20 @@ Affector
     LambdaAffectorAccumulateLinear.h
     AffectorCallbackInterface.h
     AffectorHelper.h
-	AffectorType.h
+    AffectorType.h
     AffectorType.cpp
 )
 
 ADD_FILTER(
 Shape
-	Shape.cpp
-	Shape.h
+    Shape.cpp
+    Shape.h
 )
 
 ADD_FILTER(
 Node
-	Node.cpp
-	Node.h  
+    Node.cpp
+    Node.h  
     NodeRenderHierarchy.cpp
     NodeRenderHierarchy.h
     NodePickerHierarchy.cpp
@@ -133,14 +133,14 @@ Node
 
 ADD_FILTER(
 Surface
-	Surface.cpp
-	Surface.h
+    Surface.cpp
+    Surface.h
 )
 
 ADD_FILTER(
 Entity
-	Entity.cpp
-	Entity.h
+    Entity.cpp
+    Entity.h
     EntityEventable.cpp
     EntityEventable.h
     EntityHelper.cpp
@@ -149,22 +149,22 @@ Entity
 
 ADD_FILTER(
 Scene
-	Scene.cpp
-	Scene.h
+    Scene.cpp
+    Scene.h
     SceneHelper.cpp
     SceneHelper.h
 )
 
 ADD_FILTER(
 Arrow
-	Arrow.cpp
-	Arrow.h
+    Arrow.cpp
+    Arrow.h
 )
 
 ADD_FILTER(
 Layer
-	Layer.cpp
-	Layer.h
+    Layer.cpp
+    Layer.h
 )
 
 ADD_FILTER(
@@ -177,8 +177,8 @@ ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
     BasePrototypeGenerator.h    
-	FactoryPrototypeGenerator.cpp
-	FactoryPrototypeGenerator.h
+    FactoryPrototypeGenerator.cpp
+    FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
     ScriptablePrototypeGenerator.h
@@ -188,39 +188,39 @@ PrototypeGenerator
 
 ADD_FILTER(
 BoundingBox
-	BoundingBox.cpp
-	BoundingBox.h
+    BoundingBox.cpp
+    BoundingBox.h
 )
 
 ADD_FILTER(
 Identity
-	Identity.cpp
-	Identity.h
+    Identity.cpp
+    Identity.h
 )
 
 ADD_FILTER(
 Transformation
-	Transformation.cpp
-	Transformation.h
+    Transformation.cpp
+    Transformation.h
 )
 
 ADD_FILTER(
 Animation
     AnimationEventReceiver.h
-	BaseAnimation.h
+    BaseAnimation.h
     BaseAnimation.cpp
 )
 
 ADD_FILTER(
 MatrixProxy
-	MatrixProxy.cpp
-	MatrixProxy.h
+    MatrixProxy.cpp
+    MatrixProxy.h
 )
 
 ADD_FILTER(
 RenderCamera
-	RenderCamera.cpp
-	RenderCamera.h
+    RenderCamera.cpp
+    RenderCamera.h
     RenderCameraHelper.cpp
     RenderCameraHelper.h
     RenderCameraProxy.cpp
@@ -229,8 +229,8 @@ RenderCamera
     RenderCameraOrthogonal.h
     RenderCameraProjection.cpp
     RenderCameraProjection.h
-	RenderCameraOrthogonalTarget.cpp
-	RenderCameraOrthogonalTarget.h
+    RenderCameraOrthogonalTarget.cpp
+    RenderCameraOrthogonalTarget.h
     RenderViewport.h
     RenderViewport.cpp
     RenderScissor.h
@@ -239,14 +239,14 @@ RenderCamera
 
 ADD_FILTER(
 Reference
-	Reference.cpp
-	Reference.h
+    Reference.cpp
+    Reference.h
 )
 
 ADD_FILTER(
 Resource
-	Compilable.cpp
-	Compilable.h
+    Compilable.cpp
+    Compilable.h
     ResourceCacher.h
     Resource.cpp
     Resource.h
@@ -254,54 +254,54 @@ Resource
 
 ADD_FILTER(
 Resource\\\\Image
-	ResourceImage.cpp
-	ResourceImage.h
+    ResourceImage.cpp
+    ResourceImage.h
 )
 
 ADD_FILTER(
 Resource\\\\Content
     Contentable.h
-	BaseContent.cpp
-	BaseContent.h
+    BaseContent.cpp
+    BaseContent.h
 )
 
 ADD_FILTER(
 Vertices
-	FixedVertices.h
-	VectorVertices.cpp
-	VectorVertices.h
+    FixedVertices.h
+    VectorVertices.cpp
+    VectorVertices.h
 )
 
 ADD_FILTER(
 ThreadTask
     ThreadEnum.h
-	ThreadTask.h
-	ThreadTask.cpp
+    ThreadTask.h
+    ThreadTask.cpp
     ThreadJob.h
     ThreadJob.cpp
-	ThreadTaskPacket.h
-	ThreadTaskPacket.cpp
+    ThreadTaskPacket.h
+    ThreadTaskPacket.cpp
     ThreadHelper.h
     ThreadHelper.cpp
 )
 
 ADD_FILTER(
 Visitable
-	Visitable.h
+    Visitable.h
 )
 
 ADD_FILTER(
 Scheduler
     SchedulerHelper.cpp
     SchedulerHelper.h
-	Scheduler.cpp
-	Scheduler.h
+    Scheduler.cpp
+    Scheduler.h
 )
 
 ADD_FILTER(
 Randomizer
-	MT19937Randomizer.cpp
-	MT19937Randomizer.h	
+    MT19937Randomizer.cpp
+    MT19937Randomizer.h
 )
 
 ADD_FILTER(
@@ -309,8 +309,8 @@ Assertion
     Assertion.h
     Assertion.cpp
     AssertionFactory.h
-    AssertionFactory.cpp	
-	AssertionNotImplemented.h
+    AssertionFactory.cpp
+    AssertionNotImplemented.h
     AssertionResourceType.h
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
@@ -324,19 +324,19 @@ Core
 
     CRC32.h
     CRC32.cpp
-	
+
     ServantBase.h
-	ServiceBase.h    
-	
-	FontBase.h
-	FontBase.cpp
-    
+    ServiceBase.h
+
+    FontBase.h
+    FontBase.cpp
+
     BaseFileGroup.h
     BaseFileGroup.cpp
-    
+
     Exception.h
     Visitor.h
-    
+
     Polygon.h
     Polygon.cpp
     PolygonHelper.h
@@ -345,14 +345,14 @@ Core
     Geolygon.h
     Geolygon.cpp
     
-	Viewport.h
-	Viewport.cpp
-	
-	Resolution.h
-	Resolution.cpp	
+    Viewport.h
+    Viewport.cpp
 
-	Color.h
-	Color.cpp
+    Resolution.h
+    Resolution.cpp
+
+    Color.h
+    Color.cpp
         
     GlyphCode.h
     
@@ -394,7 +394,7 @@ Core
     
     MemoryHelper.h
     MemoryHelper.cpp
-	
+
     ValueInterpolator.h
     ValueInterpolatorLinear.h
     ValueInterpolatorQuadratic.h
@@ -407,7 +407,7 @@ Core
     ValueFollowerAcceleration.h
     
     StringHelper.h
-	StringHelper.cpp
+    StringHelper.cpp
     
     Tags.h
     Tags.cpp
@@ -419,27 +419,27 @@ Core
     BufferHelper.cpp
     
     StringFormat.h
-	StringFormat.cpp
+    StringFormat.cpp
     
     Params.h
     
-	Rect.h
-	Rect.cpp
+    Rect.h
+    Rect.cpp
     
     Stream.h
     Stream.cpp
     
     Pointer.h
-	
+
     ConstString.h
     ConstString.cpp
     ConstStringHelper.h
     ConstStringHelper.cpp
-	ConstStringHolder.h
+    ConstStringHolder.h
     ConstStringHolder.cpp
-	ConstStringHolderLocalString.h
-	ConstStringHolderLocalString.cpp
-	VectorConstString.h
+    ConstStringHolderLocalString.h
+    ConstStringHolderLocalString.cpp
+    VectorConstString.h
     
     VectorResourceImages.h
     
@@ -450,7 +450,7 @@ Core
     Base64.cpp
         
     RenderUtils.h
-	RenderUtils.cpp
+    RenderUtils.cpp
     
     RenderPrimitive.h
     
@@ -482,8 +482,8 @@ Core
     Mixin.h
     MixinPointer.h
     Magicable.h
-	
-	Callback.h
+
+    Callback.h
     
     MixerValue.h
     MixerValue.cpp
@@ -504,7 +504,7 @@ Core
     LoggerBase.h
     
     AspectRatioViewport.h
-	VectorAspectRatioViewports.h
+    VectorAspectRatioViewports.h
     
     VectorAuxScope.h
     
@@ -556,8 +556,8 @@ Core
     
     DateTime.h
 
-	DummyGameEventReceiver.h
-	DummyGameEventReceiver.cpp
+    DummyGameEventReceiver.h
+    DummyGameEventReceiver.cpp
     DummyEntityEventReceiver.h
     DummyEntityEventReceiver.cpp
     DummySceneEventReceiver.h
@@ -608,27 +608,27 @@ Factory
     FactorablePointer.h
     FactorableUnique.h
     FactorablePlugin.h
-	Factory.h
-	Factory.cpp
+    Factory.h
+    Factory.cpp
     FactoryWithListener.h
     FactoryWithListener.cpp
     FactoryWithMutex.h
-    FactoryWithMutex.cpp	
-    FactoryDefault.h    
+    FactoryWithMutex.cpp
+    FactoryDefault.h
     FactoryPool.h
     FactoryPoolWithListener.h
 )
 
 ADD_FILTER(
 Logger
-	Logger.h
-	Logger.cpp
+    Logger.h
+    Logger.cpp
 )
 
 ADD_FILTER(
 Error
-	Error.h
-	Error.cpp
+    Error.h
+    Error.cpp
 )
 
 IF(MENGINE_TARGET_WINDOWS)

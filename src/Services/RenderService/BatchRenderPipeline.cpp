@@ -13,7 +13,7 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     enum ERenderObjectFlag
     {
         RENDER_OBJECT_FLAG_NONE = 0x00000000,
@@ -592,7 +592,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::render()
     {
-        if( m_renderPasses.empty() == true )	// nothing to render
+        if( m_renderPasses.empty() == true )
         {
             return;
         }

@@ -194,16 +194,6 @@ namespace Mengine
             return false;
         }
 
-        //if( caps.MaxSimultaneousTextures < MENGINE_MAX_TEXTURE_STAGES )
-        //{
-        //	LOGGER_ERROR("Render dont't support %d texture stages (%d support)"
-        //		, MENGINE_MAX_TEXTURE_STAGES
-        //		, caps.MaxSimultaneousTextures
-        //		);
-
-        //	return false;
-        //}
-
         m_dxMaxCombinedTextureImageUnits = m_caps.MaxSimultaneousTextures;
 
         if( m_dxMaxCombinedTextureImageUnits > MENGINE_MAX_TEXTURE_STAGES )

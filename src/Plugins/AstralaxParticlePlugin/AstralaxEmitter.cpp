@@ -48,13 +48,6 @@ namespace Mengine
             return false;
         }
 
-        //if( m_emitterRelative == true )
-        //{
-        //	const mt::vec3f & wm_pos = this->getWorldPosition();
-
-        //	m_emitter->setPosition( wm_pos );
-        //}
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

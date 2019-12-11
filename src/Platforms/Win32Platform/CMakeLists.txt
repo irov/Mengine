@@ -16,8 +16,8 @@ src
     Win32AlreadyRunningMonitor.cpp
     Win32AntifreezeMonitor.h
     Win32AntifreezeMonitor.cpp
-	Win32CriticalErrorsMonitor.h
-	Win32CriticalErrorsMonitor.cpp
+    Win32CriticalErrorsMonitor.h
+    Win32CriticalErrorsMonitor.cpp
 )
 
 ADD_MENGINE_LIBRARY()

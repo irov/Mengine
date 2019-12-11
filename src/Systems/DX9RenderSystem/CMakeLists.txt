@@ -2,16 +2,16 @@ set(MY_LIB_NAME DX9RenderSystem)
 
 ADD_FILTER(
 src
-	DX9RenderSystem.h
-	DX9RenderSystem.cpp
-	DX9RenderImage.h
-	DX9RenderImage.cpp
-	DX9RenderImageTarget.h
-	DX9RenderImageTarget.cpp
+    DX9RenderSystem.h
+    DX9RenderSystem.cpp
+    DX9RenderImage.h
+    DX9RenderImage.cpp
+    DX9RenderImageTarget.h
+    DX9RenderImageTarget.cpp
     DX9RenderTargetTexture.h
     DX9RenderTargetTexture.cpp
-	DX9RenderTargetOffscreen.h
-	DX9RenderTargetOffscreen.cpp
+    DX9RenderTargetOffscreen.h
+    DX9RenderTargetOffscreen.cpp
     DX9RenderVertexBuffer.h
     DX9RenderVertexBuffer.cpp
     DX9RenderVertexAttribute.h

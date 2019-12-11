@@ -2,8 +2,8 @@ SET(MY_LIB_NAME GameService)
 
 ADD_FILTER(
 src
-	GameService.h
-	GameService.cpp
+    GameService.h
+    GameService.cpp
     GameServiceAccountProvider.cpp
     GameServiceAccountProvider.h
     GameServiceSoundVolumeProvider.cpp
@@ -11,5 +11,3 @@ src
 )
 
 ADD_MENGINE_LIBRARY(Services)
-
-

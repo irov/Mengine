@@ -61,7 +61,7 @@ namespace Mengine
         }
 #else
         DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
-#endif		
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

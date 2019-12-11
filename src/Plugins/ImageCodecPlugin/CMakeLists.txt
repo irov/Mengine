@@ -2,28 +2,28 @@ set(MY_LIB_NAME ImageCodecPlugin)
 
 ADD_FILTER(
 src
-	ImageCodecPlugin.h
-	ImageCodecPlugin.cpp
+    ImageCodecPlugin.h
+    ImageCodecPlugin.cpp
 )
 
 ADD_FILTER(
 jpeg  
-	ImageDecoderJPEG.cpp
-	ImageDecoderJPEG.h
-	ImageEncoderJPEG.cpp
-	ImageEncoderJPEG.h    
+    ImageDecoderJPEG.cpp
+    ImageDecoderJPEG.h
+    ImageEncoderJPEG.cpp
+    ImageEncoderJPEG.h    
 )
 
 ADD_FILTER(
 png
-	ImageDecoderPNG.cpp
-	ImageDecoderPNG.h
-	ImageEncoderPNG.cpp
-	ImageEncoderPNG.h
+    ImageDecoderPNG.cpp
+    ImageDecoderPNG.h
+    ImageEncoderPNG.cpp
+    ImageEncoderPNG.h
 )
     
 ADD_FILTER(
-etc1    
+etc1
     ImageDecoderETC1.cpp
     ImageDecoderETC1.h
 )
@@ -35,7 +35,7 @@ pvrtc
 )
 
 ADD_FILTER(
-hit    
+hit
     PickVerifyHIT.h
     
     PickDecoderHIT.cpp
@@ -46,9 +46,9 @@ hit
 )
 
 ADD_FILTER(
-htf    
+htf
     ImageDecoderHTF.cpp
-    ImageDecoderHTF.h       
+    ImageDecoderHTF.h
     ImageEncoderHTF.cpp
     ImageEncoderHTF.h
     ImageVerifyHTF.h
@@ -57,17 +57,17 @@ htf
 ADD_FILTER(
 acf
     ImageDecoderACF.cpp
-    ImageDecoderACF.h       
+    ImageDecoderACF.h
     ImageEncoderACF.cpp
     ImageEncoderACF.h
     ImageVerifyACF.h
 )
 
 ADD_FILTER(
-dds    
+dds
     ImageCodecDDS.h
     ImageDecoderDDS.cpp
-    ImageDecoderDDS.h    
+    ImageDecoderDDS.h
     ImageEncoderDDS.cpp
     ImageEncoderDDS.h
 )

@@ -175,7 +175,7 @@ namespace Mengine
 
         return handle;
     }
-    //////////////////////////////////////////////////////////////////////////	
+    //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
         bool handle = EVENTABLE_METHODR( EVENT_HOTSPOT_MOUSE_BUTTON_BEGIN, false )

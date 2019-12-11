@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     Movie1Interface.h
     
-	Movie1Plugin.h
-	Movie1Plugin.cpp
+    Movie1Plugin.h
+    Movie1Plugin.cpp
     
     Movie.h
     Movie.cpp

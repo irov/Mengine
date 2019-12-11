@@ -2,8 +2,8 @@ SET(MY_LIB_NAME LoaderService)
 
 ADD_FILTER(
 src
-	LoaderService.cpp
-	LoaderService.h
+    LoaderService.cpp
+    LoaderService.h
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)

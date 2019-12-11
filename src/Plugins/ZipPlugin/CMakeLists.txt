@@ -2,8 +2,8 @@ set(MY_LIB_NAME ZipPlugin)
 
 ADD_FILTER(
 src
-	ZipPlugin.h
-	ZipPlugin.cpp   
+    ZipPlugin.h
+    ZipPlugin.cpp   
     FileGroupZip.h
     FileGroupZip.cpp
     ArchivatorZip.h

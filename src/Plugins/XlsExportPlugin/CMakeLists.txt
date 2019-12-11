@@ -2,8 +2,8 @@ set(MY_LIB_NAME XlsExportPlugin)
 
 ADD_FILTER(
 src
-	XlsExportPlugin.h
-	XlsExportPlugin.cpp 
+    XlsExportPlugin.h
+    XlsExportPlugin.cpp 
     XlsExportPlugin.def
     XlsScriptLogger.h
     XlsScriptLogger.cpp

@@ -2,12 +2,12 @@ set(MY_LIB_NAME XmlToBinPlugin)
 
 ADD_FILTER(
 src
-	XmlToBinPlugin.h
+    XmlToBinPlugin.h
     XmlToBinPlugin.def
-	XmlToBinPlugin.cpp
-	XmlToBinDecoder.h
-	XmlToBinDecoder.cpp    
-	XmlToBinInterface.h
+    XmlToBinPlugin.cpp
+    XmlToBinDecoder.h
+    XmlToBinDecoder.cpp    
+    XmlToBinInterface.h
 )
 
 add_definitions(-DMETABUF_EXTERNAL_CONFIG)
@@ -17,7 +17,7 @@ INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/pugixml/src)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/include)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/metabuf/src)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)
-		 
+
 ADD_MENGINE_SHARED(Plugins)
 
 SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")

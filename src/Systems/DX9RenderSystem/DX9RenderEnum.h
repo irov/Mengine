@@ -360,12 +360,12 @@ namespace Mengine
     {
         switch( _format )
         {
-        case D3DFMT_R5G6B5:		return 1;
-        case D3DFMT_X1R5G5B5:	return 2;
-        case D3DFMT_A1R5G5B5:	return 3;
-        case D3DFMT_X8R8G8B8:	return 4;
-        case D3DFMT_A8R8G8B8:	return 5;
-        default:				return 0;
+        case D3DFMT_R5G6B5: return 1;
+        case D3DFMT_X1R5G5B5: return 2;
+        case D3DFMT_A1R5G5B5: return 3;
+        case D3DFMT_X8R8G8B8: return 4;
+        case D3DFMT_A8R8G8B8: return 5;
+        default: return 0;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -381,12 +381,12 @@ namespace Mengine
     {
         switch( _format )
         {
-        case D3DFMT_R5G6B5:		return "R5G6B5";
-        case D3DFMT_X1R5G5B5:	return "X1R5G5B5";
-        case D3DFMT_A1R5G5B5:	return "A1R5G5B5";
-        case D3DFMT_X8R8G8B8:	return "X8R8G8B8";
-        case D3DFMT_A8R8G8B8:	return "A8R8G8B8";
-        default:				return "UNKNOWN";
+        case D3DFMT_R5G6B5: return "R5G6B5";
+        case D3DFMT_X1R5G5B5: return "X1R5G5B5";
+        case D3DFMT_A1R5G5B5: return "A1R5G5B5";
+        case D3DFMT_X8R8G8B8: return "X8R8G8B8";
+        case D3DFMT_A8R8G8B8: return "A8R8G8B8";
+        default: return "UNKNOWN";
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -394,12 +394,12 @@ namespace Mengine
     {
         switch( _format )
         {
-        case D3DFMT_R5G6B5:		return 16;
-        case D3DFMT_X1R5G5B5:	return 16;
-        case D3DFMT_A1R5G5B5:	return 16;
-        case D3DFMT_X8R8G8B8:	return 32;
-        case D3DFMT_A8R8G8B8:	return 32;
-        default:				return 0;
+        case D3DFMT_R5G6B5: return 16;
+        case D3DFMT_X1R5G5B5: return 16;
+        case D3DFMT_A1R5G5B5: return 16;
+        case D3DFMT_X8R8G8B8: return 32;
+        case D3DFMT_A8R8G8B8: return 32;
+        default: return 0;
         }
     }
     //////////////////////////////////////////////////////////////////////////

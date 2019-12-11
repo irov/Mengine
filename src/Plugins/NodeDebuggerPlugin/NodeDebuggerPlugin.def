@@ -1,2 +1,2 @@
-LIBRARY		"NodeDebuggerPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY "NodeDebuggerPlugin"
+EXPORTS dllCreatePlugin @1

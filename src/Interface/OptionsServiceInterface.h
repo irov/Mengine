@@ -28,15 +28,15 @@ namespace Mengine
     ((Mengine::OptionsServiceInterface *)SERVICE_GET(Mengine::OptionsServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define HAS_OPTION( Key )\
-	([](){static bool value = OPTIONS_SERVICE()->hasOption( Key ); return value;}())
+    ([](){static bool value = OPTIONS_SERVICE()->hasOption( Key ); return value;}())
 //////////////////////////////////////////////////////////////////////////
 #define GET_OPTION_VALUE( Key, Default )\
-	([](){static const Mengine::Char * value = OPTIONS_SERVICE()->getOptionValue( Key, Default ); return value;}())
+    ([](){static const Mengine::Char * value = OPTIONS_SERVICE()->getOptionValue( Key, Default ); return value;}())
 //////////////////////////////////////////////////////////////////////////
 #define GET_OPTION_VALUE_UINT32( Key )\
-	([](){static uint32_t value = OPTIONS_SERVICE()->getOptionUInt32( Key ); return value;}())
+    ([](){static uint32_t value = OPTIONS_SERVICE()->getOptionUInt32( Key ); return value;}())
 //////////////////////////////////////////////////////////////////////////
 #define TEST_OPTION_VALUE( Key, Value )\
-	OPTIONS_SERVICE()->testOptionValue( Key, Value )
+    OPTIONS_SERVICE()->testOptionValue( Key, Value )
 //////////////////////////////////////////////////////////////////////////
 

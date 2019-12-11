@@ -5,9 +5,9 @@ src
     ResourcePrefetcherInterface.h
     ResourcePrefetcherServiceInterface.h
 
-	ResourcePrefetcherPlugin.h
+    ResourcePrefetcherPlugin.h
     ResourcePrefetcherPlugin.def
-	ResourcePrefetcherPlugin.cpp
+    ResourcePrefetcherPlugin.cpp
     
     ResourcePrefetcherService.h
     ResourcePrefetcherService.cpp

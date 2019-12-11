@@ -1,2 +1,2 @@
-LIBRARY		"ResourceConvertPlugin"
-EXPORTS 	dllCreatePlugin 	@1
+LIBRARY "ResourceConvertPlugin"
+EXPORTS dllCreatePlugin @1

@@ -117,7 +117,7 @@ namespace Mengine
         }
 
         bool isValid = m_header.numFaces == 1  // supported only 1 face
-            && m_header.numSurfaces == 1;  // supported only 1 surface		
+            && m_header.numSurfaces == 1;  // supported only 1 surface
 
         return isValid;
     }

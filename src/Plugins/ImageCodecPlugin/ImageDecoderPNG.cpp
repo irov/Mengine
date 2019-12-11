@@ -123,7 +123,7 @@ namespace Mengine
 
 #if defined(PNG_SETJMP_SUPPORTED) && !defined(MENGINE_SETJMP_UNSUPPORTED)
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(push, 0) 
+#   pragma warning(push, 0) 
 #endif 
         if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
@@ -133,7 +133,7 @@ namespace Mengine
             return false;
         }
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#	pragma warning(pop) 
+#   pragma warning(pop) 
 #endif
 #endif
 

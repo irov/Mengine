@@ -2,8 +2,8 @@ set(MY_LIB_NAME Win32ConsoleLogger)
 
 ADD_FILTER(
 src
-	Win32ConsoleLoggerPlugin.h
-	Win32ConsoleLoggerPlugin.cpp
+    Win32ConsoleLoggerPlugin.h
+    Win32ConsoleLoggerPlugin.cpp
     
     Win32ConsoleLogger.h
     Win32ConsoleLogger.cpp

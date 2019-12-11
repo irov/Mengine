@@ -2,18 +2,18 @@ set(MY_LIB_NAME OpenALSoundSystem)
 
 ADD_FILTER(
 src
-	OpenALSoundBufferBase.cpp
-	OpenALSoundBufferBase.h
-	OpenALSoundBufferMemory.cpp
-	OpenALSoundBufferMemory.h
-	OpenALSoundBufferStream.cpp
-	OpenALSoundBufferStream.h
-	OpenALSoundSource.cpp
-	OpenALSoundSource.h
-	OpenALSoundSystem.cpp
-	OpenALSoundSystem.h
-	OpenALSoundError.cpp
-	OpenALSoundError.h	
+    OpenALSoundBufferBase.cpp
+    OpenALSoundBufferBase.h
+    OpenALSoundBufferMemory.cpp
+    OpenALSoundBufferMemory.h
+    OpenALSoundBufferStream.cpp
+    OpenALSoundBufferStream.h
+    OpenALSoundSource.cpp
+    OpenALSoundSource.h
+    OpenALSoundSystem.cpp
+    OpenALSoundSystem.h
+    OpenALSoundError.cpp
+    OpenALSoundError.h
 )
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/openal-soft/include)

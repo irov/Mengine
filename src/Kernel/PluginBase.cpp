@@ -165,8 +165,7 @@ namespace Mengine
 #if defined(MENGINE_WINDOWS_DEBUG)
         if( dynamicLoad == true )
         {
-            Char plugin_modulePath[MENGINE_MAX_PATH];
-            Helper::Win32GetCurrentDllPath( plugin_modulePath );
+            const Char * plugin_modulePath = Helper::Win32GetCurrentDllPath();
 
             typedef Vector<DocumentPtr> VectorDocuments;
             VectorDocuments leakObjects;

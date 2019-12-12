@@ -42,10 +42,10 @@ namespace Mengine
         font->setFTLibrary( m_ftlibrary );
 
 #ifdef MENGINE_DEBUG
-        DocumentPtr doc = MENGINE_DOCUMENT( "Sprite '%s' type '%s' create '%s'"
+        DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Sprite '%s' type '%s' create '%s'"
             , font->getName().c_str()
             , font->getType().c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         font->setDocument( doc );

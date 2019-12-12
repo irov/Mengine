@@ -25,7 +25,7 @@ namespace Mengine
 
         const mt::box2f * bb = this->getBoundingBox();
 
-        _renderPipeline->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderQuad( _context, material, vertices, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const

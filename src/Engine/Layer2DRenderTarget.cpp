@@ -23,6 +23,6 @@ namespace Mengine
 
         const mt::box2f * bb = m_layer->getBoundingBox();
 
-        _renderPipeline->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false, MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false, MENGINE_DOCUMENT_FORWARD );
     }
 }

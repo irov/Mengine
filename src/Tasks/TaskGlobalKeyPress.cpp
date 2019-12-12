@@ -25,6 +25,11 @@ namespace Mengine
     {
         auto lambda = [this, _node]( const InputKeyEvent & _event )
         {
+            if( _event.isSpecial == true )
+            {
+                return false;
+            }
+
             if( m_filter != nullptr )
             {
                 if( m_filter( _event ) == true )

@@ -119,7 +119,7 @@ namespace Mengine
             LOGGER_ERROR( "can't create object '%s' '%s' (invalid create) doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -131,7 +131,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( entity, nullptr, "can't generate '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         entity->setPrototype( m_prototype );

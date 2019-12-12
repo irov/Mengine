@@ -73,7 +73,7 @@ namespace Mengine
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _stream
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             MemoryInterfacePtr memory = Helper::createMemoryStream( stream, _doc );

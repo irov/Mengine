@@ -100,7 +100,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "resource '%s' invalid initialize (doc: %s)"
                 , _type.c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -111,7 +111,7 @@ namespace Mengine
             , _groupName.c_str()
             , _name.c_str()
             , _type.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         resource->setResourceBank( this );

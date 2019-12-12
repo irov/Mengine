@@ -108,29 +108,28 @@ namespace Mengine
         template<class T>
         bool isExistService()
         {
-            static bool s_exist = SERVICE_PROVIDER_GET()
-                ->isExistService( T::getStaticServiceID() );
+            static const bool * s_exist = SERVICE_PROVIDER_GET()
+                ->isExistServiceProvider( T::getStaticServiceID() );
             
-            return s_exist;
+            return *s_exist;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         bool isAvailableService()
         {
-            static bool s_available = SERVICE_PROVIDER_GET()
-                ->isAvailableService( T::getStaticServiceID() );
+            static const bool * s_available = SERVICE_PROVIDER_GET()
+                ->isAvailableServiceProvider( T::getStaticServiceID() );
 
-            return s_available;
+            return *s_available;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         bool isInitializeService()
         {
-            //without static 
-            bool initialize = SERVICE_PROVIDER_GET()
-                ->isInitializeService( T::getStaticServiceID() );
+            static const bool * s_initialize = SERVICE_PROVIDER_GET()
+                ->isInitializeServiceProvider( T::getStaticServiceID() );
 
-            return initialize;
+            return *s_initialize;
         }
     }
 }

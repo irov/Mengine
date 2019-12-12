@@ -25,7 +25,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( arrow, nullptr, "can't create '%s' '%s' doc '%s'"
             , m_category.c_str()
             , m_prototype.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         return arrow;

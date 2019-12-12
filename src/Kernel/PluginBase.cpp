@@ -81,7 +81,7 @@ namespace Mengine
             SERVICE_WAIT( ThreadServiceInterface, [this]()
             {
                 m_mutexAllocatorPool = THREAD_SERVICE()
-                    ->createMutex( MENGINE_DOCUMENT( "Plugin '%s'", this->getPluginName() ) );
+                    ->createMutex( MENGINE_DOCUMENT_MESSAGE( "Plugin '%s'", this->getPluginName() ) );
 
                 stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
                     , (stdex_allocator_thread_lock_t)& s_stdex_thread_lock
@@ -182,6 +182,11 @@ namespace Mengine
                     return;
                 }
 
+                if( _doc == nullptr )
+                {
+                    return;
+                }
+
                 const Char * object_modulePath = _doc->getModulePath();
 
                 if( strcmp( plugin_modulePath, object_modulePath ) != 0 )
@@ -202,7 +207,7 @@ namespace Mengine
                 for( const DocumentPtr & doc : leakObjects )
                 {
                     LOGGER_MESSAGE( "-- %s"
-                        , MENGINE_DOCUMENT_MESSAGE( doc )
+                        , MENGINE_DOCUMENT_STR( doc )
                     );
                 }
             }

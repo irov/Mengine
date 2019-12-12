@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static const FactoryPtr & getFactoryImage()
     {
-        static FactoryPtr factoryLoader = Helper::makeFactoryDefault<Image>();
+        static FactoryPtr factoryLoader = Helper::makeFactoryDefault<Image>( nullptr );
 
         return factoryLoader;
     }

@@ -42,6 +42,7 @@ PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider )
 
+SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( UnicodeSystem );
@@ -66,15 +67,16 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_CREATE( OptionsService );
-        SERVICE_CREATE( FactoryService );
+        SERVICE_CREATE( DocumentService, nullptr );
+        SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( UnicodeSystem );
+        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( StringizeService );
-        SERVICE_CREATE( ArchiveService );
+        SERVICE_CREATE( StringizeService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( LoggerService );
+        SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         class MyLogger
             : public LoggerBase
@@ -107,24 +109,24 @@ namespace Mengine
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( Helper::makeFactorableUnique<MyLogger>() );
+            ->registerLogger( Helper::makeFactorableUnique<MyLogger>( MENGINE_DOCUMENT_FUNCTION ) );
 
-        SERVICE_CREATE( CodecService );
-        SERVICE_CREATE( DataService );
-        SERVICE_CREATE( ConfigService );
+        SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( ThreadSystem );
+        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( ThreadService );
-        SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( PluginService );
+        SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( FileService );
+        SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( Win32FileGroup );
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( Zip );
-        PLUGIN_CREATE( LZ4 );
+        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
 
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "dir" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
@@ -163,8 +165,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( in.empty() == true )
     {
-        message_error( "not found 'in' param"
-        );
+        message_error( "not found 'in' param" );
 
         return 0;
     }
@@ -192,7 +193,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
 
     if( PLUGIN_SERVICE()
-        ->loadPlugin( "XmlToBinPlugin.dll" ) == false )
+        ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION ) == false )
     {
         return 0;
     }

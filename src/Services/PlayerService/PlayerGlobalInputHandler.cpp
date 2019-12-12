@@ -42,7 +42,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "Forgot remove player global input handler [%d] (doc: %s)"
                 , desc.id
-                , MENGINE_DOCUMENT_MESSAGE( desc.doc )
+                , MENGINE_DOCUMENT_STR( desc.doc )
             );
         }
 #endif

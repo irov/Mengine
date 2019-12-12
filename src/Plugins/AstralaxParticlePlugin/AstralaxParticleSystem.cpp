@@ -110,13 +110,13 @@ namespace Mengine
         AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( container, nullptr, "invalid create container doc '%s'"
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         if( container->initialize( _fileGroup, _filePath, _archivator ) == false )
         {
             LOGGER_ERROR( "invalid initialize container doc '%s'"
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -145,8 +145,8 @@ namespace Mengine
             const AstralaxEmitterContainerDesc & old_desc = it_found->second;
 
             LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
-                , MENGINE_DOCUMENT_MESSAGE( old_desc.doc )
+                , MENGINE_DOCUMENT_STR( _doc )
+                , MENGINE_DOCUMENT_STR( old_desc.doc )
             );
 #endif
         }

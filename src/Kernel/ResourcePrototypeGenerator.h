@@ -22,17 +22,17 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "can't generate '%s' '%s' doc '%s'"
                 , this->getCategory().c_str()
                 , this->getPrototype().c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             const ConstString & prototype = this->getPrototype();
             resource->setType( prototype );
 
 #ifdef MENGINE_DEBUG
-            DocumentPtr doc = MENGINE_DOCUMENT( "Resource '%s' type '%s' create '%s'"
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Resource '%s' type '%s' create '%s'"
                 , resource->getName().c_str()
                 , resource->getType().c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             resource->setDocument( doc );

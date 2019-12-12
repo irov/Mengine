@@ -4,6 +4,7 @@
 
 #include "Kernel/BezierHelper.h"
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "math/line2.h"
@@ -27,6 +28,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Vectorizator::~Vectorizator()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Vectorizator::_compile()
+    {
+        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+            ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( material, false );
+
+        m_material = material;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Vectorizator::_release()
+    {
+        m_material = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::setLineWidth( float _width )
@@ -217,16 +235,13 @@ namespace Mengine
             return;
         }
 
-        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-            ->getMaterial3( EM_COLOR_BLEND, PT_TRIANGLELIST, 0, nullptr, MENGINE_DOCUMENT_FACTORABLE );
-
         VectorRenderVertex2D::value_type * vertexData = m_renderVertex2D.data();
         VectorRenderVertex2D::size_type vertexSize = m_renderVertex2D.size();
 
         VectorRenderIndex::value_type * indexData = m_renderIndices.data();
         VectorRenderIndex::size_type indexSize = m_renderIndices.size();
 
-        _renderPipeline->addRenderObject( _context, material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderObject( _context, m_material, nullptr, vertexData, vertexSize, indexData, indexSize, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::_invalidateWorldMatrix()

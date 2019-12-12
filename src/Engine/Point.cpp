@@ -135,7 +135,7 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        _renderPipeline->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderQuad( _context, material, m_vertices, 4, nullptr, false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
 }

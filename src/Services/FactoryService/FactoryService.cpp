@@ -81,6 +81,11 @@ namespace Mengine
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
+            if( _doc == nullptr )
+            {
+                return;
+            }
+
             objectLeaks[_type].emplace_back( _doc );
 
             ++leakcount;
@@ -125,7 +130,7 @@ namespace Mengine
 
                         Char objmsg[16384];
                         int objmsg_length = snprintf( objmsg, 16384, "    doc: %s\n"
-                            , MENGINE_DOCUMENT_MESSAGE( obj )
+                            , MENGINE_DOCUMENT_STR( obj )
                         );
 
                         fwrite( objmsg, objmsg_length, 1, f );
@@ -305,8 +310,12 @@ namespace Mengine
                 continue;
             }
 
+            DocumentPtr shallow_doc = desc.factorable_doc;
+
             *it = nodeLeakDescs.back();
             nodeLeakDescs.pop_back();
+
+            shallow_doc = nullptr;
 
             break;
         }

@@ -55,7 +55,7 @@ namespace Mengine
 
         SoundIdentityInterfacePtr  soundIdentity = SOUND_SERVICE()
             ->createSoundIdentity( m_isHeadMode, soundBuffer, m_sourceCategory, streamable
-                , MENGINE_DOCUMENT( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
+                , MENGINE_DOCUMENT_MESSAGE( "sound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, false, "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
             , this->getName().c_str()

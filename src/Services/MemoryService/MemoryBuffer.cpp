@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory, MENGINE_DOCUMENT_MESSAGE( m_doc ) );
+        Helper::freeMemory( m_memory, MENGINE_DOCUMENT_STR( m_doc ) );
 
         m_memory = nullptr;
     }
@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryBuffer::newBuffer( size_t _size, const DocumentPtr & _doc )
     {
-        void * new_memory = Helper::reallocateMemory( m_memory, _size, MENGINE_DOCUMENT_MESSAGE( _doc ) );
+        void * new_memory = Helper::reallocateMemory( m_memory, _size, MENGINE_DOCUMENT_STR( _doc ) );
 
         if( new_memory == nullptr )
         {

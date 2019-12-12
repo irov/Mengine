@@ -638,7 +638,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL_RETURN( m_vertexAttributes.exist( _name ) == false, nullptr, "already has vertex attribute '%s' (doc: %s)"
             , _name.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         RenderVertexAttributeInterfacePtr vertexAttribute = RENDER_SYSTEM()
@@ -670,7 +670,7 @@ namespace Mengine
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _name.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         FilePath outFilePath = _filePath;
@@ -716,7 +716,7 @@ namespace Mengine
             , _fileGroup->getName().c_str()
             , _filePath.c_str()
             , _name.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         FilePath outFilePath = _filePath;
@@ -758,7 +758,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL_RETURN( m_programs.exist( _name ) == false, nullptr, "already has program '%s' (doc: %s)"
             , _name.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         RenderProgramInterfacePtr program = RENDER_SYSTEM()

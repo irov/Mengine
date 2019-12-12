@@ -135,12 +135,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, "_vertexBuffer == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, "_indexBuffer == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _vertexBuffer != nullptr, "_vertexBuffer == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _indexBuffer != nullptr, "_indexBuffer == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
 
         if( m_renderObjects.full() == true )
         {
@@ -218,12 +218,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {
@@ -393,12 +393,12 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
-        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", MENGINE_DOCUMENT_MESSAGE( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, "_vertices == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, "_indices == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
 
         if( _vertexCount >= MENGINE_RENDER_VERTEX_MAX_BATCH )
         {
@@ -418,6 +418,7 @@ namespace Mengine
         dro.vertexCount = _vertexCount;
         dro.indices = _indices;
         dro.indexCount = _indexCount;
+        dro.doc = _doc;
 
         m_debugRenderObjects.push_back( dro );
 #else
@@ -566,7 +567,7 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
         for( const DebugRenderObject & dro : m_debugRenderObjects )
         {
-            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, MENGINE_DOCUMENT_FACTORABLE );
+            this->addRenderObject( &dro.context, dro.material, nullptr, dro.vertices, dro.vertexCount, dro.indices, dro.indexCount, nullptr, true, dro.doc );
         }
 
         m_debugRenderObjects.clear();

@@ -66,7 +66,8 @@ PLUGIN_EXPORT( MetabufLoader );
 PLUGIN_EXPORT( DevelopmentConverter );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
-
+//////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( OptionsService );
@@ -157,13 +158,14 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
-        SERVICE_CREATE( NotificationService );
-        SERVICE_CREATE( OptionsService );
-        SERVICE_CREATE( FactoryService );
-        SERVICE_CREATE( UnicodeSystem );
-        SERVICE_CREATE( StringizeService );
-        SERVICE_CREATE( ArchiveService );
-        SERVICE_CREATE( LoggerService );
+        SERVICE_CREATE( DocumentService, nullptr );
+        SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( FactoryService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( UnicodeSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( StringizeService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
         class MyLogger
             : public LoggerBase
@@ -185,43 +187,43 @@ namespace Mengine
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( Helper::makeFactorableUnique<MyLogger>() );
+            ->registerLogger( Helper::makeFactorableUnique<MyLogger>( MENGINE_DOCUMENT_FUNCTION ) );
 
         LOGGER_WARNING( "Inititalizing Config Manager..." );
 
-        SERVICE_CREATE( ConfigService );
-        SERVICE_CREATE( ConverterService );
-        SERVICE_CREATE( CodecService );
-        SERVICE_CREATE( DataService );
-        SERVICE_CREATE( ThreadSystem );
-        SERVICE_CREATE( ThreadService );
-        SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( ModuleService );
-        SERVICE_CREATE( EnumeratorService );
-        SERVICE_CREATE( PluginService );
-        SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( VocabularyService );
+        SERVICE_CREATE( ConfigService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ConverterService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ThreadSystem, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ThreadService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( MemoryService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( EnumeratorService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( PluginService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( PrototypeService, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( VocabularyService, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( Platform );
-        SERVICE_CREATE( FileService );
+        SERVICE_CREATE( Platform, MENGINE_DOCUMENT_FUNCTION );
+        SERVICE_CREATE( FileService, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( Win32FileGroup );
-        PLUGIN_CREATE( Zip );
-        PLUGIN_CREATE( LZ4 );
-        PLUGIN_CREATE( ImageCodec );
-        PLUGIN_CREATE( Movie1 );
-        PLUGIN_CREATE( Movie );
+        PLUGIN_CREATE( Win32FileGroup, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( LZ4, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Movie1, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( Movie, MENGINE_DOCUMENT_FUNCTION );
 
-        SERVICE_CREATE( LoaderService );
-        PLUGIN_CREATE( MetabufLoader );
+        SERVICE_CREATE( LoaderService, MENGINE_DOCUMENT_FUNCTION );
+        PLUGIN_CREATE( MetabufLoader, MENGINE_DOCUMENT_FUNCTION );
 
-        PLUGIN_CREATE( DevelopmentConverter );
+        PLUGIN_CREATE( DevelopmentConverter, MENGINE_DOCUMENT_FUNCTION );
 
         //PLUGIN_SERVICE()
         //    ->loadPlugin( "DevelopmentConverterPlugin.dll" );
 
         PLUGIN_SERVICE()
-            ->loadPlugin( "XmlToBinPlugin.dll" );
+            ->loadPlugin( "XmlToBinPlugin.dll", MENGINE_DOCUMENT_FUNCTION );
 
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )

@@ -55,7 +55,7 @@ namespace Mengine
 }
 
 #ifdef MENGINE_DEBUG
-#   define MENGINE_DOCUMENT_MESSAGE(Doc) Doc->getMessage()
+#   define MENGINE_DOCUMENT_STR(Doc) Doc->getMessage()
 #else
-#   define MENGINE_DOCUMENT_MESSAGE(Doc) MENGINE_STRING_EMPTY
+#   define MENGINE_DOCUMENT_STR(Doc) MENGINE_STRING_EMPTY
 #endif

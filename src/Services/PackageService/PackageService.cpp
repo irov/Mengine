@@ -106,7 +106,7 @@ namespace Mengine
             config->hasValue( frameworkPack.c_str(), "Dev", &pack.dev );
             config->hasValue( frameworkPack.c_str(), "PreLoad", &pack.preload );
 
-            if( this->addPackage( pack, MENGINE_DOCUMENT( "framework '%s'", frameworkPack.c_str() ) ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", frameworkPack.c_str() ) ) == false )
             {
                 LOGGER_CRITICAL( "invalid add framework pack '%s'"
                     , pack.name.c_str()
@@ -155,7 +155,7 @@ namespace Mengine
             config->hasValue( resourcePack.c_str(), "Dev", &pack.dev );
             config->hasValue( resourcePack.c_str(), "PreLoad", &pack.preload );
 
-            if( this->addPackage( pack, MENGINE_DOCUMENT( "framework '%s'", resourcePack.c_str() ) ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", resourcePack.c_str() ) ) == false )
             {
                 LOGGER_CRITICAL( "invalid add resource pack '%s'"
                     , pack.name.c_str()
@@ -206,7 +206,7 @@ namespace Mengine
             config->hasValue( languagePack.c_str(), "Fonts", &pack.fontsPath );
             config->hasValue( languagePack.c_str(), "Texts", &pack.textsPath );
 
-            if( this->addPackage( pack, MENGINE_DOCUMENT( "framework '%s'", languagePack.c_str() ) ) == false )
+            if( this->addPackage( pack, MENGINE_DOCUMENT_MESSAGE( "framework '%s'", languagePack.c_str() ) ) == false )
             {
                 LOGGER_CRITICAL( "invalid add language pack '%s'"
                     , pack.name.c_str()

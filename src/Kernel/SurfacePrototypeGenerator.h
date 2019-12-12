@@ -21,17 +21,17 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr, "can't generate '%s' '%s' doc '%s'"
                 , this->getCategory().c_str()
                 , this->getPrototype().c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             const ConstString & prototype = this->getPrototype();
             surface->setType( prototype );
 
 #ifdef MENGINE_DEBUG
-            DocumentPtr doc = MENGINE_DOCUMENT( "Surface '%s' type '%s' create '%s'"
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Surface '%s' type '%s' create '%s'"
                 , surface->getName().c_str()
                 , surface->getType().c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             surface->setDocument( doc );

@@ -78,7 +78,7 @@ namespace Mengine
         if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )
         {
             LOGGER_ERROR( "invalid load buffer (doc: %s)"
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return false;

@@ -19,6 +19,6 @@ namespace Mengine
 
         float radius = 2.5f;
 
-        Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 4, 0xFF0000FF, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 4, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
     }
 }

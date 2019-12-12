@@ -15,6 +15,7 @@ namespace Mengine
     Factory::Factory( const Char * _name )
         : m_name( _name )
         , m_count( 0 )
+        , m_register( false )
     {
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )
@@ -98,6 +99,10 @@ namespace Mengine
         {
             NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_FACTORY_DESTROY_OBJECT, this, _object );
         }
+#endif
+
+#ifdef MENGINE_DEBUG
+        _object->setDocument( nullptr );
 #endif
 
         this->_destroyObject( _object );

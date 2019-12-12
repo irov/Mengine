@@ -59,7 +59,7 @@ namespace Mengine
             for( const ObserverDesc & desc : observers )
             {
                 LOGGER_MESSAGE( "Notification '%s' not clear"
-                    , MENGINE_DOCUMENT_MESSAGE( desc.doc )
+                    , MENGINE_DOCUMENT_STR( desc.doc )
                 );
             }
 #endif
@@ -121,7 +121,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL_RETURN( _id < MENGINE_NOTIFICATOR_MAX_COUNT, false );
 
-        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );        
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         const VectorObservers & observers = m_mapObserves[_id];
 
@@ -145,19 +145,26 @@ namespace Mengine
 
         if( m_visiting == 0 )
         {
-            for( const ObserverQueue & q : m_add )
+            ++m_visiting;
+
+            while( m_add.empty() == false || m_remove.empty() == false )
             {
-                this->addObserver_( q.id, q.observer, q.callable, q.doc );
+                VectorObserverQueues move_add = std::move( m_add );
+
+                for( const ObserverQueue & q : move_add )
+                {
+                    this->addObserver_( q.id, q.observer, q.callable, q.doc );
+                }
+
+                VectorObserverQueues remove_add = std::move( m_remove );
+
+                for( const ObserverQueue & q : remove_add )
+                {
+                    this->removeObserver_( q.id, q.observer );
+                }
             }
 
-            m_add.clear();
-
-            for( const ObserverQueue & q : m_remove )
-            {
-                this->removeObserver_( q.id, q.observer );
-            }
-
-            m_remove.clear();
+            --m_visiting;
         }
 
         return successful;
@@ -174,7 +181,7 @@ namespace Mengine
         ObserverDesc desc;
         desc.observer = _observer;
         desc.callable = _callable;
-        
+
 #ifdef MENGINE_DEBUG
         desc.doc = _doc;
 #endif

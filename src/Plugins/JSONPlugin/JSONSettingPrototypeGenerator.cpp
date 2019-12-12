@@ -35,7 +35,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( setting, nullptr, "can't generate '%s:%s' doc '%s'"
             , this->getCategory().c_str()
             , this->getPrototype().c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         return setting;

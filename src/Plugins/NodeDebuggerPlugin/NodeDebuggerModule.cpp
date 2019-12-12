@@ -475,7 +475,7 @@ namespace Mengine
                 , vertices.data(), vertices.size()
                 , indices.data(), indices.size()
                 , &bbox
-                , false, MENGINE_DOCUMENT_FACTORABLE );
+                , false, MENGINE_DOCUMENT_FORWARD );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::privateInit()
@@ -948,6 +948,11 @@ namespace Mengine
             MENGINE_UNUSED( _factory );
             MENGINE_UNUSED( _factorable );
 
+            if( _doc == nullptr )
+            {
+                return;
+            }
+
             objectLeaks[_type].emplace_back( _doc );
 
             ++leakcount;
@@ -957,16 +962,30 @@ namespace Mengine
         {
             pugi::xml_node xml_objects = payloadNode.append_child( "Objects" );
 
-            xml_objects.append_attribute( "factory" ).set_value( factory.c_str() );
+            xml_objects.append_attribute( "Factory" ).set_value( factory.c_str() );
 
             for( const DocumentPtr & doc : objects )
             {
                 pugi::xml_node xml_object = xml_objects.append_child( "Object" );
 
-                xml_object.append_attribute( "file" ).set_value( doc->getFile() );
-                xml_object.append_attribute( "function" ).set_value( doc->getFunction() );
-                xml_object.append_attribute( "line" ).set_value( doc->getLine() );
-                xml_object.append_attribute( "message" ).set_value( MENGINE_DOCUMENT_MESSAGE( doc ) );
+                xml_object.append_attribute( "File" ).set_value( doc->getFile() );
+                xml_object.append_attribute( "Function" ).set_value( doc->getFunction() );
+                xml_object.append_attribute( "Line" ).set_value( doc->getLine() );
+                xml_object.append_attribute( "Message" ).set_value( MENGINE_DOCUMENT_STR( doc ) );
+
+                DocumentPtr doc_parent = doc->getParent();
+
+                while( doc_parent != nullptr )
+                {
+                    pugi::xml_node xml_parent = xml_object.append_child( "Parent" );
+
+                    xml_parent.append_attribute( "File" ).set_value( doc_parent->getFile() );
+                    xml_parent.append_attribute( "Function" ).set_value( doc_parent->getFunction() );
+                    xml_parent.append_attribute( "Line" ).set_value( doc_parent->getLine() );
+                    xml_parent.append_attribute( "Message" ).set_value( MENGINE_DOCUMENT_STR( doc_parent ) );
+
+                    doc_parent = doc_parent->getParent();
+                }
             }
         }
 

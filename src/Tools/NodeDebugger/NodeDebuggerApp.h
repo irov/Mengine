@@ -385,6 +385,9 @@ namespace Mengine
             String function;
             String line;
             String message;
+
+            typedef Vector<LeakDesc> VectorLeakDesc;
+            VectorLeakDesc parents;
         };
 
         typedef Vector<LeakDesc> VectorLeaks;

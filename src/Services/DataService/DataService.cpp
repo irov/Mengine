@@ -38,19 +38,19 @@ namespace Mengine
         DataInterfacePtr data = _dataflow->create( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr, "invalid create data '%s'"
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         MemoryInterfacePtr memory = _dataflow->load( _stream, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr, "invalid load data (doc: %s)"
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         if( _dataflow->flow( data, memory, _doc ) == false )
         {
             LOGGER_ERROR( "invalid flow data (doc: %s)"
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;

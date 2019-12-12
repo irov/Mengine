@@ -1778,7 +1778,7 @@ namespace Mengine
                 , _hwHeight
                 , _hwChannels
                 , _hwPixelFormat
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
         }
 #endif

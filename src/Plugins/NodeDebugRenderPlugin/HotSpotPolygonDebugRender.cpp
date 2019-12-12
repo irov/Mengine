@@ -81,6 +81,6 @@ namespace Mengine
             }
         }
 
-        Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, MENGINE_DOCUMENT_FORWARD );
     }
 }

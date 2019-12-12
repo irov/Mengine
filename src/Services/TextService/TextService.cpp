@@ -558,7 +558,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( font, nullptr, "invalid create font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         font->setName( _fontName );
@@ -567,7 +567,7 @@ namespace Mengine
         LOGGER_INFO( "add user font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         m_fonts.emplace( _fontName, font );

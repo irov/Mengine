@@ -133,7 +133,7 @@ namespace Mengine
             LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
                 , _count
                 , _offset
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -168,7 +168,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return false;

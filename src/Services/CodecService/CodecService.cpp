@@ -44,7 +44,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
             , _type.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         DecoderInterfacePtr decoder = factory->createDecoder( _doc );
@@ -55,7 +55,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid initialize codec '%s' doc '%s'"
                 , _type.c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -70,7 +70,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr, "not found codec '%s' doc '%s'"
             , _type.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         EncoderInterfacePtr encoder = factory->createEncoder( _doc );

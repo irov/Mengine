@@ -106,7 +106,7 @@ namespace Mengine
             , _groupName.c_str()
             , _name.c_str()
             , _type.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         if( _name.empty() == false )

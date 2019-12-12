@@ -29,9 +29,9 @@ namespace Mengine
         };
 
     public:
-        virtual bool isExistService( const Char * _name ) const = 0;
-        virtual bool isAvailableService( const Char * _name ) const = 0;
-        virtual bool isInitializeService( const Char * _name ) const = 0;
+        virtual const bool * isExistServiceProvider( const Char * _name ) = 0;
+        virtual const bool * isAvailableServiceProvider( const Char * _name ) = 0;
+        virtual const bool * isInitializeServiceProvider( const Char * _name ) = 0;
 
     public:
         virtual const ServiceInterfacePtr & getService( const Char * _name ) const = 0;

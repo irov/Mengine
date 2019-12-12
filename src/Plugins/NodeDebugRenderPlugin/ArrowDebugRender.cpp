@@ -25,19 +25,19 @@ namespace Mengine
             {
                 float radius = 2.5f;
 
-                Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 4, 0x8080FFFF, MENGINE_DOCUMENT_FACTORABLE );
+                Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 4, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;
         case EAT_RADIUS:
             {
                 float radius = _node->getRadius();
 
-                Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, 0x8080FFFF, MENGINE_DOCUMENT_FACTORABLE );
+                Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;
         case EAT_POLYGON:
             {
                 const Polygon & polygon = _node->getPolygon();
 
-                Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0x8080FFFF, MENGINE_DOCUMENT_FACTORABLE );
+                Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0x8080FFFF, MENGINE_DOCUMENT_FORWARD );
             }break;
         }
     }

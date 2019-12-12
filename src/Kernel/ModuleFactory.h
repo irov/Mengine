@@ -66,7 +66,7 @@ namespace Mengine
             if( factory->initialize() == false )
             {
                 LOGGER_ERROR( "invalid initialize module (doc %s)"
-                    , MENGINE_DOCUMENT_MESSAGE( _doc )
+                    , MENGINE_DOCUMENT_STR( _doc )
                 );
 
                 return nullptr;

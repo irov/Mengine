@@ -871,7 +871,7 @@ namespace Mengine
             }
 
             ResourcePtr resource = RESOURCE_SERVICE()
-                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT( "locale '%s' group '%s' name '%s' type '%s'", _locale.c_str(), groupName.c_str(), name.c_str(), type.c_str() ) );
+                ->createResource( _locale, groupName, name, type, true, true, MENGINE_DOCUMENT_MESSAGE( "locale '%s' group '%s' name '%s' type '%s'", _locale.c_str(), groupName.c_str(), name.c_str(), type.c_str() ) );
 
             MENGINE_ASSERTION_MEMORY_PANIC( resource, false, "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
                 , _filePath.c_str()

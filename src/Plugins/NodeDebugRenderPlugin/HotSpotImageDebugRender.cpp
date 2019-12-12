@@ -62,6 +62,6 @@ namespace Mengine
             vertices[i].uv[1].y = 0.f;
         }
 
-        Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::nodeDebugRenderLine( _renderPipeline, _context, vertices, MENGINE_DOCUMENT_FORWARD );
     }
 }

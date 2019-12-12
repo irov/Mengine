@@ -908,7 +908,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->doc )
                 );
 #endif
 
@@ -966,7 +966,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->doc )
                 );
 #endif
 
@@ -1038,7 +1038,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->doc )
                 );
 #endif
 
@@ -1098,7 +1098,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
                 LOGGER_WARNING( "invalid state '%d' (doc '%s')"
                     , identity->state
-                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->doc )
                 );
 #endif
 
@@ -1533,7 +1533,7 @@ namespace Mengine
 
                 LOGGER_ERROR( "sound: %s [%s] "
                     , identity->streamable == true ? "streamable" : "instance"
-                    , MENGINE_DOCUMENT_MESSAGE( identity->doc )
+                    , MENGINE_DOCUMENT_STR( identity->doc )
                 );
             }
 #endif

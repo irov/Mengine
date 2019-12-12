@@ -134,7 +134,7 @@ namespace Mengine
         MENGINE_ASSERTION_MEMORY_PANIC( generator, nullptr, "prototype not found '%s:%s' doc '%s'"
             , _category.c_str()
             , _prototype.c_str()
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         FactorablePtr prototype = generator->generate( _doc );

@@ -387,7 +387,7 @@ namespace Mengine
             {
                 TextFieldPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, false );
@@ -455,7 +455,7 @@ namespace Mengine
             {
                 HotSpotPolygonPtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, false );
@@ -466,7 +466,7 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
@@ -486,7 +486,7 @@ namespace Mengine
             {
                 NodePtr node = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( node, false );
@@ -500,7 +500,7 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 if( matrixProxy == nullptr )
@@ -534,7 +534,7 @@ namespace Mengine
 
                 SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( surface, false );
@@ -560,7 +560,7 @@ namespace Mengine
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MatrixProxy" )
-                        , MENGINE_DOCUMENT( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
+                        , MENGINE_DOCUMENT_MESSAGE( "name '%s' composition '%s'", this->getName().c_str(), m_compositionName.c_str() )
                     );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( matrixProxy, false );
@@ -2460,7 +2460,7 @@ namespace Mengine
             Movie2ScissorPtr scissor;
             if( mesh.viewport != nullptr )
             {
-                scissor = Helper::makeFactorableUnique<Movie2Scissor>( MENGINE_DOCUMENT_FACTORABLE );
+                scissor = Helper::makeFactorableUnique<Movie2Scissor>( MENGINE_DOCUMENT_FORWARD );
 
                 scissor->setViewport( wm, mesh.viewport );
 
@@ -2546,7 +2546,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -2587,7 +2587,7 @@ namespace Mengine
                         const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                             ->getSolidMaterial( blend_mode );
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -2702,7 +2702,7 @@ namespace Mengine
                         {
                             RenderMaterialInterfacePtr material = image_desc->materials[blend_mode];
 
-                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                            _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                         }
                         else
                         {
@@ -2747,11 +2747,11 @@ namespace Mengine
                                 }
                             }
 
-                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resourceImage, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FACTORABLE );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resourceImage, materialName, blend_mode, false, false, MENGINE_DOCUMENT_FORWARD );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 
-                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                            _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                         }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -2800,7 +2800,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                        _renderPipeline->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 default:
                     break;
@@ -2909,7 +2909,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                     {
@@ -3015,7 +3015,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FACTORABLE );
+                        _renderPipeline->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false, MENGINE_DOCUMENT_FORWARD );
                     }break;
                 default:
                     break;

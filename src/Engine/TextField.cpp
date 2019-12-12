@@ -402,7 +402,7 @@ namespace Mengine
                 continue;
             }
 
-            _renderPipeline->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FACTORABLE );
+            _renderPipeline->addRenderQuad( _context, chunk.material, chunk_vertices, chunk.vertex_count, bb, false, MENGINE_DOCUMENT_FORWARD );
         }
     }
     //////////////////////////////////////////////////////////////////////////

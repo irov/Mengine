@@ -171,7 +171,7 @@ namespace Mengine
             , HWWidth
             , HWHeight
             , HWChannels
-            , MENGINE_DOCUMENT_MESSAGE( _doc )
+            , MENGINE_DOCUMENT_STR( _doc )
         );
 
         RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );

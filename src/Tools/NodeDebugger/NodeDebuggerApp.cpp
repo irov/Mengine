@@ -486,22 +486,38 @@ namespace Mengine
 
         for( const pugi::xml_node & child : _xmlContainer.children() )
         {
-            const pugi::char_t * type = child.attribute( "factory" ).value();
+            const pugi::char_t * type = child.attribute( "Factory" ).value();
             
             VectorLeaks & leaks = m_objectLeaks[type];
 
-            for( const pugi::xml_node & o : child.children() )
+            for( const pugi::xml_node & obj : child.children() )
             {
-                const pugi::char_t * file = o.attribute( "file" ).value();
-                const pugi::char_t * function = o.attribute( "function" ).value();
-                const pugi::char_t * line = o.attribute( "line" ).value();
-                const pugi::char_t * message = o.attribute( "message" ).value();
+                const pugi::char_t * file = obj.attribute( "File" ).value();
+                const pugi::char_t * function = obj.attribute( "Function" ).value();
+                const pugi::char_t * line = obj.attribute( "Line" ).value();
+                const pugi::char_t * message = obj.attribute( "Message" ).value();
 
                 LeakDesc desc;
                 desc.file = file;
                 desc.function = function;
                 desc.line = line;
                 desc.message = message;
+
+                for( const pugi::xml_node & parent : obj.children() )
+                {
+                    const pugi::char_t * parent_file = parent.attribute( "File" ).value();
+                    const pugi::char_t * parent_function = parent.attribute( "Function" ).value();
+                    const pugi::char_t * parent_line = parent.attribute( "Line" ).value();
+                    const pugi::char_t * parent_message = parent.attribute( "Message" ).value();
+
+                    LeakDesc parent_desc;
+                    parent_desc.file = parent_file;
+                    parent_desc.function = parent_function;
+                    parent_desc.line = parent_line;
+                    parent_desc.message = parent_message;
+
+                    desc.parents.emplace_back( parent_desc );
+                }
 
                 leaks.emplace_back( desc );
             }
@@ -1044,7 +1060,7 @@ namespace Mengine
         {
             ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 1.f, 0.f, 1.f ) );
 
-            char label_node[16];
+            char label_node[32];
             sprintf( label_node, "##tree_node_%u"
                 , index
             );
@@ -1085,6 +1101,53 @@ namespace Mengine
                         , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
                         , ImGuiInputTextFlags_ReadOnly
                     );
+
+                    ImGui::PushStyleColor( ImGuiCol_Text, ImVec4( 0.f, 0.f, 1.f, 1.f ) );
+
+                    char label_parent_node[32];
+                    sprintf( label_parent_node, "##tree_parent_node_%u"
+                        , index
+                    );
+
+                    bool isParentOpened = ImGui::TreeNodeEx( label_parent_node, ImGuiTreeNodeFlags_None, "traceback" );
+
+                    ImGui::PopStyleColor();
+
+                    if( isParentOpened == true )
+                    {
+                        ImGui::Separator();
+
+                        for( const LeakDesc & parent : leak.parents )
+                        {
+                            ImGui::BulletText( "file: %s"
+                                , parent.file.c_str()
+                            );
+
+                            ImGui::BulletText( "line: %s"
+                                , parent.line.c_str()
+                            );
+
+                            ImGui::BulletText( "function: %s"
+                                , parent.function.c_str()
+                            );
+
+                            char label_text[16];
+                            sprintf( label_text, "##text_%u"
+                                , index
+                            );
+
+                            ImGui::InputTextMultiline( label_text
+                                , (char *)parent.message.data()
+                                , parent.message.size()
+                                , ImVec2( -1.f, ImGui::GetTextLineHeight() * 2.5f )
+                                , ImGuiInputTextFlags_ReadOnly
+                            );
+
+                            ImGui::Separator();
+                        }
+
+                        ImGui::TreePop();
+                    }
 
                     ImGui::Separator();
 

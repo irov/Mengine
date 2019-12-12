@@ -136,7 +136,7 @@ namespace Mengine
 
         SoundIdentityInterfacePtr soundIdentity = SOUND_SERVICE()
             ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true
-                , MENGINE_DOCUMENT( "resource '%s'", _resourceName.c_str() ) );
+                , MENGINE_DOCUMENT_MESSAGE( "resource '%s'", _resourceName.c_str() ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( soundIdentity, false, "can't create sound source '%s'"
             , filePath.c_str()

@@ -30,6 +30,6 @@ namespace Mengine
 
         float radius = _node->getRadius();
 
-        Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, debugColor, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::nodeDebugRenderCircle( _renderPipeline, _context, wm, radius, 32, debugColor, MENGINE_DOCUMENT_FORWARD );
     }
 }

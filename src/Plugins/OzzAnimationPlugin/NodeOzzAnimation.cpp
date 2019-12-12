@@ -596,6 +596,6 @@ namespace Mengine
         new_context.scissor = _context->scissor;
         new_context.target = _context->target;
 
-        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FACTORABLE );
+        _renderPipeline->addRenderMesh( &new_context, m_material, nullptr, m_vertexBuffer, m_indexBuffer, vertex_count, indices_count, MENGINE_DOCUMENT_FORWARD );
     }
 }

@@ -23,6 +23,10 @@ namespace Mengine
         ~Vectorizator() override;
 
     public:
+        bool _compile() override;
+        void _release() override;
+
+    public:
         void setLineWidth( float _width );
         float getLineWidth() const;
 
@@ -138,6 +142,8 @@ namespace Mengine
 
         typedef Vector<EllipseDesc> VectorEllipses;
         VectorEllipses m_ellipses;
+
+        RenderMaterialInterfacePtr m_material;
 
         mutable VectorRenderVertex2D m_renderVertex2D;
         mutable VectorRenderIndex m_renderIndices;

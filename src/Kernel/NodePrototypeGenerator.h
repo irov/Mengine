@@ -24,7 +24,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr, "can't generate '%s' '%s' doc '%s'"
                 , this->getCategory().c_str()
                 , this->getPrototype().c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             const ConstString & prototype = this->getPrototype();
@@ -34,10 +34,10 @@ namespace Mengine
             node->setUniqueIdentity( uniqueIdentity );
 
 #ifdef MENGINE_DEBUG
-            DocumentPtr doc = MENGINE_DOCUMENT( "Node '%s' type '%s' create '%s'"
+            DocumentPtr doc = MENGINE_DOCUMENT_MESSAGE( "Node '%s' type '%s' create '%s'"
                 , node->getName().c_str()
                 , node->getType().c_str()
-                , MENGINE_DOCUMENT_MESSAGE( _doc ) 
+                , MENGINE_DOCUMENT_STR( _doc ) 
             );
 
             node->setDocument( doc );

@@ -114,7 +114,7 @@ namespace Mengine
             LOGGER_ERROR( "FT_New_Memory_Face font error: %s [%d] (doc: %s)"
                 , FT_error_message( err_code_memory_face )
                 , err_code_memory_face
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return false;
@@ -127,7 +127,7 @@ namespace Mengine
             LOGGER_ERROR( "FT_Select_Charmap font error: %s [%d] (doc: %s)"
                 , FT_error_message( err_code_memory_face )
                 , err_code_memory_face
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return false;

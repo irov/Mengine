@@ -43,12 +43,17 @@ namespace Mengine
         IntrusivePtrBase::intrusive_ptr_add_ref( this );
 
         Factorable * object = this->_createObject();
-        object->setFactory( this );
-
+        
         if( m_mutex != nullptr )
         {
             m_mutex->unlock();
         }
+
+        object->setFactory( this );
+
+#ifdef MENGINE_DEBUG
+        object->setDocument( _doc );
+#endif
 
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )
@@ -84,6 +89,10 @@ namespace Mengine
         {
             m_mutex->lock();
         }
+
+#ifdef MENGINE_DEBUG
+        _object->setDocument( nullptr );
+#endif
 
         this->_destroyObject( _object );
 

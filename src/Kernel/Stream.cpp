@@ -128,7 +128,7 @@ namespace Mengine
             if( _archivator->decompress( binaryMemory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
             {
                 LOGGER_ERROR( "invalid decompress doc '%s'"
-                    , MENGINE_DOCUMENT_MESSAGE( _doc )
+                    , MENGINE_DOCUMENT_STR( _doc )
                 );
 
                 return nullptr;

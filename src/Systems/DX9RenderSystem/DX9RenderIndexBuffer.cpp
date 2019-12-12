@@ -114,7 +114,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_indexCount
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -139,7 +139,7 @@ namespace Mengine
             LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
                 , _offset
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return nullptr;
@@ -174,7 +174,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size
-                , MENGINE_DOCUMENT_MESSAGE( _doc )
+                , MENGINE_DOCUMENT_STR( _doc )
             );
 
             return false;

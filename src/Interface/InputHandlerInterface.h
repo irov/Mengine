@@ -31,6 +31,7 @@ namespace Mengine
         EKeyCode code;
         bool isDown;
         bool isRepeat;
+        bool isSpecial;
     };
     //////////////////////////////////////////////////////////////////////////
     struct InputTextEvent

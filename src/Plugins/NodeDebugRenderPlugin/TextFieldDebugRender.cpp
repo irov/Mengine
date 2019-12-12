@@ -37,6 +37,6 @@ namespace Mengine
 
         const mt::mat4f & wm = _node->getWorldMatrix();
 
-        Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FACTORABLE );
+        Helper::nodeDebugRenderPolygon( _renderPipeline, _context, wm, polygon, 0xFF0000FF, MENGINE_DOCUMENT_FORWARD );
     }
 }

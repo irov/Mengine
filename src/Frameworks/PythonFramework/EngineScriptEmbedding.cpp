@@ -186,6 +186,12 @@ namespace Mengine
             m_creatorAffectorNodeFollowerLocalAlpha = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<Node, float>>( MENGINE_DOCUMENT_FACTORABLE );
             m_creatorAffectorNodeFollowerLocalAlpha->initialize();
 
+            m_creatorAffectorNodeFollowerCustomSize = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_creatorAffectorNodeFollowerCustomSize->initialize();
+
+            m_creatorAffectorNodeFollowerTextureUVScale = Helper::makeFactorableUnique<AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_creatorAffectorNodeFollowerTextureUVScale->initialize();
+
             return true;
         }
 
@@ -193,6 +199,12 @@ namespace Mengine
         {
             m_creatorAffectorNodeFollowerLocalAlpha->finalize();
             m_creatorAffectorNodeFollowerLocalAlpha = nullptr;
+
+            m_creatorAffectorNodeFollowerCustomSize->finalize();
+            m_creatorAffectorNodeFollowerCustomSize = nullptr;
+
+            m_creatorAffectorNodeFollowerTextureUVScale->finalize();
+            m_creatorAffectorNodeFollowerTextureUVScale = nullptr;
 
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
@@ -2411,11 +2423,11 @@ namespace Mengine
             return affector;
         }
         //////////////////////////////////////////////////////////////////////////
-        AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f> m_creatorAffectorNodeFollowerCustomSize;
+        IntrusivePtr<AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f>> m_creatorAffectorNodeFollowerCustomSize;
         //////////////////////////////////////////////////////////////////////////
         AffectorFollowerPtr s_addShapeFollowerCustomSize( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
         {
-            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerCustomSize.create( _node
+            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerCustomSize->create( _node
                 , [_node]( const mt::vec2f & _value ) { _node->setCustomSize( _value ); }
             , [_node]() { return _node->getCustomSize(); }
                 , _value, _target, _speed
@@ -2424,11 +2436,11 @@ namespace Mengine
             return affector;
         }
         //////////////////////////////////////////////////////////////////////////
-        AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f> m_creatorAffectorNodeFollowerTextureUVScale;
+        IntrusivePtr<AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f>> m_creatorAffectorNodeFollowerTextureUVScale;
         //////////////////////////////////////////////////////////////////////////
         AffectorFollowerPtr s_addShapeFollowerTextureUVScale( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
         {
-            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node
+            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerTextureUVScale->create( _node
                 , [_node]( const mt::vec2f & _value ) { _node->setTextureUVScale( _value ); }
             , [_node]() { return _node->getTextureUVScale(); }
                 , _value, _target, _speed

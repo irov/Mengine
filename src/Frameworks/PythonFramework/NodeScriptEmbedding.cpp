@@ -179,6 +179,33 @@ namespace Mengine
             m_nodeAffectorCreatorInterpolateLinearFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float>>( MENGINE_DOCUMENT_FACTORABLE );
             m_nodeAffectorCreatorInterpolateLinearFloat->initialize();
 
+            m_nodeAffectorCreatorInterpolateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateLinear->initialize();
+
+            m_nodeAffectorCreatorInterpolateLinearVec4 = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateLinearVec4->initialize();
+
+            m_nodeAffectorCreatorAccumulateLinear = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorAccumulateLinear->initialize();
+
+            m_nodeAffectorCreatorInterpolateQuadraticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateQuadraticBezier->initialize();
+
+            m_nodeAffectorCreatorInterpolateQuadratic = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateQuadratic->initialize();
+
+            m_nodeAffectorCreatorInterpolateCubicBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateCubicBezier->initialize();
+
+            m_nodeAffectorCreatorInterpolateQuarticBezier = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateQuarticBezier->initialize();
+
+            m_nodeAffectorCreatorInterpolateQuadraticFloat = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateQuadraticFloat->initialize();
+
+            m_nodeAffectorCreatorInterpolateLinearColor = Helper::makeFactorableUnique<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>>( MENGINE_DOCUMENT_FACTORABLE );
+            m_nodeAffectorCreatorInterpolateLinearColor->initialize();
+
             return true;
         }
 
@@ -198,6 +225,33 @@ namespace Mengine
 
             m_nodeAffectorCreatorInterpolateLinearFloat->finalize();
             m_nodeAffectorCreatorInterpolateLinearFloat = nullptr;
+
+            m_nodeAffectorCreatorInterpolateLinear->finalize();
+            m_nodeAffectorCreatorInterpolateLinear = nullptr;
+
+            m_nodeAffectorCreatorInterpolateLinearVec4->finalize();
+            m_nodeAffectorCreatorInterpolateLinearVec4 = nullptr;
+
+            m_nodeAffectorCreatorAccumulateLinear->finalize();
+            m_nodeAffectorCreatorAccumulateLinear = nullptr;
+
+            m_nodeAffectorCreatorInterpolateQuadraticBezier->finalize();
+            m_nodeAffectorCreatorInterpolateQuadraticBezier = nullptr;
+
+            m_nodeAffectorCreatorInterpolateQuadratic->finalize();
+            m_nodeAffectorCreatorInterpolateQuadratic = nullptr;
+
+            m_nodeAffectorCreatorInterpolateCubicBezier->finalize();
+            m_nodeAffectorCreatorInterpolateCubicBezier = nullptr;
+
+            m_nodeAffectorCreatorInterpolateQuarticBezier->finalize();
+            m_nodeAffectorCreatorInterpolateQuarticBezier = nullptr;
+
+            m_nodeAffectorCreatorInterpolateQuadraticFloat->finalize();
+            m_nodeAffectorCreatorInterpolateQuadraticFloat = nullptr;
+
+            m_nodeAffectorCreatorInterpolateLinearColor->finalize();
+            m_nodeAffectorCreatorInterpolateLinearColor = nullptr;
 
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
@@ -440,7 +494,7 @@ namespace Mengine
             return imageCenter_wm;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f> m_nodeAffectorCreatorInterpolateLinearVec4;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f>> m_nodeAffectorCreatorInterpolateLinearVec4;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryNodeAffectorCallback;
         //////////////////////////////////////////////////////////////////////////
@@ -464,7 +518,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4.create( ETA_VISIBILITY
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4->create( ETA_VISIBILITY
                 , easing
                 , callback
                 , [_shape]( const mt::vec4f & _v ) { _shape->setPercentVisibility( _v ); }
@@ -838,7 +892,7 @@ namespace Mengine
             _node->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f>> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -856,7 +910,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear->create( ETA_POSITION
                 , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
@@ -1024,7 +1078,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f>> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -1043,7 +1097,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinear.create( ETA_POSITION
+                m_nodeAffectorCreatorInterpolateLinear->create( ETA_POSITION
                     , easing
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
@@ -1071,7 +1125,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f>> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -1091,7 +1145,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic->create( ETA_POSITION
                 , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
@@ -1113,7 +1167,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1> m_nodeAffectorCreatorInterpolateQuadraticBezier;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1>> m_nodeAffectorCreatorInterpolateQuadraticBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_bezier2To( Node * _node
             , float _time
@@ -1139,7 +1193,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
                 , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
@@ -1190,7 +1244,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier->create( ETA_POSITION
                 , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setWorldPosition( _v ); }
@@ -1220,7 +1274,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2> m_nodeAffectorCreatorInterpolateCubicBezier;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2>> m_nodeAffectorCreatorInterpolateCubicBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_bezier3To( Node * _node
             , float _time
@@ -1246,7 +1300,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateCubicBezier.create( ETA_POSITION
+                m_nodeAffectorCreatorInterpolateCubicBezier->create( ETA_POSITION
                     , easing
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
@@ -1271,7 +1325,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3> m_nodeAffectorCreatorInterpolateQuarticBezier;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3>> m_nodeAffectorCreatorInterpolateQuarticBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_bezier4To( Node * _node
             , float _time
@@ -1298,7 +1352,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateQuarticBezier.create( ETA_POSITION
+                m_nodeAffectorCreatorInterpolateQuarticBezier->create( ETA_POSITION
                     , easing
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
@@ -2046,7 +2100,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float>> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -2073,7 +2127,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateQuadraticFloat.create( ETA_ANGLE
+                m_nodeAffectorCreatorInterpolateQuadraticFloat->create( ETA_ANGLE
                     , easing
                     , callback
                     , [_node]( float _v ) {_node->setLocalOrientationX( _v ); }
@@ -2116,7 +2170,7 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear.create( ETA_SCALE
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear->create( ETA_SCALE
                 , easing
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalScale( _v ); }
@@ -2143,7 +2197,7 @@ namespace Mengine
             _node->stopAffectors( ETA_COLOR );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color> m_nodeAffectorCreatorInterpolateLinearColor;
+        IntrusivePtr<NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color>> m_nodeAffectorCreatorInterpolateLinearColor;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const ConstString & _easingType, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -2183,7 +2237,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinearColor.create( ETA_COLOR
+                m_nodeAffectorCreatorInterpolateLinearColor->create( ETA_COLOR
                     , easing
                     , callback
                     , [render]( const Color & _v ) { render->setLocalColor( _v ); }

@@ -112,7 +112,7 @@ struct _inittab _PyImport_Inittab[] = {
     {"time", PyInit_time},
     {"_thread", PyInit__thread},
     {"_statistics", PyInit__statistics},
-    {"_ssl", PyInit__thread},
+    {"_ssl", PyInit__ssl },
 #ifdef WIN32
     {"msvcrt", PyInit_msvcrt},
     {"_locale", PyInit__locale},

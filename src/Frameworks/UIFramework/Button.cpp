@@ -238,6 +238,7 @@ namespace Mengine
         source_enter_movie->addFunction( this, &Button::__setState, EBS_OVER );
 
         source_enter_leave->addPickerableMouseLeave( m_pickerable, nullptr );
+        source_enter_leave->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
         source_enter_leave->addFunction( this, &Button::__setState, EBS_IDLE );
 
         source_enter_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
@@ -289,6 +290,7 @@ namespace Mengine
         source_Push_movie->addFunction( this, &Button::__setState, EBS_PRESSED );
 
         source_Push_leave->addPickerableMouseLeave( m_pickerable, nullptr );
+        source_Push_leave->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
         source_Push_leave->addFunction( this, &Button::__setState, EBS_RELEASE );
 
         source_Pressed_click_Rel->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, false, nullptr );
@@ -317,6 +319,7 @@ namespace Mengine
         source_Pressed_click_Rel->addFunction( this, &Button::__setState, EBS_CLICK );
 
         source_Pressed_leave->addPickerableMouseLeave( m_pickerable, nullptr );
+        source_Pressed_leave->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
         source_Pressed_leave->addFunction( this, &Button::__setState, EBS_RELEASE );
 
         source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );

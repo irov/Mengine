@@ -60,7 +60,10 @@ namespace Mengine
 
             if( dllPath[0] == '\0' )
             {
-                Detail::__Win32GetCurrentDllPath( dllPath );
+                if( Detail::__Win32GetCurrentDllPath( dllPath ) == false )
+                {
+                    strcpy( dllPath, "Unsupport" );
+                }
             }
 
             return dllPath;

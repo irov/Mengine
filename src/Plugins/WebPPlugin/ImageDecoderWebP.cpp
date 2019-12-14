@@ -1,4 +1,4 @@
-#include "ImageDecoderWEBP.h"
+#include "ImageDecoderWebP.h"
 
 #include "Interface/MemoryInterface.h"
 

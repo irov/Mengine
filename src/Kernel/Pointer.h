@@ -200,7 +200,7 @@ namespace Mengine
             }
 #endif
 
-            return std::move( m_pointer.moveT<U, D>() );
+            return std::move( m_pointer.template moveT<U, D>() );
         }
 
     protected:

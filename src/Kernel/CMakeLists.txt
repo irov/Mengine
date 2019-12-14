@@ -631,13 +631,11 @@ Error
     Error.cpp
 )
 
-IF(MENGINE_TARGET_WINDOWS)
-    ADD_FILTER(
-    Win32
-        Win32Helper.h
-        Win32Helper.cpp
-    )
-ENDIF()
+ADD_FILTER(
+Win32
+    Win32Helper.h
+    Win32Helper.cpp
+)
 
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/boost)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/utf8/source)

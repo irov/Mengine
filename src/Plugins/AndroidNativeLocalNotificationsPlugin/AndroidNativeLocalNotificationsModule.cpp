@@ -99,7 +99,7 @@ namespace Mengine
         static void androidLocalNotificationsSetEventHandler( AndroidNativeLocalNotificationsModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                Helper::makeFactorableUnique<PythonLocalNotificationsEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonLocalNotificationsEventHandler>( MENGINE_DOCUMENT_FUNCTION, _cb, _args )
             );
         }
     }

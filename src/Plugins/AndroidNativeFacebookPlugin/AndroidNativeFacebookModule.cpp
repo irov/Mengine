@@ -280,7 +280,7 @@ namespace Mengine
         static void androidFacebookSetEventHandler( AndroidNativeFacebookModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                Helper::makeFactorableUnique<PythonFacebookEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonFacebookEventHandler>( MENGINE_DOCUMENT_FUNCTION, _cb, _args )
             );
         }
     }

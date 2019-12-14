@@ -73,7 +73,7 @@ namespace Mengine
             return 0;
         }
 
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
 
@@ -87,7 +87,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::postMessage( const String & _url, const MapParams & _params, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
 
@@ -107,7 +107,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::headerData( const String & _url, const VectorString & _headers, const String & _data, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
 
@@ -121,7 +121,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLScriptEmbedding::getMessage( const String & _url, int32_t _timeout, const pybind::object & _cb, const pybind::args & _args )
     {
-        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FUNCTION );
+        Detail::PyCURLReceiverPtr receiver = m_factoryPyHttpReceiver->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( receiver, 0 );
 

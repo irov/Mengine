@@ -73,7 +73,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const Char * _doc )
+    MemoryInterfacePtr OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc )
     {
         if( m_lockMemory != nullptr )
         {
@@ -95,7 +95,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-        memory->newBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
+        memory->newBuffer( bufferSize, _doc );
 
         m_lockMemory = memory;
 
@@ -117,7 +117,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderIndexBuffer::draw( const void * _buffer, size_t _size, const Char * _doc )
+    bool OpenGLRenderIndexBuffer::draw( const void * _buffer, size_t _size, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

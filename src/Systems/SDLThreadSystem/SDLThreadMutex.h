@@ -19,7 +19,7 @@ namespace Mengine
         ~SDLThreadMutex() override;
 
     public:
-        bool initialize( const Char * _doc );
+        bool initialize( const DocumentPtr & _doc );
 
     protected:
         void lock() override;
@@ -35,7 +35,7 @@ namespace Mengine
         SDL_mutex * m_cs;
 
 #ifdef MENGINE_DEBUG
-        String m_doc;
+        DocumentPtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

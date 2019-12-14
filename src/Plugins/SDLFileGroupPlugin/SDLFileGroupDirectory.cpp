@@ -32,8 +32,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::_initialize()
     {
-        m_factoryInputStream = Helper::makeFactoryPool<SDLFileInputStream, 8>();
-        m_factoryOutputStream = Helper::makeFactoryPool<SDLFileOutputStream, 4>();
+        m_factoryInputStream = Helper::makeFactoryPool<SDLFileInputStream, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryOutputStream = Helper::makeFactoryPool<SDLFileOutputStream, 4>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -168,7 +168,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const Char * _doc )
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _filePath, bool _streaming, FileGroupInterface ** _fileGroup, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _filePath );
         MENGINE_UNUSED( _streaming );
@@ -211,7 +211,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const Char * _doc )
+    OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const DocumentPtr & _doc )
     {
         SDLFileOutputStreamPtr stream = m_factoryOutputStream->createObject( _doc );
 

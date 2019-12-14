@@ -77,6 +77,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( SDLFileGroup );
@@ -108,7 +109,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeOptionsService_( const int argc, char ** argv )
     {
-        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>();
+        ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
         for( int i = 1; i < argc; ++i )
         {
@@ -129,7 +130,7 @@ namespace Mengine
     bool SDLApplication::initializeFileService_()
     {
         LOGGER_INFO( "Initialize SDL file group..." );
-        PLUGIN_CREATE( SDLFileGroup );
+        PLUGIN_CREATE( SDLFileGroup, MENGINE_DOCUMENT_FUNCTION );
 
         // mount root
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
@@ -307,7 +308,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
-        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>();
+        FileLoggerPtr fileLog = Helper::makeFactorableUnique<FileLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         fileLog->setFileGroup( fileGroup );
         fileLog->setFilePath( logFilename );
@@ -340,9 +341,9 @@ namespace Mengine
         }
 
 #if defined(MENGINE_PLATFORM_ANDROID)
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>();
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<AndroidLogger>( MENGINE_DOCUMENT_FUNCTION );
 #else
-        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>();
+        LoggerInterfacePtr loggerStdio = Helper::makeFactorableUnique<SDLStdioLogger>( MENGINE_DOCUMENT_FUNCTION );
 #endif
 
         loggerStdio->setVerboseFlag( LM_MESSAGE );
@@ -352,7 +353,7 @@ namespace Mengine
 
         m_loggerStdio = loggerStdio;
 
-        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>();
+        LoggerInterfacePtr loggerMessageBox = Helper::makeFactorableUnique<SDLMessageBoxLogger>( MENGINE_DOCUMENT_FUNCTION );
 
         loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
@@ -377,6 +378,8 @@ namespace Mengine
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         m_serviceProvider = serviceProvider;
+
+        SERVICE_CREATE( DocumentService, nullptr );
 
         SERVICE_PROVIDER_GET()
             ->waitService( OptionsServiceInterface::getStaticServiceID(), [this, argc, argv]()
@@ -437,7 +440,7 @@ namespace Mengine
             return true;
         } );
 
-        SERVICE_CREATE( Bootstrapper );
+        SERVICE_CREATE( Bootstrapper, MENGINE_DOCUMENT_FUNCTION );
 
         if( BOOTSTRAPPER_SERVICE()
             ->run() == false )
@@ -551,6 +554,9 @@ namespace Mengine
 
         SERVICE_FINALIZE( Bootstrapper );
         SERVICE_DESTROY( Bootstrapper );
+
+        SERVICE_FINALIZE( DocumentService );
+        SERVICE_DESTROY( DocumentService );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }

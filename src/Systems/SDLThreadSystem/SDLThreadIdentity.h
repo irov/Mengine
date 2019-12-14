@@ -22,7 +22,7 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const Char * _doc );
+        bool initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc );
 
     public:
         void main();
@@ -56,7 +56,7 @@ namespace Mengine
         AtomicBool m_exit;
 
 #ifdef MENGINE_DEBUG
-        String m_doc;
+        DocumentPtr m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

@@ -114,7 +114,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = content->getFileGroup();
 
-        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+        InputStreamInterfacePtr stream = Helper::openInputStreamFile( fileGroup, filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
         if( stream == nullptr )
         {
@@ -154,7 +154,7 @@ namespace Mengine
         }
 
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( dataflow, stream, MENGINE_DOCUMENT_FUNCTION );
+            ->dataflowT<MovieFramePackInterfacePtr>( dataflow, stream, MENGINE_DOCUMENT_FACTORABLE );
 
         if( framePack == nullptr )
         {

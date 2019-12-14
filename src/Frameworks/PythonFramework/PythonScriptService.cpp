@@ -824,7 +824,7 @@ namespace Mengine
             , _name.c_str()
         );
 
-        ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FUNCTION );
+        ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FACTORABLE );
 
         if( module->initialize( pybind::module( m_kernel, py_module ) ) == false )
         {

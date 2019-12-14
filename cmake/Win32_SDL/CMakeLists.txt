@@ -13,6 +13,7 @@ SET(MENGINE_EXTERNAL_FRAMEWORK_NAME "" CACHE STRING "Mengine external framework 
 SET(MENGINE_EXTERNAL_FRAMEWORK_SOURCE_PATH "" CACHE STRING "Mengine external framework source path")
 SET(MENGINE_EXTERNAL_FRAMEWORK_TEMP_PATH "" CACHE STRING "Mengine external framework temp path")
 SET(MENGINE_SUBFOLDER_NAME "Mengine" CACHE STRING "Mengine subfolder name")
+SET(MENGINE_INSTALL_PATH "" CACHE STRING "Mengine install path")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 

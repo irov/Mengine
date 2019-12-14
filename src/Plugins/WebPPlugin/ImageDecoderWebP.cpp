@@ -34,7 +34,7 @@ namespace Mengine
             {
                 featuresBufferSize += 4096;
 
-                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FUNCTION );
+                MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, MENGINE_DOCUMENT_FACTORABLE );
 
                 MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
 
@@ -106,7 +106,7 @@ namespace Mengine
         size_t streamSize;
         if( m_stream->memory( &streamMemory, &streamSize ) == false )
         {
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheStream( m_stream, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, 0, "invalid create memory for stream" );
 

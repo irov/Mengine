@@ -48,7 +48,7 @@ namespace Mengine
         void stopPlatform()	override;
 
     public:
-        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda ) override;
+        uint32_t addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc ) override;
         void removeTimer( uint32_t _id ) override;
 
     public:
@@ -73,7 +73,7 @@ namespace Mengine
         bool hasTouchpad() const override;
 
     public:
-        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) override;
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc ) override;
 
     public:
         bool getDesktopResolution( Resolution & _resolution ) const override;
@@ -132,7 +132,7 @@ namespace Mengine
         uint64_t getFileTime( const Char * _filePath ) const override;
 
     public:
-        DateTimeProviderInterfacePtr createDateTimeProvider( const Char * _doc ) override;
+        DateTimeProviderInterfacePtr createDateTimeProvider( const DocumentPtr & _doc ) override;
 
     public:
         bool updateDesktopWallpaper( const Char * _directoryPath, const Char * _filePath ) override;
@@ -172,6 +172,7 @@ namespace Mengine
             float milliseconds;
             float time;
             LambdaTimer lambda;
+            DocumentPtr doc;
         };
 
         uint32_t m_enumerator;

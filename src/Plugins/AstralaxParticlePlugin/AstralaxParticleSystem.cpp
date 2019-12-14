@@ -301,7 +301,7 @@ namespace Mengine
             MENGINE_ASSERTION_MEMORY_PANIC( fragmentShader, false );
 
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
-                ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures, MENGINE_DOCUMENT_FUNCTION );
+                ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( program, false );
 

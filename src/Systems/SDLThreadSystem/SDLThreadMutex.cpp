@@ -14,7 +14,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::initialize( const Char * _doc )
+    bool SDLThreadMutex::initialize( const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

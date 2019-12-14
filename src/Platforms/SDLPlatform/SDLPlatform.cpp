@@ -314,7 +314,7 @@ namespace Mengine
         SDL_LogSetAllPriority( SDL_LOG_PRIORITY_ERROR );
 #endif
 
-        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>();
+        SDLInputPtr sdlInput = Helper::makeFactorableUnique<SDLInput>( MENGINE_DOCUMENT_FACTORABLE );
 
         if( sdlInput->initialize() == false )
         {
@@ -323,8 +323,8 @@ namespace Mengine
 
         m_sdlInput = sdlInput;
 
-        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>();
-        m_factoryDateTimeProviders = Helper::makeFactoryPool<SDLDateTimeProvider, 8>();
+        m_factoryDynamicLibraries = Helper::makeFactoryPool<SDLDynamicLibrary, 8>( MENGINE_DOCUMENT_FACTORABLE );
+        m_factoryDateTimeProviders = Helper::makeFactoryPool<SDLDateTimeProvider, 8>( MENGINE_DOCUMENT_FACTORABLE );
 
         return true;
     }
@@ -332,7 +332,7 @@ namespace Mengine
     void SDLPlatform::_runService()
     {
         DateTimeProviderInterfacePtr dateTimeProvider = 
-            this->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+            this->createDateTimeProvider( MENGINE_DOCUMENT_FACTORABLE );
 
         PlatformDateTime dateTime;
         dateTimeProvider->getLocalDateTime( &dateTime );
@@ -595,7 +595,7 @@ namespace Mengine
         m_shouldQuit = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t SDLPlatform::addTimer( float _milliseconds, const LambdaTimer & _lambda )
+    uint32_t SDLPlatform::addTimer( float _milliseconds, const LambdaTimer & _lambda, const DocumentPtr & _doc )
     {
         uint32_t new_id = ++m_enumerator;
 
@@ -604,6 +604,7 @@ namespace Mengine
         desc.milliseconds = _milliseconds;
         desc.time = _milliseconds;
         desc.lambda = _lambda;
+        desc.doc = _doc;
 
         m_timers.emplace_back( desc );
 
@@ -716,13 +717,13 @@ namespace Mengine
         return m_touchpad;
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr SDLPlatform::loadDynamicLibrary( const Char * _dynamicLibraryName )
+    DynamicLibraryInterfacePtr SDLPlatform::loadDynamicLibrary( const Char * _dynamicLibraryName, const DocumentPtr & _doc )
     {
         LOGGER_INFO( "load dynamic library '%s'"
             , _dynamicLibraryName
         );
 
-        SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( MENGINE_DOCUMENT_FUNCTION );
+        SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr, "can't create dynamic library '%s'"
             , _dynamicLibraryName
@@ -1365,7 +1366,7 @@ namespace Mengine
 #endif		
     }
     //////////////////////////////////////////////////////////////////////////
-    DateTimeProviderInterfacePtr SDLPlatform::createDateTimeProvider( const Char * _doc )
+    DateTimeProviderInterfacePtr SDLPlatform::createDateTimeProvider( const DocumentPtr & _doc )
     {
         SDLDateTimeProviderPtr dateTimeProvider = m_factoryDateTimeProviders->createObject( _doc );
 

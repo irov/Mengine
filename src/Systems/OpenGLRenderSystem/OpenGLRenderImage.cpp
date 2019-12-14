@@ -219,7 +219,7 @@ namespace Mengine
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr, "invalid create memory (l %d w %d h %d c %d f %d)"
             , _level
@@ -229,7 +229,7 @@ namespace Mengine
             , m_hwPixelFormat
         );
 
-        void * buffer = memory->newBuffer( size, MENGINE_DOCUMENT_FUNCTION );
+        void * buffer = memory->newBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid new memory %d (l %d w %d h %d c %d f %d)"
             , size

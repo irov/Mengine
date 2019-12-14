@@ -21,7 +21,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION );
+            ->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT_FACTORABLE );
 
         if( container == nullptr )
         {

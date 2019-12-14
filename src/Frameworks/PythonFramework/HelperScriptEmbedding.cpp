@@ -212,7 +212,7 @@ namespace Mengine
             size_t size;
             pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, false );
 
@@ -1227,7 +1227,7 @@ namespace Mengine
         String s_getTimeString()
         {
             DateTimeProviderInterfacePtr dateTimeProvider = PLATFORM_SERVICE()
-                ->createDateTimeProvider( MENGINE_DOCUMENT_FUNCTION );
+                ->createDateTimeProvider( MENGINE_DOCUMENT_PYBIND );
 
             PlatformDateTime dateTime;
             dateTimeProvider->getLocalDateTime( &dateTime );
@@ -2705,7 +2705,7 @@ namespace Mengine
                 return false;
             }
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "'%s' invalid get memory for '%d' size"
                 , _accountID.c_str()

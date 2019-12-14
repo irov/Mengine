@@ -1530,7 +1530,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( fileGroup, false );
 
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _filePath, false, false, MENGINE_DOCUMENT_PYBIND );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binary_buffer, false );
 

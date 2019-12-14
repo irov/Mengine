@@ -37,14 +37,14 @@ namespace Mengine
         if( PREFETCHER_SERVICE()
             ->getStream( _fileGroup, _filePath, memory ) == false )
         {
-            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FUNCTION );
+            InputStreamInterfacePtr stream = Helper::openInputStreamFile( _fileGroup, _filePath, false, false, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( stream, false, "can't open file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
 
-            memory = Helper::loadStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FUNCTION );
+            memory = Helper::loadStreamArchiveMagicMemory( stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), MENGINE_DOCUMENT_FACTORABLE );
         }
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "invalid get data" );

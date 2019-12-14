@@ -60,7 +60,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const Char * _doc )
+    bool SDLThreadIdentity::initialize( int32_t _priority, const ConstString & _name, const ThreadMutexInterfacePtr & _mutex, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _doc );
 

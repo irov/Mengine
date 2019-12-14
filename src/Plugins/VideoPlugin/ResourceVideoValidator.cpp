@@ -78,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource )
     {
-        VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder( MENGINE_DOCUMENT_FUNCTION );
+        VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder( MENGINE_DOCUMENT_FACTORABLE );
 
         if( decoder == nullptr )
         {

@@ -36,7 +36,7 @@
 
 #include "Config/Stringstream.h"
 
-#if defined(MENGINE_PLATFORM_MACOS) || defined(MENGINE_PLATFORM_IOS)
+#if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
 #	include "TargetConditionals.h"
 #endif
 
@@ -933,7 +933,7 @@ namespace Mengine
             return false;
         }
 
-#elif defined(MENGINE_PLATFORM_MACOS)
+#elif defined(MENGINE_PLATFORM_OSX)
         int status = mkdir( _fullpath, 0700 );
 
         if( status != 0 )

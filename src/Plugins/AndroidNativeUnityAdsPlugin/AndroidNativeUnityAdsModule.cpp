@@ -234,7 +234,7 @@ namespace Mengine
         static void androidUnitySetAdsEventHandler( AndroidNativeUnityAdsModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                Helper::makeFactorableUnique<PythonUnityAdsEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonUnityAdsEventHandler>( MENGINE_DOCUMENT_FUNCTION, _cb, _args )
             );
         }
     }

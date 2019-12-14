@@ -88,7 +88,7 @@ namespace Mengine
         static void androidDevToDevSetEventHandler( AndroidNativeDevToDevModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                Helper::makeFactorableUnique<PythonDevToDevEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonDevToDevEventHandler>( MENGINE_DOCUMENT_FUNCTION, _cb, _args )
             );
         }
     }

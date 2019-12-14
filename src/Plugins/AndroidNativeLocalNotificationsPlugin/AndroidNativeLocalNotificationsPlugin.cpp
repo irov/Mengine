@@ -22,7 +22,7 @@ namespace Mengine
     bool AndroidNativeLocalNotificationsPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidLocalNotifications" )
-            , Helper::makeModuleFactory<AndroidNativeLocalNotificationsModule>() );
+            , Helper::makeModuleFactory<AndroidNativeLocalNotificationsModule>( MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

@@ -341,7 +341,7 @@ namespace Mengine
         static void androidAdMobSetEventHandler( AndroidNativeAdMobModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
             _module->setEventHandler(
-                Helper::makeFactorableUnique<PythonAdMobEventHandler>( _cb, _args )
+                Helper::makeFactorableUnique<PythonAdMobEventHandler>( MENGINE_DOCUMENT_FUNCTION, _cb, _args )
             );
         }
     }

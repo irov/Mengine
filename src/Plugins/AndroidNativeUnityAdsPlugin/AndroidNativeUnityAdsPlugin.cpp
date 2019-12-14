@@ -22,7 +22,7 @@ namespace Mengine
     bool AndroidNativeUnityAdsPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidUnityAds" )
-            , Helper::makeModuleFactory<AndroidNativeUnityAdsModule>() );
+            , Helper::makeModuleFactory<AndroidNativeUnityAdsModule>(MENGINE_DOCUMENT_FACTORABLE ) );
 
         return true;
     }

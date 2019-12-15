@@ -98,8 +98,13 @@ MACRO(SET_MENGINE_OUTPUT_DIRECTORY)
         SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_INSTALL_PATH}/${PROJECT_NAME}/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE})
     elseif(APPLE)
         # output paths
-        SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/lib/${PROJECT_NAME}/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE}/${MENGINE_DEFINITIONS_SHA1})
-        SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_INSTALL_PATH}/${PROJECT_NAME}/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE})
+	if(MENGINE_TARGET_MACOS)
+            SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/lib/${PROJECT_NAME}/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE}/${MENGINE_DEFINITIONS_SHA1})
+            SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_INSTALL_PATH}/${PROJECT_NAME}/${CMAKE_GENERATOR})
+        elseif(MENGINE_TARGET_IOS)
+            SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/lib/${PROJECT_NAME}/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE}/${MENGINE_DEFINITIONS_SHA1})
+            SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_INSTALL_PATH}/${PROJECT_NAME}/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE})
+        endif()
     else()
         # output paths
         SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/lib/${PROJECT_NAME}/${CMAKE_GENERATOR}/${MENGINE_DEFINITIONS_SHA1})
@@ -302,16 +307,30 @@ if(APPLE)
   endmacro()
 
   macro(ADD_APPLE_FRAMEWORK fwname)
-    find_library(FRAMEWORK_${fwname}
-        NAMES ${fwname}
-        PATHS ${CMAKE_OSX_SYSROOT}${CMAKE_OSX_DEPLOYMENT_TARGET}.sdk/System/Library
-        PATH_SUFFIXES Frameworks
-        NO_DEFAULT_PATH)
-    if( ${FRAMEWORK_${fwname}} STREQUAL FRAMEWORK_${fwname}-NOTFOUND)
-        MESSAGE(ERROR ": Framework ${fwname} not found")
-    else()
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${FRAMEWORK_${fwname}})
-        MESSAGE(STATUS "Framework ${fwname} found at ${FRAMEWORK_${fwname}}")
+    if(MENGINE_TARGET_MACOS)
+      find_library(FRAMEWORK_${fwname}
+          NAMES ${fwname}
+          PATHS ${CMAKE_OSX_SYSROOT}/System/Library
+          PATH_SUFFIXES Frameworks
+          NO_DEFAULT_PATH)
+      if( ${FRAMEWORK_${fwname}} STREQUAL FRAMEWORK_${fwname}-NOTFOUND)
+          MESSAGE(ERROR ": Framework ${fwname} not found")
+      else()
+          TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${FRAMEWORK_${fwname}})
+          MESSAGE(STATUS "Framework ${fwname} found at ${FRAMEWORK_${fwname}}")
+      endif()
+    elseif(MENGINE_TARGET_IOS)
+      find_library(FRAMEWORK_${fwname}
+          NAMES ${fwname}
+          PATHS ${CMAKE_OSX_SYSROOT}${CMAKE_OSX_DEPLOYMENT_TARGET}.sdk/System/Library
+          PATH_SUFFIXES Frameworks
+          NO_DEFAULT_PATH)
+      if( ${FRAMEWORK_${fwname}} STREQUAL FRAMEWORK_${fwname}-NOTFOUND)
+          MESSAGE(ERROR ": Framework ${fwname} not found")
+      else()
+          TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${FRAMEWORK_${fwname}})
+          MESSAGE(STATUS "Framework ${fwname} found at ${FRAMEWORK_${fwname}}")
+        endif()
     endif()
   endmacro()
 endif()

@@ -38,7 +38,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMouseEnter();
     }
@@ -47,7 +50,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMouseLeave();
     }
@@ -56,7 +62,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMousePush();
     }
@@ -65,7 +74,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMousePressed();
     }
@@ -74,7 +86,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMouseRelease();
     }
@@ -83,7 +98,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMouseButton();
     }
@@ -92,7 +110,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMouseButtonBegin();
     }
@@ -101,7 +122,10 @@ namespace Mengine
     {
         const ButtonEventReceiverInterfacePtr & receiver = m_receivers.find( m_state );
 
-        MENGINE_ASSERTION_FATAL( receiver != nullptr );
+        if( receiver == nullptr )
+        {
+            return;
+        }
 
         receiver->onButtonMouseButtonEnd();
     }

@@ -90,10 +90,6 @@ namespace Mengine
             m_mutex->lock();
         }
 
-#ifdef MENGINE_DEBUG
-        _object->setDocument( nullptr );
-#endif
-
         this->_destroyObject( _object );
 
         --m_count;

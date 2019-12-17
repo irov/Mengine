@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TTFServiceInterface.h"
+#include "TTFInterface.h"
 #include "TTFDataInterface.h"
 #include "FEDataInterface.h"
 
@@ -32,7 +32,10 @@ namespace Mengine
 {
     class TTFFont
         : public FontBase
+        , public UnknownTTFFontInterface
     {
+        DECLARE_UNKNOWABLE();
+
     public:
         TTFFont();
         ~TTFFont() override;
@@ -41,7 +44,30 @@ namespace Mengine
         void setFTLibrary( FT_Library _library );
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
+        void setSystem( bool _system ) override;
+        bool getSystem() const override;
+
+        void setTTFPath( const FilePath & _ttfPath ) override;
+        const FilePath & getTTFPath() const override;
+
+        void setTTFFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
+        const FileGroupInterfacePtr & getTTFFileGroup() const override;
+
+        void setTTFFEPath( const FilePath & _ttfPath ) override;
+        const FilePath & getTTFFEPath() const override;
+
+        void setTTFFEName( const ConstString & _ttfPath ) override;
+        const ConstString & getTTFFEName() const override;
+
+
+        void setTTFFEFileGroup( const FileGroupInterfacePtr & _fileGroup ) override;
+        const FileGroupInterfacePtr & getTTFFEFileGroup() const override;
+
+        void setFESample( uint32_t _FESample ) override;
+        uint32_t getFESample() const override;
+
+    public:
+        bool initialize() override;
         void finalize() override;
 
     protected:
@@ -74,7 +100,7 @@ namespace Mengine
 
     protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
-        bool _prepareGlyph( GlyphCode _code ) override;
+        bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) override;
 
     protected:
         bool loadFaceGlyph_( GlyphCode _code, FT_Face * _face );
@@ -86,7 +112,8 @@ namespace Mengine
         FileGroupInterfacePtr m_ttfFileGroup;
         FilePath m_ttfPath;
 
-        uint32_t m_height;
+        bool m_system;
+
         uint32_t m_FESample;
 
         float m_ttfAscender;

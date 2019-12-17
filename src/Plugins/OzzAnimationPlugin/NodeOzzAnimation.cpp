@@ -303,8 +303,19 @@ namespace Mengine
         Detail::DeallocateRange( allocator, m_blendedLocals );
 
         m_vertexMemory = nullptr;
-        m_vertexBuffer = nullptr;
-        m_indexBuffer = nullptr;
+        
+        if( m_vertexBuffer != nullptr )
+        {
+            m_vertexBuffer->finalize();
+            m_vertexBuffer = nullptr;
+        }
+
+        if( m_indexBuffer != nullptr )
+        {
+            m_indexBuffer->finalize();
+            m_indexBuffer = nullptr;
+        }
+
         m_material = nullptr;
 
         for( const SamplerOzzAnimationPtr & sampler : m_samplerOzzAnimations )
@@ -400,7 +411,7 @@ namespace Mengine
 
         // Reallocate vertex buffer.
         const uint32_t vbo_size = skinned_data_size;
-        void * vbo_map = m_vertexMemory->newBuffer( vbo_size, MENGINE_DOCUMENT_FACTORABLE );
+        void * vbo_map = m_vertexMemory->newBuffer( vbo_size );
 
         // Iterate mesh parts and fills vbo.
         // Runs a skinning job per mesh part. Triangle indices are shared
@@ -567,14 +578,14 @@ namespace Mengine
             mt::vec2f uv;
         };
 
-        m_vertexBuffer->draw( vbo_buffer, vbo_size, MENGINE_DOCUMENT_FACTORABLE );
+        m_vertexBuffer->draw( vbo_buffer, vbo_size );
 
         const Detail::Mesh::VectorTriangleIndices & triangle_indices = ozz_mesh.triangle_indices;
 
         const uint16_t * triangle_indices_buffer_data = triangle_indices.data();
         size_t indices_count = triangle_indices.size();
 
-        m_indexBuffer->draw( triangle_indices_buffer_data, indices_count, MENGINE_DOCUMENT_FACTORABLE );
+        m_indexBuffer->draw( triangle_indices_buffer_data, indices_count );
 
         const mt::mat4f & wm = this->getWorldMatrix();
 

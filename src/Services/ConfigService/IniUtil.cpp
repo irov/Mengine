@@ -58,7 +58,7 @@ namespace Mengine
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer( _doc );
 
-            Char * memory_buffer = memory->newBuffer( size + 1, _doc );
+            Char * memory_buffer = memory->newBuffer( size + 1 );
 
             _stream->read( memory_buffer, size );
             memory_buffer[size] = '\0';

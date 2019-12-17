@@ -20,8 +20,8 @@ namespace Mengine
         ~MemoryBuffer() override;
 
     public:
-        void setBuffer( const void * _ptr, size_t _size, const DocumentPtr & _doc ) override;
-        Pointer newBuffer( size_t _size, const DocumentPtr & _doc ) override;
+        void setBuffer( const void * _ptr, size_t _size ) override;
+        Pointer newBuffer( size_t _size ) override;
 
     public:
         MENGINE_INLINE Pointer getBuffer() const override;

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/TextFontInterface.h"
-#include "Interface/ConfigInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Compilable.h"
@@ -43,7 +42,10 @@ namespace Mengine
         virtual bool _unfetch();
 
     public:
-        void setColorFont( const Color & _color ) override;
+        void setHeight( uint32_t _height ) override;
+        uint32_t getHeight() const override;
+
+        void setFontColor( const Color & _color ) override;
         const Color & getFontColor() const override;
 
         void setLineOffset( float _lineOffset ) override;
@@ -58,20 +60,19 @@ namespace Mengine
     public:
         bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const override;
         U32String prepareText( const Char * _text, size_t _size ) override;
-        bool prepareGlyph( const U32String & _text ) override;
-
-    protected:
-        bool initializeBase_( const ConfigInterfacePtr & _config );
+        bool prepareGlyph( const U32String & _text, const DocumentPtr & _doc ) override;
 
     protected:
         virtual bool _validateGlyphes( const U32String & _codes ) const = 0;
-        virtual bool _prepareGlyph( GlyphCode _code ) = 0;
+        virtual bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) = 0;
 
     protected:
         ConstString m_name;
         ConstString m_type;
 
         uint32_t m_params;
+
+        uint32_t m_height;
 
         Color m_colorFont;
 

@@ -6,10 +6,6 @@
 
 #include "stdex/thread_guard.h"
 
-#ifdef MENGINE_DEBUG
-#include "Kernel/DocumentHelper.h"
-#endif
-
 namespace Mengine
 {
     class MemoryProxy
@@ -21,7 +17,7 @@ namespace Mengine
         ~MemoryProxy() override;
 
     public:
-        void setBuffer( void * _ptr, size_t _size, const DocumentPtr & _doc ) override;
+        void setBuffer( void * _ptr, size_t _size ) override;
 
     public:
         Pointer getBuffer() const override;
@@ -31,10 +27,6 @@ namespace Mengine
     protected:
         void * m_ptr;
         size_t m_size;
-
-#ifdef MENGINE_DEBUG
-        DocumentPtr m_doc;
-#endif
 
         STDEX_THREAD_GUARD_INIT;
     };

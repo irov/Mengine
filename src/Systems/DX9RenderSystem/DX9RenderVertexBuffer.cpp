@@ -27,14 +27,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
     {
-        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType )
+    void DX9RenderVertexBuffer::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
     {
         m_pD3DDevice = _pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    IDirect3DDevice9 * DX9RenderVertexBuffer::getDirect3DDevice9() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderVertexBuffer::initialize( uint32_t _vertexSize, EBufferType _bufferType )
+    {
         m_vertexSize = _vertexSize;
-
         m_bufferType = _bufferType;
 
         switch( m_bufferType )
@@ -101,7 +108,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc )
+    MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
         if( _offset + _count > m_vertexCount )
         {
@@ -133,20 +140,20 @@ namespace Mengine
             LOGGER_ERROR( "%d offset %d invalid lock doc '%s'"
                 , _count
                 , _offset
-                , MENGINE_DOCUMENT_STR( _doc )
+                , MENGINE_DOCUMENTABLE_STR()
             );
 
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_vertexSize, MENGINE_DOCUMENT_FACTORABLE );
+        m_memory->setBuffer( lock_memory, _count * m_vertexSize );
 
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderVertexBuffer::unlock()
     {
-        m_memory->setBuffer( nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
+        m_memory->setBuffer( nullptr, 0 );
 
         IF_DXCALL( m_pVB, Unlock, () )
         {
@@ -159,16 +166,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderVertexBuffer::draw( const void * _buffer, size_t _size, const DocumentPtr & _doc )
+    bool DX9RenderVertexBuffer::draw( const void * _buffer, size_t _size )
     {
         UINT sizeToLock = (UINT)(_size * m_vertexSize);
 
         void * lock_memory = nullptr;
         IF_DXCALL( m_pVB, Lock, (0, sizeToLock, &lock_memory, D3DLOCK_DISCARD) )
         {
-            LOGGER_ERROR( "invalid lock size %u (doc '%s')"
+            LOGGER_ERROR( "invalid lock size %u (doc %s)"
                 , _size
-                , MENGINE_DOCUMENT_STR( _doc )
+                , MENGINE_DOCUMENTABLE_STR()
             );
 
             return false;
@@ -178,7 +185,8 @@ namespace Mengine
 
         IF_DXCALL( m_pVB, Unlock, () )
         {
-            LOGGER_ERROR( "invalid unlock"
+            LOGGER_ERROR( "invalid unlock (doc %s)"
+                , MENGINE_DOCUMENTABLE_STR()
             );
 
             return false;

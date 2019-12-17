@@ -82,7 +82,7 @@ namespace Mengine
         );
 
         size_t mipmapsize = (size_t)dataInfo->mipmapsize;
-        void * buffer = mipmap->newBuffer( mipmapsize, MENGINE_DOCUMENT_FACTORABLE );
+        void * buffer = mipmap->newBuffer( mipmapsize );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "name '%s' - hit file '%s' invalid new memory '%u'"
             , this->getName().c_str()

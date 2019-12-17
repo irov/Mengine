@@ -477,7 +477,7 @@ namespace Mengine
 
         if( fi.compr_method == Z_NO_COMPRESSION )
         {
-            void * buffer = memory->newBuffer( fi.file_size, MENGINE_DOCUMENT_FACTORABLE );
+            void * buffer = memory->newBuffer( fi.file_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %d"
                 , m_folderPath.c_str()
@@ -492,7 +492,7 @@ namespace Mengine
         }
         else
         {
-            void * buffer = memory->newBuffer( fi.unz_size, MENGINE_DOCUMENT_FACTORABLE );
+            void * buffer = memory->newBuffer( fi.unz_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( buffer, false, "zip '%s' file '%s' failed new memory %d"
                 , m_folderPath.c_str()

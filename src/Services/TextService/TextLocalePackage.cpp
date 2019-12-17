@@ -40,7 +40,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( m_memory, false );
 
-        Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1, MENGINE_DOCUMENT_FACTORABLE );
+        Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1 );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, false );
 

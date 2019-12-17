@@ -80,7 +80,7 @@ namespace Mengine
 
         size_t stream_size = m_stream->size();
 
-        void * memory = memoryInput->newBuffer( stream_size, MENGINE_DOCUMENT_FACTORABLE );
+        void * memory = memoryInput->newBuffer( stream_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false, "file '%s:%s' invalid alloc memory '%d'"
             , this->getFileGroup()->getName().c_str()

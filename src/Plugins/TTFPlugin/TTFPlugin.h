@@ -4,7 +4,7 @@
 
 #include "Kernel/PluginBase.h"
 
-#include "TTFServiceInterface.h"
+#include "TTFInterface.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"

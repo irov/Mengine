@@ -17,6 +17,33 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool RenderBatch::initialize()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderBatch::finalize()
+    {
+        m_lockData.vertexMemory = nullptr;
+        m_lockData.indexMemory = nullptr;
+
+        m_vertexAttribute = nullptr;
+
+        if( m_vertexBuffer != nullptr )
+        {
+            m_vertexBuffer->finalize();
+            m_vertexBuffer = nullptr;
+        }
+
+        if( m_indexBuffer != nullptr )
+        {
+            m_indexBuffer->finalize();
+            m_indexBuffer = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderBatch::setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute )
     {
         m_vertexAttribute = _vertexAttribute;
@@ -82,7 +109,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr vertexMemory = m_vertexBuffer->lock( 0, m_vertexCount, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr vertexMemory = m_vertexBuffer->lock( 0, m_vertexCount );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexMemory, false, "failed to lock vertex buffer '%u'"
             , m_vertexCount
@@ -99,7 +126,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr indexMemory = m_indexBuffer->lock( 0, m_indexCount, MENGINE_DOCUMENT_FACTORABLE );
+        MemoryInterfacePtr indexMemory = m_indexBuffer->lock( 0, m_indexCount );
 
         MENGINE_ASSERTION_MEMORY_PANIC( indexMemory, false, "failed to lock index buffer '%u'"
             , m_indexCount

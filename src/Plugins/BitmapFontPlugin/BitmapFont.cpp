@@ -17,7 +17,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BitmapFont::BitmapFont()
-        : m_height( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,45 +24,29 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    void BitmapFont::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
     {
         m_fileGroup = _fileGroup;
-
-        if( this->initializeBase_( _config ) == false )
-        {
-            return false;
-        }
-
-        FilePath glyphPath;
-        if( _config->hasValue( m_name.c_str(), "Glyph", &glyphPath ) == false )
-        {
-            LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
-
-        BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE()
-            ->getGlyph( _fileGroup, glyphPath );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( glyph, false, "invalid font '%s' don't load Glyph '%s'"
-            , m_name.c_str()
-            , glyphPath.c_str()
-        );
-
-        m_glyph = glyph;
-
-        m_height = m_glyph->getHeight();
-
-        if( _config->hasValue( m_name.c_str(), "Image", &m_pathFontImage ) == false )
-        {
-            LOGGER_ERROR( "invalid font '%s' dont setup Image"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & BitmapFont::getFileGroup() const
+    {
+        return m_fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BitmapFont::setPathFontImage( const FilePath & _pathFontImage )
+    {
+        m_pathFontImage = _pathFontImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & BitmapFont::getPathFontImage() const
+    {
+        return m_pathFontImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BitmapFont::initialize()
+    {
+        //Empty
 
         return true;
     }
@@ -123,8 +106,6 @@ namespace Mengine
     void BitmapFont::setGlyph( const BitmapGlyphPtr & _glyph )
     {
         m_glyph = _glyph;
-
-        m_height = m_glyph->getHeight();
     }
     //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
@@ -165,7 +146,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontAscent() const
     {
-        return m_height;
+        return (float)m_height;
     }
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontDescent() const
@@ -175,12 +156,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontHeight() const
     {
-        return m_height;
+        return (float)m_height;
     }
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontBearingYA() const
     {
-        return m_height;
+        return (float)m_height;
     }
     //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontSpacing() const
@@ -197,14 +178,8 @@ namespace Mengine
     {
         bool successful = true;
 
-        for( U32String::const_iterator
-            it = _codes.begin(),
-            it_end = _codes.end();
-            it != it_end;
-            ++it )
+        for( GlyphCode bitmap_code : _codes )
         {
-            GlyphCode bitmap_code = *it;
-
             if( this->hasGlyph( bitmap_code ) == false )
             {
                 LOGGER_ERROR( "bitmap font '%s' not found glyph code '%d'"
@@ -221,9 +196,10 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::_prepareGlyph( uint32_t _code )
+    bool BitmapFont::_prepareGlyph( uint32_t _code, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _code );
+        MENGINE_UNUSED( _doc );
 
         return true;
     }

@@ -26,8 +26,8 @@ namespace Mengine
         : public MemoryInterface
     {
     public:
-        virtual void setBuffer( const void * _ptr, size_t _size, const DocumentPtr & _doc ) = 0;
-        virtual Pointer newBuffer( size_t _size, const DocumentPtr & _doc ) = 0;
+        virtual void setBuffer( const void * _ptr, size_t _size ) = 0;
+        virtual Pointer newBuffer( size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryBufferInterface> MemoryBufferInterfacePtr;
@@ -36,7 +36,7 @@ namespace Mengine
         : public MemoryInterface
     {
     public:
-        virtual void setBuffer( void * _ptr, size_t _size, const DocumentPtr & _doc ) = 0;
+        virtual void setBuffer( void * _ptr, size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxyInterface> MemoryProxyInterfacePtr;
@@ -53,7 +53,7 @@ namespace Mengine
         : public MemoryGetterStreamInterface
     {
     public:
-        virtual Pointer cacheBuffer( size_t _size, const DocumentPtr & _doc ) = 0;
+        virtual Pointer cacheBuffer( size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
@@ -62,7 +62,7 @@ namespace Mengine
         : public MemoryGetterStreamInterface
     {
     public:
-        virtual Pointer setBuffer( void * _memory, size_t _offset, size_t _size, const DocumentPtr & _doc ) = 0;
+        virtual Pointer setBuffer( void * _memory, size_t _offset, size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxyInputInterface> MemoryProxyInputInterfacePtr;
@@ -71,7 +71,7 @@ namespace Mengine
         : public MemoryGetterStreamInterface
     {
     public:
-        virtual Pointer newBuffer( size_t _size, const DocumentPtr & _doc ) = 0;
+        virtual Pointer newBuffer( size_t _size ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryInputInterface> MemoryInputInterfacePtr;

@@ -22,7 +22,7 @@ namespace Mengine
         {
             U32String cacheText = _font->prepareText( _message, _size );
 
-            if( _font->prepareGlyph( cacheText ) == false )
+            if( _font->prepareGlyph( cacheText, _doc ) == false )
             {
                 return;
             }

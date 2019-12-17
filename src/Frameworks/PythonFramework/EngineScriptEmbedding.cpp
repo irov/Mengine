@@ -1788,7 +1788,7 @@ namespace Mengine
 
             size_t size = stream->size();
 
-            void * memory_buffer = _memory->newBuffer( size, MENGINE_DOCUMENT_PYBIND );
+            void * memory_buffer = _memory->newBuffer( size );
 
             if( stream->read( memory_buffer, size ) != size )
             {

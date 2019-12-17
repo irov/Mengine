@@ -261,7 +261,7 @@ namespace Mengine
         const RenderVertexAttributeInterfacePtr & vertexAttribute = program->getVertexAttribute();
 
         const RenderBatchInterfacePtr & batch = RENDER_SERVICE()
-            ->requestRenderBatch( vertexAttribute, _vertexCount, _indexCount );
+            ->requestRenderBatch( vertexAttribute, _vertexCount, _indexCount, _doc );
 
         const RenderVertexBufferInterfacePtr & vertexBuffer = batch->getVertexBuffer();
         const RenderIndexBufferInterfacePtr & indexBuffer = batch->getIndexBuffer();

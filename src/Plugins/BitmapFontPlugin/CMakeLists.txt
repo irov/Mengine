@@ -7,6 +7,8 @@ src
     BitmapFontInterface.h
     BitmapFont.h
     BitmapFont.cpp
+    BitmapFontConfigLoader.h
+    BitmapFontConfigLoader.cpp
     BitmapGlyph.h
     BitmapGlyph.cpp
     BitmapGlyphService.h

@@ -154,7 +154,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol, 0, "invalid create memory for protocol" );
 
-        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, MENGINE_DOCUMENT_FACTORABLE );
+        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_protocol_buffer, 0, "invalid new memory buffer '%u'"
             , protocol_size
@@ -229,7 +229,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid create memory for xml" );
 
-        void * memory_xml_buffer = memory_xml->newBuffer( xml_size, MENGINE_DOCUMENT_FACTORABLE );
+        void * memory_xml_buffer = memory_xml->newBuffer( xml_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_xml, 0, "invalid new memory buffer '%u'"
             , xml_size
@@ -264,7 +264,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_header, 0, "invalid create memory for bin" );
 
-        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, MENGINE_DOCUMENT_FACTORABLE );
+        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_header_buffer, 0, "invalid new memory buffer '%u'"
             , Metacode::header_size
@@ -289,7 +289,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_bin, 0, "invalid create memory for bin" );
 
-        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, MENGINE_DOCUMENT_FACTORABLE );
+        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2 );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory_bin_buffer, 0, "invalid new memory buffer '%u'"
             , xml_size * 2

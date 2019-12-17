@@ -12,6 +12,7 @@
 #include "Kernel/ConstStringHelper.h"
 
 #include "TTFPrototypeGenerator.h"
+#include "TTFFontConfigLoader.h"
 #include "TTFDataflow.h"
 #include "FEDataflow.h"
 
@@ -79,6 +80,9 @@ namespace Mengine
             return false;
         }
 
+        VOCABULARY_SET( TextFontConfigLoaderInterface, STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ), Helper::makeFactorableUnique<TTFFontConfigLoader>( MENGINE_DOCUMENT_FACTORABLE ) );
+
+
         m_ftlibrary = ftlibrary;
 
         m_ftMutex = THREAD_SERVICE()
@@ -129,6 +133,8 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+
+        VOCABULARY_REMOVE( STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 
         SERVICE_FINALIZE( TTFAtlasService );
 

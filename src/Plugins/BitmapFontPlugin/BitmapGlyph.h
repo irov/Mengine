@@ -37,8 +37,8 @@ namespace Mengine
         void setSize( float _size );
         float getSize() const;
 
-        void setHeight( float _size );
-        float getHeight() const;
+        void setHeight( uint32_t _size );
+        uint32_t getHeight() const;
 
         void setAscender( float _ascender );
         float getAscender() const;
@@ -61,7 +61,7 @@ namespace Mengine
 
     protected:
         float m_size;
-        float m_height;
+        uint32_t m_height;
 
         float m_ascender;
         float m_descender;

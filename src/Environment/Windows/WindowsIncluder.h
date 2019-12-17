@@ -2,11 +2,13 @@
 
 #include "Config/Config.h"
 
+#include <sdkddkver.h>
+
 #ifndef MENGINE_WINDOWS_VERSION
 #ifdef MENGINE_TOOLCHAIN_MINGW
-#define MENGINE_WINDOWS_VERSION 0x0501
+#define MENGINE_WINDOWS_VERSION _WIN32_WINNT_WINXP
 #else
-#define MENGINE_WINDOWS_VERSION 0x0600
+#define MENGINE_WINDOWS_VERSION _WIN32_WINNT_VISTA
 #endif
 #endif
 

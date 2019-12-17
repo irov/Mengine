@@ -118,7 +118,7 @@ namespace Mengine
                 , binary_size
             );
 
-            void * binaryMemory = binaryBuffer->newBuffer( binary_size, _doc );
+            void * binaryMemory = binaryBuffer->newBuffer( binary_size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( binaryMemory, nullptr, "invalid get memory '%d' (binary)"
                 , binary_size
@@ -388,7 +388,7 @@ namespace Mengine
                 , binary_size
             );
 
-            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc );
+            void * binary_buffer = binary_memory->newBuffer( binary_size );
 
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )
@@ -480,7 +480,7 @@ namespace Mengine
                 , binary_size
             );
 
-            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc );
+            void * binary_buffer = binary_memory->newBuffer( binary_size );
 
             size_t uncompressSize = 0;
             if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )

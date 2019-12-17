@@ -43,14 +43,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv )
+    RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TTFTextureGlyphProviderInterface * _provider, mt::uv4f & _uv, const DocumentPtr & _doc )
     {
         if( _width == 0 || _height == 0 )
         {
             return nullptr;
         }
 
-        TTFAtlas * atlas = this->getAtlas_( _width, _height, _channel );
+        TTFAtlas * atlas = this->getAtlas_( _width, _height, _channel, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( atlas, nullptr );
 
@@ -98,7 +98,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    TTFAtlasService::TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel )
+    TTFAtlasService::TTFAtlas * TTFAtlasService::getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel, const DocumentPtr & _doc )
     {
         MENGINE_ASSERTION_FATAL( _channel < 5 );
 
@@ -145,7 +145,7 @@ namespace Mengine
         EPixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format, MENGINE_DOCUMENT_FACTORABLE );
+            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( texture, nullptr );
 

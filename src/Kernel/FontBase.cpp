@@ -9,6 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     FontBase::FontBase()
         : m_params( EFP_NONE )
+        , m_height( 0 )
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
     {
@@ -90,11 +91,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontBase::setColorFont( const Color & _color )
+    void FontBase::setHeight( uint32_t _height )
+    {
+        m_height = _height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t FontBase::getHeight() const
+    {
+        return m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FontBase::setFontColor( const Color & _color )
     {
         m_colorFont = _color;
 
         m_params |= EFP_COLOR_FONT;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Color & FontBase::getFontColor() const
+    {
+        return m_colorFont;
     }
     //////////////////////////////////////////////////////////////////////////
     void FontBase::setLineOffset( float _lineOffset )
@@ -115,11 +131,7 @@ namespace Mengine
     {
         return m_params;
     }
-    //////////////////////////////////////////////////////////////////////////
-    const Color & FontBase::getFontColor() const
-    {
-        return m_colorFont;
-    }
+
     //////////////////////////////////////////////////////////////////////////
     float FontBase::getLineOffset() const
     {
@@ -274,7 +286,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FontBase::prepareGlyph( const U32String & _text )
+    bool FontBase::prepareGlyph( const U32String & _text, const DocumentPtr & _doc )
     {
         for( Char32 code : _text )
         {
@@ -290,33 +302,10 @@ namespace Mengine
                 }break;
             };
 
-            if( this->_prepareGlyph( code ) == false )
+            if( this->_prepareGlyph( code, _doc ) == false )
             {
                 return false;
             }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool FontBase::initializeBase_( const ConfigInterfacePtr & _config )
-    {
-        Color colorFont;
-        if( _config->hasValue( m_name.c_str(), "ColorFont", &colorFont ) == true )
-        {
-            this->setColorFont( colorFont );
-        }
-
-        float lineOffset;
-        if( _config->hasValue( m_name.c_str(), "LineOffset", &lineOffset ) == true )
-        {
-            this->setLineOffset( lineOffset );
-        }
-
-        float charOffset;
-        if( _config->hasValue( m_name.c_str(), "CharOffset", &charOffset ) == true )
-        {
-            this->setCharOffset( charOffset );
         }
 
         return true;

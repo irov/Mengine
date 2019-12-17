@@ -28,14 +28,21 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderIndexBuffer::~DX9RenderIndexBuffer()
     {
-        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _indexSize, EBufferType _bufferType )
+    void DX9RenderIndexBuffer::setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice )
     {
         m_pD3DDevice = _pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    IDirect3DDevice9 * DX9RenderIndexBuffer::getDirect3DDevice9() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
+    {
         m_indexSize = _indexSize;
-
         m_bufferType = _bufferType;
 
         switch( m_bufferType )
@@ -106,7 +113,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc )
+    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
         if( _offset + _count > m_indexCount )
         {
@@ -114,7 +121,7 @@ namespace Mengine
                 , _count
                 , _offset
                 , m_indexCount
-                , MENGINE_DOCUMENT_STR( _doc )
+                , MENGINE_DOCUMENTABLE_STR()
             );
 
             return nullptr;
@@ -139,20 +146,20 @@ namespace Mengine
             LOGGER_ERROR( "invalid lock count %d offset %d (doc '%s')"
                 , _count
                 , _offset
-                , MENGINE_DOCUMENT_STR( _doc )
+                , MENGINE_DOCUMENTABLE_STR()
             );
 
             return nullptr;
         }
 
-        m_memory->setBuffer( lock_memory, _count * m_indexSize, MENGINE_DOCUMENT_FACTORABLE );
+        m_memory->setBuffer( lock_memory, _count * m_indexSize );
 
         return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::unlock()
     {
-        m_memory->setBuffer( nullptr, 0, MENGINE_DOCUMENT_FACTORABLE );
+        m_memory->setBuffer( nullptr, 0 );
 
         IF_DXCALL( m_pIB, Unlock, () )
         {
@@ -165,7 +172,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size, const DocumentPtr & _doc )
+    bool DX9RenderIndexBuffer::draw( const void * _buffer, size_t _size )
     {
         UINT sizeToLock = (UINT)(_size * m_indexSize);
 
@@ -174,7 +181,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid lock size %u (doc '%s')"
                 , _size
-                , MENGINE_DOCUMENT_STR( _doc )
+                , MENGINE_DOCUMENTABLE_STR()
             );
 
             return false;

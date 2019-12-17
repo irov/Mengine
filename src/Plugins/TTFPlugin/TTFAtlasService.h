@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TTFServiceInterface.h"
+#include "TTFInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -23,7 +23,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
+        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TTFTextureGlyphProviderInterface * _provider, mt::uv4f & _uv, const DocumentPtr & _doc ) override;
 
     public:
         struct TTFAtlas
@@ -48,6 +48,6 @@ namespace Mengine
         uint32_t m_maxAtlasWidth;
 
     protected:
-        TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel );
+        TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel, const DocumentPtr & _doc );
     };
 }

@@ -1275,7 +1275,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
 
-        if( buffer->initialize( m_pD3DDevice, _vertexSize, _bufferType ) == false )
+        buffer->setDirect3DDevice9( m_pD3DDevice );
+
+        if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
             return nullptr;
         }
@@ -1312,7 +1314,9 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr );
 
-        if( buffer->initialize( m_pD3DDevice, _indexSize, _bufferType ) == false )
+        buffer->setDirect3DDevice9( m_pD3DDevice );
+
+        if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
             return nullptr;
         }

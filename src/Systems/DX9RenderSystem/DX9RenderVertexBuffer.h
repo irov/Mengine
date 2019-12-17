@@ -20,8 +20,12 @@ namespace Mengine
         ~DX9RenderVertexBuffer() override;
 
     public:
-        bool initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType );
-        void finalize();
+        void setDirect3DDevice9( IDirect3DDevice9 * _pD3DDevice );
+        IDirect3DDevice9 * getDirect3DDevice9() const;
+
+    public:
+        bool initialize( uint32_t _vertexSize, EBufferType _bufferType ) override;
+        void finalize() override;
 
     protected:
         uint32_t getVertexCount() const override;
@@ -35,11 +39,11 @@ namespace Mengine
         bool resize( uint32_t _count ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, const DocumentPtr & _doc ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) override;
         bool unlock() override;
 
     protected:
-        bool draw( const void * _buffer, size_t _size, const DocumentPtr & _doc ) override;
+        bool draw( const void * _buffer, size_t _size ) override;
 
     protected:
         void onRenderReset() override;

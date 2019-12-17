@@ -4,9 +4,11 @@ ADD_FILTER(
 src
     TTFPlugin.h
     TTFPlugin.cpp
-    TTFServiceInterface.h
+    TTFInterface.h
     TTFFont.h
     TTFFont.cpp
+    TTFFontConfigLoader.h
+    TTFFontConfigLoader.cpp
     TTFDataInterface.h
     TTFData.h
     TTFData.cpp
@@ -18,7 +20,7 @@ src
     FEDataflow.h
     FEDataflow.cpp
     TTFAtlasService.h
-    TTFAtlasService.cpp    
+    TTFAtlasService.cpp
     TTFPrototypeGenerator.h
     TTFPrototypeGenerator.cpp
 )

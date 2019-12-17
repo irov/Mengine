@@ -22,7 +22,7 @@ namespace Mengine
         ~MemoryInput() override;
 
     public:
-        Pointer newBuffer( size_t _size, const DocumentPtr & _doc ) override;
+        Pointer newBuffer( size_t _size ) override;
 
     public:
         Pointer getBuffer() const override;
@@ -48,10 +48,6 @@ namespace Mengine
 
         uint8_t * m_pos;
         uint8_t * m_end;
-
-#ifdef MENGINE_DEBUG
-        DocumentPtr m_doc;
-#endif
 
         STDEX_THREAD_GUARD_INIT;
     };

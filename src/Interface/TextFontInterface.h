@@ -4,8 +4,8 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
-#include "Interface/ConfigInterface.h"
 
+#include "Kernel/Unknowable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
@@ -45,6 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TextFontInterface
         : public ServantInterface
+        , public Unknowable
     {
     public:
         virtual void setName( const ConstString & _name ) = 0;
@@ -55,7 +56,7 @@ namespace Mengine
         virtual const ConstString & getType() const = 0;
 
     public:
-        virtual bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) = 0;
+        virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
     public:
@@ -73,14 +74,22 @@ namespace Mengine
         virtual uint32_t getLayoutCount() const = 0;
 
     public:
-        virtual void setColorFont( const Color & _color ) = 0;
+        virtual void setHeight( uint32_t _height ) = 0;
+        virtual uint32_t getHeight() const = 0;
+
+        virtual void setFontColor( const Color & _color ) = 0;
+        virtual const Color & getFontColor() const = 0;
+
         virtual void setLineOffset( float _lineOffset ) = 0;
+        virtual float getLineOffset() const = 0;
+
         virtual void setCharOffset( float _charOffset ) = 0;
+        virtual float getCharOffset() const = 0;
 
     public:
         virtual bool validateText( const ConstString & _key, const Char * _text, size_t _size ) const = 0;
         virtual U32String prepareText( const Char * _text, size_t _size ) = 0;
-        virtual bool prepareGlyph( const U32String & _code ) = 0;
+        virtual bool prepareGlyph( const U32String & _code, const DocumentPtr & _doc ) = 0;
 
     public:
         virtual bool hasGlyph( GlyphCode _char ) const = 0;
@@ -95,11 +104,6 @@ namespace Mengine
 
     public:
         virtual uint32_t getFontParams() const = 0;
-
-        virtual const Color & getFontColor() const = 0;
-
-        virtual float getLineOffset() const = 0;
-        virtual float getCharOffset() const = 0;
 
     public:
         virtual bool getFontPremultiply() const = 0;

@@ -29,7 +29,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-            void * memory_buffer = memory->newBuffer( _size, _doc );
+            void * memory_buffer = memory->newBuffer( _size );
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr );
 
@@ -88,7 +88,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-            void * memory_buffer = memory->newBuffer( _size, _doc );
+            void * memory_buffer = memory->newBuffer( _size );
 
             MENGINE_UNUSED( memory_buffer );
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr );
@@ -103,7 +103,7 @@ namespace Mengine
 
             MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
 
-            void * memory_buffer = memory->newBuffer( _size, _doc );
+            void * memory_buffer = memory->newBuffer( _size );
 
             MENGINE_UNUSED( memory_buffer );
             MENGINE_ASSERTION_MEMORY_PANIC( memory_buffer, nullptr );

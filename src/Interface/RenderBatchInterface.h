@@ -29,6 +29,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
         virtual void setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute ) = 0;
         virtual const RenderVertexAttributeInterfacePtr & getVertexAttribute() = 0;
 

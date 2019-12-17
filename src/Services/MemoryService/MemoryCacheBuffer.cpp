@@ -35,19 +35,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheBuffer::setBuffer( const void * _ptr, size_t _size, const DocumentPtr & _doc )
+    void MemoryCacheBuffer::setBuffer( const void * _ptr, size_t _size )
     {
-        void * buffer = this->newBuffer( _size, _doc );
+        void * buffer = this->newBuffer( _size );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryCacheBuffer::newBuffer( size_t _size, const DocumentPtr & _doc )
+    Pointer MemoryCacheBuffer::newBuffer( size_t _size )
     {
         this->uncache_();
 
         void * memory;
-        uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _doc );
+        uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
         if( bufferId == INVALID_CACHE_BUFFER_ID )
         {
@@ -58,10 +58,6 @@ namespace Mengine
 
         m_data = memory;
         m_size = _size;
-
-#ifdef MENGINE_DEBUG
-        m_doc = _doc;
-#endif
 
         return m_data;
     }

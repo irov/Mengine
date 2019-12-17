@@ -86,6 +86,12 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "RenderPipeline" ), STRINGIZE_STRING_LOCAL( "Batch" ) );
 
         m_renderBatches.clear();
+
+        for( const RenderBatchPtr & renderBatch : m_cacheRenderBatches )
+        {
+            renderBatch->finalize();
+        }
+
         m_cacheRenderBatches.clear();
 
         m_debugRenderVertices.clear();
@@ -990,7 +996,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderBatchInterfacePtr & RenderService::requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount )
+    const RenderBatchInterfacePtr & RenderService::requestRenderBatch( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount, uint32_t _indexCount, const DocumentPtr & _doc )
     {
         for( const RenderBatchPtr & batch : m_renderBatches )
         {
@@ -1014,13 +1020,13 @@ namespace Mengine
             return batch;
         }
 
-        RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FACTORABLE );
+        RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( _doc );
 
         new_batch->setVertexAttribute( _vertexAttribute );
 
         uint32_t elementSize = _vertexAttribute->getElementSize();
 
-        RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, MENGINE_DOCUMENT_FACTORABLE );
+        RenderVertexBufferInterfacePtr vertexBuffer = m_renderSystem->createVertexBuffer( elementSize, BT_DYNAMIC, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( vertexBuffer, RenderBatchInterfacePtr::none() );
 
@@ -1030,7 +1036,7 @@ namespace Mengine
 
         uint32_t indexSize = sizeof( RenderIndex );
 
-        RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, MENGINE_DOCUMENT_FACTORABLE );
+        RenderIndexBufferInterfacePtr indexBuffer = m_renderSystem->createIndexBuffer( indexSize, BT_DYNAMIC, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( indexBuffer, RenderBatchInterfacePtr::none() );
 

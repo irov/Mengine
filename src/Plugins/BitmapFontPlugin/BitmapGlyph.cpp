@@ -21,7 +21,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     BitmapGlyph::BitmapGlyph()
         : m_size( 0.f )
-        , m_height( 0.f )
+        , m_height( 0 )
         , m_ascender( 0.f )
         , m_descender( 0.f )
         , m_textureInvWidth( 1.f )
@@ -43,12 +43,12 @@ namespace Mengine
         return m_size;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BitmapGlyph::setHeight( float _height )
+    void BitmapGlyph::setHeight( uint32_t _height )
     {
         m_height = _height;
     }
     //////////////////////////////////////////////////////////////////////////
-    float BitmapGlyph::getHeight() const
+    uint32_t BitmapGlyph::getHeight() const
     {
         return m_height;
     }
@@ -170,8 +170,8 @@ namespace Mengine
                         }
                         else if( strcmp( key, "height" ) == 0 )
                         {
-                            float height = 0.f;
-                            if( sscanf( value, "%f", &height ) != 1 )
+                            uint32_t height = 0;
+                            if( sscanf( value, "%u", &height ) != 1 )
                             {
                                 LOGGER_ERROR( "glyph '%s:%s' invalid read height '%s'"
                                     , m_fileGroup->getName().c_str()

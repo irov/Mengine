@@ -9,6 +9,8 @@
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/TextFontConfigLoaderInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -564,7 +566,7 @@ namespace Mengine
         font->setName( _fontName );
         font->setType( _fontType );
 
-        LOGGER_INFO( "add user font '%s' type '%s' (doc: %s)"
+        LOGGER_INFO( "add font '%s' type '%s' (doc: %s)"
             , _fontName.c_str()
             , _fontType.c_str()
             , MENGINE_DOCUMENT_STR( _doc )
@@ -624,8 +626,7 @@ namespace Mengine
             ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
             config->hasValue( fontName.c_str(), "Type", &fontType );
 
-            TextFontInterfacePtr font = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FACTORABLE );
+            TextFontInterfacePtr font = this->createFont( fontName, fontType, MENGINE_DOCUMENT_FACTORABLE );
 
             MENGINE_ASSERTION_MEMORY_PANIC( font, false, "invalid create '%s:%s' font '%s' not found type '%s'"
                 , _fileGroup->getName().c_str()
@@ -634,10 +635,20 @@ namespace Mengine
                 , fontType.c_str()
             );
 
-            font->setName( fontName );
-            font->setType( fontType );
+            TextFontConfigLoaderInterfacePtr fontConfigLoader = VOCABULARY_GET( STRINGIZE_STRING_LOCAL( "TextFontConfigLoader" ), fontType );
 
-            if( font->initialize( _fileGroup, config ) == false )
+            if( fontConfigLoader->load( font, _fileGroup, config ) == false )
+            {
+                LOGGER_ERROR( "invalid load '%s:%s' font '%s'"
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
+                    , fontName.c_str()
+                );
+
+                return false;
+            }
+
+            if( font->initialize() == false )
             {
                 LOGGER_ERROR( "invalid initialize '%s:%s' font '%s'"
                     , _fileGroup->getName().c_str()
@@ -647,14 +658,6 @@ namespace Mengine
 
                 return false;
             }
-
-            LOGGER_INFO( "add font '%s' path '%s:%s'"
-                , fontName.c_str()
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-            );
-
-            m_fonts.emplace( fontName, font );
         }
 
 #ifndef MENGINE_MASTER_RELEASE

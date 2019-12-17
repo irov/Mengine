@@ -19,7 +19,6 @@ namespace Mengine
         , m_id( 0 )
         , m_lockOffset( 0 )
         , m_lockCount( 0 )
-        , m_lockMemory( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,7 +45,25 @@ namespace Mengine
         m_vertexSize = _elementSize;
         m_usage = s_getGLBufferType( _bufferType );
 
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
+
+        m_memory = memory;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderVertexBuffer::finalize()
+    {
+        if( m_id != 0 )
+        {
+            GLCALL( glDeleteBuffers, (1, &m_id) );
+            m_id = 0;
+        }
+
+        m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderVertexBuffer::getVertexCount() const
@@ -72,9 +89,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc )
+    MemoryInterfacePtr OpenGLRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
-        if( m_lockMemory != nullptr )
+        if( m_memory == nullptr )
         {
             return nullptr;
         }
@@ -89,21 +106,14 @@ namespace Mengine
 
         const uint32_t bufferSize = m_lockCount * m_vertexSize;
 
-        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryCacheBuffer( _doc );
+        m_memory->newBuffer( bufferSize );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
-
-        memory->newBuffer( bufferSize, _doc );
-
-        m_lockMemory = memory;
-
-        return m_lockMemory;
+        return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexBuffer::unlock()
     {
-        void * memory_buffer = m_lockMemory->getBuffer();
+        void * memory_buffer = m_memory->getBuffer();
 
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, m_lockOffset * m_vertexSize, m_lockCount * m_vertexSize, memory_buffer) );
@@ -111,15 +121,12 @@ namespace Mengine
 
         m_lockOffset = 0;
         m_lockCount = 0;
-        m_lockMemory = nullptr;
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderVertexBuffer::draw( const void * _buffer, size_t _size, const DocumentPtr & _doc )
+    bool OpenGLRenderVertexBuffer::draw( const void * _buffer, size_t _size )
     {
-        MENGINE_UNUSED( _doc );
-
         GLCALL( glBindBuffer, (GL_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ARRAY_BUFFER, _size, nullptr, GL_STREAM_DRAW) );
         GLCALL( glBufferSubData, (GL_ARRAY_BUFFER, 0, _size, _buffer) );

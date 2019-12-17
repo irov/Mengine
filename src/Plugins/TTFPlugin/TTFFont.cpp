@@ -1,6 +1,6 @@
 #include "TTFFont.h"
 
-#include "TTFServiceInterface.h"
+#include "TTFInterface.h"
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
-        , m_height( 0 )
+        , m_system( false )
         , m_FESample( 1 )
         , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
@@ -53,85 +53,79 @@ namespace Mengine
         m_ftlibrary = _ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config )
+    void TTFFont::setSystem( bool _system )
     {
-        if( this->initializeBase_( _config ) == false )
-        {
-            return false;
-        }
-
-        if( _config->getValue( m_name.c_str(), "System", false ) == false )
-        {
-            if( _config->hasValue( m_name.c_str(), "Path", &m_ttfPath ) == false )
-            {
-                LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
-                    , m_name.c_str()
-                );
-
-                return false;
-            }
-
-            m_ttfFileGroup = _fileGroup;
-        }
-        else
-        {
-            const Char * ttfName = nullptr;
-            if( _config->hasValue( m_name.c_str(), "Name", &ttfName ) == false )
-            {
-                LOGGER_ERROR( "invalid font '%s' don't setup Name"
-                    , m_name.c_str()
-                );
-
-                return false;
-            }
-
-            Char utf8_ttfPath[MENGINE_MAX_PATH] = { '\0' };
-            if( PLATFORM_SERVICE()
-                ->getSystemFontPath( ttfName, utf8_ttfPath ) == MENGINE_UNKNOWN_SIZE )
-            {
-                LOGGER_ERROR( "invalid font '%s' don't found '%s' path"
-                    , m_name.c_str()
-                    , ttfName
-                );
-
-                return false;
-            }
-
-            m_ttfPath = Helper::stringizeFilePath( utf8_ttfPath );
-
-            m_ttfFileGroup = FILE_SERVICE()
-                ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
-        }
-
-        if( _config->hasValue( m_name.c_str(), "Height", &m_height ) == false )
-        {
-            LOGGER_ERROR( "invalid font '%s' don't setup Height"
-                , m_name.c_str()
-            );
-
-            return false;
-        }
-
-        if( _config->hasValue( m_name.c_str(), "FEPath", &m_ttfFEPath ) == true )
-        {
-            if( _config->hasValue( m_name.c_str(), "FEName", &m_ttfFEName ) == false )
-            {
-                LOGGER_ERROR( "invalid font '%s' don't setup FEName"
-                    , m_name.c_str()
-                );
-
-                return false;
-            }
-
-            m_ttfFEFileGroup = _fileGroup;
-        }
-
-        _config->hasValue( m_name.c_str(), "FESample", &m_FESample );
-
-        for( uint32_t index = 0; index != FE_MAX_PINS; ++index )
-        {
-            m_ttfEffectNodes[index] = nullptr;
-        }
+        m_system = _system;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::getSystem() const
+    {
+        return m_system;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setTTFPath( const FilePath & _ttfPath )
+    {
+        m_ttfPath = _ttfPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & TTFFont::getTTFPath() const
+    {
+        return m_ttfPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setTTFFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    {
+        m_ttfFileGroup = _fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & TTFFont::getTTFFileGroup() const
+    {
+        return m_ttfFileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setTTFFEPath( const FilePath & _ttfFEPath )
+    {
+        m_ttfFEPath = _ttfFEPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & TTFFont::getTTFFEPath() const
+    {
+        return m_ttfFEPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setTTFFEName( const ConstString & _ttfFEName )
+    {
+        m_ttfFEName = _ttfFEName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TTFFont::getTTFFEName() const
+    {
+        return m_ttfFEName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setTTFFEFileGroup( const FileGroupInterfacePtr & _fileGroup )
+    {
+        m_ttfFEFileGroup = _fileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & TTFFont::getTTFFEFileGroup() const
+    {
+        return m_ttfFEFileGroup;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setFESample( uint32_t _FESample )
+    {
+        m_FESample = _FESample;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t TTFFont::getFESample() const
+    {
+        return m_FESample;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::initialize()
+    {
+        //Empty
 
         return true;
     }
@@ -340,7 +334,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         class TTFFontTextureGlyphProvider
-            : public TextureGlyphProviderInterface
+            : public TTFTextureGlyphProviderInterface
             , public Factorable
         {
         public:
@@ -471,7 +465,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::_prepareGlyph( GlyphCode _code )
+    bool TTFFont::_prepareGlyph( GlyphCode _code, const DocumentPtr & _doc )
     {
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
@@ -597,7 +591,9 @@ namespace Mengine
                 fe_im & res = bgra_res[layoutIndex];
                 fe_image & bgra_image = bgra_images[layoutIndex];
 
-                fe_node_apply( m_height * m_FESample
+                int fe_height = (int)(m_height * m_FESample);
+
+                fe_node_apply( fe_height
                     , im_x
                     , im_y
                     , im_image_w
@@ -639,7 +635,7 @@ namespace Mengine
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv );
+                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv, _doc );
 
                         fe_image_free( &bgra_image );
 
@@ -660,7 +656,7 @@ namespace Mengine
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv );
+                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv, _doc );
 
                         fe_image_free( &bgra_image );
 
@@ -688,7 +684,7 @@ namespace Mengine
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, uv );
+                ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, uv, _doc );
 
             MENGINE_ASSERTION_MEMORY_PANIC( texture, false );
 
@@ -732,7 +728,9 @@ namespace Mengine
             return false;
         }
 
-        if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
+        int fe_height = (int)(m_height * m_FESample);
+
+        if( FT_Set_Pixel_Sizes( face, 0, fe_height ) != FT_Err_Ok )
         {
             return false;
         }
@@ -906,9 +904,11 @@ namespace Mengine
     {
         FT_Face face = m_dataTTF->getFTFace();
 
-        if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
+        int fe_height = (int)(m_height * m_FESample);
+
+        if( FT_Set_Pixel_Sizes( face, 0, fe_height ) != FT_Err_Ok )
         {
-            LOGGER_ERROR( "font '%s' invalid set pixel height '%u'"
+            LOGGER_ERROR( "font '%s' invalid set pixel height '%f'"
                 , m_name.c_str()
                 , m_height
             );

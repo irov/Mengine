@@ -17,7 +17,8 @@ namespace Mengine
         ~OpenGLRenderVertexBuffer() override;
 
     public:
-        bool initialize( uint32_t _elementSize, EBufferType _bufferType );
+        bool initialize( uint32_t _elementSize, EBufferType _bufferType ) override;
+        void finalize() override;
 
     protected:
         uint32_t getVertexCount() const override;
@@ -27,11 +28,11 @@ namespace Mengine
         bool resize( uint32_t _vertexCount ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count ) override;
         bool unlock() override;
 
     protected:
-        bool draw( const void * _buffer, size_t _size, const DocumentPtr & _doc ) override;
+        bool draw( const void * _buffer, size_t _size ) override;
 
     public:
         void enable() override;
@@ -47,7 +48,8 @@ namespace Mengine
 
         uint32_t m_lockOffset;
         uint32_t m_lockCount;
-        MemoryInterfacePtr m_lockMemory;
+
+        MemoryBufferInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderVertexBuffer> OpenGLRenderVertexBufferPtr;

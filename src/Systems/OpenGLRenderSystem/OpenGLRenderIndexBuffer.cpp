@@ -13,23 +13,17 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderIndexBuffer::OpenGLRenderIndexBuffer()
-        : m_memory( nullptr )
-        , m_indexSize( 0 )
+        : m_indexSize( 0 )
         , m_indexCount( 0 )
         , m_usage( GL_STATIC_DRAW )
         , m_id( 0 )
         , m_lockOffset( 0 )
         , m_lockCount( 0 )
-        , m_lockMemory( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderIndexBuffer::~OpenGLRenderIndexBuffer()
     {
-        if( m_id != 0 )
-        {
-            GLCALL( glDeleteBuffers, (1, &m_id) );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::initialize( uint32_t _indexSize, EBufferType _bufferType )
@@ -47,7 +41,25 @@ namespace Mengine
         m_usage = s_getGLBufferType( _bufferType );
         m_indexSize = _indexSize;
 
+        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+
+        m_memory = memory;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderIndexBuffer::finalize()
+    {
+        m_memory = nullptr;
+
+        if( m_id != 0 )
+        {
+            GLCALL( glDeleteBuffers, (1, &m_id) );
+            m_id = 0;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t OpenGLRenderIndexBuffer::getIndexCount() const
@@ -73,9 +85,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc )
+    MemoryInterfacePtr OpenGLRenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
     {
-        if( m_lockMemory != nullptr )
+        if( m_memory == nullptr )
         {
             return nullptr;
         }
@@ -90,21 +102,14 @@ namespace Mengine
 
         const uint32_t bufferSize = m_lockCount * m_indexSize;
 
-        MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryCacheBuffer( _doc );
+        m_memory->newBuffer( bufferSize );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
-
-        memory->newBuffer( bufferSize, _doc );
-
-        m_lockMemory = memory;
-
-        return m_lockMemory;
+        return m_memory;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::unlock()
     {
-        void * memory_buffer = m_lockMemory->getBuffer();
+        void * memory_buffer = m_memory->getBuffer();
 
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, m_lockOffset * m_indexSize, m_lockCount * m_indexSize, memory_buffer) );
@@ -112,15 +117,12 @@ namespace Mengine
 
         m_lockOffset = 0;
         m_lockCount = 0;
-        m_lockMemory = nullptr;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderIndexBuffer::draw( const void * _buffer, size_t _size, const DocumentPtr & _doc )
+    bool OpenGLRenderIndexBuffer::draw( const void * _buffer, size_t _size )
     {
-        MENGINE_UNUSED( _doc );
-
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferData, (GL_ELEMENT_ARRAY_BUFFER, _size, nullptr, GL_STREAM_DRAW) );
         GLCALL( glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, 0, _size, _buffer) );

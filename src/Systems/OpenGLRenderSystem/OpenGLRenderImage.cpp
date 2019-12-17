@@ -229,7 +229,7 @@ namespace Mengine
             , m_hwPixelFormat
         );
 
-        void * buffer = memory->newBuffer( size, MENGINE_DOCUMENT_FACTORABLE );
+        void * buffer = memory->newBuffer( size );
 
         MENGINE_ASSERTION_MEMORY_PANIC( buffer, nullptr, "invalid new memory %d (l %d w %d h %d c %d f %d)"
             , size

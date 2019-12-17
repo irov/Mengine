@@ -17,7 +17,8 @@ namespace Mengine
         ~OpenGLRenderIndexBuffer() override;
 
     public:
-        bool initialize( uint32_t _indexSize, EBufferType _bufferType );
+        bool initialize( uint32_t _indexSize, EBufferType _bufferType ) override;
+        void finalize() override;
 
     public:
         uint32_t getIndexCount() const override;
@@ -31,12 +32,11 @@ namespace Mengine
         bool resize( uint32_t _count ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count, const DocumentPtr & _doc ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _count ) override;
         bool unlock() override;
-        bool draw( const void * _buffer, size_t _size, const DocumentPtr & _doc ) override;
+        bool draw( const void * _buffer, size_t _size ) override;
 
     protected:
-        void * m_memory;
         uint32_t m_indexSize;
         uint32_t m_indexCount;
 
@@ -46,7 +46,8 @@ namespace Mengine
 
         uint32_t m_lockOffset;
         uint32_t m_lockCount;
-        MemoryInterfacePtr m_lockMemory;
+
+        MemoryBufferInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderIndexBuffer> OpenGLRenderIndexBufferPtr;

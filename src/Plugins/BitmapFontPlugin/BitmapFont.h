@@ -16,8 +16,15 @@ namespace Mengine
         BitmapFont();
         ~BitmapFont() override;
 
+    public:
+        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
+        const FileGroupInterfacePtr & getFileGroup() const;
+
+        void setPathFontImage( const FilePath & _pathFontImage );
+        const FilePath & getPathFontImage() const;
+
     protected:
-        bool initialize( const FileGroupInterfacePtr & _fileGroup, const ConfigInterfacePtr & _config ) override;
+        bool initialize() override;
         void finalize() override;
 
     protected:
@@ -49,7 +56,7 @@ namespace Mengine
 
     protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
-        bool _prepareGlyph( GlyphCode _code ) override;
+        bool _prepareGlyph( GlyphCode _code, const DocumentPtr & _doc ) override;
 
     protected:
         BitmapGlyphPtr m_glyph;
@@ -57,11 +64,10 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_pathFontImage;
 
-        float m_height;
-
         RenderTextureInterfacePtr m_textureFont;
         RenderTextureInterfacePtr m_textureOutline;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<BitmapFont> BitmapFontPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

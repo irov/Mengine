@@ -12,6 +12,10 @@ namespace Mengine
         ~RenderBatch() override;
 
     public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
         void setVertexAttribute( const RenderVertexAttributeInterfacePtr & _vertexAttribute ) override;
         const RenderVertexAttributeInterfacePtr & getVertexAttribute() override;
 

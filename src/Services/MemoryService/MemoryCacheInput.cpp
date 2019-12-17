@@ -39,12 +39,12 @@ namespace Mengine
         m_memoryManager = _memoryManager;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryCacheInput::cacheBuffer( size_t _size, const DocumentPtr & _doc )
+    Pointer MemoryCacheInput::cacheBuffer( size_t _size )
     {
         this->uncache_();
 
         void * memory;
-        uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _doc );
+        uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, MENGINE_DOCUMENT_FACTORABLE );
 
         if( bufferId == INVALID_CACHE_BUFFER_ID )
         {
@@ -58,10 +58,6 @@ namespace Mengine
 
         m_pos = m_data;
         m_end = m_data + m_size;
-
-#ifdef MENGINE_DEBUG
-        m_doc = _doc;
-#endif
 
         return m_data;
     }

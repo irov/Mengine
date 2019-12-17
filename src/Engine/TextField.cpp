@@ -921,7 +921,7 @@ namespace Mengine
 
             const TextFontInterfacePtr & font = cache.font;
 
-            if( font->prepareGlyph( tc.value ) == false )
+            if( font->prepareGlyph( tc.value, MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 return false;
             }

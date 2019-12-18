@@ -85,7 +85,7 @@ namespace Mengine
             return false;
         }
 
-        void * memory = m_memory->newBuffer( m_width * m_height * m_channels, MENGINE_DOCUMENT_FUNCTION );
+        void * memory = m_memory->newBuffer( m_width * m_height * m_channels );
 
         if( memory == nullptr )
         {
@@ -177,7 +177,7 @@ namespace Mengine
             return false;
         }
 
-        void * memory_buffer = m_memory->newBuffer( m_width * m_height * m_channels, MENGINE_DOCUMENT_FUNCTION );
+        void * memory_buffer = m_memory->newBuffer( m_width * m_height * m_channels );
 
         if( memory_buffer == nullptr )
         {

@@ -97,7 +97,7 @@ namespace Mengine
             return false;
         }
 
-        unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize, MENGINE_DOCUMENT_FUNCTION );
+        unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize );
 
         if( textureBuffer == nullptr )
         {

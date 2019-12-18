@@ -46,6 +46,13 @@ namespace Mengine
         bool read_( void * _buf, size_t _offset, size_t _size, size_t * _read );
         bool seek_( size_t _pos );
 
+#ifdef MENGINE_DEBUG
+    protected:
+        const FilePath & getRelationPath() const override;
+        const FilePath & getFolderPath() const override;
+        const FilePath & getFilePath() const override;
+#endif
+
     protected:
         HANDLE m_hFile;
 

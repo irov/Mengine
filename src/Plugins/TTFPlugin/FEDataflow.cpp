@@ -57,8 +57,9 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FEDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+    bool FEDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_DEBUG( _context );
         MENGINE_UNUSED( _doc );
 
         FEData * data = stdex::intrusive_get<FEData *>( _data );

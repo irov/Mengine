@@ -71,21 +71,22 @@ namespace Mengine
 
         size_t stream_size = _stream->size();
 
-        source_buffer[stream_size] = '\n';
+        source_buffer[stream_size + 0] = '\n';
         source_buffer[stream_size + 1] = '\0';
 
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+    bool DataflowPY::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
         PythonScriptCodeData * data = stdex::intrusive_get<PythonScriptCodeData *>( _data );
 
         Char * source_buffer = _memory->getBuffer();
 
-        PyObject * py_code = m_kernel->code_compile_file( source_buffer, "FIXME!!!" );
+        PyObject * py_code = m_kernel->code_compile_file( source_buffer, MENGINE_DEBUG_ATTRIBUTE( _context->filePath.c_str(), "PythonSource" ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( py_code, false, "invalid marshal get object" );
 

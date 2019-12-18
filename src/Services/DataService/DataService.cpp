@@ -6,6 +6,7 @@
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DataService, Mengine::DataService );
@@ -47,7 +48,12 @@ namespace Mengine
             , MENGINE_DOCUMENT_STR( _doc )
         );
 
-        if( _dataflow->flow( data, memory, _doc ) == false )
+#ifdef MENGINE_DEBUG
+        DataflowContext context;
+        context.filePath = Helper::getInputStreamFilePath( _stream );
+#endif
+
+        if( _dataflow->flow( data, memory, MENGINE_DEBUG_ATTRIBUTE( &context, nullptr ), _doc ) == false )
         {
             LOGGER_ERROR( "invalid flow data (doc: %s)"
                 , MENGINE_DOCUMENT_STR( _doc )

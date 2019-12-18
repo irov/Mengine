@@ -93,8 +93,10 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+    bool TTFDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _context );
+
         TTFData * data = stdex::intrusive_get<TTFData *>( _data );
 
         data->setTTFMemory( _memory );

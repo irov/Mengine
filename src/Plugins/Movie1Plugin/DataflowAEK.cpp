@@ -68,8 +68,10 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+    bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _context );
+
         MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>( _data );
 
         void * binaryBuffer_memory = _memory->getBuffer();

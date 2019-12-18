@@ -270,8 +270,9 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+    bool DataflowAEZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
         Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );

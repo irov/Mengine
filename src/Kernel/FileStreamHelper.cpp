@@ -1,5 +1,9 @@
 #include "FileStreamHelper.h"
 
+#ifdef MENGINE_DEBUG
+#include "Interface/FileInputStreamInterface.h"
+#endif
+
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
@@ -52,5 +56,51 @@ namespace Mengine
 
             return file;
         }
+        //////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_DEBUG
+        //////////////////////////////////////////////////////////////////////////
+        const FilePath & getInputStreamRelationPath( const InputStreamInterfacePtr & _stream )
+        {
+            FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
+
+            if( file_stream == nullptr )
+            {
+                return FilePath::none();
+            }
+
+            const FilePath & relationPath = file_stream->getRelationPath();
+
+            return relationPath;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const FilePath & getInputStreamFolderPath( const InputStreamInterfacePtr & _stream )
+        {
+            FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
+
+            if( file_stream == nullptr )
+            {
+                return FilePath::none();
+            }
+
+            const FilePath & folderPath = file_stream->getFolderPath();
+
+            return folderPath;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const FilePath & getInputStreamFilePath( const InputStreamInterfacePtr & _stream )
+        {
+            FileInputStreamInterface * file_stream = stdex::intrusive_dynamic_get<FileInputStreamInterface *>( _stream );
+
+            if( file_stream == nullptr )
+            {
+                return FilePath::none();
+            }
+
+            const FilePath & filePath = file_stream->getFilePath();
+
+            return filePath;
+        }
+        //////////////////////////////////////////////////////////////////////////
+#endif
     }
 }

@@ -30,7 +30,7 @@ namespace Mengine
     public:
         DataInterfacePtr create( const DocumentPtr & _doc ) override;
         MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) override;
-        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) override;
+        bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc ) override;
 
     protected:
         bool loadBuffer_( MovieFramePack * _pack, const void * _buffer, size_t _size );

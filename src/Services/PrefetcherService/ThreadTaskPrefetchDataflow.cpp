@@ -6,6 +6,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FileStreamHelper.h"
 
 namespace Mengine
 {
@@ -77,7 +78,12 @@ namespace Mengine
 
         if( m_dataflow->isThreadFlow() == true )
         {
-            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FACTORABLE ) == false )
+#ifdef MENGINE_DEBUG
+            DataflowContext context;
+            context.filePath = Helper::getInputStreamFilePath( m_stream );
+#endif
+
+            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_ATTRIBUTE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()
@@ -101,7 +107,12 @@ namespace Mengine
         {
             MemoryInterfacePtr memory = std::move( m_memory );
 
-            if( m_dataflow->flow( m_data, memory, MENGINE_DOCUMENT_FACTORABLE ) == false )
+#ifdef MENGINE_DEBUG
+            DataflowContext context;
+            context.filePath = Helper::getInputStreamFilePath( m_stream );
+#endif
+
+            if( m_dataflow->flow( m_data, memory, MENGINE_DEBUG_ATTRIBUTE( &context, nullptr ), MENGINE_DOCUMENT_FACTORABLE ) == false )
             {
                 LOGGER_ERROR( "invalide flow file '%s':'%s'"
                     , this->getFileGroup()->getName().c_str()

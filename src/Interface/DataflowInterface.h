@@ -1,15 +1,23 @@
 #pragma once
 
-#include "Config/Typedef.h"
-#include "Config/Char.h"
-
 #include "Interface/Interface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#include "Kernel/FilePath.h"
+
+#include "Config/Typedef.h"
+#include "Config/Char.h"
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct DataflowContext
+    {
+        FilePath filePath;
+    };
+    //////////////////////////////////////////////////////////////////////////
     class DataflowInterface
         : public Interface
     {
@@ -25,7 +33,7 @@ namespace Mengine
 
     public:
         virtual MemoryInterfacePtr load( const InputStreamInterfacePtr & _stream, const DocumentPtr & _doc ) = 0;
-        virtual bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc ) = 0;
+        virtual bool flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowInterface> DataflowInterfacePtr;

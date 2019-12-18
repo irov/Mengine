@@ -12,10 +12,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        template<class T>
-        IntrusivePtr<T> makeIntrusivePtr( T * _ptr )
+        template<class T, class D = void>
+        IntrusivePtr<T, D> makeIntrusivePtr( T * _ptr )
         {
-            return IntrusivePtr<T>( _ptr );
+            return IntrusivePtr<T, D>( _ptr );
         }
     }
 }

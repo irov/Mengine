@@ -91,8 +91,9 @@ namespace Mengine
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPYZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DocumentPtr & _doc )
+    bool DataflowPYZ::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _context );
         MENGINE_UNUSED( _doc );
 
         PythonScriptCodeData * data = stdex::intrusive_get<PythonScriptCodeData *>( _data );

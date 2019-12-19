@@ -902,7 +902,7 @@ namespace Mengine
 
             ImGui::BeginGroup();
             {
-                ImGui::AlignFirstTextHeightToWidgets();
+                ImGui::AlignTextToFramePadding();
                 ImGui::TextUnformatted( "IP Port:" );
                 ImGui::SameLine();
 
@@ -1314,7 +1314,7 @@ namespace Mengine
 
         const float width = ImGui::CalcItemWidth();
         ImGui::BeginGroup();
-        ImGui::AlignFirstTextHeightToWidgets();
+        ImGui::AlignTextToFramePadding();
         ImGui::PushID( "IPInputForm" );
         ImGui::TextUnformatted( _title.c_str() );
         for( int i = 0; i < 4; ++i )

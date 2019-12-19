@@ -168,7 +168,7 @@ namespace Mengine
             {
                 value_type * record = m_buffer + index;
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     continue;
                 }
@@ -250,7 +250,7 @@ namespace Mengine
             {
                 for( ; m_carriage != m_end; ++m_carriage )
                 {
-                    if( m_carriage->element == nullptr || m_carriage->element == reinterpret_cast<const element_type *>(~0) )
+                    if( m_carriage->element == nullptr || m_carriage->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         continue;
                     }
@@ -335,7 +335,7 @@ namespace Mengine
                 {
                     const value_type * value = m_carriage - 1;
 
-                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0) )
+                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         continue;
                     }
@@ -387,7 +387,7 @@ namespace Mengine
         }
 
     protected:
-        value_type * newbuffer_( size_type _capacity )
+        static value_type * newbuffer_( size_type _capacity )
         {
             value_type * new_buffer = Helper::allocateArrayT<value_type>( _capacity );
 
@@ -412,7 +412,7 @@ namespace Mengine
             {
                 value_type * record = old_buffer + index;
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     continue;
                 }
@@ -438,7 +438,7 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0)), "hash push" );
+                MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0ULL)), "hash push" );
 
                 if( record->element == nullptr )
                 {
@@ -449,7 +449,7 @@ namespace Mengine
                     return record->element;
                 }
 
-                if( record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     record->hash = _hash;
                     record->key = _key;
@@ -474,7 +474,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         record->element.set( nullptr );
                         record->element = _element;
@@ -518,11 +518,11 @@ namespace Mengine
                     return nullptr;
                 }
 
-                if( record->hash == _hash && record->key == _key && record->element != reinterpret_cast<const element_type *>(~0) )
+                if( record->hash == _hash && record->key == _key && record->element != reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     element_type_ptr pop_element = std::move( record->element );
 
-                    record->element.set( reinterpret_cast<element_type *>(~0) );
+                    record->element.set( reinterpret_cast<element_type *>(~0ULL) );
 
                     return std::move( pop_element );
                 }
@@ -547,7 +547,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         return element_type_ptr::none();
                     }
@@ -575,7 +575,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         return false;
                     }
@@ -755,7 +755,7 @@ namespace Mengine
             {
                 value_type * record = m_buffer + index;
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     continue;
                 }
@@ -839,7 +839,7 @@ namespace Mengine
                 {
                     const value_type * value = m_carriage;
 
-                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0) )
+                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         continue;
                     }
@@ -924,7 +924,7 @@ namespace Mengine
                 {
                     const value_type * value = m_carriage - 1;
 
-                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0) )
+                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         continue;
                     }
@@ -976,7 +976,7 @@ namespace Mengine
         }
 
     protected:
-        value_type * newbuffer_( size_type _capacity )
+        static value_type * newbuffer_( size_type _capacity )
         {
             value_type * new_buffer = Helper::allocateArrayT<value_type>( _capacity );
 
@@ -1001,7 +1001,7 @@ namespace Mengine
             {
                 value_type * record = old_buffer + index;
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     continue;
                 }
@@ -1027,9 +1027,9 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0)), "hash push" );
+                MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0ULL)), "hash push" );
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0) )
+                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     record->hash = _hash;
                     record->key = _key;
@@ -1053,7 +1053,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         record->element = _element;
 
@@ -1096,11 +1096,11 @@ namespace Mengine
                     return nullptr;
                 }
 
-                if( record->hash == _hash && record->key == _key && record->element != reinterpret_cast<const element_type *>(~0) )
+                if( record->hash == _hash && record->key == _key && record->element != reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     element_type_ptr pop_element = record->element;
 
-                    record->element = reinterpret_cast<element_type *>(~0);
+                    record->element = reinterpret_cast<element_type *>(~0ULL);
 
                     return pop_element;
                 }
@@ -1125,7 +1125,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         return nullptr;
                     }
@@ -1153,7 +1153,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0) )
+                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         return false;
                     }

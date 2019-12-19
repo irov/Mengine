@@ -5,10 +5,6 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#ifndef MENGINE_PATH_INVALID_LENGTH
-#define MENGINE_PATH_INVALID_LENGTH (~0U)
-#endif
-
 namespace Mengine
 {
     namespace Helper

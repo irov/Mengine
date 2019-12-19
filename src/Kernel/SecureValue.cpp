@@ -38,7 +38,7 @@ namespace Mengine
         Char buffer[17];
         sprintf( buffer, "%x%x", m_value, hash );
 
-        uint32_t unprotected_value = (m_value ^ hash) ^ (::abs( ::strcmp( m_buffer, buffer ) ) * ~0u);
+        uint32_t unprotected_value = (m_value ^ hash) ^ (::abs( ::strcmp( m_buffer, buffer ) ) * ~0U);
 
         if( (unprotected_value ^ hash) != m_value )
         {

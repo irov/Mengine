@@ -936,7 +936,7 @@ namespace Mengine
         VectorTextLineChunks2 textLines;
         Helper::split( textLines, textChars, line_delims );
 
-        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
+        MENGINE_ASSERTION( !(m_autoScale == true && (m_wrap == true || m_maxCharCount != ~0U)), "text '%s' invalid enable together attributes 'wrap' and 'scaleFactor'"
             , this->getName().c_str()
         );
 

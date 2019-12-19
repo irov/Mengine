@@ -236,7 +236,7 @@ namespace Mengine
         }
 
         // Extracts the list of children of the shoulder.
-        ozz::animation::IterateJointsDF( skeleton, m_upperBodyRoot, [this]( int _joint, int )
+        ozz::animation::IterateJointsDF( skeleton, [this]( int _joint, int )
         {
             float upper_body_joint_weight_setting = 1.f;
 

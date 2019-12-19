@@ -99,7 +99,7 @@ namespace Mengine
         ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
         m_locals = Detail::AllocateRange<ozz::math::SoaTransform>( allocator, num_soa_joints );
-        m_cache = allocator->New<ozz::animation::SamplingCache>( num_joints );
+        m_cache = OZZ_NEW( allocator, ozz::animation::SamplingCache )(num_joints);
 
         this->updateAnimation_();
 
@@ -111,7 +111,7 @@ namespace Mengine
         ozz::memory::Allocator * allocator = ozz::memory::default_allocator();
 
         Detail::DeallocateRange( allocator, m_locals );
-        allocator->Delete( m_cache );
+        OZZ_DELETE( allocator, m_cache );
 
         m_resourceOzzAnimation->release();
         m_resourceOzzSkeleton->release();

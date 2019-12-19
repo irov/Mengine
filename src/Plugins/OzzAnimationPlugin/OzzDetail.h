@@ -24,7 +24,7 @@ namespace Mengine
         template<class T>
         void DeallocateRange( ozz::memory::Allocator * _allocator, ozz::Range<T> & _range )
         {
-            _allocator->Delete( _range.begin );
+            OZZ_DELETE( _allocator, _range.begin );
             _range.Clear();
         }
 

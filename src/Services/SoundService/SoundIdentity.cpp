@@ -42,6 +42,8 @@ namespace Mengine
 
         listener = nullptr;
         worker = nullptr;
+
+        state = ESS_STOP;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundIdentity::setId( uint32_t _id )

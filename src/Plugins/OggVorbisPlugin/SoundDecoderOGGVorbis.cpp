@@ -109,10 +109,12 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( vorbisInfo, false, "invalid ov_info" );
 
-        MENGINE_ASSERTION_RETURN( vorbisInfo->channels == 2, false, "invalid channels %d need %d"
+#ifdef MENGINE_SOUND_STEREO_ONLY
+        MENGINE_ASSERTION_FATAL_RETURN( vorbisInfo->channels == 2, false, "invalid channels %d need %d"
             , vorbisInfo->channels
             , 2
         );
+#endif
 
         ogg_int64_t pcmTotal = ov_pcm_total( &m_oggVorbisFile, -1 );
 

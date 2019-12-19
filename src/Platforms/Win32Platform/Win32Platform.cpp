@@ -705,7 +705,7 @@ namespace Mengine
                 , _fontName 
             );
 
-            return ~0U;
+            return MENGINE_PATH_INVALID_LENGTH;
         }
 
         const WChar * fontRegistryPath = L"Software\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
@@ -718,7 +718,7 @@ namespace Mengine
         {
             _fontPath[0] = '\0';
 
-            return ~0U;
+            return MENGINE_PATH_INVALID_LENGTH;
         }
 
         DWORD maxValueNameSize;
@@ -729,7 +729,7 @@ namespace Mengine
         {
             _fontPath[0] = '\0';
 
-            return ~0U;
+            return MENGINE_PATH_INVALID_LENGTH;
         }
 
         DWORD valueIndex = 0;
@@ -769,7 +769,7 @@ namespace Mengine
         {
             _fontPath[0] = '\0';
 
-            return ~0U;
+            return MENGINE_PATH_INVALID_LENGTH;
         }
 
         WCHAR winDir[MAX_PATH];
@@ -786,7 +786,7 @@ namespace Mengine
         {
             _fontPath[0] = '\0';
 
-            return ~0U;
+            return MENGINE_PATH_INVALID_LENGTH;
         }
 
         return utf8_size;

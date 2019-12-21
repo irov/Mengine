@@ -21,7 +21,7 @@ namespace Mengine
         MENGINE_INLINE const jpp::object & getJSON() const override;
 
     public:
-        void mergeJSON( const jpp::object & _json ) override;
+        bool mergeJSON( const jpp::object & _json ) override;
 
     protected:
         jpp::object m_json;

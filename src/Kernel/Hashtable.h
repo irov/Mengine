@@ -168,7 +168,7 @@ namespace Mengine
             {
                 value_type * record = m_buffer + index;
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
+                if( record->element.get_base() == nullptr || record->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     continue;
                 }
@@ -250,7 +250,7 @@ namespace Mengine
             {
                 for( ; m_carriage != m_end; ++m_carriage )
                 {
-                    if( m_carriage->element == nullptr || m_carriage->element == reinterpret_cast<const element_type *>(~0ULL) )
+                    if( m_carriage->element.get_base() == nullptr || m_carriage->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         continue;
                     }
@@ -335,7 +335,7 @@ namespace Mengine
                 {
                     const value_type * value = m_carriage - 1;
 
-                    if( value->element == nullptr || value->element == reinterpret_cast<const element_type *>(~0ULL) )
+                    if( value->element.get_base() == nullptr || value->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         continue;
                     }
@@ -412,7 +412,7 @@ namespace Mengine
             {
                 value_type * record = old_buffer + index;
 
-                if( record->element == nullptr || record->element == reinterpret_cast<const element_type *>(~0ULL) )
+                if( record->element.get_base() == nullptr || record->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     continue;
                 }
@@ -438,9 +438,9 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element != reinterpret_cast<const element_type *>(~0ULL)), "hash push" );
+                MENGINE_ASSERTION_FATAL( !(record->hash == _hash && record->key == _key && record->element.get_base() != nullptr && record->element.get_base() != reinterpret_cast<const element_type *>(~0ULL)), "hash push" );
 
-                if( record->element == nullptr )
+                if( record->element.get_base() == nullptr )
                 {
                     record->hash = _hash;
                     record->key = _key;
@@ -449,7 +449,7 @@ namespace Mengine
                     return record->element;
                 }
 
-                if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
+                if( record->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     record->hash = _hash;
                     record->key = _key;
@@ -474,7 +474,7 @@ namespace Mengine
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
+                    if( record->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         record->element.set( nullptr );
                         record->element = _element;
@@ -482,7 +482,7 @@ namespace Mengine
                         return nullptr;
                     }
 
-                    if( record->element != nullptr )
+                    if( record->element.get_base() != nullptr )
                     {
                         element_type_ptr prev = std::move( record->element );
                         record->element = _element;
@@ -491,7 +491,7 @@ namespace Mengine
                     }
                 }
 
-                if( record->element == nullptr )
+                if( record->element.get_base() == nullptr )
                 {
                     record->hash = _hash;
                     record->key = _key;
@@ -513,12 +513,12 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                if( record->element == nullptr )
+                if( record->element.get_base() == nullptr )
                 {
                     return nullptr;
                 }
 
-                if( record->hash == _hash && record->key == _key && record->element != reinterpret_cast<const element_type *>(~0ULL) )
+                if( record->hash == _hash && record->key == _key && record->element.get_base() != reinterpret_cast<const element_type *>(~0ULL) )
                 {
                     element_type_ptr pop_element = std::move( record->element );
 
@@ -540,14 +540,14 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                if( record->element == nullptr )
+                if( record->element.get_base() == nullptr )
                 {
                     return element_type_ptr::none();
                 }
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
+                    if( record->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         return element_type_ptr::none();
                     }
@@ -568,14 +568,14 @@ namespace Mengine
             {
                 value_type * record = _buffer + (mask & hash_mask);
 
-                if( record->element == nullptr )
+                if( record->element.get_base() == nullptr )
                 {
                     return false;
                 }
 
                 if( record->hash == _hash && record->key == _key )
                 {
-                    if( record->element == reinterpret_cast<const element_type *>(~0ULL) )
+                    if( record->element.get_base() == reinterpret_cast<const element_type *>(~0ULL) )
                     {
                         return false;
                     }

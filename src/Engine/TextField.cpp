@@ -82,10 +82,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_release()
     {
-        if( m_font != nullptr )
+        if( m_totalFont != nullptr )
         {
-            m_font->releaseFont();
-            m_font = nullptr;
+            m_totalFont->releaseFont();
+            m_totalFont = nullptr;
         }
 
         m_chunks.clear();
@@ -99,7 +99,7 @@ namespace Mengine
 
         m_cacheFonts.clear();
 
-        m_textEntry = nullptr;
+        m_totalTextEntry = nullptr;
 
         VectorTextLinesLayout layouts;
         m_layouts.swap( layouts );
@@ -357,7 +357,7 @@ namespace Mengine
             return;
         }
 
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -461,7 +461,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::getFontHeight() const
     {
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -583,7 +583,7 @@ namespace Mengine
             return false;
         }
 
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -870,7 +870,7 @@ namespace Mengine
             return true;
         }
 
-        const TextFontInterfacePtr & baseFont = this->getFont();
+        const TextFontInterfacePtr & baseFont = this->getTotalFont();
 
         if( baseFont == nullptr )
         {
@@ -1019,9 +1019,9 @@ namespace Mengine
 
         ConstString fontName = this->calcFontName();
 
-        if( m_font != nullptr )
+        if( m_totalFont != nullptr )
         {
-            const ConstString & currentFontName = m_font->getName();
+            const ConstString & currentFontName = m_totalFont->getName();
 
             if( fontName == currentFontName )
             {
@@ -1029,8 +1029,8 @@ namespace Mengine
             }
             else
             {
-                m_font->releaseFont();
-                m_font = nullptr;
+                m_totalFont->releaseFont();
+                m_totalFont = nullptr;
             }
         }
 
@@ -1061,7 +1061,7 @@ namespace Mengine
             return false;
         }
 
-        m_font = font;
+        m_totalFont = font;
 
         return true;
     }
@@ -1081,12 +1081,12 @@ namespace Mengine
             , aliasTestId.c_str()
         );
 
-        m_textEntry = textEntry;
+        m_totalTextEntry = textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & TextField::calcFontName() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1113,7 +1113,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcLineOffset() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1132,7 +1132,7 @@ namespace Mengine
             return m_lineOffset;
         }
 
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font != nullptr )
         {
@@ -1152,7 +1152,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcCharOffset() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1171,7 +1171,7 @@ namespace Mengine
             return m_charOffset;
         }
 
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font != nullptr )
         {
@@ -1190,7 +1190,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcMaxLength() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1209,7 +1209,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color & TextField::calcFontColor() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1228,7 +1228,7 @@ namespace Mengine
             return m_colorFont;
         }
 
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font != nullptr )
         {
@@ -1247,7 +1247,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ETextHorizontAlign TextField::calcHorizontAlign() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1271,7 +1271,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ETextVerticalAlign TextField::calcVerticalAlign() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1295,7 +1295,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TextField::calcCharScale() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry != nullptr )
         {
@@ -1453,31 +1453,33 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setTextID( const ConstString & _key )
+    void TextField::setTextId( const ConstString & _textId )
     {
-        m_textId = _key;
+        m_textId = _textId;
 
         m_textFormatArgs.clear();
 
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextField::getTextID() const
+    const ConstString & TextField::getTextId() const
     {
         return m_textId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::removeTextID()
+    void TextField::removeTextId()
     {
-        m_textEntry = nullptr;
+        m_textId.clear();
+
+        m_totalTextEntry = nullptr;
         m_textFormatArgs.clear();
 
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextField::getTextEntryID() const
+    const ConstString & TextField::getTotalTextId() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         if( textEntry == nullptr )
         {
@@ -1536,7 +1538,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextField::getTextExpectedArgument() const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, 0, "'%s:%s' not compile"
             , this->getName().c_str()
@@ -1556,7 +1558,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "'%s:%s' except error '%s'"
                 , this->getName().c_str()
-                , this->getTextEntryID().c_str()
+                , this->getTotalTextId().c_str()
                 , _ex.what()
             );
         }
@@ -1566,14 +1568,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextField::updateTextCache_( U32String & _cacheText ) const
     {
-        const TextEntryInterfacePtr & textEntry = this->getTextEntry();
+        const TextEntryInterfacePtr & textEntry = this->getTotalTextEntry();
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, false, "'%s:%s' invalid get text entry can't setup text ID"
             , this->getName().c_str()
             , m_textId.c_str()
         );
 
-        const TextFontInterfacePtr & font = this->getFont();
+        const TextFontInterfacePtr & font = this->getTotalFont();
 
         if( font == nullptr )
         {
@@ -1591,7 +1593,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
                 , this->getName().c_str()
-                , this->getTextEntryID().c_str()
+                , this->getTotalTextId().c_str()
                 , m_textFormatArgs.size()
             );
 

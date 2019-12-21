@@ -2927,15 +2927,16 @@ namespace Mengine
                 ;
 
             pybind::interface_<TextField, pybind::bases<Node>>( _kernel, "TextField", false )
-                .def_deprecated( "setTextByKey", &TextField::setTextID, "use setTextID" )
-                .def( "setTextID", &TextField::setTextID )
-                .def( "removeTextID", &TextField::removeTextID )
+                .def_deprecated( "setTextByKey", &TextField::setTextId, "use setTextID" )
+                .def( "setTextID", &TextField::setTextId )
+                .def( "removeTextID", &TextField::removeTextId )
                 .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_setTextFormatArgs )
                 .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_getTextFormatArgs )
                 .def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
-                .def_deprecated( "getTextKey", &TextField::getTextEntryID, "use getTextID" )
-                .def( "getTextID", &TextField::getTextID )
-                .def( "getTextEntryID", &TextField::getTextEntryID )
+                .def_deprecated( "getTextKey", &TextField::getTotalTextId, "use getTextID" )
+                .def( "getTextId", &TextField::getTextId )
+                .def_deprecated( "getTextEntryId", &TextField::getTotalTextId, "use getTotalTextId" )
+                .def( "getTotalTextId", &TextField::getTotalTextId )
                 .def( "getTextExpectedArgument", &TextField::getTextExpectedArgument )
 
                 .def_deprecated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )

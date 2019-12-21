@@ -23,6 +23,21 @@ namespace Mengine
         virtual bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) = 0;
 
     public:
+        virtual TextEntryInterfacePtr createTextEntry( const ConstString & _key
+            , const Char * _text
+            , const size_t _size
+            , const ConstString & _font
+            , const Color & _colorFont
+            , float _lineOffset
+            , float _charOffset
+            , float _maxLength
+            , ETextHorizontAlign _horizontAlign
+            , ETextVerticalAlign _verticalAlign
+            , float _scale
+            , uint32_t _params
+            , const DocumentPtr & _doc ) = 0;
+
+    public:
         virtual bool addTextEntry( const ConstString & _key
             , const Char * _text
             , size_t _size

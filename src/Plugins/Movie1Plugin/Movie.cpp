@@ -1638,7 +1638,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_text, false );
 
-        layer_text->setTextID( _layer.name ); //Name = TextID
+        layer_text->setTextId( _layer.name );
 
         if( _layer.hasParam( MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER ) == true )
         {
@@ -1670,7 +1670,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( layer_text, false );
 
-        layer_text->setTextID( _layer.name ); //Name = TextID
+        layer_text->setTextId( _layer.name ); //Name = TextID
         layer_text->setHorizontalCenterAlign();
 
         if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )

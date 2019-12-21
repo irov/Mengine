@@ -395,7 +395,7 @@ namespace Mengine
                 node->setName( layer.name );
                 node->setExternalRender( true );
 
-                node->setTextID( layer.name );
+                node->setTextId( layer.name );
                 node->setTextAliasEnvironment( m_aliasEnvironment );
 
                 node->setPixelsnap( false );

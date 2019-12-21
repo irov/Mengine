@@ -628,7 +628,7 @@ namespace Mengine
         serializeNodeProp( _textField->getMaxLength(), "MaxLength", xmlNode );
         serializeNodeProp( _textField->getWrap(), "Wrap", xmlNode );
 
-        const ConstString & textID = _textField->getTextID();
+        const ConstString & textID = _textField->getTextId();
         const ConstString & textAliasEnvironment = _textField->getTextAliasEnvironment();
 
         const ConstString & aliasTestId = TEXT_SERVICE()
@@ -1190,7 +1190,7 @@ namespace Mengine
 
                 deserializeNodeProp<ConstString>( "TextID", typeNodeTextField, [textField]( auto _value )
                 {
-                    textField->setTextID( _value );
+                    textField->setTextId( _value );
                 } );
 
                 deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeTextField, [textField]( auto _value )

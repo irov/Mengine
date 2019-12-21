@@ -43,12 +43,12 @@ namespace Mengine
         bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) override;
 
     public:
-        bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
-        const TextEntryInterfacePtr & getTextEntry( const ConstString & _key ) const override;
+        bool hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * _entry ) const override;
+        const TextEntryInterfacePtr & getTextEntry( const ConstString & _textId ) const override;
 
     public:
-        bool existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const override;
-        const TextFontInterfacePtr & getFont( const ConstString & _name ) const override;
+        bool existFont( const ConstString & _fontName, TextFontInterfacePtr * _font ) const override;
+        const TextFontInterfacePtr & getFont( const ConstString & _fontName ) const override;
 
     public:
         void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString & _key ) override;
@@ -71,7 +71,7 @@ namespace Mengine
         const ConstString & getDefaultFontName() const override;
 
     public:
-        bool addTextEntry( const ConstString & _key
+        TextEntryInterfacePtr createTextEntry( const ConstString & _textId
             , const Char * _text
             , size_t _size
             , const ConstString & _font
@@ -83,17 +83,32 @@ namespace Mengine
             , ETextVerticalAlign _verticalAlign
             , float _scale
             , uint32_t _params
+            , const DocumentPtr & _doc ) override;
+
+    public:
+        bool addTextEntry( const ConstString & _textId
+            , const Char * _text
+            , size_t _size
+            , const ConstString & _fontName
+            , const Color & _colorFont
+            , float _lineOffset
+            , float _charOffset
+            , float _maxLength
+            , ETextHorizontAlign _horizontAlign
+            , ETextVerticalAlign _verticalAlign
+            , float _scale
+            , uint32_t _params
             , bool _isOverride
             , const DocumentPtr & _doc ) override;
 
-        bool removeTextEntry( const ConstString & _key ) override;
+        bool removeTextEntry( const ConstString & _textId ) override;
 
     public:
-        bool directFontCompile( const ConstString & _name ) override;
-        bool directFontRelease( const ConstString & _name ) override;
+        bool directFontCompile( const ConstString & _fontName ) override;
+        bool directFontRelease( const ConstString & _fontName ) override;
 
     protected:
-        typedef Hashtable<ConstString, TextEntryInterfacePtr> HashtableTextEntry;
+        typedef Hashtable<ConstString, TextEntryPtr> HashtableTextEntry;
         HashtableTextEntry m_texts;
 
         typedef Hashtable<ConstString, TextFontInterfacePtr> HashtableTextFont;

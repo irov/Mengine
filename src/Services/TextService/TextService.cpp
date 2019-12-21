@@ -746,10 +746,40 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::addTextEntry( const ConstString & _key
+    TextEntryInterfacePtr TextService::createTextEntry( const ConstString & _key
         , const Char * _text
         , const size_t _size
         , const ConstString & _font
+        , const Color & _colorFont
+        , float _lineOffset
+        , float _charOffset
+        , float _maxLength
+        , ETextHorizontAlign _horizontAlign
+        , ETextVerticalAlign _verticalAlign
+        , float _scale
+        , uint32_t _params
+        , const DocumentPtr & _doc )
+    {
+        TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
+
+        MENGINE_ASSERTION_MEMORY_PANIC( textEntry, nullptr );
+
+        if( textEntry->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+        {
+            LOGGER_ERROR( "invalid initialize '%s'"
+                , _key.c_str()
+            );
+
+            return nullptr;
+        }
+
+        return textEntry;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextService::addTextEntry( const ConstString & _key
+        , const Char * _text
+        , const size_t _size
+        , const ConstString & _fontName
         , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
@@ -778,14 +808,21 @@ namespace Mengine
                 return false;
             }
 
-            textEntry_has->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
+            if( textEntry_has->initialize( _key, _text, _size, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+            {
+                LOGGER_ERROR( "invalid initialize '%s'"
+                    , _key.c_str()
+                );
+
+                return false;
+            }
 
             return true;
         }
 
-        TextEntryPtr textEntry = m_factoryTextEntry->createObject( _doc );
+        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
 
-        if( textEntry->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+        if( textEntry == nullptr )
         {
             return false;
         }
@@ -844,9 +881,9 @@ namespace Mengine
         return textEntry;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const
+    bool TextService::hasTextEntry( const ConstString & _textId, TextEntryInterfacePtr * _entry ) const
     {
-        const TextEntryInterfacePtr & textEntry = m_texts.find( _key );
+        const TextEntryInterfacePtr & textEntry = m_texts.find( _textId );
 
         if( textEntry == nullptr )
         {
@@ -861,9 +898,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::existFont( const ConstString & _name, TextFontInterfacePtr * _font ) const
+    bool TextService::existFont( const ConstString & _fontName, TextFontInterfacePtr * _font ) const
     {
-        const TextFontInterfacePtr & font = m_fonts.find( _name );
+        const TextFontInterfacePtr & font = m_fonts.find( _fontName );
 
         if( font == nullptr )
         {
@@ -878,12 +915,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextFontInterfacePtr & TextService::getFont( const ConstString & _name ) const
+    const TextFontInterfacePtr & TextService::getFont( const ConstString & _fontName ) const
     {
-        const TextFontInterfacePtr & font = m_fonts.find( _name );
+        const TextFontInterfacePtr & font = m_fonts.find( _fontName );
 
         MENGINE_ASSERTION_MEMORY_PANIC( font, TextFontInterfacePtr::none(), "not found '%s'"
-            , _name.c_str()
+            , _fontName.c_str()
         );
 
         return font;
@@ -1003,44 +1040,42 @@ namespace Mengine
             }
         }
 
-        for( HashtableTextEntry::const_iterator
-            it = m_texts.begin(),
-            it_end = m_texts.end();
-            it != it_end;
-            ++it )
+        for( const HashtableTextEntry::value_type & value : m_texts )
         {
-            const TextEntryInterfacePtr & text = it->element;
+            const TextEntryInterfacePtr & text = value.element;
 
-            const ConstString & textKey = text->getKey();
+            const ConstString & textId = text->getKey();
             const ConstString & fontName = text->getFontName();
 
-            if( fontName.empty() == false )
+            if( fontName.empty() == true )
             {
-                TextFontInterfacePtr font;
-                if( this->existFont( fontName, &font ) == false )
-                {
-                    LOGGER_ERROR( "not found font '%s' for text '%s'"
-                        , fontName.c_str()
-                        , textKey.c_str()
-                    );
+                continue;
+            }
 
-                    successful = false;
+            TextFontInterfacePtr font;
+            if( this->existFont( fontName, &font ) == false )
+            {
+                LOGGER_ERROR( "not found font '%s' for text '%s'"
+                    , fontName.c_str()
+                    , textId.c_str()
+                );
 
-                    continue;
-                }
+                successful = false;
 
-                size_t text_size;
-                const Char * text_value = text->getValue( &text_size );
+                continue;
+            }
 
-                if( font->validateText( textKey, text_value, text_size ) == false )
-                {
-                    LOGGER_ERROR( "text '%s' font name '%s' invalid"
-                        , textKey.c_str()
-                        , fontName.c_str()
-                    );
+            size_t text_size;
+            const Char * text_value = text->getValue( &text_size );
 
-                    successful = false;
-                }
+            if( font->validateText( textId, text_value, text_size ) == false )
+            {
+                LOGGER_ERROR( "text '%s' font name '%s' invalid"
+                    , textId.c_str()
+                    , fontName.c_str()
+                );
+
+                successful = false;
             }
         }
 

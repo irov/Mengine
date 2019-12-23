@@ -2,6 +2,7 @@
 
 #include "Interface/Interface.h"
 
+#include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
@@ -34,6 +35,9 @@ namespace Mengine
     public:
         virtual const ConstString & getKey() const = 0;
         virtual const Char * getValue( size_t * _size ) const = 0;
+
+    public:
+        virtual const Tags & getTags() const = 0;
 
     public:
         virtual const ConstString & getFontName() const = 0;

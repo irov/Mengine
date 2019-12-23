@@ -22,6 +22,7 @@ namespace Mengine
     bool TextEntry::initialize( const ConstString & _key
         , const Char * _text
         , size_t _size
+        , const Tags & _tags
         , const ConstString & _fontName
         , const Color & _colorFont
         , float _lineOffset
@@ -40,8 +41,10 @@ namespace Mengine
         }
         else
         {
-            m_text = _text;
+            m_text.assign( _text );
         }
+
+        m_tags = _tags;
 
         m_fontName = _fontName;
 

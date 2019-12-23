@@ -273,26 +273,26 @@ namespace Mengine
                 return "String";
             }
         };
-    }
 
-    template <typename T>
-    void serializeNodeProp( const T & _prop, const Char * _propName, pugi::xml_node & _xmlParentNode )
-    {
-        pugi::xml_node propNode = _xmlParentNode.append_child( _propName );
-        const Char * type_name = Detail::prop_type_name<T>::get_value();
-        propNode.append_attribute( "type" ).set_value( type_name );
-        pugi::xml_attribute valueAttrib = propNode.append_attribute( "value" );
-        Detail::setXmlValue<T>( valueAttrib, _prop );
-    }
+        template <typename T>
+        void serializeNodeProp( const T & _prop, const Char * _propName, pugi::xml_node & _xmlParentNode )
+        {
+            pugi::xml_node propNode = _xmlParentNode.append_child( _propName );
+            const Char * type_name = Detail::prop_type_name<T>::get_value();
+            propNode.append_attribute( "type" ).set_value( type_name );
+            pugi::xml_attribute valueAttrib = propNode.append_attribute( "value" );
+            Detail::setXmlValue<T>( valueAttrib, _prop );
+        }
 
-    template<typename T>
-    bool deserializeNodeProp( const Char * _propName,
-        const pugi::xml_node & _xmlParentNode,
-        const Lambda<void( const T & )> & _lambda )
-    {
-        const Char * type_name = Detail::prop_type_name<T>::get_value();
+        template<typename T>
+        bool deserializeNodeProp( const Char * _propName,
+            const pugi::xml_node & _xmlParentNode,
+            const Lambda<void( const T & )> & _lambda )
+        {
+            const Char * type_name = Detail::prop_type_name<T>::get_value();
 
-        return Detail::deserializeNodePropImpl<T>( type_name, _propName, _xmlParentNode, _lambda );
+            return Detail::deserializeNodePropImpl<T>( type_name, _propName, _xmlParentNode, _lambda );
+        }
     }
 
     class MyXMLWriter

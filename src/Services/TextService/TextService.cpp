@@ -383,7 +383,9 @@ namespace Mengine
                 );
             }
 
-            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, m_doc ) == false )
+            Tags tags;
+
+            if( m_textManager->addTextEntry( text_key, text_str_value, text_str_size, tags, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride, m_doc ) == false )
             {
                 LOGGER_ERROR( "'%s:%s' invalid add text key '%s'"
                     , m_fileGroup->getName().c_str()
@@ -749,6 +751,7 @@ namespace Mengine
     TextEntryInterfacePtr TextService::createTextEntry( const ConstString & _key
         , const Char * _text
         , const size_t _size
+        , const Tags & _tags
         , const ConstString & _font
         , const Color & _colorFont
         , float _lineOffset
@@ -764,7 +767,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( textEntry, nullptr );
 
-        if( textEntry->initialize( _key, _text, _size, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+        if( textEntry->initialize( _key, _text, _size, _tags, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
         {
             LOGGER_ERROR( "invalid initialize '%s'"
                 , _key.c_str()
@@ -779,6 +782,7 @@ namespace Mengine
     bool TextService::addTextEntry( const ConstString & _key
         , const Char * _text
         , const size_t _size
+        , const Tags & _tags
         , const ConstString & _fontName
         , const Color & _colorFont
         , float _lineOffset
@@ -808,7 +812,7 @@ namespace Mengine
                 return false;
             }
 
-            if( textEntry_has->initialize( _key, _text, _size, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
+            if( textEntry_has->initialize( _key, _text, _size, _tags, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params ) == false )
             {
                 LOGGER_ERROR( "invalid initialize '%s'"
                     , _key.c_str()
@@ -820,7 +824,7 @@ namespace Mengine
             return true;
         }
 
-        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
+        TextEntryInterfacePtr textEntry = this->createTextEntry( _key, _text, _size, _tags, _fontName, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params, _doc );
 
         if( textEntry == nullptr )
         {
@@ -834,12 +838,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::removeTextEntry( const ConstString & _key )
     {
-        if( m_texts.erase( _key ) == nullptr )
+        TextEntryPtr entry = m_texts.erase( _key );
+
+        if( entry == nullptr )
         {
             return false;
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextService::removeTextEntries( const Tags & _tag )
+    {
+        for( const HashtableTextEntry::value_type & value : m_texts )
+        {
+            const TextEntryPtr & text = value.element;
+
+            const Tags & tags = text->getTags();
+
+            if( tags.hasTags( _tag ) == false )
+            {
+                continue;
+            }
+
+            m_texts.erase( value.key );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextService::directFontCompile( const ConstString & _name )

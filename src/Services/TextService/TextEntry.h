@@ -2,6 +2,7 @@
 
 #include "Interface/TextEntryInterface.h"
 
+#include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Color.h"
 
@@ -21,6 +22,7 @@ namespace Mengine
         bool initialize( const ConstString & _key
             , const Char * _text
             , size_t _size
+            , const Tags & _tags
             , const ConstString & _font
             , const Color & _colorFont
             , float _lineOffset
@@ -34,6 +36,9 @@ namespace Mengine
     public:
         const ConstString & getKey() const override;
         const Char * getValue( size_t * _size ) const override;
+
+    public:
+        const Tags & getTags() const override;
 
     public:
         const ConstString & getFontName() const override;
@@ -51,6 +56,8 @@ namespace Mengine
     protected:
         ConstString m_key;
         String m_text;
+
+        Tags m_tags;
 
         ConstString m_fontName;
 

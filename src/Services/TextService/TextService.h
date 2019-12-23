@@ -10,6 +10,7 @@
 
 #include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
+#include "Kernel/Tags.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHolderLocalString.h"
 #include "Kernel/FilePath.h"
@@ -74,6 +75,7 @@ namespace Mengine
         TextEntryInterfacePtr createTextEntry( const ConstString & _textId
             , const Char * _text
             , size_t _size
+            , const Tags & _tags
             , const ConstString & _font
             , const Color & _colorFont
             , float _lineOffset
@@ -89,6 +91,7 @@ namespace Mengine
         bool addTextEntry( const ConstString & _textId
             , const Char * _text
             , size_t _size
+            , const Tags & _tags
             , const ConstString & _fontName
             , const Color & _colorFont
             , float _lineOffset
@@ -102,6 +105,7 @@ namespace Mengine
             , const DocumentPtr & _doc ) override;
 
         bool removeTextEntry( const ConstString & _textId ) override;
+        void removeTextEntries( const Tags & _tag ) override;
 
     public:
         bool directFontCompile( const ConstString & _fontName ) override;

@@ -42,8 +42,6 @@ namespace Mengine
         typedef Hashtable<ConstString, NodeDebugRenderInterfacePtr> HashtableNodeDebugRenders;
         HashtableNodeDebugRenders m_nodeDebugRenders;
 
-        TextFieldPtr m_debugText;
-
         uint32_t m_fps;
 
         uint32_t m_showDebugText;

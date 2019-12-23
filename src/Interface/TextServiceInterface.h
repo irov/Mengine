@@ -4,6 +4,8 @@
 #include "Interface/TextFontInterface.h"
 #include "Interface/TextEntryInterface.h"
 
+#include "Kernel/Tags.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -26,6 +28,7 @@ namespace Mengine
         virtual TextEntryInterfacePtr createTextEntry( const ConstString & _key
             , const Char * _text
             , const size_t _size
+            , const Tags & _tags
             , const ConstString & _font
             , const Color & _colorFont
             , float _lineOffset
@@ -41,6 +44,7 @@ namespace Mengine
         virtual bool addTextEntry( const ConstString & _key
             , const Char * _text
             , size_t _size
+            , const Tags & _tags
             , const ConstString & _font
             , const Color & _colorFont
             , float _lineOffset
@@ -54,6 +58,7 @@ namespace Mengine
             , const DocumentPtr & _doc ) = 0;
 
         virtual bool removeTextEntry( const ConstString & _key ) = 0;
+        virtual void removeTextEntries( const Tags & _tag ) = 0;
 
     public:
         virtual bool hasTextEntry( const ConstString & _key, TextEntryInterfacePtr * _entry ) const = 0;

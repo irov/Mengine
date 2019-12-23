@@ -37,10 +37,10 @@ namespace Mengine
     };
 
 #define DESERIALIZE_PROP(NAME)\
-    deserializeNodeProp<decltype(this->NAME)>( #NAME, _xmlNode, [this]( decltype(this->NAME) _value ) { this->NAME = _value; } )
+    Detail::deserializeNodeProp<decltype(this->NAME)>( #NAME, _xmlNode, [this]( decltype(this->NAME) _value ) { this->NAME = _value; } )
 
 #define SERIALIZE_PROP(NAME)\
-    serializeNodeProp( this->NAME, #NAME, _xmlNode )
+    Detail::serializeNodeProp( this->NAME, #NAME, _xmlNode )
 
     struct NodeTransformation
     {

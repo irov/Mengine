@@ -308,7 +308,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( float _value, Char * _string, size_t _capacity )
         {
-            if( MENGINE_SNPRINTF( _string, _capacity, "%f", _value ) >= (int)_capacity )
+            if( MENGINE_SNPRINTF( _string, _capacity, "%g", _value ) >= (int)_capacity )
             {
                 return false;
             }

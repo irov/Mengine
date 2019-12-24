@@ -3,10 +3,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 
-#include <string.h>
-
-#define __STDC_FORMAT_MACROS
-#include <inttypes.h>
+#include "Config/StdIO.h"
 
 namespace Mengine
 {
@@ -16,7 +13,7 @@ namespace Mengine
         bool stringalized( const Char * _string, bool * _value )
         {
             uint32_t tmp_value;
-            if( ::sscanf( _string, "%" SCNu32, &tmp_value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNu32, &tmp_value ) != 1 )
             {
                 return false;
             }
@@ -28,7 +25,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int8_t * _value )
         {
-            if( ::sscanf( _string, "%" SCNd8, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNd8, _value ) != 1 )
             {
                 return false;
             }
@@ -38,7 +35,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint8_t * _value )
         {
-            if( ::sscanf( _string, "%" SCNu8, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNu8, _value ) != 1 )
             {
                 return false;
             }
@@ -48,7 +45,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int32_t * _value )
         {
-            if( ::sscanf( _string, "%" SCNd32, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNd32, _value ) != 1 )
             {
                 return false;
             }
@@ -58,7 +55,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint32_t * _value )
         {
-            if( ::sscanf( _string, "%" SCNu32, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNu32, _value ) != 1 )
             {
                 return false;
             }
@@ -68,7 +65,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int64_t * _value )
         {
-            if( ::sscanf( _string, "%" SCNd64, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNd64, _value ) != 1 )
             {
                 return false;
             }
@@ -78,7 +75,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint64_t * _value )
         {
-            if( ::sscanf( _string, "%" SCNu64, _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%" SCNu64, _value ) != 1 )
             {
                 return false;
             }
@@ -88,7 +85,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, float * _value )
         {
-            if( ::sscanf( _string, "%f", _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%f", _value ) != 1 )
             {
                 return false;
             }
@@ -98,7 +95,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, double * _value )
         {
-            if( ::sscanf( _string, "%lf", _value ) != 1 )
+            if( MENGINE_SSCANF( _string, "%lf", _value ) != 1 )
             {
                 return false;
             }
@@ -140,7 +137,7 @@ namespace Mengine
 
             for( const Char
                 * it = _string,
-                *it_end = _string + strlen( _string );
+                *it_end = _string + ::strlen( _string );
                 it != it_end;
                 ++it )
             {
@@ -180,7 +177,7 @@ namespace Mengine
         {
             uint32_t width;
             uint32_t height;
-            if( sscanf( _string, "%" SCNu32" %" SCNu32, &width, &height ) != 2 )
+            if( MENGINE_SSCANF( _string, "%" SCNu32" %" SCNu32, &width, &height ) != 2 )
             {
                 return false;
             }
@@ -197,7 +194,7 @@ namespace Mengine
             float g;
             float b;
             float a;
-            if( sscanf( _string, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+            if( MENGINE_SSCANF( _string, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
             {
                 return false;
             }
@@ -223,7 +220,7 @@ namespace Mengine
             float ex;
             float ey;
 
-            if( sscanf( _string, "%f %f %f %f %f %f", &width, &height, &bx, &by, &ex, &ey ) != 6 )
+            if( MENGINE_SSCANF( _string, "%f %f %f %f %f %f", &width, &height, &bx, &by, &ex, &ey ) != 6 )
             {
                 return false;
             }
@@ -237,5 +234,199 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( bool _value, Char * _string, size_t _capacity )
+        {
+            uint32_t tmp_value = _value;
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu32, tmp_value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( int8_t _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRId8, _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( uint8_t _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu8, _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( int32_t _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRId32, _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( uint32_t _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu32, _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( int64_t _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRId64, _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( uint64_t _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu64, _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( float _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%f", _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( double _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%lf", _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Char * _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%s", _value ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const String & _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const ConstString & _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const FilePath & _value, Char * _string, size_t _capacity )
+        {
+            if( MENGINE_SNPRINTF( _string, _capacity, "%s", _value.c_str() ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Tags & _value, Char * _string, size_t _capacity )
+        {
+            int offset = 0;
+
+            for( const ConstString & tag : _value )
+            {
+                offset += MENGINE_SNPRINTF( _string + offset, _capacity - offset, "%s ", tag.c_str() );
+
+                if( offset >= (int)_capacity )
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Resolution & _value, Char * _string, size_t _capacity )
+        {
+            uint32_t width = _value.getWidth();
+            uint32_t height = _value.getHeight();
+
+            if( MENGINE_SNPRINTF( _string, _capacity, "%" PRIu32" %" PRIu32, width, height ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const Color & _value, Char * _string, size_t _capacity )
+        {
+            float r = _value.getR();
+            float g = _value.getG();
+            float b = _value.getB();
+            float a = _value.getA();
+
+            if( MENGINE_SNPRINTF( _string, _capacity, "%f %f %f %f", r, g, b, a ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool stringalized( const AspectRatioViewport & _value, Char * _string, size_t _capacity )
+        {
+            float width = _value.width;
+            float height = _value.height;
+            float bx = _value.viewport.begin.x;
+            float by = _value.viewport.begin.y;
+            float ex = _value.viewport.end.x;
+            float ey = _value.viewport.end.y;
+
+            if( MENGINE_SNPRINTF( _string, _capacity, "%f %f %f %f %f %f", width, height, bx, by, ex, ey ) >= (int)_capacity )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
     }
 }

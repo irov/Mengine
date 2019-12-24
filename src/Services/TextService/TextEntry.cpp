@@ -78,6 +78,11 @@ namespace Mengine
         return text_str;
     }
     //////////////////////////////////////////////////////////////////////////
+    const Tags & TextEntry::getTags() const
+    {
+        return m_tags;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & TextEntry::getFontName() const
     {
         return m_fontName;

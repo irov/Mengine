@@ -676,10 +676,7 @@ namespace Mengine
             Helper::writeIniSetting( file, "SelectAccountID", m_currentAccountID );
         }
 
-        String AccountEnumerator;
-        Helper::unsignedToString( m_playerEnumerator, &AccountEnumerator );
-
-        Helper::writeIniSetting( file, "AccountEnumerator", AccountEnumerator );
+        Helper::writeIniSetting( file, "AccountEnumerator", m_playerEnumerator );
 
         Helper::writeIniSection( file, "[ACCOUNTS]" );
 

@@ -1,11 +1,33 @@
 #include "IniHelper.h"
 
+#include "Kernel/Stringalized.h"
+
 #include <string.h>
 
 namespace Mengine
 {
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, uint32_t _value )
+        {
+            Char value_str[64];
+            Helper::stringalized( _value, value_str, 64 );
+
+            bool successful = Helper::writeIniSetting( _stream, _key, value_str );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, float _value )
+        {
+            Char value_str[64];
+            Helper::stringalized( _value, value_str, 64 );
+
+            bool successful = Helper::writeIniSetting( _stream, _key, value_str );
+
+            return successful;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, const Char * _value, size_t _size )
         {

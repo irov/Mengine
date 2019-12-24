@@ -4,6 +4,9 @@
 #include <stdarg.h>
 #include <string.h>
 
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #define MENGINE_VA_LIST_TYPE va_list
 #define MENGINE_VA_LIST_START( Args, Format ) va_start( Args, Format )
 #define MENGINE_VA_LIST_END( Args ) va_end( Args )
@@ -21,3 +24,6 @@
 #else
 #   define MENGINE_STRICMP stricmp
 #endif
+
+#define MENGINE_SSCANF(Buffer, ...) ::sscanf( Buffer, __VA_ARGS__ )
+#define MENGINE_SNPRINTF(Buffer, Capacity, ...) ::snprintf( Buffer, Capacity, __VA_ARGS__ )

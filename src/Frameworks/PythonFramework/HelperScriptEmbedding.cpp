@@ -27,8 +27,8 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/TagsHelper.h"
 #include "Kernel/FilePathHelper.h"
-#include "Kernel/StringHelper.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/StringHelper.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/Base64.h"
 
@@ -1587,10 +1587,10 @@ namespace Mengine
                 return false;
             }
 
-            String setting_value;
-            Helper::intToString( _value, &setting_value );
+            Char setting_value[32];
+            Helper::stringalized( _value, setting_value, 32 );
 
-            bool result = account->changeSetting( _setting, setting_value.c_str() );
+            bool result = account->changeSetting( _setting, setting_value );
 
             return result;
         }
@@ -1614,10 +1614,10 @@ namespace Mengine
                 return false;
             }
 
-            String setting_value;
-            Helper::unsignedToString( _value, &setting_value );
+            Char setting_value[32];
+            Helper::stringalized( _value, setting_value, 32 );
 
-            bool result = account->changeSetting( _setting, setting_value.c_str() );
+            bool result = account->changeSetting( _setting, setting_value );
 
             return result;
         }
@@ -1641,10 +1641,10 @@ namespace Mengine
                 return false;
             }
 
-            String setting_value;
-            Helper::unsigned64ToString( _value, &setting_value );
+            Char setting_value[32];
+            Helper::stringalized( _value, setting_value, 32 );
 
-            bool result = account->changeSetting( _setting, setting_value.c_str() );
+            bool result = account->changeSetting( _setting, setting_value );
 
             return result;
         }
@@ -1668,10 +1668,10 @@ namespace Mengine
                 return false;
             }
 
-            String setting_value;
-            Helper::floatToString( _value, &setting_value );
+            Char setting_value[64];
+            Helper::stringalized( _value, setting_value, 64 );
 
-            bool result = account->changeSetting( _setting, setting_value.c_str() );
+            bool result = account->changeSetting( _setting, setting_value );
 
             return result;
         }

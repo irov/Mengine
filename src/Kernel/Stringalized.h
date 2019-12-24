@@ -33,5 +33,23 @@ namespace Mengine
         bool stringalized( const Char * _string, Resolution * _value );
         bool stringalized( const Char * _string, Color * _value );
         bool stringalized( const Char * _string, AspectRatioViewport * _value );
+
+        bool stringalized( bool _value, Char * _string, size_t _capacity );
+        bool stringalized( int8_t _value, Char * _string, size_t _capacity );
+        bool stringalized( uint8_t _value, Char * _string, size_t _capacity );
+        bool stringalized( int32_t _value, Char * _string, size_t _capacity );
+        bool stringalized( uint32_t _value, Char * _string, size_t _capacity );
+        bool stringalized( int64_t _value, Char * _string, size_t _capacity );
+        bool stringalized( uint64_t _value, Char * _string, size_t _capacity );
+        bool stringalized( float _value, Char * _string, size_t _capacity );
+        bool stringalized( double _value, Char * _string, size_t _capacity );
+        bool stringalized( const Char * _value, Char * _string, size_t _capacity );
+        bool stringalized( const String & _value, Char * _string, size_t _capacity );
+        bool stringalized( const ConstString & _value, Char * _string, size_t _capacity );
+        bool stringalized( const FilePath & _value, Char * _string, size_t _capacity );
+        bool stringalized( const Tags & _value, Char * _string, size_t _capacity );
+        bool stringalized( const Resolution & _value, Char * _string, size_t _capacity );
+        bool stringalized( const Color & _value, Char * _string, size_t _capacity );
+        bool stringalized( const AspectRatioViewport & _value, Char * _string, size_t _capacity );
     }
 }

@@ -60,8 +60,18 @@ namespace Mengine
         m_values.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    VectorConstString::const_iterator Tags::begin() const
+    {
+        return m_values.begin();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    VectorConstString::const_iterator Tags::end() const
+    {
+        return m_values.end();
+    }
+    //////////////////////////////////////////////////////////////////////////
     const VectorConstString & Tags::getValues() const
     {
         return m_values;
-    }
+    }    
 }

@@ -13,7 +13,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
-#include "Kernel/StringHelper.h"
+#include "Kernel/Stringalized.h"
 
 namespace Mengine
 {
@@ -200,7 +200,7 @@ namespace Mengine
         }
 
         uint32_t projectVersion = 0;
-        if( Helper::stringToUnsigned( projectVersion_s, &projectVersion ) == false )
+        if( Helper::stringalized( projectVersion_s, &projectVersion ) == false )
         {
             LOGGER_ERROR( "account '%s' failed invalid project version '%s'"
                 , m_id.c_str()
@@ -270,13 +270,7 @@ namespace Mengine
 
         Helper::writeIniSection( file, "[ACCOUNT]" );
 
-        String projectVersion_s;
-        if( Helper::unsignedToString( m_projectVersion, &projectVersion_s ) == false )
-        {
-            return false;
-        }
-
-        Helper::writeIniSetting( file, "PROJECT_VERSION", projectVersion_s );
+        Helper::writeIniSetting( file, "PROJECT_VERSION", m_projectVersion );
         Helper::writeIniSetting( file, "UID", m_uid.data, AccountUID::size_data );
 
         Helper::writeIniSection( file, "[SETTINGS]" );

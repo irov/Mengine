@@ -23,6 +23,10 @@ namespace Mengine
         void clear();
 
     public:
+        VectorConstString::const_iterator begin() const;
+        VectorConstString::const_iterator end() const;
+
+    public:
         const VectorConstString & getValues() const;
 
     protected:

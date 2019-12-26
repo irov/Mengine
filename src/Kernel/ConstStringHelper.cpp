@@ -22,14 +22,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size )
         {
-            ConstString cstr = stringizeStringSizeHash( _value, (ConstStringHolder::size_type)_size, MENGINE_STRINGIZE_UNKNOWN_HASH );
+            ConstString cstr = Helper::stringizeStringSizeHash( _value, (ConstStringHolder::size_type)_size, MENGINE_STRINGIZE_UNKNOWN_HASH );
 
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
         ConstString stringizeString( const Char * _value )
         {
-            ConstString cstr = stringizeStringSize( _value, MENGINE_STRINGIZE_UNKNOWN_SIZE );
+            ConstString cstr = Helper::stringizeStringSize( _value, MENGINE_STRINGIZE_UNKNOWN_SIZE );
 
             return cstr;
         }
@@ -63,7 +63,7 @@ namespace Mengine
             const String::value_type * value_str = _value.c_str();
             String::size_type value_size = _value.size();
 
-            ConstString constString = stringizeStringSize( value_str, static_cast<ConstString::size_type>(value_size) );
+            ConstString constString = Helper::stringizeStringSize( value_str, static_cast<ConstString::size_type>(value_size) );
 
             return constString;
         }

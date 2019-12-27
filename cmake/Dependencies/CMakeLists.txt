@@ -105,7 +105,10 @@ endif()
 #dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
-    ADD_SUBDIRECTORY(Box2D)
+    SET(BUILD_TESTS OFF CACHE BOOL "BUILD_TESTS" FORCE)
+    SET(BUILD_SAMPLES OFF CACHE BOOL "BUILD_SAMPLES" FORCE)
+    
+    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
 endif()
 
 

@@ -139,7 +139,7 @@ namespace Mengine
             }
 
         protected:
-            float32 ReportFixture( b2Fixture * fixture, const b2Vec2 & b2_point, const b2Vec2 & b2_normal, float32 b2_fraction ) override
+            float ReportFixture( b2Fixture * fixture, const b2Vec2 & b2_point, const b2Vec2 & b2_normal, float _fraction ) override
             {
                 const b2Body * b2_body = fixture->GetBody();
 
@@ -147,7 +147,7 @@ namespace Mengine
 
                 mt::vec2f contact_point = m_scaler.toEngineWorld( b2_point );
                 mt::vec2f contact_normal = m_scaler.toEngineWorld( b2_normal );
-                float fraction = (float)b2_fraction;
+                float fraction = _fraction;
 
                 float result = m_response->onResponse( m_index, body, contact_point, contact_normal, fraction );
 

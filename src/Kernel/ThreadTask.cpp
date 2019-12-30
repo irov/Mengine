@@ -132,7 +132,12 @@ namespace Mengine
             m_successful = false;
             m_finish = true;
 
-            this->_onComplete( false );
+            if( m_complete == false )
+            {
+                m_complete = true;
+
+                this->_onComplete( false );
+            }
 
             return false;
         }

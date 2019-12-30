@@ -140,8 +140,8 @@ namespace Mengine
         unsigned short _collisionMask, unsigned short _categoryBits, unsigned short _groupIndex )
     {
         b2Vec2 b2_position = m_scaler.toBox2DWorld( _position );
-        float32 b2_width = _width;
-        float32 b2_height = _height;
+        float b2_width = _width;
+        float b2_height = _height;
 
         b2PolygonShape shape;
         shape.SetAsBox( b2_width, b2_height
@@ -181,9 +181,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Box2DBody::getAngle() const
     {
-        float32 b2_angle = m_body->GetAngle();
-
-        float angle = (float)b2_angle;
+        float angle = m_body->GetAngle();
 
         return angle;
     }
@@ -198,16 +196,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float Box2DBody::getMass() const
     {
-        float32 mass = m_body->GetMass();
+        float mass = m_body->GetMass();
 
-        return (float)mass;
+        return mass;
     }
     //////////////////////////////////////////////////////////////////////////
     float Box2DBody::getInertia() const
     {
-        float32 inertia = m_body->GetInertia();
+        float inertia = m_body->GetInertia();
 
-        return (float)inertia;
+        return inertia;
     }
     //////////////////////////////////////////////////////////////////////////
     void Box2DBody::setLinearVelocity( const mt::vec2f & _velocity )

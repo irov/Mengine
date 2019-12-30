@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Box2D/Box2D.h"
+#include "box2d/box2d.h"
 
 namespace Mengine
 {
@@ -24,20 +24,20 @@ namespace Mengine
         }
 
     public:
-        MENGINE_INLINE float32 toBox2DWorld( float _v ) const
+        MENGINE_INLINE float toBox2DWorld( float _v ) const
         {
-            return (float32)_v * m_valueInv;
+            return _v * m_valueInv;
         }
 
-        MENGINE_INLINE float toEngineWorld( float32 _v ) const
+        MENGINE_INLINE float toEngineWorld( float _v ) const
         {
-            return (float32)_v * m_value;
+            return _v * m_value;
         }
 
         MENGINE_INLINE b2Vec2 toBox2DWorld( const mt::vec2f & _v ) const
         {
-            float32 x = this->toBox2DWorld( _v.x );
-            float32 y = this->toBox2DWorld( _v.y );
+            float x = this->toBox2DWorld( _v.x );
+            float y = this->toBox2DWorld( _v.y );
 
             return b2Vec2( x, y );
         }

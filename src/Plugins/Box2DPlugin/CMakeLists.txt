@@ -20,7 +20,7 @@ src
     PhysicalPlaceholder.h
 )
 
-INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/box2d)
+INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/box2d/include)
 
 ADD_MENGINE_LIBRARY(Plugins)
 

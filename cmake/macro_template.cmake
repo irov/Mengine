@@ -148,7 +148,7 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
     ENDIF()
     
     IF(${Plugin})
-        SET(${Plugin}_DLL ${DLL} CACHE BOOL ${MSG} FORCE)
+        OPTION(${Plugin}_DLL ${MSG} ${DLL})
         
         IF(${Plugin}_DLL)
             SET(${Plugin}_STATIC OFF CACHE BOOL ${MSG} FORCE)
@@ -167,7 +167,7 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
         ENDIF()
     ENDIF()
     
-    MESSAGE("PLUGIN: ${Plugin} = ${${Plugin}} [${DLL}]")
+    MESSAGE("PLUGIN: ${Plugin} = ${${Plugin}} [${${Plugin}_DLL}]")
 ENDMACRO()
 
 MACRO(CREATE_PRECOMPILED_HEADER)

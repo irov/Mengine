@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Scene.h"
+#include "Kernel/SceneEventReceiverInterface.h"
 
 namespace Mengine
 {

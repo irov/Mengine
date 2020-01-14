@@ -2,7 +2,7 @@
 
 #include "Environment/Python/PythonEventReceiver.h"
 
-#include "Kernel/Entity.h"
+#include "Kernel/EntityEventReceiverInterface.h"
 #include "Kernel/Factorable.h"
 
 namespace Mengine

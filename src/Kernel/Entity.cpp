@@ -1,5 +1,7 @@
 #include "Entity.h"
 
+#include "Kernel/EntityEventReceiverInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/EventableHelper.h"

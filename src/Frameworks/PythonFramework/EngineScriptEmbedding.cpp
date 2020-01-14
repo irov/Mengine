@@ -97,6 +97,7 @@
 
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
+#include "Kernel/Layer.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"

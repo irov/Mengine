@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Entity.h"
+#include "Kernel/EntityEventReceiverInterface.h"
 
 namespace Mengine
 {

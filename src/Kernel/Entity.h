@@ -58,7 +58,7 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    public:
+    protected:
         void _destroy() override;
 
     protected:

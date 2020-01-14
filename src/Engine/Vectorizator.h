@@ -54,6 +54,7 @@ namespace Mengine
 
     public:
         void drawRect( const mt::vec2f & _point, float _width, float _height );
+        void drawRoundedRect( const mt::vec2f & _point, float _width, float _height, float _radius );
         void drawCircle( const mt::vec2f & _point, float _radius );
         void drawEllipse( const mt::vec2f & _point, float _width, float _height );
 
@@ -123,6 +124,25 @@ namespace Mengine
 
         typedef Vector<RectDesc> VectorRects;
         VectorRects m_rects;
+
+        struct RoundedRectDesc
+        {
+            mt::vec2f point;
+            float width;
+            float height;
+            float radius;
+            uint8_t quality;
+
+            float lineWidth;
+            float lineSoft;
+            Color lineColor;
+
+            Color fillColor;
+            bool filling;
+        };
+
+        typedef Vector<RoundedRectDesc> VectorRoundedRects;
+        VectorRoundedRects m_roundedRects;
 
         struct EllipseDesc
         {

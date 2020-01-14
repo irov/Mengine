@@ -149,7 +149,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLThreadTask::_onMain()
     {
-        /* init the curl session */
         CURL * curl = curl_easy_init();
 
         CURLCALL( curl_easy_setopt, (curl, CURLOPT_URL, m_url.c_str()) );
@@ -256,7 +255,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLThreadTask::setupWriteResponse( CURL * _curl )
     {
-        /* send all data to this function  */
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEDATA, (void *)this) );
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse) );
 
@@ -283,4 +281,3 @@ namespace Mengine
         m_receiver = nullptr;
     }
 }
-   

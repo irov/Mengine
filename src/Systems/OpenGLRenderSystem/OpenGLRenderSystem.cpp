@@ -232,17 +232,20 @@ namespace Mengine
         mt::vec2f vs = m_viewport.size();
 
         float bx = (b.x + 1.f) * 0.5f * vs.x;
-        float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
+        float by = (1.f - (1.f - (b.y + 1.f) * 0.5f)) * vs.y;
         float ex = (e.x + 1.f) * 0.5f * vs.x;
-        float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
+        float ey = (1.f - (1.f - (e.y + 1.f) * 0.5f)) * vs.y;
 
         uint32_t left = (uint32_t)bx;
-        uint32_t top = (uint32_t)ey;
+        uint32_t top = (uint32_t)by;
         uint32_t right = (uint32_t)ex;
-        uint32_t bottom = (uint32_t)by;
+        uint32_t bottom = (uint32_t)ey;
+
+        uint32_t width = right - left;
+        uint32_t height = top - bottom;
 
         glEnable( GL_SCISSOR_TEST );
-        glScissor( left, top, right - left, bottom - top );
+        glScissor( left, bottom, width, height );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::removeScissor()

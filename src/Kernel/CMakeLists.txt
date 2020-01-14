@@ -139,6 +139,8 @@ Surface
 
 ADD_FILTER(
 Entity
+    EntityEventReceiverInterface.h
+    EntityBehaviorInterface.h
     Entity.cpp
     Entity.h
     EntityEventable.cpp
@@ -149,6 +151,7 @@ Entity
 
 ADD_FILTER(
 Scene
+    SceneEventReceiverInterface.h
     Scene.cpp
     Scene.h
     SceneHelper.cpp

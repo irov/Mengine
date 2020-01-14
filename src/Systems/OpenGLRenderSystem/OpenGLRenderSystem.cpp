@@ -237,9 +237,9 @@ namespace Mengine
         float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
 
         uint32_t left = (uint32_t)bx;
-        uint32_t top = (uint32_t)by;
+        uint32_t top = (uint32_t)ey;
         uint32_t right = (uint32_t)ex;
-        uint32_t bottom = (uint32_t)ey;
+        uint32_t bottom = (uint32_t)by;
 
         glEnable( GL_SCISSOR_TEST );
         glScissor( left, top, right - left, bottom - top );

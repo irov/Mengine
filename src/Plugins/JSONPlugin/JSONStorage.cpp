@@ -16,9 +16,11 @@ namespace Mengine
         m_json = _json;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool JSONStorage::mergeJSON( const jpp::object & _json )
+    bool JSONStorage::mergeJSON( const jpp::object & _json, bool _mergeArray )
     {
-        bool successful = jpp::merge( m_json, _json, jpp::merge_mode_e::update );
+        jpp::merge_mode_e mode = _mergeArray == false ? jpp::merge_mode_e::update : jpp::merge_mode_e::update_with_array;
+
+        bool successful = jpp::merge( m_json, _json, mode );
 
         return successful;
     }

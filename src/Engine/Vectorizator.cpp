@@ -281,15 +281,18 @@ namespace Mengine
         m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to )
+    namespace Detail
     {
-        mt::vec2f dir;
-        mt::sub_v2_v2( dir, _to, _from );
+        static void __makeLinePerp( mt::vec2f & _perp, const mt::vec2f & _from, const mt::vec2f & _to )
+        {
+            mt::vec2f dir;
+            mt::sub_v2_v2( dir, _to, _from );
 
-        mt::vec2f dir_norm;
-        mt::norm_v2_v2( dir_norm, dir );
+            mt::vec2f dir_norm;
+            mt::norm_v2_v2( dir_norm, dir );
 
-        mt::perp_v2( _perp, dir_norm );
+            mt::perp_v2( _perp, dir_norm );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::updateLocalVertex2D_() const
@@ -568,7 +571,7 @@ namespace Mengine
                 const mt::vec2f & p1 = points[1].pos;
 
                 mt::vec2f perp;
-                makeLinePerp( perp, p0, p1 );
+                Detail::__makeLinePerp( perp, p0, p1 );
 
                 float line_width = width * 0.5f;
 
@@ -626,10 +629,10 @@ namespace Mengine
                 float line_width = width * 0.5f;
 
                 mt::vec2f perp01;
-                makeLinePerp( perp01, p0, p1 );
+                Detail::__makeLinePerp( perp01, p0, p1 );
 
                 mt::vec2f perp12;
-                makeLinePerp( perp12, p1, p2 );
+                Detail::__makeLinePerp( perp12, p1, p2 );
 
                 mt::line2f line01l;
                 mt::line_from_two_point_v2( line01l, p0 - perp01 * line_width, p1 - perp01 * line_width );
@@ -729,7 +732,7 @@ namespace Mengine
                 const mt::vec2f & p1 = points[pointSize - 1].pos;
 
                 mt::vec2f perp;
-                makeLinePerp( perp, p0, p1 );
+                Detail::__makeLinePerp( perp, p0, p1 );
 
                 float line_width = width * 0.5f;
 

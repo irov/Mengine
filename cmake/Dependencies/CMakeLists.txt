@@ -105,12 +105,18 @@ endif()
 #dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
-    SET(BOX2D_BUILD_TESTS OFF CACHE BOOL "BOX2D_BUILD_TESTS" FORCE)
-    SET(BOX2D_BUILD_SAMPLES OFF CACHE BOOL "BOX2D_BUILD_SAMPLES" FORCE)
-    SET(BOX2D_BUILD_DOCS OFF CACHE BOOL "BOX2D_BUILD_DOCS" FORCE)
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
+    ADD_SUBDIRECTORY(Box2D)
 endif()
+
+#Android support only 3.6 CMake (Box2D 3.8 minimal)
+#if(MENGINE_DEPENDENCE_BOX2D)
+#    message("================Box2D================")
+#    SET(BOX2D_BUILD_TESTS OFF CACHE BOOL "BOX2D_BUILD_TESTS" FORCE)
+#    SET(BOX2D_BUILD_SAMPLES OFF CACHE BOOL "BOX2D_BUILD_SAMPLES" FORCE)
+#    SET(BOX2D_BUILD_DOCS OFF CACHE BOOL "BOX2D_BUILD_DOCS" FORCE)
+#    
+#    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
+#endif()
 
 
 #dependencies lz4
@@ -572,8 +578,7 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_BUILD_ROUTER OFF CACHE BOOL "Build the router (EXPERIMENTAL; creates OpenAL32.dll and soft_oal.dll)" FORCE)
         SET(ALSOFT_NO_UID_DEFS OFF CACHE BOOL "Do not define GUIDs, IIDs, CLSIDs, or PropertyKeys" FORCE)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
-        SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
-        SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+        SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)        
         SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force -static-libgcc for static GCC runtimes" FORCE)
         SET(ALSOFT_STATIC_STDCXX ON CACHE BOOL "Static link libstdc++" FORCE)
         SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)

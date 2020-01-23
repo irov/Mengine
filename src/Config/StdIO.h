@@ -5,6 +5,11 @@
 #include <string.h>
 
 #define __STDC_FORMAT_MACROS
+
+#ifndef __STDC_VERSION__
+#define __STDC_VERSION__ 201112L
+#endif
+
 #include <inttypes.h>
 
 #define MENGINE_VA_LIST_TYPE va_list

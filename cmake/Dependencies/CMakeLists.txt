@@ -550,6 +550,7 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         if(MENGINE_TOOLCHAIN_MSVC)			
             SET(LIBTYPE STATIC)
             SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+            SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
         endif()
         
         if(MENGINE_TOOLCHAIN_MINGW)
@@ -580,12 +581,13 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
         SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)        
         SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force -static-libgcc for static GCC runtimes" FORCE)
-        SET(ALSOFT_STATIC_STDCXX ON CACHE BOOL "Static link libstdc++" FORCE)
-        SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
+        SET(ALSOFT_STATIC_STDCXX ON CACHE BOOL "Static link libstdc++" FORCE)        
         SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
         SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openal-soft ${CMAKE_TEMP_DIR}/openal-soft)
+        
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/win_main_utf8.h ${THIRDPARTY_DIR}/openal-soft/common/win_main_utf8.h COPYONLY)
     endif()    
 endif()
 

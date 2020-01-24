@@ -1,6 +1,7 @@
 #include "MemoryBuffer.h"
 
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/Documentable.h"
 
 #include "stdex/memorycopy.h"
 

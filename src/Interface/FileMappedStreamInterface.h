@@ -3,6 +3,7 @@
 #include "Interface/InputStreamInterface.h"
 
 #include "Kernel/FilePath.h"
+#include "Kernel/Document.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine

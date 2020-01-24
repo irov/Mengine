@@ -7,6 +7,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Document.h"
 
 #include "Config/Char.h"
 #include "Config/Atomic.h"

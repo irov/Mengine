@@ -5,12 +5,9 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/Document.h"
 
 #include "Config/Char.h"
-
-#ifdef MENGINE_DEBUG
-#   include "Kernel/Document.h"
-#endif
 
 namespace Mengine
 {

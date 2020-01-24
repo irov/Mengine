@@ -5,6 +5,7 @@
 
 #include "Kernel/IntrusivePtrView.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Document.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Pointer.h"

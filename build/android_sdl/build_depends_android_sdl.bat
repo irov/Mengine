@@ -15,8 +15,8 @@ set ANDROID_SYSROOT=%ANDROID_NDK%\sysroot
 set MAKE_PROGRAM=%ANDROID_SDK%\cmake\3.6.4111459\bin\ninja.exe
 set TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 set CMAKE_EXE=%ANDROID_SDK%\cmake\3.6.4111459\bin\cmake.exe
-set CMAKE_PATH="%CD%\..\..\cmake\Depends_Android_SDL"
-set BUILD_TEMP_DIR="%CD%\..\..\solutions\dependencies_android_sdl"
+set CMAKE_PATH=%CD%\..\..\cmake\Depends_Android_SDL
+set BUILD_TEMP_DIR=%CD%\..\..\solutions\dependencies_android_sdl
 
 @mkdir %BUILD_TEMP_DIR%\%CONFIGURATION%\armeabi-v7a
 @pushd %BUILD_TEMP_DIR%\%CONFIGURATION%\armeabi-v7a

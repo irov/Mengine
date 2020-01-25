@@ -6,6 +6,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Document.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/LambdaFilePath.h"
 

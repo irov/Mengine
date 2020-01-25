@@ -15,7 +15,9 @@ namespace Mengine
     Factory::Factory( const Char * _name )
         : m_name( _name )
         , m_count( 0 )
+#ifdef MENGINE_DEBUG
         , m_register( false )
+#endif
     {
 #ifdef MENGINE_DEBUG
         if( SERVICE_EXIST( FactoryServiceInterface ) == true )

@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, uint32_t _count )
+    void MessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );

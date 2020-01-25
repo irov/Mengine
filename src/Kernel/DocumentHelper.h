@@ -5,6 +5,7 @@
 #include "Kernel/Win32Helper.h"
 
 #ifdef MENGINE_DEBUG
+#   include "Kernel/Document.h"
 #   include "Kernel/BufferHelper.h"
 
 #   define MENGINE_DOCUMENT_FORWARD (this->getDocument())

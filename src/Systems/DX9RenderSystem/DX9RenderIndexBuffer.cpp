@@ -7,6 +7,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Documentable.h"
 #include "Kernel/DocumentHelper.h"
 
 #include "stdex/memorycopy.h"

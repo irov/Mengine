@@ -24,8 +24,10 @@ namespace Mengine
 #endif
     };
 }
+//////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
 #   define MENGINE_DOCUMENTABLE_STR() this->getDocument()->getMessage()
 #else
 #   define MENGINE_DOCUMENTABLE_STR() MENGINE_STRING_EMPTY
 #endif
+//////////////////////////////////////////////////////////////////////////

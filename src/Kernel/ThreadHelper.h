@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/ConstString.h"
+#include "Kernel/Document.h"
 
 #include "Config/Lambda.h"
 

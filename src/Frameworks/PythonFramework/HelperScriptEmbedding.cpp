@@ -17,6 +17,7 @@
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/PlayerServiceInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -719,6 +720,14 @@ namespace Mengine
         {
             SCRIPT_SERVICE()
                 ->addGlobalModule( _name, _module );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_logger( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message )
+        {
+            size_t messagelen = strlen( _message );
+
+            LOGGER_SERVICE()
+                ->logMessage( _level, _flag, _color, _message, messagelen );
         }
         //////////////////////////////////////////////////////////////////////////
         float filterpowf( const pybind::list & l, float _pow )
@@ -3397,6 +3406,8 @@ namespace Mengine
             ;
 
         HelperScriptMethodPtr helperScriptMethod = Helper::makeFactorableUnique<HelperScriptMethod>( MENGINE_DOCUMENT_FACTORABLE );
+
+        pybind::def_functor( _kernel, "logger", helperScriptMethod, &HelperScriptMethod::s_logger );
 
         pybind::def_functor( _kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
         pybind::def_functor( _kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );

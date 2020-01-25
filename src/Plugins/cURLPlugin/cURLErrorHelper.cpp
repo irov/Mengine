@@ -19,7 +19,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("[cURL] file '%s' line %d call '%s' get error '%s' [%d]"
+        LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("[cURL] file '%s' line %d call '%s' get error '%s' [%d]"
             , m_file
             , m_line
             , m_method

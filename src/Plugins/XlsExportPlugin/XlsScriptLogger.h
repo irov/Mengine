@@ -12,7 +12,7 @@ namespace Mengine
     class XlsScriptLogger
     {
     public:
-        XlsScriptLogger( ELoggerLevel _level );
+        XlsScriptLogger( ELoggerLevel _level, uint32_t _color );
         virtual ~XlsScriptLogger();
 
     public:
@@ -28,6 +28,7 @@ namespace Mengine
 
     protected:
         ELoggerLevel m_level;
+        uint32_t m_color;
 
         int32_t m_softspace;
     };

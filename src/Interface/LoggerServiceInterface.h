@@ -37,7 +37,7 @@ namespace Mengine
         virtual bool validMessage( ELoggerLevel _level, uint32_t _flag ) const = 0;
 
     public:
-        virtual void logMessage( ELoggerLevel _level, uint32_t _flag, const Char * _message, size_t _size ) = 0;
+        virtual void logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size ) = 0;
         virtual uint32_t getCountMessage( ELoggerLevel _level ) = 0;
 
     public:

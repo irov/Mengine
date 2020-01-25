@@ -19,7 +19,7 @@ namespace Mengine
 
             const Char * message = alGetString( error );
 
-            LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("OpenAL Error: method '%s' (%s[%d]) %d:%s"
+            LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("OpenAL Error: method '%s' (%s[%d]) %d:%s"
                 , _method
                 , _file
                 , _line

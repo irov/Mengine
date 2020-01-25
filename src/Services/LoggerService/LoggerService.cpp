@@ -281,7 +281,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logMessage( ELoggerLevel _level, uint32_t _flag, const Char * _message, size_t _size )
+    void LoggerService::logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size )
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
 
@@ -294,7 +294,7 @@ namespace Mengine
                 continue;
             }
 
-            logger->log( _level, _flag, _message, _size );
+            logger->log( _level, _flag, _color, _message, _size );
         }
 
 #ifdef MENGINE_LOGGER_HISTORY
@@ -303,6 +303,7 @@ namespace Mengine
             Record history;
             history.level = _level;
             history.flag = _flag;
+            history.color = _color;
             history.message.assign( _message, _size );
 
             m_history.emplace_back( history );
@@ -321,8 +322,6 @@ namespace Mengine
     {
         MENGINE_UNUSED( _logger );
 
-
-
 #ifdef MENGINE_LOGGER_HISTORY
         MENGINE_THREAD_MUTEX_SCOPE( m_threadMutex );
 
@@ -331,7 +330,7 @@ namespace Mengine
             const Char * record_message_str = record.message.c_str();
             String::size_type record_message_size = record.message.size();
 
-            _logger->log( record.level, record.flag, record_message_str, record_message_size );
+            _logger->log( record.level, record.flag, record.color, record_message_str, record_message_size );
         }
 #endif
     }

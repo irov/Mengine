@@ -23,9 +23,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _flag, const Char * _file, uint32_t _line )
+    LoggerOperator::LoggerOperator( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _file, uint32_t _line )
         : m_level( _level )
         , m_flag( _flag )
+        , m_color( _color )
         , m_file( _file )
         , m_line( _line )
         , m_newline( true )
@@ -122,6 +123,6 @@ namespace Mengine
     void LoggerOperator::logMessage( const Char * _msg, uint32_t _size ) const
     {
         LOGGER_SERVICE()
-            ->logMessage( m_level, m_flag, _msg, _size );
+            ->logMessage( m_level, m_flag, m_color, _msg, _size );
     }
 }

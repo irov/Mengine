@@ -4,7 +4,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     LoggerBase::LoggerBase()
-        : m_verboseLevel( LM_INFO )
+        : m_color( LCOLOR_NONE )
+        , m_verboseLevel( LM_INFO )
         , m_verboseFlag( 0xFFFFFFFF )
     {
     }
@@ -20,6 +21,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::finalize()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerBase::setColor( uint32_t _color )
+    {
+        m_color = _color;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t LoggerBase::getColor() const
+    {
+        return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerBase::setVerboseLevel( ELoggerLevel _level )

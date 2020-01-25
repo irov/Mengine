@@ -22,7 +22,7 @@ namespace Mengine
         void finalize() override;
 
     protected:
-        void log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _count ) override;
+        void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size ) override;
 
     protected:
         void flush() override;

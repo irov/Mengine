@@ -44,7 +44,7 @@ namespace Mengine
         bool validMessage( ELoggerLevel _level, uint32_t _flag ) const override;
 
     public:
-        void logMessage( ELoggerLevel _level, uint32_t _flag, const Char * _message, size_t _size ) override;
+        void logMessage( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _message, size_t _size ) override;
         uint32_t getCountMessage( ELoggerLevel _level ) override;
 
     public:
@@ -73,6 +73,7 @@ namespace Mengine
         {
             ELoggerLevel level;
             uint32_t flag;
+            uint32_t color;
             String message;
         };
 

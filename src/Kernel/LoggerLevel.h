@@ -15,4 +15,12 @@ namespace Mengine
 
         LM_MAX
     };
+    
+    enum ELoggerColor
+    {
+        LCOLOR_NONE = 1 << 0,
+        LCOLOR_RED = 1 << 1,
+        LCOLOR_BLUE = 1 << 2,
+        LCOLOR_GREEN = 1 << 3
+    };
 }

@@ -166,6 +166,6 @@ namespace Mengine
     namespace Helper
     {
         EngineSourcePtr makeEngineSource();
-        GOAP::ChainInterfacePtr makeEngineChain( const EngineSourcePtr & _source );
+        GOAP::ChainInterfacePtr makeEngineChain( const EngineSourcePtr & _source, const Char * _file, uint32_t _line );
     }
 }

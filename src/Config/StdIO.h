@@ -12,10 +12,12 @@
 #define MENGINE_VA_LIST_START( Args, Format ) va_start( Args, Format )
 #define MENGINE_VA_LIST_END( Args ) va_end( Args )
 
-#ifdef MENGINE_TOOLCHAIN_MSVC
-    #define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Capacity, Format, Args )
+#if defined(MENGINE_TOOLCHAIN_MSVC)
+#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Capacity, Format, Args )
+#elif defined(MENGINE_TOOLCHAIN_MINGW)
+#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Capacity, Format, Args )
 #else
-    #define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsprintf( Buffer, Format, Args )
+#   define MENGINE_VSNPRINTF(Buffer, Capacity, Format, Args) ::vsnprintf( Buffer, Format, Args )
 #endif
 
 #if defined(MENGINE_COMPILER_MSVC)

@@ -177,7 +177,7 @@ namespace Mengine
                 int size = MENGINE_VSNPRINTF( msg, 2047, _format, args );
 
                 drawTextDebug2( _renderPipeline, _context, _pos, font, argb, msg, (size_t)size, _doc );
-
+                
                 MENGINE_VA_LIST_END( args );
             }
 

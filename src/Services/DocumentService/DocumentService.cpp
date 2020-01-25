@@ -66,11 +66,12 @@ namespace Mengine
         document->setFunction( _function );
         document->setLine( _line );
 
+        Char message[MENGINE_DOCUMENT_MAX_MESSAGE] = { 0 };
+
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
-
-        Char message[MENGINE_DOCUMENT_MAX_MESSAGE] = {0};
-        MENGINE_VSNPRINTF( message, MENGINE_DOCUMENT_MAX_MESSAGE, _format, args );
+        
+        MENGINE_VSNPRINTF( message, MENGINE_DOCUMENT_MAX_MESSAGE - 1, _format, args );
 
         MENGINE_VA_LIST_END( args );
 

@@ -74,7 +74,7 @@ namespace Mengine
             ->makeFunctionStamp( m_file, m_line, str, size, MENGINE_LOGGER_MAX_MESSAGE );
 
         size += MENGINE_VSNPRINTF( str + size, MENGINE_LOGGER_MAX_MESSAGE - size - 2, _format, _args );
-
+        
         if( size < 0 )
         {
             const Char msg[] = "invalid message :(\n";

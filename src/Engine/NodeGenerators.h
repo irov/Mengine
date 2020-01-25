@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

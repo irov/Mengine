@@ -30,10 +30,8 @@ android {
         } else {
             applicationId "org.Mengine.EvilMonkey"
             print 'HARDCODE ANDROID_APP_ID = '
-            println applicationId
         }
         
-        print 'ANDROID_APP_ID = '
         println applicationId
 
         minSdkVersion 18
@@ -48,9 +46,12 @@ android {
         if (findProperty("ANDROID_APP_NAME")) {
             manifestPlaceholders = [app_name_gradle:ANDROID_APP_NAME]
         } else {
-            manifestPlaceholders = [app_name_gradle:"Dunge"]
+            manifestPlaceholders = [app_name_gradle:"org.Mengine.EvilMonkey"]
         }
-//               a
+
+        print 'manifestPlaceholders = '
+        println manifestPlaceholders
+        
         print 'ANDROID_APP_CODE_VERSION = '
         println versionCode
         
@@ -61,6 +62,13 @@ android {
         signingConfig signingConfigs.config
         targetSdkVersion 28
     }
+    
+    externalNativeBuild {
+        cmake {
+            version "3.10.2"
+        }
+    }
+    
     buildTypes {
         debug {
             debuggable true

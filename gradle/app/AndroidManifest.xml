@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.Mengine.Build"
     android:installLocation="preferExternal">
 
@@ -21,7 +22,8 @@
         android:label="${app_name_gradle}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
-        android:hardwareAccelerated="true">
+        android:hardwareAccelerated="true"
+        tools:replace="label">
 
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
         <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />

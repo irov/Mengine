@@ -4,16 +4,13 @@
 #include "Interface/ThreadWorkerInterface.h"
 
 #include "Kernel/ThreadTask.h"
+#include "Kernel/Document.h"
 
 #include "Config/Atomic.h"
 #include "Config/Char.h"
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
 #define MENGINE_THREAD_JOB_WORK_COUNT 32
-#endif
-
-#ifdef MENGINE_DEBUG
-#include "Kernel/DocumentHelper.h"
 #endif
 
 namespace Mengine

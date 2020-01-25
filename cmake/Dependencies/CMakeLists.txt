@@ -105,11 +105,18 @@ endif()
 #dependencies Box2D
 if(MENGINE_DEPENDENCE_BOX2D)
     message("================Box2D================")
-    SET(BUILD_TESTS OFF CACHE BOOL "BUILD_TESTS" FORCE)
-    SET(BUILD_SAMPLES OFF CACHE BOOL "BUILD_SAMPLES" FORCE)
-    
-    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
+    ADD_SUBDIRECTORY(Box2D)
 endif()
+
+#Android support only 3.6 CMake (Box2D 3.8 minimal)
+#if(MENGINE_DEPENDENCE_BOX2D)
+#    message("================Box2D================")
+#    SET(BOX2D_BUILD_TESTS OFF CACHE BOOL "BOX2D_BUILD_TESTS" FORCE)
+#    SET(BOX2D_BUILD_SAMPLES OFF CACHE BOOL "BOX2D_BUILD_SAMPLES" FORCE)
+#    SET(BOX2D_BUILD_DOCS OFF CACHE BOOL "BOX2D_BUILD_DOCS" FORCE)
+#    
+#    ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/Box2D ${CMAKE_TEMP_DIR}/Box2D)
+#endif()
 
 
 #dependencies lz4
@@ -342,7 +349,7 @@ if(MENGINE_DEPENDENCE_FREETYPE)
         set(IOS_PLATFORM "OS" CACHE STRING "IOS_PLATFORM" FORCE)
     endif()
 
-    set(FT_WITH_BZIP2 OFF CACHE BOOL "FT_WITH_BZIP2" FORCE)    
+    set(FT_WITH_BZIP2 OFF CACHE BOOL "FT_WITH_BZIP2" FORCE)
 
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/freetype ${CMAKE_TEMP_DIR}/freetype)
     
@@ -543,6 +550,7 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         if(MENGINE_TOOLCHAIN_MSVC)			
             SET(LIBTYPE STATIC)
             SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+            SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
         endif()
         
         if(MENGINE_TOOLCHAIN_MINGW)
@@ -571,15 +579,15 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_BUILD_ROUTER OFF CACHE BOOL "Build the router (EXPERIMENTAL; creates OpenAL32.dll and soft_oal.dll)" FORCE)
         SET(ALSOFT_NO_UID_DEFS OFF CACHE BOOL "Do not define GUIDs, IIDs, CLSIDs, or PropertyKeys" FORCE)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
-        SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
-        SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
+        SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)        
         SET(ALSOFT_STATIC_LIBGCC ON CACHE BOOL "Force -static-libgcc for static GCC runtimes" FORCE)
-        SET(ALSOFT_STATIC_STDCXX ON CACHE BOOL "Static link libstdc++" FORCE)
-        SET(ALSOFT_STATIC_WINPTHREAD ON CACHE BOOL "Static link libwinpthread" FORCE)
+        SET(ALSOFT_STATIC_STDCXX ON CACHE BOOL "Static link libstdc++" FORCE)        
         SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
         SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openal-soft ${CMAKE_TEMP_DIR}/openal-soft)
+        
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/win_main_utf8.h ${THIRDPARTY_DIR}/openal-soft/common/win_main_utf8.h COPYONLY)
     endif()    
 endif()
 

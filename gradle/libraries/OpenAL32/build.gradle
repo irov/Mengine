@@ -14,6 +14,13 @@ android {
             abiFilters "arm64-v8a", "armeabi-v7a"
         }
     }
+    
+    externalNativeBuild {
+        cmake {
+            version "3.6.0"
+        }
+    }
+    
     buildTypes {
         debug {
             debuggable true
@@ -37,9 +44,17 @@ android {
                             "-DALSOFT_CONFIG:BOOLEAN=OFF",
                             "-DALSOFT_HRTF_DEFS:BOOLEAN=OFF",
                             "-DALSOFT_AMBDEC_PRESETS:BOOLEAN=OFF",
+                            "-DALSOFT_INSTALL:BOOLEAN=OFF",
+                            "-DALSOFT_BUILD_ROUTER:BOOLEAN=OFF",
+                            "-DALSOFT_NO_UID_DEFS:BOOLEAN=OFF",
                             "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF",
-                            "-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL:BOOLEAN=OFF"
+                            "-DALSOFT_BUILD_IMPORT_LIB:BOOLEAN=OFF",
+                            "-DALSOFT_STATIC_LIBGCC:BOOLEAN=OFF",
+                            "-DALSOFT_STATIC_STDCXX:BOOLEAN=OFF",
+                            "-DALSOFT_STATIC_WINPTHREAD:BOOLEAN=OFF",
+                            "-DALSOFT_BACKEND_WAVE:BOOLEAN=ON",
+                            "-DALSOFT_REQUIRE_OPENSL:BOOLEAN=ON",
+                            "-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF"
                 }
             }
         }
@@ -64,9 +79,18 @@ android {
                             "-DALSOFT_TESTS:BOOLEAN=OFF",
                             "-DALSOFT_CONFIG:BOOLEAN=OFF",
                             "-DALSOFT_HRTF_DEFS:BOOLEAN=OFF",
+                            "-DALSOFT_AMBDEC_PRESETS:BOOLEAN=OFF",
+                            "-DALSOFT_INSTALL:BOOLEAN=OFF",
+                            "-DALSOFT_BUILD_ROUTER:BOOLEAN=OFF",
+                            "-DALSOFT_NO_UID_DEFS:BOOLEAN=OFF",
                             "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF",
-                            "-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF",
-                            "-DALSOFT_INSTALL:BOOLEAN=OFF"
+                            "-DALSOFT_BUILD_IMPORT_LIB:BOOLEAN=OFF",
+                            "-DALSOFT_STATIC_LIBGCC:BOOLEAN=OFF",
+                            "-DALSOFT_STATIC_STDCXX:BOOLEAN=OFF",
+                            "-DALSOFT_STATIC_WINPTHREAD:BOOLEAN=OFF",
+                            "-DALSOFT_BACKEND_WAVE:BOOLEAN=ON",
+                            "-DALSOFT_REQUIRE_OPENSL:BOOLEAN=ON",
+                            "-DALSOFT_REQUIRE_SDL2:BOOLEAN=OFF"
                 }
             }
         }

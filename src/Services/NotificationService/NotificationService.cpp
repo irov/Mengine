@@ -153,7 +153,11 @@ namespace Mengine
 
                 for( const ObserverQueue & q : move_add )
                 {
+#ifdef MENGINE_DEBUG
                     this->addObserver_( q.id, q.observer, q.callable, q.doc );
+#else
+                    this->addObserver_( q.id, q.observer, q.callable, nullptr );
+#endif
                 }
 
                 VectorObserverQueues remove_add = std::move( m_remove );

@@ -145,7 +145,7 @@ namespace Mengine
 
         source->addWhile( fn );
 
-        m_chain = Helper::makeEngineChain( source );
+        m_chain = Helper::makeEngineChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         if( m_chain->run() == false )
         {

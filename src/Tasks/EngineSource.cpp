@@ -189,9 +189,9 @@ namespace Mengine
             return EngineSourcePtr::from( new EngineSource( provider ) );
         }
         //////////////////////////////////////////////////////////////////////////
-        GOAP::ChainInterfacePtr makeEngineChain( const EngineSourcePtr & _source )
+        GOAP::ChainInterfacePtr makeEngineChain( const EngineSourcePtr & _source, const Char * _file, uint32_t _line )
         {
-            GOAP::ChainPtr chain = GOAP::Helper::makeChain( _source );
+            GOAP::ChainPtr chain = GOAP::Helper::makeChain( _source, _file, _line );
 
             return chain;
         }

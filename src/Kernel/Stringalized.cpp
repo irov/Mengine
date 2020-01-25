@@ -25,20 +25,26 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, int8_t * _value )
         {
-            if( MENGINE_SSCANF( _string, "%" SCNd8, _value ) != 1 )
+            int32_t tmp_value;
+            if( MENGINE_SSCANF( _string, "%" SCNd32, &tmp_value ) != 1 )
             {
                 return false;
             }
+
+            *_value = (int8_t)tmp_value;
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
         bool stringalized( const Char * _string, uint8_t * _value )
         {
-            if( MENGINE_SSCANF( _string, "%" SCNu8, _value ) != 1 )
+            uint32_t tmp_value;
+            if( MENGINE_SSCANF( _string, "%" SCNu32, &tmp_value ) != 1 )
             {
                 return false;
             }
+
+            *_value = (uint8_t)tmp_value;
 
             return true;
         }

@@ -43,12 +43,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const AssertionOperator & AssertionOperator::operator()( const Char * _format, ... ) const
         {
+            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
+
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
 
-            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
-            MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
-
+            MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
+            
             MENGINE_VA_LIST_END( argList );
 
             Assertion( m_level, m_test, m_file, m_line, str_info );
@@ -71,12 +72,13 @@ namespace Mengine
                 return;
             }
 
+            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
+
             MENGINE_VA_LIST_TYPE argList;
             MENGINE_VA_LIST_START( argList, _format );
 
-            Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
-            MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE, _format, argList );
-
+            MENGINE_VSNPRINTF( str_info, MENGINE_ASSERTION_MAX_MESSAGE - 1, _format, argList );
+            
             MENGINE_VA_LIST_END( argList );
 
             if( SERVICE_IS_INITIALIZE( LoggerServiceInterface ) == true )

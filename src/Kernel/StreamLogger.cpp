@@ -43,12 +43,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void StreamLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _count )
+    void StreamLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
 
-        m_stream->write( _data, _count );
+        m_stream->write( _data, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void StreamLogger::flush()

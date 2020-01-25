@@ -78,12 +78,12 @@ namespace Mengine
             .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
             ;
 
-        m_warninglogger = new XlsScriptLogger( LM_WARNING );
+        m_warninglogger = new XlsScriptLogger( LM_WARNING, LCOLOR_RED | LCOLOR_GREEN );
 
         PyObject * pyWarningLogger = pybind::ptr( kernel, m_warninglogger );
         kernel->setStdOutHandle( pyWarningLogger );
 
-        m_errorLogger = new XlsScriptLogger( LM_ERROR );
+        m_errorLogger = new XlsScriptLogger( LM_ERROR, LCOLOR_RED );
 
         PyObject * pyErrorLogger = pybind::ptr( kernel, m_warninglogger );
         kernel->setStdErrorHandle( pyErrorLogger );

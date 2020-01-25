@@ -2752,13 +2752,13 @@ namespace Mengine
 
                 if( successful == TRUE )
                 {
-                    LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("%s"
+                    LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("%s"
                         , tempFileBuffer
                         );
                 }
                 else
                 {
-                    LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("invalid read file '%ls'"
+                    LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("invalid read file '%ls'"
                         , tempFileNameBuffer
                         );
                 }

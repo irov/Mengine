@@ -7,12 +7,13 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum ETaskTransformationScaleFlags
     {
         ETASK_FLAG_NONE = 0,
         ETASK_FLAG_NOREWIND = 1 << 0,
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class TaskTransformationScaleTime
         : public GOAP::Task
     {

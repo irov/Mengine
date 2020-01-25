@@ -1126,14 +1126,14 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
+                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open %s%s"
                     , _folder
                     , _filePath
                     );
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("streaming %s%s"
+                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming %s%s"
                     , _folder
                     , _filePath
                     );
@@ -1143,7 +1143,7 @@ namespace Mengine
         {
             if( _streaming == false )
             {
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open [multithread:%u] open %s%s"
+                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("open [multithread:%u] open %s%s"
                     , THREAD_SERVICE()->getCurrentThreadId()
                     , _folder
                     , _filePath
@@ -1151,7 +1151,7 @@ namespace Mengine
             }
             else
             {
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("streaming [multithread:%u] open %s%s"
+                LOGGER_VERBOSE_LEVEL( LM_STATISTIC, LCOLOR_GREEN, nullptr, 0 )("streaming [multithread:%u] open %s%s"
                     , THREAD_SERVICE()->getCurrentThreadId()
                     , _folder
                     , _filePath

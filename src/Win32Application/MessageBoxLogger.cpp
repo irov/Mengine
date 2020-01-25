@@ -13,10 +13,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
+    void MessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, uint32_t _count )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _count );
 
         MessageBoxA( NULL, _data, "Critical Error", MB_OK );

@@ -23,7 +23,7 @@ namespace Mengine
         MENGINE_VA_LIST_TYPE args;
         MENGINE_VA_LIST_START( args, _format );
 
-        LoggerOperator( LM_CRITICAL, 0, m_file, m_line )
+        LoggerOperator( LM_CRITICAL, 0, LCOLOR_RED, m_file, m_line )
             .logMessageArgs( _format, args );
 
         MENGINE_VA_LIST_END( args );

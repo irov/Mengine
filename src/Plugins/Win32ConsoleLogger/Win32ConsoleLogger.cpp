@@ -108,8 +108,9 @@ namespace Mengine
         m_createConsole = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _count )
+    void Win32ConsoleLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
     {
+        MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
 
         HANDLE output_handle = ::GetStdHandle( STD_OUTPUT_HANDLE );
@@ -120,35 +121,31 @@ namespace Mengine
             return;
         }
 
-        WORD textColor;
-        switch( _level )
+        WORD textColor = 0;
+
+        if( _color & LCOLOR_NONE )
         {
-        case LM_ERROR:
-            textColor = FOREGROUND_RED;
-            break;
-        case LM_PERFOMANCE:
-            textColor = FOREGROUND_BLUE | FOREGROUND_RED;
-            break;
-        case LM_STATISTIC:
-            textColor = FOREGROUND_GREEN;
-            break;
-        case LM_WARNING:
-            textColor = FOREGROUND_RED | FOREGROUND_GREEN;
-            break;
-        case LM_MESSAGE:
-            textColor = FOREGROUND_BLUE | FOREGROUND_RED;
-            break;
-        case LM_INFO:
-            textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;
-            break;
-        default:
             textColor = consoleInfo.wAttributes;
-            break;
+        }
+
+        if( _color & LCOLOR_RED )
+        {
+            textColor |= FOREGROUND_RED;
+        }
+
+        if( _color & LCOLOR_GREEN )
+        {
+            textColor |= FOREGROUND_GREEN;
+        }
+
+        if( _color & LCOLOR_BLUE )
+        {
+            textColor |= FOREGROUND_BLUE;
         }
 
         ::SetConsoleTextAttribute( output_handle, textColor );
 
-        std::cout.write( _data, _count );
+        std::cout.write( _data, _size );
 
         ::SetConsoleTextAttribute( output_handle, consoleInfo.wAttributes );
     }

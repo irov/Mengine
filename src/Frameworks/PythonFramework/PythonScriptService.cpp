@@ -183,7 +183,7 @@ namespace Mengine
                     }
                 }
 
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
+                LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("script call '%s::%s' args [(%s)] kwds [(%s)] and get error!"
                     , _className
                     , _functionName
                     , ss_args.str().c_str()
@@ -193,7 +193,7 @@ namespace Mengine
                 Char traceback[4096];
                 _kernel->get_traceback( traceback, 4096 );
 
-                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("traceback:\n%s"
+                LOGGER_VERBOSE_LEVEL( LM_ERROR, LCOLOR_RED, nullptr, 0 )("traceback:\n%s"
                     , traceback
                     );
             }
@@ -276,6 +276,7 @@ namespace Mengine
         m_loggerWarning = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_loggerWarning->setVerboseLevel( LM_WARNING );
+        m_loggerWarning->setColor( LCOLOR_RED | LCOLOR_GREEN );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
@@ -283,6 +284,7 @@ namespace Mengine
         m_loggerError = Helper::makeFactorableUnique<PythonScriptLogger>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_loggerError->setVerboseLevel( LM_ERROR );
+        m_loggerError->setColor( LCOLOR_RED );
 
         pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );

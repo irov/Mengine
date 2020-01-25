@@ -55,8 +55,9 @@ namespace Mengine
     void PythonScriptLogger::write( const Char * _msg, uint32_t _size )
     {
         ELoggerLevel level = this->getVerboseLevel();
+        uint32_t color = this->getColor();
 
-        LOGGER_VERBOSE_LEVEL( level, "Python", 0 ).logMessage( _msg, _size );
+        LOGGER_VERBOSE_LEVEL( level, color, "Python", 0 ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptLogger::setSoftspace( int32_t _softspace )
@@ -69,10 +70,11 @@ namespace Mengine
         return m_softspace;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _size )
+    void PythonScriptLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _data );
         MENGINE_UNUSED( _size );
 

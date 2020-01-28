@@ -103,11 +103,12 @@ namespace Mengine
             }
 
         public:
-            void log( ELoggerLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override
+            void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count ) override
             {
-                (void)_level;
-                (void)_flag;
-                (void)_count;
+                MENGINE_UNUSED( _level );
+                MENGINE_UNUSED( _flag );
+                MENGINE_UNUSED( _color );
+                MENGINE_UNUSED( _count );
 
                 message_error( "%s"
                     , _data

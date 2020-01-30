@@ -1,0 +1,3 @@
+LIBRARY "VectorizatorPlugin"
+EXPORTS
+   dllCreatePlugin @1

@@ -41,7 +41,6 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
             NOTIFICATION_ADDOBSERVERLAMBDA( NOTIFICATOR_SCRIPT_EMBEDDING_END, this, [this]()
             {
                 const ConstString & prototype = this->getPrototype();
@@ -58,7 +57,6 @@ namespace Mengine
 
                 m_scriptWrapper = scriptWrapper;
             } );
-#endif
 
             FactoryPtr factory = Helper::makeFactoryPool<Type, Count>( MENGINE_DOCUMENT_FACTORABLE );
 
@@ -67,9 +65,7 @@ namespace Mengine
 
         void _finalizeFactory() override
         {
-#ifdef MENGINE_USE_SCRIPT_SERVICE
             NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_SCRIPT_EMBEDDING_END );
-#endif
         }
 
     protected:

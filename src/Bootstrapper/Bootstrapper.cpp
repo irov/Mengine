@@ -192,6 +192,10 @@ PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( Texturepacker );
 #endif
 
+#ifdef MENGINE_PLUGIN_VECTORIZATOR_STATIC
+PLUGIN_EXPORT( Vectorizator );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -507,6 +511,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_TEXTUREPACKER_STATIC
         MENGINE_ADD_PLUGIN( Texturepacker, "initialize Plugin Texturepacker...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_VECTORIZATOR_STATIC
+        MENGINE_ADD_PLUGIN( Vectorizator, "initialize Plugin Vectorizator...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC

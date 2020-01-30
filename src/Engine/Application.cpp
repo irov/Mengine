@@ -93,8 +93,6 @@
 #include "ShapeQuadFixed.h"
 #include "ShapeQuadFlex.h"
 
-#include "Vectorizator.h"
-
 #include "SurfaceSound.h"
 #include "SurfaceImage.h"
 #include "SurfaceImageSequence.h"
@@ -455,7 +453,6 @@ namespace Mengine
         NODE_FACTORY( ShapePacMan );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
-        NODE_FACTORY( Vectorizator );
 
 #undef NODE_FACTORY
 
@@ -517,7 +514,6 @@ namespace Mengine
         NODE_FACTORY( ShapePacMan );
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
-        NODE_FACTORY( Vectorizator );
 
 #undef NODE_FACTORY
 

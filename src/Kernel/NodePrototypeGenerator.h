@@ -1,6 +1,10 @@
 #pragma once
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "Kernel/ScriptablePrototypeGenerator.h"
+#else
+#include "Kernel/DefaultPrototypeGenerator.h"
+#endif
 
 #include "Interface/EnumeratorServiceInterface.h"
 
@@ -12,7 +16,11 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class NodePrototypeGenerator
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         : public ScriptablePrototypeGenerator<Type, Count>
+#else
+        : public DefaultPrototypeGenerator<Type, Count>
+#endif
     {
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
@@ -43,7 +51,9 @@ namespace Mengine
             node->setDocument( doc );
 #endif
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
             this->setupScriptable( node );
+#endif
 
             return node;
         }

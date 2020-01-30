@@ -1,6 +1,10 @@
 #pragma once
 
-#include "ScriptablePrototypeGenerator.h"
+#ifdef MENGINE_USE_SCRIPT_SERVICE
+#include "Kernel/ScriptablePrototypeGenerator.h"
+#else
+#include "Kernel/DefaultPrototypeGenerator.h"
+#endif
 
 #include "Kernel/Resource.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -10,7 +14,11 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class ResourcePrototypeGenerator
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         : public ScriptablePrototypeGenerator<Type, Count>
+#else
+        : public DefaultPrototypeGenerator<Type, Count>
+#endif
     {
     protected:
         FactorablePointer generate( const DocumentPtr & _doc ) override
@@ -38,7 +46,9 @@ namespace Mengine
             resource->setDocument( doc );
 #endif
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
             this->setupScriptable( resource );
+#endif
 
             return resource;
         }

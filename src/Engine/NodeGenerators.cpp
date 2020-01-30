@@ -27,7 +27,6 @@
 #include "Point.h"
 #include "SoundEmitter.h"
 #include "TextField.h"
-#include "Vectorizator.h"
 #include "Window.h"
 #include "ShapeCircle.h"
 #include "ShapePacMan.h"
@@ -76,7 +75,6 @@ MENGINE_NODE_GENERATE( Meshget )
 MENGINE_NODE_GENERATE( Point )
 MENGINE_NODE_GENERATE( SoundEmitter )
 MENGINE_NODE_GENERATE( TextField )
-MENGINE_NODE_GENERATE( Vectorizator )
 MENGINE_NODE_GENERATE( Window )
 MENGINE_NODE_GENERATE( ShapeCircle )
 MENGINE_NODE_GENERATE( ShapePacMan )

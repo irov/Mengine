@@ -3,6 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "SpineScriptEmbedding.h"

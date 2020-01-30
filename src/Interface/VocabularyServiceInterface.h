@@ -43,7 +43,3 @@ namespace Mengine
 #define VOCABULARY_HAS(Category, Prototype)\
     VOCABULARY_SERVICE()->hasFactorable(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////
-
-
-
-

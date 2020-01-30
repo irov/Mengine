@@ -6,6 +6,7 @@
 #include "Checkbox.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
+#include "Kernel/ConstStringHelper.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

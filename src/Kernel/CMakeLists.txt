@@ -179,14 +179,14 @@ Interender
 ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
-    BasePrototypeGenerator.h    
+    BasePrototypeGenerator.h
     FactoryPrototypeGenerator.cpp
     FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
     ScriptablePrototypeGenerator.h
     ResourcePrototypeGenerator.h
-    SurfacePrototypeGenerator.h    
+    SurfacePrototypeGenerator.h
 )
 
 ADD_FILTER(

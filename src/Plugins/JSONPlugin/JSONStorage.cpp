@@ -20,7 +20,7 @@ namespace Mengine
     {
         jpp::merge_mode_e mode = _mergeArray == false ? jpp::merge_mode_e::update : jpp::merge_mode_e::update_with_array;
 
-        bool successful = jpp::merge( m_json, _json, mode );
+        bool successful = jpp::merge( m_json, _json, true, mode );
 
         return successful;
     }

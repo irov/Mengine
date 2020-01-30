@@ -9,7 +9,7 @@ MAKE_PROGRAM="$ANDROID_SDK/cmake/3.6.4111459/bin/ninja"
 TOOLCHAIN_FILE="$ANDROID_NDK/build/cmake/android.toolchain.cmake"
 CMAKE_EXE="$ANDROID_SDK/cmake/3.6.4111459/bin/cmake"
 CMAKE_PATH="$PWD/../../cmake/Depends_Android_SDL"
-BUILD_TEMP_DIR="$PWD/../../build_temp/build_android_sdl"
+BUILD_TEMP_DIR="$PWD/../../solutions/dependencies_android_sdl"
 
 mkdir -p $BUILD_TEMP_DIR/$BUILD_TYPE/armeabi-v7a
 pushd $BUILD_TEMP_DIR/$BUILD_TYPE/armeabi-v7a

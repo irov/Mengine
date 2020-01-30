@@ -148,11 +148,19 @@ namespace Mengine
             return false;
         }
 
+#ifdef MENGINE_USE_SCRIPT_SERVICE
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<ScriptablePrototypeGenerator<Movie2SubComposition, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
         {
             return false;
         }
+#else
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), Helper::makeFactorableUnique<DefaultPrototypeGenerator<Movie2SubComposition, 128>>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+#endif
 
         SERVICE_WAIT( DataServiceInterface, [this]()
         {

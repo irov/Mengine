@@ -27,6 +27,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "ToolUtils/ToolUtils.h"
+#include "ToolUtils/ToolLogger.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -78,39 +79,11 @@ namespace Mengine
 
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
-        class MyLogger
-            : public LoggerBase
-        {
-        public:
-            MyLogger()
-                : m_verboseLevel( LM_WARNING )
-                , m_verboseFlag( 0xFFFFFFFF )
-            {
-            }
-
-        public:
-            void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _count ) override
-            {
-                MENGINE_UNUSED( _level );
-                MENGINE_UNUSED( _flag );
-                MENGINE_UNUSED( _color );
-                MENGINE_UNUSED( _count );
-
-                message_error( "%s"
-                    , _data
-                );
-            }
-
-        protected:
-            ELoggerLevel m_verboseLevel;
-            uint32_t m_verboseFlag;
-        };
-
         LOGGER_SERVICE()
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( Helper::makeFactorableUnique<MyLogger>( MENGINE_DOCUMENT_FUNCTION ) );
+            ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
 
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );

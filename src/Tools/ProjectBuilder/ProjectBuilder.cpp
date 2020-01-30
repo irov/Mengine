@@ -47,6 +47,8 @@
 
 #include "Config/Vector.h"
 
+#include "ToolUtils/ToolLogger.h"
+
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"
 
@@ -167,27 +169,11 @@ namespace Mengine
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
-        class MyLogger
-            : public LoggerBase
-        {
-        public:
-            void log( ELoggerLevel _level, uint32_t _flag, const char * _data, uint32_t _count ) override
-            {
-                (void)_level;
-                (void)_flag;
-                (void)_count;
-
-                printf( "%s"
-                    , _data
-                );
-            }
-        };
-
         LOGGER_SERVICE()
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( Helper::makeFactorableUnique<MyLogger>( MENGINE_DOCUMENT_FUNCTION ) );
+            ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
 
         LOGGER_WARNING( "Inititalizing Config Manager..." );
 
@@ -559,7 +545,7 @@ namespace Mengine
         void write( const char * _msg, uint32_t _size )
         {
             LOGGER_SERVICE()
-                ->logMessage( LM_ERROR, 0, _msg, _size );
+                ->logMessage( LM_ERROR, 0, LCOLOR_NONE, _msg, _size );
         }
 
     public:

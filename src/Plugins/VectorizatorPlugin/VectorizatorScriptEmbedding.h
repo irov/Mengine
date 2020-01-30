@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class SpineScriptEmbedding
+    class VectorizatorScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        SpineScriptEmbedding();
-        ~SpineScriptEmbedding() override;
+        VectorizatorScriptEmbedding();
+        ~VectorizatorScriptEmbedding() override;
 
     public:
         bool embedding( pybind::kernel_interface * _kernel ) override;

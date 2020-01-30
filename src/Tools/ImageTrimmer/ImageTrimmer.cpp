@@ -11,9 +11,9 @@
 #include "Interface/LoggerServiceInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/LoggerInterface.h"
-#include "Interface/CodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
 #include "Interface/DataInterface.h"
-#include "Interface/MemoryInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
@@ -25,9 +25,13 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/FilePathHelper.h"
+#include "Kernel/UnicodeHelper.h"
+#include "Kernel/FileStreamHelper.h"
 #include "Kernel/FactorableUnique.h"
 
 #include "ToolUtils/ToolUtils.h"
+#include "ToolUtils/ToolLogger.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Win32FileGroup );
@@ -71,85 +75,11 @@ namespace Mengine
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( LoggerService, MENGINE_DOCUMENT_FUNCTION );
 
-        class MyLogger
-            : public LoggerInterface
-            , public Factorable
-        {
-        public:
-            bool initialize() override
-            {
-                return true;
-            }
-
-            void finalize() override
-            {
-            };
-
-            MyLogger()
-                : m_verboseLevel( LM_WARNING )
-                , m_verboseFlag( 0xFFFFFFFF )
-            {
-            }
-
-        public:
-            void setVerboseLevel( ELoggerLevel _level ) override
-            {
-                m_verboseLevel = _level;
-            };
-
-            void setVerboseFlag( size_t _flag ) override
-            {
-                m_verboseFlag = _flag;
-            };
-
-        public:
-            bool validMessage( ELoggerLevel _level, size_t _flag ) const override
-            {
-                if( m_verboseLevel < _level )
-                {
-                    return false;
-                }
-
-                if( _flag == 0 )
-                {
-                    return true;
-                }
-
-                if( (m_verboseFlag & _flag) == 0 )
-                {
-                    return false;
-                }
-
-                return true;
-            };
-
-        public:
-            void log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const char * _data, size_t _count ) override
-            {
-                MENGINE_UNUSED( _level );
-                MENGINE_UNUSED( _flag );
-                MENGINE_UNUSED( _color );
-                MENGINE_UNUSED( _count );
-
-                message_error( "%s"
-                    , _data
-                );
-            }
-
-            void flush() override
-            {
-            }
-
-        protected:
-            ELoggerLevel m_verboseLevel;
-            uint32_t m_verboseFlag;
-        };
-
         LOGGER_SERVICE()
             ->setVerboseLevel( LM_WARNING );
 
         LOGGER_SERVICE()
-            ->registerLogger( Helper::makeFactorableUnique<MyLogger>( MENGINE_DOCUMENT_FUNCTION ) );
+            ->registerLogger( Helper::makeFactorableUnique<ToolLogger>( MENGINE_DOCUMENT_FUNCTION ) );
 
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( DataService, MENGINE_DOCUMENT_FUNCTION );
@@ -170,15 +100,13 @@ namespace Mengine
         PLUGIN_CREATE( ImageCodec, MENGINE_DOCUMENT_FUNCTION );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), nullptr, FilePath::none(), Helper::stringizeString( "global" ), nullptr ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
 
-        ConstString dev = Helper::stringizeString( "dev" );
-
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, nullptr, FilePath::none(), Helper::stringizeString( "global" ), nullptr ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, nullptr, FilePath::none(), STRINGIZE_STRING_LOCAL( "global" ), nullptr, false, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }
@@ -196,8 +124,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
-        InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, c_in, false );
+        InputStreamInterfacePtr input_stream = Helper::openInputStreamFile( fileGroup, c_in, false, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( input_stream == nullptr )
         {
@@ -213,7 +140,7 @@ namespace Mengine
         }
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
@@ -247,14 +174,14 @@ namespace Mengine
         size_t bufferSize = width * height * channels;
 
         MemoryBufferInterfacePtr memory_texture = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_texture == nullptr )
         {
             return false;
         }
 
-        unsigned char * texture_buffer = memory_texture->newBuffer( bufferSize, "trimImage", __FILE__, __LINE__ );
+        unsigned char * texture_buffer = memory_texture->newBuffer( bufferSize );
 
         if( texture_buffer == nullptr )
         {
@@ -367,14 +294,14 @@ namespace Mengine
             size_t new_bufferSize = new_width * new_height * channels;
 
             MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-                ->createMemoryBuffer();
+                ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
             if( memory == nullptr )
             {
                 return false;
             }
 
-            uint8_t * new_textureBuffer = memory->newBuffer( new_bufferSize, "trimImage", __FILE__, __LINE__ );
+            uint8_t * new_textureBuffer = memory->newBuffer( new_bufferSize );
 
             if( new_textureBuffer == nullptr )
             {
@@ -604,8 +531,7 @@ namespace Mengine
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
             
-            OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-                ->openOutputFile( fileGroup, c_out );
+            OutputStreamInterfacePtr output_stream = Helper::openOutputStreamFile( fileGroup, c_out, MENGINE_DOCUMENT_FUNCTION );
 
             if( output_stream == nullptr )
             {
@@ -613,7 +539,7 @@ namespace Mengine
             }
 
             ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-                ->createEncoderT<ImageEncoderInterfacePtr>( codecType );
+                ->createEncoderT<ImageEncoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
             if( imageEncoder == nullptr )
             {

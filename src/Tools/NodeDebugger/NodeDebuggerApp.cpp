@@ -1131,10 +1131,10 @@ namespace Mengine
                                 , parent.function.c_str()
                             );
 
-                            char label_text[16];
-                            sprintf( label_text, "##text_%u"
-                                , index
-                            );
+                            //char label_text[16];
+                            //sprintf( label_text, "##text_%u"
+                            //    , index
+                            //);
 
                             ImGui::InputTextMultiline( label_text
                                 , (char *)parent.message.data()

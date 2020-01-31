@@ -2,6 +2,7 @@
 
 #include "Kernel/Factory.h"
 #include "Kernel/Typename.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Pool.h"
 
 namespace Mengine
@@ -45,13 +46,14 @@ namespace Mengine
         template<class Type, uint32_t Count, class F = Factory>
         IntrusivePtr<F> makeFactoryPool( const DocumentPtr & _doc )
         {
+            MENGINE_UNUSED( _doc );
+
             Factory * factory = new FactoryPool<Type, Count, F>();
 
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+
 #ifdef MENGINE_DEBUG
-            if( factory != nullptr )
-            {
-                factory->setDocument( _doc );
-            }
+            factory->setDocument( _doc );
 #endif
 
             return IntrusivePtr<F>( factory );

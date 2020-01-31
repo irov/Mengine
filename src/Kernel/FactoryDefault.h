@@ -35,13 +35,14 @@ namespace Mengine
         template<class T>
         FactoryPtr makeFactoryDefault( const DocumentPtr & _doc )
         {
+            MENGINE_UNUSED( _doc );
+
             Factory * factory = new FactoryDefault<T>();
 
+            MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
+
 #ifdef MENGINE_DEBUG
-            if( factory != nullptr )
-            {
-                factory->setDocument( _doc );
-            }
+            factory->setDocument( _doc );
 #endif
 
             return FactoryPtr( factory );

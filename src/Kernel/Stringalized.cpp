@@ -151,7 +151,7 @@ namespace Mengine
                 {
                     if( it_tag != nullptr )
                     {
-                        ConstString cstr_value = Helper::stringizeStringSize( it_tag, it - it_tag );
+                        ConstString cstr_value = Helper::stringizeStringSize( it_tag, (ConstString::size_type)(it - it_tag) );
 
                         _value->addTag( cstr_value );
 

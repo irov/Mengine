@@ -33,7 +33,7 @@ namespace Mengine
         size_t utf8_currentPathLen = PLATFORM_SERVICE()
             ->getCurrentPath( utf8_currentPath );
 
-        FilePath relationPath = Helper::stringizeFilePathSize( utf8_currentPath, utf8_currentPathLen );
+        FilePath relationPath = Helper::stringizeFilePathSize( utf8_currentPath, (FilePath::size_type)utf8_currentPathLen );
 
         VOCABULARY_SET( Factory, STRINGIZE_STRING_LOCAL( "FileGroupFactory" ), STRINGIZE_STRING_LOCAL( "dir" ), Helper::makeFactory<SDLFileGroupDirectoryFactory>( relationPath ) );
 

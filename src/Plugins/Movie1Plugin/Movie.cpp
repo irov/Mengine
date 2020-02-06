@@ -49,12 +49,12 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Movie::Movie()
-        : m_frameTime( 0.f )
-        , m_currentFrame( 0 )
-        , m_renderCameraProjection( nullptr )
+        : m_renderCameraProjection( nullptr )
         , m_renderViewport( nullptr )
-        , m_parentMovie( false )
+        , m_frameTime( 0.f )
+        , m_currentFrame( 0 )
         , m_interruptEnd( false )
+        , m_parentMovie( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////

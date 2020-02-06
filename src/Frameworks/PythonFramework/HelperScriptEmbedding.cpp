@@ -676,7 +676,7 @@ namespace Mengine
 
             if( _length > total_base64_size )
             {
-                uint32_t uid_size = _length - total_base64_size;
+                uint32_t uid_size = _length - (uint32_t)total_base64_size;
 
                 Char uid[40];
                 Helper::makeUID( uid_size, uid );

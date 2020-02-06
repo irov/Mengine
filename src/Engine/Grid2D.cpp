@@ -19,11 +19,11 @@ namespace Mengine
     Grid2D::Grid2D()
         : m_width( 0.f )
         , m_height( 0.f )
+        , m_angle( 0.f )
+        , m_offset( 0.f, 0.f )
         , m_countX( 0 )
         , m_countY( 0 )
         , m_invalidateVerticesWM( true )
-        , m_offset( 0.f, 0.f )
-        , m_angle( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////

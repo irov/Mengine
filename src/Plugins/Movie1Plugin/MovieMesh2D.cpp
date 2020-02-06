@@ -14,12 +14,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MovieMesh2D::MovieMesh2D()
         : m_shape( nullptr )
+        , m_vertexCount( 0 )
+        , m_indicesCount( 0 )
         , m_solid( false )
         , m_invalidateVerticesLocal( true )
         , m_invalidateVerticesWM( true )
         , m_invalidateVerticesColor( true )
-        , m_vertexCount( 0 )
-        , m_indicesCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////

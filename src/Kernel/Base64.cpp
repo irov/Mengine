@@ -112,10 +112,10 @@ namespace Mengine
             
             for( uint32_t i = 0, j = 0; i != _base64size;)
             {
-                uint32_t sextet_a = _base64[i] == '=' ? 0 & i++ : base64_decode_table[_base64[i++]];
-                uint32_t sextet_b = _base64[i] == '=' ? 0 & i++ : base64_decode_table[_base64[i++]];
-                uint32_t sextet_c = _base64[i] == '=' ? 0 & i++ : base64_decode_table[_base64[i++]];
-                uint32_t sextet_d = _base64[i] == '=' ? 0 & i++ : base64_decode_table[_base64[i++]];
+                uint32_t sextet_a = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
+                uint32_t sextet_b = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
+                uint32_t sextet_c = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
+                uint32_t sextet_d = _base64[i] == '=' ? 0 & i++ : base64_decode_table[(size_t)_base64[i++]];
 
                 uint32_t triple = (sextet_a << 3 * 6) + (sextet_b << 2 * 6) + (sextet_c << 1 * 6) + (sextet_d << 0 * 6);
 

@@ -43,17 +43,25 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 
-    static const uint32_t PVRTEX_MIPMAP = (1 << 8); // has mip map levels
-    static const uint32_t PVRTEX_TWIDDLE = (1 << 9); // is twiddled
-    static const uint32_t PVRTEX_BUMPMAP = (1 << 10); // has normals encoded for a bump map
-    static const uint32_t PVRTEX_TILING = (1 << 11); // is bordered for tiled pvr
-    static const uint32_t PVRTEX_CUBEMAP = (1 << 12); // is a cubemap/skybox
-    static const uint32_t PVRTEX_FALSEMIPCOL = (1 << 13); //
-    static const uint32_t PVRTEX_VOLUME = (1 << 14);
-    static const uint32_t PVRTEX_PIXELTYPE = 0xff; // pixel type is always in the last 16bits of the flags
-    static const uint32_t PVRTEX_IDENTIFIER = 0x21525650;  // the pvr identifier is the characters 'P','V','R'
+    // has mip map levels
+    #define PVRTEX_MIPMAP (1 << 8) 
+     // is twiddled
+    #define PVRTEX_TWIDDLE (1 << 9)
+    // has normals encoded for a bump map
+    #define PVRTEX_BUMPMAP (1 << 10)
+     // is bordered for tiled pvr
+    #define PVRTEX_TILING (1 << 11)
+     // is a cubemap/skybox
+    #define PVRTEX_CUBEMAP (1 << 12)
+    #define PVRTEX_FALSEMIPCOL (1 << 13)
+    #define PVRTEX_VOLUME (1 << 14)
+     // pixel type is always in the last 16bits of the flags
+    #define PVRTEX_PIXELTYPE (0xff)
+    // the pvr identifier is the characters 'P','V','R'
+    #define PVRTEX_IDENTIFIER (0x21525650)
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t PVRTEX_V1_HEADER_SIZE = 44; // old header size was 44 for identification purposes
+    // old header size was 44 for identification purposes
+    #define PVRTEX_V1_HEADER_SIZE (44)
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderPVRTC::ImageDecoderPVRTC()
     {

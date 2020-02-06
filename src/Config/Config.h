@@ -67,10 +67,10 @@
 #   define MENGINE_PLATFORM_DESKTOP
 #elif defined(__APPLE__)
 #   include "TargetConditionals.h"
-#   if defined(TARGET_OS_OSX)
+#   if TARGET_OS_OSX
 #       define MENGINE_PLATFORM_OSX
 #       define MENGINE_PLATFORM_DESKTOP
-#   elif defined(TARGET_OS_IPHONE)
+#   elif TARGET_OS_IPHONE
 #       define MENGINE_PLATFORM_IOS
 #       define MENGINE_PLATFORM_MOBILE
 #   endif

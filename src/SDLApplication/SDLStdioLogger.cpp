@@ -21,6 +21,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
 
         std::cout.write( _data, _count );
     }

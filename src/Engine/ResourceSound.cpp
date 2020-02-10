@@ -13,8 +13,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceSound::ResourceSound()
-        : m_isStreamable( false )
-        , m_defaultVolume( 1.f )
+        : m_defaultVolume( 1.f )
+        , m_isStreamable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////

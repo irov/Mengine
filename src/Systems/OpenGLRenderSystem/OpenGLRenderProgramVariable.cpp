@@ -40,7 +40,7 @@ namespace Mengine
         {
             ::strcpy( _variable.uniform, _uniform );
             _variable.type = _type;
-            _variable.offset = _container.size();
+            _variable.offset = (uint32_t)_container.size();
             _variable.size = _size;
             _variable.count = _count;
 

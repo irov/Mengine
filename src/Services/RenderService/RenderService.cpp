@@ -38,17 +38,17 @@ namespace Mengine
         , m_windowCreated( false )
         , m_vsync( false )
         , m_fullscreen( false )
-        , m_currentRenderTextureStage( 0 )
         , m_maxVertexCount( 0 )
         , m_maxIndexCount( 0 )
         , m_depthBufferTestEnable( false )
         , m_depthBufferWriteEnable( false )
-        , m_alphaBlendEnable( false )
-        , m_currentRenderMaterialStage( nullptr )
+        , m_currentRenderTextureStage( 0 )
         , m_currentMaterialId( 0 )
+        , m_currentRenderMaterialStage( nullptr )
         , m_currentBlendSrc( BF_ONE )
         , m_currentBlendDst( BF_ONE )
         , m_currentBlendOp( BOP_ADD )
+        , m_alphaBlendEnable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         m_factoryRenderBatch = Helper::makeFactoryPool<RenderBatch, 16>( MENGINE_DOCUMENT_FACTORABLE );
 
         m_renderSystem = RENDER_SYSTEM();
@@ -406,7 +406,7 @@ namespace Mengine
         bool RenderFrameClear = CONFIG_VALUE( "Engine", "RenderFrameClear", true );
 
         if( RenderFrameClear == true )
-        {            
+        {
             uint8_t RenderFrameClearColorR = CONFIG_VALUET( "Engine", "RenderFrameClearColorR", 0U, uint8_t );
             uint8_t RenderFrameClearColorG = CONFIG_VALUET( "Engine", "RenderFrameClearColorG", 0U, uint8_t );
             uint8_t RenderFrameClearColorB = CONFIG_VALUET( "Engine", "RenderFrameClearColorB", 0U, uint8_t );
@@ -988,7 +988,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::renderPrimitives( RenderPrimitive * _primitives, uint32_t _count )
     {
-        for( uint32_t index = 0 ; index != _count; ++index )
+        for( uint32_t index = 0; index != _count; ++index )
         {
             RenderPrimitive * renderPrimitive = _primitives + index;
 
@@ -1054,7 +1054,7 @@ namespace Mengine
         }
 
         return batch;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     VectorRenderVertex2D & RenderService::getDebugRenderVertex2D( uint32_t _count )
     {

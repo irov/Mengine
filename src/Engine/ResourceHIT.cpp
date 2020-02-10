@@ -19,9 +19,9 @@ namespace Mengine
     ResourceHIT::ResourceHIT()
         : m_width( 0 )
         , m_height( 0 )
+        , m_mipmaplevel( 0 )
         , m_widthF( 0.f )
         , m_heightF( 0.f )
-        , m_mipmaplevel( 0 )
         , m_mipmapsize( 0 )
     {
     }

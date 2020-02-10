@@ -50,6 +50,8 @@ namespace Mengine
         bool getHeadMode() const;
 
     private:
+        SilentSoundSystem * m_soundSystem;
+        
         bool m_headMode;
         bool m_playing;
         bool m_pausing;
@@ -60,7 +62,7 @@ namespace Mengine
         float m_timing;
 
         SilentSoundBufferPtr m_soundBuffer;
-        SilentSoundSystem * m_soundSystem;
+        
 
     private:
         void apply_( uint32_t _source );

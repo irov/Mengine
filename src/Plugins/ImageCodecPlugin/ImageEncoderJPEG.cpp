@@ -4,7 +4,7 @@
 
 #ifndef MENGINE_JPEG_OUTPUT_BUF_SIZE
 #define MENGINE_JPEG_OUTPUT_BUF_SIZE 4096
-#endif MENGINE_JPEG_OUTPUT_BUF_SIZE
+#endif
 
 namespace Mengine
 {

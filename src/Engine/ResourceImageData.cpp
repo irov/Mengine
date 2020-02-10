@@ -14,11 +14,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceImageData::ResourceImageData()
-        : m_maxSize( 0.f, 0.f )
-        , m_width( 0 )
+        : m_width( 0 )
         , m_height( 0 )
         , m_widthF( 0.f )
         , m_heightF( 0.f )
+        , m_maxSize( 0.f, 0.f )
         , m_buffer( nullptr )
     {
     }

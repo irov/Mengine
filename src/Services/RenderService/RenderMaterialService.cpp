@@ -54,10 +54,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////    
     RenderMaterialService::RenderMaterialService()
         : m_materialEnumerator( 0 )
-        , m_stageCount( 0 )
         , m_defaultTextureFilterMipmap( TF_NONE )
         , m_defaultTextureFilterMagnification( TF_LINEAR )
         , m_defaultTextureFilterMinification( TF_LINEAR )
+        , m_stageCount( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////    

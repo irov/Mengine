@@ -49,7 +49,7 @@ namespace Mengine
         uint8_t getEllipseQuality() const override;
 
     public:
-        void beginFill( const Color & _color ) override;
+        void beginFill() override;
         void endFill() override;
 
     public:

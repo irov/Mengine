@@ -17,13 +17,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, const Char * _data, size_t _size )
+    void SDLMessageBoxLogger::log( ELoggerLevel _level, uint32_t _flag, uint32_t _color, const Char * _data, size_t _size )
     {
         MENGINE_UNUSED( _level );
         MENGINE_UNUSED( _flag );
+        MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _size );
 
-        printf( "%s", _data );
+        printf( "%.*s", _size, _data );
 
         if( _level == LM_CRITICAL )
         {

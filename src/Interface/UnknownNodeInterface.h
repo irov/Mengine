@@ -24,3 +24,4 @@ public:\
     Mengine::Node * getUnknownNode() override{ return this; }\
     const Mengine::Node * getUnknownNode() const override{ return this; }\
 protected:
+//////////////////////////////////////////////////////////////////////////

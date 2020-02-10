@@ -250,7 +250,7 @@ namespace Mengine
         size_t messageLen = ::strlen( _message );
 
         LOGGER_SERVICE()
-            ->logMessage( level, 0, _message, messageLen );
+            ->logMessage( level, 0, LCOLOR_NONE, _message, messageLen );
     }
     //////////////////////////////////////////////////////////////////////////
     static int RemoveMouse_EventFilter( void * userdata, SDL_Event * event )

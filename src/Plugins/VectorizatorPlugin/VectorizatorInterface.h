@@ -30,7 +30,7 @@ namespace Mengine
         virtual uint8_t getEllipseQuality() const = 0;
 
     public:
-        virtual void beginFill( const Color & _color ) = 0;
+        virtual void beginFill() = 0;
         virtual void endFill() = 0;
 
     public:

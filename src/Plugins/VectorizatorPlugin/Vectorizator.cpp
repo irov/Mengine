@@ -98,7 +98,7 @@ namespace Mengine
         c.b = _color.getB();
         c.a = _color.getA();
 
-        gp_set_line_color( m_canvas, &c );
+        gp_set_color( m_canvas, &c );
 
         m_invalidateLocalVertex2D = true;
     }
@@ -106,7 +106,7 @@ namespace Mengine
     Color Vectorizator::getLineColor() const
     {
         gp_color_t c;
-        gp_get_line_color( m_canvas, &c );
+        gp_get_color( m_canvas, &c );
         
         return Color( c.r, c.g, c.b, c.a );
     }
@@ -141,33 +141,19 @@ namespace Mengine
         return quality;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Vectorizator::beginFill( const Color & _color )
+    void Vectorizator::beginFill()
     {
         gp_begin_fill( m_canvas );
-
-        gp_color_t c;
-        c.r = _color.getR();
-        c.g = _color.getG();
-        c.b = _color.getB();
-        c.a = _color.getA();
-
-        gp_set_fill_color( m_canvas, &c );
-
-        m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::endFill()
     {
         gp_end_fill( m_canvas );
-
-        m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::moveTo( const mt::vec2f & _point )
     {
         gp_move_to( m_canvas, _point.x, _point.y );
-
-        m_invalidateLocalVertex2D = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Vectorizator::lineTo( const mt::vec2f & _point )
@@ -291,6 +277,10 @@ namespace Mengine
         mesh.colors_buffer = vertices;
         mesh.colors_offset = offsetof( VectorRenderVertex2D::value_type, color );
         mesh.colors_stride = sizeof( VectorRenderVertex2D::value_type );
+
+        mesh.uv_buffer = GP_NULLPTR;
+        mesh.uv_offset = 0;
+        mesh.uv_stride = 0;
 
         VectorRenderIndex::value_type * indices = m_renderIndices.data();
 

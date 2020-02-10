@@ -33,6 +33,6 @@ namespace Mengine
             return;
         }
 
-        m_cb.call_args( scriptable, _id, _isEnd, m_args );        
+        m_cb.call_args( scriptable, _id, _isEnd, m_args );
     }
 }

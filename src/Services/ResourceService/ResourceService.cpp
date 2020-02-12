@@ -98,7 +98,7 @@ namespace Mengine
     {
         MENGINE_ASSERTION_FATAL( !(_name.empty() == true && _groupCache == true), nullptr );
 
-        Resource * prev_resource;
+        Resource * prev_resource = nullptr;
         ResourcePtr resource = m_globalBank->createResource( _locale, _groupName, _name, _type, _keep, &prev_resource, _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( resource, nullptr, "invalid generate resource locale '%s' group '%s' name '%s' type '%s' doc '%s'"

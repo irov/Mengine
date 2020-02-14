@@ -61,7 +61,7 @@ namespace Mengine
         virtual bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop ) = 0;
         virtual bool removeStateAnimation( const ConstString & _state ) = 0;
 
-        virtual bool hasSkeletonAnimationName( const ConstString & _name ) = 0;
+        virtual bool hasSkeletonAnimationName( const ConstString & _name ) const = 0;
 
     public:
         virtual bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor ) = 0;

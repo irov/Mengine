@@ -200,7 +200,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Spine::hasSkeletonAnimationName( const ConstString & _name )
+    bool Spine::hasSkeletonAnimationName( const ConstString & _name ) const 
     {
         spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
 

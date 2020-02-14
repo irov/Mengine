@@ -200,6 +200,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Spine::hasSkeletonAnimationName( const ConstString & _name )
+    {
+        spAnimation * animation = m_resourceSpineSkeleton->findSkeletonAnimation( _name );
+
+        if( animation == nullptr )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Spine::setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor )
     {
         VectorAnimations::iterator it_found = std::find_if( m_animations.begin(), m_animations.end(), [&_state]( const AnimationDesc & _desc )

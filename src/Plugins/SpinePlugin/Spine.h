@@ -48,6 +48,8 @@ namespace Mengine
         bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop ) override;
         bool removeStateAnimation( const ConstString & _state ) override;
 
+        bool hasSkeletonAnimationName( const ConstString & _name ) override;
+
     public:
         bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor ) override;
         float getStateAnimationSpeedFactor( const ConstString & _state ) const override;

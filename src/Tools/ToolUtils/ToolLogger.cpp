@@ -18,7 +18,7 @@ namespace Mengine
         MENGINE_UNUSED( _flag );
         MENGINE_UNUSED( _color );
 
-        message_error( "%*.s"
+        message_error( "%.*s"
             , _size
             , _data
         );

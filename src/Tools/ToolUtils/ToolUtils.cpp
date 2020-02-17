@@ -8,7 +8,6 @@ void message_error( const char * _format, ... )
     va_start( argList, _format );
 
     char str[2048];
-
     vsnprintf( str, 2048 - 1, _format, argList );
 
     va_end( argList );

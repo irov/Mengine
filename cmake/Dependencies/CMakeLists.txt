@@ -80,10 +80,12 @@ PROJECT(Dependencies)
 message("============@@##START##@@============")
 
 #dependencies sentry
-if(MENGINE_DEPENDENCE_SENTRY)
-    message("================sentry================")
-    
-    ADD_SUBDIRECTORY(sentry)
+if(MSVC)
+    if(MENGINE_DEPENDENCE_SENTRY)
+        message("================sentry================")
+        
+        ADD_SUBDIRECTORY(sentry)
+    endif()
 endif()
 
 #dependencies zlib
@@ -568,6 +570,9 @@ endif()
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     message("================openal-soft================")
     if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/bsinc_inc.h COPYONLY)
+    
         if(MENGINE_TOOLCHAIN_MSVC)			
             SET(LIBTYPE STATIC)
             SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)

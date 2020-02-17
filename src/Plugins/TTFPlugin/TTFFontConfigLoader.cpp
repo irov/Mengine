@@ -44,8 +44,7 @@ namespace Mengine
             font->setCharOffset( charOffset );
         }
 
-        bool system = false;
-        _config->getValue( name.c_str(), "System", &system );
+        bool system =_config->getValue( name.c_str(), "System", false );
 
         font->setSystem( system );
 

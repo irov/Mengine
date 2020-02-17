@@ -13,7 +13,7 @@ namespace Mengine
         : m_value( false )
         , m_state( ECS_APPEAR )
         , m_semaphoreBlock( GOAP::Helper::makeSemaphore( GOAP::Helper::makeEvent(), 0 ) )
-        , m_eventValue( GOAP::Helper::makeEvent() )
+        , m_semaphoreValue( GOAP::Helper::makeSemaphore( GOAP::Helper::makeEvent(), 0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ namespace Mengine
 
         m_value = _value;
 
-        m_eventValue->call();
+        m_semaphoreValue->setValue( 1 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Checkbox::getValue() const
@@ -138,6 +138,7 @@ namespace Mengine
 
             const NodePtr & node = m_nodes[index][m_state];
 
+            _source->addSemaphoreAssign( m_semaphoreValue, 0 );
             _source->addScope( this, stateFunction, node, m_value );
 
             return true;
@@ -189,7 +190,9 @@ namespace Mengine
 
         source_false->addBlock();
 
-        auto && [source_over_click, source_over_enter, source_block, source_play] = _source->addRace<4>();
+        auto && [source_over_click, source_over_enter, source_block, source_play, source_value] = _source->addRace<5>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
 
         source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
         source_over_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
@@ -211,7 +214,9 @@ namespace Mengine
         _source->addNodeEnable( _nodeIdle );
         _source->addLocalDelay( 0.f );
 
-        auto && [source_over_click, source_over_enter, source_block] = _source->addRace<3>();
+        auto && [source_over_click, source_over_enter, source_block, source_value] = _source->addRace<4>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
 
         source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
         source_over_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
@@ -230,7 +235,9 @@ namespace Mengine
         _source->addNodeEnable( _nodeOver );
         _source->addLocalDelay( 0.f );
 
-        auto && [source_over_click, source_over_leave, source_block] = _source->addRace<3>();
+        auto && [source_over_click, source_over_leave, source_block, source_value] = _source->addRace<4>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
 
         source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
         source_over_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
@@ -258,7 +265,10 @@ namespace Mengine
         _source->addLocalDelay( 0.f );
         _source->addEventable( this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
 
-        auto && [source_enter_movie, source_enter_leave, source_enter_click] = _source->addRace<3>();
+        auto && [source_enter_movie, source_enter_leave, source_enter_click, source_value] = _source->addRace<4>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+
         source_enter_movie->addAnimatablePlayWait( _nodeEnter, _nodeEnter );
         source_enter_movie->addFunction( this, &Checkbox::__setState, _value, ECS_OVER );
 
@@ -285,7 +295,10 @@ namespace Mengine
         _source->addLocalDelay( 0.f );
         _source->addEventable( this, EVENT_CHECKBOX_MOUSE_LEAVE, &CheckboxEventReceiverInterface::onCheckboxMouseLeave, _value );
 
-        auto && [source_leave_movie, source_leave_enter] = _source->addRace<2>();
+        auto && [source_leave_movie, source_leave_enter, source_value] = _source->addRace<3>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+
         source_leave_movie->addAnimatablePlayWait( _nodeLeave, _nodeLeave );
         source_leave_movie->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
 
@@ -309,7 +322,10 @@ namespace Mengine
         _source->addLocalDelay( 0.f );
         _source->addEventable( this, EVENT_CHECKBOX_MOUSE_PUSH, &CheckboxEventReceiverInterface::onCheckboxMousePush, _value );
 
-        auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel] = _source->addRace<3>();
+        auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel, source_value] = _source->addRace<4>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+
         source_Push_movie->addAnimatablePlayWait( _nodePush, _nodePush );
         source_Push_movie->addFunction( this, &Checkbox::__setState, _value, ECS_PRESSED );
 
@@ -336,7 +352,9 @@ namespace Mengine
         _source->addLocalDelay( 0.f );
         _source->addEventable( this, EVENT_CHECKBOX_MOUSE_PRESSED, &CheckboxEventReceiverInterface::onCheckboxMousePressed, _value );
 
-        auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block] = _source->addRace<3>();
+        auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block, source_value] = _source->addRace<4>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
 
         source_Pressed_click_Rel->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, false, nullptr );
         source_Pressed_click_Rel->addFunction( this, &Checkbox::__setState, _value, ECS_CLICK );
@@ -364,7 +382,10 @@ namespace Mengine
         _source->addLocalDelay( 0.f );
         _source->addEventable( this, EVENT_CHECKBOX_MOUSE_RELEASE, &CheckboxEventReceiverInterface::onCheckboxMouseRelease, _value );
 
-        auto && [source_Release_movie, source_Release_enter] = _source->addRace<2>();
+        auto && [source_Release_movie, source_Release_enter, source_value] = _source->addRace<3>();
+
+        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+
         source_Release_movie->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, true, nullptr );
         source_Release_movie->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
 

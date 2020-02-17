@@ -35,6 +35,7 @@ namespace Mengine
 
     public:
         bool initializeGame( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _packagesPaths, const VectorFilePath & _settingsPaths ) override;
+        void finalizeGame() override;
 
     public:
         void changeWindowResolution( const Resolution & _resolution ) override;
@@ -237,5 +238,7 @@ namespace Mengine
 
         bool m_debugPause;
         bool m_debugFileOpen;        
+
+        bool m_initailizeGame;
     };
 }

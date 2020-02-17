@@ -171,6 +171,7 @@ namespace Mengine
         , m_projectVersion( 0 )
         , m_debugPause( false )
         , m_debugFileOpen( false )
+        , m_initailizeGame( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -783,7 +784,23 @@ namespace Mengine
         }
 #endif
 
+        m_initailizeGame = true;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::finalizeGame()
+    {
+        if( m_initailizeGame == false )
+        {
+            return;
+        }
+
+        m_initailizeGame = false;
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::keyEvent( const InputKeyEvent & _event )

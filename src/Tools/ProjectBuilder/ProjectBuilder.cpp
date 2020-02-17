@@ -1154,7 +1154,7 @@ int main( int argc, char *argv[] )
     {
         if( run() == false )
         {
-            return 1;
+            return EXIT_FAILURE;
         }
     }
     catch( const std::exception & se )
@@ -1163,8 +1163,8 @@ int main( int argc, char *argv[] )
 
         MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
 
-        return 1;
+        return EXIT_FAILURE;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

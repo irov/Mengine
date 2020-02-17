@@ -79,6 +79,7 @@ namespace Mengine
         NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EMBEDDING_END );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME, this, &PythonFramework::notifyBootstrapperInitializeGame );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME, this, &PythonFramework::notifyBootstrapperFinalizeGame );
 
         return true;
     }
@@ -86,6 +87,7 @@ namespace Mengine
     void PythonFramework::_stopFramework()
     {
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_FINALIZE_GAME );
 
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "ConstsScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "MathScriptEmbedding" ) );
@@ -93,8 +95,7 @@ namespace Mengine
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "NodeScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EntityScriptEmbedding" ) );
         REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "SoundScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );
-        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
+        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "EngineScriptEmbedding" ) );        
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_SCRIPT_EJECTING );
     }
@@ -102,5 +103,10 @@ namespace Mengine
     void PythonFramework::notifyBootstrapperInitializeGame()
     {
         ADD_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ), Helper::makeFactorableUnique<GameScriptEmbedding>( MENGINE_DOCUMENT_FACTORABLE ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonFramework::notifyBootstrapperFinalizeGame()
+    {
+        REMOVE_SCRIPT_EMBEDDING( STRINGIZE_STRING_LOCAL( "GameScriptEmbedding" ) );
     }
 }

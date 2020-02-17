@@ -23,8 +23,16 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/Stringalized.h"
 
 #include "Config/VectorString.h"
+
+#include <io.h>
+#include <cstdio>
+#include <locale.h>
+#include <fcntl.h>
+
+#include <iostream>
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
@@ -196,6 +204,10 @@ PLUGIN_EXPORT( Texturepacker );
 PLUGIN_EXPORT( Vectorizator );
 #endif
 
+#ifdef MENGINE_PLUGIN_SENTRY_STATIC
+PLUGIN_EXPORT( Sentry );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -253,6 +265,16 @@ namespace Mengine
             return false;
         }
 
+        if( this->createDynamicPriorityPlugins_() == false )
+        {
+            return false;
+        }
+
+        if( this->createDynamicPriorityDevPlugins_() == false )
+        {
+            return false;
+        }
+
         if( this->createStaticPlugins_() == false )
         {
             return false;
@@ -292,7 +314,7 @@ namespace Mengine
         {
             return false;
         }
-
+        
         NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_RUN_FRAMEWORKS );
 
         LOGGER_INFO( "initialize Game..." );
@@ -460,6 +482,10 @@ namespace Mengine
         if( PLUGIN_CREATE(Name, Doc) == false ){\
         LOGGER_ERROR( "Invalid %s", Info );}else{\
         LOGGER_MESSAGE( "Successful %s", Info );}}
+
+#ifdef MENGINE_PLUGIN_SENTRY_STATIC
+        MENGINE_ADD_PLUGIN( Sentry, "initialize Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
 
 #ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC
         MENGINE_ADD_PLUGIN( MENGINE_EXTERNAL_FRAMEWORK_NAME, "initialize Plugin External Framework...", MENGINE_DOCUMENT_FACTORABLE );
@@ -635,6 +661,62 @@ namespace Mengine
         {
             VectorString devPlugins;
             CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
+
+            for( const String & pluginName : devPlugins )
+            {
+                if( PLUGIN_SERVICE()
+                    ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+                {
+                    LOGGER_WARNING( "failed to load dev plugin '%s'"
+                        , pluginName.c_str()
+                    );
+                }
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createDynamicPriorityPlugins_()
+    {
+        VectorString plugins;
+        CONFIG_VALUES( "PriorityPlugins", "Name", plugins );
+
+        for( const String & pluginName : plugins )
+        {
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName.c_str(), MENGINE_DOCUMENT_FACTORABLE ) == false )
+            {
+                LOGGER_CRITICAL( "failed to load plugin '%s'"
+                    , pluginName.c_str()
+                );
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Bootstrapper::createDynamicPriorityDevPlugins_()
+    {
+#ifdef MENGINE_MASTER_RELEASE
+        bool devplugins = false;
+#else
+#ifdef MENGINE_DEBUG
+        bool devplugins = true;
+#else
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool devplugins = developmentMode;
+#endif
+#endif
+
+        bool nodevplugins = HAS_OPTION( "nodevplugins" );
+
+        if( devplugins == true && nodevplugins == false )
+        {
+            VectorString devPlugins;
+            CONFIG_VALUES( "PriorityDevPlugins", "Name", devPlugins );
 
             for( const String & pluginName : devPlugins )
             {

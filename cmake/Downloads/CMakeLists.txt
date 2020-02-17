@@ -53,4 +53,5 @@ GIT_CLONE(SDL2 https://github.com/spurious/SDL-mirror.git "release-2.0.10")
 GIT_CLONE(xmlsax https://github.com/irov/xmlsax.git)
 GIT_CLONE(box2d https://github.com/erincatto/Box2D.git)
 GIT_CLONE(graphics https://github.com/irov/graphics.git)
+GIT_CLONE(sentry https://github.com/getsentry/sentry-native.git "0.1.4")
 

@@ -27,13 +27,6 @@
 
 #include "Config/VectorString.h"
 
-#include <io.h>
-#include <cstdio>
-#include <locale.h>
-#include <fcntl.h>
-
-#include <iostream>
-
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
 #define MENGINE_APPLICATION_INI_PATH "application.ini"

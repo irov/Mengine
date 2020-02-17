@@ -24,7 +24,7 @@ namespace Mengine
         MENGINE_UNUSED( _color );
         MENGINE_UNUSED( _size );
 
-        printf( "%.*s", _size, _data );
+        printf( "%.*s", (int32_t)_size, _data );
 
         if( _level == LM_CRITICAL )
         {

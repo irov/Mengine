@@ -32,6 +32,8 @@ Checkbox
     CheckboxEventReceiverInterface.h
     TaskCheckboxChange.cpp
     TaskCheckboxChange.h
+    TaskCheckboxChangeAny.cpp
+    TaskCheckboxChangeAny.h
 )
 
 INCLUDE_DIRECTORIES(${MENGINE_CMAKE_DEPENDENCIES_DIR}/GOAP/Config)

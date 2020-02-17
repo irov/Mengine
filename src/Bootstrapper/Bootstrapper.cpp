@@ -309,8 +309,6 @@ namespace Mengine
             return false;
         }
 
-        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_INITIALIZE_GAME );
-
         if( GAME_SERVICE()
             ->loadPersonality() == false )
         {
@@ -848,6 +846,9 @@ namespace Mengine
 
         SCENE_SERVICE()
             ->destroyCurrentScene();
+
+        APPLICATION_SERVICE()
+            ->finalizeGame();
 
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {

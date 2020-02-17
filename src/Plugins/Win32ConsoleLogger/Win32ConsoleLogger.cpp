@@ -13,8 +13,6 @@
 
 #include <iostream>
 
-typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -47,6 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::createConsole_()
     {
+        typedef BOOL( WINAPI * PATTACHCONSOLE )(DWORD);
         PATTACHCONSOLE pAttachConsole = nullptr;
 
         HMODULE hKernel32 = ::LoadLibraryW( L"Kernel32.dll" );

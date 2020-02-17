@@ -2,10 +2,10 @@
 
 #include "Interface/PlatformInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/NotificatorInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
-
-#include "sentry.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
@@ -14,6 +14,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SentryPlugin::SentryPlugin()
+        : m_options( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -29,8 +30,37 @@ namespace Mengine
         sentry_options_set_debug( options, 1 );
         sentry_init( options );
 
+        m_options = options;
+
         sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_ );
+
+        //sentry_capture_event( sentry_value_new_message_event(
+        //    /*   level */ SENTRY_LEVEL_INFO,
+        //    /*  logger */ "custom",
+        //    /* message */ "It works!"
+        //) );
+
+        //*(int *)(0) = 0;
+        //memset( (char *)0x0, 1, 100 );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryPlugin::_finalizePlugin()
+    {
+        NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
+        sentry_shutdown();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryPlugin::_destroyPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SentryPlugin::notifyCreateApplication_()
+    {
         Char companyName[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
         APPLICATION_SERVICE()
             ->getCompanyName( companyName );
@@ -55,26 +85,6 @@ namespace Mengine
         Char releaseString[32];
         sprintf( releaseString, "%s@%u", projectName, projectVersion );
 
-        sentry_options_set_release( options, releaseString );
-
-        //sentry_capture_event( sentry_value_new_message_event(
-        //    /*   level */ SENTRY_LEVEL_INFO,
-        //    /*  logger */ "custom",
-        //    /* message */ "It works!"
-        //) );
-
-        //*(int *)(0) = 0;
-        //memset( (char *)0x0, 1, 100 );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::_finalizePlugin()
-    {
-        sentry_shutdown();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SentryPlugin::_destroyPlugin()
-    {
+        sentry_options_set_release( m_options, releaseString );
     }
 }

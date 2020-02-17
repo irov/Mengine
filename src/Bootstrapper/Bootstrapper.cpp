@@ -737,6 +737,8 @@ namespace Mengine
 
         SERVICE_CREATE( Application, MENGINE_DOCUMENT_FACTORABLE );
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

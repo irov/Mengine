@@ -84,7 +84,7 @@ namespace Mengine
 
         GOAP::ChainInterfacePtr m_chain;
         GOAP::SemaphorePtr m_semaphoreBlock;
-        GOAP::EventPtr m_eventValue;
+        GOAP::SemaphorePtr m_semaphoreValue;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Checkbox> CheckboxPtr;

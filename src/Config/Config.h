@@ -48,6 +48,8 @@
 
 #ifndef NDEBUG
 #define MENGINE_DEBUG
+#else
+#define MENGINE_RELEASE
 #endif
 
 #ifdef MENGINE_DEBUG

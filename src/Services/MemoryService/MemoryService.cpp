@@ -109,6 +109,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         size_t minSize = 0U;
         size_t maxSize = MENGINE_UNKNOWN_SIZE;
 

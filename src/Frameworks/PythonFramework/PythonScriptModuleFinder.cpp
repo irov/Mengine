@@ -151,11 +151,6 @@ namespace Mengine
 
         PyObject * py_code = loader->load_module( _kernel, _module );
 
-        if( IntrusivePtrBase::intrusive_ptr_get_ref( loader->getDocument().get() ) == 0 )
-        {
-            return nullptr;
-        }
-
         loader->finalize();
 
         return py_code;

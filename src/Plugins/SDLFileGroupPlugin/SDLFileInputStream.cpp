@@ -351,6 +351,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::time( uint64_t * _time ) const
     {
+#ifdef MENGINE_DEBUG
         Char filePath[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
         {
@@ -368,6 +369,11 @@ namespace Mengine
         *_time = ft;
 
         return true;
+#else
+        MENGINE_UNUSED( _time );
+        
+        return false;
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::memory( void ** _memory, size_t * _size )

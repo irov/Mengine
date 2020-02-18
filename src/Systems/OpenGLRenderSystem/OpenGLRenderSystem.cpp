@@ -145,10 +145,15 @@ namespace Mengine
         const char * versionStr = reinterpret_cast<const char *>(glGetString( GL_VERSION ));
         const char * extensionsStr = reinterpret_cast<const char *>(glGetString( GL_EXTENSIONS ));
 
-        LOGGER_WARNING( "Vendor      : %s", vendorStr );
-        LOGGER_WARNING( "Renderer    : %s", rendererStr );
-        LOGGER_WARNING( "Version     : %s", versionStr );
-        LOGGER_WARNING( "Extensions  : %s", extensionsStr );
+        MENGINE_UNUSED( vendorStr );
+        MENGINE_UNUSED( rendererStr );
+        MENGINE_UNUSED( versionStr );
+        MENGINE_UNUSED( extensionsStr );
+
+        LOGGER_MESSAGE( "Vendor      : %s", vendorStr );
+        LOGGER_MESSAGE( "Renderer    : %s", rendererStr );
+        LOGGER_MESSAGE( "Version     : %s", versionStr );
+        LOGGER_MESSAGE( "Extensions  : %s", extensionsStr );
 
         OPENGL_RENDER_CHECK_ERROR();
 

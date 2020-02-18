@@ -59,6 +59,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
+#ifdef MENGINE_DEBUG
         //////////////////////////////////////////////////////////////////////////
         static bool exist_value( const jpp::object & _j, const Char * _key )
         {
@@ -90,6 +91,7 @@ namespace Mengine
 
             return true;
         }
+#endif
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         T get_value( const jpp::object & _j, const Char * _key, T _default )

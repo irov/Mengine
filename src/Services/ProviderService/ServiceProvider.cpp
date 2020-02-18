@@ -54,6 +54,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ServiceInterfacePtr ServiceProvider::generateService_( FServiceProviderGenerator _generator, const DocumentPtr & _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         if( _generator == nullptr )
         {
             return nullptr;

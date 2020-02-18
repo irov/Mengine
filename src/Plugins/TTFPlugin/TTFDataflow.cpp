@@ -96,6 +96,7 @@ namespace Mengine
     bool TTFDataflow::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _doc );
 
         TTFData * data = stdex::intrusive_get<TTFData *>( _data );
 

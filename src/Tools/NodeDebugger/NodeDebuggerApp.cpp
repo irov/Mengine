@@ -326,16 +326,17 @@ namespace Mengine
             const size_t maxCompressedSize = ::LZ4_compressBound( static_cast<int>(payloadSize) );
             Mengine::Blobject compressedPayload( maxCompressedSize );
 
-            const int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
-            if( result < 0 || payloadSize < result )
+            int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
+
+            if( result < 0 || payloadSize < (Blobject::size_type)result )
             {
                 _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
                 _hdr.uncompressedSize = 0; // packet is not compressed
             }
             else
             {
-                _hdr.compressedSize = static_cast<uint32_t>( result );
-                _hdr.uncompressedSize = static_cast<uint32_t>( payloadSize );
+                _hdr.compressedSize = (uint32_t)result;
+                _hdr.uncompressedSize = (uint32_t)payloadSize;
 
                 compressedPayload.resize( _hdr.compressedSize );
                 _packet.payload.swap( compressedPayload );

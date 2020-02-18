@@ -71,6 +71,7 @@ namespace Mengine
     bool DataflowAEK::flow( const DataInterfacePtr & _data, const MemoryInterfacePtr & _memory, const DataflowContext * _context, const DocumentPtr & _doc )
     {
         MENGINE_UNUSED( _context );
+        MENGINE_UNUSED( _doc );
 
         MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>( _data );
 

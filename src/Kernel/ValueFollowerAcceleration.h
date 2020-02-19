@@ -12,7 +12,7 @@ namespace Mengine
         ValueFollowerAcceleration()
             : m_speed( 0.f )
             , m_acceleration( 0.f )
-            , m_distance( 0.f )
+            , m_distanceOffset( 0.f )
         {
         }
 
@@ -37,14 +37,14 @@ namespace Mengine
             return m_acceleration;
         }
 
-        void setDistance( float _distance )
+        void setDistanceOffset( float _distanceOffset )
         {
-            m_distance = _distance;
+            m_distanceOffset = _distanceOffset;
         }
 
-        float getDistance() const
+        float getDistanceOffset() const
         {
-            return m_distance;
+            return m_distanceOffset;
         }
 
     protected:
@@ -71,18 +71,18 @@ namespace Mengine
 
                 return true;
             }
-            else if( step + m_distance >= value_length )
+            else if( step + m_distanceOffset >= value_length )
             {
-                T offset = this->getDistance();
+                T offset = this->getDistanceOffset();
 
-                T add = offset * ((value_length - m_distance) / value_length);
+                T add = offset * ((value_length - m_distanceOffset) / value_length);
 
                 this->step( add );
 
                 return true;
             }
 
-            T offset = this->getDistance();
+            T offset = this->getDistanceOffset();
 
             T add = offset * (step / value_length);
 
@@ -94,6 +94,6 @@ namespace Mengine
     protected:
         float m_speed;
         float m_acceleration;
-        float m_distance;
+        float m_distanceOffset;
     };
 }

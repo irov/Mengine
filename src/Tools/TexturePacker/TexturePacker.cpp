@@ -190,7 +190,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	WaitForSingleObject( lpProcessInformation.hProcess, INFINITE );
 
-	DWORD exit_code;//Код завершения процесса
+	DWORD exit_code;//пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	GetExitCodeProcess( lpProcessInformation.hProcess, &exit_code );
 
 	CloseHandle( lpProcessInformation.hProcess );

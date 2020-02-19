@@ -197,7 +197,7 @@ namespace Mengine
 
                         if( bytesReceived > 0 )
                         {
-                            m_receivedData.insert( m_receivedData.end(), &buffer[0], &buffer[bytesReceived] );
+                            m_receivedData.insert( m_receivedData.end(), buffer + 0, buffer + bytesReceived );
                         }
                         else
                         {

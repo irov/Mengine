@@ -190,6 +190,8 @@ namespace Mengine
             {
                 png_set_strip_alpha( m_png_ptr );
             }break;
+        default:
+            break;
         };
 
         png_read_update_info( m_png_ptr, m_info_ptr );

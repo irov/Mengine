@@ -58,7 +58,7 @@ namespace Mengine
 #endif
 
     public:
-        uint32_t getReference() const;
+        MENGINE_INLINE uint32_t getReference() const noexcept;
 
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
     public:
@@ -83,6 +83,11 @@ namespace Mengine
         return m_factory;
     }
     //////////////////////////////////////////////////////////////////////////
+    MENGINE_INLINE uint32_t Factorable::getReference() const noexcept
+    {
+        return m_reference;
+    }
+    //////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
     MENGINE_INLINE bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )
     {
@@ -98,7 +103,7 @@ namespace Mengine
         }
 #endif
 
-        if( _ptr->m_reference == 0 )
+        if( _ptr->getReference() == 0 )
         {
             return false;
         }

@@ -85,9 +85,6 @@ protected:
 #define EVENTABLE_OTHER_METHOD(Self, Event)\
     EVENTABLE_OTHER_METHODRT(Self, Event, MENGINE_UNUSED(0), EVENTATION_GETTYPE(Event))
 //////////////////////////////////////////////////////////////////////////
-#define EVENTABLE_OTHER_METHODRT(Self, Event, R, Type)\
-    Self == nullptr ? R : Mengine::Helper::hasEventableReceiver( Self, Event ) == false ? R : Mengine::Helper::getThisEventReciever<Type>( Self, Event )
-//////////////////////////////////////////////////////////////////////////
 #define EVENTABLE_OTHER_METHODT(Self, Event, Type)\
     EVENTABLE_OTHER_METHODRT(Self, Event, MENGINE_UNUSED(0), Type)
 //////////////////////////////////////////////////////////////////////////

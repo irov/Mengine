@@ -1760,6 +1760,7 @@ namespace Mengine
             parameter.type = _callbackData->parameter_types[index];
 
             float shader_values[4] = { 0.f };
+
             switch( parameter.type )
             {
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_SLIDER:
@@ -1789,6 +1790,8 @@ namespace Mengine
 
                     programVariable->setPixelVariableFloats( parameter.uniform, desc->indexOffset + index, shader_values, 4, 1 );
                 }break;
+            default:
+                return AE_FALSE;
             }
         }
 

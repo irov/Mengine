@@ -18,7 +18,7 @@ namespace Mengine
     public:
         void setVertices( const RenderVertex2D * _vertices )
         {
-            stdex::memorycopy( m_vertices, _vertices, VerticesCount );
+            stdex::memorycopy( m_vertices, 0, _vertices, VerticesCount );
         }
 
         MENGINE_INLINE const RenderVertex2D * getVertices() const

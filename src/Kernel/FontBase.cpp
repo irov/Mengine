@@ -278,6 +278,8 @@ namespace Mengine
                 {
                     code = 32;
                 }break;
+            default:
+                break;
             }
 
             result.push_back( (Char32)code );

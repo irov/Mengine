@@ -65,7 +65,7 @@
             </intent-filter>
         </activity>
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider2127867717489966"
+        <provider android:authorities="@string/fb_content_provider_id"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
         <receiver android:name="org.Mengine.Build.LocalNotifications.NotificationPublisher" />

@@ -26,9 +26,9 @@ namespace Mengine
     AstralaxEmitter::AstralaxEmitter()
         : m_randomMode( false )
         , m_renderVertices( nullptr )
-        , m_renderVertexCount( 0 )
+        , m_renderVertexCount( 0U )
         , m_renderIndicies( nullptr )
-        , m_renderIndexCount( 0 )
+        , m_renderIndexCount( 0U )
         , m_positionProviderOriginOffset( 0.f, 0.f, 0.f )
         , m_emitterPositionRelative( false )
         , m_emitterCameraRelative( false )
@@ -111,7 +111,7 @@ namespace Mengine
 
         if( m_emitterPositionRelative == true )
         {
-            if( emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr( this ) ) == false )
+            if( emitter->setPositionProvider( AstralaxPositionProviderInterfacePtr::from( this ) ) == false )
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
@@ -138,7 +138,7 @@ namespace Mengine
 
         if( m_emitterCameraRelative == true )
         {
-            if( emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr( this ) ) == false )
+            if( emitter->setCameraProvider( AstralaxCameraProviderInterfacePtr::from( this ) ) == false )
             {
                 LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()

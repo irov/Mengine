@@ -33,7 +33,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, uint32_t N, class F>
-        MENGINE_CONSTEXPR float calculateBezierLength( const T & _begin, const T & _end, uint32_t _count, const T * _v, uint32_t _quality, F _length )
+        MENGINE_CONSTEXPR float calculateBezierLength( const T & _begin, const T & _end, const T * _v, uint32_t _quality, F _length )
         {
             float total_length = 0.f;
 
@@ -48,7 +48,7 @@ namespace Mengine
                 t += dt;
 
                 T nextPoint;
-                Helper::calculateBezierPosition( nextPoint, _begin, _end, _count, _v, t );
+                Helper::calculateBezierPosition<T, N>( nextPoint, _begin, _end, _v, t );
 
                 float length = _length( nextPoint, prevPoint );
 

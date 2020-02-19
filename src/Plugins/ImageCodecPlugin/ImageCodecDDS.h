@@ -87,6 +87,8 @@ namespace Mengine
             return PF_DXT4;
         case MENGINE_FOURCC( 'D', 'X', 'T', '5' ):
             return PF_DXT5;
+        default:
+            break;
         }
 
         return PF_UNKNOWN;

@@ -113,11 +113,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Factorable::getReference() const
-    {
-        return m_reference;
-    }
-    //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_FACTORABLE_DEBUG
     void Factorable::_checkDestroy()
     {

@@ -214,7 +214,7 @@ namespace Mengine
     bool DX9RenderVertexBuffer::onRenderRestore()
     {
         IDirect3DVertexBuffer9 * pVB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, 0, m_pool, &pVB, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, 0, m_pool, &pVB, nullptr) )
         {
             return false;
         }

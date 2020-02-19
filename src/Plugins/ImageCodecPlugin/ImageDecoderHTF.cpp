@@ -22,6 +22,8 @@ namespace Mengine
             return PF_ETC1;
         case 3:
             return PF_PVRTC4_RGB;
+        default:
+            break;
         }
 
         return PF_UNKNOWN;

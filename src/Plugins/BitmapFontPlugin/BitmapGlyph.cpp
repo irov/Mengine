@@ -417,9 +417,9 @@ namespace Mengine
         {
             MENGINE_UNUSED( _userdata );
 
-            BitmapGlyphSaxCallback * tmsc = (BitmapGlyphSaxCallback *)_userdata;
+            BitmapGlyphSaxCallback * callback = (BitmapGlyphSaxCallback *)_userdata;
 
-            tmsc->parse( _node, _count, _key, _value );
+            callback->parse( _node, _count, _key, _value );
         };
 
         if( xmlsax_parse( memory, &callbacks, &tmsc ) == false )

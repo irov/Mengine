@@ -31,7 +31,7 @@ namespace Mengine
         std::mutex m_mutex;
 
 #ifndef NDEBUG
-        const char * m_file;
+        const Char * m_file;
         uint32_t m_line;
 #endif
     };

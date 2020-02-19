@@ -126,7 +126,7 @@ namespace Mengine
         {
             uint32_t index;
 
-            ResourceImage * image;
+            const ResourceImage * image;
             RenderMaterialInterfacePtr material;
 
             VectorRenderVertex2D vertices;

@@ -748,7 +748,7 @@ namespace Mengine
 
             const spAttachmentType attachment_type = slot->attachment->type;
 
-            ResourceImage * resourceImage = nullptr;
+            const ResourceImage * resourceImage = nullptr;
 
             switch( attachment_type )
             {
@@ -767,7 +767,7 @@ namespace Mengine
                     ab = attachment->color.b;
                     aa = attachment->color.a;
 
-                    resourceImage = (ResourceImage *)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+                    resourceImage = static_cast<const ResourceImage *>(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
 
                     mesh.vertices.resize( 4 );
                     mesh.indices.resize( 6 );
@@ -787,7 +787,7 @@ namespace Mengine
                     ab = attachment->color.b;
                     aa = attachment->color.a;
 
-                    resourceImage = (ResourceImage *)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+                    resourceImage = static_cast<const ResourceImage *>(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
 
                     mesh.vertices.resize( verticesCount );
                     mesh.indices.resize( trianglesCount );

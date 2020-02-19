@@ -219,7 +219,7 @@ namespace Mengine
     bool DX9RenderIndexBuffer::onRenderRestore()
     {
         IDirect3DIndexBuffer9 * pIB = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, nullptr) )
         {
             return false;
         }

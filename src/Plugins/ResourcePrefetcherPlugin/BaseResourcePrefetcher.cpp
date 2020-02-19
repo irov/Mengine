@@ -40,9 +40,9 @@ namespace Mengine
     {
         bool successful = _resource->unfetch( [this, &_resource]()
         {
-            bool successful = this->_unfetch( _resource );
+            bool result = this->_unfetch( _resource );
 
-            return successful;
+            return result;
         } );
 
         if( successful == false )

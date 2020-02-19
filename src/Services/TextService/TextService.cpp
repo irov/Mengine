@@ -434,9 +434,9 @@ namespace Mengine
         {
             MENGINE_UNUSED( _userdata );
 
-            TextManagerLoadSaxCallback * tmsc = (TextManagerLoadSaxCallback *)_userdata;
+            TextManagerLoadSaxCallback * callback = (TextManagerLoadSaxCallback *)_userdata;
 
-            tmsc->parse( _node, _count, _key, _value );
+            callback->parse( _node, _count, _key, _value );
         };
 
         if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )
@@ -528,9 +528,9 @@ namespace Mengine
         {
             MENGINE_UNUSED( _userdata );
 
-            TextManagerUnloadSaxCallback * tmsc = (TextManagerUnloadSaxCallback *)_userdata;
+            TextManagerUnloadSaxCallback * callback = (TextManagerUnloadSaxCallback *)_userdata;
 
-            tmsc->parse( _node, _count, _key, _value );
+            callback->parse( _node, _count, _key, _value );
         };
 
         if( xmlsax_parse( xml_buff, &callbacks, &tmsc ) == false )

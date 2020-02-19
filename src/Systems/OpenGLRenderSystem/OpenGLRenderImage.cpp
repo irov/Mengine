@@ -56,6 +56,8 @@ namespace Mengine
                     return false;
                 }
             }break;
+        default:
+            break;
         }
 
         GLuint tuid = 0;

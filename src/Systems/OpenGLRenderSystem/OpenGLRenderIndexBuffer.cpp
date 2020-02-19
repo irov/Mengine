@@ -44,7 +44,7 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryBuffer( MENGINE_DOCUMENT_FACTORABLE );
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 
         m_memory = memory;
 

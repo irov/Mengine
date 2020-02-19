@@ -532,6 +532,8 @@ namespace Mengine
             {
                 return false;
             }break;
+        default:
+            return false;
         };
 
         TTFGlyph ttf_glyph;
@@ -573,6 +575,8 @@ namespace Mengine
                 break;
             case 4:
                 im_image_format = FE_IMG_R8G8B8A8;
+                break;
+            default:
                 break;
             }
 
@@ -779,6 +783,8 @@ namespace Mengine
 
                     successful = false;
                 }break;
+            default:
+                break;
             };
         }
 

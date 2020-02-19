@@ -23,7 +23,8 @@
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        tools:replace="label">
+        tools:replace="android:label"
+        >
 
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
         <meta-data android:name="firebase_analytics_collection_deactivated" android:value="true" />

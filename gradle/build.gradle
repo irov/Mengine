@@ -21,6 +21,13 @@ buildscript {
 }
 
 allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.encoding = 'UTF-8'
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
+
     repositories {
         maven { url 'https://maven.google.com' }
         google()

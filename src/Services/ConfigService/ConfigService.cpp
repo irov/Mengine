@@ -86,7 +86,7 @@ namespace Mengine
 
         config->setPlatformTags( m_platformTags );
 
-        if( config->load( stream ) == false )
+        if( config->load( stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load config '%s'"
                 , _filePath.c_str()
@@ -106,7 +106,7 @@ namespace Mengine
             , _filePath.c_str()
         );
 
-        if( m_defaultConfig->load( stream ) == false )
+        if( m_defaultConfig->load( stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load config '%s'"
                 , _filePath.c_str()
@@ -122,4 +122,5 @@ namespace Mengine
     {
         return m_defaultConfig;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

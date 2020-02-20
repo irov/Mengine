@@ -24,7 +24,7 @@
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         tools:replace="android:label"
-        >
+        android:fullBackupContent="@xml/backup_descriptor">
 
         <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true"/>
         <meta-data android:name="firebase_analytics_collection_enabled" android:value="false"/>

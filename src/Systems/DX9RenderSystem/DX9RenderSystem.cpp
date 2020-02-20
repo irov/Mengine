@@ -1808,6 +1808,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::onDestroyDX9RenderImage_( DX9RenderImage * _image )
     {
+        MENGINE_UNUSED( _image );
+
 #ifdef MENGINE_DEBUG
         m_textureCount--;
 

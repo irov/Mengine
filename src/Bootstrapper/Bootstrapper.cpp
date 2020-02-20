@@ -646,6 +646,11 @@ namespace Mengine
 #endif
 #endif
 
+        if( HAS_OPTION( "devplugins" ) == true )
+        {
+            devplugins = true;
+        }
+
         bool nodevplugins = HAS_OPTION( "nodevplugins" );
 
         if( devplugins == true && nodevplugins == false )
@@ -701,6 +706,11 @@ namespace Mengine
         bool devplugins = developmentMode;
 #endif
 #endif
+
+        if( HAS_OPTION( "devplugins" ) == true )
+        {
+            devplugins = true;
+        }
 
         bool nodevplugins = HAS_OPTION( "nodevplugins" );
 
@@ -790,6 +800,11 @@ namespace Mengine
 #endif
 #endif
 
+        if( HAS_OPTION( "devmodules" ) == true )
+        {
+            devmodules = true;
+        }
+
         bool nodevmodules = HAS_OPTION( "nodevmodules" );
 
         if( devmodules == true && nodevmodules == false )
@@ -862,6 +877,11 @@ namespace Mengine
         bool devmodules = developmentMode;
 #endif
 #endif
+
+        if( HAS_OPTION( "devmodules" ) == true )
+        {
+            devmodules = true;
+        }
 
         bool nodevmodules = HAS_OPTION( "nodevmodules" );
 

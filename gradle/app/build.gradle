@@ -143,10 +143,10 @@ android {
        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
     
-    //afterEvaluate {
-    //    assembleDebug.finalizedBy(crashlyticsUploadSymbolsDebug)
-    //    assembleRelease.finalizedBy(crashlyticsUploadSymbolsRelease)
-    //}
+    afterEvaluate {
+        assembleDebug.finalizedBy(crashlyticsUploadSymbolsDebug)
+        assembleRelease.finalizedBy(crashlyticsUploadSymbolsRelease)
+    }
 }
 
 task openal_copy_bsinc_inc(type: Copy) {

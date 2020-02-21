@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     signingConfigs {
@@ -88,6 +87,10 @@ android {
                             "-DCMAKE_BUILD_TYPE:STRING=Debug",
                             "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug"
                 }
+                
+                firebaseCrashlytics {
+                    mappingFileUploadEnabled false
+                }
             }
         }
 
@@ -101,6 +104,10 @@ android {
                             "-DANDROID_ALLOW_UNDEFINED_SYMBOLS=TRUE",
                             "-DCMAKE_BUILD_TYPE:STRING=Release",
                             "-DCMAKE_CONFIGURATION_TYPES:STRING=Release"
+                }
+                
+                firebaseCrashlytics {
+                    nativeSymbolUploadEnabled true
                 }
             }
         }
@@ -134,11 +141,14 @@ android {
             }
         }
     }
+    
     aaptOptions {
         noCompress 'pak', 'bin'
     }
+    
     productFlavors {
-    }    
+    }
+    
     packagingOptions {
        pickFirst 'lib/arm64-v8a/libjsc.so'
        pickFirst 'lib/arm64-v8a/libc++_shared.so'
@@ -158,10 +168,6 @@ task openal_CMakeLists(type: Copy) {
 
 preBuild.dependsOn openal_copy_bsinc_inc
 preBuild.dependsOn openal_CMakeLists
-
-crashlytics {
-    enableNdk true
-}
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -184,8 +190,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
     implementation 'com.google.firebase:firebase-firestore:21.4.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
-    implementation 'com.crashlytics.sdk.android:crashlytics-ndk:2.1.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.0-beta01'
+    implementation 'com.google.firebase:firebase-crashlytics-ndk:17.0.0-beta01'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'androidx.multidex:multidex:2.0.0'
 }

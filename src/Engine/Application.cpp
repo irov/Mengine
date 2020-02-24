@@ -278,6 +278,13 @@ namespace Mengine
             LOGGER_CRITICAL( "Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru" );
         }
 
+#ifdef MENGINE_GIT_SHA1
+        if( HAS_OPTION( "git" ) == true )
+        {
+            LOGGER_CRITICAL( "Git: %s", MENGINE_GIT_SHA1 );
+        }
+#endif
+
         bool fullscreen = this->getFullscreenMode();
 
         if( fullscreen == true )

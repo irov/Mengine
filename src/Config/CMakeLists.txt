@@ -1,5 +1,11 @@
 SET(MY_LIB_NAME Config)
 
+list(APPEND CMAKE_MODULE_PATH "${THIRDPARTY_DIR}/cmake-modules/")
+include(GetGitRevisionDescription)
+
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+configure_file(GitSHA1.h.in "${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.h" @ONLY)
+
 ADD_FILTER(
 src
     Array.h
@@ -30,6 +36,7 @@ src
     Secure.h
     StdIO.h
     Metaprogramming.h
+    GitSHA1.h
     cmake_dummy.cpp
 )
 

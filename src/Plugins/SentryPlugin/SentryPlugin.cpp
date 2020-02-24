@@ -6,6 +6,9 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
+#include "Kernel/Logger.h"
+
+#include "Config/GitSHA1.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
@@ -26,7 +29,8 @@ namespace Mengine
     {
         sentry_options_t * options = sentry_options_new();
         sentry_options_set_dsn( options, "https://fbdebd6adfef416f988343a18124aa32@sentry.io/2491034" );
-        sentry_options_set_handler_path( options, "crashpad_handler.exe" );
+        sentry_options_set_handler_pathw( options, L"crashpad_handler.exe" );
+        sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, 1 );
         sentry_init( options );
 
@@ -35,15 +39,6 @@ namespace Mengine
         sentry_set_extra( "Application", sentry_value_new_string( "Mengine" ) );
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION, this, &SentryPlugin::notifyCreateApplication_ );
-
-        //sentry_capture_event( sentry_value_new_message_event(
-        //    /*   level */ SENTRY_LEVEL_INFO,
-        //    /*  logger */ "custom",
-        //    /* message */ "It works!"
-        //) );
-
-        //*(int *)(0) = 0;
-        //memset( (char *)0x0, 1, 100 );
 
         return true;
     }
@@ -80,11 +75,24 @@ namespace Mengine
         Helper::stringalized( projectVersion, projectVersionString, 32 );
 
         sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
-        sentry_set_extra( "GitHub SHA1", sentry_value_new_string( MENGINE_GITHUB_SHA1 ) );
+
+#ifdef MENGINE_GIT_SHA1
+        sentry_set_extra( "GitHub SHA1", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
+#endif
 
         Char releaseString[32];
         sprintf( releaseString, "%s@%u", projectName, projectVersion );
 
         sentry_options_set_release( m_options, releaseString );
+
+        //sentry_capture_event( sentry_value_new_message_event(
+        //    /*   level */ SENTRY_LEVEL_INFO,
+        //    /*  logger */ "custom",
+        //    /* message */ "It works!"
+        //) );
+
+        //Sleep( 1000 );
+
+        //*(int *)(0) = 0;
     }
 }

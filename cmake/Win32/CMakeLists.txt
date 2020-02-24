@@ -17,6 +17,7 @@ SET(MENGINE_INSTALL_PATH "" CACHE STRING "Mengine install path")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
+INCLUDE(../base_template.cmake)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../win32_template.cmake)
 INCLUDE(../mengine_template.cmake)

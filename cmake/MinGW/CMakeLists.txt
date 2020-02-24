@@ -16,6 +16,7 @@ SET(MENGINE_SUBFOLDER_NAME "Mengine" CACHE STRING "Mengine subfolder name")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
+INCLUDE(../base_template.cmake)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../mingw_template.cmake)
 INCLUDE(../mengine_template.cmake)

@@ -21,11 +21,10 @@ SET(MENGINE_INSTALL_PATH "" CACHE STRING "Mengine install path")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
+INCLUDE(../base_template.cmake)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../xcode_template.cmake)
 INCLUDE(../mengine_template.cmake)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 SET_MENGINE_ENVIRONMENT(MACOS OPENGL X64 SDL XCODE)
 

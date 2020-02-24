@@ -16,11 +16,10 @@ SET(MENGINE_SUBFOLDER_NAME "Mengine" CACHE STRING "Mengine subfolder name")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
+INCLUDE(../base_template.cmake)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../android_template.cmake)
 INCLUDE(../mengine_template.cmake)
-
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 SET_MENGINE_ENVIRONMENT(ANDROID OPENGL X64 SDL GRADLE)
 

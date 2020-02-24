@@ -2141,8 +2141,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, value ) == false )
+            const Char * value = nullptr;
+            if( account->getSetting( _setting, &value ) == false )
             {
                 return _kernel->ret_none();
             }
@@ -2161,8 +2161,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, value ) == false )
+            const Char * value = nullptr;
+            if( account->getSetting( _setting, &value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
@@ -2199,8 +2199,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, setting_value ) == false )
+            const Char * setting_value = nullptr;
+            if( account->getSetting( _setting, &setting_value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
@@ -2236,8 +2236,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, setting_value ) == false )
+            const Char * setting_value = nullptr;
+            if( account->getSetting( _setting, &setting_value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
@@ -2273,8 +2273,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, setting_value ) == false )
+            const Char * setting_value = nullptr;
+            if( account->getSetting( _setting, &setting_value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
@@ -2310,8 +2310,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, setting_value ) == false )
+            const Char * setting_value = nullptr;
+            if( account->getSetting( _setting, &setting_value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
@@ -2350,8 +2350,8 @@ namespace Mengine
                 , _accountID.c_str()
             );
 
-            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, setting_value ) == false )
+            const Char * setting_value = nullptr;
+            if( account->getSetting( _setting, &setting_value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
@@ -2392,8 +2392,8 @@ namespace Mengine
                 return _default;
             }
 
-            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
-            if( account->getSetting( _setting, setting_value ) == false )
+            const Char * setting_value = nullptr;
+            if( account->getSetting( _setting, &setting_value ) == false )
             {
                 LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()

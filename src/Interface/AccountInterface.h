@@ -50,12 +50,13 @@ namespace Mengine
     public:
         virtual bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) = 0;
         virtual bool changeSetting( const ConstString & _setting, const Char * _value ) = 0;
-        virtual bool getSetting( const ConstString & _setting, Char * _value ) const = 0;
-        virtual bool hasSetting( const ConstString & _setting, Char * _value ) const = 0;
+        virtual bool getSetting( const ConstString & _setting, const Char ** _value ) const = 0;
+        virtual bool hasSetting( const ConstString & _setting, const Char ** _value ) const = 0;
 
     public:
         virtual void apply() = 0;
 
+    public:
         virtual bool load() = 0;
         virtual bool save() = 0;
 

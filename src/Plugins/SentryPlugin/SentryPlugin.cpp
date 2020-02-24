@@ -89,7 +89,7 @@ namespace Mengine
         sentry_set_extra( "Version", sentry_value_new_string( projectVersionString ) );
 
 #ifdef MENGINE_GIT_SHA1
-        sentry_set_extra( "GitHub SHA1", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
+        sentry_set_extra( "Git", sentry_value_new_string( MENGINE_GIT_SHA1 ) );
 #endif
 
         Char releaseString[32];

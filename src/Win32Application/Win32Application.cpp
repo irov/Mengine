@@ -409,6 +409,10 @@ namespace Mengine
             return false;
         }
 
+#ifdef MENGINE_GIT_SHA1
+        LOGGER_INFO( "GIT_SHA1: %s", MENGINE_GIT_SHA1 );
+#endif
+
         LOGGER_MESSAGE( "Creating Render Window..." );
 
         const Char * projectTitle = nullptr;

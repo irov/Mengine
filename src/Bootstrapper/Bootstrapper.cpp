@@ -760,6 +760,8 @@ namespace Mengine
                 LOGGER_CRITICAL( "failed to run framework '%s'"
                     , name.c_str()
                 );
+
+                return false;
             }
         }
 

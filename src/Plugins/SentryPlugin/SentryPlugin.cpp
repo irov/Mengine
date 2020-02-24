@@ -27,6 +27,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SentryPlugin::_initializePlugin()
     {
+        if( PLATFORM_SERVICE()
+            ->isDebuggerPresent() == true )
+        {
+            return true;
+        }
+
         sentry_options_t * options = sentry_options_new();
         sentry_options_set_dsn( options, "https://fbdebd6adfef416f988343a18124aa32@sentry.io/2491034" );
         sentry_options_set_handler_pathw( options, L"crashpad_handler.exe" );
@@ -45,6 +51,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SentryPlugin::_finalizePlugin()
     {
+        if( PLATFORM_SERVICE()
+            ->isDebuggerPresent() == true )
+        {
+            return;
+        }
+
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_BOOTSTRAPPER_CREATE_APPLICATION );
 
         sentry_shutdown();

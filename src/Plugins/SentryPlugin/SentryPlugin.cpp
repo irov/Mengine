@@ -4,6 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificatorInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Stringalized.h"
 #include "Kernel/Logger.h"
@@ -42,9 +43,11 @@ namespace Mengine
             return true;
         }
 
+        const Char * sentryHandler = CONFIG_VALUE( "Sentry", "Handler", "crashpad_handler.exe" );
+
         sentry_options_t * options = sentry_options_new();
         sentry_options_set_dsn( options, sentryDSN );
-        sentry_options_set_handler_pathw( options, L"crashpad_handler.exe" );
+        sentry_options_set_handler_path( options, sentryHandler );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, 1 );
         sentry_init( options );

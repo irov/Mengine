@@ -156,6 +156,10 @@ android {
        pickFirst 'lib/arm64-v8a/libc++_shared.so'
        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
     }
+    
+    afterEvaluate {
+        assembleRelease.finalizedBy(uploadCrashlyticsSymbolFileRelease)
+    }
 }
 
 task openal_copy_bsinc_inc(type: Copy) {

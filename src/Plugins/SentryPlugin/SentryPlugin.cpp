@@ -33,8 +33,17 @@ namespace Mengine
             return true;
         }
 
+        const Char * sentryDSN = CONFIG_VALUE( "Sentry", "DSN", "" );
+
+        if( ::strcmp( sentryDSN, "" ) == 0 )
+        {
+            LOGGER_WARNING( "Sentry don't setup DSN" );
+
+            return true;
+        }
+
         sentry_options_t * options = sentry_options_new();
-        sentry_options_set_dsn( options, "https://fbdebd6adfef416f988343a18124aa32@sentry.io/2491034" );
+        sentry_options_set_dsn( options, sentryDSN );
         sentry_options_set_handler_pathw( options, L"crashpad_handler.exe" );
         sentry_options_set_system_crash_reporter_enabled( options, 1 );
         sentry_options_set_debug( options, 1 );

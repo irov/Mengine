@@ -304,7 +304,7 @@ MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)
     if(MENGINE_USE_SUBFOLDER)
         if(${EXIST_FILTER_FOLDER} GREATER 0)
             set_target_properties (${MY_LIB_NAME} PROPERTIES
-                FOLDER ${MENGINE_SUBFOLDER_NAME}/${FILTER_FOLDER}
+                FOLDER ${FILTER_FOLDER}
             )
         else()
             set_target_properties (${MY_LIB_NAME} PROPERTIES

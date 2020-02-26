@@ -1773,7 +1773,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::changeWindowResolution( const Resolution & _resolution )
     {
-        LOGGER_ERROR( "%u %u -> %u %u"
+        LOGGER_MESSAGE( "change window resolution size %u:%u -> %u:%u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , _resolution.getWidth()

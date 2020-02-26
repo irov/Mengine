@@ -654,7 +654,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_WARNING( "w %d h %d fullscreen %d"
+        LOGGER_MESSAGE( "create window size %u:%u fullscreen %d"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen

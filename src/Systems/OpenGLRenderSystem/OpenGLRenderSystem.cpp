@@ -42,7 +42,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::_initializeService()
     {
-        LOGGER_WARNING( "Initializing OpenGL RenderSystem..." );
+        LOGGER_MESSAGE( "Initializing OpenGL RenderSystem..." );
 
 #ifndef MENGINE_RENDER_OPENGL_ES
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGL" );

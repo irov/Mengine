@@ -569,10 +569,11 @@ endif()
 #dependencies openal-soft
 if(MENGINE_DEPENDENCE_OPENAL_SOFT)
     message("================openal-soft================")
-    if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/bsinc_inc.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/bsinc_inc.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/win_main_utf8.h ${THIRDPARTY_DIR}/openal-soft/common/win_main_utf8.h COPYONLY)
     
+    if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
         if(MENGINE_TOOLCHAIN_MSVC)			
             SET(LIBTYPE STATIC)
             SET(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
@@ -612,8 +613,6 @@ if(MENGINE_DEPENDENCE_OPENAL_SOFT)
         SET(ALSOFT_REQUIRE_SDL2 OFF CACHE BOOL "Require SDL2 backend" FORCE)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/openal-soft ${CMAKE_TEMP_DIR}/openal-soft)
-        
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/win_main_utf8.h ${THIRDPARTY_DIR}/openal-soft/common/win_main_utf8.h COPYONLY)
     endif()    
 endif()
 

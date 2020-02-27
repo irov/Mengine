@@ -679,10 +679,10 @@ namespace Mengine
         int dh;
         SDL_GL_GetDrawableSize( m_window, &dw, &dh );
 
-        m_sdlInput->updateSurfaceResolution( static_cast<float>(dw),
-            static_cast<float>(dh) );
+        float dwf = (float)dw;
+        float dhf = (float)dh;
 
-        ;
+        m_sdlInput->updateSurfaceResolution( dwf, dhf );
 
 #if defined(MENGINE_PLATFORM_IOS)
         APPLICATION_SERVICE()
@@ -842,8 +842,8 @@ namespace Mengine
         uint32_t width = resolution.getWidth();
         uint32_t height = resolution.getHeight();
 
-        const int wndPosX = static_cast<int>(_pos.x * width);
-        const int wndPosY = static_cast<int>(_pos.y * height);
+        int wndPosX = static_cast<int>(_pos.x * width);
+        int wndPosY = static_cast<int>(_pos.y * height);
 
         // ! This function generates a mouse motion event !
         SDL_WarpMouseInWindow( m_window, wndPosX, wndPosY );

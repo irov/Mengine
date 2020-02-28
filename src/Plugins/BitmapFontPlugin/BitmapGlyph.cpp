@@ -10,11 +10,11 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
+#include "Config/StdString.h"
+
 #include "xmlsax/xmlsax.hpp"
 
 #include "utf8.h"
-
-#include <string.h>
 
 namespace Mengine
 {
@@ -108,30 +108,30 @@ namespace Mengine
         public:
             void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
             {
-                if( strcmp( _node, "font" ) == 0 )
+                if( MENGINE_STRCMP( _node, "font" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const char * key = _keys[i];
                         const char * value = _values[i];
 
-                        if( strcmp( key, "type" ) == 0 )
+                        if( MENGINE_STRCMP( key, "type" ) == 0 )
                         {
-                            if( strcmp( value, "GHL" ) == 0 )
+                            if( MENGINE_STRCMP( value, "GHL" ) == 0 )
                             {
                                 m_valid = true;
                             }
                         }
                     }
                 }
-                else if( strcmp( _node, "description" ) == 0 )
+                else if( MENGINE_STRCMP( _node, "description" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const char * key = _keys[i];
                         const char * value = _values[i];
 
-                        if( strcmp( key, "size" ) == 0 )
+                        if( MENGINE_STRCMP( key, "size" ) == 0 )
                         {
                             float size;
                             if( sscanf( value, "%f", &size ) != 1 )
@@ -147,14 +147,14 @@ namespace Mengine
                         }
                     }
                 }
-                else if( strcmp( _node, "metrics" ) == 0 )
+                else if( MENGINE_STRCMP( _node, "metrics" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const char * key = _keys[i];
                         const char * value = _values[i];
 
-                        if( strcmp( key, "ascender" ) == 0 )
+                        if( MENGINE_STRCMP( key, "ascender" ) == 0 )
                         {
                             float ascender = 0.f;
                             if( sscanf( value, "%f", &ascender ) != 1 )
@@ -168,7 +168,7 @@ namespace Mengine
 
                             m_glyph->setAscender( ascender );
                         }
-                        else if( strcmp( key, "height" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "height" ) == 0 )
                         {
                             uint32_t height = 0;
                             if( sscanf( value, "%u", &height ) != 1 )
@@ -182,7 +182,7 @@ namespace Mengine
 
                             m_glyph->setHeight( height );
                         }
-                        else if( strcmp( key, "descender" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "descender" ) == 0 )
                         {
                             float descender = 0.f;
                             if( sscanf( value, "%f", &descender ) != 1 )
@@ -198,14 +198,14 @@ namespace Mengine
                         }
                     }
                 }
-                else if( strcmp( _node, "texture" ) == 0 )
+                else if( MENGINE_STRCMP( _node, "texture" ) == 0 )
                 {
                     for( uint32_t i = 0; i != _count; ++i )
                     {
                         const char * key = _keys[i];
                         const char * value = _values[i];
 
-                        if( strcmp( key, "width" ) == 0 )
+                        if( MENGINE_STRCMP( key, "width" ) == 0 )
                         {
                             uint32_t width = 0;
                             if( sscanf( value, "%u", &width ) != 1 )
@@ -221,7 +221,7 @@ namespace Mengine
 
                             m_glyph->setTextureWidth( width_pow2 );
                         }
-                        else if( strcmp( key, "height" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "height" ) == 0 )
                         {
                             uint32_t height = 0;
                             if( sscanf( value, "%u", &height ) != 1 )
@@ -239,7 +239,7 @@ namespace Mengine
                         }
                     }
                 }
-                else if( strcmp( _node, "char" ) == 0 )
+                else if( MENGINE_STRCMP( _node, "char" ) == 0 )
                 {
                     float advance = 0.f;
                     mt::vec2f offset( 0.f, 0.f );
@@ -251,7 +251,7 @@ namespace Mengine
                         const char * key = _keys[i];
                         const char * value = _values[i];
 
-                        if( strcmp( key, "advance" ) == 0 )
+                        if( MENGINE_STRCMP( key, "advance" ) == 0 )
                         {
                             if( sscanf( value, "%f", &advance ) != 1 )
                             {
@@ -262,7 +262,7 @@ namespace Mengine
                                 );
                             }
                         }
-                        else if( strcmp( key, "offset" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "offset" ) == 0 )
                         {
                             if( sscanf( value, "%f %f", &offset.x, &offset.y ) != 2 )
                             {
@@ -273,7 +273,7 @@ namespace Mengine
                                 );
                             }
                         }
-                        else if( strcmp( key, "rect" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "rect" ) == 0 )
                         {
                             if( sscanf( value, "%f %f %f %f", &rect.x, &rect.y, &rect.z, &rect.w ) != 4 )
                             {
@@ -284,7 +284,7 @@ namespace Mengine
                                 );
                             }
                         }
-                        else if( strcmp( key, "id" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "id" ) == 0 )
                         {
                             id = value;
                         }
@@ -294,7 +294,7 @@ namespace Mengine
                     mt::vec2f size( rect.z, rect.w );
 
                     uint32_t cp = 0;
-                    size_t code_length = strlen( id );
+                    size_t code_length = MENGINE_STRLEN( id );
                     utf8::internal::utf_error err_code = utf8::internal::validate_next( id, id + code_length, cp );
 
                     if( cp == 0 || err_code != utf8::internal::UTF8_OK )
@@ -314,7 +314,7 @@ namespace Mengine
 
                     m_glyphCode = glyphCode;
                 }
-                else if( strcmp( _node, "kerning" ) == 0 )
+                else if( MENGINE_STRCMP( _node, "kerning" ) == 0 )
                 {
                     float advance = 0.f;
                     GlyphCode nextCode = 0;
@@ -324,7 +324,7 @@ namespace Mengine
                         const char * key = _keys[i];
                         const char * value = _values[i];
 
-                        if( strcmp( key, "advance" ) == 0 )
+                        if( MENGINE_STRCMP( key, "advance" ) == 0 )
                         {
                             if( sscanf( value, "%f", &advance ) != 1 )
                             {
@@ -335,12 +335,12 @@ namespace Mengine
                                 );
                             }
                         }
-                        else if( strcmp( key, "id" ) == 0 )
+                        else if( MENGINE_STRCMP( key, "id" ) == 0 )
                         {
                             const char * id = value;
 
                             uint32_t cp = 0;
-                            size_t id_length = strlen( id );
+                            size_t id_length = MENGINE_STRLEN( id );
                             utf8::internal::utf_error err_code = utf8::internal::validate_next( id, id + id_length, cp );
 
                             if( cp == 0 || err_code != utf8::internal::UTF8_OK )

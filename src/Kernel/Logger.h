@@ -4,7 +4,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Char.h"
-#include "Config/StdIO.h"
+#include "Config/StdArg.h"
 
 namespace Mengine
 {

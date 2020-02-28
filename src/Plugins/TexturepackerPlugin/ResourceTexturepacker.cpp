@@ -16,7 +16,7 @@
 #include "Kernel/PathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -253,7 +253,7 @@ namespace Mengine
                 {
                     c_name = Helper::stringizeString( name );
                 }
-                else if( ::strcmp( ext_delimiter, ".png" ) != 0 )
+                else if( MENGINE_STRCMP( ext_delimiter, ".png" ) != 0 )
                 {
                     c_name = Helper::stringizeString( name );
                 }

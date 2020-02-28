@@ -7,6 +7,7 @@
 #include "Config/VectorString.h"
 #include "Config/Stringstream.h"
 #include "Config/StdIO.h"
+#include "Config/StdArg.h"
 
 #include <clocale>
 

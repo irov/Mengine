@@ -49,7 +49,6 @@
 
 #include "MessageBoxLogger.h"
 
-#include <cstdio>
 #include <clocale>
 #include <memory>
 #include <errno.h>

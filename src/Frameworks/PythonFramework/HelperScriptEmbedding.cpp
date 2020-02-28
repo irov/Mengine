@@ -770,7 +770,9 @@ namespace Mengine
             const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                 ->getRandomizer();
 
-            return randomizer->getRandom( a );
+            int32_t value = randomizer->getRandom( a );
+
+            return value;
         }
         //////////////////////////////////////////////////////////////////////////
         float mt_randf( float a )
@@ -778,7 +780,9 @@ namespace Mengine
             const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                 ->getRandomizer();
 
-            return randomizer->getRandomf( a );
+            float value = randomizer->getRandomf( a );
+
+            return value;
         }
         //////////////////////////////////////////////////////////////////////////
         int32_t mt_range_rand( int32_t a, int32_t b )
@@ -786,7 +790,9 @@ namespace Mengine
             const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                 ->getRandomizer();
 
-            return randomizer->getRandomRange( a, b );
+            int32_t value = randomizer->getRandomRange( a, b );
+
+            return value;
         }
         //////////////////////////////////////////////////////////////////////////
         float mt_range_randf( float a, float b )
@@ -794,7 +800,9 @@ namespace Mengine
             const RandomizerInterfacePtr & randomizer = PLAYER_SERVICE()
                 ->getRandomizer();
 
-            return randomizer->getRandomRangef( a, b );
+            float value = randomizer->getRandomRangef( a, b );
+
+            return value;
         }
         //////////////////////////////////////////////////////////////////////////
         float mt_around_randf( float a, float b )

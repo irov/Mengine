@@ -9,8 +9,7 @@
 
 #include "Config/String.h"
 #include "Config/Char.h"
-
-#include <stdint.h>
+#include "Config/StdInt.h"
 
 namespace Mengine
 {

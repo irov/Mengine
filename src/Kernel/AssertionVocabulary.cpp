@@ -5,8 +5,6 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
-#include <stdlib.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

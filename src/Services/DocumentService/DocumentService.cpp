@@ -7,6 +7,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Config/StdIO.h"
+#include "Config/StdArg.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_DOCUMENT_MAX_MESSAGE

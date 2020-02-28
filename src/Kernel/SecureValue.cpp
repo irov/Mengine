@@ -1,9 +1,9 @@
 #include "SecureValue.h"
 #include "CRC32.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "Config/StdIO.h"
+#include "Config/StdLib.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -23,7 +23,8 @@ namespace Mengine
         uint32_t hash = Helper::make_crc32_pod( _value );
         m_hash = hash;
         m_value = _value ^ hash;
-        sprintf( m_buffer, "%x%x", m_value, hash );
+
+        MENGINE_SPRINTF( m_buffer, "%x%x", m_value, hash );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SecureValue::getUnprotectedValue( uint32_t * _value ) const
@@ -36,9 +37,9 @@ namespace Mengine
         }
 
         Char buffer[17];
-        sprintf( buffer, "%x%x", m_value, hash );
+        MENGINE_SPRINTF( buffer, "%x%x", m_value, hash );
 
-        uint32_t unprotected_value = (m_value ^ hash) ^ (::abs( ::strcmp( m_buffer, buffer ) ) * ~0U);
+        uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( MENGINE_STRCMP( m_buffer, buffer ) ) * ~0U);
 
         if( (unprotected_value ^ hash) != m_value )
         {

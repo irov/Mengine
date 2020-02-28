@@ -34,7 +34,13 @@ src
     Config.h
     Export.h
     Secure.h
+    StdInt.h
+    StdDef.h
+    StdIntTypes.h
+    StdArg.h
     StdIO.h
+    StdLib.h
+    StdString.h
     Metaprogramming.h
     GitSHA1.h
     cmake_dummy.cpp

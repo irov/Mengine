@@ -9,9 +9,9 @@
 
 #include "JSONStorage.h"
 
-#include "jpp/jpp.hpp"
+#include "Config/StdString.h"
 
-#include <string.h>
+#include "jpp/jpp.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( JSONService, Mengine::JSONService );
@@ -66,10 +66,10 @@ namespace Mengine
             }
 
             const uint8_t * jd_buffer = jd->buffer + jd->carriage;
-            ::memcpy( _buffer, jd_buffer, _buflen );
+            MENGINE_MEMCPY( _buffer, jd_buffer, _buflen );
             jd->carriage += _buflen;
 
-            return _buflen;            
+            return _buflen;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,13 +106,31 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    JSONStorageInterfacePtr JSONService::createStorage( const jpp::object & _json, const DocumentPtr & _doc ) const
+    JSONStorageInterfacePtr JSONService::createStorage( const jpp::object & _json, bool _copy, const DocumentPtr & _doc ) const
     {
         JSONStoragePtr storage = m_factoryJSONStorage->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( storage, nullptr, "invalid create json storage" );
 
-        storage->setJSON( _json );
+        if( _copy == true )
+        {
+            jpp::object copy_json = jpp::copy( _json );
+
+            storage->setJSON( copy_json );
+        }
+        else
+        {
+            storage->setJSON( _json );
+        }
+
+        return storage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JSONStorageInterfacePtr JSONService::copyStorage( const JSONStorageInterfacePtr & _storage, const DocumentPtr & _doc ) const
+    {
+        const jpp::object & json = _storage->getJSON();
+
+        JSONStorageInterfacePtr storage = this->createStorage( json, true, _doc );
 
         return storage;
     }
@@ -169,7 +187,7 @@ namespace Mengine
             return nullptr;
         }
 
-        JSONStoragePtr storage = this->createStorage( json, _doc );
+        JSONStoragePtr storage = this->createStorage( json, false, _doc );
 
         return storage;
     }

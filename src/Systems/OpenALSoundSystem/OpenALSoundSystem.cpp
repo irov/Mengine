@@ -11,7 +11,6 @@
 #include "Kernel/DocumentHelper.h"
 
 #include <algorithm>
-#include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundSystem, Mengine::OpenALSoundSystem );

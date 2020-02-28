@@ -21,7 +21,6 @@
 
 #include "ozz/geometry/runtime/skinning_job.h"
 
-#include <string.h>
 #include <algorithm>
 
 namespace Mengine

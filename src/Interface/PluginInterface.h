@@ -22,6 +22,10 @@ namespace Mengine
         virtual const Char * getPluginName() const = 0;
 
     public:
+        virtual void setUID( uint32_t _uid ) = 0;
+        virtual uint32_t getUID() const = 0;
+
+    public:
         virtual void setDynamicLoad( bool _dynamicLoad ) = 0;
         virtual bool isDynamicLoad() const = 0;
 
@@ -48,10 +52,11 @@ namespace Mengine
     initPlugin##Name
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
-    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic ){\
-    if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();}\
+    extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, uint32_t _uid, bool _dynamic ){\
+    if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();stdex_allocator_set_uid(_uid);}\
     Mengine::PluginInterface * plugin = new Mengine::FactorablePlugin<Type>();\
     if( plugin == nullptr ){ return false; }\
+    plugin->setUID( _uid );\
     plugin->setDynamicLoad( _dynamic );\
     *_plugin = plugin;\
     return true;}}
@@ -59,9 +64,9 @@ namespace Mengine
 #define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
     extern "C"\
     {\
-        MENGINE_DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin )\
+        MENGINE_DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, uint32_t _uid )\
         {\
-            return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
+            return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, _uid, true );\
         }\
     }
 //////////////////////////////////////////////////////////////////////////
@@ -77,6 +82,6 @@ namespace Mengine
 #define PLUGIN_EXPORT(Name)\
     extern "C"\
     {\
-        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, bool _dynamic );\
+        extern bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, uint32_t _uid, bool _dynamic );\
     }
 //////////////////////////////////////////////////////////////////////////

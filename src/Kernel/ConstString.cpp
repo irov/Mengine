@@ -1,7 +1,7 @@
 #include "ConstString.h"
 #include "ConstStringHolder.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -17,7 +17,7 @@ namespace Mengine
     {
         const ConstString::value_type * left_str = _left.c_str();
 
-        if( strcmp( left_str, _right ) != 0 )
+        if( MENGINE_STRCMP( left_str, _right ) != 0 )
         {
             return false;
         }
@@ -29,7 +29,7 @@ namespace Mengine
     {
         const ConstString::value_type * right_str = _right.c_str();
 
-        if( strcmp( _left, right_str ) != 0 )
+        if( MENGINE_STRCMP( _left, right_str ) != 0 )
         {
             return false;
         }
@@ -41,7 +41,7 @@ namespace Mengine
     {
         const ConstString::value_type * left_str = _left.c_str();
 
-        if( strcmp( left_str, _right ) == 0 )
+        if( MENGINE_STRCMP( left_str, _right ) == 0 )
         {
             return false;
         }
@@ -53,7 +53,7 @@ namespace Mengine
     {
         const ConstString::value_type * right_str = _right.c_str();
 
-        if( strcmp( _left, right_str ) == 0 )
+        if( MENGINE_STRCMP( _left, right_str ) == 0 )
         {
             return false;
         }

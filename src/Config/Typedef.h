@@ -1,7 +1,5 @@
 #pragma once
 
 #include "Config/Config.h"
-
-#include <cstddef>
-#include <stddef.h>
-#include <stdint.h>
+#include "Config/StdInt.h"
+#include "Config/StdDef.h"

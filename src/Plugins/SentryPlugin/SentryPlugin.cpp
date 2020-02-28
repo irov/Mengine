@@ -10,6 +10,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/GitSHA1.h"
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Sentry, Mengine::SentryPlugin )
@@ -28,6 +29,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SentryPlugin::_initializePlugin()
     {
+        if( CONFIG_VALUE( "Sentry", "Enable", true ) == false )
+        {
+            return true;
+        }
+
         if( PLATFORM_SERVICE()
             ->isDebuggerPresent() == true )
         {
@@ -36,7 +42,7 @@ namespace Mengine
 
         const Char * sentryDSN = CONFIG_VALUE( "Sentry", "DSN", "" );
 
-        if( ::strcmp( sentryDSN, "" ) == 0 )
+        if( MENGINE_STRCMP( sentryDSN, "" ) == 0 )
         {
             LOGGER_WARNING( "Sentry don't setup DSN" );
 

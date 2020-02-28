@@ -2,6 +2,8 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -27,7 +29,7 @@ namespace Mengine
 
             _utf8.resize( utf8Size );
 
-            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, &_utf8[0], utf8Size, nullptr ) == false )
+            if( unicodeService->unicodeToUtf8( _unicode, _unicodeSize, _utf8.data(), utf8Size, nullptr ) == false )
             {
                 _utf8.clear();
 
@@ -91,7 +93,7 @@ namespace Mengine
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
-            size_t utf8Size = strlen( _utf8 );
+            size_t utf8Size = MENGINE_STRLEN( _utf8 );
 
             size_t unicodeSize;
             bool successful = unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, &unicodeSize );
@@ -118,7 +120,7 @@ namespace Mengine
 
             _unicode.resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, &_unicode[0], unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, MENGINE_UNKNOWN_SIZE, _unicode.data(), unicodeSize, nullptr ) == false )
             {
                 _unicode.clear();
 
@@ -157,7 +159,7 @@ namespace Mengine
 
             _unicode.resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, &_unicode[0], unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode.data(), unicodeSize, nullptr ) == false )
             {
                 _unicode.clear();
 

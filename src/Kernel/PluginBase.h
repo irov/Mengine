@@ -20,6 +20,10 @@ namespace Mengine
         ~PluginBase() override;
 
     protected:
+        void setUID( uint32_t _uid ) override;
+        uint32_t getUID() const override;
+
+    protected:
         void setDynamicLoad( bool _dynamicLoad ) override;
         bool isDynamicLoad() const override;
 
@@ -46,6 +50,8 @@ namespace Mengine
         bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory );
 
     protected:
+        uint32_t m_uid;
+
         typedef Vector<ConstString> VectorModuleFactory;
         VectorModuleFactory m_moduleFactories;
 

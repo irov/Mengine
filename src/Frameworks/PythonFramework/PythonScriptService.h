@@ -26,8 +26,6 @@
 
 #include "stdex/intrusive_list.h"
 
-#include <cstdarg>
-
 namespace Mengine
 {
     class PythonScriptService

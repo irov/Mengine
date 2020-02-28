@@ -7,5 +7,8 @@ namespace Mengine
     class ConstStringHolderLocalString
         : public ConstStringHolder
     {
+    public:
+        ConstStringHolderLocalString();
+        ~ConstStringHolderLocalString() override;
     };
 }

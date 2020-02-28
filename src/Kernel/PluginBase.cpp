@@ -13,6 +13,8 @@
 #   include "Kernel/Win32Helper.h"
 #endif
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -27,7 +29,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
-        : m_dynamicLoad( false )
+        : m_uid( 0 )
+        , m_dynamicLoad( false )
         , m_initializePlugin( false )
         , m_availablePlugin( true )
         , m_systemPlugin( false )
@@ -36,6 +39,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PluginBase::~PluginBase()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginBase::setUID( uint32_t _uid )
+    {
+        m_uid = _uid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t PluginBase::getUID() const
+    {
+        return m_uid;
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::setDynamicLoad( bool _dynamicLoad )
@@ -189,7 +202,7 @@ namespace Mengine
 
                 const Char * object_modulePath = _doc->getModulePath();
 
-                if( strcmp( plugin_modulePath, object_modulePath ) != 0 )
+                if( MENGINE_STRCMP( plugin_modulePath, object_modulePath ) != 0 )
                 {
                     return;
                 }

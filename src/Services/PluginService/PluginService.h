@@ -31,6 +31,8 @@ namespace Mengine
         const PluginInterfacePtr & getPlugin( const Char * _name ) const override;
 
     protected:
+        uint32_t m_enumerator;
+
         struct PluginDesc
         {
             Char name[MENGINE_PLUGIN_NAME_MAX];

@@ -13,9 +13,9 @@
 #include "Kernel/Logger.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "stdex/memorycopy.h"
+#include "Config/StdString.h"
 
-#include <string.h>
+#include "stdex/memorycopy.h"
 
 namespace Mengine
 {

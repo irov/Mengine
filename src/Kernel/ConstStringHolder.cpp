@@ -10,6 +10,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ConstStringHolder::~ConstStringHolder()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     ConstStringHolder::ConstStringHolder( const ConstStringHolder & _holder )
         : m_data( _holder.m_data )
         , m_size( _holder.m_size )
@@ -17,7 +21,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder::~ConstStringHolder()
+    ConstStringHolder::ConstStringHolder( ConstStringHolder && _holder )
+        : m_data( _holder.m_data )
+        , m_size( _holder.m_size )
+        , m_hash( _holder.m_hash )
     {
     }
     //////////////////////////////////////////////////////////////////////////

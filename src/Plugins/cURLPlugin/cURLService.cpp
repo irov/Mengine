@@ -20,11 +20,11 @@
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
+#include "Config/StdString.h"
 
 #include "curl/curl.h"
-#include "stdex/allocator_report.h"
 
-#include <string.h>
+#include "stdex/allocator_report.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( cURLService, Mengine::cURLService );
@@ -49,11 +49,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static char * stdex_curl_strdup_callback( const char * str )
     {
-        size_t len = strlen( str ) + 1;
+        size_t len = MENGINE_STRLEN( str ) + 1;
         void * m = ::stdex_malloc( len, "curl" );
         if( m == nullptr )
             return nullptr;
-        return (char *)memcpy( m, str, len );
+        return (char *)MENGINE_MEMCPY( m, str, len );
     }
     //////////////////////////////////////////////////////////////////////////
     static void * stdex_curl_calloc_callback( size_t nmemb, size_t size )

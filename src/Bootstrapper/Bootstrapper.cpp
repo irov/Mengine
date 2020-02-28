@@ -97,6 +97,11 @@ PLUGIN_EXPORT( SoundCodec );
 PLUGIN_EXPORT( Amplifier );
 PLUGIN_EXPORT( OggVorbis );
 
+//////////////////////////////////////////////////////////////////////////
+#ifdef MENGINE_EXTERNAL_SOURCE
+PLUGIN_EXPORT( ExternalBootstrapper );
+#endif
+
 #ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
 PLUGIN_EXPORT( BitmapFont );
 #endif
@@ -355,7 +360,7 @@ namespace Mengine
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
+        FilePath applicationPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -412,7 +417,6 @@ namespace Mengine
         }
 
         SERVICE_CREATE( SettingsService, MENGINE_DOCUMENT_FACTORABLE );
-
         SERVICE_CREATE( ArchiveService, MENGINE_DOCUMENT_FACTORABLE );
 
         PLUGIN_CREATE( Zip, MENGINE_DOCUMENT_FACTORABLE );
@@ -433,7 +437,6 @@ namespace Mengine
         }
 
         SERVICE_CREATE( SoundService, MENGINE_DOCUMENT_FACTORABLE );
-
         SERVICE_CREATE( ModuleService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( FrameworkService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( CodecService, MENGINE_DOCUMENT_FACTORABLE );
@@ -476,6 +479,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
         MENGINE_ADD_PLUGIN( Sentry, "initialize Plugin Sentry...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_EXTERNAL_SOURCE
+        MENGINE_ADD_PLUGIN( ExternalBootstrapper, "initialize external Bootstrapper...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_EXTERNAL_FRAMEWORK_STATIC

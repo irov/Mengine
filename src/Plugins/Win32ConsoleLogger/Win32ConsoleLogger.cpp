@@ -7,7 +7,6 @@
 #include "Kernel/Logger.h"
 
 #include <io.h>
-#include <cstdio>
 #include <locale.h>
 #include <fcntl.h>
 

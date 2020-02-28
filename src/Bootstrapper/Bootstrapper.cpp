@@ -360,7 +360,7 @@ namespace Mengine
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
-        FilePath applicationPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
+        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL_I( MENGINE_APPLICATION_INI_PATH );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();

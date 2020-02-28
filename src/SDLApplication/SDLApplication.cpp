@@ -70,10 +70,6 @@
 
 #include "SDL_filesystem.h"
 
-#ifndef MENGINE_APPLICATION_INI_PATH
-#define MENGINE_APPLICATION_INI_PATH "application.ini"
-#endif
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
@@ -107,13 +103,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeOptionsService_( const int argc, char ** argv )
+    bool SDLApplication::initializeOptionsService_( int32_t _argc, Char ** _argv )
     {
         ArgumentsInterfacePtr arguments = Helper::makeFactorableUnique<StringArguments>( MENGINE_DOCUMENT_FUNCTION );
 
-        for( int i = 1; i < argc; ++i )
+        for( int32_t i = 1; i != _argc; ++i )
         {
-            const Char * arg = argv[i];
+            const Char * arg = _argv[i];
 
             arguments->addArgument( arg );
         }
@@ -158,36 +154,6 @@ namespace Mengine
             return false;
         }
 #endif
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::loadApplicationConfig_()
-    {
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( MENGINE_APPLICATION_INI_PATH );
-
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        if( fileGroup->existFile( applicationPath, true ) == false )
-        {
-            LOGGER_INFO( "not exist application config '%s'"
-                , applicationPath.c_str()
-            );
-
-            return true;
-        }
-
-        ConfigInterfacePtr config = CONFIG_SERVICE()
-            ->loadConfig( fileGroup, applicationPath, MENGINE_DOCUMENT_FUNCTION );
-
-        MENGINE_ASSERTION_MEMORY_PANIC( config, false, "invalid open application settings '%s'"
-            , applicationPath.c_str()
-        );
-
-        config->getValues( "Configs", "Path", m_configPaths );
-        config->getValues( "Credentials", "Path", m_credentialsPaths );
-        config->getValues( "Packages", "Path", m_packagesPaths );
 
         return true;
     }
@@ -365,9 +331,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize( const int argc, char ** argv )
+    bool SDLApplication::initialize( int32_t _argc, Char ** _argv )
     {
-        setlocale( LC_ALL, "C" );
+        ::setlocale( LC_ALL, "C" );
 
         ServiceProviderInterface * serviceProvider;
         if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
@@ -382,9 +348,9 @@ namespace Mengine
         SERVICE_CREATE( DocumentService, nullptr );
 
         SERVICE_PROVIDER_GET()
-            ->waitService( OptionsServiceInterface::getStaticServiceID(), [this, argc, argv]()
+            ->waitService( OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
         {
-            if( this->initializeOptionsService_( argc, argv ) == false )
+            if( this->initializeOptionsService_( _argc, _argv ) == false )
             {
                 return false;
             }
@@ -451,17 +417,23 @@ namespace Mengine
             return false;
         }
 
+#ifdef MENGINE_GIT_SHA1
+        LOGGER_INFO( "GIT_SHA1: %s", MENGINE_GIT_SHA1 );
+#endif
+
+        LOGGER_MESSAGE( "Creating Render Window..." );
+
         PLATFORM_SERVICE()
             ->setIcon( 0 );
 
-        const Char * projectTitle = "";
+        const Char * projectTitle = nullptr;
         size_t projectTitleLen = 0;
 
         TextEntryInterfacePtr entry;
         if( TEXT_SERVICE()
             ->hasTextEntry( STRINGIZE_STRING_LOCAL( "APPLICATION_TITLE" ), &entry ) == false )
         {
-            LOGGER_WARNING( "Application not setup title 'APPLICATION_TITLE'"
+            LOGGER_INFO( "Application not setup title 'APPLICATION_TITLE'"
             );
         }
         else
@@ -483,8 +455,6 @@ namespace Mengine
         {
             return false;
         }
-
-        LOGGER_INFO( "Creating Render Window..." );
 
         if( APPLICATION_SERVICE()
             ->createRenderWindow() == false )

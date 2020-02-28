@@ -16,6 +16,8 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
+#include "Config/StdString.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileService, Mengine::FileService );
 //////////////////////////////////////////////////////////////////////////
@@ -247,7 +249,7 @@ namespace Mengine
         {
             const FileModifyDesc & desc = *it;
 
-            if( strcmp( desc.fullPath, fullPath ) != 0 )
+            if( MENGINE_STRCMP( desc.fullPath, fullPath ) != 0 )
             {
                 continue;
             }

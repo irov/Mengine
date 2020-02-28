@@ -2,8 +2,6 @@
 
 #include "Kernel/Logger.h"
 
-#include <string.h>
-
 #ifndef MENGINE_THEORA_OGG_BUFFER_SIZE
 #define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
 #endif

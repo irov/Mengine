@@ -10,7 +10,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AstralaxSystem, Mengine::AstralaxParticleSystem );

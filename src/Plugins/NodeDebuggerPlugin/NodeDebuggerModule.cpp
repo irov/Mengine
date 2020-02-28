@@ -39,6 +39,7 @@
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
+#include "Config/StdString.h"
 
 #include "stdex/allocator_report.h"
 
@@ -559,7 +560,7 @@ namespace Mengine
         {
             // this packet is uncompressed, just copy
             _packet.payload.resize( _hdr.compressedSize );
-            memcpy( _packet.payload.data(), _receivedData, _hdr.compressedSize );
+            MENGINE_MEMCPY( _packet.payload.data(), _receivedData, _hdr.compressedSize );
         }
         else
         {

@@ -14,7 +14,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/FileStreamHelper.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 namespace Mengine
 {

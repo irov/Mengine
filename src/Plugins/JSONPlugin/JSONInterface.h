@@ -18,7 +18,10 @@ namespace Mengine
         virtual const jpp::object & getJSON() const = 0;
 
     public:
-        virtual bool mergeJSON( const jpp::object & _obj, bool _mergeArray ) = 0;
+        virtual jpp::object copyJSON() const = 0;
+
+    public:
+        virtual bool mergeJSON( const jpp::object & _json, bool _copy, bool _recurive, bool _mergeArray ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<JSONStorageInterface> JSONStorageInterfacePtr;
@@ -36,7 +39,10 @@ namespace Mengine
         SERVICE_DECLARE( "JSONService" );
 
     public:
-        virtual JSONStorageInterfacePtr createStorage( const jpp::object & _json, const DocumentPtr & _doc ) const = 0;
+        virtual JSONStorageInterfacePtr createStorage( const jpp::object & _json, bool _copy, const DocumentPtr & _doc ) const = 0;
+
+    public:
+        virtual JSONStorageInterfacePtr copyStorage( const JSONStorageInterfacePtr & _storage, const DocumentPtr & _doc ) const = 0;
 
     public:
         virtual JSONStorageInterfacePtr loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) const = 0;

@@ -16,8 +16,5 @@ namespace Mengine
 
     public:
         void setValue( const ConstStringHolder::value_type * _value, ConstStringHolder::size_type _size, hash_type _hash );
-
-    protected:
-        ConstStringHolder::value_type * m_buff;
     };
 }

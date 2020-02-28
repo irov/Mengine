@@ -28,6 +28,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #include "Config/Stringstream.h"
+#include "Config/StdString.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -39,7 +40,6 @@
 #   pragma warning(pop) 
 #endif
 
-#include <cstdio>
 #include <clocale>
 #include <ctime>
 #include <iomanip>
@@ -167,7 +167,7 @@ namespace Mengine
         {
             const Char * option_platform = GET_OPTION_VALUE( "platform", nullptr );
 
-            if( strcmp( option_platform, "" ) != 0 )
+            if( MENGINE_STRCMP( option_platform, "" ) != 0 )
             {
                 m_platformTags.clear();
                 m_platformTags.addTag( Helper::stringizeString( option_platform ) );
@@ -757,7 +757,7 @@ namespace Mengine
             // Found a match
             if( ::_wcsicmp( unicode_fontName, valueName ) == 0 )
             {
-                ::memcpy( unicode_fontPath, valueData, valueDataSize ); 
+                MENGINE_MEMCPY( unicode_fontPath, valueData, valueDataSize );
 
                 break;
             }
@@ -1512,7 +1512,7 @@ namespace Mengine
 
         float activeFrameTimeDefault = 1000.f / 60.f;
 
-        if( strlen( option_fps ) != 0 )
+        if( MENGINE_STRLEN( option_fps ) != 0 )
         {
             float fps;
             Helper::stringalized( option_fps, &fps );
@@ -1847,7 +1847,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::existDirectory( const Char * _directoryPath ) const
     {
-        MENGINE_ASSERTION_FATAL_RETURN( strlen( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[strlen( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (MENGINE_STRRCHR( _directoryPath, '.' ) > MENGINE_STRRCHR( _directoryPath, '/' ) || _directoryPath[MENGINE_STRLEN( _directoryPath ) - 1] == '/'), false );
 
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )
@@ -1884,7 +1884,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory( const Char * _directoryPath )
     {
-        MENGINE_ASSERTION_FATAL_RETURN( strlen( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[strlen( _directoryPath ) - 1] == '/'), false );
+        MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRLEN( _directoryPath ) > 0 && (strrchr( _directoryPath, '.' ) > strrchr( _directoryPath, '/' ) || _directoryPath[::strlen( _directoryPath ) - 1] == '/'), false );
 
         WChar unicode_path[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _directoryPath, unicode_path, MENGINE_MAX_PATH ) == false )

@@ -4,6 +4,7 @@
 
 #include "Kernel/Assertion.h"
 
+#include "Config/StdArg.h"
 #include "Config/StdIO.h"
 
 namespace Mengine

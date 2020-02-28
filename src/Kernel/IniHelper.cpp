@@ -2,7 +2,7 @@
 
 #include "Kernel/Stringalized.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -31,7 +31,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _stream, const Char * _key, const Char * _value, size_t _size )
         {
-            size_t len = ::strlen( _key );
+            size_t len = MENGINE_STRLEN( _key );
+
             _stream->write( _key, len );
             _stream->write( " = ", sizeof( " = " ) - 1 );
             _stream->write( _value, _size );

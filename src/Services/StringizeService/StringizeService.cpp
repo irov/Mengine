@@ -4,7 +4,7 @@
 #include "Kernel/HashHelper.h"
 #include "Kernel/FactoryPool.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( StringizeService, Mengine::StringizeService );
@@ -61,6 +61,8 @@ namespace Mengine
             m_poolHolderStringMemory.destroyT( holder );
         }
 
+        m_holdersMemory.clear();
+
         for( uint32_t i = 0; i != MENGINE_STRINGIZE_HOLDER_COUNT; ++i )
         {
             IntrusiveListConstStringHolder & holdres = m_holders[i];
@@ -77,7 +79,7 @@ namespace Mengine
 
         if( _size == MENGINE_STRINGIZE_UNKNOWN_SIZE )
         {
-            size_t len = strlen( _str );
+            size_t len = MENGINE_STRLEN( _str );
 
             _size = (ConstStringHolder::size_type)len;
         }
@@ -94,7 +96,7 @@ namespace Mengine
             _hash = Helper::makeHash( _str, _size );
         }
 
-        ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
+        const ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
         _cstr = ConstString( holder );
     }
@@ -133,7 +135,7 @@ namespace Mengine
                 continue;
             }
 
-            ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
+            const ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
             inter.str = _str;
             inter.holder = holder;
@@ -143,7 +145,7 @@ namespace Mengine
             return;
         }
 
-        ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
+        const ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
 
         _cstr = ConstString( holder );
     }
@@ -177,7 +179,7 @@ namespace Mengine
                 continue;
             }
 
-            ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
+            const ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
 
             inter.str = _str;
             inter.holder = holder;
@@ -187,7 +189,7 @@ namespace Mengine
             return;
         }
 
-        ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
+        const ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
 
         _cstr = ConstString( holder );
     }
@@ -207,7 +209,7 @@ namespace Mengine
 
         if( holder_size == MENGINE_STRINGIZE_UNKNOWN_SIZE )
         {
-            holder_size = (ConstStringHolder::size_type)strlen( holder_str );
+            holder_size = (ConstStringHolder::size_type)MENGINE_STRLEN( holder_str );
         }
 
         if( holder_hash == MENGINE_STRINGIZE_UNKNOWN_HASH )
@@ -217,7 +219,7 @@ namespace Mengine
 
         _holder->setup( holder_str, holder_size, holder_hash );
 
-        ConstStringHolder * test = this->testHolder_( holder_str, holder_size, holder_hash );
+        const ConstStringHolder * test = this->testHolder_( holder_str, holder_size, holder_hash );
 
         if( test != nullptr )
         {
@@ -233,9 +235,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::stringizeHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+    const ConstStringHolder * StringizeService::stringizeHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
     {
-        ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
+        const ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
 
         if( test != nullptr )
         {
@@ -253,13 +255,13 @@ namespace Mengine
         return holder;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::stringizeHolderUnique_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+    const ConstStringHolder * StringizeService::stringizeHolderUnique_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
     {
-        ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
+        const ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
 
         if( test != nullptr )
         {
-            MENGINE_ASSERTION_FATAL( strcmp( test->c_str(), _str ) == 0, "stringize unique '%s' alredy exist"
+            MENGINE_ASSERTION_FATAL_RETURN( MENGINE_STRCMP( test->c_str(), _str ) == 0, nullptr, "stringize unique '%s' alredy exist"
                 , _str
             );
 
@@ -272,14 +274,16 @@ namespace Mengine
 
         this->addHolder_( holder, _hash );
 
+        m_holdersMemory.push_back( holder );
+
         return holder;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type *_str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+    const ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type *_str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
     {
-        IntrusiveListConstStringHolder & list = this->getList_( _hash );
+        const IntrusiveListConstStringHolder & list = this->getList_( _hash );
 
-        for( ConstStringHolder * holder : list )
+        for( const ConstStringHolder * holder : list )
         {
             ConstStringHolder::hash_type holder_hash = holder->hash();
 
@@ -319,6 +323,14 @@ namespace Mengine
     {
         uint32_t branch = (uint32_t)_hash % MENGINE_STRINGIZE_HOLDER_COUNT;
         IntrusiveListConstStringHolder & list = m_holders[branch];
+
+        return list;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const StringizeService::IntrusiveListConstStringHolder & StringizeService::getList_( ConstStringHolder::hash_type _hash ) const
+    {
+        uint32_t branch = (uint32_t)_hash % MENGINE_STRINGIZE_HOLDER_COUNT;
+        const IntrusiveListConstStringHolder & list = m_holders[branch];
 
         return list;
     }

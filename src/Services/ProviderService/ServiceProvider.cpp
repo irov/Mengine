@@ -6,7 +6,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_FACTORY( ServiceProvider, Mengine::ServiceProvider );
@@ -128,9 +128,9 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION( strlen( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
             , name
-            , strlen( name )
+            , MENGINE_STRLEN( name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -138,11 +138,11 @@ namespace Mengine
         {
             ServiceDesc & desc = m_services[index];
 
-            if( strlen( desc.name ) == 0 )
+            if( MENGINE_STRLEN( desc.name ) == 0 )
             {
-                strcpy( desc.name, name );
+                ::strcpy( desc.name, name );
             }
-            else if( strcmp( desc.name, name ) != 0 )
+            else if( MENGINE_STRCMP( desc.name, name ) != 0 )
             {
                 continue;
             }
@@ -193,7 +193,7 @@ namespace Mengine
         {
             LeaveDesc & desc = m_leaving[index];
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -208,7 +208,7 @@ namespace Mengine
         {
             const DependencyDesc & desc = m_dependencies[index];
 
-            if( strcmp( desc.dependency, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.dependency, _name ) != 0 )
             {
                 continue;
             }
@@ -220,7 +220,7 @@ namespace Mengine
         {
             ServiceDesc & desc = m_services[index];
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -246,7 +246,7 @@ namespace Mengine
         {
             const DependencyDesc & desc = m_dependencies[index];
 
-            if( strcmp( desc.dependency, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.dependency, _name ) != 0 )
             {
                 continue;
             }
@@ -258,7 +258,7 @@ namespace Mengine
         {
             ServiceDesc & desc = m_services[index];
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -284,9 +284,9 @@ namespace Mengine
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
         MENGINE_ASSERTION( m_dependenciesCount < MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT );
-        MENGINE_ASSERTION( strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
             , _name
-            , strlen( _name )
+            , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
             );
 
@@ -299,9 +299,9 @@ namespace Mengine
     bool ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
     {
         MENGINE_ASSERTION( m_waitsCount < MENGINE_SERVICE_PROVIDER_MAX_WAIT );
-        MENGINE_ASSERTION( strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
             , _name
-            , strlen( _name )
+            , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -309,7 +309,7 @@ namespace Mengine
         {
             ServiceDesc & desc = m_services[index];
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -338,9 +338,9 @@ namespace Mengine
     bool ServiceProvider::leaveService( const Char * _name, const LambdaLeaveService & _lambda )
     {
         MENGINE_ASSERTION( m_leaveCount < MENGINE_SERVICE_PROVIDER_LEAVE_COUNT );
-        MENGINE_ASSERTION( strlen( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
+        MENGINE_ASSERTION( MENGINE_STRLEN( _name ) < MENGINE_SERVICE_PROVIDER_NAME_SIZE, "invalid service name '%s' max size '%d' >= '%d'"
             , _name
-            , strlen( _name )
+            , MENGINE_STRLEN( _name )
             , MENGINE_SERVICE_PROVIDER_NAME_SIZE
         );
 
@@ -365,7 +365,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 ++index;
 
@@ -385,7 +385,7 @@ namespace Mengine
         {
             WaitDesc & desc = m_waits[index];
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 ++index;
 
@@ -409,7 +409,7 @@ namespace Mengine
     const bool * ServiceProvider::isExistServiceProvider( const Char * _name )
     {
 #ifdef MENGINE_DEBUG
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0 );
 #endif
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
@@ -421,7 +421,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -443,7 +443,7 @@ namespace Mengine
     const bool * ServiceProvider::isAvailableServiceProvider( const Char * _name )
     {
 #ifdef MENGINE_DEBUG
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0 );
 #endif
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
@@ -455,7 +455,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -477,7 +477,7 @@ namespace Mengine
     const bool * ServiceProvider::isInitializeServiceProvider( const Char * _name )
     {
 #ifdef MENGINE_DEBUG
-        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || strcmp( m_initializeServiceName, _name ) != 0 );
+        MENGINE_ASSERTION_CRITICAL( m_initializeServiceName == nullptr || MENGINE_STRCMP( m_initializeServiceName, _name ) != 0 );
 #endif
 
         for( uint32_t index = 0; index != m_servicesCount; ++index )
@@ -489,7 +489,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -514,7 +514,7 @@ namespace Mengine
         {
             const ServiceDesc & desc = m_services[index];
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }

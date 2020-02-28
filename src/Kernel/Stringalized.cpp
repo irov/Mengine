@@ -3,7 +3,9 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 
+#include "Config/StdIntTypes.h"
 #include "Config/StdIO.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -143,7 +145,7 @@ namespace Mengine
 
             for( const Char
                 * it = _string,
-                *it_end = _string + ::strlen( _string );
+                *it_end = _string + MENGINE_STRLEN( _string );
                 it != it_end;
                 ++it )
             {

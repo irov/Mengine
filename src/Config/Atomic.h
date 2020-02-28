@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Config/StdInt.h"
+
 #include <atomic>
-#include <stdint.h>
 
 namespace Mengine
 {

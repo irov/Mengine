@@ -25,7 +25,6 @@
 #include "stdex/intrusive_ptr_base.h"
 
 #include <math.h>
-#include <memory.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderService, Mengine::RenderService );

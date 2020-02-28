@@ -15,8 +15,11 @@ namespace Mengine
     {
     protected:
         ConstStringHolder();
-        ConstStringHolder( const ConstStringHolder & _holder );
         virtual ~ConstStringHolder();
+
+    public:
+        ConstStringHolder( const ConstStringHolder & _holder );
+        ConstStringHolder( ConstStringHolder && _holder );
 
     protected:
         ConstStringHolder & operator = ( const ConstStringHolder & _holder );
@@ -46,6 +49,12 @@ namespace Mengine
         MENGINE_INLINE hash_type hash() const noexcept
         {
             return m_hash;
+        }
+
+    protected:
+        MENGINE_INLINE const value_type * data() const noexcept
+        {
+            return m_data;
         }
 
     public:

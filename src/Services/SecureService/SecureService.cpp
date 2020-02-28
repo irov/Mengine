@@ -3,7 +3,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/HashHelper.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SecureService, Mengine::SecureService );
@@ -57,11 +57,11 @@ namespace Mengine
             int64_t tail64;
         };
 
-        ::memcpy( tail_buffer, (int8_t *)_buffer + head, tail );
+        MENGINE_MEMCPY( tail_buffer, (int8_t *)_buffer + head, tail );
 
         tail64 ^= m_secureHash;
 
-        ::memcpy( (int8_t *)_buffer + head, tail_buffer, tail );
+        MENGINE_MEMCPY( (int8_t *)_buffer + head, tail_buffer, tail );
     }
     //////////////////////////////////////////////////////////////////////////
     void SecureService::unprotectData( void * _buffer, size_t _size ) const
@@ -80,10 +80,10 @@ namespace Mengine
             int64_t tail64;
         };
 
-        ::memcpy( tail_buffer, (int8_t *)_buffer + head, tail );
+        MENGINE_MEMCPY( tail_buffer, (int8_t *)_buffer + head, tail );
 
         tail64 ^= m_secureHash;
 
-        ::memcpy( (int8_t *)_buffer + head, tail_buffer, tail );
+        MENGINE_MEMCPY( (int8_t *)_buffer + head, tail_buffer, tail );
     }
 }

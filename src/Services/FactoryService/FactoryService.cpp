@@ -10,9 +10,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ThreadMutexScope.h"
 
-#include <algorithm>
+#include "Config/StdString.h"
 
-#include <string.h>
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FactoryService, Mengine::FactoryService );
@@ -111,7 +111,7 @@ namespace Mengine
                 for( auto && [name, objects] : objectLeaks )
                 {
                     const Char * factory_delimiter = "##########################################################\n";
-                    fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
+                    fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
                     Char factorymsg[2048];
                     int factorymsg_length = snprintf( factorymsg, 2048, "Factory '%s' [%u]:\n"
@@ -121,12 +121,12 @@ namespace Mengine
 
                     fwrite( factorymsg, factorymsg_length, 1, f );
 
-                    fwrite( factory_delimiter, strlen( factory_delimiter ), 1, f );
+                    fwrite( factory_delimiter, MENGINE_STRLEN( factory_delimiter ), 1, f );
 
                     for( const DocumentPtr & obj : objects )
                     {
                         const Char * obj_delimiter = "**********************************************************\n";
-                        fwrite( obj_delimiter, strlen( obj_delimiter ), 1, f );
+                        fwrite( obj_delimiter, MENGINE_STRLEN( obj_delimiter ), 1, f );
 
                         Char objmsg[16384];
                         int objmsg_length = snprintf( objmsg, 16384, "    doc: %s\n"

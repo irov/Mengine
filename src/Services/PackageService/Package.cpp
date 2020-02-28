@@ -21,8 +21,6 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 
-#include <stdio.h>
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

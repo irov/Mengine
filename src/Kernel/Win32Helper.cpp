@@ -4,8 +4,6 @@
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
-#include <string.h>
-
 namespace Mengine
 {
     namespace Helper

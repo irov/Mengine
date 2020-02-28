@@ -2,7 +2,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
@@ -53,7 +53,7 @@ namespace Mengine
 
             if( option_value_str == nullptr )
             {
-                if( strlen( option_key_str ) >= MENGINE_OPTIONS_KEY_SIZE )
+                if( MENGINE_STRLEN( option_key_str ) >= MENGINE_OPTIONS_KEY_SIZE )
                 {
                     return false;
                 }
@@ -74,7 +74,7 @@ namespace Mengine
                 strncpy( op.key, option_key_str, key_size );
                 op.key[key_size] = '\0';
 
-                if( strlen( option_value_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )
+                if( MENGINE_STRLEN( option_value_str + 1 ) >= MENGINE_OPTIONS_VALUE_SIZE )
                 {
                     return false;
                 }
@@ -92,7 +92,7 @@ namespace Mengine
     {
         for( const Option & op : m_options )
         {
-            if( strcmp( op.key, _key ) != 0 )
+            if( MENGINE_STRCMP( op.key, _key ) != 0 )
             {
                 continue;
             }
@@ -107,7 +107,7 @@ namespace Mengine
     {
         for( const Option & op : m_options )
         {
-            if( strcmp( op.key, _key ) != 0 )
+            if( MENGINE_STRCMP( op.key, _key ) != 0 )
             {
                 continue;
             }
@@ -131,7 +131,7 @@ namespace Mengine
     {
         for( const Option & op : m_options )
         {
-            if( strcmp( op.key, _key ) != 0 )
+            if( MENGINE_STRCMP( op.key, _key ) != 0 )
             {
                 continue;
             }
@@ -166,7 +166,7 @@ namespace Mengine
 
         const Char * value = this->getOptionValue( _key, "" );
 
-        if( strcmp( value, _value ) != 0 )
+        if( MENGINE_STRCMP( value, _value ) != 0 )
         {
             return false;
         }

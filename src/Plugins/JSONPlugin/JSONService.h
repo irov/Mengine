@@ -20,7 +20,10 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        JSONStorageInterfacePtr createStorage( const jpp::object & _json, const DocumentPtr & _doc ) const override;
+        JSONStorageInterfacePtr createStorage( const jpp::object & _json, bool _copy, const DocumentPtr & _doc ) const override;
+
+    protected:
+        JSONStorageInterfacePtr copyStorage( const JSONStorageInterfacePtr & _storage, const DocumentPtr & _doc ) const override;
 
     protected:
         JSONStorageInterfacePtr loadJSON( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DocumentPtr & _doc ) const override;

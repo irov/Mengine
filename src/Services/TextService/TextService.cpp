@@ -20,15 +20,13 @@
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/String.h"
+#include "Config/StdString.h"
 
 #include "xmlsax/xmlsax.hpp"
 
 #include "utf8.h"
 
 #include <algorithm>
-
-#include <stdio.h>
-#include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TextService, Mengine::TextService );
@@ -86,6 +84,8 @@ namespace Mengine
 
         m_factoryTextEntry = nullptr;
         m_factoryTextLocalePackage = nullptr;
+
+        m_poolLocalString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     class TextService::TextManagerLoadSaxCallback
@@ -111,7 +111,7 @@ namespace Mengine
     public:
         void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
         {
-            if( strcmp( _node, "Text" ) != 0 )
+            if( MENGINE_STRCMP( _node, "Text" ) != 0 )
             {
                 return;
             }
@@ -144,13 +144,13 @@ namespace Mengine
                 const char * str_key = _keys[i];
                 const char * str_value = _values[i];
 
-                if( strcmp( str_key, "Key" ) == 0 )
+                if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
                 }
-                else if( strcmp( str_key, "Value" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "Value" ) == 0 )
                 {
-                    size_t str_value_size = strlen( str_value );
+                    size_t str_value_size = MENGINE_STRLEN( str_value );
 
                     const char * str_value_end = str_value + str_value_size;
                     const char * str_value_valid = utf8::find_invalid( str_value, str_value_end );
@@ -179,13 +179,13 @@ namespace Mengine
                         text_str_size = str_value_size;
                     }
                 }
-                else if( strcmp( str_key, "Font" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "Font" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, fontName );
 
                     params |= EFP_FONT;
                 }
-                else if( strcmp( str_key, "CharOffset" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "CharOffset" ) == 0 )
                 {
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
@@ -202,7 +202,7 @@ namespace Mengine
 
                     params |= EFP_CHAR_OFFSET;
                 }
-                else if( strcmp( str_key, "LineOffset" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "LineOffset" ) == 0 )
                 {
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
@@ -219,7 +219,7 @@ namespace Mengine
 
                     params |= EFP_LINE_OFFSET;
                 }
-                else if( strcmp( str_key, "Color" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "Color" ) == 0 )
                 {
                     float r;
                     float g;
@@ -239,7 +239,7 @@ namespace Mengine
 
                     params |= EFP_COLOR_FONT;
                 }
-                else if( strcmp( str_key, "MaxLength" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "MaxLength" ) == 0 )
                 {
                     float value = 0.f;
                     if( sscanf( str_value, "%f", &value ) != 1 )
@@ -256,7 +256,7 @@ namespace Mengine
 
                     params |= EFP_MAX_LENGTH;
                 }
-                else if( strcmp( str_key, "Override" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "Override" ) == 0 )
                 {
                     uint32_t value = 0;
                     if( sscanf( str_value, "%u", &value ) != 1 )
@@ -271,21 +271,21 @@ namespace Mengine
 
                     isOverride = (value != 0);
                 }
-                else if( strcmp( str_key, "VerticalAlign" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "VerticalAlign" ) == 0 )
                 {
-                    if( strcmp( str_value, "Bottom" ) == 0 )
+                    if( MENGINE_STRCMP( str_value, "Bottom" ) == 0 )
                     {
                         verticalAlign = ETFVA_BOTTOM;
 
                         params |= EFP_VERTICAL_ALIGN;
                     }
-                    else if( strcmp( str_value, "Center" ) == 0 )
+                    else if( MENGINE_STRCMP( str_value, "Center" ) == 0 )
                     {
                         verticalAlign = ETFVA_CENTER;
 
                         params |= EFP_VERTICAL_ALIGN;
                     }
-                    else if( strcmp( str_value, "Top" ) == 0 )
+                    else if( MENGINE_STRCMP( str_value, "Top" ) == 0 )
                     {
                         verticalAlign = ETFVA_TOP;
 
@@ -301,21 +301,21 @@ namespace Mengine
                         );
                     }
                 }
-                else if( strcmp( str_key, "HorizontAlign" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "HorizontAlign" ) == 0 )
                 {
-                    if( strcmp( str_value, "Left" ) == 0 )
+                    if( MENGINE_STRCMP( str_value, "Left" ) == 0 )
                     {
                         horizontAlign = ETFHA_LEFT;
 
                         params |= EFP_HORIZONTAL_ALIGN;
                     }
-                    else if( strcmp( str_value, "Center" ) == 0 )
+                    else if( MENGINE_STRCMP( str_value, "Center" ) == 0 )
                     {
                         horizontAlign = ETFHA_CENTER;
 
                         params |= EFP_HORIZONTAL_ALIGN;
                     }
-                    else if( strcmp( str_value, "Right" ) == 0 )
+                    else if( MENGINE_STRCMP( str_value, "Right" ) == 0 )
                     {
                         horizontAlign = ETFHA_RIGHT;
 
@@ -331,7 +331,7 @@ namespace Mengine
                         );
                     }
                 }
-                else if( strcmp( str_key, "CharScale" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "CharScale" ) == 0 )
                 {
                     float value = 0;
                     if( sscanf( str_value, "%f", &value ) != 1 )
@@ -348,7 +348,7 @@ namespace Mengine
 
                     params |= EFP_CHAR_SCALE;
                 }
-                else if( strcmp( str_key, "Empty" ) == 0 )
+                else if( MENGINE_STRCMP( str_key, "Empty" ) == 0 )
                 {
                     uint32_t value = 0;
                     if( sscanf( str_value, "%u", &value ) != 1 )
@@ -471,7 +471,7 @@ namespace Mengine
     public:
         void parse( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
         {
-            if( strcmp( _node, "Text" ) != 0 )
+            if( MENGINE_STRCMP( _node, "Text" ) != 0 )
             {
                 return;
             }
@@ -483,7 +483,7 @@ namespace Mengine
                 const char * str_key = _keys[i];
                 const char * str_value = _values[i];
 
-                if( strcmp( str_key, "Key" ) == 0 )
+                if( MENGINE_STRCMP( str_key, "Key" ) == 0 )
                 {
                     m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
                     //text_key = Helper::stringizeString( str_value, (size_t)-1 );
@@ -1111,7 +1111,10 @@ namespace Mengine
 
         holder->setup( _text, _size, -1 );
 
-        STRINGIZE_SERVICE()
-            ->stringizeExternal( holder, _cstr );
+        if( STRINGIZE_SERVICE()
+            ->stringizeExternal( holder, _cstr ) == false )
+        {
+            m_poolLocalString.destroyT( holder );
+        }
     }
 }

@@ -8,6 +8,8 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     namespace Helper
@@ -211,7 +213,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathRemoveBackslashA( Char * _filePath )
         {
-            size_t len = ::strlen( _filePath );
+            size_t len = MENGINE_STRLEN( _filePath );
 
             Char * pch = _filePath + len - 1;
 
@@ -223,7 +225,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool pathRemoveFileSpecA( Char * _filePath )
         {
-            size_t len = ::strlen( _filePath );
+            size_t len = MENGINE_STRLEN( _filePath );
 
             if( len == 0 )
             {

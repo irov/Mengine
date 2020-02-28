@@ -20,8 +20,8 @@
 #include "xml2metabuf/Xml2Metacode.hpp"
 
 #include "Config/Blobject.h"
+#include "Config/StdString.h"
 
-#include <stdio.h>
 #include "utf8.h"
 
 namespace Mengine
@@ -31,7 +31,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _user );
 
-        uint32_t utf8_size = (uint32_t)strlen( _value );
+        uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
 
         _metabuf->writeSize( utf8_size );
         _metabuf->writeCount( &_value[0], utf8_size );
@@ -43,7 +43,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _user );
 
-        uint32_t utf8_size = (uint32_t)strlen( _value );
+        uint32_t utf8_size = (uint32_t)MENGINE_STRLEN( _value );
 
         _metabuf->writeSize( utf8_size );
         _metabuf->writeCount( &_value[0], utf8_size );
@@ -55,7 +55,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _user );
 
-        size_t len = strlen( _value );
+        size_t len = MENGINE_STRLEN( _value );
         const char * text_it = _value;
         const char * text_end = _value + len + 1;
 

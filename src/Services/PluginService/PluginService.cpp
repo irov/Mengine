@@ -7,7 +7,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <string.h>
+#include "Config/StdString.h"
 
 #include <algorithm>
 
@@ -22,6 +22,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PluginService::PluginService()
+        : m_enumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -96,10 +97,12 @@ namespace Mengine
             return false;
         }
 
+        uint32_t id = ++m_enumerator;
+
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
         PluginInterface * plugin;
-        if( _create( serviceProvider, &plugin, _dynamic ) == false )
+        if( _create( serviceProvider, &plugin, id, _dynamic ) == false )
         {
             LOGGER_ERROR( "can't create plugin [invalid create]"
             );
@@ -200,7 +203,7 @@ namespace Mengine
             return false;
         }
 
-        MENGINE_ASSERTION_FATAL( ::strlen( name ) < MENGINE_PLUGIN_NAME_MAX );
+        MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( name ) < MENGINE_PLUGIN_NAME_MAX );
 
         PluginDesc desc;
         ::strcpy( desc.name, name );
@@ -254,7 +257,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }
@@ -274,7 +277,7 @@ namespace Mengine
                 continue;
             }
 
-            if( strcmp( desc.name, _name ) != 0 )
+            if( MENGINE_STRCMP( desc.name, _name ) != 0 )
             {
                 continue;
             }

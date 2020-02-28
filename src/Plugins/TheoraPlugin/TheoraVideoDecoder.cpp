@@ -2,6 +2,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 #ifndef MENGINE_THEORA_OGG_BUFFER_SIZE
 #define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
 #endif
@@ -62,11 +64,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TheoraVideoDecoder::_initialize()
     {
-        memset( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
-        memset( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
-        memset( &m_theoraState, 0, sizeof( m_theoraState ) );
-        memset( &m_theoraComment, 0, sizeof( m_theoraComment ) );
-        memset( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
+        MENGINE_MEMSET( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
+        MENGINE_MEMSET( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
+        MENGINE_MEMSET( &m_theoraState, 0, sizeof( m_theoraState ) );
+        MENGINE_MEMSET( &m_theoraComment, 0, sizeof( m_theoraComment ) );
+        MENGINE_MEMSET( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
 
         ogg_sync_init( &m_oggSyncState );
 
@@ -114,7 +116,7 @@ namespace Mengine
                 }
 
                 ogg_stream_state oggStreamStateTest;
-                memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
+                MENGINE_MEMSET( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
 
                 int32_t serialno = ogg_page_serialno( &page );
                 if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
@@ -145,7 +147,7 @@ namespace Mengine
                 }
                 else
                 {
-                    memcpy( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
+                    MENGINE_MEMCPY( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
 
                     theoraHeader = true;
                 }
@@ -280,11 +282,11 @@ namespace Mengine
         theora_comment_clear( &m_theoraComment );
         theora_info_clear( &m_theoraInfo );
 
-        memset( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
-        memset( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
-        memset( &m_theoraState, 0, sizeof( m_theoraState ) );
-        memset( &m_theoraComment, 0, sizeof( m_theoraComment ) );
-        memset( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
+        MENGINE_MEMSET( &m_oggStreamState, 0, sizeof( m_oggStreamState ) );
+        MENGINE_MEMSET( &m_oggSyncState, 0, sizeof( m_oggSyncState ) );
+        MENGINE_MEMSET( &m_theoraState, 0, sizeof( m_theoraState ) );
+        MENGINE_MEMSET( &m_theoraComment, 0, sizeof( m_theoraComment ) );
+        MENGINE_MEMSET( &m_theoraInfo, 0, sizeof( m_theoraInfo ) );
 
         ogg_sync_init( &m_oggSyncState );
 

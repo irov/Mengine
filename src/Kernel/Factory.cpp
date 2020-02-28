@@ -104,6 +104,9 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_DEBUG
+        DocumentPtr doc = _object->getDocument();
+        MENGINE_UNUSED( doc );
+
         _object->setDocument( nullptr );
 #endif
 

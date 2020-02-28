@@ -19,9 +19,6 @@
 #include "Interface/PlayerServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
 
-#include "Config/Typedef.h"
-#include "Config/Stringstream.h"
-
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHierarchy.h"
 #include "Kernel/Assertion.h"
@@ -66,6 +63,9 @@
 #include "Interface/ScriptServiceInterface.h"
 
 #include "Config/Blobject.h"
+#include "Config/Typedef.h"
+#include "Config/Stringstream.h"
+#include "Config/StdString.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/pickle.hpp"
@@ -2180,11 +2180,11 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            if( strcmp( value, "True" ) == 0 || strcmp( value, "true" ) == 0 || strcmp( value, "TRUE" ) == 0 )
+            if( MENGINE_STRCMP( value, "True" ) == 0 || MENGINE_STRCMP( value, "true" ) == 0 || MENGINE_STRCMP( value, "TRUE" ) == 0 )
             {
                 return _kernel->ret_true();
             }
-            else if( strcmp( value, "False" ) == 0 || strcmp( value, "false" ) == 0 || strcmp( value, "FALSE" ) == 0 )
+            else if( MENGINE_STRCMP( value, "False" ) == 0 || MENGINE_STRCMP( value, "false" ) == 0 || MENGINE_STRCMP( value, "FALSE" ) == 0 )
             {
                 return _kernel->ret_false();
             }

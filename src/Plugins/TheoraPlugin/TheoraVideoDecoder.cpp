@@ -159,7 +159,6 @@ namespace Mengine
             return false;
         }
 
-
         int32_t theoraHeaderPackets = 1;
 
         while( theoraHeaderPackets < 3 )

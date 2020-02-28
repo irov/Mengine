@@ -26,6 +26,11 @@
 #define MENGINE_MEMCPY(a, b, n) ::memcpy(a, b, n)
 #endif
 
+#ifndef MENGINE_MEMSET
+#define MENGINE_MEMSET(d, v, s) ::memset(d, v, s)
+#endif
+
+
 #ifndef MENGINE_STRICMP
 #if defined(MENGINE_COMPILER_MSVC)
 #   define MENGINE_STRICMP(a, b) _stricmp(a, b)

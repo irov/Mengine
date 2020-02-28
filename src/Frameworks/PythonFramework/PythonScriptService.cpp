@@ -34,6 +34,7 @@
 #include "Kernel/ConstStringHelper.h"
 
 #include "Config/Stringstream.h"
+#include "Config/StdString.h"
 
 #include "pybind/debug.hpp"
 
@@ -150,12 +151,12 @@ namespace Mengine
                     return;
                 }
 
-                if( strcmp( _className, "PythonScriptLogger" ) == 0 )
+                if( MENGINE_STRCMP( _className, "PythonScriptLogger" ) == 0 )
                 {
                     return;
                 }
 
-                if( strcmp( _className, "ErrorScriptLogger" ) == 0 )
+                if( MENGINE_STRCMP( _className, "ErrorScriptLogger" ) == 0 )
                 {
                     return;
                 }

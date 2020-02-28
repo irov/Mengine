@@ -87,6 +87,13 @@ namespace Mengine
             return filePath;
         }
         //////////////////////////////////////////////////////////////////////////
+        FilePath stringizeFileHashUnique( const Char * _value, FilePath::size_type _size, FilePath::hash_type _hash )
+        {
+            ConstString constString = Helper::stringizeStringHashUnique( _value, _size, _hash );
+
+            return FilePath( constString );
+        }
+        //////////////////////////////////////////////////////////////////////////
         ConstString getFilePathExt( const FilePath & _filePath )
         {
             const Char * str_filePath = _filePath.c_str();

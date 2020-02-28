@@ -301,7 +301,7 @@ namespace Mengine
 
             const ConstStringHolder::value_type * holder_str = holder->c_str();
 
-            if( strncmp( holder_str, _str, _size ) != 0 )
+            if( MENGINE_STRNCMP( holder_str, _str, _size ) != 0 )
             {
                 continue;
             }

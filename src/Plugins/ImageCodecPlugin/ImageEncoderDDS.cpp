@@ -7,6 +7,8 @@
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,7 @@ namespace Mengine
         uint32_t ddsSize = Helper::getTextureMemorySize( imageInfo->width, imageInfo->height, imageInfo->channels, imageInfo->depth, imageInfo->format );
 
         DDS_HEADER header;
-        memset( &header, 0, sizeof( header ) );
+        MENGINE_MEMSET( &header, 0, sizeof( header ) );
 
         header.dwSize = 124;
         header.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT | DDSD_LINEARSIZE;

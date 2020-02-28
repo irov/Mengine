@@ -2,12 +2,17 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static uint16_t readBEUint16( const uint8_t * pIn )
+    namespace Detail
     {
-        return (pIn[0] << 8) | pIn[1];
+        static uint16_t readBEUint16( const uint8_t * pIn )
+        {
+            return (pIn[0] << 8) | pIn[1];
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     static const uint16_t ETC1_PKM_FORMAT_OFFSET = 6;
@@ -33,7 +38,9 @@ namespace Mengine
         }
 
         m_stream->read( _buffer, _bufferSize );
+
         m_needSeek = true;
+
         return _bufferSize;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,9 +52,10 @@ namespace Mengine
         }
 
         m_stream->read( &m_header, sizeof( ETC1Header ) );
+
         m_needSeek = false;
 
-        if( strncmp( m_header.tag, "PKM 10", 6 ) != 0 )
+        if( MENGINE_STRNCMP( m_header.tag, "PKM 10", 6 ) != 0 )
         {
             LOGGER_ERROR( "Bad or not ETC1 file" );
 
@@ -55,11 +63,11 @@ namespace Mengine
         }
 
         uint8_t * buffer = reinterpret_cast<uint8_t *>(&m_header);
-        m_header.format = readBEUint16( buffer + ETC1_PKM_FORMAT_OFFSET );
-        m_header.texHeight = readBEUint16( buffer + ETC1_PKM_ENCODED_HEIGHT_OFFSET );
-        m_header.texWidth = readBEUint16( buffer + ETC1_PKM_ENCODED_WIDTH_OFFSET );
-        m_header.origHeight = readBEUint16( buffer + ETC1_PKM_HEIGHT_OFFSET );
-        m_header.origWidth = readBEUint16( buffer + ETC1_PKM_WIDTH_OFFSET );
+        m_header.format = Detail::readBEUint16( buffer + ETC1_PKM_FORMAT_OFFSET );
+        m_header.texHeight = Detail::readBEUint16( buffer + ETC1_PKM_ENCODED_HEIGHT_OFFSET );
+        m_header.texWidth = Detail::readBEUint16( buffer + ETC1_PKM_ENCODED_WIDTH_OFFSET );
+        m_header.origHeight = Detail::readBEUint16( buffer + ETC1_PKM_HEIGHT_OFFSET );
+        m_header.origWidth = Detail::readBEUint16( buffer + ETC1_PKM_WIDTH_OFFSET );
 
         bool isValid = m_header.texWidth >= m_header.origWidth
             && m_header.texWidth - m_header.origWidth < 4

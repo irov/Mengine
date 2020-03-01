@@ -15,6 +15,9 @@
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/Stringalized.h"
 
+#include "Config/ArrayString.h"
+#include "Config/StdString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -90,7 +93,7 @@ namespace Mengine
         }
 
         Setting st;
-        ::strcpy( st.value, _defaultValue );
+        MENGINE_STRCPY( st.value, _defaultValue );
         st.provider = _provider;
 
         m_settings.emplace( _setting, st );
@@ -114,7 +117,7 @@ namespace Mengine
 
         Setting & st = it_found->second;
 
-        ::strcpy( st.value, _value );
+        MENGINE_STRCPY( st.value, _value );
 
         if( st.provider != nullptr )
         {
@@ -253,7 +256,7 @@ namespace Mengine
                 continue;
             }
 
-            ::strcpy( st.value, value );
+            MENGINE_STRCPY( st.value, value );
         }
 
         return true;

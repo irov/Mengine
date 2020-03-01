@@ -27,6 +27,7 @@
 
 #include "Config/Stringstream.h"
 #include "Config/ArrayString.h"
+#include "Config/StdString.h"
 
 #include "math/quat.h"
 
@@ -1756,7 +1757,7 @@ namespace Mengine
         {
             ShaderParameterDesc parameter;
 
-            strcpy( parameter.uniform, _callbackData->parameter_uniforms[index] );
+            MENGINE_STRCPY( parameter.uniform, _callbackData->parameter_uniforms[index] );
             parameter.type = _callbackData->parameter_types[index];
 
             float shader_values[4] = { 0.f };

@@ -14,6 +14,10 @@
 #define MENGINE_STRCMP(a, b) ::strcmp(a, b)
 #endif
 
+#ifndef MENGINE_STRCPY
+#define MENGINE_STRCPY(a, b) ::strcpy(a, b)
+#endif
+
 #ifndef MENGINE_STRNCMP
 #define MENGINE_STRNCMP(a, b, n) ::strncmp(a, b, n)
 #endif

@@ -95,7 +95,6 @@ android {
 
         release {
             externalNativeBuild {
-                minifyEnabled true
                 
                 cmake {
                     arguments "-DANDROID_PLATFORM=android-18",
@@ -175,8 +174,8 @@ preBuild.dependsOn openal_CMakeLists
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':unity-ads')
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "androidx.core:core:1.2.0"
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.devtodev:android:1.13'
@@ -187,9 +186,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation project(':libraries:SDL2')
-    implementation project(':libraries:OpenAL32')
-    implementation project(':unity-ads')
     implementation 'com.google.firebase:firebase-core:17.2.2'
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
     implementation 'com.google.firebase:firebase-auth:19.2.0'
@@ -198,6 +194,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ndk:17.0.0-beta01'
     implementation 'com.google.firebase:firebase-messaging:20.1.0'
     implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation project(':libraries:SDL2')
+    implementation project(':libraries:OpenAL32')
 }
 apply plugin: 'com.google.gms.google-services'
 

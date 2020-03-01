@@ -1,20 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-OPTION(MENGINE_BUILD_ONLY_EXECUTABLE_MODULE "Mengine build only executable module" OFF)
-OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" OFF)
-OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
-OPTION(MENGINE_USE_SCRIPT_SERVICE "Mengine use script" ON)
-OPTION(MENGINE_EXTERNAL_SOURCE "Mengine external sources" OFF)
-OPTION(MENGINE_USE_SUBFOLDER "Mengine use subfolder" OFF)
-
 SET(MENGINE_PROJECT_NAME "Mengine_WIN32" CACHE STRING "Mengine project name")
-SET(MENGINE_EXTERNAL_SOURCE_PATH "" CACHE STRING "Mengine external source path")
-SET(MENGINE_EXTERNAL_TEMP_PATH "" CACHE STRING "Mengine external temp path")
-SET(MENGINE_SUBFOLDER_NAME "Mengine" CACHE STRING "Mengine subfolder name")
-SET(MENGINE_INSTALL_PATH "" CACHE STRING "Mengine install path")
 
 PROJECT(${MENGINE_PROJECT_NAME})
 
+INCLUDE(../dev_options_template.cmake)
 INCLUDE(../base_template.cmake)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../win32_template.cmake)

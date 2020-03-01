@@ -140,7 +140,7 @@ namespace Mengine
 
             if( MENGINE_STRLEN( desc.name ) == 0 )
             {
-                ::strcpy( desc.name, name );
+                MENGINE_STRCPY( desc.name, name );
             }
             else if( MENGINE_STRCMP( desc.name, name ) != 0 )
             {
@@ -292,8 +292,8 @@ namespace Mengine
 
         DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
 
-        strcpy( desc.name, _name );
-        strcpy( desc.dependency, _dependency );
+        MENGINE_STRCPY( desc.name, _name );
+        MENGINE_STRCPY( desc.dependency, _dependency );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
@@ -329,7 +329,7 @@ namespace Mengine
 
         WaitDesc & desc = m_waits[m_waitsCount++];
 
-        strcpy( desc.name, _name );
+        MENGINE_STRCPY( desc.name, _name );
         desc.lambda = _lambda;
 
         return true;
@@ -346,7 +346,7 @@ namespace Mengine
 
         LeaveDesc & desc = m_leaving[m_leaveCount++];
 
-        strcpy( desc.name, _name );
+        MENGINE_STRCPY( desc.name, _name );
         desc.lambda = _lambda;
 
         return true;
@@ -374,8 +374,8 @@ namespace Mengine
 
             DependencyDesc & last_desc = m_dependencies[--m_dependenciesCount];
 
-            strcpy( desc.name, last_desc.name );
-            strcpy( desc.dependency, last_desc.dependency );
+            MENGINE_STRCPY( desc.name, last_desc.name );
+            MENGINE_STRCPY( desc.dependency, last_desc.dependency );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -399,7 +399,7 @@ namespace Mengine
 
             WaitDesc & last_desc = m_waits[--m_waitsCount];
 
-            strcpy( desc.name, last_desc.name );
+            MENGINE_STRCPY( desc.name, last_desc.name );
             desc.lambda = last_desc.lambda;
         }
 
@@ -431,7 +431,7 @@ namespace Mengine
 
         ServiceDesc & desc = m_services[m_servicesCount++];
 
-        strcpy( desc.name, _name );
+        MENGINE_STRCPY( desc.name, _name );
         desc.service = nullptr;
         desc.exist = false;
         desc.available = false;
@@ -465,7 +465,7 @@ namespace Mengine
 
         ServiceDesc & desc = m_services[m_servicesCount++];
 
-        strcpy( desc.name, _name );
+        MENGINE_STRCPY( desc.name, _name );
         desc.service = nullptr;
         desc.exist = false;
         desc.available = false;
@@ -499,7 +499,7 @@ namespace Mengine
 
         ServiceDesc & desc = m_services[m_servicesCount++];
 
-        strcpy( desc.name, _name );
+        MENGINE_STRCPY( desc.name, _name );
         desc.service = nullptr;
         desc.exist = false;
         desc.available = false;

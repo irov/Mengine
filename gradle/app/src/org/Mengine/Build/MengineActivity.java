@@ -32,27 +32,16 @@ public class MengineActivity extends SDLActivity {
     private static MengineActivity _instance;
 
     private static native void AndroidNativeFacebook_setupFacebookJNI();
-
     private static native void AndroidNativeFacebook_onSDKInitialized();
-
     private static native void AndroidNativeUnity_setupUnityJNI();
-
     private static native void AndroidNativeUnity_onSDKInitialized();
-
     private static native void AndroidNativeAdMob_setupAdMobJNI();
-
     private static native void AndroidNativeAdMob_onSDKInitialized();
-
     private static native void AndroidNativeDevToDev_setupDevToDevJNI();
-
     private static native void AndroidNativeDevToDev_onSDKInitialized();
-
     private static native void AndroidNativeLinking_setupLinkingJNI();
-
     private static native void AndroidNativeLocalNotifications_setupLocalNotificationsJNI();
-
     private static native void AndroidNativeLocalNotifications_onLocalNotificationsInitialized();
-
     private static native void AndroidNativeLocalNotifications_onLocalNotificationsPress(int id);
 
     @Override
@@ -66,8 +55,6 @@ public class MengineActivity extends SDLActivity {
     protected void initPlugins() {
         AppEventsLogger.activateApp(getApplication());
 
-        _instance = this;
-
         AndroidNativeFacebook_setupFacebookJNI();
         AndroidNativeUnity_setupUnityJNI();
         AndroidNativeAdMob_setupAdMobJNI();
@@ -78,6 +65,8 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        _instance = this;
+
         super.onCreate(savedInstanceState);
 
         Log.e(TAG, "MengineActivity.onCreate()");

@@ -1,5 +1,7 @@
 #include "Win32Helper.h"
 
+#include "Config/StdString.h"
+
 #ifdef MENGINE_PLATFORM_WINDOWS
 #   include "Environment/Windows/WindowsIncluder.h"
 #endif
@@ -62,7 +64,7 @@ namespace Mengine
             {
                 if( Detail::__Win32GetCurrentDllPath( dllPath ) == false )
                 {
-                    strcpy( dllPath, "Unsupport" );
+                    MENGINE_STRCPY( dllPath, "Unsupport" );
                 }
             }
 

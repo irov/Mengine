@@ -4,6 +4,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/Config.h"
+#include "Config/StdString.h"
 
 namespace Mengine
 {
@@ -24,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32DynamicLibrary::setName( const Char * _name )
     {
-        strcpy( m_name, _name );
+        MENGINE_STRCPY( m_name, _name );
     }
     //////////////////////////////////////////////////////////////////////////
     const Char * Win32DynamicLibrary::getName() const

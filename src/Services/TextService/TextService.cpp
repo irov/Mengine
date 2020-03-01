@@ -175,7 +175,7 @@ namespace Mengine
                     }
                     else
                     {
-                        ::strcpy( text_str_value, str_value );
+                        MENGINE_STRCPY( text_str_value, str_value );
                         text_str_size = str_value_size;
                     }
                 }

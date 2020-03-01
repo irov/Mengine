@@ -58,7 +58,7 @@ namespace Mengine
                     return false;
                 }
 
-                strcpy( op.key, option_key_str );
+                MENGINE_STRCPY( op.key, option_key_str );
 
                 op.value[0] = '\0';
             }
@@ -79,7 +79,7 @@ namespace Mengine
                     return false;
                 }
 
-                strcpy( op.value, option_value_str + 1 );
+                MENGINE_STRCPY( op.value, option_value_str + 1 );
             }
 
             m_options.push_back( op );

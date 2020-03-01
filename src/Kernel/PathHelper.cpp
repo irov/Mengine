@@ -118,7 +118,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void pathCorrectBackslashToA( Char * _out, const Char * _in )
         {
-            ::strcpy( _out, _in );
+            MENGINE_STRCPY( _out, _in );
 
             pathCorrectBackslashA( _out );
         }

@@ -206,7 +206,7 @@ namespace Mengine
         MENGINE_ASSERTION_FATAL( MENGINE_STRLEN( name ) < MENGINE_PLUGIN_NAME_MAX );
 
         PluginDesc desc;
-        ::strcpy( desc.name, name );
+        MENGINE_STRCPY( desc.name, name );
         desc.dynamicLibrary = _dynamicLibrary;
         desc.plugin = _plugin;
 

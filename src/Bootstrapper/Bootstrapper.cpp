@@ -24,6 +24,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Stringalized.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Config/VectorString.h"
 
@@ -360,7 +361,7 @@ namespace Mengine
         SERVICE_CREATE( TimelineService, MENGINE_DOCUMENT_FACTORABLE );
         SERVICE_CREATE( TimepipeService, MENGINE_DOCUMENT_FACTORABLE );
 
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL_I( MENGINE_APPLICATION_INI_PATH );
+        FilePath applicationPath = Helper::stringizeFilePath( MENGINE_APPLICATION_INI_PATH );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();

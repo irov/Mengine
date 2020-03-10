@@ -39,14 +39,14 @@ namespace Mengine
         , m_fullscreen( false )
         , m_maxVertexCount( 0 )
         , m_maxIndexCount( 0 )
-        , m_depthBufferTestEnable( false )
-        , m_depthBufferWriteEnable( false )
         , m_currentRenderTextureStage( 0 )
         , m_currentMaterialId( 0 )
         , m_currentRenderMaterialStage( nullptr )
         , m_currentBlendSrc( BF_ONE )
         , m_currentBlendDst( BF_ONE )
         , m_currentBlendOp( BOP_ADD )
+        , m_depthBufferTestEnable( false )
+        , m_depthBufferWriteEnable( false )
         , m_alphaBlendEnable( false )
     {
     }

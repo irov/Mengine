@@ -94,6 +94,10 @@ namespace Mengine
             {
             }
 
+            ~My_observer_bind_call()
+            {
+            }
+
         public:
             void begin_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds ) override
             {

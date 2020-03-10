@@ -348,7 +348,7 @@ if(APPLE)
           PATH_SUFFIXES Frameworks
           NO_DEFAULT_PATH)
       if( ${FRAMEWORK_${fwname}} STREQUAL FRAMEWORK_${fwname}-NOTFOUND)
-          MESSAGE(ERROR ": Framework ${fwname} not found")
+          MESSAGE(ERROR ": Framework ${fwname} not found PATHS ${CMAKE_OSX_SYSROOT}${CMAKE_OSX_DEPLOYMENT_TARGET}.sdk/System/Library")
       else()
           TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${FRAMEWORK_${fwname}})
           MESSAGE(STATUS "Framework ${fwname} found at ${FRAMEWORK_${fwname}}")

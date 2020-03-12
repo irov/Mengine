@@ -368,9 +368,12 @@ namespace Mengine
         pybind::def_functor( kernel, "androidAdMobShowRewardedVideoAd", this, &AndroidNativeAdMobModule::showRewardedVideoAd );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation.setMutex( mutex );
+        if( m_eventation.initialize( mutex ) == false )
+        {
+            return false;
+        }
 
         s_androidNativeAdMobModule = this;
 
@@ -379,6 +382,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeAdMobModule::_finalizeModule()
     {
+        s_androidNativeAdMobModule = nullptr;
+
+        m_eventation.finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeAdMobModule::_update( bool _focus )

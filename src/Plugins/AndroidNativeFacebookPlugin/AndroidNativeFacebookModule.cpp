@@ -319,9 +319,12 @@ namespace Mengine
                 ;
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation.setMutex( mutex );
+        if( m_eventation.initialize( mutex ) == false )
+        {
+            return false;
+        }
 
         s_androidNativeFacebookModule = this;
 
@@ -330,6 +333,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeFacebookModule::_finalizeModule()
     {
+        s_androidNativeFacebookModule = nullptr;
+
+        m_eventation.finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeFacebookModule::addCommand( const LambdaFacebookEventHandler & _command )

@@ -62,6 +62,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/EntityEventable.h"
 #include "Kernel/MT19937Randomizer.h"
+#include "Kernel/SecureValue.h"
 
 #include "Config/Config.h"
 #include "Config/String.h"
@@ -404,6 +405,12 @@ namespace Mengine
             return false;
         }
 
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), Helper::makeDefaultPrototypeGenerator<SecureValue, 64>( MENGINE_DOCUMENT_FACTORABLE ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -416,6 +423,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()

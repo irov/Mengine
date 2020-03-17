@@ -7,8 +7,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
 #include "Kernel/Color.h"
-
-#include "Config/VectorString.h"
+#include "Kernel/VectorString.h"
 
 namespace Mengine
 {

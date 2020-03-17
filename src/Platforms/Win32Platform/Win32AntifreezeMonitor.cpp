@@ -9,7 +9,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 #include <thread>
 #include <atomic>

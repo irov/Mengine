@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Plugins/GOAPPlugin/GOAPInterface.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
-
-#include "Tasks/EngineSource.h"
 
 namespace Mengine
 {
@@ -61,18 +61,18 @@ namespace Mengine
         void __setState( bool _value, ECheckboxState _state );
 
     protected:
-        void __stateAppear( const EngineSourcePtr & _source, const NodePtr & _nodeAppear, bool _value );
-        void __stateIdle( const EngineSourcePtr & _source, const NodePtr & _nodeIdle, bool _value );
-        void __stateOver( const EngineSourcePtr & source, const NodePtr & _nodeOver, bool _value );
-        void __stateEnter( const EngineSourcePtr & _source, const NodePtr & _nodeEnter, bool _value );
-        void __stateLeave( const EngineSourcePtr & _source, const NodePtr & _nodeLeave, bool _value );
-        void __stateClick( const EngineSourcePtr & _source, const NodePtr & _nodeClick, bool _value );
-        void __statePush( const EngineSourcePtr & _source, const NodePtr & _nodePush, bool _value );
-        void __stateRelease( const EngineSourcePtr & _source, const NodePtr & _nodeRelease, bool _value );
-        void __statePressed( const EngineSourcePtr & _source, const NodePtr & _nodePressed, bool _value );
-        void __stateBlock( const EngineSourcePtr & _source, const NodePtr & _nodeBlock, bool _value );
-        void __stateBlockEnter( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnter, bool _value );
-        void __stateBlockEnd( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnd, bool _value );
+        void __stateAppear( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeAppear, bool _value );
+        void __stateIdle( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeIdle, bool _value );
+        void __stateOver( const GOAP::SourceInterfacePtr & source, const NodePtr & _nodeOver, bool _value );
+        void __stateEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeEnter, bool _value );
+        void __stateLeave( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeLeave, bool _value );
+        void __stateClick( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeClick, bool _value );
+        void __statePush( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodePush, bool _value );
+        void __stateRelease( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeRelease, bool _value );
+        void __statePressed( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodePressed, bool _value );
+        void __stateBlock( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlock, bool _value );
+        void __stateBlockEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlockEnter, bool _value );
+        void __stateBlockEnd( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlockEnd, bool _value );
 
     protected:
         bool m_value;
@@ -83,8 +83,8 @@ namespace Mengine
         NodePtr m_nodes[2][__ECS_MAX__];
 
         GOAP::ChainInterfacePtr m_chain;
-        GOAP::SemaphorePtr m_semaphoreBlock;
-        GOAP::SemaphorePtr m_semaphoreValue;
+        GOAP::SemaphoreInterfacePtr m_semaphoreBlock;
+        GOAP::SemaphoreInterfacePtr m_semaphoreValue;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveNodePtr<Checkbox> CheckboxPtr;

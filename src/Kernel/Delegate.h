@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Kernel/IntrusivePtr.h"
+#include "Kernel/Tuple.h"
 
 #include "Config/Lambda.h"
-#include "Config/Tuple.h"
 
 namespace Mengine
 {

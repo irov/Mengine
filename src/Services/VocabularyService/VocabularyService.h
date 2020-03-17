@@ -7,7 +7,7 @@
 #include "Kernel/Hashtable.h"
 
 #ifndef MENGINE_MASTER_RELEASE
-#   include "Config/Map.h"
+#   include "Kernel/Map.h"
 #endif
 
 namespace Mengine

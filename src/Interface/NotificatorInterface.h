@@ -2,14 +2,14 @@
 
 #include "Interface/RenderTextureInterface.h"
 
-#include "Config/Typedef.h"
-#include "Config/Tuple.h"
-#include "Config/Char.h"
-
+#include "Kernel/Tuple.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Factorable.h"
 #include "Kernel/Resolution.h"
+
+#include "Config/Typedef.h"
+#include "Config/Char.h"
 
 #ifndef MENGINE_NOTIFICATOR_MAX_COUNT
 #define MENGINE_NOTIFICATOR_MAX_COUNT 64

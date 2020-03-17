@@ -1,8 +1,8 @@
 #include "PolygonHelper.h"
 
 #include "Kernel/MemoryAllocator.h"
-
-#include "Config/Deque.h"
+#include "Kernel/StlAllocator.h"
+#include "Kernel/Deque.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -149,7 +149,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         typedef boost::geometry::model::point<float, 2, boost::geometry::cs::cartesian> BoostPoint;
-        typedef boost::geometry::model::polygon<mt::vec2f, true, true, Vector, Vector, stdex::stl_allocator, stdex::stl_allocator> BoostPolygon;
+        typedef boost::geometry::model::polygon<mt::vec2f, true, true, Vector, Vector, StlAllocator, StlAllocator> BoostPolygon;
         typedef boost::geometry::model::box<mt::vec2f> BoostBox;
         typedef boost::geometry::model::segment<mt::vec2f> BoostSegment;
         //////////////////////////////////////////////////////////////////////////

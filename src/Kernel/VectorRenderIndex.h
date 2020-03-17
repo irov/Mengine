@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/RenderIndex.h"
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

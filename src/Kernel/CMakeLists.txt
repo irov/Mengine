@@ -1,4 +1,28 @@
-set( MY_LIB_NAME Kernel )
+set(MY_LIB_NAME Kernel)
+
+ADD_FILTER(
+Containers
+    StlAllocator.h
+    StlAllocator.cpp
+    Array.h
+    ArrayString.h
+    DynamicArray.h
+    Blobject.h
+    String.h
+    StringRegex.h
+    VectorString.h
+    Stringstream.h
+    Vector.h
+    Floats.h
+    Deque.h
+    Set.h
+    Map.h
+    Pair.h
+    UnorderedMap.h
+    List.h
+    Tuple.h
+    Regex.h
+)
 
 ADD_FILTER(
 Mixin\\\\Unknowable
@@ -20,7 +44,7 @@ Mixin\\\\Eventable
 )
 
 ADD_FILTER(
-Mixin\\\\Scriptable    
+Mixin\\\\Scriptable
     Scriptable.cpp
     Scriptable.h
 )
@@ -40,6 +64,11 @@ ADD_FILTER(
 Mixin\\\\Updatable
     Updatable.h
     UpdateContext.h
+)
+
+ADD_FILTER(
+Mixin\\\\Hierarchyable
+    Hierarchyable.h
 )
 
 ADD_FILTER(
@@ -74,6 +103,12 @@ Mixin\\\\Observable
 ADD_FILTER(
 Mixin\\\\Pickerable
     Pickerable.h
+)
+
+ADD_FILTER(
+BaseHierarchy    
+    BaseHierarchy.cpp
+    BaseHierarchy.h
 )
 
 ADD_FILTER(
@@ -325,6 +360,9 @@ Assertion
 ADD_FILTER(
 Core    
     Pool.h
+    
+    PoolAllocator.h
+    PoolAllocator.cpp
 
     CRC32.h
     CRC32.cpp
@@ -393,6 +431,9 @@ Core
     
     PixelFormat.h
     PixelFormat.cpp
+    
+    AllocatorHelper.h
+    AllocatorHelper.cpp
     
     MemoryAllocator.h
     
@@ -502,7 +543,7 @@ Core
     IntrusiveSlugIterator.h
     IntrusiveSlugHead.h
     IntrusiveSlugListSize.h
-    IntrusiveSlugList.h    
+    IntrusiveSlugList.h
     
     LoggerBase.cpp
     LoggerBase.h

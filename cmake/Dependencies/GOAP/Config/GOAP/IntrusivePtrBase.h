@@ -9,13 +9,9 @@
 
 #include "GOAP/Config.h"
 
+#include "stdex/intrusive_ptr_base.h"
+
 namespace GOAP
 {
-    class IntrusivePtrBase
-    {
-    public:
-        virtual uint32_t incref() = 0;
-        virtual void decref() = 0;
-        virtual uint32_t getrefcount() const = 0;
-    };
+    typedef stdex::intrusive_ptr_base IntrusivePtrBase;
 }

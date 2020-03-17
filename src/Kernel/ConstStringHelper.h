@@ -2,8 +2,8 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/HashHelper.h"
+#include "Kernel/String.h"
 
-#include "Config/String.h"
 #include "Config/Char.h"
 
 namespace Mengine

@@ -37,8 +37,8 @@
 #include "Kernel/GlobalInputHandlerHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Stringstream.h"
 
-#include "Config/Stringstream.h"
 #include "Config/StdString.h"
 
 #include "stdex/allocator_report.h"

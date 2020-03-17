@@ -7,7 +7,7 @@
 #include "Environment/Windows/WindowsIncluder.h"
 
 #ifdef MENGINE_DEBUG
-#include "Config/String.h"
+#include "Kernel/String.h"
 #endif
 
 namespace Mengine

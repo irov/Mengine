@@ -1,22 +1,23 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
                                              
-project( jpeg )
-
-SET( SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg )
-
-#configure_file( ${SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
+project(jpeg)
 
 IF(MENGINE_RENDER_DIRECTX)
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${SOURCE_DIR}/jmorecfg.h COPYONLY )
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_dx.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
 ELSE()
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${SOURCE_DIR}/jmorecfg.h COPYONLY )
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmorecfg_ogl.h ${SOURCE_DIR}/jmorecfg.h COPYONLY)
 ENDIF()
 
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemname.c ${SOURCE_DIR}/jmemname.c COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jmemsys.h ${SOURCE_DIR}/jmemsys.h COPYONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/jconfig.vc ${SOURCE_DIR}/jconfig.h COPYONLY)
+
+SET(SOURCE_DIR ${THIRDPARTY_DIR}/libjpeg)
 
 # OUR SOURCES
-set( jpeg_sources
+set(jpeg_sources
 ${SOURCE_DIR}/jaricom.c
 ${SOURCE_DIR}/jcapimin.c
 ${SOURCE_DIR}/jcapistd.c
@@ -62,15 +63,9 @@ ${SOURCE_DIR}/jquant1.c
 ${SOURCE_DIR}/jquant2.c
 ${SOURCE_DIR}/jutils.c
 ${SOURCE_DIR}/jmemmgr.c
+${SOURCE_DIR}/jmemname.c
 )
 
-#choose memory manager
-set(jpeg_sources ${jpeg_sources} ${CMAKE_CURRENT_SOURCE_DIR}/jmemstdex.c)
-
-include_directories(${SOURCE_DIR})
-include_directories(${THIRDPARTY_DIR}/stdex/include)
-
 include_directories(${SOURCE_DIR})
 
-
-add_library( ${PROJECT_NAME} STATIC ${jpeg_sources} )
+add_library(${PROJECT_NAME} STATIC ${jpeg_sources})

@@ -18,9 +18,8 @@
 #include "Kernel/Factory.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Pool.h"
-
-#include "Config/Map.h"
-#include "Config/Vector.h"
+#include "Kernel/Map.h"
+#include "Kernel/Vector.h"
 
 #include "pybind/pybind.hpp"
 

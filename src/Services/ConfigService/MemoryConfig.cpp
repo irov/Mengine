@@ -5,8 +5,7 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Stringalized.h"
-
-#include "Config/ArrayString.h"
+#include "Kernel/ArrayString.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

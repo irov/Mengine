@@ -15,8 +15,6 @@
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 
-#include "stdex/allocator.h"
-
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////

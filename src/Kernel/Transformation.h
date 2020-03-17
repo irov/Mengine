@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/mat4.h"
 

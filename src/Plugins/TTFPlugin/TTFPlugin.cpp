@@ -4,6 +4,7 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/PixelFormat.h"
 
@@ -20,14 +21,18 @@
 #include "stdex/allocator_report.h"
 
 //////////////////////////////////////////////////////////////////////////
-void * _fe_alloc( size_t size )
+void * _fe_alloc( size_t _size )
 {
-    return stdex_malloc( size, "fe" );
+    void * p = ALLOCATOR_SERVICE()
+        ->malloc( _size, "fe" );
+
+    return p;
 }
 //////////////////////////////////////////////////////////////////////////
-void _fe_free( void * ptr )
+void _fe_free( void * _ptr )
 {
-    stdex_free( ptr, "fe" );
+    ALLOCATOR_SERVICE()
+        ->free( _ptr, "fe" );
 }
 //////////////////////////////////////////////////////////////////////////
 void _debug_image_created( fe_image * )

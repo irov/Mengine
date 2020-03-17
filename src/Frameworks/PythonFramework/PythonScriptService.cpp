@@ -32,8 +32,8 @@
 #include "Kernel/Error.h"
 #include "Kernel/Document.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Stringstream.h"
 
-#include "Config/Stringstream.h"
 #include "Config/StdString.h"
 
 #include "pybind/debug.hpp"
@@ -289,7 +289,7 @@ namespace Mengine
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
 #ifdef MENGINE_DEBUG
-        pybind::observer_bind_call * bind_call = Helper::allocateT<My_observer_bind_call>( this );
+        pybind::observer_bind_call * bind_call = Helper::newT<My_observer_bind_call>( this );
         m_kernel->set_observer_bind_call( bind_call );
 #endif
 
@@ -426,7 +426,7 @@ namespace Mengine
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
         My_observer_bind_call * observer_bind_call = static_cast<My_observer_bind_call *>(observer);
-        Helper::freeT( observer_bind_call );
+        Helper::deleteT( observer_bind_call );
 
         m_kernel->set_observer_bind_call( nullptr );
 

@@ -3,10 +3,9 @@
 #include "TTFInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Vector.h"
-#include "Config/Pair.h"
-#include "Config/Map.h"
+#include "Kernel/Vector.h"
+#include "Kernel/Pair.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {

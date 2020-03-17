@@ -19,8 +19,7 @@
 #include "Kernel/PathString.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/MemoryAllocator.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/quat.h"
 

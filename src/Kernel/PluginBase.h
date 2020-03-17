@@ -6,9 +6,8 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-
-#include "Config/Vector.h"
-#include "Config/String.h"
+#include "Kernel/Vector.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -54,8 +53,6 @@ namespace Mengine
 
         typedef Vector<ConstString> VectorModuleFactory;
         VectorModuleFactory m_moduleFactories;
-
-        ThreadMutexInterfacePtr m_mutexAllocatorPool;
 
         bool m_dynamicLoad;
         bool m_initializePlugin;

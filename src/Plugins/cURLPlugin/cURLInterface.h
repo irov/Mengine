@@ -5,14 +5,13 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Tasks/EngineSource.h"
+#include "Plugins/GOAPPlugin/GOAPInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FactorableUnique.h"
-
-#include "Config/String.h"
-#include "Config/VectorString.h"
+#include "Kernel/String.h"
+#include "Kernel/VectorString.h"
 
 namespace Mengine
 {
@@ -48,23 +47,10 @@ namespace Mengine
         : public ServantInterface
     {
     public:
-        virtual void onResponse( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onResponse( const GOAP::SourceInterfacePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<cURLTaskReceiverInterface> cURLTaskReceiverInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const EngineSourcePtr & _source, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )> LambdaTaskReceiver;
-    //////////////////////////////////////////////////////////////////////////
-    class cURLSourceInterface
-        : public ServantInterface
-    {
-    public:
-        virtual void addHttpGet( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc ) = 0;
-        virtual void addHttpHeaderData( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const String & _data, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc ) = 0;
-        virtual void addHttpPost( const String & _url, const cURLHeaders & _headers, int32_t _timeout, bool _receiveHeaders, const cURLPostParams & _params, const LambdaTaskReceiver & _lambda, const DocumentPtr & _doc ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<cURLSourceInterface> cURLSourceInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class cURLServiceInterface
         : public ServiceInterface
@@ -81,9 +67,6 @@ namespace Mengine
 
     public:
         virtual bool cancelRequest( HttpRequestID _id ) = 0;
-
-    public:
-        virtual cURLSourceInterfacePtr makeSource( const EngineSourcePtr & _source ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

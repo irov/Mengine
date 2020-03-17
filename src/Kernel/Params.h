@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Kernel/ConstString.h"
-
-#include "Config/Map.h"
-#include "Config/String.h"
+#include "Kernel/Map.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

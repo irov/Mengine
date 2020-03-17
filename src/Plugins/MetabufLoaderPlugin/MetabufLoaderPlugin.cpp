@@ -2,6 +2,7 @@
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "LoaderResourceCursorICO.h"
 #include "LoaderResourceCursorSystem.h"
@@ -22,12 +23,31 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "metabuf/Memory.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( MetabufLoader, Mengine::MetabufLoaderPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static void * metabuf_malloc( size_t _size, void * _ud )
+    {
+        (void)_ud;
+
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "metabuf" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void metabuf_free( void * _ptr, void * _ud )
+    {
+        (void)_ud;
+
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "metabuf" );
+    }
     //////////////////////////////////////////////////////////////////////////
     MetabufLoaderPlugin::MetabufLoaderPlugin()
     {
@@ -39,6 +59,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MetabufLoaderPlugin::_initializePlugin()
     {
+        Metabuf::set_Metabuf_allocator( &metabuf_malloc, &metabuf_free, nullptr );
+
 #define DECLARE_LOADER(T)\
         VOCABULARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ), Helper::makeFactorableUnique<Loader##T>(MENGINE_DOCUMENT_FACTORABLE) )
 

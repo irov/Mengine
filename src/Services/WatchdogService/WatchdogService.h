@@ -3,9 +3,9 @@
 #include "Interface/WatchdogInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Map.h"
 
 #include "Config/Typedef.h"
-#include "Config/Map.h"
 
 namespace Mengine
 {

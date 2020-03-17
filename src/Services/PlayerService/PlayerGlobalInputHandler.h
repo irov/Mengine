@@ -4,8 +4,8 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Config/Vector.h"
-#include "Config/String.h"
+#include "Kernel/Vector.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

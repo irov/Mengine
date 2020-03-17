@@ -8,22 +8,21 @@
 #include "Kernel/Eventable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
+#include "Kernel/Vector.h"
 
-#include "Config/Typedef.h"
-#include "Config/Vector.h"
-
+//////////////////////////////////////////////////////////////////////////
 extern "C"
 {
     struct _object;
     typedef _object PyObject;
 }
-
+//////////////////////////////////////////////////////////////////////////
 namespace pybind
 {
     class kernel_interface;
     class object;
 }
-
+//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -60,8 +59,10 @@ namespace Mengine
         virtual void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;
         virtual void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;
 
+    public:
         virtual ScriptModuleInterfacePtr importModule( const ConstString & _name ) = 0;
 
+    public:
         virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
         virtual void removeGlobalModule( const Char * _name ) = 0;

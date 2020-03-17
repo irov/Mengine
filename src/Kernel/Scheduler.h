@@ -5,8 +5,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/BaseUpdation.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

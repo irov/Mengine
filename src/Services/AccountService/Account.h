@@ -6,9 +6,8 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-
-#include "Config/String.h"
-#include "Config/Map.h"
+#include "Kernel/String.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {

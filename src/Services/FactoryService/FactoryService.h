@@ -4,9 +4,8 @@
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Vector.h"
-#include "Config/String.h"
+#include "Kernel/Vector.h"
+#include "Kernel/String.h"
 
 #ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
 #define MENGINE_NODELEAKDETECTOR_HASHSIZE 16

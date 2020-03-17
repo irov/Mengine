@@ -5,16 +5,15 @@
 #include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 #include "AstralaxEmitterContainer.h"
 #include "AstralaxEmitter2.h"
 
 #include "Kernel/Factory.h"
-
-#include "Config/Stringstream.h"
-#include "Config/Vector.h"
+#include "Kernel/Stringstream.h"
+#include "Kernel/Vector.h"
+#include "Kernel/Map.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 
@@ -25,8 +24,6 @@
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(pop) 
 #endif
-
-#include "Config/Map.h"
 
 namespace Mengine
 {

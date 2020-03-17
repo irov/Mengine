@@ -4,8 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
-
-#include "Config/Map.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {

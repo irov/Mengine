@@ -4,10 +4,10 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/PathString.h"
 #include "Kernel/HashHelper.h"
+#include "Kernel/String.h"
+#include "Kernel/Vector.h"
 
 #include "Config/Typedef.h"
-#include "Config/String.h"
-#include "Config/Vector.h"
 
 namespace Mengine
 {

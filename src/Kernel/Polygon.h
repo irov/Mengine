@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Kernel/Vector.h"
+
 #include "Config/Typedef.h"
-#include "Config/Vector.h"
 
 #include "math/vec2.h"
 #include "math/mat4.h"

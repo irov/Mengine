@@ -8,6 +8,8 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
 
+#include "pybind/pybind.hpp"
+
 namespace Mengine
 {
     class cURLScriptEmbedding

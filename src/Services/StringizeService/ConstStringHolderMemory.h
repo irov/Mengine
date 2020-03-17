@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Config/String.h"
-
+#include "Kernel/String.h"
 #include "Kernel/ConstStringHolder.h"
 
 namespace Mengine

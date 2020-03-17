@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Identity.h"
+#include "Kernel/Hierarchyable.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Pickerable.h"
 #include "Kernel/Eventable.h"
@@ -30,6 +31,7 @@ namespace Mengine
         , public Factorable
         , public Identity
         , public Compilable
+        , public Hierarchyable
         , public Updatable
         , public Renderable
         , public Transformation

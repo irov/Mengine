@@ -2,8 +2,6 @@
 
 #include "Interface/Interface.h"
 
-#include "pybind/pybind.hpp"
-
 namespace pybind
 {
     class kernel_interface;

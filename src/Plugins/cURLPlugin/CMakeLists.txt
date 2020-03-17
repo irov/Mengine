@@ -25,8 +25,8 @@ src
     cURLErrorHelper.cpp
     cURLErrorHelper.h
     
-    cURLSource.h
-    cURLSource.cpp
+    cURLCook.h
+    cURLCook.cpp
     
     TaskcURLHttpBase.cpp
     TaskcURLHttpBase.h

@@ -6,8 +6,8 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/Color.h"
 #include "Kernel/AspectRatioViewport.h"
+#include "Kernel/String.h"
 
-#include "Config/String.h"
 #include "Config/Char.h"
 #include "Config/StdInt.h"
 

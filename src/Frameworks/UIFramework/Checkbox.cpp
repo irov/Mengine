@@ -1,7 +1,5 @@
 #include "Checkbox.h"
 
-#include "Tasks/EngineSource.h"
-
 #include "CheckboxEventReceiverInterface.h"
 
 #include "Kernel/Delegate.h"
@@ -12,8 +10,8 @@ namespace Mengine
     Checkbox::Checkbox()
         : m_value( false )
         , m_state( ECS_APPEAR )
-        , m_semaphoreBlock( GOAP::Helper::makeSemaphore( GOAP::Helper::makeEvent(), 0 ) )
-        , m_semaphoreValue( GOAP::Helper::makeSemaphore( GOAP::Helper::makeEvent(), 0 ) )
+        , m_semaphoreBlock( GOAP_SERVICE()->makeSemaphore( 0 ) )
+        , m_semaphoreValue( GOAP_SERVICE()->makeSemaphore( 0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -110,11 +108,12 @@ namespace Mengine
             m_nodes[1][ECS_OVER] = m_nodes[1][ECS_IDLE];
         }
 
-        EngineSourcePtr source = Helper::makeEngineSource();
+        GOAP::SourceInterfacePtr source = GOAP_SERVICE()
+            ->makeSource();
 
-        auto fn = [this]( const EngineSourcePtr & _source )
+        auto fn = [this]( const GOAP::SourceInterfacePtr & _source )
         {
-            typedef void (Checkbox:: * TF)(const EngineSourcePtr &, const NodePtr &, bool);
+            typedef void (Checkbox:: * TF)(const GOAP::SourceInterfacePtr &, const NodePtr &, bool);
 
             const TF stateFunctions[] =
             {
@@ -138,20 +137,23 @@ namespace Mengine
 
             const NodePtr & node = m_nodes[index][m_state];
 
-            _source->addSemaphoreAssign( m_semaphoreValue, 0 );
-            _source->addScope( this, stateFunction, node, m_value );
+            Cook::addSemaphoreAssign( _source, m_semaphoreValue, 0 );
+            Cook::addScope( _source, this, stateFunction, node, m_value );
 
             return true;
         };
 
-        source->addWhile( fn );
+        Cook::addWhile( source, fn );
 
-        m_chain = Helper::makeEngineChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
+        GOAP::ChainInterfacePtr chain = GOAP_SERVICE()
+            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
-        if( m_chain->run() == false )
+        if( chain->run() == false )
         {
             return false;
         }
+
+        m_chain = chain;
 
         return true;
     }
@@ -171,299 +173,299 @@ namespace Mengine
         m_state = _state;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateAppear( const EngineSourcePtr & _source, const NodePtr & _nodeAppear, bool _value )
+    void Checkbox::__stateAppear( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeAppear, bool _value )
     {
         if( _nodeAppear == nullptr )
         {
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeAppear );
-        _source->addLocalDelay( 0.f );
+        Cook::addNodeEnable( _source, _nodeAppear );
+        Cook::addLocalDelay( _source, 0.f );
 
-        auto && [source_true, source_false] = _source->addIf( [this]()
+        auto && [source_true, source_false] = Cook::addIf( _source, [this]()
         {
             return this->isEnable();
         } );
 
-        source_false->addBlock();
+        Cook::addBlock( source_false );
 
-        auto && [source_over_click, source_over_enter, source_block, source_play, source_value] = _source->addRace<5>();
+        auto && [source_over_click, source_over_enter, source_block, source_play, source_value] = Cook::addRace<5>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_over_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_over_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        source_over_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_over_enter->addFunction( this, &Checkbox::__setState, _value, ECS_ENTER );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_over_enter, this, &Checkbox::__setState, _value, ECS_ENTER );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
 
-        source_play->addAnimatablePlayWait( _nodeAppear, _nodeAppear );
-        source_play->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+        Cook::addAnimatablePlayWait( source_play, _nodeAppear, _nodeAppear );
+        Cook::addFunction( source_play, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        _source->addNodeDisable( _nodeAppear );
+        Cook::addNodeDisable( _source, _nodeAppear );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateIdle( const EngineSourcePtr & _source, const NodePtr & _nodeIdle, bool _value )
+    void Checkbox::__stateIdle( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeIdle, bool _value )
     {
-        _source->addNodeEnable( _nodeIdle );
-        _source->addLocalDelay( 0.f );
+        Cook::addNodeEnable( _source, _nodeIdle );
+        Cook::addLocalDelay( _source, 0.f );
 
-        auto && [source_over_click, source_over_enter, source_block, source_value] = _source->addRace<4>();
+        auto && [source_over_click, source_over_enter, source_block, source_value] = Cook::addRace<4>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_over_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_over_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        source_over_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_over_enter->addFunction( this, &Checkbox::__setState, _value, ECS_ENTER );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_over_enter, this, &Checkbox::__setState, _value, ECS_ENTER );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
 
-        _source->addNodeDisable( _nodeIdle );
+        Cook::addNodeDisable( _source, _nodeIdle );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateOver( const EngineSourcePtr & _source, const NodePtr & _nodeOver, bool _value )
+    void Checkbox::__stateOver( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeOver, bool _value )
     {
-        _source->addNodeEnable( _nodeOver );
-        _source->addLocalDelay( 0.f );
+        Cook::addNodeEnable( _source, _nodeOver );
+        Cook::addLocalDelay( _source, 0.f );
 
-        auto && [source_over_click, source_over_leave, source_block, source_value] = _source->addRace<4>();
+        auto && [source_over_click, source_over_leave, source_block, source_value] = Cook::addRace<4>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_over_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_over_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        source_over_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_over_leave->addFunction( this, &Checkbox::__setState, _value, ECS_LEAVE );
+        Cook::addPickerableMouseLeave( source_over_leave, m_pickerable, nullptr );
+        Cook::addFunction( source_over_leave, this, &Checkbox::__setState, _value, ECS_LEAVE );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
 
-        _source->addNodeDisable( _nodeOver );
+        Cook::addNodeDisable( _source, _nodeOver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateEnter( const EngineSourcePtr & _source, const NodePtr & _nodeEnter, bool _value )
+    void Checkbox::__stateEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeEnter, bool _value )
     {
         if( _nodeEnter == nullptr )
         {
-            _source->addEventable( this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_OVER );
+            Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_OVER );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeEnter );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
+        Cook::addNodeEnable( _source, _nodeEnter );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_ENTER, &CheckboxEventReceiverInterface::onCheckboxMouseEnter, _value );
 
-        auto && [source_enter_movie, source_enter_leave, source_enter_click, source_value] = _source->addRace<4>();
+        auto && [source_enter_movie, source_enter_leave, source_enter_click, source_value] = Cook::addRace<4>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_enter_movie->addAnimatablePlayWait( _nodeEnter, _nodeEnter );
-        source_enter_movie->addFunction( this, &Checkbox::__setState, _value, ECS_OVER );
+        Cook::addAnimatablePlayWait( source_enter_movie, _nodeEnter, _nodeEnter );
+        Cook::addFunction( source_enter_movie, this, &Checkbox::__setState, _value, ECS_OVER );
 
-        source_enter_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_enter_leave->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+        Cook::addPickerableMouseLeave( source_enter_leave, m_pickerable, nullptr );
+        Cook::addFunction( source_enter_leave, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        source_enter_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_enter_click->addFunction( this, &Checkbox::__setState, _value, ECS_PUSH );
+        Cook::addPickerableMouseButton( source_enter_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_enter_click, this, &Checkbox::__setState, _value, ECS_PUSH );
 
-        _source->addNodeDisable( _nodeEnter );
+        Cook::addNodeDisable( _source, _nodeEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateLeave( const EngineSourcePtr & _source, const NodePtr & _nodeLeave, bool _value )
+    void Checkbox::__stateLeave( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeLeave, bool _value )
     {
         if( _nodeLeave == nullptr )
         {
-            _source->addEventable( this, EVENT_CHECKBOX_MOUSE_LEAVE, &CheckboxEventReceiverInterface::onCheckboxMouseLeave, _value );
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+            Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_LEAVE, &CheckboxEventReceiverInterface::onCheckboxMouseLeave, _value );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeLeave );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_CHECKBOX_MOUSE_LEAVE, &CheckboxEventReceiverInterface::onCheckboxMouseLeave, _value );
+        Cook::addNodeEnable( _source, _nodeLeave );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_LEAVE, &CheckboxEventReceiverInterface::onCheckboxMouseLeave, _value );
 
-        auto && [source_leave_movie, source_leave_enter, source_value] = _source->addRace<3>();
+        auto && [source_leave_movie, source_leave_enter, source_value] = Cook::addRace<3>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_leave_movie->addAnimatablePlayWait( _nodeLeave, _nodeLeave );
-        source_leave_movie->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+        Cook::addAnimatablePlayWait( source_leave_movie, _nodeLeave, _nodeLeave );
+        Cook::addFunction( source_leave_movie, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        source_leave_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_leave_enter->addFunction( this, &Checkbox::__setState, _value, ECS_OVER );
+        Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_leave_enter, this, &Checkbox::__setState, _value, ECS_OVER );
 
-        _source->addNodeDisable( _nodeLeave );
+        Cook::addNodeDisable( _source, _nodeLeave );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__statePush( const EngineSourcePtr & _source, const NodePtr & _nodePush, bool _value )
+    void Checkbox::__statePush( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodePush, bool _value )
     {
         if( _nodePush == nullptr )
         {
-            _source->addEventable( this, EVENT_CHECKBOX_MOUSE_PUSH, &CheckboxEventReceiverInterface::onCheckboxMousePush, _value );
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_PRESSED );
+            Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_PUSH, &CheckboxEventReceiverInterface::onCheckboxMousePush, _value );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_PRESSED );
 
             return;
         }
 
-        _source->addNodeEnable( _nodePush );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_CHECKBOX_MOUSE_PUSH, &CheckboxEventReceiverInterface::onCheckboxMousePush, _value );
+        Cook::addNodeEnable( _source, _nodePush );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_PUSH, &CheckboxEventReceiverInterface::onCheckboxMousePush, _value );
 
-        auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel, source_value] = _source->addRace<4>();
+        auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel, source_value] = Cook::addRace<4>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_Push_movie->addAnimatablePlayWait( _nodePush, _nodePush );
-        source_Push_movie->addFunction( this, &Checkbox::__setState, _value, ECS_PRESSED );
+        Cook::addAnimatablePlayWait( source_Push_movie, _nodePush, _nodePush );
+        Cook::addFunction( source_Push_movie, this, &Checkbox::__setState, _value, ECS_PRESSED );
 
-        source_Push_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_Push_leave->addFunction( this, &Checkbox::__setState, _value, ECS_RELEASE );
+        Cook::addPickerableMouseLeave( source_Push_leave, m_pickerable, nullptr );
+        Cook::addFunction( source_Push_leave, this, &Checkbox::__setState, _value, ECS_RELEASE );
 
-        source_Pressed_click_Rel->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, false, nullptr );
-        source_Pressed_click_Rel->addFunction( this, &Checkbox::__setState, _value, ECS_CLICK );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addFunction( source_Pressed_click_Rel, this, &Checkbox::__setState, _value, ECS_CLICK );
 
-        _source->addNodeDisable( _nodePush );
+        Cook::addNodeDisable( _source, _nodePush );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__statePressed( const EngineSourcePtr & _source, const NodePtr & _nodePressed, bool _value )
+    void Checkbox::__statePressed( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodePressed, bool _value )
     {
         if( _nodePressed == nullptr )
         {
-            _source->addEventable( this, EVENT_CHECKBOX_MOUSE_PRESSED, &CheckboxEventReceiverInterface::onCheckboxMousePressed, _value );
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_CLICK );
+            Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_PRESSED, &CheckboxEventReceiverInterface::onCheckboxMousePressed, _value );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_CLICK );
 
             return;
         }
 
-        _source->addNodeEnable( _nodePressed );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_CHECKBOX_MOUSE_PRESSED, &CheckboxEventReceiverInterface::onCheckboxMousePressed, _value );
+        Cook::addNodeEnable( _source, _nodePressed );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_PRESSED, &CheckboxEventReceiverInterface::onCheckboxMousePressed, _value );
 
-        auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block, source_value] = _source->addRace<4>();
+        auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block, source_value] = Cook::addRace<4>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_Pressed_click_Rel->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, false, nullptr );
-        source_Pressed_click_Rel->addFunction( this, &Checkbox::__setState, _value, ECS_CLICK );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addFunction( source_Pressed_click_Rel, this, &Checkbox::__setState, _value, ECS_CLICK );
 
-        source_Pressed_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_Pressed_leave->addFunction( this, &Checkbox::__setState, _value, ECS_RELEASE );
+        Cook::addPickerableMouseLeave( source_Pressed_leave, m_pickerable, nullptr );
+        Cook::addFunction( source_Pressed_leave, this, &Checkbox::__setState, _value, ECS_RELEASE );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Checkbox::__setState, _value, ECS_BLOCK_ENTER );
 
-        _source->addNodeDisable( _nodePressed );
+        Cook::addNodeDisable( _source, _nodePressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateRelease( const EngineSourcePtr & _source, const NodePtr & _nodeRelease, bool _value )
+    void Checkbox::__stateRelease( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeRelease, bool _value )
     {
         if( _nodeRelease == nullptr )
         {
-            _source->addEventable( this, EVENT_CHECKBOX_MOUSE_RELEASE, &CheckboxEventReceiverInterface::onCheckboxMouseRelease, _value );
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+            Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_RELEASE, &CheckboxEventReceiverInterface::onCheckboxMouseRelease, _value );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeRelease );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_CHECKBOX_MOUSE_RELEASE, &CheckboxEventReceiverInterface::onCheckboxMouseRelease, _value );
+        Cook::addNodeEnable( _source, _nodeRelease );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_CHECKBOX_MOUSE_RELEASE, &CheckboxEventReceiverInterface::onCheckboxMouseRelease, _value );
 
-        auto && [source_Release_movie, source_Release_enter, source_value] = _source->addRace<3>();
+        auto && [source_Release_movie, source_Release_enter, source_value] = Cook::addRace<3>( _source );
 
-        source_value->addSemaphoreEqual( m_semaphoreValue, 1 );
+        Cook::addSemaphoreEqual( source_value, m_semaphoreValue, 1 );
 
-        source_Release_movie->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, true, nullptr );
-        source_Release_movie->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+        Cook::addPickerableMouseButton( source_Release_movie, m_pickerable, MC_LBUTTON, false, true, nullptr );
+        Cook::addFunction( source_Release_movie, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        source_Release_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_Release_enter->addFunction( this, &Checkbox::__setState, _value, ECS_PRESSED );
+        Cook::addPickerableMouseEnter( source_Release_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_Release_enter, this, &Checkbox::__setState, _value, ECS_PRESSED );
 
-        _source->addNodeDisable( _nodeRelease );
+        Cook::addNodeDisable( _source, _nodeRelease );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateClick( const EngineSourcePtr & _source, const NodePtr & _nodeClick, bool _value )
+    void Checkbox::__stateClick( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeClick, bool _value )
     {
         bool changeValue = !_value;
 
         if( _nodeClick == nullptr )
         {
-            _source->addFunction( this, &Checkbox::__setState, changeValue, ECS_IDLE );
-            _source->addEventable( this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
+            Cook::addFunction( _source, this, &Checkbox::__setState, changeValue, ECS_IDLE );
+            Cook::addEventable( _source, this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeClick );
-        _source->addAnimatablePlayWait( _nodeClick, _nodeClick );
+        Cook::addNodeEnable( _source, _nodeClick );
+        Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick );
         
-        _source->addFunction( this, &Checkbox::__setState, changeValue, ECS_IDLE );
-        _source->addEventable( this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
+        Cook::addFunction( _source, this, &Checkbox::__setState, changeValue, ECS_IDLE );
+        Cook::addEventable( _source, this, EVENT_CHECKBOX_CHANGE, &CheckboxEventReceiverInterface::onCheckboxChange, changeValue );
 
-        _source->addNodeDisable( _nodeClick );
+        Cook::addNodeDisable( _source, _nodeClick );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateBlockEnter( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnter, bool _value )
+    void Checkbox::__stateBlockEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlockEnter, bool _value )
     {
         if( _nodeBlockEnter == nullptr )
         {
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_BLOCK );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeBlockEnter );
-        _source->addAnimatablePlayWait( _nodeBlockEnter, _nodeBlockEnter );
-        _source->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK );
+        Cook::addNodeEnable( _source, _nodeBlockEnter );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnter, _nodeBlockEnter );
+        Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_BLOCK );
 
-        _source->addNodeDisable( _nodeBlockEnter );
+        Cook::addNodeDisable( _source, _nodeBlockEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateBlock( const EngineSourcePtr & _source, const NodePtr & _nodeBlock, bool _value )
+    void Checkbox::__stateBlock( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlock, bool _value )
     {
         if( _nodeBlock == nullptr )
         {
-            _source->addSemaphoreEqual( m_semaphoreBlock, 0 );
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK_END );
+            Cook::addSemaphoreEqual( _source, m_semaphoreBlock, 0 );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_BLOCK_END );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeBlock );
+        Cook::addNodeEnable( _source, _nodeBlock );
 
-        _source->addSemaphoreEqual( m_semaphoreBlock, 0 );
-        _source->addFunction( this, &Checkbox::__setState, _value, ECS_BLOCK_END );
+        Cook::addSemaphoreEqual( _source, m_semaphoreBlock, 0 );
+        Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_BLOCK_END );
 
-        _source->addNodeDisable( _nodeBlock );
+        Cook::addNodeDisable( _source, _nodeBlock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Checkbox::__stateBlockEnd( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnd, bool _value )
+    void Checkbox::__stateBlockEnd( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlockEnd, bool _value )
     {
         if( _nodeBlockEnd == nullptr )
         {
-            _source->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+            Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeBlockEnd );
+        Cook::addNodeEnable( _source, _nodeBlockEnd );
 
-        _source->addAnimatablePlayWait( _nodeBlockEnd, _nodeBlockEnd );
-        _source->addFunction( this, &Checkbox::__setState, _value, ECS_IDLE );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnd, _nodeBlockEnd );
+        Cook::addFunction( _source, this, &Checkbox::__setState, _value, ECS_IDLE );
 
-        _source->addNodeDisable( _nodeBlockEnd );
+        Cook::addNodeDisable( _source, _nodeBlockEnd );
     }
 }

@@ -16,14 +16,35 @@
 #ifndef _OS_TYPES_H
 #define _OS_TYPES_H
 
-#include "stdex/allocator.h"
 
+//////////////////////////////////////////////////////////////////////////
+typedef void * (*OGG_malloc_t)(size_t _size, void * _ud);
+typedef void * (*OGG_ñalloc_t)(size_t _num, size_t _size, void * _ud);
+typedef void * (*OGG_realloc_t)(void * _ptr, size_t _size, void * _ud);
+typedef void (*OGG_free_t)(void * _ptr, void * _ud);
+//////////////////////////////////////////////////////////////////////////    
+static OGG_malloc_t s_OGG_malloc;
+static OGG_ñalloc_t s_OGG_calloc;
+static OGG_realloc_t s_OGG_realloc;
+static OGG_free_t s_OGG_free;
+static void * s_OGG_ud;
+//////////////////////////////////////////////////////////////////////////
+inline static void set_OGG_allocator( OGG_malloc_t _malloc, OGG_ñalloc_t _calloc, OGG_realloc_t _realloc, OGG_free_t _free, void * _ud )
+{
+    s_OGG_malloc = _malloc;
+    s_OGG_calloc = _calloc;
+    s_OGG_realloc = _realloc;
+    s_OGG_free = _free;
+    s_OGG_ud = _ud;
+}
+//////////////////////////////////////////////////////////////////////////
 /* make it easy on the folks that want to compile the libs with a
    different malloc than stdlib */
-#define _ogg_malloc(n)  stdex_malloc(n, "ogg")
-#define _ogg_calloc(c,n)  stdex_calloc(c, n, "ogg")
-#define _ogg_realloc(p, n) stdex_realloc(p, n, "ogg")
-#define _ogg_free(p)    stdex_free(p, "ogg")
+#define _ogg_malloc(n)     ((*s_OGG_malloc)(n, s_OGG_ud))
+#define _ogg_calloc(c,n)   ((*s_OGG_calloc)(c, n, s_OGG_ud))
+#define _ogg_realloc(p, n) ((*s_OGG_realloc)(p, n, s_OGG_ud))
+#define _ogg_free(p)       ((*s_OGG_free)(p, s_OGG_ud))
+
 
 #if defined(_WIN32)
 

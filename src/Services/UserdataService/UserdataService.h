@@ -5,8 +5,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/DocumentHelper.h"
-
-#include "Config/Map.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {

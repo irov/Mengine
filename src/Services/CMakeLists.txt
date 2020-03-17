@@ -1,3 +1,4 @@
+ADD_SUBDIRECTORY(AllocatorService)
 ADD_SUBDIRECTORY(TextService)
 ADD_SUBDIRECTORY(EasingService)
 ADD_SUBDIRECTORY(CodecService)

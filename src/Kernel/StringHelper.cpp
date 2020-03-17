@@ -2,14 +2,12 @@
 
 #include "Kernel/Assertion.h"
 
-#include "Config/Typedef.h"
-#include "Config/Vector.h"
-#include "Config/VectorString.h"
-#include "Config/Stringstream.h"
+#include "Kernel/Vector.h"
+#include "Kernel/VectorString.h"
+#include "Kernel/Stringstream.h"
+
 #include "Config/StdIO.h"
 #include "Config/StdArg.h"
-
-#include <clocale>
 
 namespace Mengine
 {

@@ -9,8 +9,7 @@
 #include "Kernel/BaseContent.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Color.h"
-
-#include "Config/Map.h"
+#include "Kernel/Map.h"
 
 #include "math/mat4.h"
 

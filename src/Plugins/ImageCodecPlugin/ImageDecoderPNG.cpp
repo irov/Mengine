@@ -1,13 +1,12 @@
 #include "ImageDecoderPNG.h"
 
+#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "stdex/allocator.h"
 
 #ifndef MENGINE_DECODER_PNG_BYTES_TO_CHECK
 #define MENGINE_DECODER_PNG_BYTES_TO_CHECK 8
@@ -48,14 +47,18 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        return stdex_malloc( _size, "png decoder" );
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "png decoder" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
     static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
     {
         MENGINE_UNUSED( _png );
 
-        stdex_free( _ptr, "png decoder" );
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "png decoder" );
     }
     //////////////////////////////////////////////////////////////////////////
     ImageDecoderPNG::ImageDecoderPNG()

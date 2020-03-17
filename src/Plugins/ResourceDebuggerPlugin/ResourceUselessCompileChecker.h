@@ -4,8 +4,7 @@
 #include "Kernel/Observable.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Scene.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

@@ -4,10 +4,8 @@
 
 #include "TextChar.h"
 
-#include "Config/Typedef.h"
-#include "Config/String.h"
-#include "Config/Vector.h"
-
+#include "Kernel/String.h"
+#include "Kernel/Vector.h"
 #include "Kernel/Color.h"
 #include "Kernel/GlyphChar.h"
 

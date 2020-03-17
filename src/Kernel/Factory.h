@@ -20,7 +20,7 @@ namespace Mengine
     {
     public:
         Factory( const Char * _name );
-        virtual ~Factory();
+        ~Factory() override;
 
     public:
         const Char * getName() const;

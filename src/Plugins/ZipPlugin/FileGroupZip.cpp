@@ -6,6 +6,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
@@ -327,20 +328,24 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    static voidpf s_alloc_func( voidpf opaque, uInt items, uInt size )
+    static voidpf s_alloc_func( voidpf _opaque, uInt _items, uInt _size )
     {
-        MENGINE_UNUSED( opaque );
+        MENGINE_UNUSED( _opaque );
 
-        void * memory = stdex_malloc( items * size, "FileGroupZip" );
+        uInt total = _items * _size;
 
-        return memory;
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( total, "FileGroupZip" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void s_free_func( voidpf opaque, voidpf address )
+    static void s_free_func( voidpf _opaque, voidpf _address )
     {
-        MENGINE_UNUSED( opaque );
+        MENGINE_UNUSED( _opaque );
 
-        stdex_free( address, "FileGroupZip" );
+        ALLOCATOR_SERVICE()
+            ->free( _address, "FileGroupZip" );
     }
     //////////////////////////////////////////////////////////////////////////
     static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )

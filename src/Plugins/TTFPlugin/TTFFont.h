@@ -7,19 +7,16 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/TextFontInterface.h"
 
-#include "Config/String.h"
-
+#include "Kernel/String.h"
 #include "Kernel/Factorable.h"
-
 #include "Kernel/FontBase.h"
+#include "Kernel/Map.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"
 #include "freetype/ftglyph.h"
 
 #include "math/uv4.h"
-
-#include "Config/Map.h"
 
 #include "fe/fe.h"
 

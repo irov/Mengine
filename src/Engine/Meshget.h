@@ -13,7 +13,7 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseUpdation.h"
 
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

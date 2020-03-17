@@ -19,14 +19,14 @@ namespace Mengine
     protected:
         Factorable * _createObject() override
         {
-            Type * ptr = Helper::allocateT<Type>();
+            Type * ptr = Helper::newT<Type>();
 
             return ptr;
         }
 
         void _destroyObject( Factorable * _obj ) override
         {
-            Helper::freeT<Type>( static_cast<Type *>(_obj) );
+            Helper::deleteT<Type>( static_cast<Type *>(_obj) );
         }
     };
     //////////////////////////////////////////////////////////////////////////

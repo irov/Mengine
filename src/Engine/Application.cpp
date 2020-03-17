@@ -64,9 +64,9 @@
 #include "Kernel/MT19937Randomizer.h"
 
 #include "Config/Config.h"
-#include "Config/String.h"
-#include "Config/Stringstream.h"
-#include "Config/List.h"
+#include "Kernel/String.h"
+#include "Kernel/Stringstream.h"
+#include "Kernel/List.h"
 #include "Config/StdString.h"
 
 // All Node type
@@ -121,9 +121,6 @@
 #include "EntityPrototypeGenerator.h"
 #include "ScenePrototypeGenerator.h"
 #include "ArrowPrototypeGenerator.h"
-
-#include "stdex/allocator.h"
-#include "stdex/allocator_report.h"
 
 #include <ctime>
 #include <sstream>
@@ -1043,24 +1040,24 @@ namespace Mengine
             //        ->setBatchMode( mode );
             //}
 
-            if( _event.code == KC_F3 && _event.isDown == true )
-            {
-                uint32_t count = stdex_allocator_report_count();
+            //if( _event.code == KC_F3 && _event.isDown == true )
+            //{
+            //    uint32_t count = stdex_allocator_report_count();
 
-                for( uint32_t i = 0; i != count; ++i )
-                {
-                    stdex_memory_report_t * report = stdex_allocator_report_info( i );
+            //    for( uint32_t i = 0; i != count; ++i )
+            //    {
+            //        stdex_memory_report_t * report = stdex_allocator_report_info( i );
 
-                    LOGGER_ERROR( "block '%s' size [%u]"
-                        , report->name
-                        , report->count
-                    );
-                }
-            }
+            //        LOGGER_ERROR( "block '%s' size [%u]"
+            //            , report->name
+            //            , report->count
+            //        );
+            //    }
+            //}
 
-            if( _event.code == KC_F2 && _event.isDown == true )
-            {
-            }
+            //if( _event.code == KC_F2 && _event.isDown == true )
+            //{
+            //}
         }
 
         bool handle = GAME_SERVICE()

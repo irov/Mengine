@@ -7,8 +7,8 @@
 #include "Kernel/VectorConstString.h"
 #include "Kernel/Factory.h"
 
-#include "Config/Pair.h"
-#include "Config/Map.h"
+#include "Kernel/Pair.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {

@@ -3,8 +3,7 @@
 #include "Interface/RenderProgramVariableInterface.h"
 
 #include "Kernel/Factorable.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "d3d9.h"
 

@@ -5,8 +5,8 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Hashtable.h"
+#include "Kernel/Vector.h"
 
-#include "Config/Vector.h"
 #include "Config/Atomic.h"
 
 namespace Mengine

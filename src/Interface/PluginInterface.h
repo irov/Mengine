@@ -53,7 +53,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
     extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, uint32_t _uid, bool _dynamic ){\
-    if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);stdex_allocator_initialize();stdex_allocator_set_uid(_uid);}\
+    if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);}\
     Mengine::PluginInterface * plugin = new Mengine::FactorablePlugin<Type>();\
     if( plugin == nullptr ){ return false; }\
     plugin->setUID( _uid );\

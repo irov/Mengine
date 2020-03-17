@@ -1,10 +1,10 @@
 #include "ArchivatorZip.h"
 
+#include "Interface/AllocatorServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include "zlib.h"
-
-#include "stdex/allocator.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -66,33 +66,39 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static voidpf my_alloc_func( voidpf opaque, uInt items, uInt size )
+    static voidpf my_alloc_func( voidpf _opaque, uInt _items, uInt _size )
     {
-        MENGINE_UNUSED( opaque );
+        MENGINE_UNUSED( _opaque );
 
-        return stdex_malloc( items * size, "ArchivatorZip" );
+        uInt total = _items * _size;
+
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( total, "ArchivatorZip" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void my_free_func( voidpf opaque, voidpf address )
+    static void my_free_func( voidpf _opaque, voidpf _address )
     {
-        MENGINE_UNUSED( opaque );
+        MENGINE_UNUSED( _opaque );
 
-        stdex_free( address, "ArchivatorZip" );
+        ALLOCATOR_SERVICE()
+            ->free( _address, "ArchivatorZip" );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int32_t my_uncompress( Bytef * dest, uLong * destLen, const Bytef * source, uLong sourceLen )
+    static int32_t my_uncompress( Bytef * _dest, uLong * _destLen, const Bytef * _source, uLong _sourceLen )
     {
         z_stream stream;
         int32_t err;
 
-        stream.next_in = const_cast<Bytef *>(source);
-        stream.avail_in = (uInt)sourceLen;
+        stream.next_in = const_cast<Bytef *>(_source);
+        stream.avail_in = (uInt)_sourceLen;
         /* Check for source > 64K on 16-bit machine: */
-        if( (uLong)stream.avail_in != sourceLen ) return Z_BUF_ERROR;
+        if( (uLong)stream.avail_in != _sourceLen ) return Z_BUF_ERROR;
 
-        stream.next_out = dest;
-        stream.avail_out = (uInt)* destLen;
-        if( (uLong)stream.avail_out != *destLen ) return Z_BUF_ERROR;
+        stream.next_out = _dest;
+        stream.avail_out = (uInt)* _destLen;
+        if( (uLong)stream.avail_out != *_destLen ) return Z_BUF_ERROR;
 
         stream.zalloc = (alloc_func)my_alloc_func;
         stream.zfree = (free_func)my_free_func;
@@ -108,7 +114,7 @@ namespace Mengine
                 return Z_DATA_ERROR;
             return err;
         }
-        *destLen = stream.total_out;
+        *_destLen = stream.total_out;
 
         err = inflateEnd( &stream );
 

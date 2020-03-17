@@ -6,9 +6,8 @@
 #include "Kernel/RenderPrimitive.h"
 #include "Kernel/Factory.h"
 #include "Kernel/Pool.h"
-
-#include "Config/Vector.h"
-#include "Config/DynamicArray.h"
+#include "Kernel/Vector.h"
+#include "Kernel/DynamicArray.h"
 
 #include "math/box2.h"
 

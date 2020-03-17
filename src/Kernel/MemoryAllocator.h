@@ -1,16 +1,77 @@
 #pragma once
 
 #include "Kernel/Typename.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "Config/Config.h"
 #include "Config/Char.h"
-
-#include "stdex/allocator.h"
 
 #include <utility>
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T * allocateT()
+        {
+            size_t memory_size = sizeof( T );
+            void * memory_buffer = Helper::allocateMemory( memory_size, Typename<T>::value );
+            
+            return reinterpret_cast<T *>(memory_buffer);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void freeT( T * _ptr )
+        {
+            Helper::freeMemory( _ptr, Typename<T>::value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T * allocateArrayT( size_t _count )
+        {
+            size_t memory_size = sizeof( T ) * _count;
+            void * memory_buffer = Helper::allocateMemory( memory_size, Typename<T>::value );
+
+            return reinterpret_cast<T *>(memory_buffer);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        T * reallocateArrayT( T * _array, size_t _count )
+        {
+            size_t memory_size = sizeof( T ) * _count;
+            void * memory_buffer = Helper::reallocateMemory( _array, memory_size, Typename<T>::value );
+
+            return reinterpret_cast<T *>(memory_buffer);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void freeArrayT( T * _array )
+        {
+            Helper::freeMemory( _array, Typename<T>::value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, class ... Args>
+        T * newT( Args && ... _args )
+        {
+            void * memory_buffer = Helper::allocateT<T>();
+
+            new (memory_buffer)T( std::forward<Args &&>( _args ) ... );
+
+            return reinterpret_cast<T *>(memory_buffer);
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        void deleteT( T * _t )
+        {
+            _t->~T();
+
+            Helper::freeT( _t );
+        }
+        //////////////////////////////////////////////////////////////////////////
+    }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     class MemoryAllocator
@@ -18,92 +79,30 @@ namespace Mengine
     public:
         void * operator new (size_t _size)
         {
-            return stdex_malloc( _size, Typename<T>::value );
+            void * p = Helper::allocateMemory( _size, Typename<T>::value );
+
+            return p;
         }
 
         void operator delete (void * _ptr, size_t _size)
         {
             MENGINE_UNUSED( _size );
 
-            stdex_free( _ptr, Typename<T>::value );
+            Helper::freeMemory( _ptr, Typename<T>::value );
         }
 
         void * operator new []( size_t _size )
         {
-            return stdex_malloc( _size, Typename<T>::value );
+            void * p = Helper::allocateMemory( _size, Typename<T>::value );
+
+            return p;
         }
 
             void operator delete []( void * _ptr, size_t _size )
         {
             MENGINE_UNUSED( _size );
 
-            stdex_free( _ptr, Typename<T>::value );
+            Helper::freeMemory( _ptr, Typename<T>::value );
         }
     };
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        template<class T, class ... Args>
-        T * allocateT( Args && ... _args )
-        {
-            size_t memory_size = sizeof( T );
-            void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
-
-            new (memory_buffer)T( std::forward<Args>( _args ) ... );
-
-            return reinterpret_cast<T *>(memory_buffer);
-        }
-
-        template<class T>
-        void freeT( T * _t )
-        {
-            _t->~T();
-
-            stdex_free( _t, Typename<T>::value );
-        }
-
-        template<class T>
-        T * allocateArrayT( size_t _count )
-        {
-            size_t memory_size = sizeof( T ) * _count;
-            void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
-
-            return reinterpret_cast<T *>(memory_buffer);
-        }
-
-        template<class T>
-        T * reallocateArrayT( T * _buffer, size_t _count )
-        {
-            size_t memory_size = sizeof( T ) * _count;
-            void * memory_buffer = stdex_realloc( _buffer, memory_size, Typename<T>::value );
-
-            return reinterpret_cast<T *>(memory_buffer);
-        }
-
-        template<class T>
-        void freeArrayT( T * _memory )
-        {
-            stdex_free( _memory, Typename<T>::value );
-        }
-
-        MENGINE_INLINE void * allocateMemory( size_t _size, const Char * _doc )
-        {
-            void * memory_buffer = stdex_malloc( _size, _doc );
-
-            return memory_buffer;
-        }
-
-        MENGINE_INLINE void * reallocateMemory( void * _buffer, size_t _size, const Char * _doc )
-        {
-            MENGINE_UNUSED( _doc );
-            void * memory_buffer = stdex_realloc( _buffer, _size, _doc );
-
-            return memory_buffer;
-        }
-
-        MENGINE_INLINE void freeMemory( void * _memory, const Char * _doc )
-        {
-            stdex_free( _memory, _doc );
-        }
-    }
 }

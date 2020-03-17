@@ -22,7 +22,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 
-#include "Config/Map.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {
@@ -50,8 +50,6 @@ namespace Mengine
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
-        ThreadMutexInterfacePtr m_mutexAllocatorPool;
 
         LoggerInterfacePtr m_loggerFile;
         LoggerInterfacePtr m_loggerMessageBox;

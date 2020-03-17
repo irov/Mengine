@@ -7,8 +7,7 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/VectorResourceImages.h"
 #include "Kernel/Polygon.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

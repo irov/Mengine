@@ -406,6 +406,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Pointer MovieFramePack::allocateMemory( size_t _size ) const
     {
-        return stdex_malloc( _size, "MovieFramePack" );
+        return Helper::allocateMemory( _size, "MovieFramePack" );
     }
 }

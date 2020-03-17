@@ -5,9 +5,9 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Map.h"
 
 #include "Config/Typedef.h"
-#include "Config/Map.h"
 
 namespace Mengine
 {

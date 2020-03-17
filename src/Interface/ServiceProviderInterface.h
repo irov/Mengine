@@ -24,6 +24,7 @@ namespace Mengine
         ServiceProviderInterface() noexcept
         {
         };
+
         virtual ~ServiceProviderInterface()
         {
         };

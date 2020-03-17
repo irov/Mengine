@@ -2,7 +2,7 @@
 
 #include "HotSpot.h"
 
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

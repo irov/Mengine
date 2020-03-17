@@ -7,8 +7,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/Factory.h"
-
-#include "Config/Pair.h"
+#include "Kernel/Pair.h"
 
 namespace Mengine
 {

@@ -2,8 +2,8 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
-#include "Config/String.h"
-#include "Config/Stringstream.h"
+#include "Kernel/String.h"
+#include "Kernel/Stringstream.h"
 
 #include "pybind/pybind.hpp"
 

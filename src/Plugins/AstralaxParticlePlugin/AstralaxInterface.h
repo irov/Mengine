@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Config/Typedef.h"
-#include "Config/String.h"
-
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/RenderMaterialInterface.h"
 
+#include "Kernel/String.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Color.h"

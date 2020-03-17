@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        explicit TaskButtonClick( const ButtonPtr & _button );
+        TaskButtonClick( const ButtonPtr & _button );
         ~TaskButtonClick() override;
 
     protected:

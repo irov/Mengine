@@ -7,7 +7,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Factorable.h"
 
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

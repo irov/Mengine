@@ -25,8 +25,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Stringalized.h"
 #include "Kernel/FilePathHelper.h"
-
-#include "Config/VectorString.h"
+#include "Kernel/VectorString.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_APPLICATION_INI_PATH
@@ -205,6 +204,10 @@ PLUGIN_EXPORT( Vectorizator );
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
 PLUGIN_EXPORT( Sentry );
+#endif
+
+#ifdef MENGINE_PLUGIN_GOAP_STATIC
+PLUGIN_EXPORT( GOAP );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
@@ -475,7 +478,7 @@ namespace Mengine
 #define MENGINE_ADD_PLUGIN( Name, Info, Doc )\
         {LOGGER_INFO( Info );\
         if( PLUGIN_CREATE(Name, Doc) == false ){\
-        LOGGER_ERROR( "Invalid %s", Info );}else{\
+        LOGGER_ERROR( "Invalid %s", Info ); return false;}else{\
         LOGGER_MESSAGE( "Successful %s", Info );}}
 
 #ifdef MENGINE_PLUGIN_SENTRY_STATIC
@@ -589,6 +592,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
         MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket...", MENGINE_DOCUMENT_FACTORABLE );
+#endif
+
+#ifdef MENGINE_PLUGIN_GOAP_STATIC
+        MENGINE_ADD_PLUGIN( GOAP, "initialize Plugin GOAP...", MENGINE_DOCUMENT_FACTORABLE );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC

@@ -117,7 +117,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FrameworkService::isRunFramework( const ConstString & _name ) const
+    bool FrameworkService::isInitializeFramework( const ConstString & _name ) const
     {
         VectorFrameworks::const_iterator it_found =
             std::find_if( m_frameworks.begin(), m_frameworks.end(), [&_name]( const FrameworkInterfacePtr & _framework )

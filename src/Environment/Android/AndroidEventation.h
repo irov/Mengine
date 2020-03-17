@@ -17,9 +17,19 @@ namespace Mengine
         typedef Vector<LambdaEventHandler> VectorEventHandlerCommand;
 
     public:
-        void setMutex( const ThreadMutexInterfacePtr & _mutex )
+        bool initialize( const ThreadMutexInterfacePtr & _mutex )
         {
             m_mutex = _mutex;
+
+            return true;
+        }
+
+        void finalize()
+        {
+            m_mutex = nullptr;
+            m_handler = nullptr;
+
+            m_commands.clear();
         }
 
         void setEventHandler( const EventHandlerPtr & _handler )
@@ -55,9 +65,8 @@ namespace Mengine
 
     protected:
         ThreadMutexInterfacePtr m_mutex;
+        EventHandlerPtr m_handler;
 
         VectorEventHandlerCommand m_commands;
-
-        EventHandlerPtr m_handler;
     };
 }

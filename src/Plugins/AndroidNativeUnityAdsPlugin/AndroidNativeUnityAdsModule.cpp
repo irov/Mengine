@@ -258,9 +258,12 @@ namespace Mengine
         pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );        
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation.setMutex( mutex );
+        if( m_eventation.initialize( mutex ) == false )
+        {
+            return false;
+        }
 
         s_androidNativeUnityModule = this;
 
@@ -269,6 +272,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::_finalizeModule()
     {
+        s_androidNativeUnityModule = nullptr;
+
+        m_eventation.finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::_update( bool _focus )

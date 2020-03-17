@@ -75,6 +75,10 @@ namespace Mengine
                 , m_args( _args )
             {}
 
+            ~PythonLocalNotificationsEventHandler() override
+            {
+            }
+
         protected:
             void onLocalNotificationsInitialized() override
             {
@@ -123,9 +127,12 @@ namespace Mengine
         pybind::def_functor( kernel, "androidInstantlyPresentLocalNotification", this, &AndroidNativeLocalNotificationsModule::instantlyPresentLocalNotification );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation.setMutex( mutex );
+        if( m_eventation.initialize( mutex ) == false )
+        {
+            return false;
+        }
 
         s_androidNativeLocalNotificationsModule = this;
 
@@ -134,11 +141,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeLocalNotificationsModule::_finalizeModule()
     {
+        s_androidNativeLocalNotificationsModule = nullptr;
+
+        m_eventation.finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeLocalNotificationsModule::_update( bool _focus )
     {
-        (void)_focus;
+        MENGINE_UNUSED( _focus );
 
         m_eventation.invoke();
     }

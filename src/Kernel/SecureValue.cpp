@@ -36,7 +36,7 @@ namespace Mengine
             return false;
         }
 
-        Char buffer[17];
+        Char buffer[20];
         MENGINE_SPRINTF( buffer, "%x%x", m_value, hash );
 
         uint32_t unprotected_value = (m_value ^ hash) ^ (MENGINE_ABS( MENGINE_STRCMP( m_buffer, buffer ) ) * ~0U);
@@ -51,7 +51,31 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SecureValue::addSecureValue( const SecureValue & _value )
+    bool SecureValue::setupSecureValue( const SecureValuePtr & _setup )
+    {
+        uint32_t setup_unprotected_value;
+        if( _setup->getUnprotectedValue( &setup_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        this->setUnprotectedValue( setup_unprotected_value );
+
+        uint32_t total_unprotected_value;
+        if( this->getUnprotectedValue( &total_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        if( total_unprotected_value != setup_unprotected_value )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SecureValue::additiveSecureValue( const SecureValuePtr & _add )
     {
         uint32_t base_unprotected_value;
         if( this->getUnprotectedValue( &base_unprotected_value ) == false )
@@ -60,7 +84,7 @@ namespace Mengine
         }
 
         uint32_t add_unprotected_value;
-        if( _value.getUnprotectedValue( &add_unprotected_value ) == false )
+        if( _add->getUnprotectedValue( &add_unprotected_value ) == false )
         {
             return false;
         }
@@ -74,6 +98,72 @@ namespace Mengine
         }
 
         if( total_unprotected_value != base_unprotected_value + add_unprotected_value )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SecureValue::substractSecureValue( const SecureValuePtr & _sub )
+    {
+        uint32_t base_unprotected_value;
+        if( this->getUnprotectedValue( &base_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        uint32_t sub_unprotected_value;
+        if( _sub->getUnprotectedValue( &sub_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        this->setUnprotectedValue( base_unprotected_value - sub_unprotected_value );
+
+        uint32_t total_unprotected_value;
+        if( this->getUnprotectedValue( &total_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        if( total_unprotected_value != base_unprotected_value - sub_unprotected_value )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SecureValue::additive2SecureValue( const SecureValuePtr & _add, const SecureValuePtr & _pow )
+    {
+        uint32_t base_unprotected_value;
+        if( this->getUnprotectedValue( &base_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        uint32_t add_unprotected_value;
+        if( _add->getUnprotectedValue( &add_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        uint32_t pow_unprotected_value;
+        if( _pow->getUnprotectedValue( &pow_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        this->setUnprotectedValue( base_unprotected_value + add_unprotected_value * pow_unprotected_value );
+
+        uint32_t total_unprotected_value;
+        if( this->getUnprotectedValue( &total_unprotected_value ) == false )
+        {
+            return false;
+        }
+
+        if( total_unprotected_value != base_unprotected_value + add_unprotected_value * pow_unprotected_value )
         {
             return false;
         }

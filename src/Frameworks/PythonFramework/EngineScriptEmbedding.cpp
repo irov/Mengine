@@ -126,6 +126,7 @@
 #include "Kernel/Polygon.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/ValueFollower.h"
+#include "Kernel/SecureValue.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -2515,6 +2516,29 @@ namespace Mengine
             affectorable->stopAffector( id );
         }
         //////////////////////////////////////////////////////////////////////////
+        pybind::tuple s_SecureValue_getUnprotectedValue( pybind::kernel_interface * _kernel, const SecureValue * _secure )
+        {
+            uint32_t unprotected_value;
+
+            if( _secure->getUnprotectedValue( &unprotected_value ) == false )
+            {                
+                return pybind::make_tuple_t( _kernel, false, 0 );
+            }
+
+            return pybind::make_tuple_t( _kernel, true, unprotected_value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        SecureValuePtr s_makeSecureValue( uint32_t _value )
+        {
+            SecureValuePtr secureValue = PROTOTYPE_GENERATE( STRINGIZE_STRING_LOCAL( "SecureValue" ), ConstString::none(), MENGINE_DOCUMENT_PYBIND );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( secureValue, nullptr );
+
+            secureValue->setUnprotectedValue( _value );
+
+            return secureValue;
+        }
+        //////////////////////////////////////////////////////////////////////////
         Scene * s_findNodeScene( Node * _node )
         {
             Node * node_iterator = _node;
@@ -3839,6 +3863,17 @@ namespace Mengine
             .def( "getRandomf", &RandomizerInterface::getRandomf )
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
+
+        pybind::interface_<SecureValue, pybind::bases<Mixin> >( _kernel, "SecureValue" )
+            .def( "setupSecureValue", &SecureValue::setupSecureValue )
+            .def( "setUnprotectedValue", &SecureValue::setUnprotectedValue )
+            .def_proxy_static_kernel( "getUnprotectedValue", nodeScriptMethod, &EngineScriptMethod::s_SecureValue_getUnprotectedValue )
+            .def( "additiveSecureValue", &SecureValue::additiveSecureValue )
+            .def( "substractSecureValue", &SecureValue::substractSecureValue )
+            .def( "additive2SecureValue", &SecureValue::additive2SecureValue )
+            ;
+
+        pybind::def_functor( _kernel, "makeSecureValue", nodeScriptMethod, &EngineScriptMethod::s_makeSecureValue );
 
         return true;
     }

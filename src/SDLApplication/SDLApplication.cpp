@@ -200,7 +200,7 @@ namespace Mengine
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
-        FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, userPathLen );
+        FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, (FilePath::size_type)userPathLen );
 
         // mount user directory
         if( FILE_SERVICE()

@@ -116,9 +116,12 @@ namespace Mengine
         pybind::def_functor( kernel, "androidDevToDevOnSimpleCustomEvent", this, &AndroidNativeDevToDevModule::onSimpleCustomEvent );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation.setMutex( mutex );
+        if( m_eventation.initialize( mutex ) == false )
+        {
+            return false;
+        }
 
         s_androidNativeDevToDevModule = this;
 
@@ -127,6 +130,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeDevToDevModule::_finalizeModule()
     {
+        s_androidNativeDevToDevModule = nullptr;
+
+        m_eventation.finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeDevToDevModule::addCommand( const LambdaDevToDevEventHandler & _command )

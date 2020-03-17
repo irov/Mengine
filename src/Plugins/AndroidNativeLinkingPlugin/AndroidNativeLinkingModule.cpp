@@ -76,9 +76,12 @@ namespace Mengine
         pybind::def_functor( kernel, "AndroidOpenMail", this, &AndroidNativeLinkingModule::openMail );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
+            ->createMutex( MENGINE_DOCUMENT_FACTORABLE );
 
-        m_eventation.setMutex( mutex );
+        if( m_eventation.initialize( mutex ) == false )
+        {
+            return false;
+        }
 
         s_androidNativeLinkingModule = this;
 
@@ -87,6 +90,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeLinkingModule::_finalizeModule()
     {
+        s_androidNativeLinkingModule = nullptr;
+
+        m_eventation.finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeLinkingModule::addCommand( const LambdaLinkingEventHandler & _command )

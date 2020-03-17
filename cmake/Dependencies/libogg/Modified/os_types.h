@@ -16,34 +16,27 @@
 #ifndef _OS_TYPES_H
 #define _OS_TYPES_H
 
+#include <stddef.h>
 
 //////////////////////////////////////////////////////////////////////////
-typedef void * (*OGG_malloc_t)(size_t _size, void * _ud);
-typedef void * (*OGG_ñalloc_t)(size_t _num, size_t _size, void * _ud);
-typedef void * (*OGG_realloc_t)(void * _ptr, size_t _size, void * _ud);
-typedef void (*OGG_free_t)(void * _ptr, void * _ud);
-//////////////////////////////////////////////////////////////////////////    
-static OGG_malloc_t s_OGG_malloc;
-static OGG_ñalloc_t s_OGG_calloc;
-static OGG_realloc_t s_OGG_realloc;
-static OGG_free_t s_OGG_free;
-static void * s_OGG_ud;
-//////////////////////////////////////////////////////////////////////////
-inline static void set_OGG_allocator( OGG_malloc_t _malloc, OGG_ñalloc_t _calloc, OGG_realloc_t _realloc, OGG_free_t _free, void * _ud )
+typedef struct
 {
-    s_OGG_malloc = _malloc;
-    s_OGG_calloc = _calloc;
-    s_OGG_realloc = _realloc;
-    s_OGG_free = _free;
-    s_OGG_ud = _ud;
-}
+    void * ud;
+    void * (*malloc)(size_t _size, void * _ud);
+    void * (*calloc)(size_t _num, size_t _size, void * _ud);
+    void * (*realloc)(void * _ptr, size_t _size, void * _ud);
+    void (*free)(void * _ptr, void * _ud);
+} OGGAllocatorEx;
+//////////////////////////////////////////////////////////////////////////
+extern void setOGGAllocatorEx( OGGAllocatorEx * _allocator );
+extern OGGAllocatorEx * getOGGAllocatorEx();
 //////////////////////////////////////////////////////////////////////////
 /* make it easy on the folks that want to compile the libs with a
    different malloc than stdlib */
-#define _ogg_malloc(n)     ((*s_OGG_malloc)(n, s_OGG_ud))
-#define _ogg_calloc(c,n)   ((*s_OGG_calloc)(c, n, s_OGG_ud))
-#define _ogg_realloc(p, n) ((*s_OGG_realloc)(p, n, s_OGG_ud))
-#define _ogg_free(p)       ((*s_OGG_free)(p, s_OGG_ud))
+#define _ogg_malloc(n)     (getOGGAllocatorEx()->malloc(n, getOGGAllocatorEx()->ud))
+#define _ogg_calloc(c,n)   (getOGGAllocatorEx()->calloc(c, n, getOGGAllocatorEx()->ud))
+#define _ogg_realloc(p, n) (getOGGAllocatorEx()->realloc(p, n, getOGGAllocatorEx()->ud))
+#define _ogg_free(p)       (getOGGAllocatorEx()->free(p, getOGGAllocatorEx()->ud))
 
 
 #if defined(_WIN32)

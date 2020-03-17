@@ -62,7 +62,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OggVorbisPlugin::_initializePlugin()
     {
-        set_OGG_allocator( &ogg_malloc, &ogg_calloc, &ogg_realloc, &ogg_free, nullptr );
+        OGGAllocatorEx allocator;
+        allocator.ud = nullptr;
+        allocator.malloc = &ogg_malloc;
+        allocator.calloc = &ogg_calloc;
+        allocator.realloc = &ogg_realloc;
+        allocator.free = &ogg_free;
+
+        setOGGAllocatorEx( &allocator );
 
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "oggSound" ), MENGINE_DOCUMENT_FACTORABLE );
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "ogvSound" ), MENGINE_DOCUMENT_FACTORABLE );

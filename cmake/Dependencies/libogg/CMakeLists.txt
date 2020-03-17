@@ -70,6 +70,7 @@ include(CheckSizes)
 
 configure_file(include/ogg/config_types.h.in include/ogg/config_types.h @ONLY)
 
+
 include_directories(${THIRDPARTY_DIR}/stdex/include)
 
 set(OGG_HEADERS
@@ -79,6 +80,7 @@ set(OGG_HEADERS
 )
 
 set(OGG_SOURCES
+    src/os_types.c
     src/bitwise.c
     src/framing.c
     src/crctable.h

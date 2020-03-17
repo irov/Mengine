@@ -157,7 +157,8 @@ if(MENGINE_DEPENDENCE_OGG)
     SET(INSTALL_CMAKE_PACKAGE_MODULE OFF CACHE BOOL "INSTALL_CMAKE_PACKAGE_MODULE" FORCE)
     SET(BUILD_TESTING OFF CACHE BOOL "INSTALL_CMAKE_PACKAGE_MODULE" FORCE)
     
-    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/Modified/os_types.h ${THIRDPARTY_DIR}/libogg/include/ogg/os_types.h COPYONLY)    
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/Modified/os_types.h ${THIRDPARTY_DIR}/libogg/include/ogg/os_types.h COPYONLY)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/Modified/os_types.c ${THIRDPARTY_DIR}/libogg/src/os_types.c COPYONLY)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libogg/CMakeLists.txt ${THIRDPARTY_DIR}/libogg/CMakeLists.txt COPYONLY)
     
     ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/libogg ${CMAKE_TEMP_DIR}/libogg)

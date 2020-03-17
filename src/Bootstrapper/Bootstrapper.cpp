@@ -938,6 +938,12 @@ namespace Mengine
         for( const ConstString & name : frameworks )
         {
             if( FRAMEWORK_SERVICE()
+                ->isInitializeFramework( name ) == false )
+            {
+                continue;
+            }
+
+            if( FRAMEWORK_SERVICE()
                 ->finalizeFramework( name ) == false )
             {
                 LOGGER_CRITICAL( "failed to stop framework '%s'"
@@ -961,8 +967,11 @@ namespace Mengine
         SCENE_SERVICE()
             ->destroyCurrentScene();
 
-        APPLICATION_SERVICE()
-            ->finalizeGame();
+        if( SERVICE_EXIST( ApplicationInterface ) == true )
+        {
+            APPLICATION_SERVICE()
+                ->finalizeGame();
+        }
 
         if( SERVICE_EXIST( PlatformInterface ) == true )
         {
@@ -970,17 +979,17 @@ namespace Mengine
                 ->stopPlatform();
         }
 
-        ACCOUNT_SERVICE()
-            ->stopAccounts();
+        if( SERVICE_EXIST( AccountServiceInterface ) == true )
+        {
+            ACCOUNT_SERVICE()
+                ->stopAccounts();
+        }
 
-        GAME_SERVICE()
-            ->removePersonality();
-
-        //if( SERVICE_EXIST( FrameworkInterface ) == true )
-        //{
-        //    FRAMEWORK_SERVICE()
-        //        ->onFrameworkFinalize();
-        //}
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        {
+            GAME_SERVICE()
+                ->removePersonality();
+        }
 
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
@@ -1016,8 +1025,11 @@ namespace Mengine
         SERVICE_FINALIZE( TextService );
         SERVICE_FINALIZE( DataService );
 
-        PLUGIN_SERVICE()
-            ->unloadPlugins();
+        if( SERVICE_EXIST( PluginServiceInterface ) == true )
+        {
+            PLUGIN_SERVICE()
+                ->unloadPlugins();
+        }
 
         SERVICE_FINALIZE( LoaderService );
         SERVICE_FINALIZE( TimelineService );

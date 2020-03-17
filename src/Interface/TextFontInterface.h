@@ -10,8 +10,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
 #include "Kernel/Color.h"
-
-#include "Config/VectorString.h"
+#include "Kernel/VectorString.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"

@@ -19,7 +19,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "Config/String.h"
+#include "Kernel/String.h"
 #include "Config/StdString.h"
 
 #include "xmlsax/xmlsax.hpp"

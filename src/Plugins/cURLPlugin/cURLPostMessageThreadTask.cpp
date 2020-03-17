@@ -5,8 +5,7 @@
 #include "cURLErrorHelper.h"
 
 #include "Kernel/Logger.h"
-
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 namespace Mengine
 {

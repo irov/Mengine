@@ -4,6 +4,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/DocumentHelper.h"
 
 namespace Mengine
 {
@@ -74,7 +75,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     TaskButtonClick::TaskButtonClick( const ButtonPtr & _button )
-        : m_button( _button )        
+        : m_button( _button )
     {
     }
     //////////////////////////////////////////////////////////////////////////

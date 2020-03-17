@@ -3,8 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/Scene.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/vec2.h"
 

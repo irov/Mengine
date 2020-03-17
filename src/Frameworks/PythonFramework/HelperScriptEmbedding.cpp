@@ -62,9 +62,10 @@
 
 #include "Interface/ScriptServiceInterface.h"
 
-#include "Config/Blobject.h"
+#include "Kernel/Blobject.h"
+#include "Kernel/Stringstream.h"
+
 #include "Config/Typedef.h"
-#include "Config/Stringstream.h"
 #include "Config/StdString.h"
 
 #include "pybind/pybind.hpp"

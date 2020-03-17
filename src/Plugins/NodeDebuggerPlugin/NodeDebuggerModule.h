@@ -4,10 +4,9 @@
 
 #include "Engine/TextField.h"
 
-#include "Config/Vector.h"
-#include "Config/Map.h"
-#include "Config/Deque.h"
-
+#include "Kernel/Vector.h"
+#include "Kernel/Map.h"
+#include "Kernel/Deque.h"
 #include "Kernel/ModuleBase.h"
 #include "Kernel/NodeUniqueFinder.h"
 #include "Kernel/Observable.h"

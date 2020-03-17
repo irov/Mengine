@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Config/Config.h"
-#include "Config/String.h"
 
+#include "Kernel/String.h"
 #include "Kernel/Factorable.h"
 
 namespace Mengine

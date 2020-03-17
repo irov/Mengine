@@ -12,8 +12,7 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/Polygon.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/mat3.h"
 

@@ -1,6 +1,3 @@
-#include "Config/Config.h"
-#include "Config/Stringstream.h"
-
 #include "Win32Application.h"
 
 #include "Interface/PrototypeServiceInterface.h"
@@ -44,6 +41,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"
+#include "Kernel/Stringstream.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -65,6 +63,7 @@
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
+SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 
@@ -72,16 +71,6 @@ PLUGIN_EXPORT( Win32FileGroup );
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->lock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->unlock();
-    }
     //////////////////////////////////////////////////////////////////////////
     Win32Application::Win32Application()
         : m_serviceProvider( nullptr )
@@ -337,6 +326,7 @@ namespace Mengine
 
         m_serviceProvider = serviceProvider;
 
+        SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
         SERVICE_WAIT( OptionsServiceInterface, [this]()
@@ -380,19 +370,6 @@ namespace Mengine
             {
                 return false;
             }
-
-            return true;
-        } );
-
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
-        {
-            m_mutexAllocatorPool = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
-
-            stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-                , (stdex_allocator_thread_lock_t)& s_stdex_thread_lock
-                , (stdex_allocator_thread_unlock_t)& s_stdex_thread_unlock
-            );
 
             return true;
         } );
@@ -513,13 +490,6 @@ namespace Mengine
             }
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
-        {
-            stdex_allocator_finalize_threadsafe();
-
-            m_mutexAllocatorPool = nullptr;
-        } );
-
         BOOTSTRAPPER_SERVICE()
             ->stop();
 
@@ -528,6 +498,9 @@ namespace Mengine
 
         SERVICE_FINALIZE( DocumentService );
         SERVICE_DESTROY( DocumentService );
+
+        SERVICE_FINALIZE( AllocatorService );
+        SERVICE_DESTROY( AllocatorService );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }

@@ -5,7 +5,7 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/DataflowInterface.h"
 
-#include "Config/Blobject.h"
+#include "Kernel/Blobject.h"
 
 namespace Mengine
 {

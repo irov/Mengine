@@ -1,5 +1,6 @@
 #include "cURLService.h"
 
+#include "Interface/AllocatorServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
@@ -10,21 +11,17 @@
 #include "cURLHeaderDataThreadTask.h"
 #include "cURLGetAssetThreadTask.h"
 
-#include "cURLSource.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/Stringstream.h"
 
-#include "Config/Stringstream.h"
 #include "Config/StdString.h"
 
 #include "curl/curl.h"
-
-#include "stdex/allocator_report.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( cURLService, Mengine::cURLService );
@@ -32,33 +29,49 @@ SERVICE_FACTORY( cURLService, Mengine::cURLService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_curl_malloc_callback( size_t size )
+    static void * stdex_curl_malloc_callback( size_t _size )
     {
-        return ::stdex_malloc( size, "curl" );
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "curl" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_curl_free_callback( void * ptr )
+    static void stdex_curl_free_callback( void * _ptr )
     {
-        ::stdex_free( ptr, "curl" );
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "curl" );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_curl_realloc_callback( void * ptr, size_t size )
+    static void * stdex_curl_realloc_callback( void * _ptr, size_t _size )
     {
-        return ::stdex_realloc( ptr, size, "curl" );
+        void * p = ALLOCATOR_SERVICE()
+            ->realloc( _ptr, _size, "curl" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
     static char * stdex_curl_strdup_callback( const char * str )
     {
         size_t len = MENGINE_STRLEN( str ) + 1;
-        void * m = ::stdex_malloc( len, "curl" );
-        if( m == nullptr )
+        
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( len, "curl" );
+        
+        if( p == nullptr )
+        {
             return nullptr;
-        return (char *)MENGINE_MEMCPY( m, str, len );
+        }
+
+        return (char *)MENGINE_MEMCPY( p, str, len );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_curl_calloc_callback( size_t nmemb, size_t size )
+    static void * stdex_curl_calloc_callback( size_t _nmemb, size_t _size )
     { 
-        return ::stdex_calloc( nmemb, size, "curl" );
+        void * p = ALLOCATOR_SERVICE()
+            ->calloc( _nmemb, _size, "curl" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
     cURLService::cURLService()
@@ -116,8 +129,6 @@ namespace Mengine
             m_threadQueue->addThread( threadName );
         }
 
-        m_factorySource = Helper::makeFactoryPool<cURLSource, 8>( MENGINE_DOCUMENT_FACTORABLE );
-
         m_factoryTaskGetMessage = Helper::makeFactoryPool<cURLGetMessageThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskPostMessage = Helper::makeFactoryPool<cURLPostMessageThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
         m_factoryTaskHeaderData = Helper::makeFactoryPool<cURLHeaderDataThreadTask, 8>( MENGINE_DOCUMENT_FACTORABLE );
@@ -128,14 +139,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySource );
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
-
-        m_factorySource = nullptr;
 
         m_factoryTaskDownloadAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
@@ -145,7 +152,9 @@ namespace Mengine
         curl_global_cleanup();
 
 #ifdef STDEX_ALLOCATOR_REPORT_ENABLE
-        uint32_t report_count = stdex_get_allocator_report_count( "curl" );
+        uint32_t report_count = ALLOCATOR_SERVICE()
+            ->count( "curl" );
+
         MENGINE_ASSERTION( report_count == 0, "cURL memleak [%d]"
             , report_count
         );
@@ -370,15 +379,6 @@ namespace Mengine
         );
 
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    cURLSourceInterfacePtr cURLService::makeSource( const EngineSourcePtr & _source )
-    {
-        cURLSourcePtr curl_source = m_factorySource->createObject( MENGINE_DOCUMENT_FACTORABLE );
-
-        curl_source->setSource( _source );
-
-        return curl_source;
     }
     //////////////////////////////////////////////////////////////////////////
     void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful )

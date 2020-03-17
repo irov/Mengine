@@ -10,13 +10,10 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Factory.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
+#include "Kernel/Map.h"
 
 #include "math/vec3.h"
-
-#include "Config/Map.h"
-#include "Config/Vector.h"
 
 namespace Mengine
 {

@@ -17,7 +17,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/ConstStringHelper.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrefetcherService, Mengine::PrefetcherService );

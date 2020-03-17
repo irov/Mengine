@@ -136,7 +136,7 @@ namespace Mengine
             {
             }
 
-            virtual ~NodeAffectorCreatorAccumulateLinear()
+            ~NodeAffectorCreatorAccumulateLinear() override
             {
             }
 
@@ -193,7 +193,7 @@ namespace Mengine
             {
             }
 
-            virtual ~NodeAffectorCreatorInterpolateLinear()
+            ~NodeAffectorCreatorInterpolateLinear() override
             {
             }
 
@@ -246,11 +246,11 @@ namespace Mengine
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
-            NodeAffectorCreatorInterpolateQuadratic()                
+            NodeAffectorCreatorInterpolateQuadratic()
             {
             }
 
-            virtual ~NodeAffectorCreatorInterpolateQuadratic()
+            ~NodeAffectorCreatorInterpolateQuadratic() override
             {
             }
 
@@ -307,11 +307,11 @@ namespace Mengine
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
-            NodeAffectorCreatorInterpolateBezier()                
+            NodeAffectorCreatorInterpolateBezier()
             {
             }
 
-            virtual ~NodeAffectorCreatorInterpolateBezier()
+            ~NodeAffectorCreatorInterpolateBezier() override
             {
             }
 

@@ -32,7 +32,7 @@ namespace Mengine
         protected:
             Factorable * _createObject() override
             {
-                Win32FileGroupDirectory * t = Helper::allocateT<Win32FileGroupDirectory>();
+                Win32FileGroupDirectory * t = Helper::newT<Win32FileGroupDirectory>();
 
                 t->setRelationPath( m_relationPath );
 
@@ -41,7 +41,7 @@ namespace Mengine
 
             void _destroyObject( Factorable * _obj ) override
             {
-                Helper::freeT( _obj );
+                Helper::deleteT( _obj );
             }
 
         protected:

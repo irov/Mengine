@@ -6,10 +6,9 @@
 
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
+#include "Kernel/Vector.h"
 
 #include "math/vec2.h"
-
-#include "Config/Vector.h"
 
 namespace Mengine
 {

@@ -37,9 +37,6 @@ namespace Mengine
     protected:
         bool cancelRequest( HttpRequestID _id ) override;
 
-    protected:
-        cURLSourceInterfacePtr makeSource( const EngineSourcePtr & _source ) override;
-
     private:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override;
 
@@ -58,9 +55,7 @@ namespace Mengine
 
         typedef Vector<ReceiverDesc> VectorReceiverDesc;
         VectorReceiverDesc m_receiverDescs;
-
-        FactoryPtr m_factorySource;
-
+         
         FactoryPtr m_factoryTaskGetMessage;
         FactoryPtr m_factoryTaskPostMessage;
         FactoryPtr m_factoryTaskHeaderData;

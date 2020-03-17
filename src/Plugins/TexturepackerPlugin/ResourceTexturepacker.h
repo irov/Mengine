@@ -5,8 +5,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Hashtable.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

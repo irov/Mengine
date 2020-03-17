@@ -1,18 +1,16 @@
 #pragma once
 
+#include "Kernel/Color.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/ConstStringHelper.h"
+#include "Kernel/Vector.h"
+#include "Kernel/String.h"
+
 #include "Config/Lambda.h"
-#include "Config/Vector.h"
-#include "Config/String.h"
 #include "Config/Char.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
-
-#include "Kernel/Color.h"
-#include "Kernel/ConstString.h"
-#include "Kernel/ConstStringHelper.h"
-
-#include "Config/Char.h"
 
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY

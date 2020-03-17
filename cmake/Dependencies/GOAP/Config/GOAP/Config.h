@@ -11,10 +11,6 @@
 #include <cstddef>
 
 #define GOAP_UNUSED(expr) ((void)(expr))
-
-#include "stdex/allocator.h"
-
-#define GOAP_MALLOC(SIZE) (stdex_malloc(SIZE, "GOAP"))
-#define GOAP_FREE(PTR, SIZE) (stdex_free(PTR, "GOAP"))
+#define GOAP_INLINE inline
 
 #include <utility>

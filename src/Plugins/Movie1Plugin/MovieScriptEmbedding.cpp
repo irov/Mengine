@@ -21,11 +21,10 @@
 #include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
+#include "Kernel/ArrayString.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotShape.h"
-
-#include "Config/ArrayString.h"
 
 #include "pybind/pybind.hpp"
 

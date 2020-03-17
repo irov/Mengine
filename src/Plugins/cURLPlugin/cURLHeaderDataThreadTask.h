@@ -19,7 +19,7 @@ namespace Mengine
         void _onCURL( CURL * _curl ) override;
         void _onCURLCleanup( CURL * _curl ) override;
 
-    protected:        
+    protected:
         String m_data;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -4,8 +4,7 @@
 #include "Interface/TimepipeInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

@@ -10,11 +10,9 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/IntrusivePtrView.h"
 #include "Kernel/Hashtable.h"
-
-#include "Config/Typedef.h"
-#include "Config/Vector.h"
-#include "Config/Pair.h"
-#include "Config/Map.h"
+#include "Kernel/Vector.h"
+#include "Kernel/Pair.h"
+#include "Kernel/Map.h"
 
 namespace Mengine
 {

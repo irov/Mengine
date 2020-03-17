@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Config/ArrayString.h"
+#include "Kernel/ArrayString.h"
 
 namespace Mengine
 {

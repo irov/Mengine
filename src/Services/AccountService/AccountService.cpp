@@ -18,9 +18,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/StringHelper.h"
-
-#include "Config/Typedef.h"
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Mengine::AccountService );

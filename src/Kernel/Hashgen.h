@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Kernel/HashType.h"
-
-#include "Config/Pair.h"
+#include "Kernel/Pair.h"
 
 namespace Mengine
 {

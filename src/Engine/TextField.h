@@ -15,8 +15,7 @@
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorRenderVertex2D.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/vec4.h"
 

@@ -4,11 +4,9 @@ OPTION(MENGINE_USE_PRECOMPILED_HEADER "Mengine use precompiled header" OFF)
 
 PROJECT(Depends_EMSCRIPTEN)
 
+INCLUDE(../base_template.cmake)
 INCLUDE(../macro_template.cmake)
 INCLUDE(../emscripten_template.cmake)
-
-SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
-SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies/cmake_scripts)
 
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
     

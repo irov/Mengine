@@ -3,30 +3,26 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "Kernel/ServiceBase.h"
-
 #include "RenderBatch.h"
 #include "RenderMaterial.h"
 
+#include "Kernel/ServiceBase.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorRenderIndex.h"
+#include "Kernel/Factory.h"
+#include "Kernel/Pool.h"
+#include "Kernel/Vector.h"
+#include "Kernel/List.h"
+#include "Kernel/ConstString.h"
 
 #include "stdex/static_array.h"
 #include "stdex/dynamic_array.h"
 
-#include "Kernel/Factory.h"
-#include "Kernel/Pool.h"
-
 #include "math/mat4.h"
 #include "math/vec4.h"
-
-#include "Config/Vector.h"
-#include "Config/List.h"
-
-#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

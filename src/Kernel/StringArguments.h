@@ -3,8 +3,7 @@
 #include "Interface/ArgumentsInterface.h"
 
 #include "Kernel/Factorable.h"
-
-#include "Config/VectorString.h"
+#include "Kernel/VectorString.h"
 
 namespace Mengine
 {

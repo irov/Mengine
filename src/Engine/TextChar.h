@@ -2,8 +2,8 @@
 
 #include "Interface/TextFontInterface.h"
 
-#include "Config/Vector.h"
-#include "Config/VectorString.h"
+#include "Kernel/Vector.h"
+#include "Kernel/VectorString.h"
 
 namespace Mengine
 {

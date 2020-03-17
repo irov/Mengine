@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Kernel/Vector.h"
+
 #include "Config/Config.h"
-#include "Config/Vector.h"
 
 namespace Mengine
 {

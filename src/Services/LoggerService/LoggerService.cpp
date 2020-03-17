@@ -8,8 +8,8 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/DocumentHelper.h"
 
-#include "Config/String.h"
-#include "Config/StringRegex.h"
+#include "Kernel/String.h"
+#include "Kernel/StringRegex.h"
 
 #include <algorithm>
 

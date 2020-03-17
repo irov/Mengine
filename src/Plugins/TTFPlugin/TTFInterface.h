@@ -8,8 +8,6 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/FilePath.h"
 
-#include "Config/String.h"
-
 #include "math/uv4.h"
 
 namespace Mengine

@@ -21,7 +21,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Engine/TextDebug.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 #include "stdex/allocator_report.h"
 

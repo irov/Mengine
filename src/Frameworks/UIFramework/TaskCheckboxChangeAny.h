@@ -10,7 +10,7 @@ namespace Mengine
         : public GOAP::Task
     {
     public:
-        TaskCheckboxChangeAny( const CheckboxPtr & _checkbox );
+        explicit TaskCheckboxChangeAny( const CheckboxPtr & _checkbox );
         ~TaskCheckboxChangeAny() override;
 
     protected:

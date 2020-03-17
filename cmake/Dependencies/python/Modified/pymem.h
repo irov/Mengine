@@ -8,20 +8,36 @@
 extern "C" {
 #endif
 
-//#	define stdex_malloc malloc
-//#	define stdex_realloc realloc
-//#	define stdex_free free
+typedef struct
+{
+    void * ctx;
+
+    /* allocate a memory block */
+    void * (*malloc) (void * ctx, size_t size);
+
+    /* allocate a memory block initialized by zeros */
+    void * (*calloc) (void * ctx, size_t nelem, size_t elsize);
+
+    /* allocate or resize a memory block */
+    void * (*realloc) (void * ctx, void * ptr, size_t new_size);
+
+    /* release a memory block */
+    void (*free) (void * ctx, void * ptr);
+} PyMemAllocatorEx;
+
+PyAPI_FUNC(void) PyMem_SetAllocator( PyMemAllocatorEx * allocator );
+PyAPI_FUNC(PyMemAllocatorEx *) PyMem_GetAllocator();
 
 PyAPI_FUNC(void *) PyMem_Malloc(size_t);
 PyAPI_FUNC(void *) PyMem_Realloc(void *, size_t);
 PyAPI_FUNC(void) PyMem_Free(void *);
 
 #define PyMem_MALLOC(n)		((size_t)(n) > (size_t)PY_SSIZE_T_MAX ? NULL \
-    : stdex_malloc((n) ? (n) : 1, "Python"))
+    : PyMem_GetAllocator()->malloc(PyMem_GetAllocator()->ctx, (n) ? (n) : 1, "Python"))
 #define PyMem_REALLOC(p, n)	((size_t)(n) > (size_t)PY_SSIZE_T_MAX  ? NULL \
-    : stdex_realloc((p), (n) ? (n) : 1, "Python"))
+    : PyMem_GetAllocator()->realloc(PyMem_GetAllocator()->ctx, (p), (n) ? (n) : 1, "Python"))
 
-#define PyMem_FREE(p)		stdex_free(p, "Python")
+#define PyMem_FREE(p)		PyMem_GetAllocator()->free(PyMem_GetAllocator()->ctx, p, "Python")
 
 
 #define PyMem_New(type, n) \

@@ -5,6 +5,7 @@ src
     Interface.h
     ServiceInterface.h
     ServiceProviderInterface.h
+    AllocatorServiceInterface.h
     PluginInterface.h
     ModuleInterface.h
     ModuleFactoryInterface.h
@@ -100,6 +101,7 @@ src
     UnknownNodeInterface.h
     RenderProgramVariableInterface.h
     RenderServiceInterface.h
+    HierarchyInterface.h
     RenderInterface.h
     UpdateServiceInterface.h
     UpdationInterface.h

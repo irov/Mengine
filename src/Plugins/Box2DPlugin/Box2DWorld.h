@@ -8,7 +8,7 @@
 
 #include "Box2D/Box2D.h"
 
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

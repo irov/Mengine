@@ -3,8 +3,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Mixin.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

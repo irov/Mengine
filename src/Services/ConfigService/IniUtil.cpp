@@ -1,7 +1,5 @@
 #include "IniUtil.h"
 
-#include "Config/Stringstream.h"
-
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SecureServiceInterface.h"
@@ -14,6 +12,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FileStreamHelper.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/Stringstream.h"
 
 #include "Config/StdIntTypes.h"
 

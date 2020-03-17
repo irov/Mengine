@@ -92,9 +92,9 @@ set( HAVE_DEVICE_MACROS 0 )
 configure_file(Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 
 configure_file(Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)
+configure_file(Modified/object.c ${SOURCE_DIR}/Objects/object.c COPYONLY)
 configure_file(Modified/random.c ${SOURCE_DIR}/Python/random.c COPYONLY)
 configure_file(Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
-
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 
 if(APPLE)

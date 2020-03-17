@@ -16,7 +16,7 @@ namespace Mengine
         {
         }
 
-        ~Mixin() override
+        virtual ~Mixin()
         {
         }
     };

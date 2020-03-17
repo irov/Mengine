@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Config/Typedef.h"
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

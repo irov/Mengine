@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Config/String.h"
-#include "Config/VectorString.h"
+#include "Kernel/String.h"
+#include "Kernel/VectorString.h"
 
 namespace Mengine
 {

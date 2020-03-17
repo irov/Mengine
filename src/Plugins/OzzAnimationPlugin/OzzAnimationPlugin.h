@@ -5,8 +5,9 @@
 
 #include "Kernel/PluginBase.h"
 #include "Kernel/Observable.h"
+#include "Kernel/Vector.h"
 
-#include "Config/Vector.h"
+#include "ozz/base/memory/allocator.h"
 
 namespace Mengine
 {
@@ -23,5 +24,8 @@ namespace Mengine
     protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
+
+    protected:
+        ozz::memory::Allocator * m_allocatorOld;
     };
 }

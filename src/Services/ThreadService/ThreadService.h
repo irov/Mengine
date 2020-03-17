@@ -9,8 +9,8 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
-#include "Config/String.h"
-#include "Config/Vector.h"
+#include "Kernel/String.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

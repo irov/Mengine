@@ -9,8 +9,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
 #include "Kernel/VectorResourceImages.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #   pragma warning(push, 0) 

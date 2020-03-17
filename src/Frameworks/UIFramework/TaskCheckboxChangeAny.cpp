@@ -6,6 +6,8 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Eventable.h"
 
+#include "GOAP/NodeInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -11,7 +11,7 @@
 #include "Kernel/VectorRenderVertex2D.h"
 #include "Kernel/VectorResourceImages.h"
 
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

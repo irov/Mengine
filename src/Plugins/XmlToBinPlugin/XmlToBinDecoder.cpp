@@ -19,7 +19,8 @@
 #include "xml2metabuf/Xml2Metabuf.hpp"
 #include "xml2metabuf/Xml2Metacode.hpp"
 
-#include "Config/Blobject.h"
+#include "Kernel/Blobject.h"
+
 #include "Config/StdString.h"
 
 #include "utf8.h"

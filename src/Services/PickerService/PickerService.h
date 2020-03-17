@@ -4,8 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Viewport.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

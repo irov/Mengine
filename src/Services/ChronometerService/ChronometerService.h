@@ -3,8 +3,7 @@
 #include "Interface/ChronometerServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #ifdef MENGINE_DEBUG
 #   include "Kernel/Document.h"

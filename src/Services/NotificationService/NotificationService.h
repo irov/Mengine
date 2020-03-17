@@ -4,11 +4,10 @@
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #ifdef MENGINE_DEBUG
-#include "Config/String.h"
+#include "Kernel/String.h"
 #endif
 
 namespace Mengine

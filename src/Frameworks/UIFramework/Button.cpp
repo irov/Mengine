@@ -1,7 +1,5 @@
 #include "Button.h"
 
-#include "Tasks/EngineSource.h"
-
 #include "ButtonEventReceiverInterface.h"
 
 namespace Mengine
@@ -9,7 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Button::Button()
         : m_state( EBS_APPEAR )
-        , m_semaphoreBlock( GOAP::Helper::makeSemaphore( GOAP::Helper::makeEvent(), 0 ) )
+        , m_semaphoreBlock( GOAP_SERVICE()->makeSemaphore( 0 ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -88,11 +86,12 @@ namespace Mengine
             m_state = EBS_IDLE;
         }
 
-        EngineSourcePtr source = Helper::makeEngineSource();
+        GOAP::SourceInterfacePtr source = GOAP_SERVICE()
+            ->makeSource();
 
-        auto fn = [this]( const EngineSourcePtr & _source )
+        auto fn = [this]( const GOAP::SourceInterfacePtr & _source )
         {
-            typedef void (Button:: * TF)(const EngineSourcePtr &, const NodePtr &);
+            typedef void (Button:: * TF)(const GOAP::SourceInterfacePtr &, const NodePtr &);
 
             const TF stateFunctions[] =
             {
@@ -115,14 +114,15 @@ namespace Mengine
 
             const NodePtr & node = m_nodes[m_state];
 
-            _source->addScope( this, stateFunction, node );
+            Cook::addScope( _source, this, stateFunction, node );
 
             return true;
         };
 
-        source->addWhile( fn );
+        Cook::addWhile( source, fn );
 
-        m_chain = Helper::makeEngineChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
+        m_chain = GOAP_SERVICE()
+            ->makeChain( source, MENGINE_CODE_FUNCTION, MENGINE_CODE_LINE );
 
         if( m_chain->run() == false )
         {
@@ -146,299 +146,300 @@ namespace Mengine
         m_state = _state;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateAppear( const EngineSourcePtr & _source, const NodePtr & _nodeAppear )
+    void Button::__stateAppear( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeAppear )
     {
         if( _nodeAppear == nullptr )
         {
-            _source->addFunction( this, &Button::__setState, EBS_IDLE );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeAppear );
-        _source->addLocalDelay( 0.f );
+        Cook::addNodeEnable( _source, _nodeAppear );
+        Cook::addLocalDelay( _source, 0.f );
 
-        auto && [source_true, source_false] = _source->addIf( [this]()
+        auto && [source_true, source_false] = Cook::addIf( _source, [this]()
         {
             return this->isEnable();
         } );
 
-        source_false->addBlock();
+        Cook::addBlock( source_false );
 
-        auto && [source_over_click, source_over_enter, source_block, source_play] = _source->addRace<4>();
+        auto && [source_over_click, source_over_enter, source_block, source_play] = Cook::addRace<4>( _source );
 
-        source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_over_click->addFunction( this, &Button::__setState, EBS_PUSH );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_over_click, this, &Button::__setState, EBS_PUSH );
 
-        source_over_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_over_enter->addFunction( this, &Button::__setState, EBS_ENTER );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_over_enter, this, &Button::__setState, EBS_ENTER );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Button::__setState, EBS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Button::__setState, EBS_BLOCK_ENTER );
 
-        source_play->addAnimatablePlayWait( _nodeAppear, _nodeAppear );
-        source_play->addFunction( this, &Button::__setState, EBS_IDLE );
+        Cook::addAnimatablePlayWait( source_play, _nodeAppear, _nodeAppear );
+        Cook::addFunction( source_play, this, &Button::__setState, EBS_IDLE );
 
-        _source->addNodeDisable( _nodeAppear );
+        Cook::addNodeDisable( _source, _nodeAppear );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateIdle( const EngineSourcePtr & _source, const NodePtr & _nodeIdle )
+    void Button::__stateIdle( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeIdle )
     {
-        _source->addNodeEnable( _nodeIdle );
-        _source->addLocalDelay( 0.f );
+        Cook::addNodeEnable( _source, _nodeIdle );
+        Cook::addLocalDelay( _source, 0.f );
 
-        auto && [source_over_click, source_over_enter, source_block] = _source->addRace<3>();
+        auto && [source_over_click, source_over_enter, source_block] = Cook::addRace<3>( _source );
 
-        source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_over_click->addFunction( this, &Button::__setState, EBS_PUSH );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_over_click, this, &Button::__setState, EBS_PUSH );
 
-        source_over_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_over_enter->addFunction( this, &Button::__setState, EBS_ENTER );
+        Cook::addPickerableMouseEnter( source_over_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_over_enter, this, &Button::__setState, EBS_ENTER );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Button::__setState, EBS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Button::__setState, EBS_BLOCK_ENTER );
 
-        _source->addNodeDisable( _nodeIdle );
+        Cook::addNodeDisable( _source, _nodeIdle );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateOver( const EngineSourcePtr & _source, const NodePtr & _nodeOver )
+    void Button::__stateOver( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeOver )
     {
-        _source->addNodeEnable( _nodeOver );
-        _source->addLocalDelay( 0.f );
+        Cook::addNodeEnable( _source, _nodeOver );
+        Cook::addLocalDelay( _source, 0.f );
 
-        auto && [source_over_click, source_over_leave, source_block] = _source->addRace<3>();
+        auto && [source_over_click, source_over_leave, source_block] = Cook::addRace<3>( _source );
 
-        source_over_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_over_click->addFunction( this, &Button::__setState, EBS_PUSH );
+        Cook::addPickerableMouseButton( source_over_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_over_click, this, &Button::__setState, EBS_PUSH );
 
-        source_over_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_over_leave->addFunction( this, &Button::__setState, EBS_LEAVE );
+        Cook::addPickerableMouseLeave( source_over_leave, m_pickerable, nullptr );
+        Cook::addFunction( source_over_leave, this, &Button::__setState, EBS_LEAVE );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Button::__setState, EBS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Button::__setState, EBS_BLOCK_ENTER );
 
-        _source->addNodeDisable( _nodeOver );
+        Cook::addNodeDisable( _source, _nodeOver );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateEnter( const EngineSourcePtr & _source, const NodePtr & _nodeEnter )
+    void Button::__stateEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeEnter )
     {
         if( _nodeEnter == nullptr )
         {
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
-            _source->addFunction( this, &Button::__setState, EBS_OVER );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_OVER );
+
             return;
         }
 
-        _source->addNodeEnable( _nodeEnter );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
+        Cook::addNodeEnable( _source, _nodeEnter );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_ENTER, &ButtonEventReceiverInterface::onButtonMouseEnter );
 
-        auto && [source_enter_movie, source_enter_leave, source_enter_click] = _source->addRace<3>();
-        source_enter_movie->addAnimatablePlayWait( _nodeEnter, _nodeEnter );
-        source_enter_movie->addFunction( this, &Button::__setState, EBS_OVER );
+        auto && [source_enter_movie, source_enter_leave, source_enter_click] = Cook::addRace<3>( _source );
+        Cook::addAnimatablePlayWait( source_enter_movie, _nodeEnter, _nodeEnter );
+        Cook::addFunction( source_enter_movie, this, &Button::__setState, EBS_OVER );
 
-        source_enter_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_enter_leave->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
-        source_enter_leave->addFunction( this, &Button::__setState, EBS_IDLE );
+        Cook::addPickerableMouseLeave( source_enter_leave, m_pickerable, nullptr );
+        Cook::addEventable( source_enter_leave, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
+        Cook::addFunction( source_enter_leave, this, &Button::__setState, EBS_IDLE );
 
-        source_enter_click->addPickerableMouseButton( m_pickerable, MC_LBUTTON, true, true, nullptr );
-        source_enter_click->addFunction( this, &Button::__setState, EBS_PUSH );
+        Cook::addPickerableMouseButton( source_enter_click, m_pickerable, MC_LBUTTON, true, true, nullptr );
+        Cook::addFunction( source_enter_click, this, &Button::__setState, EBS_PUSH );
 
-        _source->addNodeDisable( _nodeEnter );
+        Cook::addNodeDisable( _source, _nodeEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateLeave( const EngineSourcePtr & _source, const NodePtr & _nodeLeave )
+    void Button::__stateLeave( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeLeave )
     {
         if( _nodeLeave == nullptr )
         {
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
-            _source->addFunction( this, &Button::__setState, EBS_IDLE );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeLeave );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
+        Cook::addNodeEnable( _source, _nodeLeave );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
 
-        auto && [source_leave_movie, source_leave_enter] = _source->addRace<2>();
-        source_leave_movie->addAnimatablePlayWait( _nodeLeave, _nodeLeave );
-        source_leave_movie->addFunction( this, &Button::__setState, EBS_IDLE );
+        auto && [source_leave_movie, source_leave_enter] = Cook::addRace<2>( _source );
+        Cook::addAnimatablePlayWait( source_leave_movie, _nodeLeave, _nodeLeave );
+        Cook::addFunction( source_leave_movie, this, &Button::__setState, EBS_IDLE );
 
-        source_leave_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_leave_enter->addFunction( this, &Button::__setState, EBS_OVER );
+        Cook::addPickerableMouseEnter( source_leave_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_leave_enter, this, &Button::__setState, EBS_OVER );
 
-        _source->addNodeDisable( _nodeLeave );
+        Cook::addNodeDisable( _source, _nodeLeave );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__statePush( const EngineSourcePtr & _source, const NodePtr & _nodePush )
+    void Button::__statePush( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodePush )
     {
         if( _nodePush == nullptr )
         {
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
-            _source->addFunction( this, &Button::__setState, EBS_PRESSED );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_PRESSED );
 
             return;
         }
 
-        _source->addNodeEnable( _nodePush );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
+        Cook::addNodeEnable( _source, _nodePush );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_PUSH, &ButtonEventReceiverInterface::onButtonMousePush );
 
-        auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel] = _source->addRace<3>();
-        source_Push_movie->addAnimatablePlayWait( _nodePush, _nodePush );
-        source_Push_movie->addFunction( this, &Button::__setState, EBS_PRESSED );
+        auto && [source_Push_movie, source_Push_leave, source_Pressed_click_Rel] = Cook::addRace<3>( _source );
+        Cook::addAnimatablePlayWait( source_Push_movie, _nodePush, _nodePush );
+        Cook::addFunction( source_Push_movie, this, &Button::__setState, EBS_PRESSED );
 
-        source_Push_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_Push_leave->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
-        source_Push_leave->addFunction( this, &Button::__setState, EBS_RELEASE );
+        Cook::addPickerableMouseLeave( source_Push_leave, m_pickerable, nullptr );
+        Cook::addEventable( source_Push_leave, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
+        Cook::addFunction( source_Push_leave, this, &Button::__setState, EBS_RELEASE );
 
-        source_Pressed_click_Rel->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, false, nullptr );
-        source_Pressed_click_Rel->addFunction( this, &Button::__setState, EBS_CLICK );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addFunction( source_Pressed_click_Rel, this, &Button::__setState, EBS_CLICK );
 
-        _source->addNodeDisable( _nodePush );
+        Cook::addNodeDisable( _source, _nodePush );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__statePressed( const EngineSourcePtr & _source, const NodePtr & _nodePressed )
+    void Button::__statePressed( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodePressed )
     {
         if( _nodePressed == nullptr )
         {
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
-            _source->addFunction( this, &Button::__setState, EBS_CLICK );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_CLICK );
 
             return;
         }
 
-        _source->addNodeEnable( _nodePressed );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
+        Cook::addNodeEnable( _source, _nodePressed );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_PRESSED, &ButtonEventReceiverInterface::onButtonMousePressed );
 
-        auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block] = _source->addRace<3>();
+        auto && [source_Pressed_click_Rel, source_Pressed_leave, source_block] = Cook::addRace<3>( _source );
 
-        source_Pressed_click_Rel->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, false, nullptr );
-        source_Pressed_click_Rel->addFunction( this, &Button::__setState, EBS_CLICK );
+        Cook::addPickerableMouseButton( source_Pressed_click_Rel, m_pickerable, MC_LBUTTON, false, false, nullptr );
+        Cook::addFunction( source_Pressed_click_Rel, this, &Button::__setState, EBS_CLICK );
 
-        source_Pressed_leave->addPickerableMouseLeave( m_pickerable, nullptr );
-        source_Pressed_leave->addEventable( this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
-        source_Pressed_leave->addFunction( this, &Button::__setState, EBS_RELEASE );
+        Cook::addPickerableMouseLeave( source_Pressed_leave, m_pickerable, nullptr );
+        Cook::addEventable( source_Pressed_leave, this, EVENT_BUTTON_MOUSE_LEAVE, &ButtonEventReceiverInterface::onButtonMouseLeave );
+        Cook::addFunction( source_Pressed_leave, this, &Button::__setState, EBS_RELEASE );
 
-        source_block->addSemaphoreEqual( m_semaphoreBlock, 1 );
-        source_block->addFunction( this, &Button::__setState, EBS_BLOCK_ENTER );
+        Cook::addSemaphoreEqual( source_block, m_semaphoreBlock, 1 );
+        Cook::addFunction( source_block, this, &Button::__setState, EBS_BLOCK_ENTER );
 
-        _source->addNodeDisable( _nodePressed );
+        Cook::addNodeDisable( _source, _nodePressed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateRelease( const EngineSourcePtr & _source, const NodePtr & _nodeRelease )
+    void Button::__stateRelease( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeRelease )
     {
         if( _nodeRelease == nullptr )
         {
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
-            _source->addFunction( this, &Button::__setState, EBS_RELEASE_PLAY );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_RELEASE_PLAY );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeRelease );
-        _source->addLocalDelay( 0.f );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
+        Cook::addNodeEnable( _source, _nodeRelease );
+        Cook::addLocalDelay( _source, 0.f );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_RELEASE, &ButtonEventReceiverInterface::onButtonMouseRelease );
 
-        auto && [source_Release_movie, source_Release_enter] = _source->addRace<2>();
-        source_Release_movie->addPickerableMouseButton( m_pickerable, MC_LBUTTON, false, true, nullptr );
-        source_Release_movie->addFunction( this, &Button::__setState, EBS_RELEASE_PLAY );
+        auto && [source_Release_movie, source_Release_enter] = Cook::addRace<2>( _source );
+        Cook::addPickerableMouseButton( source_Release_movie, m_pickerable, MC_LBUTTON, false, true, nullptr );
+        Cook::addFunction( source_Release_movie, this, &Button::__setState, EBS_RELEASE_PLAY );
 
-        source_Release_enter->addPickerableMouseEnter( m_pickerable, nullptr );
-        source_Release_enter->addFunction( this, &Button::__setState, EBS_PRESSED );
+        Cook::addPickerableMouseEnter( source_Release_enter, m_pickerable, nullptr );
+        Cook::addFunction( source_Release_enter, this, &Button::__setState, EBS_PRESSED );
 
-        _source->addNodeDisable( _nodeRelease );
+        Cook::addNodeDisable( _source, _nodeRelease );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateReleasePlay( const EngineSourcePtr & _source, const NodePtr & _nodeRelease )
+    void Button::__stateReleasePlay( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeRelease )
     {
         if( _nodeRelease == nullptr )
         {
-            _source->addFunction( this, &Button::__setState, EBS_IDLE );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeRelease );
-        _source->addAnimatablePlayWait( _nodeRelease, _nodeRelease );
-        _source->addAnimatableRewind( _nodeRelease );
-        _source->addFunction( this, &Button::__setState, EBS_IDLE );
-        _source->addNodeDisable( _nodeRelease );
+        Cook::addNodeEnable( _source, _nodeRelease );
+        Cook::addAnimatablePlayWait( _source, _nodeRelease, _nodeRelease );
+        Cook::addAnimatableRewind( _source, _nodeRelease );
+        Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
+        Cook::addNodeDisable( _source, _nodeRelease );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateClick( const EngineSourcePtr & _source, const NodePtr & _nodeClick )
+    void Button::__stateClick( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeClick )
     {
         if( _nodeClick == nullptr )
         {
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
-            _source->addEventable( this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
+            Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
 
-            _source->addFunction( this, &Button::__setState, EBS_IDLE );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeClick );
-        _source->addAnimatablePlayWait( _nodeClick, _nodeClick );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
-        _source->addEventable( this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
+        Cook::addNodeEnable( _source, _nodeClick );
+        Cook::addAnimatablePlayWait( _source, _nodeClick, _nodeClick );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON_BEGIN, &ButtonEventReceiverInterface::onButtonMouseButtonBegin );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON, &ButtonEventReceiverInterface::onButtonMouseButton );
+        Cook::addEventable( _source, this, EVENT_BUTTON_MOUSE_BUTTON_END, &ButtonEventReceiverInterface::onButtonMouseButtonEnd );
 
-        _source->addFunction( this, &Button::__setState, EBS_IDLE );
-        _source->addNodeDisable( _nodeClick );
+        Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
+        Cook::addNodeDisable( _source, _nodeClick );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateBlockEnter( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnter )
+    void Button::__stateBlockEnter( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlockEnter )
     {
         if( _nodeBlockEnter == nullptr )
         {
-            _source->addFunction( this, &Button::__setState, EBS_BLOCK );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_BLOCK );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeBlockEnter );
-        _source->addAnimatablePlayWait( _nodeBlockEnter, _nodeBlockEnter );
-        _source->addFunction( this, &Button::__setState, EBS_BLOCK );
+        Cook::addNodeEnable( _source, _nodeBlockEnter );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnter, _nodeBlockEnter );
+        Cook::addFunction( _source, this, &Button::__setState, EBS_BLOCK );
 
-        _source->addNodeDisable( _nodeBlockEnter );
+        Cook::addNodeDisable( _source, _nodeBlockEnter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateBlock( const EngineSourcePtr & _source, const NodePtr & _nodeBlock )
+    void Button::__stateBlock( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlock )
     {
         if( _nodeBlock == nullptr )
         {
-            _source->addSemaphoreEqual( m_semaphoreBlock, 0 );
-            _source->addFunction( this, &Button::__setState, EBS_BLOCK_END );
+            Cook::addSemaphoreEqual( _source, m_semaphoreBlock, 0 );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_BLOCK_END );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeBlock );
+        Cook::addNodeEnable( _source, _nodeBlock );
 
-        _source->addSemaphoreEqual( m_semaphoreBlock, 0 );
-        _source->addFunction( this, &Button::__setState, EBS_BLOCK_END );
+        Cook::addSemaphoreEqual( _source, m_semaphoreBlock, 0 );
+        Cook::addFunction( _source, this, &Button::__setState, EBS_BLOCK_END );
 
-        _source->addNodeDisable( _nodeBlock );
+        Cook::addNodeDisable( _source, _nodeBlock );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Button::__stateBlockEnd( const EngineSourcePtr & _source, const NodePtr & _nodeBlockEnd )
+    void Button::__stateBlockEnd( const GOAP::SourceInterfacePtr & _source, const NodePtr & _nodeBlockEnd )
     {
         if( _nodeBlockEnd == nullptr )
         {
-            _source->addFunction( this, &Button::__setState, EBS_IDLE );
+            Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
             return;
         }
 
-        _source->addNodeEnable( _nodeBlockEnd );
+        Cook::addNodeEnable( _source, _nodeBlockEnd );
 
-        _source->addAnimatablePlayWait( _nodeBlockEnd, _nodeBlockEnd );
-        _source->addFunction( this, &Button::__setState, EBS_IDLE );
+        Cook::addAnimatablePlayWait( _source, _nodeBlockEnd, _nodeBlockEnd );
+        Cook::addFunction( _source, this, &Button::__setState, EBS_IDLE );
 
-        _source->addNodeDisable( _nodeBlockEnd );
+        Cook::addNodeDisable( _source, _nodeBlockEnd );
     }
 }

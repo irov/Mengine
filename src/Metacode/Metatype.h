@@ -12,10 +12,10 @@
 #include "Kernel/Color.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/Viewport.h"
+#include "Kernel/String.h"
+#include "Kernel/Floats.h"
 
 #include "Config/Typedef.h"
-#include "Config/String.h"
-#include "Config/Floats.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"

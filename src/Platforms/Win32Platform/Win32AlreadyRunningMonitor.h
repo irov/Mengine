@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Config/Typedef.h"
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 #include "Kernel/Factorable.h"
 

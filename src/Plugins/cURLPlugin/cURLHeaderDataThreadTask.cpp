@@ -6,7 +6,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 namespace Mengine
 {
@@ -32,7 +32,7 @@ namespace Mengine
 
         const String::value_type * data_buffer = m_data.c_str();
         String::size_type data_size = m_data.size();
-        
+
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDS, data_buffer) );
         CURLCALL( curl_easy_setopt, (_curl, CURLOPT_POSTFIELDSIZE, (long)data_size) );
 

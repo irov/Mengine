@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Config/Config.h"
-#include "Config/Vector.h"
+
+#include "Kernel/Vector.h"
 
 #include "ozz/base/maths/simd_math.h"
 #include "ozz/base/maths/simd_math_archive.h"

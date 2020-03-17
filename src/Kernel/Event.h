@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Kernel/Vector.h"
+
 #include "Config/Lambda.h"
-#include "Config/Vector.h"
 
 #include <algorithm>
 
@@ -90,7 +91,7 @@ namespace Mengine
         {
             for( const EventDesc & desc : m_events )
             {
-                desc.lambda( _args... );
+                desc.lambda( std::forward<Args &&>( _args )... );
             }
         }
 

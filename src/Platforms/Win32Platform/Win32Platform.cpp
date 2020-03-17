@@ -27,7 +27,7 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 #include "Config/StdString.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING

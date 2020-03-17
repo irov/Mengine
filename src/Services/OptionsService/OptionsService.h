@@ -3,8 +3,7 @@
 #include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #ifndef MENGINE_OPTIONS_KEY_SIZE
 #define MENGINE_OPTIONS_KEY_SIZE 32

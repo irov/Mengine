@@ -7,9 +7,9 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Error.h"
+#include "Kernel/String.h"
 
 #include "Config/Char.h"
-#include "Config/String.h"
 
 #include "pybind/object.hpp"
 #include "pybind/dict.hpp"

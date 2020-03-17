@@ -6,8 +6,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "stdex/intrusive_list.h"
 

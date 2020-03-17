@@ -8,26 +8,8 @@ configure_file(GitSHA1.h.in "${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.h" @ONLY)
 
 ADD_FILTER(
 src
-    Array.h
-    ArrayString.h
-    Blobject.h
     Char.h
-    DynamicArray.h
-    String.h
-    StringRegex.h
-    VectorString.h
-    Stringstream.h
     Typedef.h
-    Floats.h
-    Vector.h
-    Deque.h
-    Set.h
-    Map.h
-    Pair.h
-    UnorderedMap.h
-    List.h
-    Tuple.h
-    Regex.h
     Atomic.h
     Lambda.h
     Define.h

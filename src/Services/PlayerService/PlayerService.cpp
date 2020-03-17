@@ -46,7 +46,7 @@
 #include "Kernel/DocumentHelper.h"
 #include "Kernel/Resource.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 #include "math/mat3.h"
 

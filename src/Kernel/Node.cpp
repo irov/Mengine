@@ -808,8 +808,9 @@ namespace Mengine
         return size;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
+    namespace Detail
     {
+        //////////////////////////////////////////////////////////////////////////
         template<class M>
         class FFindChild
         {
@@ -851,7 +852,7 @@ namespace Mengine
     NodePtr Node::findChild( const ConstString & _name, bool _recursion ) const
     {
         IntrusiveSlugListNodeChild::const_iterator it_found =
-            s_node_find_child( m_children, &Identity::getName, _name );
+            Detail::s_node_find_child( m_children, &Identity::getName, _name );
 
         if( it_found != m_children.end() )
         {
@@ -956,7 +957,7 @@ namespace Mengine
     bool Node::hasChild( const ConstString & _name, bool _recursive ) const
     {
         IntrusiveSlugListNodeChild::const_iterator it_found =
-            s_node_find_child( m_children, &Identity::getName, _name );
+            Detail::s_node_find_child( m_children, &Identity::getName, _name );
 
         if( it_found != m_children.end() )
         {

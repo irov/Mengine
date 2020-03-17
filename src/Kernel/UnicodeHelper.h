@@ -3,9 +3,9 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/PathString.h"
+#include "Kernel/String.h"
 
 #include "Config/Char.h"
-#include "Config/String.h"
 
 namespace Mengine
 {

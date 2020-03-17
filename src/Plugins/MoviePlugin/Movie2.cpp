@@ -24,9 +24,9 @@
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/EventableHelper.h"
+#include "Kernel/Stringstream.h"
+#include "Kernel/ArrayString.h"
 
-#include "Config/Stringstream.h"
-#include "Config/ArrayString.h"
 #include "Config/StdString.h"
 
 #include "math/quat.h"
@@ -1667,7 +1667,7 @@ namespace Mengine
     {
         AE_UNUSED( _ud );
 
-        TrackMatteDesc * desc = Helper::allocateT<TrackMatteDesc>();
+        TrackMatteDesc * desc = Helper::newT<TrackMatteDesc>();
 
         desc->matrix.from_f12( _callbackData->matrix );
         desc->mesh = *_callbackData->mesh;
@@ -1709,7 +1709,7 @@ namespace Mengine
 
         TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element_userdata);
 
-        Helper::freeT( desc );
+        Helper::deleteT( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     struct ShaderParameterDesc
@@ -1731,7 +1731,7 @@ namespace Mengine
         Movie2 * movie2 = Helper::reinterpretNodeCast<Movie2 *>( _ud );
         AE_UNUSED( movie2 );
 
-        Movie2ShaderDesc * desc = Helper::allocateT<Movie2ShaderDesc>();
+        Movie2ShaderDesc * desc = Helper::newT<Movie2ShaderDesc>();
 
         ArrayString<64> materialNameBlend;
         materialNameBlend.append( _callbackData->description );
@@ -1812,7 +1812,7 @@ namespace Mengine
 
         desc->programVariable = nullptr;
 
-        Helper::freeT( desc );
+        Helper::deleteT( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _ud )

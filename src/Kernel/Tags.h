@@ -2,8 +2,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/VectorConstString.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

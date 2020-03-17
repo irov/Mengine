@@ -18,16 +18,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->lock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->unlock();
-    }
-    //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
         : m_uid( 0 )
         , m_dynamicLoad( false )
@@ -89,21 +79,6 @@ namespace Mengine
             return true;
         }
 
-        if( m_dynamicLoad == true )
-        {
-            SERVICE_WAIT( ThreadServiceInterface, [this]()
-            {
-                m_mutexAllocatorPool = THREAD_SERVICE()
-                    ->createMutex( MENGINE_DOCUMENT_MESSAGE( "Plugin '%s'", this->getPluginName() ) );
-
-                stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-                    , (stdex_allocator_thread_lock_t)& s_stdex_thread_lock
-                    , (stdex_allocator_thread_unlock_t)& s_stdex_thread_unlock
-                );
-
-                return true;
-            } );
-        }
 
         bool successful = this->_initializePlugin();
 
@@ -171,8 +146,6 @@ namespace Mengine
 
         bool dynamicLoad = m_dynamicLoad;
 
-        ThreadMutexInterfacePtr mutexAllocatorPool = std::move( m_mutexAllocatorPool );
-
         delete this;
 
 #if defined(MENGINE_WINDOWS_DEBUG)
@@ -184,16 +157,11 @@ namespace Mengine
             VectorDocuments leakObjects;
 
             FACTORY_SERVICE()
-                ->visitFactoryLeakObjects( ~0U, [plugin_modulePath, &leakObjects, &mutexAllocatorPool]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
+                ->visitFactoryLeakObjects( ~0U, [plugin_modulePath, &leakObjects]( const Factory * _factory, const Factorable * _factorable, const Char * _type, const DocumentPtr & _doc )
             {
                 MENGINE_UNUSED( _factory );
                 MENGINE_UNUSED( _factorable );
                 MENGINE_UNUSED( _type );
-
-                if( _factorable == dynamic_cast<Factorable *>(mutexAllocatorPool.get()) )
-                {
-                    return;
-                }
 
                 if( _doc == nullptr )
                 {
@@ -226,14 +194,6 @@ namespace Mengine
             }
         }
 #endif
-
-        if( dynamicLoad == true )
-        {
-            stdex_allocator_finalize_threadsafe();
-            mutexAllocatorPool = nullptr;
-
-            stdex_allocator_finalize();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::_initializePlugin()
@@ -256,7 +216,7 @@ namespace Mengine
     bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory )
     {
         VOCABULARY_SET( ModuleFactoryInterface, STRINGIZE_STRING_LOCAL( "Module" ), _name, _factory );
-        
+
         m_moduleFactories.emplace_back( _name );
 
         return true;

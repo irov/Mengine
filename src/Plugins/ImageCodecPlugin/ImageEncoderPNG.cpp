@@ -1,9 +1,9 @@
 #include "ImageEncoderPNG.h"
 
+#include "Interface/AllocatorServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
-
-#include "stdex/allocator.h"
 
 namespace Mengine
 {
@@ -48,14 +48,18 @@ namespace Mengine
     {
         MENGINE_UNUSED( _png );
 
-        return stdex_malloc( _size, "png encoder" );
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "png encoder" );
+
+        return p;
     }
     //////////////////////////////////////////////////////////////////////////
     static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
     {
         MENGINE_UNUSED( _png );
 
-        stdex_free( _ptr, "png encoder" );
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "png encoder" );
     }
     //////////////////////////////////////////////////////////////////////////
     ImageEncoderPNG::ImageEncoderPNG()

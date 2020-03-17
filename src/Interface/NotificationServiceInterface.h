@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Config/Typedef.h"
-#include "Config/Tuple.h"
 #include "Config/Lambda.h"
 
 #include "Interface/ServiceInterface.h"
@@ -13,6 +12,7 @@
 #include "Kernel/Exception.h"
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/DocumentHelper.h"
+#include "Kernel/Tuple.h"
 
 #include <type_traits>
 

@@ -2,6 +2,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Logger.h"
+#include "Kernel/DocumentHelper.h"
 
 #include "GOAP/Source.h"
 #include "GOAP/NodeInterface.h"
@@ -28,7 +29,8 @@ namespace Mengine
     protected:
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const cURLHeaders & _headers, const String & _response, uint32_t _code, bool _successful ) override
         {
-            GOAP::SourceInterfacePtr source = m_node->makeSource();
+            GOAP::SourceInterfacePtr source = GOAP_SERVICE()
+                ->makeSource();
 
             m_receiver->onResponse( source, _status, _error, _headers, _response, _code, _successful );
             m_receiver = nullptr;

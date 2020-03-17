@@ -6,7 +6,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Factory.h"
 
-#include "Config/List.h"
+#include "Kernel/List.h"
 
 namespace Mengine
 {

@@ -14,13 +14,12 @@
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/Materialable.h"
+#include "Kernel/Vector.h"
 
 #include "ResourceMovie.h"
 #include "MovieNodeExtra.h"
 #include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"
-
-#include "Config/Vector.h"
 
 namespace Mengine
 {

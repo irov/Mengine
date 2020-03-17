@@ -7,7 +7,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/BaseContent.h"
 
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 #include "ozz/animation/runtime/skeleton.h"
 

@@ -16,8 +16,8 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Pool.h"
 
-#include "Config/Pair.h"
-#include "Config/Map.h"
+#include "Kernel/Pair.h"
+#include "Kernel/Map.h"
 #include "Config/Typedef.h"
 
 namespace Mengine

@@ -146,7 +146,7 @@ namespace Mengine
 
         bool dynamicLoad = m_dynamicLoad;
 
-        delete this;
+        Helper::deleteT( this );
 
 #if defined(MENGINE_WINDOWS_DEBUG)
         if( dynamicLoad == true )

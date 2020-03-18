@@ -55,7 +55,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            ModuleFactoryInterface * factory = new FactorableUnique<ModuleFactory<T>>();
+            ModuleFactoryInterface * factory = Helper::newT<FactorableUnique<ModuleFactory<T>>>();
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
 

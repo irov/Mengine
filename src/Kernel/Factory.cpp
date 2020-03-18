@@ -130,7 +130,7 @@ namespace Mengine
     {
         this->_destroy();
 
-        delete this;
+        Helper::deleteT( this );
     }
     //////////////////////////////////////////////////////////////////////////
 }

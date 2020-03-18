@@ -44,7 +44,7 @@ namespace Mengine
     protected:
         void destroy() override
         {
-            delete this;
+            Helper::deleteT( this );
         }
 
     protected:

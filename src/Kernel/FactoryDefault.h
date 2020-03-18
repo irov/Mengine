@@ -37,7 +37,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            Factory * factory = new FactoryDefault<T>();
+            Factory * factory = Helper::newT<FactoryDefault<T>>();
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
 

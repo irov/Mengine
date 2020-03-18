@@ -3381,8 +3381,8 @@ namespace Mengine
             .def( "MC_MBUTTON", MC_MBUTTON )
             ;
 
-        pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>());
-        pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>());
+        pybind::registration_type_cast<Blobject>(_kernel, pybind::make_type_cast<extract_Blobject_type>(_kernel));
+        pybind::registration_type_cast<Tags>(_kernel, pybind::make_type_cast<extract_Tags_type>(_kernel));
 
         pybind::registration_stl_vector_type_cast<ResourceImagePtr, VectorResourceImages>(_kernel);
         pybind::registration_stl_vector_type_cast<HotSpotPolygonPtr, VectorHotSpotPolygons>(_kernel);
@@ -3390,8 +3390,8 @@ namespace Mengine
         pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(_kernel);
         pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(_kernel);
 
-        pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>());
-        pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>());
+        pybind::registration_type_cast<String>(_kernel, pybind::make_type_cast<extract_String_type>(_kernel));
+        pybind::registration_type_cast<WString>(_kernel, pybind::make_type_cast<extract_WString_type>(_kernel));
 
         pybind::registration_stl_vector_type_cast<String, Vector<String>>(_kernel);
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(_kernel);

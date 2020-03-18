@@ -10,7 +10,6 @@ namespace Mengine
     template<class Base>
     class FactorableUnique
         : public Base
-        , public MemoryAllocator<FactorableUnique<Base>>
     {
     public:
         template<class ... Args>
@@ -28,7 +27,7 @@ namespace Mengine
         {
             this->_destroy();
 
-            delete this;
+            Helper::deleteT( this );
         }
     };
     //////////////////////////////////////////////////////////////////////////
@@ -39,7 +38,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            Type * factorable = new FactorableUnique<Type>( std::forward<Args &&>( _args ) ... );
+            Type * factorable = Helper::newT<FactorableUnique<Type>>( std::forward<Args &&>( _args ) ... );
 
             MENGINE_ASSERTION_MEMORY_PANIC( factorable, nullptr );
 

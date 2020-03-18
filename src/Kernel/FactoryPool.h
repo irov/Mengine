@@ -3,6 +3,7 @@
 #include "Kernel/Factory.h"
 #include "Kernel/Typename.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/MemoryAllocator.h"
 #include "Kernel/Pool.h"
 
 namespace Mengine
@@ -48,7 +49,7 @@ namespace Mengine
         {
             MENGINE_UNUSED( _doc );
 
-            Factory * factory = new FactoryPool<Type, Count, F>();
+            Factory * factory = Helper::newT<FactoryPool<Type, Count, F>>();
 
             MENGINE_ASSERTION_MEMORY_PANIC( factory, nullptr );
 

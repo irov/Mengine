@@ -4,6 +4,7 @@
 
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "Box2DBody.h"
 #include "Box2DJoint.h"
@@ -37,9 +38,9 @@ namespace Mengine
 
         b2Vec2 b2_gravity = m_scaler.toBox2DWorld( _gravity );
 
-        m_world = new b2World( b2_gravity );
-        m_world->SetAllowSleeping( true );
+        m_world = Helper::newT<b2World>( b2_gravity );
 
+        m_world->SetAllowSleeping( true );
         m_world->SetDestructionListener( this );
         m_world->SetContactFilter( this );
         m_world->SetContactListener( this );
@@ -67,7 +68,7 @@ namespace Mengine
             m_timepipeId = 0;
         }
 
-        delete m_world;
+        Helper::deleteT( m_world );
         m_world = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

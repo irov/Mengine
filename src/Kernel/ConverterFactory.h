@@ -40,7 +40,7 @@ namespace Mengine
 
             m_factory = nullptr;
 
-            delete this;
+            Helper::deleteT( this );
         }
 
     protected:

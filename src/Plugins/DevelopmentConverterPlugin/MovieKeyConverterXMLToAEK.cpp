@@ -630,7 +630,7 @@ namespace Mengine
                             p2t_polygon.emplace_back( p );
                         }
 
-                        p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
+                        p2t::CDT cdt( p2t_polygon );
 
                         const VectorPolygon & inners = geolygon.getInners();
 
@@ -647,13 +647,13 @@ namespace Mengine
                                 p2t_hole.emplace_back( p );
                             }
 
-                            cdt->AddHole( p2t_hole );
+                            cdt.AddHole( p2t_hole );
                         }
 
-                        cdt->Triangulate();
+                        cdt.Triangulate();
 
                         //cdt::GetTriangles return std::vector
-                        std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
+                        std::vector<p2t::Triangle *> triangles = cdt.GetTriangles();
 
                         for( p2t::Triangle * tr : triangles )
                         {
@@ -671,8 +671,6 @@ namespace Mengine
                             shape_indices.emplace_back( i1 );
                             shape_indices.emplace_back( i2 );
                         }
-
-                        delete cdt;
                     }
 
                     Vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();

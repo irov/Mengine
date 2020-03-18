@@ -44,7 +44,8 @@ namespace Mengine
         PythonScriptWrapper( pybind::kernel_interface * _kernel )
             : m_kernel( _kernel )
         {
-            pybind::type_cast_ptr cast( new Helper::ScriptExtract<T> );
+            pybind::type_cast_ptr cast = _kernel->get_allocator()->newT<Helper::ScriptExtract<T>>();
+
             pybind::registration_type_cast<T>(m_kernel, cast);
 
             const pybind::class_type_scope_interface_ptr & scope = m_kernel->get_class_type_scope_t<T>();

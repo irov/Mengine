@@ -4,6 +4,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -23,6 +24,43 @@ PLUGIN_FACTORY( XlsExport, Mengine::XlsExportPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        class MyAllocator
+            : public pybind::allocator_interface
+        {
+        protected:
+            void * malloc( size_t _size ) override
+            {
+                void * p = ALLOCATOR_SERVICE()
+                    ->malloc( _size, "python" );
+
+                return p;
+            }
+
+            void * calloc( size_t _num, size_t _size ) override
+            {
+                void * p = ALLOCATOR_SERVICE()
+                    ->calloc( _num, _size, "python" );
+
+                return p;
+            }
+
+            void * realloc( void * _ptr, size_t _size ) override
+            {
+                void * p = ALLOCATOR_SERVICE()
+                    ->realloc( _ptr, _size, "python" );
+
+                return p;
+            }
+
+            void free( void * _ptr ) override
+            {
+                ALLOCATOR_SERVICE()
+                    ->free( _ptr, "python" );
+            }
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     XlsExportPlugin::XlsExportPlugin()
         : m_warninglogger( nullptr )
@@ -64,7 +102,9 @@ namespace Mengine
             return false;
         }
 
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, shortpath_exportPath, false, false, true );
+        pybind::allocator_interface * allocator = Helper::newT<Detail::MyAllocator>();
+
+        pybind::kernel_interface * kernel = pybind::initialize( allocator, shortpath_exportPath, false, false, true );
 
         //PyObject * xls_module = pybind::module_init( "Xls" );
 
@@ -78,12 +118,12 @@ namespace Mengine
             .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
             ;
 
-        m_warninglogger = new XlsScriptLogger( LM_WARNING, LCOLOR_RED | LCOLOR_GREEN );
+        m_warninglogger = Helper::newT<XlsScriptLogger>( LM_WARNING, LCOLOR_RED | LCOLOR_GREEN );
 
         PyObject * pyWarningLogger = pybind::ptr( kernel, m_warninglogger );
         kernel->setStdOutHandle( pyWarningLogger );
 
-        m_errorLogger = new XlsScriptLogger( LM_ERROR, LCOLOR_RED );
+        m_errorLogger = Helper::newT<XlsScriptLogger>( LM_ERROR, LCOLOR_RED );
 
         PyObject * pyErrorLogger = pybind::ptr( kernel, m_warninglogger );
         kernel->setStdErrorHandle( pyErrorLogger );
@@ -133,10 +173,14 @@ namespace Mengine
 
         kernel->remove_scope<XlsScriptLogger>();
 
+        pybind::allocator_interface * allocator = kernel->get_allocator();
+
         kernel->destroy();
 
-        delete m_warninglogger;
-        delete m_errorLogger;
+        Helper::deleteT( allocator );
+
+        Helper::deleteT( m_warninglogger );
+        Helper::deleteT( m_errorLogger );
 
         NOTIFICATION_REMOVEOBSERVER_THIS( NOTIFICATOR_CHANGE_LOCALE_PREPARE );
     }
@@ -177,23 +221,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::warning_( const wchar_t * _msg )
+    void XlsExportPlugin::warning_( const WChar * _msg )
     {
         Char utf8_msg[2048];
         Helper::unicodeToUtf8( _msg, utf8_msg, 2048 );
 
-        LOGGER_WARNING( "%s"
+        LOGGER_MESSAGE( "XlsExport[Warning]: %s"
             , utf8_msg
         );
 
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::error_( const wchar_t * _msg )
+    void XlsExportPlugin::error_( const WChar * _msg )
     {
         Char utf8_msg[2048];
         Helper::unicodeToUtf8( _msg, utf8_msg, 2048 );
 
-        LOGGER_ERROR( "%s"
+        LOGGER_MESSAGE( "XlsExport[Error]: %s"
             , utf8_msg
         );
     }

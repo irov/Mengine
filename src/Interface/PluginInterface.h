@@ -5,6 +5,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/FactorablePlugin.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "Config/Char.h"
 #include "Config/Export.h"
@@ -54,7 +55,7 @@ namespace Mengine
 #define PLUGIN_FACTORY_STATIC(Name, Type)\
     extern "C"{bool PLUGIN_FUNCTION(Name)( Mengine::ServiceProviderInterface * _serviceProvider, Mengine::PluginInterface ** _plugin, uint32_t _uid, bool _dynamic ){\
     if( _dynamic == true ){SERVICE_PROVIDER_SETUP(_serviceProvider);}\
-    Mengine::PluginInterface * plugin = new Mengine::FactorablePlugin<Type>();\
+    Mengine::PluginInterface * plugin = Mengine::Helper::newT<Mengine::FactorablePlugin<Type>>();\
     if( plugin == nullptr ){ return false; }\
     plugin->setUID( _uid );\
     plugin->setDynamicLoad( _dynamic );\

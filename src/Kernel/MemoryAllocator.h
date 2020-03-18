@@ -72,37 +72,4 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
     }
-    //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    class MemoryAllocator
-    {
-    public:
-        void * operator new (size_t _size)
-        {
-            void * p = Helper::allocateMemory( _size, Typename<T>::value );
-
-            return p;
-        }
-
-        void operator delete (void * _ptr, size_t _size)
-        {
-            MENGINE_UNUSED( _size );
-
-            Helper::freeMemory( _ptr, Typename<T>::value );
-        }
-
-        void * operator new []( size_t _size )
-        {
-            void * p = Helper::allocateMemory( _size, Typename<T>::value );
-
-            return p;
-        }
-
-            void operator delete []( void * _ptr, size_t _size )
-        {
-            MENGINE_UNUSED( _size );
-
-            Helper::freeMemory( _ptr, Typename<T>::value );
-        }
-    };
 }

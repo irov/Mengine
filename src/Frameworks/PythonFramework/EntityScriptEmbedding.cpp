@@ -280,12 +280,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EntityScriptEmbedding::embedding( pybind::kernel_interface * _kernel )
     {
-        pybind::superclass_<Entity, pybind::bases<Node> >( _kernel, "Entity", nullptr, pybind::new_adapter_interface_ptr( new superclass_new_Entity ), pybind::destroy_adapter_interface_ptr( new superclass_destroy_Entity ), false )
+        pybind::allocator_interface * allocator = _kernel->get_allocator();
+
+        pybind::superclass_<Entity, pybind::bases<Node> >( _kernel, "Entity", nullptr, allocator->newT<superclass_new_Entity>(), allocator->newT<superclass_destroy_Entity>(), false )
             .def_constructor( pybind::init<>() )
             .def( "getPrototype", &Entity::getPrototype )
             ;
 
-        pybind::superclass_<Arrow, pybind::bases<Entity> >( _kernel, "Arrow", nullptr, pybind::new_adapter_interface_ptr( new superclass_new_Arrow ), pybind::destroy_adapter_interface_ptr( new superclass_destroy_Arrow ), false )
+        pybind::superclass_<Arrow, pybind::bases<Entity> >( _kernel, "Arrow", nullptr, allocator->newT<superclass_new_Arrow>(), allocator->newT<superclass_destroy_Arrow>(), false )
             .def_constructor( pybind::init<>() )
             .def( "setOffsetClick", &Arrow::setOffsetClick )
             .def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -295,7 +297,7 @@ namespace Mengine
             .def( "getRadius", &Arrow::getRadius )
             ;
 
-        pybind::superclass_<Scene, pybind::bases<Entity> >( _kernel, "Scene", nullptr, pybind::new_adapter_interface_ptr( new superclass_new_Scene ), pybind::destroy_adapter_interface_ptr( new superclass_destroy_Scene ), false )
+        pybind::superclass_<Scene, pybind::bases<Entity> >( _kernel, "Scene", nullptr, allocator->newT<superclass_new_Scene>(), allocator->newT<superclass_destroy_Scene>(), false )
             .def_constructor( pybind::init<>() )
             ;
 

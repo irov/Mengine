@@ -5,6 +5,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/AssertionMemoryPanic.h"
+#include "Kernel/MemoryAllocator.h"
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
 #   include <crtdbg.h>
@@ -15,43 +16,42 @@ SERVICE_FACTORY( ScriptProviderService, Mengine::PythonScriptProviderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void * s_python_malloc( void * _ctx, size_t _size )
+    namespace Detail
     {
-        MENGINE_UNUSED( _ctx );
+        class MyAllocator
+            : public pybind::allocator_interface
+        {
+        protected:
+            void * malloc( size_t _size ) override
+            {
+                void * p = ALLOCATOR_SERVICE()
+                    ->malloc( _size, "python" );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->malloc( _size, "python" );
+                return p;
+            }
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * s_python_calloc( void * _ctx, size_t _num, size_t _size )
-    {
-        MENGINE_UNUSED( _ctx );
+            void * calloc( size_t _num, size_t _size ) override
+            {
+                void * p = ALLOCATOR_SERVICE()
+                    ->calloc( _num, _size, "python" );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->calloc( _num, _size, "python" );
+                return p;
+            }
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void * s_python_realloc( void * _ctx, void * _ptr, size_t _size )
-    {
-        MENGINE_UNUSED( _ctx );
+            void * realloc( void * _ptr, size_t _size ) override
+            {
+                void * p = ALLOCATOR_SERVICE()
+                    ->realloc( _ptr, _size, "python" );
 
-        void * p = ALLOCATOR_SERVICE()
-            ->realloc( _ptr, _size, "python" );
+                return p;
+            }
 
-        return p;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_python_free( void * _ctx, void * _ptr )
-    {
-        MENGINE_UNUSED( _ctx );
-
-        ALLOCATOR_SERVICE()
-            ->free( _ptr, "python" );
+            void free( void * _ptr ) override
+            {
+                ALLOCATOR_SERVICE()
+                    ->free( _ptr, "python" );
+            }
+        };
     }
     //////////////////////////////////////////////////////////////////////////
     PythonScriptProviderService::PythonScriptProviderService()
@@ -71,18 +71,9 @@ namespace Mengine
         int crt_assert = _CrtSetReportMode( _CRT_ASSERT, _CRTDBG_REPORT_MODE );
 #endif
 
-        pybind::kernel_domain_allocator_t domain;
-        pybind::kernel_allocator_t raw;
+        pybind::allocator_interface * allocator = Helper::newT<Detail::MyAllocator>();
 
-        raw.ctx = nullptr;
-        raw.malloc = &s_python_malloc;
-        raw.calloc = &s_python_calloc;
-        raw.realloc = &s_python_realloc;
-        raw.free = &s_python_free;
-
-        domain.raw = &raw;
-
-        pybind::kernel_interface * kernel = pybind::initialize( &domain, nullptr, MENGINE_DEBUG_ATTRIBUTE( true, false ), false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( allocator, nullptr, MENGINE_DEBUG_ATTRIBUTE( true, false ), false, true );
 
 #if defined(MENGINE_WINDOWS_DEBUG) && !defined(MENGINE_TOOLCHAIN_MINGW)
         _CrtSetReportMode( _CRT_WARN, crt_warn );
@@ -99,8 +90,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PythonScriptProviderService::_finalizeService()
     {
+        pybind::allocator_interface * allocator = m_kernel->get_allocator();
+
         m_kernel->destroy();
         m_kernel = nullptr;
+
+        Helper::deleteT( allocator );
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * PythonScriptProviderService::getKernel() const

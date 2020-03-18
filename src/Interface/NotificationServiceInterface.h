@@ -132,7 +132,7 @@ namespace Mengine
         template<uint32_t ID, class C, class L>
         void addObserverLambda( C * _self, const L & _lambda, const DocumentPtr & _doc )
         {
-            ObserverCallableInterfacePtr callable( new LambdaObserverCallable<ID, L>( _lambda ) );
+            ObserverCallableInterfacePtr callable( Helper::newT<LambdaObserverCallable<ID, L>>( _lambda ) );
 
             this->addObserver( ID, _self, callable, _doc );
         }
@@ -141,7 +141,7 @@ namespace Mengine
         template<uint32_t ID, class C, class M>
         void addObserverMethod( C * _self, M _method, const DocumentPtr & _doc )
         {
-            ObserverCallableInterfacePtr callable( new GeneratorMethodObserverCallable<ID, M>( _self, _method ) );
+            ObserverCallableInterfacePtr callable( Helper::newT<GeneratorMethodObserverCallable<ID, M>>( _self, _method ) );
 
             this->addObserver( ID, _self, callable, _doc );
         }

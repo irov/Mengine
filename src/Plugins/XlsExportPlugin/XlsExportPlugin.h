@@ -30,8 +30,8 @@ namespace Mengine
         bool proccess_();
 
     protected:
-        void warning_( const wchar_t * _msg );
-        void error_( const wchar_t * _msg );
+        void warning_( const WChar * _msg );
+        void error_( const WChar * _msg );
 
     protected:
         XlsScriptLogger * m_warninglogger;

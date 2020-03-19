@@ -175,7 +175,7 @@ namespace Mengine
                 return (p->*_method)(_source, _args ...);
             } );
 
-            SourceInterfacePtr source_until = _source->makeSource();
+            GOAP::SourceInterfacePtr source_until = _source->makeSource();
 
             Cook::addTaskRepeat( _source, provider, source_until );
 

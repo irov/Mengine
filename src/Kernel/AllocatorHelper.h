@@ -2,6 +2,7 @@
 
 #include "Config/Config.h"
 #include "Config/Char.h"
+#include "Config/StdDef.h"
 
 namespace Mengine
 {

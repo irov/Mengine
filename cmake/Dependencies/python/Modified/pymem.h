@@ -33,11 +33,11 @@ PyAPI_FUNC(void *) PyMem_Realloc(void *, size_t);
 PyAPI_FUNC(void) PyMem_Free(void *);
 
 #define PyMem_MALLOC(n)		((size_t)(n) > (size_t)PY_SSIZE_T_MAX ? NULL \
-    : PyMem_GetAllocator()->malloc(PyMem_GetAllocator()->ctx, (n) ? (n) : 1, "Python"))
+    : PyMem_GetAllocator()->malloc(PyMem_GetAllocator()->ctx, (n) ? (n) : 1))
 #define PyMem_REALLOC(p, n)	((size_t)(n) > (size_t)PY_SSIZE_T_MAX  ? NULL \
-    : PyMem_GetAllocator()->realloc(PyMem_GetAllocator()->ctx, (p), (n) ? (n) : 1, "Python"))
+    : PyMem_GetAllocator()->realloc(PyMem_GetAllocator()->ctx, (p), (n) ? (n) : 1))
 
-#define PyMem_FREE(p)		PyMem_GetAllocator()->free(PyMem_GetAllocator()->ctx, p, "Python")
+#define PyMem_FREE(p)		PyMem_GetAllocator()->free(PyMem_GetAllocator()->ctx, p)
 
 
 #define PyMem_New(type, n) \

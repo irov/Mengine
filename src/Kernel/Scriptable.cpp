@@ -6,7 +6,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
-#include "pybind/kernel.hpp"
+#include "pybind/kernel_interface.hpp"
 #endif
 
 namespace Mengine

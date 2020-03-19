@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/StdDef.h"
+
 namespace Mengine
 {
     class PoolAllocator

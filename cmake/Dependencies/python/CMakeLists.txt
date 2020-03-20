@@ -235,7 +235,6 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
-include_directories(${THIRDPARTY_DIR}/stdex/include)
 include_directories(${THIRDPARTY_DIR}/zlib)
 
 include_directories(${SOURCE_DIR}/PC)

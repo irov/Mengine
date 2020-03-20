@@ -1,0 +1,2 @@
+LIBRARY		"ImGUIPlugin"
+EXPORTS 	dllCreatePlugin 	@1

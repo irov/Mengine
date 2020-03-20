@@ -6,7 +6,7 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/Logger.h"
 
-#include "stdex/thread_guard.h"
+#include "stdex/thread_guard_scope.h"
 
 namespace Mengine
 {
@@ -22,6 +22,10 @@ namespace Mengine
         {
         }
 
+        ~Decoder() override
+        {
+        }
+
     public:
         bool initialize() override
         {
@@ -29,9 +33,6 @@ namespace Mengine
 
             if( m_initialize == true )
             {
-                LOGGER_ERROR( "alredy initialize!"
-                );
-
                 return false;
             }
 
@@ -53,9 +54,6 @@ namespace Mengine
 
             if( m_initialize == false )
             {
-                LOGGER_ERROR( "alredy finalize!"
-                );
-
                 return;
             }
 

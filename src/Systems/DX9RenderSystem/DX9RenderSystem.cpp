@@ -76,6 +76,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    Pointer DX9RenderSystem::getRenderDevice() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
     ERenderPlatform DX9RenderSystem::getRenderPlatformType() const
     {
         return RP_DX9;

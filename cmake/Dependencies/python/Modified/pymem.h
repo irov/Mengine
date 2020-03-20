@@ -2,7 +2,6 @@
 #define Py_PYMEM_H
 
 #include "pyport.h"
-#include "stdex/allocator.h"
 
 #ifdef __cplusplus
 extern "C" {

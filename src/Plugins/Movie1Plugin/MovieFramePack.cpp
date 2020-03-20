@@ -26,21 +26,21 @@ namespace Mengine
         {
             const MovieLayerFrame & layer = m_layers[index];
 
-            Helper::freeMemory( layer.anchorPoint, "MovieFramePack" );
-            Helper::freeMemory( layer.position, "MovieFramePack" );
-            Helper::freeMemory( layer.rotation_x, "MovieFramePack" );
-            Helper::freeMemory( layer.rotation_y, "MovieFramePack" );
-            Helper::freeMemory( layer.rotation_z, "MovieFramePack" );
-            Helper::freeMemory( layer.scale, "MovieFramePack" );
-            Helper::freeMemory( layer.opacity, "MovieFramePack" );
-            Helper::freeMemory( layer.volume, "MovieFramePack" );
+            Helper::deallocateMemory( layer.anchorPoint, "MovieFramePack" );
+            Helper::deallocateMemory( layer.position, "MovieFramePack" );
+            Helper::deallocateMemory( layer.rotation_x, "MovieFramePack" );
+            Helper::deallocateMemory( layer.rotation_y, "MovieFramePack" );
+            Helper::deallocateMemory( layer.rotation_z, "MovieFramePack" );
+            Helper::deallocateMemory( layer.scale, "MovieFramePack" );
+            Helper::deallocateMemory( layer.opacity, "MovieFramePack" );
+            Helper::deallocateMemory( layer.volume, "MovieFramePack" );
         }
 
         for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
         {
             const MovieLayerTimeRemap & layer = m_timeremap[index];
 
-            Helper::freeMemory( layer.times, "MovieFramePack" );
+            Helper::deallocateMemory( layer.times, "MovieFramePack" );
         }
 
         for( uint32_t index = 0; index != m_sizeShapes; ++index )
@@ -51,19 +51,19 @@ namespace Mengine
             {
                 const MovieFrameShape & frame_shape = layer_shape.shapes[j];
 
-                Helper::freeMemory( frame_shape.pos, "MovieFramePack" );
-                Helper::freeMemory( frame_shape.uv, "MovieFramePack" );
-                Helper::freeMemory( frame_shape.indices, "MovieFramePack" );
+                Helper::deallocateMemory( frame_shape.pos, "MovieFramePack" );
+                Helper::deallocateMemory( frame_shape.uv, "MovieFramePack" );
+                Helper::deallocateMemory( frame_shape.indices, "MovieFramePack" );
             }
 
-            Helper::freeMemory( layer_shape.shapes, "MovieFramePack" );
+            Helper::deallocateMemory( layer_shape.shapes, "MovieFramePack" );
         }
 
         for( uint32_t index = 0; index != m_sizePolygons; ++index )
         {
             const MovieLayerPolygon & polygon = m_polygons[index];
 
-            Helper::freeMemory( polygon.polygon, "MovieFramePack" );
+            Helper::deallocateMemory( polygon.polygon, "MovieFramePack" );
         }
 
         Helper::freeArrayT( m_layers );

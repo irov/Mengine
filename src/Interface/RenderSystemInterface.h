@@ -47,6 +47,9 @@ namespace Mengine
         SERVICE_DECLARE( "RenderSystem" )
 
     public:
+        virtual Pointer getRenderDevice() const = 0;
+
+    public:
         virtual ERenderPlatform getRenderPlatformType() const = 0;
         virtual const ConstString & getRenderPlatformName() const = 0;
 

@@ -2,7 +2,7 @@
 
 #include "Plugins/MoviePlugin/Movie2Interface.h"
 
-#include "Config/Blobject.h"
+#include "Kernel/Blobject.h"
 
 #include "lz4.h"
 #include "lz4hc.h"

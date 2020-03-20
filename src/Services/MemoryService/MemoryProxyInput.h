@@ -4,7 +4,7 @@
 
 #include "Kernel/Factorable.h"
 
-#include "stdex/thread_guard.h"
+#include "stdex/thread_guard_scope.h"
 
 #ifdef MENGINE_DEBUG
 #include "Kernel/DocumentHelper.h"

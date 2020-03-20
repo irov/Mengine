@@ -37,6 +37,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        Pointer getRenderDevice() const override;
+
+    public:
         ERenderPlatform getRenderPlatformType() const override;
         const ConstString & getRenderPlatformName() const override;
 

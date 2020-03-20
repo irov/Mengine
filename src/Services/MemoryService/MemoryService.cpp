@@ -163,7 +163,7 @@ namespace Mengine
         {
             CacheBufferMemory & buffer = m_buffers[minIndex];
 
-            Helper::freeMemory( buffer.memory, MENGINE_DOCUMENT_STR( buffer.doc ) );
+            Helper::deallocateMemory( buffer.memory, MENGINE_DOCUMENT_STR( buffer.doc ) );
 
             void * memory = Helper::allocateMemory( _size, MENGINE_DOCUMENT_STR( _doc ) );
 
@@ -241,7 +241,7 @@ namespace Mengine
                 return false;
             }
 
-            Helper::freeMemory( _buffer.memory, MENGINE_DOCUMENT_STR( _buffer.doc ) );
+            Helper::deallocateMemory( _buffer.memory, MENGINE_DOCUMENT_STR( _buffer.doc ) );
 
             return true;
         } ), m_buffers.end() );

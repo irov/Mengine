@@ -71,8 +71,6 @@ include(CheckSizes)
 configure_file(include/ogg/config_types.h.in include/ogg/config_types.h @ONLY)
 
 
-include_directories(${THIRDPARTY_DIR}/stdex/include)
-
 set(OGG_HEADERS
     ${CMAKE_CURRENT_BINARY_DIR}/include/ogg/config_types.h
     include/ogg/ogg.h

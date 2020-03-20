@@ -1,6 +1,6 @@
 #include "NodeDebuggerApp.h"
 
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 #include "stdex/allocator.h"
 

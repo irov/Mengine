@@ -13,6 +13,5 @@ set( sources
 include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/include)
 include_directories(${THIRDPARTY_DIR}/pugixml/src)
-include_directories(${THIRDPARTY_DIR}/stdex/include)         
 
 add_library( ${PROJECT_NAME} STATIC ${sources} )

@@ -68,6 +68,7 @@ PLUGIN_EXPORT( DevelopmentConverter );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
@@ -160,6 +161,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
+        SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
@@ -1003,8 +1005,7 @@ bool run()
     kernel->incref( py_tools_module );
     kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-    Mengine::WChar currentDirectory[MAX_PATH];
-
+    Mengine::WChar currentDirectory[MAX_PATH] = {0};
     if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
     {
         return false;

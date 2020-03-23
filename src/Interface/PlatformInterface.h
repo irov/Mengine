@@ -8,6 +8,7 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Params.h"
+#include "Kernel/UnknownPointer.h"
 #include "Kernel/LambdaFilePath.h"
 
 #include "Interface/ServiceInterface.h"
@@ -15,6 +16,7 @@
 #include "Interface/DynamicLibraryInterface.h"
 #include "Interface/DateTimeProviderInterface.h"
 #include "Interface/ContentInterface.h"
+#include "Interface/UnknownInterface.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -141,6 +143,9 @@ namespace Mengine
 
     public:
         virtual void abort() = 0;
+
+    public:
+        virtual UnknownPointer getPlatformExternal() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -779,7 +779,7 @@ namespace Mengine
 
         return result;
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::LoadIconsAtlas()
     {
         pugi::xml_document doc;

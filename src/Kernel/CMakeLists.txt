@@ -612,6 +612,8 @@ Core
     
     RandomizerHelper.h
     RandomizerHelper.cpp
+    
+    UnknownPointer.h
 )
 
 ADD_FILTER(

@@ -2,6 +2,7 @@
 
 #include "Interface/RenderPipelineInterface.h"
 #include "Interface/RenderBatchInterface.h"
+#include "Interface/RenderExternalInterface.h"
 
 #include "Kernel/RenderPrimitive.h"
 #include "Kernel/Factory.h"
@@ -31,7 +32,7 @@ namespace Mengine
         mt::box2f bb;
 
         uint32_t flags;
-    };
+    };    
     //////////////////////////////////////////////////////////////////////////
     struct RenderPass
         : public Factorable
@@ -52,7 +53,9 @@ namespace Mengine
         RenderScissorInterfacePtr scissor;
         RenderTargetInterfacePtr target;
 
-        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
+        RenderExternalInterfacePtr external;
+
+        const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];        
 
         uint32_t flags;
     };
@@ -92,6 +95,13 @@ namespace Mengine
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) override;
+
+    public:
+        void addRenderExternal( const RenderContext * _context
+            , const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _programVariable
+            , const RenderExternalInterfacePtr & _external
+            , const DocumentPtr & _doc ) override;
 
     public:
         void addDebugRenderObject( const RenderContext * _context

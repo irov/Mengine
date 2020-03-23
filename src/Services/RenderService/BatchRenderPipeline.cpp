@@ -23,7 +23,8 @@ namespace Mengine
     enum ERenderPassFlag
     {
         RENDER_PASS_FLAG_NONE = 0x00000000,
-        RENDER_PASS_FLAG_SINGLE = 0x00000001
+        RENDER_PASS_FLAG_SINGLE = 0x00000001,
+        RENDER_PASS_FLAG_EXTERNAL = 0x00000002
     };
     //////////////////////////////////////////////////////////////////////////
     BatchRenderPipeline::BatchRenderPipeline()
@@ -386,6 +387,69 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BatchRenderPipeline::addRenderExternal( const RenderContext * _context
+        , const RenderMaterialInterfacePtr & _material
+        , const RenderProgramVariableInterfacePtr & _programVariable
+        , const RenderExternalInterfacePtr & _external
+        , const DocumentPtr & _doc )
+    {
+        MENGINE_UNUSED( _doc );
+
+        MENGINE_ASSERTION_FATAL( _context != nullptr, "context == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, "_context->viewport == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, "_context->camera == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, "_material == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+        MENGINE_ASSERTION_FATAL( _external != nullptr, "_external == nullptr (doc: %s)", MENGINE_DOCUMENT_STR( _doc ) );
+
+        if( m_renderObjects.full() == true )
+        {
+            LOGGER_ERROR( "max render objects %u"
+                , m_renderObjects.size()
+            );
+
+            return;
+        }
+
+#ifdef MENGINE_DEBUG
+        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
+        {
+            if( m_iterateRenderObjects++ >= m_debugLimitRenderObjects && m_debugLimitRenderObjects > 0 && m_debugStopRenderObjects == false )
+            {
+                return;
+            }
+        }
+#endif
+
+        const RenderMaterialStage * materialStage = _material->getStage();
+
+        const RenderProgramInterfacePtr & program = materialStage->program;
+
+        const RenderVertexAttributeInterfacePtr & vertexAttribute = program->getVertexAttribute();
+
+        RenderPass * renderPass = m_poolRenderPass.createT();
+
+        renderPass->batch = nullptr;
+        renderPass->vertexBuffer = nullptr;
+        renderPass->indexBuffer = nullptr;
+        renderPass->vertexAttribute = vertexAttribute;
+        renderPass->beginRenderObject = 0U;
+        renderPass->countRenderObject = 0U;
+
+        renderPass->viewport = _context->viewport;
+        renderPass->camera = _context->camera;
+        renderPass->transformation = _context->transformation;
+        renderPass->scissor = _context->scissor;
+        renderPass->target = _context->target;
+        renderPass->programVariable = _programVariable;
+        renderPass->external = _external;
+
+        renderPass->flags = RENDER_PASS_FLAG_SINGLE;
+
+        renderPass->countRenderObject = 0;
+
+        m_renderPasses.emplace_back( renderPass );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BatchRenderPipeline::addDebugRenderObject( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
@@ -608,14 +672,22 @@ namespace Mengine
             const RenderScissorInterfacePtr & scissor = renderPass->scissor;
             const RenderTargetInterfacePtr & target = renderPass->target;
             const RenderProgramVariableInterfacePtr & programVariable = renderPass->programVariable;
+            const RenderExternalInterfacePtr & external = renderPass->external;
 
             RENDER_SERVICE()
                 ->beginRenderPass( vertexBuffer, indexBuffer, viewport, camera, transformation, scissor, target, programVariable );
 
-            RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
+            if( external == nullptr )
+            {
+                RenderPrimitive * renderPrimitives = m_renderPrimitives.buff();
 
-            RENDER_SERVICE()
-                ->renderPrimitives( renderPrimitives + renderPass->beginRenderObject, renderPass->countRenderObject );
+                RENDER_SERVICE()
+                    ->renderPrimitives( renderPrimitives + renderPass->beginRenderObject, renderPass->countRenderObject );                
+            }
+            else
+            {
+                external->onRenderExternal();
+            }
 
             RENDER_SERVICE()
                 ->endRenderPass( renderPass->target );

@@ -51,8 +51,7 @@
 #include "Kernel/ConstStringHelper.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/UnicodeHelper.h"
-
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 #include "SDLMessageBoxLogger.h"
 

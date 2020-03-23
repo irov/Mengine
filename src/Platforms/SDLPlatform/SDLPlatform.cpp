@@ -33,8 +33,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
-
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 #if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
 #	include "TargetConditionals.h"
@@ -1454,6 +1453,11 @@ namespace Mengine
     void SDLPlatform::abort()
     {
         ::abort();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer SDLPlatform::getPlatformExternal()
+    {
+        return this;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )

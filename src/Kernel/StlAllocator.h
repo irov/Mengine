@@ -2,6 +2,8 @@
 
 #include "Kernel/AllocatorHelper.h"
 
+#include <new>
+
 namespace Mengine
 {
     template <typename T>

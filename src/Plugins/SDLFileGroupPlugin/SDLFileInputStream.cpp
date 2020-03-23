@@ -9,6 +9,7 @@
 #include "SDLFileHelper.h"
 
 #include "stdex/memorycopy.h"
+#include "stdex/thread_guard_scope.h"
 
 #include <algorithm>
 

@@ -19,6 +19,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
+#include "Interface/SDLPlatformInterface.h"
 
 #include "Kernel/FileLogger.h"
 #include "Kernel/Factory.h"
@@ -32,6 +33,7 @@ namespace Mengine
 {
     class SDLPlatform
         : public ServiceBase<PlatformInterface>
+        , public SDLPlatformInterface
     {
     public:
         SDLPlatform();
@@ -147,6 +149,9 @@ namespace Mengine
         bool createProcess( const Char * _process, const Char * _command, bool _wait, uint32_t * _code ) override;
         bool getLocalMachineRegValue( const Char * _path, const Char * _key, Char * _value, size_t _size ) override;
         void abort() override;
+
+    public:
+        UnknownPointer getPlatformExternal() override;
 
     protected:
         void changeWindow_( const Resolution & _resolution, bool _fullscreen );

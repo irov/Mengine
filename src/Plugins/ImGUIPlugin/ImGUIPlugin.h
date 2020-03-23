@@ -23,5 +23,8 @@ namespace Mengine
 
     protected:
         void notifyCreateRenderWindow_();
+
+    protected:
+        uint32_t m_handlerId;
     };
 }

@@ -4,8 +4,8 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/String.h"
 
-#include "Config/String.h"
 #include "Config/Atomic.h"
 
 #include "SDL_thread.h"

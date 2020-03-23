@@ -5,11 +5,11 @@
 #include "OpenGLRenderProgram.h"
 
 #include "Kernel/Factorable.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     struct ProgramVariableDesc
     {
         Char uniform[32];
@@ -18,7 +18,7 @@ namespace Mengine
         uint32_t size;
         uint32_t count;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
@@ -68,4 +68,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OpenGLRenderProgramVariable> OpenGLRenderProgramVariablePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

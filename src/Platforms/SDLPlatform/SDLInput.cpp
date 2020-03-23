@@ -4,8 +4,7 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/InputServiceHelper.h"
-
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

@@ -30,6 +30,8 @@ src
     MemoryInterface.h
     MemoryServiceInterface.h
     PlatformInterface.h
+    Win32PlatformInterface.h
+    SDLPlatformInterface.h
     ImageCodecInterface.h
     PickCodecInterface.h
     SoundCodecInterface.h

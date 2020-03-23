@@ -5,6 +5,7 @@
 #include "Interface/RenderProgramVariableInterface.h"
 #include "Interface/RenderVertexBufferInterface.h"
 #include "Interface/RenderIndexBufferInterface.h"
+#include "Interface/RenderExternalInterface.h"
 
 #include "Kernel/RenderContext.h"
 #include "Kernel/RenderVertex2D.h"
@@ -45,6 +46,13 @@ namespace Mengine
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug, const DocumentPtr & _doc ) = 0;
+
+    public:
+        virtual void addRenderExternal( const RenderContext * _context
+            , const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _programVariable
+            , const RenderExternalInterfacePtr & _external
+            , const DocumentPtr & _doc ) = 0;
 
     public:
         virtual void addDebugRenderObject( const RenderContext * _context

@@ -870,6 +870,11 @@ namespace Mengine
             return result;
         }
 
+        for( const Win32ProcessDesc & desc : m_win32ProcessHandlers )
+        {
+            desc.lambda( hWnd, uMsg, wParam, lParam );
+        }
+
         switch( uMsg )
         {
         case WM_ACTIVATE:
@@ -3133,5 +3138,35 @@ namespace Mengine
         {
             ::SetCursor( NULL );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer Win32Platform::getPlatformExternal()
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda )
+    {
+        uint32_t id = ++m_enumerator;
+
+        Win32ProcessDesc desc;
+        desc.id = id;
+        desc.lambda = _lambda;
+
+        m_win32ProcessHandlers.emplace_back( desc );
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::removeWin32ProcessHandler( uint32_t _id )
+    {
+        VectorWin32ProcessHandler::iterator it_found = std::find_if( m_win32ProcessHandlers.begin(), m_win32ProcessHandlers.end(), [_id]( const Win32ProcessDesc & _desc )
+        {
+            return _desc.id == _id;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_win32ProcessHandlers.end() );
+
+        m_win32ProcessHandlers.erase( it_found );
     }
 }

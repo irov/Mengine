@@ -3,7 +3,6 @@ set(MY_LIB_NAME Kernel)
 ADD_FILTER(
 Containers
     StlAllocator.h
-    StlAllocator.cpp
     Array.h
     ArrayString.h
     DynamicArray.h
@@ -613,6 +612,8 @@ Core
     
     RandomizerHelper.h
     RandomizerHelper.cpp
+    
+    UnknownPointer.h
 )
 
 ADD_FILTER(

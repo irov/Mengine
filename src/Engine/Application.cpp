@@ -721,6 +721,8 @@ namespace Mengine
         PLAYER_SERVICE()
             ->initializeRenderResources();
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_CREATE_RENDER_WINDOW );
+
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
         GAME_SERVICE()

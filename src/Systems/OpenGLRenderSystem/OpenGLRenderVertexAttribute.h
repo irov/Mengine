@@ -5,8 +5,7 @@
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/Factorable.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
 
 namespace Mengine
 {

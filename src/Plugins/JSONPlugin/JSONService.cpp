@@ -28,7 +28,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void my_jpp_free( void * _ptr )
         {
-            Helper::freeMemory( _ptr, "json" );
+            Helper::deallocateMemory( _ptr, "json" );
         }
         //////////////////////////////////////////////////////////////////////////
         static void my_jpp_error( int32_t _line, int32_t _column, int32_t _position, const char * _source, const char * _text, void * _ud )

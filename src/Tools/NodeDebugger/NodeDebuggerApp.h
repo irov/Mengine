@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Config/Vector.h"
-#include "Config/Map.h"
-#include "Config/String.h"
-#include "Config/VectorString.h"
-#include "Config/Deque.h"
-#include "Config/Blobject.h"
+#include "Kernel/Vector.h"
+#include "Kernel/Map.h"
+#include "Kernel/String.h"
+#include "Kernel/VectorString.h"
+#include "Kernel/Deque.h"
+#include "Kernel/Blobject.h"
 
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 

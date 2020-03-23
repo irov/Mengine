@@ -6,7 +6,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "Config/Stringstream.h"
+#include "Kernel/Stringstream.h"
 
 #include <chrono>
 #include <sstream>
@@ -779,7 +779,7 @@ namespace Mengine
 
         return result;
     }
-
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerApp::LoadIconsAtlas()
     {
         pugi::xml_document doc;

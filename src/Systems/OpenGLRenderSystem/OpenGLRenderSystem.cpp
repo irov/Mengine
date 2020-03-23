@@ -706,6 +706,11 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
+    Pointer OpenGLRenderSystem::getRenderDevice() const
+    {
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setDepthBufferTestEnable( bool _depthTest )
     {
         if( _depthTest == true )

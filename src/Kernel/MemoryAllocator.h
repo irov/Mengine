@@ -26,7 +26,7 @@ namespace Mengine
         template<class T>
         void freeT( T * _ptr )
         {
-            Helper::freeMemory( _ptr, Typename<T>::value );
+            Helper::deallocateMemory( _ptr, Typename<T>::value );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
@@ -50,7 +50,7 @@ namespace Mengine
         template<class T>
         void freeArrayT( T * _array )
         {
-            Helper::freeMemory( _array, Typename<T>::value );
+            Helper::deallocateMemory( _array, Typename<T>::value );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class ... Args>

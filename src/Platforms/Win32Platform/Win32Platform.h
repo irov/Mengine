@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PlatformInterface.h"
+#include "Interface/Win32PlatformInterface.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
@@ -14,6 +15,7 @@ namespace Mengine
 {
     class Win32Platform
         : public ServiceBase<PlatformInterface>
+        , public Win32PlatformInterface
     {
     public:
         Win32Platform();
@@ -157,6 +159,13 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
+        UnknownPointer getPlatformExternal() override;
+
+    protected:
+        uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda ) override;
+        void removeWin32ProcessHandler( uint32_t _id ) override;
+
+    protected:
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;
@@ -172,6 +181,15 @@ namespace Mengine
         Win32AntifreezeMonitorPtr m_antifreezeMonitor;
 
         Win32MouseEvent m_mouseEvent;
+
+        struct Win32ProcessDesc
+        {
+            uint32_t id;
+            LambdaWin32ProcessHandler lambda;
+        };
+
+        typedef Vector<Win32ProcessDesc> VectorWin32ProcessHandler;
+        VectorWin32ProcessHandler m_win32ProcessHandlers;
 
         struct TimerDesc
         {

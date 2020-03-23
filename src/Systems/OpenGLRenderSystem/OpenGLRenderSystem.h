@@ -140,6 +140,10 @@ namespace Mengine
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 
+
+    protected:
+        Pointer getRenderDevice() const override;
+
     protected:
         void findFormatFromChannels_( EPixelFormat _format, uint32_t _channels, EPixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 

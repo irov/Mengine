@@ -24,7 +24,7 @@ static void gp_free( void * _ptr, void * _ud )
 {
     MENGINE_UNUSED( _ud );
 
-    return Mengine::Helper::freeMemory( _ptr, "gp" );
+    return Mengine::Helper::deallocateMemory( _ptr, "gp" );
 }
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

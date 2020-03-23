@@ -16,7 +16,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory, MENGINE_DOCUMENTABLE_STR() );
+        Helper::deallocateMemory( m_memory, MENGINE_DOCUMENTABLE_STR() );
 
         m_memory = nullptr;
     }

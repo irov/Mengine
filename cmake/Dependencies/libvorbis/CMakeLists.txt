@@ -30,6 +30,5 @@ ${SOURCE_DIR}/lib/window.c
 
 include_directories(${SOURCE_DIR}/include)
 include_directories(${THIRDPARTY_DIR}/libogg/include)
-include_directories(${THIRDPARTY_DIR}/stdex/include)
 
 add_library( ${PROJECT_NAME} STATIC ${vorbis_sources} )

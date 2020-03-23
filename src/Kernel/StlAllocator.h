@@ -1,17 +1,11 @@
 #pragma once
 
+#include "Kernel/AllocatorHelper.h"
+
 #include <new>
-#include <limits>
-#include <memory>
 
 namespace Mengine
 {
-    namespace Detail
-    {
-        void * stl_allocate( std::size_t _size );
-        void stl_deallocate( void * _ptr );
-    }
-
     template <typename T>
     class StlAllocator
     {
@@ -27,13 +21,13 @@ namespace Mengine
         {
             std::size_t element_size = sizeof( T );
             std::size_t total_size = element_size * n;
-            void * p = Detail::stl_allocate( total_size );
+            void * p = Helper::allocateMemory( total_size, "stl" );
             return static_cast<T *>(p);
         }
 
         void deallocate( T * p, std::size_t )
         {
-            Detail::stl_deallocate( p );
+            Helper::deallocateMemory( p, "stl" );
         }
     };
 

@@ -6,7 +6,7 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "stdex/thread_guard.h"
+#include "stdex/thread_guard_scope.h"
 
 //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE

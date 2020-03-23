@@ -31,21 +31,20 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
-#include "Config/String.h"
-
-#include "Kernel/ConverterFactory.h"
-#include "Kernel/LoggerBase.h"
-
 #include "Image.h"
 
+#include "Kernel/String.h"
+#include "Kernel/ConverterFactory.h"
+#include "Kernel/LoggerBase.h"
 #include "Kernel/Logger.h"
 #include "Kernel/Document.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/UnicodeHelper.h"
 #include "Kernel/FileStreamHelper.h"
-
-#include "Config/Vector.h"
+#include "Kernel/Vector.h"
+#include "Kernel/MemoryAllocator.h"
+#include "Kernel/AllocatorHelper.h"
 
 #include "ToolUtils/ToolLogger.h"
 
@@ -69,6 +68,7 @@ PLUGIN_EXPORT( DevelopmentConverter );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
@@ -161,6 +161,7 @@ namespace Mengine
 
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
+        SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
         SERVICE_CREATE( NotificationService, MENGINE_DOCUMENT_FUNCTION );
         SERVICE_CREATE( OptionsService, MENGINE_DOCUMENT_FUNCTION );
@@ -801,48 +802,38 @@ public:
     }
 };
 //////////////////////////////////////////////////////////////////////////
-static void* my_stdex_malloc( void *ctx, size_t size )
+namespace Detail
 {
-    (void)ctx;
-    if( size == 0 )
-        size = 1;
-
-    return stdex_malloc( size, "python3" );
-}
-//////////////////////////////////////////////////////////////////////////
-static void* my_stdex_calloc( void *ctx, size_t nelem, size_t elsize )
-{
-    (void)ctx;
-    if( nelem == 0 || elsize == 0 )
+    class MyAllocator
+        : public pybind::allocator_interface
     {
-        nelem = 1;
-        elsize = 1;
-    }
+    protected:
+        void * malloc( size_t _size ) override
+        {
+            void * p = Mengine::Helper::allocateMemory( _size, "python" );
 
-    return stdex_calloc( nelem, elsize, "python3" );
-}
-//////////////////////////////////////////////////////////////////////////
-static void* my_stdex_realloc( void *ctx, void *ptr, size_t new_size )
-{
-    (void)ctx;
-    if( new_size == 0 )
-        new_size = 1;
+            return p;
+        }
 
-    void* ptr2 = stdex_realloc( ptr, new_size, "python3" );
+        void * calloc( size_t _num, size_t _size ) override
+        {
+            void * p = Mengine::Helper::callocateMemory( _num, _size, "python" );
 
-    if( ptr2 == nullptr )
-    {
-        return nullptr;
-    }
+            return p;
+        }
 
-    return ptr2;
-}
-//////////////////////////////////////////////////////////////////////////
-static void my_stdex_free( void *ctx, void *ptr )
-{
-    (void)ctx;
+        void * realloc( void * _ptr, size_t _size ) override
+        {
+            void * p = Mengine::Helper::reallocateMemory( _ptr, _size, "python" );
 
-    stdex_free( ptr, "python3" );
+            return p;
+        }
+
+        void free( void * _ptr ) override
+        {
+            Mengine::Helper::deallocateMemory( _ptr, "python" );
+        }
+    };
 }
 //////////////////////////////////////////////////////////////////////////
 bool run()
@@ -958,19 +949,9 @@ bool run()
         , szPythonPath
     );
 
-    pybind::kernel_allocator_t stdex_alloc;
-    stdex_alloc.ctx = nullptr;
-    stdex_alloc.malloc = &my_stdex_malloc;
-    stdex_alloc.calloc = &my_stdex_calloc;
-    stdex_alloc.realloc = &my_stdex_realloc;
-    stdex_alloc.free = &my_stdex_free;
+    pybind::allocator_interface * allocator = Mengine::Helper::newT<Detail::MyAllocator>();
 
-    pybind::kernel_domain_allocator_t da;
-    da.raw = &stdex_alloc;
-    da.mem = &stdex_alloc;
-    da.obj = &stdex_alloc;
-
-    pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, MENGINE_DEBUG_ATTRIBUTE( true, false ), true, false );
+    pybind::kernel_interface * kernel = pybind::initialize( allocator, szPythonPath, MENGINE_DEBUG_ATTRIBUTE( true, false ), true, false );
 
     if( kernel == nullptr )
     {
@@ -981,8 +962,8 @@ bool run()
 
     PyObject * py_tools_module = kernel->module_init( "ToolsBuilderPlugin" );
 
-    pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>());
-    pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>());
+    pybind::registration_type_cast<Mengine::String>(kernel, pybind::make_type_cast<extract_String_type>(kernel));
+    pybind::registration_type_cast<Mengine::WString>(kernel, pybind::make_type_cast<extract_WString_type>(kernel));
 
     pybind::registration_stl_vector_type_cast<Mengine::String, Mengine::Vector<Mengine::String>>(kernel);
     pybind::registration_stl_vector_type_cast<Mengine::WString, Mengine::Vector<Mengine::WString>>(kernel);
@@ -1024,8 +1005,7 @@ bool run()
     kernel->incref( py_tools_module );
     kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
-    Mengine::WChar currentDirectory[MAX_PATH];
-
+    Mengine::WChar currentDirectory[MAX_PATH] = {0};
     if( ::GetCurrentDirectory( MAX_PATH, currentDirectory ) == 0 )
     {
         return false;
@@ -1124,6 +1104,8 @@ bool run()
     {
         return false;
     }
+
+    Mengine::Helper::deleteT( allocator );
 
     return result;
 }

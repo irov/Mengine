@@ -18,6 +18,10 @@
 #define MENGINE_STRCPY(a, b) ::strcpy(a, b)
 #endif
 
+#ifndef MENGINE_STRCAT
+#define MENGINE_STRCAT(a, b) ::strcat(a, b)
+#endif
+
 #ifndef MENGINE_STRNCMP
 #define MENGINE_STRNCMP(a, b, n) ::strncmp(a, b, n)
 #endif

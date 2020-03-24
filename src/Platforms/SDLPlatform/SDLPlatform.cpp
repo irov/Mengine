@@ -12,7 +12,7 @@
 #include "Interface/LoggerServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#	include "Environment/Windows/WindowsIncluder.h"
+#   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -35,8 +35,10 @@
 #include "Kernel/Document.h"
 #include "Kernel/Stringstream.h"
 
+#include "Config/StdString.h"
+
 #if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
-#	include "TargetConditionals.h"
+#   include "TargetConditionals.h"
 #endif
 
 #include <cstdio>
@@ -655,12 +657,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setProjectTitle( const Char * _projectTitle )
     {
-        ::strcpy( m_projectTitle, _projectTitle );
+        if( _projectTitle == nullptr )
+        {
+            m_projectTitle[0] = '\0';
+
+            return;
+        }
+
+        MENGINE_STRCPY( m_projectTitle, _projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::getProjectTitle( Char * _projectTitle ) const
     {
-        ::strcpy( _projectTitle, m_projectTitle );
+        MENGINE_STRCPY( _projectTitle, m_projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
@@ -1129,8 +1138,8 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathCorrect, _path );
 
         Char fullPath[MENGINE_MAX_PATH];
-        ::strcpy( fullPath, userPath );
-        ::strcat( fullPath, pathCorrect );
+        MENGINE_STRCPY( fullPath, userPath );
+        MENGINE_STRCAT( fullPath, pathCorrect );
 
         struct stat sb;
         if( stat( fullPath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )

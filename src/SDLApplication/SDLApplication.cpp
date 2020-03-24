@@ -72,6 +72,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( AllocatorService );
 SERVICE_EXTERN( DocumentService );
 SERVICE_EXTERN( Bootstrapper );
 //////////////////////////////////////////////////////////////////////////
@@ -79,16 +80,6 @@ PLUGIN_EXPORT( SDLFileGroup );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->lock();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
-    {
-        _mutex->unlock();
-    }
     //////////////////////////////////////////////////////////////////////////
     SDLApplication::SDLApplication()
         : m_serviceProvider( nullptr )
@@ -153,42 +144,6 @@ namespace Mengine
             return false;
         }
 #endif
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initializeConfigService_()
-    {
-        LOGGER_WARNING( "Inititalizing Config Service..." );
-
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-            ->getDefaultFileGroup();
-
-        for( const FilePath & filePath : m_configPaths )
-        {
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "invalid load config '%s'"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
-        }
-
-        for( const FilePath & filePath : m_credentialsPaths )
-        {
-            if( CONFIG_SERVICE()
-                ->loadDefaultConfig( fileGroup, filePath, MENGINE_DOCUMENT_FUNCTION ) == false )
-            {
-                LOGGER_ERROR( "invalid load credential '%s'"
-                    , filePath.c_str()
-                );
-
-                return false;
-            }
-        }        
 
         return true;
     }
@@ -287,7 +242,7 @@ namespace Mengine
         }
         else
         {
-            m_fileLog = fileLog;
+            m_loggerFile = fileLog;
 
             LOGGER_INFO( "starting log to '%s'"
                 , logFilename.c_str()
@@ -344,10 +299,10 @@ namespace Mengine
 
         m_serviceProvider = serviceProvider;
 
+        SERVICE_CREATE( AllocatorService, nullptr );
         SERVICE_CREATE( DocumentService, nullptr );
 
-        SERVICE_PROVIDER_GET()
-            ->waitService( OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
+        SERVICE_PROVIDER_GET()->waitService( OptionsServiceInterface::getStaticServiceID(), [this, _argc, _argv]()
         {
             if( this->initializeOptionsService_( _argc, _argv ) == false )
             {
@@ -388,19 +343,6 @@ namespace Mengine
             {
                 return false;
             }
-
-            return true;
-        } );
-
-        SERVICE_WAIT( ThreadServiceInterface, [this]()
-        {
-            m_mutexAllocatorPool = THREAD_SERVICE()
-                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
-
-            stdex_allocator_initialize_threadsafe( m_mutexAllocatorPool.get()
-                , (stdex_allocator_thread_lock_t)& s_stdex_thread_lock
-                , (stdex_allocator_thread_unlock_t)& s_stdex_thread_unlock
-            );
 
             return true;
         } );
@@ -483,12 +425,12 @@ namespace Mengine
     {
         SERVICE_LEAVE( FileServiceInterface, [this]()
         {
-            if( m_fileLog != nullptr )
+            if( m_loggerFile != nullptr )
             {
                 LOGGER_SERVICE()
-                    ->unregisterLogger( m_fileLog );
+                    ->unregisterLogger( m_loggerFile );
 
-                m_fileLog = nullptr;
+                m_loggerFile = nullptr;
             }
         } );
 
@@ -511,13 +453,6 @@ namespace Mengine
             }
         } );
 
-        SERVICE_LEAVE( ThreadServiceInterface, [this]()
-        {
-            stdex_allocator_finalize_threadsafe();
-
-            m_mutexAllocatorPool = nullptr;
-        } );
-
         BOOTSTRAPPER_SERVICE()
             ->stop();
 
@@ -526,6 +461,9 @@ namespace Mengine
 
         SERVICE_FINALIZE( DocumentService );
         SERVICE_DESTROY( DocumentService );
+
+        SERVICE_FINALIZE( AllocatorService );
+        SERVICE_DESTROY( AllocatorService );
 
         SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }

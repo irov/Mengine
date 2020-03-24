@@ -40,7 +40,6 @@ namespace Mengine
     protected:
         bool initializeOptionsService_( int32_t argc, Char ** _argv );
         bool initializeFileService_();
-        bool initializeConfigService_();
         bool initializeUserDirectory_();
         bool initializeLoggerFile_();
         bool initializeLoggerService_();
@@ -48,19 +47,13 @@ namespace Mengine
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        ThreadMutexInterfacePtr m_mutexAllocatorPool;
-
         LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_loggerStdio;
-        LoggerInterfacePtr m_fileLog;
+        LoggerInterfacePtr m_loggerFile;
 
         bool m_running;
         bool m_active;
 
         bool m_developmentMode;
-
-        VectorFilePath m_configPaths;
-        VectorFilePath m_credentialsPaths;
-        VectorFilePath m_packagesPaths;
     };
 }

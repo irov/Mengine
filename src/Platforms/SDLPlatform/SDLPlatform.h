@@ -194,7 +194,7 @@ namespace Mengine
         SDLInputPtr m_sdlInput;
 
         uint32_t m_icon;
-        Char m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME];
+        Char m_projectTitle[MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME] = {'\0'};
 
         uint64_t m_prevTime;
 

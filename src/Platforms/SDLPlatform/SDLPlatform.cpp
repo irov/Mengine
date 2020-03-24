@@ -72,6 +72,7 @@ namespace Mengine
         , m_shouldQuit( false )
         , m_running( false )
         , m_pause( false )
+        , m_desktop( false )
         , m_touchpad( false )
     {
     }
@@ -252,7 +253,7 @@ namespace Mengine
             ->logMessage( level, 0, LCOLOR_NONE, _message, messageLen );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
+    static int s_RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
     {
         MENGINE_UNUSED( userdata );
 
@@ -279,30 +280,40 @@ namespace Mengine
 
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
+            m_desktop = true;
             m_touchpad = false;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
         }
         else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
         {
+            m_desktop = true;
             m_touchpad = false;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( strcmp( sdlPlatform, "Android" ) == 0 )
         {
+            m_desktop = false;
             m_touchpad = true;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-            SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
+            SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
         else if( strcmp( sdlPlatform, "iOS" ) == 0 )
         {
+            m_desktop = false;
             m_touchpad = true;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-            SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
+            SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
 
         if( HAS_OPTION( "touchpad" ) == true )
         {
             m_touchpad = true;
+        }
+
+        if( HAS_OPTION( "desktop" ) == true )
+        {
+            m_desktop = true;
         }
 
         SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
@@ -474,9 +485,10 @@ namespace Mengine
         {
             if( SDL_JoystickGetAttached( m_accelerometer ) )
             {
-                SDL_JoystickClose( m_accelerometer );
-                m_accelerometer = nullptr;
+                SDL_JoystickClose( m_accelerometer );                
             }
+
+            m_accelerometer = nullptr;
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
@@ -709,6 +721,11 @@ namespace Mengine
     const Tags & SDLPlatform::getPlatformTags() const
     {
         return m_platformTags;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::isDesktop() const
+    {
+        return m_desktop;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasTouchpad() const

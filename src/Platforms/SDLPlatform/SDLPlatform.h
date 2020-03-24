@@ -72,6 +72,7 @@ namespace Mengine
         const Tags & getPlatformTags() const override;
 
     public:
+        bool isDesktop() const override;
         bool hasTouchpad() const override;
 
     public:
@@ -201,6 +202,7 @@ namespace Mengine
         bool m_running;
         bool m_pause;
 
+        bool m_desktop;
         bool m_touchpad;
     };
 }

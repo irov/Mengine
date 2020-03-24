@@ -39,4 +39,3 @@ int APIENTRY WinMain( _In_ HINSTANCE hInstance, _In_ HINSTANCE hPrevInstance, _I
 
     return EXIT_SUCCESS;
 }
-//////////////////////////////////////////////////////////////////////////

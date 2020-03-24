@@ -58,6 +58,7 @@ namespace Mengine
         virtual bool hasPlatformTag( const ConstString & _tag ) const = 0;
 
     public:
+        virtual bool isDesktop() const = 0;
         virtual bool hasTouchpad() const = 0;
 
     public:

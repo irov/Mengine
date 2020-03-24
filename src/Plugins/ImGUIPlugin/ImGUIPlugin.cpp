@@ -5,6 +5,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/Win32PlatformInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #include "ImGUIRender.h"
 
@@ -24,6 +25,24 @@ PLUGIN_FACTORY( ImGUI, Mengine::ImGUIPlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static void * ImGUIPlugin_alloc_func( size_t sz, void * user_data )
+    {
+        MENGINE_UNUSED( user_data );
+
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( sz, "imgui" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////    
+    static void ImGUIPlugin_free_func( void * ptr, void * user_data )
+    {
+        MENGINE_UNUSED( user_data );
+
+        ALLOCATOR_SERVICE()
+            ->free( ptr, "imgui" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     ImGUIPlugin::ImGUIPlugin()
         : m_handlerId( 0 )
     {
@@ -40,6 +59,8 @@ namespace Mengine
         {
             return false;
         }
+
+        ImGui::SetAllocatorFunctions( &ImGUIPlugin_alloc_func, &ImGUIPlugin_free_func, nullptr );
 
         ImGui::CreateContext();
 

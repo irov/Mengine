@@ -117,12 +117,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DDEVICE9 DX9RenderImage::getDirect3dDevice9() const
+    LPDIRECT3DDEVICE9 DX9RenderImage::getD3DDevice() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderImage::getDirect3dTexture9() const
+    LPDIRECT3DTEXTURE9 DX9RenderImage::getD3DTexture() const
     {
         return m_pD3DTexture;
     }
@@ -182,5 +182,10 @@ namespace Mengine
         //Empty
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer DX9RenderImage::getRenderImageExtention()
+    {
+        return this;
     }
 }

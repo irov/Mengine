@@ -2,7 +2,6 @@ set(MY_LIB_NAME OpenGLRenderSystem)
 
 ADD_FILTER(
 src
-    OpenGLRenderHeader.h
     OpenGLRenderExtension.cpp
     OpenGLRenderExtension.h
     OpenGLRenderSystem.cpp

@@ -2,6 +2,7 @@
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/ConstStringHelper.h"
 
@@ -22,7 +23,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PluginService::PluginService()
-        : m_enumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ namespace Mengine
             return false;
         }
 
-        uint32_t id = ++m_enumerator;
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 

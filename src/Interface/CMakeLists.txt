@@ -101,8 +101,6 @@ src
     EventReceiverInterface.h
     UnknownInterface.h
     UnknownNodeInterface.h
-    RenderProgramVariableInterface.h
-    RenderServiceInterface.h
     HierarchyInterface.h
     RenderInterface.h
     UpdateServiceInterface.h
@@ -159,7 +157,9 @@ ADD_FILTER(
 Render     
     MaterialEnumInterface.h
     RenderEnumInterface.h
+    RenderServiceInterface.h
     RenderSystemInterface.h
+    RenderProgramVariableInterface.h
     RenderImageInterface.h
     RenderTextureInterface.h
     RenderViewportInterface.h
@@ -177,7 +177,7 @@ Render
     RenderVertexAttributeInterface.h
     RenderMaterialInterface.h
     RenderBatchInterface.h
-    RenderPipelineInterface.h    
+    RenderPipelineInterface.h
 )
 
 ADD_FILTER(

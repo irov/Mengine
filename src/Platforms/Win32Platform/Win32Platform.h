@@ -206,8 +206,6 @@ namespace Mengine
 #endif
         };
 
-        uint32_t m_enumerator;
-
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;
 

@@ -6,6 +6,8 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "BatchRenderPipeline.h"
 
@@ -424,6 +426,8 @@ namespace Mengine
             m_renderSystem->clearFrameBuffer( frameBufferTypes, argb, 1.f, 0x00000000 );
         }
 
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_BEGIN, _renderPipeline );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -432,6 +436,8 @@ namespace Mengine
         _renderPipeline->flush();
 
         this->flushRender_( _renderPipeline );
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_SCENE_END, _renderPipeline );
 
         m_renderSystem->endScene();
 

@@ -1,7 +1,5 @@
 #include "EngineScriptEmbedding.h"
 
-#include "Config/Lambda.h"
-
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -141,6 +139,9 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+
+#include "Config/StdString.h"
+#include "Config/Lambda.h"
 
 #include "pybind/stl/stl_type_cast.hpp"
 #include "stdex/xml_sax_parser.h"
@@ -1808,7 +1809,7 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
 
-            strcat( projectName, "/" );
+            MENGINE_STRCAT( projectName, "/" );
 
             if( PLATFORM_SERVICE()
                 ->updateDesktopWallpaper( projectName, _filePath.c_str() ) == false )
@@ -1835,7 +1836,7 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
 
-            strcat( projectName, "/" );
+            MENGINE_STRCAT( projectName, "/" );
 
             if( PLATFORM_SERVICE()
                 ->createDirectoryUserPicture( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )
@@ -1862,7 +1863,7 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
 
-            strcat( projectName, "/" );
+            MENGINE_STRCAT( projectName, "/" );
 
             if( PLATFORM_SERVICE()
                 ->createDirectoryUserMusic( projectName, _filePath.c_str(), memory->getBuffer(), memory->getSize() ) == false )

@@ -4,6 +4,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsServiceInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
@@ -362,8 +363,10 @@ namespace Mengine
 
         m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-        HWND windowHandle = PLATFORM_SERVICE()
-            ->getWindowHandle();
+        Win32PlatformExtensionInterface * extension = PLATFORM_SERVICE()
+            ->getPlatformExtention();
+
+        HWND windowHandle = extension->getWindowHandle();
 
         m_d3dppW.hDeviceWindow = windowHandle;
 

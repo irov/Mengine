@@ -1,18 +1,18 @@
 #pragma once
 
+#include "Interface/RenderImageLoaderInterface.h"
+
 #include "Kernel/Mixin.h"
-#include "Kernel/IntrusivePtr.h"
-#include "Kernel/String.h"
 
 namespace Mengine
 {
-    class FacebookInitializationCallback
+    class RenderImageProviderInterface
         : public Mixin
     {
     public:
-        virtual void onSDKInitialized() = 0;
+        virtual RenderImageLoaderInterfacePtr getLoader() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FacebookInitializationCallback> FacebookInitializationCallbackPtr;
+    typedef IntrusivePtr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/UnknownInterface.h"
+
 #include "Config/Typedef.h"
 #include "Config/Lambda.h"
 
@@ -7,9 +9,12 @@
 
 namespace Mengine
 {
-    class Win32PlatformInterface
+    class Win32PlatformExtensionInterface
         : public UnknownInterface
     {
+    public:
+        virtual HWND getWindowHandle() const = 0;
+
     public:
         typedef Lambda<LRESULT( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )> LambdaWin32ProcessHandler;
         virtual uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda ) = 0;

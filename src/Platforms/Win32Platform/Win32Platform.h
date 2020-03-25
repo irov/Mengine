@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/PlatformInterface.h"
-#include "Interface/Win32PlatformInterface.h"
+#include "Interface/Win32PlatformExtensionInterface.h"
 
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
@@ -15,7 +15,7 @@ namespace Mengine
 {
     class Win32Platform
         : public ServiceBase<PlatformInterface>
-        , public Win32PlatformInterface
+        , public Win32PlatformExtensionInterface
     {
     public:
         Win32Platform();
@@ -46,8 +46,7 @@ namespace Mengine
         void getProjectTitle( Char * _projectTitle ) const override;
 
     public:
-        bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
-        Pointer getWindowHandle() const override;
+        bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;        
 
     protected:
         ATOM registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
@@ -57,6 +56,9 @@ namespace Mengine
     public:
         const Tags & getPlatformTags() const override;
         bool hasPlatformTag( const ConstString & _tag ) const override;
+
+    public:
+        bool isDesktop() const override;
         bool hasTouchpad() const override;
 
     public:
@@ -159,7 +161,10 @@ namespace Mengine
         void setActive_( bool _active );
 
     protected:
-        UnknownPointer getPlatformExternal() override;
+        UnknownPointer getPlatformExtention() override;
+
+    protected:
+        HWND getWindowHandle() const override;
 
     protected:
         uint32_t addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda ) override;
@@ -203,8 +208,6 @@ namespace Mengine
 #endif
         };
 
-        uint32_t m_enumerator;
-
         typedef Vector<TimerDesc> VectorTimers;
         VectorTimers m_timers;
 
@@ -243,5 +246,6 @@ namespace Mengine
 
         bool m_isDoubleClick;
         bool m_touchpad;
+        bool m_desktop;
     };
 }

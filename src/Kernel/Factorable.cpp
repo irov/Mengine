@@ -47,6 +47,15 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Factorable::getImmortal() const
+    {
+#ifdef MENGINE_FACTORABLE_DEBUG
+        return m_immortal;
+#else
+        return false;
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
     uint32_t Factorable::incref()
     {
         ++m_reference;

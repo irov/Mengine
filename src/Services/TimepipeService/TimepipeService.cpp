@@ -1,5 +1,7 @@
 #include "TimepipeService.h"
 
+#include "Interface/EnumeratorServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 #include <algorithm>
@@ -11,7 +13,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TimepipeService::TimepipeService()
-        : m_enumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TimepipeService::addTimepipe( const TimepipeInterfacePtr & _timepipe, const DocumentPtr & _doc )
     {
-        uint32_t newid = ++m_enumerator;
+        uint32_t newid = GENERATE_UNIQUE_IDENTITY();
 
         TimepipeDesc desc;
         desc.id = newid;

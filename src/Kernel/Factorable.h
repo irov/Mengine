@@ -14,8 +14,6 @@
 #include "Kernel/Documentable.h"
 #endif
 
-//typedef IntrusivePtr<Type> TypePtr;
-
 namespace Mengine
 {
     class Factory;
@@ -37,6 +35,7 @@ namespace Mengine
 
     public:
         void setImmortal( bool _value );
+        bool getImmortal() const;
 
     protected:
         uint32_t incref() override;

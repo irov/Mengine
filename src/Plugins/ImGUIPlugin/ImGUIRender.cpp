@@ -49,8 +49,12 @@ namespace Mengine
     {
         ImGui_ImplDX9_NewFrame();
         ImGui_ImplWin32_NewFrame();
-        
+
+        ImGui::NewFrame();
+
         m_provider();
+
+        ImGui::EndFrame();
 
         ImGui::Render();
         ImGui_ImplDX9_RenderDrawData( ImGui::GetDrawData() );

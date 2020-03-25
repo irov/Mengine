@@ -6,6 +6,7 @@
 #include "Interface/Win32PlatformInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/AllocatorServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 #include "ImGUIRender.h"
 
@@ -114,4 +115,5 @@ namespace Mengine
         ImGui_ImplDX9_Init( d3dDevice );
         ImGui_ImplDX9_CreateDeviceObjects();
     }
+    //////////////////////////////////////////////////////////////////////////
 }

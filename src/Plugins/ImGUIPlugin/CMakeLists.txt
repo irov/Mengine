@@ -18,6 +18,16 @@ if(MENGINE_PLATFORM_WIN32)
     )
 endif()
 
+if(MENGINE_PLATFORM_SDL)
+    ADD_FILTER(
+    imgui_platform_ext
+        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_sdl.h
+        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_sdl.cpp
+    )
+
+    INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/SDL2/include)
+endif()
+
 if(MENGINE_RENDER_DIRECTX)
     ADD_FILTER(
     imgui_render_ext
@@ -26,10 +36,18 @@ if(MENGINE_RENDER_DIRECTX)
     )
 endif()
 
+if(MENGINE_RENDER_OPENGL)
+    ADD_FILTER(
+    imgui_render_ext
+        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_opengl2.h
+        ${THIRDPARTY_DIR}/imgui/examples/imgui_impl_opengl2.cpp
+    )
+endif()
+
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui)
 INCLUDE_DIRECTORIES(${THIRDPARTY_DIR}/imgui/examples)
 
-ADD_MENGINE_LIBRARY(Plugins)
+ADD_MENGINE_PLUGIN(MENGINE_PLUGIN_IMGUI)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}imgui${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

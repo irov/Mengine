@@ -30,8 +30,8 @@ src
     MemoryInterface.h
     MemoryServiceInterface.h
     PlatformInterface.h
-    Win32PlatformInterface.h
-    SDLPlatformInterface.h
+    Win32PlatformExtensionInterface.h
+    SDLPlatformExtensionInterface
     ImageCodecInterface.h
     PickCodecInterface.h
     SoundCodecInterface.h
@@ -161,6 +161,10 @@ Render
     RenderSystemInterface.h
     RenderProgramVariableInterface.h
     RenderImageInterface.h
+    RenderImageLoaderInterface.h
+    RenderImageProviderInterface.h
+    DX9RenderImageExtensionInterface.h
+    OpenGLRenderImageExtensionInterface.h
     RenderTextureInterface.h
     RenderViewportInterface.h
     RenderCameraInterface.h

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/RenderImageInterface.h"
+#include "Interface/DX9RenderImageExtensionInterface.h"
 
 #include "DX9RenderResourceHandler.h"
 
@@ -14,6 +15,7 @@ namespace Mengine
 
     class DX9RenderImageTarget
         : public RenderImageInterface
+        , public DX9RenderImageExtensionInterface
         , public Factorable
     {
     public:
@@ -30,10 +32,6 @@ namespace Mengine
     protected:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
-
-    public:
-        LPDIRECT3DDEVICE9 getDirect3dDevice9() const;
-        LPDIRECT3DTEXTURE9 getDirect3dTexture9() const;
 
     public:
         ERenderImageMode getMode() const override;
@@ -54,6 +52,13 @@ namespace Mengine
     public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
         bool unlock( uint32_t _level, bool _successful ) override;
+
+    public:
+        UnknownPointer getRenderImageExtention() override;
+
+    public:
+        LPDIRECT3DDEVICE9 getD3DDevice() const override;
+        LPDIRECT3DTEXTURE9 getD3DTexture() const override;
 
     protected:
         DX9RenderTargetTexturePtr m_target;

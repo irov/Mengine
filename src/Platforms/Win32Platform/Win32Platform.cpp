@@ -1562,7 +1562,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer Win32Platform::getWindowHandle() const
+    HWND Win32Platform::getWindowHandle() const
     {
         return m_hWnd;
     }
@@ -3158,7 +3158,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer Win32Platform::getPlatformExternal()
+    UnknownPointer Win32Platform::getPlatformExtention()
     {
         return this;
     }

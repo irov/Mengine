@@ -2,26 +2,34 @@
 
 #include "Interface/RenderMaterialServiceInterface.h"
 
-#ifdef MENGINE_ENVIRONMENT_PLATFORM_SDL
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
 #include "Interface/PlatformInterface.h"
 #include "Interface/SDLPlatformExtensionInterface.h"
 #endif
 
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+#include "Interface/DX9RenderImageExtensionInterface.h"
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+#include "Interface/OpenGLRenderImageExtensionInterface.h"
+#endif
+
 #include "imgui.h"
 
-#ifdef MENGINE_ENVIRONMENT_PLATFORM_WIN32
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
 #include "imgui_impl_win32.h"
 #endif
 
-#ifdef MENGINE_ENVIRONMENT_PLATFORM_SDL
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_SDL)
 #include "imgui_impl_sdl.h"
 #endif
 
-#ifdef MENGINE_ENVIRONMENT_RENDER_DIRECTX
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
 #include "imgui_impl_dx9.h"
 #endif
 
-#ifdef MENGINE_ENVIRONMENT_RENDER_OPENGL
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
 #include "imgui_impl_opengl2.h"
 #endif
 
@@ -89,7 +97,7 @@ namespace Mengine
 
         ImGui::NewFrame();
 
-        m_provider();
+        m_provider( ImGUIRenderProviderInterfacePtr::from( this ) );
 
         ImGui::EndFrame();
 
@@ -103,6 +111,27 @@ namespace Mengine
 
 #if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
         ImGui_ImplOpenGL2_RenderDrawData( imData );
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ImTextureID ImGUIRender::getImTexture( const RenderTextureInterfacePtr & _texture ) const
+    {
+        const RenderImageInterfacePtr & image = _texture->getImage();
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+        DX9RenderImageExtensionInterface * extension = image->getRenderImageExtention();
+
+        LPDIRECT3DTEXTURE9 pD3DTexture = extension->getD3DTexture();
+
+        return (ImTextureID)pD3DTexture;
+#endif
+
+#if defined(MENGINE_ENVIRONMENT_RENDER_OPENGL)
+        OpenGLRenderImageExtensionInterface * extension = image->getRenderImageExtention();
+
+        LPDIRECT3DTEXTURE9 pD3DTexture = extension->getD3DTexture();
+
+        return (ImTextureID)pD3DTexture;
 #endif
     }
 }

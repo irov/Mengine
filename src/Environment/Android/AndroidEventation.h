@@ -2,8 +2,9 @@
 
 #include "Interface/ThreadMutexInterface.h"
 
+#include "Kernel/Vector.h"
+
 #include "Config/Lambda.h"
-#include "Config/Vector.h"
 
 namespace Mengine
 {

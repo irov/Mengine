@@ -51,13 +51,13 @@ namespace Mengine
 
     public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
-        virtual Pointer getWindowHandle() const = 0;
 
     public:
         virtual const Tags & getPlatformTags() const = 0;
         virtual bool hasPlatformTag( const ConstString & _tag ) const = 0;
 
     public:
+        virtual bool isDesktop() const = 0;
         virtual bool hasTouchpad() const = 0;
 
     public:
@@ -145,7 +145,7 @@ namespace Mengine
         virtual void abort() = 0;
 
     public:
-        virtual UnknownPointer getPlatformExternal() = 0;
+        virtual UnknownPointer getPlatformExtention() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

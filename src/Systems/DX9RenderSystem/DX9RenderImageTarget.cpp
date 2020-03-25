@@ -70,14 +70,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DDEVICE9 DX9RenderImageTarget::getDirect3dDevice9() const
+    LPDIRECT3DDEVICE9 DX9RenderImageTarget::getD3DDevice() const
     {
         LPDIRECT3DDEVICE9 pD3DDevice = m_target->getDirect3dDevice9();
 
         return pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderImageTarget::getDirect3dTexture9() const
+    LPDIRECT3DTEXTURE9 DX9RenderImageTarget::getD3DTexture() const
     {
         LPDIRECT3DTEXTURE9 pD3DTexture = m_target->getDirect3dTexture9();
 
@@ -141,5 +141,10 @@ namespace Mengine
     uint32_t DX9RenderImageTarget::getHWMipmaps() const
     {
         return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    UnknownPointer DX9RenderImageTarget::getRenderImageExtention()
+    {
+        return this;
     }
 }

@@ -3,7 +3,7 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
-#include "Config/String.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

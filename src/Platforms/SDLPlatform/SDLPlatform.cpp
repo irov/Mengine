@@ -10,9 +10,10 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsServiceInterface.h"
 #include "Interface/LoggerServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #if defined(MENGINE_PLATFORM_WINDOWS)
-#	include "Environment/Windows/WindowsIncluder.h"
+#   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
 #include "SDLDynamicLibrary.h"
@@ -35,8 +36,10 @@
 #include "Kernel/Document.h"
 #include "Kernel/Stringstream.h"
 
+#include "Config/StdString.h"
+
 #if defined(MENGINE_PLATFORM_OSX) || defined(MENGINE_PLATFORM_IOS)
-#	include "TargetConditionals.h"
+#   include "TargetConditionals.h"
 #endif
 
 #include <cstdio>
@@ -72,6 +75,7 @@ namespace Mengine
         , m_shouldQuit( false )
         , m_running( false )
         , m_pause( false )
+        , m_desktop( false )
         , m_touchpad( false )
     {
     }
@@ -252,7 +256,7 @@ namespace Mengine
             ->logMessage( level, 0, LCOLOR_NONE, _message, messageLen );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
+    static int s_RemoveMouse_EventFilter( void * userdata, SDL_Event * event )
     {
         MENGINE_UNUSED( userdata );
 
@@ -279,30 +283,40 @@ namespace Mengine
 
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
+            m_desktop = true;
             m_touchpad = false;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "PC" ) );
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
         }
         else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
         {
+            m_desktop = true;
             m_touchpad = false;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
         }
         else if( strcmp( sdlPlatform, "Android" ) == 0 )
         {
+            m_desktop = false;
             m_touchpad = true;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
-            SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
+            SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
         else if( strcmp( sdlPlatform, "iOS" ) == 0 )
         {
+            m_desktop = false;
             m_touchpad = true;
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
-            SDL_SetEventFilter( RemoveMouse_EventFilter, nullptr );
+            SDL_SetEventFilter( &s_RemoveMouse_EventFilter, nullptr );
         }
 
         if( HAS_OPTION( "touchpad" ) == true )
         {
             m_touchpad = true;
+        }
+
+        if( HAS_OPTION( "desktop" ) == true )
+        {
+            m_desktop = true;
         }
 
         SDL_LogSetOutputFunction( &MySDL_LogOutputFunction, nullptr );
@@ -474,9 +488,10 @@ namespace Mengine
         {
             if( SDL_JoystickGetAttached( m_accelerometer ) )
             {
-                SDL_JoystickClose( m_accelerometer );
-                m_accelerometer = nullptr;
+                SDL_JoystickClose( m_accelerometer );                
             }
+
+            m_accelerometer = nullptr;
         }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
@@ -643,12 +658,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::setProjectTitle( const Char * _projectTitle )
     {
-        ::strcpy( m_projectTitle, _projectTitle );
+        if( _projectTitle == nullptr )
+        {
+            m_projectTitle[0] = '\0';
+
+            return;
+        }
+
+        MENGINE_STRCPY( m_projectTitle, _projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::getProjectTitle( Char * _projectTitle ) const
     {
-        ::strcpy( _projectTitle, m_projectTitle );
+        MENGINE_STRCPY( _projectTitle, m_projectTitle );
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow( const Resolution & _resolution, bool _fullscreen )
@@ -664,15 +686,17 @@ namespace Mengine
             return false;
         }
 
-        m_glContext = SDL_GL_CreateContext( m_window );
+        SDL_GLContext glContext = SDL_GL_CreateContext( m_window );
 
-        if( m_glContext == nullptr )
+        if( glContext == nullptr )
         {
             SDL_DestroyWindow( m_window );
             m_window = nullptr;
 
             return false;
         }
+
+        m_glContext = glContext;
 
         int dw;
         int dh;
@@ -696,11 +720,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer SDLPlatform::getWindowHandle() const
-    {
-        return m_window;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasPlatformTag( const ConstString & _tag ) const
     {
         return m_platformTags.hasTag( _tag );
@@ -709,6 +728,11 @@ namespace Mengine
     const Tags & SDLPlatform::getPlatformTags() const
     {
         return m_platformTags;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::isDesktop() const
+    {
+        return m_desktop;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::hasTouchpad() const
@@ -1112,8 +1136,8 @@ namespace Mengine
         Helper::pathCorrectBackslashToA( pathCorrect, _path );
 
         Char fullPath[MENGINE_MAX_PATH];
-        ::strcpy( fullPath, userPath );
-        ::strcat( fullPath, pathCorrect );
+        MENGINE_STRCPY( fullPath, userPath );
+        MENGINE_STRCAT( fullPath, pathCorrect );
 
         struct stat sb;
         if( stat( fullPath, &sb ) == 0 && ((sb.st_mode) & S_IFMT) != S_IFDIR )
@@ -1455,9 +1479,45 @@ namespace Mengine
         ::abort();
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer SDLPlatform::getPlatformExternal()
+    UnknownPointer SDLPlatform::getPlatformExtention()
     {
         return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SDL_Window * SDLPlatform::getWindow() const
+    {
+        return m_window;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SDL_GLContext SDLPlatform::getGLContext() const
+    {
+        return m_glContext;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLPlatform::addSDLEventHandler( const LambdaSDLEventHandler & _handler )
+    {
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+
+        SDLEventHandlerDesc desc;
+        
+        desc.id = id;
+        desc.handler = _handler;
+
+        m_sdlEventHandlers.emplace_back( desc );
+
+        return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::removeSDLEventHandler( uint32_t _handlerId )
+    {
+        VectorSDLEventHandlers::iterator it_found = std::find_if( m_sdlEventHandlers.begin(), m_sdlEventHandlers.end(), [_handlerId]( const SDLEventHandlerDesc & _desc )
+        {
+            return _desc.id == _handlerId;
+        } );
+
+        MENGINE_ASSERTION_FATAL( it_found != m_sdlEventHandlers.end() );
+
+        m_sdlEventHandlers.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::changeWindow_( const Resolution & _resolution, bool _fullscreen )
@@ -1595,6 +1655,11 @@ namespace Mengine
         SDL_Event sdlEvent;
         while( SDL_PollEvent( &sdlEvent ) != 0 && !quitRequest )
         {
+            for( const SDLEventHandlerDesc & desc : m_sdlEventHandlers )
+            {
+                desc.handler( &sdlEvent );
+            }
+
             m_sdlInput->handleEvent( sdlEvent );
 
             switch( sdlEvent.type )

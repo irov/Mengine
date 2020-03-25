@@ -6,7 +6,7 @@
 
 #include "Kernel/ModuleBase.h"
 
-#include "Config/String.h"
+#include "Kernel/String.h"
 #include "Config/Lambda.h"
 
 namespace Mengine

@@ -659,6 +659,12 @@ if(MENGINE_DEPENDENCE_PYBIND)
     add_dependencies(pybind_python python)
 endif()
 
+#dependencies imgui
+if(MENGINE_DEPENDENCE_IMGUI)
+    message("================imgui================")
+    ADD_SUBDIRECTORY(imgui)
+endif()
+
 if(MENGINE_TOOLCHAIN_MSVC)
     #dependencies python3
     if(MENGINE_DEPENDENCE_PYTHON3)        
@@ -709,12 +715,6 @@ if(MENGINE_TOOLCHAIN_MSVC)
 		set(GLFW_VULKAN_STATIC OFF CACHE BOOL "GLFW_VULKAN_STATIC" FORCE)
 
         ADD_SUBDIRECTORY(${THIRDPARTY_DIR}/glfw3 ${CMAKE_TEMP_DIR}/glfw3)
-    endif()
-    
-    #dependencies imgui
-    if(MENGINE_DEPENDENCE_IMGUI)
-        message("================imgui================")
-        ADD_SUBDIRECTORY(imgui)
     endif()
 endif()
 

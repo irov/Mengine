@@ -7,11 +7,10 @@
 #include "Environment/Android/AndroidEventation.h"
 
 #include "Kernel/ModuleBase.h"
+#include "Kernel/String.h"
+#include "Kernel/VectorString.h"
 
-#include "Config/String.h"
 #include "Config/Lambda.h"
-
-#include "Config/VectorString.h"
 
 namespace Mengine
 {

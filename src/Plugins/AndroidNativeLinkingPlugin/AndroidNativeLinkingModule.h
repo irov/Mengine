@@ -5,8 +5,8 @@
 #include "Environment/Android/AndroidEventation.h"
 
 #include "Kernel/ModuleBase.h"
+#include "Kernel/String.h"
 
-#include "Config/String.h"
 #include "Config/Lambda.h"
 
 namespace Mengine

@@ -6,6 +6,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Win32DynamicLibrary.h"
 #include "Win32DateTimeProvider.h"
@@ -64,7 +65,6 @@ namespace Mengine
         , m_performanceSupport( false )
         , m_active( false )
         , m_update( false )
-        , m_enumerator( 0 )
         , m_icon( 0 )
         , m_close( false )
         , m_vsync( false )
@@ -81,7 +81,8 @@ namespace Mengine
         , m_lastMouseX( 0 )
         , m_lastMouseY( 0 )
         , m_touchpad( false )
-        , m_fullscreen( false )        
+        , m_desktop( false )
+        , m_fullscreen( false )
     {
         m_projectTitle[0] = '\0';
     }
@@ -113,6 +114,7 @@ namespace Mengine
 #endif
 
         m_touchpad = false;
+        m_desktop = false;
 
         if( HAS_OPTION( "win32" ) )
         {
@@ -121,6 +123,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
 
             m_touchpad = false;
+            m_desktop = true;
         }
         else if( HAS_OPTION( "win64" ) )
         {
@@ -129,6 +132,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN64" ) );
 
             m_touchpad = false;
+            m_desktop = true;
         }
         else if( HAS_OPTION( "mac" ) )
         {
@@ -136,6 +140,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
 
             m_touchpad = false;
+            m_desktop = true;
         }
         else if( HAS_OPTION( "ios" ) )
         {
@@ -147,6 +152,7 @@ namespace Mengine
 #endif
 
             m_touchpad = true;
+            m_desktop = false;
         }
         else if( HAS_OPTION( "android" ) )
         {
@@ -154,6 +160,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
 
             m_touchpad = true;
+            m_desktop = false;
         }
         else if( HAS_OPTION( "wp" ) )
         {
@@ -161,6 +168,7 @@ namespace Mengine
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
 
             m_touchpad = true;
+            m_desktop = false;
         }
 
         if( HAS_OPTION( "platform" ) == true )
@@ -177,6 +185,11 @@ namespace Mengine
         if( HAS_OPTION( "touchpad" ) )
         {
             m_touchpad = true;
+        }
+
+        if( HAS_OPTION( "desktop" ) )
+        {
+            m_desktop = true;
         }
 
         bool developmentMode = HAS_OPTION( "dev" );
@@ -440,7 +453,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _doc );
 
-        uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         TimerDesc desc;
         desc.id = new_id;
@@ -814,6 +827,11 @@ namespace Mengine
     bool Win32Platform::hasPlatformTag( const ConstString & _tag ) const
     {
         return m_platformTags.hasTag( _tag );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::isDesktop() const
+    {
+        return m_desktop;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::hasTouchpad() const
@@ -1544,7 +1562,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer Win32Platform::getWindowHandle() const
+    HWND Win32Platform::getWindowHandle() const
     {
         return m_hWnd;
     }
@@ -3140,14 +3158,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    UnknownPointer Win32Platform::getPlatformExternal()
+    UnknownPointer Win32Platform::getPlatformExtention()
     {
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Win32Platform::addWin32ProcessHandler( const LambdaWin32ProcessHandler & _lambda )
     {
-        uint32_t id = ++m_enumerator;
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
         Win32ProcessDesc desc;
         desc.id = id;

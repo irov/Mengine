@@ -361,10 +361,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onWindowClose()
     {
-        if( m_windowCreated == true )
+        if( m_windowCreated == false )
         {
-            m_renderSystem->onWindowClose();
+            return;
         }
+
+        m_renderSystem->onWindowClose();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onDeviceLostPrepare()
@@ -373,6 +375,8 @@ namespace Mengine
         {
             return;
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
         this->restoreRenderSystemStates_();
 
@@ -391,6 +395,8 @@ namespace Mengine
 
         this->createNullTexture_();
         this->createWhitePixelTexture_();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )
@@ -1128,10 +1134,12 @@ namespace Mengine
 
         m_vsync = _vSync;
 
-        if( m_windowCreated == true )
+        if( m_windowCreated == false )
         {
-            m_renderSystem->setVSync( m_vsync );
+            return;
         }
+
+        m_renderSystem->setVSync( m_vsync );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::getVSync() const

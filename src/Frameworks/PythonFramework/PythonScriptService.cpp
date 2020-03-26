@@ -492,6 +492,8 @@ namespace Mengine
 
         m_holdersPythonString.clear();
 
+        m_poolPythonString.clear();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
         m_factoryScriptModule = nullptr;
@@ -890,10 +892,15 @@ namespace Mengine
 
         holder->setPythonObject( m_kernel, (PyObject *)_object );
 
-        STRINGIZE_SERVICE()
-            ->stringizeExternal( holder, _cstr );
-
-        m_holdersPythonString.push_back( holder );
+        if( STRINGIZE_SERVICE()
+            ->stringizeExternal( holder, _cstr ) == false )
+        {
+            m_poolPythonString.destroyT( holder );
+        }
+        else
+        {
+            m_holdersPythonString.push_back( holder );
+        }
 
         return true;
     }

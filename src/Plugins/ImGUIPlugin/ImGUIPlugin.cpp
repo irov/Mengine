@@ -90,6 +90,8 @@ namespace Mengine
         ImGui::CreateContext();
 
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CREATE_RENDER_WINDOW, this, &ImGUIPlugin::notifyCreateRenderWindow_ );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE, this, &ImGUIPlugin::notifyRenderDeviceLostPrepare_ );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE, this, &ImGUIPlugin::notifyRenderDeviceLostRestore_ );
 
 #if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32)
         Win32PlatformExtensionInterface * win32Platform = PLATFORM_SERVICE()
@@ -192,6 +194,20 @@ namespace Mengine
             ->getRenderDevice();
         
         ImGui_ImplDX9_Init( d3dDevice );
+        ImGui_ImplDX9_CreateDeviceObjects();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIPlugin::notifyRenderDeviceLostPrepare_()
+    {
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
+        ImGui_ImplDX9_InvalidateDeviceObjects();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImGUIPlugin::notifyRenderDeviceLostRestore_()
+    {
+#if defined(MENGINE_ENVIRONMENT_PLATFORM_WIN32) && defined(MENGINE_ENVIRONMENT_RENDER_DIRECTX)
         ImGui_ImplDX9_CreateDeviceObjects();
 #endif
     }

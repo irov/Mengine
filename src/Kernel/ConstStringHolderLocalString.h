@@ -6,6 +6,7 @@ namespace Mengine
 {
     class ConstStringHolderLocalString
         : public ConstStringHolder
+        , public stdex::intrusive_linked<ConstStringHolderLocalString>
     {
     public:
         ConstStringHolderLocalString();

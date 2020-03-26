@@ -237,7 +237,7 @@ namespace Mengine
         bool m_inputMouseButtonEventBlock;
 
         bool m_debugPause;
-        bool m_debugFileOpen;        
+        bool m_debugFileOpen;
 
         bool m_initailizeGame;
     };

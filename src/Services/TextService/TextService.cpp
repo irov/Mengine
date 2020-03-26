@@ -79,13 +79,27 @@ namespace Mengine
 
         m_packages.clear();
 
+        for( IntrusiveListConstStringHolderLocalString::iterator it = m_holdersLocalString.begin(); it != m_holdersLocalString.end(); )
+        {
+            IntrusiveListConstStringHolderLocalString::iterator it_erase = it;
+
+            ConstStringHolderLocalString * holder = *it;
+            ++it;
+
+            m_holdersLocalString.erase( it_erase );
+
+            m_poolLocalString.destroyT( holder );
+        }
+
+        m_holdersLocalString.clear();
+
+        m_poolLocalString.clear();
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePackage );
 
         m_factoryTextEntry = nullptr;
         m_factoryTextLocalePackage = nullptr;
-
-        m_poolLocalString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     class TextService::TextManagerLoadSaxCallback
@@ -1115,6 +1129,10 @@ namespace Mengine
             ->stringizeExternal( holder, _cstr ) == false )
         {
             m_poolLocalString.destroyT( holder );
+        }
+        else
+        {
+            m_holdersLocalString.push_back( holder );
         }
     }
 }

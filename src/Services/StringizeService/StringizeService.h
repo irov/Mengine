@@ -60,7 +60,7 @@ namespace Mengine
         InternalHolder m_internals[MENGINE_STRINGIZE_INTERNAL_COUNT][8];
 
     protected:
-        const ConstStringHolder * testHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
+        const ConstStringHolder * testHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash ) const;
         const ConstStringHolder * stringizeHolderUnique_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
         const ConstStringHolder * stringizeHolder_( const ConstStringHolder::value_type * _str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash );
         void addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash );

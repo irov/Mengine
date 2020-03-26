@@ -42,7 +42,7 @@ namespace Mengine
     public:
         PyObject * initModule( const Char * _name );
 
-        ScriptModuleInterfacePtr importModule( const ConstString& _name ) override;
+        ScriptModuleInterfacePtr importModule( const ConstString & _name ) override;
 
         void setCurrentModule( PyObject * _module ) override;
 
@@ -107,7 +107,7 @@ namespace Mengine
         struct ScriptEmbeddingDesc
         {
             ConstString name;
-            ScriptEmbeddingInterfacePtr embedding;            
+            ScriptEmbeddingInterfacePtr embedding;
         };
 
         typedef Vector<ScriptEmbeddingDesc> VectorEmbeddings;

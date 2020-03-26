@@ -51,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_DEBUG
     //////////////////////////////////////////////////////////////////////////
-    namespace
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_WINDOWS_DEBUG
@@ -123,7 +123,7 @@ namespace Mengine
 #ifdef MENGINE_WINDOWS_DEBUG
                 if( m_prev_handler_count++ == 0 )
                 {
-                    m_prev_handler = _set_invalid_parameter_handler( &py_invalid_parameter_handler );
+                    m_prev_handler = _set_invalid_parameter_handler( &Detail::py_invalid_parameter_handler );
                     m_prev_mode = _CrtSetReportMode( _CRT_ASSERT, 0 );
                 }
 #endif
@@ -293,7 +293,7 @@ namespace Mengine
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
 #ifdef MENGINE_DEBUG
-        pybind::observer_bind_call * bind_call = Helper::newT<My_observer_bind_call>( this );
+        pybind::observer_bind_call * bind_call = Helper::newT<Detail::My_observer_bind_call>( this );
         m_kernel->set_observer_bind_call( bind_call );
 #endif
 
@@ -429,7 +429,7 @@ namespace Mengine
 #ifdef MENGINE_DEBUG
         pybind::observer_bind_call * observer = m_kernel->get_observer_bind_call();
 
-        My_observer_bind_call * observer_bind_call = static_cast<My_observer_bind_call *>(observer);
+        Detail::My_observer_bind_call * observer_bind_call = static_cast<Detail::My_observer_bind_call *>(observer);
         Helper::deleteT( observer_bind_call );
 
         m_kernel->set_observer_bind_call( nullptr );

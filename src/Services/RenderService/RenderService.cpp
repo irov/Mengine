@@ -361,10 +361,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onWindowClose()
     {
-        if( m_windowCreated == true )
+        if( m_windowCreated == false )
         {
-            m_renderSystem->onWindowClose();
+            return;
         }
+         
+        m_renderSystem->onWindowClose();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::onDeviceLostPrepare()
@@ -1128,10 +1130,12 @@ namespace Mengine
 
         m_vsync = _vSync;
 
-        if( m_windowCreated == true )
+        if( m_windowCreated == false )
         {
-            m_renderSystem->setVSync( m_vsync );
+            return;
         }
+
+        m_renderSystem->setVSync( m_vsync );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::getVSync() const

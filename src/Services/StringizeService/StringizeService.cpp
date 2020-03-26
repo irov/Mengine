@@ -217,8 +217,6 @@ namespace Mengine
             holder_hash = Helper::makeHash( holder_str, holder_size );
         }
 
-        _holder->setup( holder_str, holder_size, holder_hash );
-
         const ConstStringHolder * test = this->testHolder_( holder_str, holder_size, holder_hash );
 
         if( test != nullptr )
@@ -227,6 +225,8 @@ namespace Mengine
 
             return false;
         }
+
+        _holder->setup( holder_str, holder_size, holder_hash );
 
         this->addHolder_( _holder, holder_hash );
 
@@ -279,7 +279,7 @@ namespace Mengine
         return holder;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type *_str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash )
+    const ConstStringHolder * StringizeService::testHolder_( const ConstStringHolder::value_type *_str, ConstStringHolder::size_type _size, ConstStringHolder::hash_type _hash ) const
     {
         const IntrusiveListConstStringHolder & list = this->getList_( _hash );
 

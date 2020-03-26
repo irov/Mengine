@@ -365,7 +365,7 @@ namespace Mengine
         {
             return;
         }
-         
+
         m_renderSystem->onWindowClose();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -375,6 +375,8 @@ namespace Mengine
         {
             return;
         }
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_PREPARE );
 
         this->restoreRenderSystemStates_();
 
@@ -393,6 +395,8 @@ namespace Mengine
 
         this->createNullTexture_();
         this->createWhitePixelTexture_();
+
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RENDER_DEVICE_LOST_RESTORE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::beginScene( const RenderPipelineInterfacePtr & _renderPipeline )

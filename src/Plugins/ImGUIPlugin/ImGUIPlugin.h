@@ -23,6 +23,8 @@ namespace Mengine
 
     protected:
         void notifyCreateRenderWindow_();
+        void notifyRenderDeviceLostPrepare_();
+        void notifyRenderDeviceLostRestore_();
 
     protected:
         uint32_t m_handlerId;

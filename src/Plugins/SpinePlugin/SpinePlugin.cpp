@@ -4,6 +4,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/AllocatorServiceInterface.h"
 
 #ifdef MENGINE_USE_SCRIPT_SERVICE
 #include "SpineScriptEmbedding.h"
@@ -23,11 +24,49 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ConstStringHelper.h"
 
+#include "spine/extension.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Spine, Mengine::SpinePlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        static void * my_spine_malloc( size_t size )
+        {
+            void * p = ALLOCATOR_SERVICE()
+                ->malloc( size, "spine" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * my_spine_debug_malloc( size_t size, const char * file, int line )
+        {
+            MENGINE_UNUSED( file );
+            MENGINE_UNUSED( line );
+
+            void * p = ALLOCATOR_SERVICE()
+                ->malloc( size, "spine" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void * my_spine_realloc( void * ptr, size_t size )
+        {
+            void * p = ALLOCATOR_SERVICE()
+                ->realloc( ptr, size, "spine" );
+
+            return p;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void my_spine_free( void * ptr )
+        {
+            ALLOCATOR_SERVICE()
+                ->free( ptr, "spine" );
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     SpinePlugin::SpinePlugin()
     {
@@ -83,6 +122,11 @@ namespace Mengine
 
             return true;
         } );
+
+        _spSetMalloc( &Detail::my_spine_malloc );
+        _spSetDebugMalloc( &Detail::my_spine_debug_malloc );
+        _spSetRealloc( &Detail::my_spine_realloc );
+        _spSetFree( &Detail::my_spine_free );
 
         return true;
     }

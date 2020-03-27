@@ -1,5 +1,7 @@
 #include "ImageDecoderJPEG.h"
 
+#include "Interface/AllocatorServiceInterface.h"
+
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -165,6 +167,24 @@ namespace Mengine
         return (val1 + val2) / 2;
     }
     //////////////////////////////////////////////////////////////////////////
+    static void * my_jpeg_malloc( size_t _size, void * _ud )
+    {
+        MENGINE_UNUSED( _ud );
+
+        void * p = ALLOCATOR_SERVICE()
+            ->malloc( _size, "jpeg" );
+
+        return p;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void my_jpeg_free( void * _ptr, void * _ud )
+    {
+        MENGINE_UNUSED( _ud );
+
+        ALLOCATOR_SERVICE()
+            ->free( _ptr, "jpeg" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     ImageDecoderJPEG::ImageDecoderJPEG()
     {
     }
@@ -175,6 +195,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderJPEG::_initialize()
     {
+        set_jpeg_allocator( &my_jpeg_malloc, &my_jpeg_free, nullptr );
+
         // step 1: allocate and initialize JPEG decompression object
         m_jpegObject.err = jpeg_std_error( &m_errorMgr );
         m_jpegObject.client_data = this;

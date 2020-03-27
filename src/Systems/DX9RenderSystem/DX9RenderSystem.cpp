@@ -614,10 +614,11 @@ namespace Mengine
     {
         MENGINE_ASSERTION_MEMORY_PANIC_VOID( m_pD3DDevice, "device not created" );
 
-        //float offset_x = -0.5f / (m_windowViewport.end.x - m_windowViewport.begin.x);
-        //float offset_y = 0.5f / (m_windowViewport.end.y - m_windowViewport.begin.y);
-        float offset_x = 0.f;
-        float offset_y = 0.f;
+        float DX9PerfectPixelOffsetX = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetX", -0.5f );
+        float DX9PerfectPixelOffsetY = CONFIG_VALUE( "Engine", "DX9PerfectPixelOffsetY", -0.5f );
+
+        float offset_x = DX9PerfectPixelOffsetX / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float offset_y = DX9PerfectPixelOffsetY / (m_windowViewport.end.y - m_windowViewport.begin.y);
 
         mt::mat4f vmperfect;
         mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
